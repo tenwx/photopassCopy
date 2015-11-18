@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dashLine="http://schemas.android.com/apk/res/com.pictureAir"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+
+        <ImageView
+            android:id="@+id/cartSelectImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:src="@drawable/cart_select" />
+
+        <ImageView
+            android:id="@+id/cartProductImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/cartSelectImageView"
+            android:src="@drawable/ic_stub" />
+
+        <TextView
+            android:id="@+id/cartProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/cartProductImageView"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="product"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/cartEditBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/cartProductImageView"
+            android:orientation="horizontal" >
+
+            <com.pictureAir.widget.ListViewImageView
+                android:id="@+id/cartRemoveImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rem_btn" 
+                android:clickable="true"/>
+
+            <TextView
+                android:id="@+id/cartProductCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_bg"
+                android:gravity="center"
+                android:textColor="@color/gray"
+                android:textSize="15sp" >
+            </TextView>
+
+            <com.pictureAir.widget.ListViewImageView
+                android:id="@+id/cartAddImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/add_btn"
+				android:clickable="true" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cartPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="11"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/cartCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/cartPrice"
+            android:text="11"
+            android:layout_marginRight="2dp"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/cartCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/cartProductImageView"
+            android:layout_alignParentRight="true"
+            android:text="11"
+            android:textColor="@color/gray"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <com.pictureAir.widget.DashedLineView
+        android:id="@+id/cartLine1"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        dashLine:dashColor="@color/gray_light3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/hideView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:src="@drawable/cart_select"
+            android:visibility="invisible" />
+
+        <GridLayout
+            android:id="@+id/cartPhotoGridLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cartLine1"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@id/cartSelectImageView"
+            android:columnCount="4"
+            android:orientation="horizontal"
+            android:useDefaultMargins="true" >
+        </GridLayout>
+    </LinearLayout>
+
+</LinearLayout>

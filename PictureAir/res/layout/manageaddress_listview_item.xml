@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff" >
+
+    <ImageView
+        android:id="@+id/address_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/address_select_button"
+        android:focusable="false"
+        android:textOff=""
+        android:textOn="" />
+
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/address_check"
+        android:layout_marginRight="10dp"
+        android:background="#00000000"
+        android:drawableLeft="@drawable/edit1"
+        android:drawablePadding="5dp"
+        android:focusable="false"
+        android:text="@string/edit2"
+        android:textColor="@color/gray"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:id="@+id/addressinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/edit"
+        android:layout_alignLeft="@id/address_check"
+        android:layout_marginTop="12dp"
+        android:paddingRight="3dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="32dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/mobilephone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="telphone"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+        <TextView
+            android:id="@+id/homephone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="homephone"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/detailaddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/sampleaddress"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/imageButton_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/edit"
+        android:layout_below="@id/edit"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:background="#00000000"
+        android:drawableLeft="@drawable/address_delete_button"
+        android:focusable="false" />
+
+</RelativeLayout>

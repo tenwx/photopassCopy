@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/submitOrderRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_light2"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/lltitle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue" >
+
+        <ImageView
+            android:id="@+id/llrt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+           android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/submitorder"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listView_submitorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_below="@id/lltitle"
+        android:divider="@color/gray_light2"
+        android:dividerHeight="5dp"
+        android:focusable="true"
+        android:scrollbars="none" />
+
+    <RelativeLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true" >
+
+        <TextView
+            android:id="@+id/good_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/gray"
+            android:textSize="15sp"
+            android:text="@string/all_goods" />
+
+        <TextView
+            android:id="@+id/button2_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@color/blue"
+            android:padding="15dp"
+            android:text="@string/checkout"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/submitorder_textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@id/button2_submit"
+            android:text="30.00"
+            android:textColor="@color/orange"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textView_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/submitorder_textView3"
+            android:text="$"
+            android:textColor="@color/orange"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/submitorder_textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/textView_currency"
+            android:text="@string/totalprice"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

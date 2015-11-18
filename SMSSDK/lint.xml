@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ContentDescription">
+        <ignore path="res/layout/smssdk_regist_page.xml" />
+        <ignore path="res/layout/smssdk_search_title_layout.xml" />
+    </issue>
+    <issue id="HardcodedText">
+        <ignore path="res/layout/smssdk_regist_page.xml" />
+    </issue>
+    <issue id="InefficientWeight">
+        <ignore path="res/layout/smssdk_regist_page.xml" />
+        <ignore path="res/layout/smssdk_search_title_layout.xml" />
+    </issue>
+    <issue id="MissingTranslation" severity="informational" />
+    <issue id="NestedWeights">
+        <ignore path="res/layout/smssdk_search_title_layout.xml" />
+    </issue>
+</lint>

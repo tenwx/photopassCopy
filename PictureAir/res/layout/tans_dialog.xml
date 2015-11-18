@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:padding="25dp" >
+
+    <TextView
+        android:id="@+id/buy_ppp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_blue"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/up_ppp_money"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+    
+    <TextView
+        android:id="@+id/buynow"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_blue"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/buythisphoto"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+    
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_white_with_blue_line"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/cancel1"
+        android:textColor="@color/gray"
+        android:textSize="15sp" />
+
+</LinearLayout>

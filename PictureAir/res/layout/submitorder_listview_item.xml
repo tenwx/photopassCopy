@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dashLine="http://schemas.android.com/apk/res/com.pictureAir"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/submitOrderRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp">
+
+        <ImageView
+            android:id="@+id/imageView_pd"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="15dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_stub" />
+
+        <TextView
+            android:id="@+id/textView_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/imageView_pd"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="product"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textView_pr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="15.00"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textView_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/textView_pr"
+            android:text="$"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/editText_count1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/imageView_pd"
+            android:text="x1"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/gray"
+            android:textSize="15sp" >
+        </TextView>
+        
+       <ImageView 
+            android:id="@+id/showOrHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@id/imageView_pd"
+            android:src="@drawable/good_show_photo"/>
+    </RelativeLayout>
+
+    <com.pictureAir.widget.DashedLineView
+        android:id="@+id/submitLine1"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        dashLine:dashColor="@color/gray_light3" />
+    
+    <GridLayout
+        android:id="@+id/gridView_cartphoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:useDefaultMargins="true" >
+    </GridLayout>
+
+</LinearLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <View
+        android:layout_width="3dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/delivery_item"
+        android:layout_marginLeft="33dp"
+        android:background="@color/gray_light3" />
+
+    <LinearLayout
+        android:id="@+id/delivery_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <RelativeLayout
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical" >
+
+            <ImageView
+                android:id="@+id/delivery_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/delivery_time_point" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/delivery_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/delivery_bg_nor"
+            android:gravity="center_vertical"
+            android:text="11111111\nfsdfsdfs\nfsdfsdfs\nfsdfsdfs\nfsdfsdfs\nfsdfsdfs"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</RelativeLayout>

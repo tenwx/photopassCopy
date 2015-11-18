@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right"
+    android:layout_marginRight="5dp"
+    android:background="@drawable/pop_bg3"
+    android:orientation="vertical" >
+
+
+    <TextView
+        android:id="@+id/buyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/transparent"
+        android:drawableLeft="@drawable/ppppop_buy_button"
+        android:drawablePadding="5dp"
+        android:gravity="left|center_vertical"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/buy_good2"
+        android:textColor="@drawable/textview_selector"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/gray_light" />
+
+    <TextView
+        android:id="@+id/scanTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/transparent"
+        android:drawableLeft="@drawable/ppppop_scan_button"
+        android:drawablePadding="5dp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/auto_auto"
+        android:textColor="@drawable/textview_selector"
+        android:textSize="15sp" />
+
+
+    
+  
+
+</LinearLayout>
