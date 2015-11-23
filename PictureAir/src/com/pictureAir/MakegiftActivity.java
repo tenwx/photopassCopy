@@ -58,7 +58,7 @@ import com.pictureAir.widget.MyHorizontalScrollView;
 import com.pictureAir.widget.MyHorizontalScrollView.OnItemClickListener;
 import com.pictureAir.widget.MyToast;
 
-public class MakegiftActivity extends Activity implements OnClickListener{
+public class MakegiftActivity extends BaseActivity implements OnClickListener{
 	//选择商品的horizontalscrollview的popupwindow
 	private MyHorizontalScrollView myHorizontalScrollView;
 	private HorizontalScrollViewAdapter mAdapter;

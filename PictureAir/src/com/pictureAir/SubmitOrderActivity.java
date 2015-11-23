@@ -43,7 +43,7 @@ import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.XListViewHeader;
 
-public class SubmitOrderActivity extends Activity implements OnClickListener{
+public class SubmitOrderActivity extends BaseActivity implements OnClickListener{
 	private TextView submitButton;
 	private ImageView llrtLayout;
 	private TextView totalpriceTextView,currencyTextView, allGoodsTextView;

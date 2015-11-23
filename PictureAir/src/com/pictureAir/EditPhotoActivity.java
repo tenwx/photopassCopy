@@ -84,7 +84,7 @@ import com.pictureAir.widget.HorizontalListView;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.TouchView;
 
-public class EditPhotoActivity extends Activity implements OnClickListener {
+public class EditPhotoActivity extends BaseActivity implements OnClickListener {
 	private String photoURL;
 	private ImageView editImageView; // 原始图
 	private ImageView frameImageView; // 相框

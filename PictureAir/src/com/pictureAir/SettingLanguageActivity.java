@@ -17,7 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-public class SettingLanguageActivity extends Activity implements OnClickListener{
+public class SettingLanguageActivity extends BaseActivity implements OnClickListener{
 	private Configuration config;
 	private DisplayMetrics dm;
 	

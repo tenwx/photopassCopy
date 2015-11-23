@@ -44,7 +44,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:name=".MyApplication"
+        android:name="com.pictureAir.MyApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
@@ -257,8 +257,8 @@
         <activity
             android:name=".OtherRegisterActivity"
             android:configChanges="keyboard|orientation"
-            android:windowSoftInputMode="stateHidden|adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".NationalListSelectionActivity"
             android:configChanges="keyboard|orientation"
@@ -351,6 +351,15 @@
                 <data android:scheme="wxd930ea5d5a258f4f" />
             </intent-filter>
         </activity>
+        <!-- 友盟反馈 -->
+        <activity android:name="com.umeng.fb.ConversationActivity" />
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="564c08dee0f55a15de002a72" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="360" />
 
         <receiver android:name=".wxapi.AppRegister" >
             <intent-filter>

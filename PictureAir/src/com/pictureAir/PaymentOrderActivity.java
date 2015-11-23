@@ -57,7 +57,7 @@ import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
-public class PaymentOrderActivity extends Activity implements OnClickListener{
+public class PaymentOrderActivity extends BaseActivity implements OnClickListener{
 	private ImageView lrtLayout;
 	private TextView sbmtButton;
 	private String nameString;

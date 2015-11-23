@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+import com.pictureAir.BaseFragment;
 import com.pictureAir.CartActivity;
 import com.pictureAir.DetailProductActivity;
 import com.pictureAir.MyApplication;
@@ -37,8 +38,6 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.UniversalImageLoadTool;
 import com.pictureAir.widget.MyToast;
-import com.pictureAir.widget.XListView;
-import com.pictureAir.widget.XListView.IXListViewListener;
 
 /**
  * shop类
@@ -46,7 +45,7 @@ import com.pictureAir.widget.XListView.IXListViewListener;
  * @author bauer_bao
  * 
  */
-public class FragmentPageShop extends Fragment implements OnClickListener{
+public class FragmentPageShop extends BaseFragment implements OnClickListener{
 	//申明控件
 	private ImageView shoppingBag;
 	private TextView cartCountTextView;

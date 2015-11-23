@@ -21,7 +21,7 @@ import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.widget.MyToast;
 
-public class NationalListSelectionActivity extends Activity {
+public class NationalListSelectionActivity extends BaseActivity {
 	// 组件
 	private ListView lv;
 	private myAdapter adapter;

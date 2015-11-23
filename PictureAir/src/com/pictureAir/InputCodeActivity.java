@@ -39,7 +39,7 @@ import com.pictureAir.widget.MyToast;
 /**
  * 手动输入条码的页面
  * */
-public class InputCodeActivity extends Activity implements OnClickListener{
+public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	private Button ok;
 	private EditText input;
 	private ImageView back;

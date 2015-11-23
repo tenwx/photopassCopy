@@ -52,7 +52,7 @@ import com.pictureAir.zxing.view.ViewfinderView;
  * Initial the camera
  * @author Talon
  */
-public class MipCaptureActivity extends Activity implements Callback {
+public class MipCaptureActivity extends BaseActivity implements Callback {
 
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;

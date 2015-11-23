@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.pictureAir.BaseFragment;
 import com.pictureAir.CameraActivity;
 import com.pictureAir.R;
 /**
@@ -14,7 +15,7 @@ import com.pictureAir.R;
  * @author bauer_bao
  *
  */
-public class FragmentPageCamera extends Fragment{
+public class FragmentPageCamera extends BaseFragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	
 		Intent intent = new Intent(getActivity(), CameraActivity.class);

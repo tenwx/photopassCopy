@@ -74,5 +74,8 @@
     <color name="color14">#EE0000</color>
     <color name="color15">#000</color>
     <color name="color16">#fff</color>
+    
+     <color name="start_color_press">#8b791f</color>
+    <color name="start_color_normal">#9d8926</color>
 
 </resources>

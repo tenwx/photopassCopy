@@ -58,7 +58,7 @@ import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.PPPPop;
 import com.pictureAir.widget.calendar.CalendarActivity;
 /**显示用户所有的PP+或是对应某个PP而言可使用的PP+*/
-public class MyPPPActivity extends Activity implements OnClickListener {
+public class MyPPPActivity extends BaseActivity implements OnClickListener {
 	private final static int PPP_CODE = 1;
 	private final static int PP_CODE = 2;
 	private final static int OPTION_TYPE_CHOOSE_PP_TO_BIND = 3;

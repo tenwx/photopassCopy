@@ -54,7 +54,7 @@ import com.pictureAir.widget.MyToast;
  * @author bauer_bao
  *
  */
-public class PPPDetailProductActivity extends Activity implements OnClickListener{
+public class PPPDetailProductActivity extends BaseActivity implements OnClickListener{
 	//申明控件
 	private ViewGroup animMaskLayout;//动画层
 	private ImageView buyImg;// 这是在界面上跑的小图片

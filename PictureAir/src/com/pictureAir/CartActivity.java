@@ -52,7 +52,7 @@ import com.pictureAir.widget.XListViewHeader;
  * @author bauer_bao
  * 
  */
-public class CartActivity extends Activity implements OnClickListener {
+public class CartActivity extends BaseActivity implements OnClickListener {
 	private ListView listView;
 	private ImageView rtButton;
 	private Button paymentButton;

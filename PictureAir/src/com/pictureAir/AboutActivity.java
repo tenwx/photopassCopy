@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class AboutActivity extends Activity implements OnClickListener{
+public class AboutActivity extends BaseActivity implements OnClickListener{
     private TextView logo_text;
     private TextView tv_versionCode;
     private String versionCode;

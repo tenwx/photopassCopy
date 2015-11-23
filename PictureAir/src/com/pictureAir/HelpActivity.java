@@ -9,11 +9,13 @@ import org.json.JSONObject;
 
 import cn.sharesdk.framework.authorize.a;
 
+import com.paypal.android.sdk.ca;
 import com.pictureAir.adapter.MyAdapter;
 import com.pictureAir.db.DatabaseAdapter;
 import com.pictureAir.entity.Question;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.PinYin;
+import com.pictureAir.util.UmengUtil;
 import com.pictureAir.widget.EditTextWithClear;
 
 import android.app.Activity;
@@ -42,7 +44,7 @@ import android.widget.Toast;
  * 搜索界面 实现问题的搜索功能 支持关键字搜索
  * 
  */
-public class HelpActivity extends Activity implements OnClickListener{
+public class HelpActivity extends BaseActivity implements OnClickListener{
 
 	private final String TAG = "MainActivity ";
 	// 申明控件
@@ -52,6 +54,7 @@ public class HelpActivity extends Activity implements OnClickListener{
 	private ArrayList<Question> testArray = new ArrayList<Question>();
 	private MyAdapter adapter;
 	private ImageView back;
+	private RelativeLayout feedBackRl;
 	private Question question;
 
 	private DatabaseAdapter databaseAdapter;
@@ -101,6 +104,7 @@ public class HelpActivity extends Activity implements OnClickListener{
 		//		cancel_btn = (ImageButton) findViewById(R.id.cancel_btn);
 		back = (ImageView) findViewById(R.id.back);
 		// lvSearch=(ListView) findViewById(R.id.lvSearch);
+		feedBackRl = (RelativeLayout) findViewById(R.id.relativeLayout1);
 
 		adapter = new MyAdapter(this, testArray);
 		mListView.setAdapter(adapter);
@@ -125,6 +129,7 @@ public class HelpActivity extends Activity implements OnClickListener{
 
 		// 删除按钮的单击操作
 		//		cancel_btn.setOnClickListener(myClickListener);
+		feedBackRl.setOnClickListener(this);
 		back.setOnClickListener(this);
 		// listView点击事件
 		mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -222,6 +227,10 @@ public class HelpActivity extends Activity implements OnClickListener{
 		switch (v.getId()) {
 		case R.id.back:
 			finish();
+			break;
+		case R.id.relativeLayout1:
+			//意见反馈弹出框
+			UmengUtil.startFeedbackActivity(this);
 			break;
 
 		default:

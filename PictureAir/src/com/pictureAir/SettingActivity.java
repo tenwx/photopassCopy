@@ -32,9 +32,11 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
+import com.pictureAir.util.UmengUtil;
+import com.umeng.fb.FeedbackAgent;
 
 /**用户功能设置*/
-public class SettingActivity  extends Activity implements OnClickListener{
+public class SettingActivity  extends BaseActivity implements OnClickListener{
 	private Configuration config;
 	private DisplayMetrics dm;
 	//	private Resources resources;
@@ -43,6 +45,7 @@ public class SettingActivity  extends Activity implements OnClickListener{
 	private Button logout;
 	private TextView tvSettingLanguage;
 	private MyApplication application;
+	//feedback
 	
 	// 三个单选按钮
 	private ImageButton gDownload;
@@ -142,28 +145,31 @@ public class SettingActivity  extends Activity implements OnClickListener{
 			break;
 
 		case R.id.sub_opinions://消息回馈按钮
-			final EditText inputServer = new EditText(this);
-			inputServer.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-			inputServer.setGravity(Gravity.TOP);
-			inputServer.setSingleLine(false);
-			inputServer.setHorizontallyScrolling(false);
-			inputServer.setWidth(ScreenUtil.getScreenWidth(this));
-			inputServer.setHeight(ScreenUtil.getScreenHeight(this)*2/3);
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.submit_opinions).setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(R.string.button_cancel, null);
-			builder.setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					//把inputServer中的文字传到服务器
-					try {
-						String opinions = new String(inputServer.getText().toString().getBytes(),"utf-8");
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-//					RequestParams params = new RequestParams();
-				}
-			});
-			builder.show();
+//			final EditText inputServer = new EditText(this);
+//			inputServer.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+//			inputServer.setGravity(Gravity.TOP);
+//			inputServer.setSingleLine(false);
+//			inputServer.setHorizontallyScrolling(false);
+//			inputServer.setWidth(ScreenUtil.getScreenWidth(this));
+//			inputServer.setHeight(ScreenUtil.getScreenHeight(this)*2/3);
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//			builder.setTitle(R.string.submit_opinions).setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(R.string.button_cancel, null);
+//			builder.setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
+//				public void onClick(DialogInterface dialog, int which) {
+//					//把inputServer中的文字传到服务器
+//					try {
+//						String opinions = new String(inputServer.getText().toString().getBytes(),"utf-8");
+//					} catch (UnsupportedEncodingException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+////					RequestParams params = new RequestParams();
+//				}
+//			});
+//			builder.show();
+			//意见反馈弹出框
+			UmengUtil.startFeedbackActivity(this);
+			
 			break;
 
 		case R.id.setting_language:
@@ -227,7 +233,7 @@ public class SettingActivity  extends Activity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		onCreate(null);
+//		onCreate(null);
 	}
 	
 	//监听返回键

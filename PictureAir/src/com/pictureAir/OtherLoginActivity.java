@@ -47,7 +47,7 @@ import com.pictureAir.widget.EditTextWithClear;
 import com.pictureAir.widget.MyToast;
 
 /** 其他登录 bass */
-public class OtherLoginActivity extends Activity implements OnClickListener {
+public class OtherLoginActivity extends BaseActivity implements OnClickListener {
 	private static final String TAG = "OtherLoginActivity";
 	// 申明控件
 	private Button sign, login;

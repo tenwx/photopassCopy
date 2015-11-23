@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class ModifyPasswordActivity extends Activity implements OnClickListener{
+public class ModifyPasswordActivity extends BaseActivity implements OnClickListener{
 	private SharedPreferences sharedPreferences;
     private ImageView back;
     private EditText oldPassword,newPassword;

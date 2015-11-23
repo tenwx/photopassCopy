@@ -26,7 +26,7 @@ import com.pictureAir.util.Common;
 import com.pictureAir.widget.MyToast;
 
 /** 个人信息页面 */
-public class ProfileActivity extends Activity implements OnClickListener {
+public class ProfileActivity extends BaseActivity implements OnClickListener {
 	private TextView tvNickName, tvGender, tvBirthday,tvQq;
 	private RelativeLayout nn, g, bd,q, item_password;
 	private Button save;

@@ -21,33 +21,39 @@ import com.pictureAir.util.ACache;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
+import com.pictureAir.util.UmengUtil;
 import com.pictureAir.widget.BadgeView;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 
 /**
- * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
- * 通过扫描或者登录之后会来到此页面
+ * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面 通过扫描或者登录之后会来到此页面
  * */
-public class MainTabActivity extends FragmentActivity {
+public class MainTabActivity extends BaseActivity {
 	public static MainTabActivity instances;
 	// 定义FragmentTabHost对象
 	private FragmentTabHost mTabHost;
 	// 定义一个布局
 	private LayoutInflater layoutInflater;
 	// 定义数组来存放Fragment界面
-	private Class<?> fragmentArray[] = { FragmentPageStory.class, FragmentPageDiscover.class, FragmentPageCamera.class, FragmentPageShop.class, FragmentPageMe.class };
+	private Class<?> fragmentArray[] = { FragmentPageStory.class,
+			FragmentPageDiscover.class, FragmentPageCamera.class,
+			FragmentPageShop.class, FragmentPageMe.class };
 	// 定义数组来存放按钮图片
-	private int mImageViewArray[] = { R.drawable.tab_photo_btn, R.drawable.tab_discover_btn, R.drawable.tab_camera_btn, R.drawable.tab_shop_btn, R.drawable.tab_me_btn };
+	private int mImageViewArray[] = { R.drawable.tab_photo_btn,
+			R.drawable.tab_discover_btn, R.drawable.tab_camera_btn,
+			R.drawable.tab_shop_btn, R.drawable.tab_me_btn };
 	// Tab选项卡的文字
-	private int mTextviewArray[] = { R.string.tab_story, R.string.tab_discover, R.string.tab_camera, R.string.tab_shops, R.string.tab_me };
-	//记录退出的时候的两次点击的间隔时间
+	private int mTextviewArray[] = { R.string.tab_story, R.string.tab_discover,
+			R.string.tab_camera, R.string.tab_shops, R.string.tab_me };
+	// 记录退出的时候的两次点击的间隔时间
 	private long exitTime = 0;
-	
+
 	public static BadgeView maintabbadgeView;
-	//上次的tab页面，用来判断点击camera之后回到那个tab
+	// 上次的tab页面，用来判断点击camera之后回到那个tab
 	private int last_tab = 0;
 	private MyToast newToast;
-	
+
 	private MyApplication application;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,12 +61,13 @@ public class MainTabActivity extends FragmentActivity {
 		System.out.println("maintab ======= create");
 		setContentView(R.layout.main_tab_layout);
 		AppManager.getInstance().addActivity(this);
-		application = (MyApplication)getApplication();
+		application = (MyApplication) getApplication();
 		instances = this;
 		initView();
+
 	}
 
-	//清除acahe框架的缓存数据
+	// 清除acahe框架的缓存数据
 	private void clearCache() {
 		System.out.println("clearing cache---------");
 		ACache.get(this).remove(Common.TOP_GOODS);
@@ -68,7 +75,7 @@ public class MainTabActivity extends FragmentActivity {
 		ACache.get(this).remove(Common.BANNER_GOODS);
 		ACache.get(this).remove(Common.PPP_GOOD);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
@@ -83,13 +90,15 @@ public class MainTabActivity extends FragmentActivity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		System.out.println("maintab ==== resume");
-		//设置成为上次的tab页面
+		// 设置成为上次的tab页面
 		mTabHost.setCurrentTab(last_tab);
 		System.out.println("pushcount-->" + application.getPushPhotoCount());
-		if (application.getPushPhotoCount() > 0) {//显示红点
+		if (application.getPushPhotoCount() > 0) {// 显示红点
 			MainTabActivity.maintabbadgeView.show();
 			application.setPushPhotoCount(0);
 		}
+		// 接收消息回复
+		UmengUtil.syncFeedback(this);
 	}
 
 	@Override
@@ -98,6 +107,7 @@ public class MainTabActivity extends FragmentActivity {
 		super.onPause();
 		System.out.println("maintab ===== pause");
 	}
+
 	/**
 	 * 初始化组件
 	 */
@@ -111,40 +121,42 @@ public class MainTabActivity extends FragmentActivity {
 		// 得到fragment的个数
 		int count = fragmentArray.length;
 		for (int i = 0; i < count; i++) {
-			System.out.println("count --------->"+i);
+			System.out.println("count --------->" + i);
 			// 为每一个Tab按钮设置图标、文字和内容
-			TabSpec tabSpec = mTabHost.newTabSpec(getString(mTextviewArray[i])).setIndicator(getTabItemView(i));
+			TabSpec tabSpec = mTabHost.newTabSpec(getString(mTextviewArray[i]))
+					.setIndicator(getTabItemView(i));
 			// 将Tab按钮添加进Tab选项卡中
 			mTabHost.addTab(tabSpec, fragmentArray[i], null);
-			mTabHost.getTabWidget().getChildTabViewAt(i).setOnClickListener(new TabOnClick(i));
+			mTabHost.getTabWidget().getChildTabViewAt(i)
+					.setOnClickListener(new TabOnClick(i));
 		}
 	}
-	
-	//tab按钮的点击监听
-	private class TabOnClick implements OnClickListener{
+
+	// tab按钮的点击监听
+	private class TabOnClick implements OnClickListener {
 		private int currentTab;
-		
+
 		public TabOnClick(int currentTab) {
 			this.currentTab = currentTab;
 		}
-		
+
 		@Override
 		public void onClick(View v) {
 			switch (currentTab) {
 			case 0:
 				System.out.println("photo tab on click");
-				if (mTabHost.getCurrentTab()==0) {//获取最新数据
+				if (mTabHost.getCurrentTab() == 0) {// 获取最新数据
 					FragmentPageStory.doRefresh();
 				}
 				mTabHost.setCurrentTab(0);
 				last_tab = 0;
 				break;
-				
+
 			case 2:
 				System.out.println("camera tab on click");
 				mTabHost.setCurrentTab(2);
 				break;
-				
+
 			case 1:
 			case 3:
 			case 4:
@@ -152,14 +164,14 @@ public class MainTabActivity extends FragmentActivity {
 				mTabHost.setCurrentTab(currentTab);
 				last_tab = currentTab;
 				break;
-				
+
 			default:
 				break;
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * 给Tab按钮设置图标和文字
 	 */
@@ -170,29 +182,30 @@ public class MainTabActivity extends FragmentActivity {
 		LayoutParams layoutParams = imageView.getLayoutParams();
 		if (index != 2) {
 			layoutParams.width = ScreenUtil.dip2px(this, 25);
-		}else {
+		} else {
 			layoutParams.width = ScreenUtil.dip2px(this, 40);
-			
+
 		}
 		layoutParams.height = layoutParams.width;
 		imageView.setLayoutParams(layoutParams);
 		TextView textView = (TextView) view.findViewById(R.id.textview);
 		textView.setText(mTextviewArray[index]);
-//		textView.setTextColor(getResources().getColor(R.drawable.tab_selector_onclick));
-//		textView.setTextSize(15);
+		// textView.setTextColor(getResources().getColor(R.drawable.tab_selector_onclick));
+		// textView.setTextSize(15);
 		if (index == 2) {
 			textView.setVisibility(View.GONE);
 		}
-		if(index==0){//添加badgeview
+		if (index == 0) {// 添加badgeview
 			maintabbadgeView = new BadgeView(getApplicationContext(), imageView);
 			maintabbadgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
 			maintabbadgeView.setTextSize(1);
-			maintabbadgeView.setBackgroundResource(R.drawable.notificaitonpoint);
+			maintabbadgeView
+					.setBackgroundResource(R.drawable.notificaitonpoint);
 		}
 		return view;
 	}
 
-	//双击退出app
+	// 双击退出app
 	private void exitApp() {
 		if ((System.currentTimeMillis() - exitTime) > 1000) {
 			newToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);

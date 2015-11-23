@@ -51,7 +51,7 @@ import com.pictureAir.widget.MyToast;
  * 3.全部获取之后，需要确认之前有扫描过pp或者ppp，如果有，则自动绑定
  * */
 
-public class LoginActivity extends Activity implements OnClickListener {
+public class LoginActivity extends BaseActivity implements OnClickListener {
 	private static final String TAG = "LoginActivity";
 	// 申明控件
 	private TextView tv_country, tv_country_num;// 国家，区号
@@ -149,6 +149,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 								.getJSONArray("PPList");
 						editor = sp.edit();
 						editor.putInt(Common.PP_COUNT, pplists.length());
+						
 						editor.commit();
 					} catch (JSONException e) {
 						e.printStackTrace();

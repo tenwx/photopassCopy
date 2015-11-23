@@ -38,7 +38,7 @@ import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 
 /**显示用户所有的PP或某张PP+可绑定的PP*/
-public class SelectPPActivity extends Activity implements OnClickListener {
+public class SelectPPActivity extends BaseActivity implements OnClickListener {
 	private ImageView back;
 	private ListView listPP;
 	private TextView ok;

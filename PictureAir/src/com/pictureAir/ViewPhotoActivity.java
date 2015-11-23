@@ -41,7 +41,7 @@ import com.pictureAir.widget.SharePop;
  *
  */
 
-public class ViewPhotoActivity extends Activity implements OnClickListener {
+public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 	private ImageView rtLayout;
 	private TextView viewTextView;

@@ -96,7 +96,7 @@ import com.pictureAir.widget.RotatetextView;
  * 
  */
 @SuppressLint("NewApi")
-public class CameraActivity extends Activity implements SurfaceHolder.Callback, OnClickListener, OnZoomChangeListener {
+public class CameraActivity extends BaseActivity implements SurfaceHolder.Callback, OnClickListener, OnZoomChangeListener {
 	private SurfaceView mySurfaceView = null;
 	private SurfaceHolder mySurfaceHolder = null;
 	private ImageButton recordButton;

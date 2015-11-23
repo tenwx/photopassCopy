@@ -1,6 +1,9 @@
 package com.pictureAir.util;
 
 import java.util.Stack;
+
+import com.pictureAir.MyApplication;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -125,6 +128,8 @@ public class AppManager {
 			}
 		}
 		mActivityStack.clear();
+		//保存友盟数据
+		UmengUtil.onKillProcess(MyApplication.getInstance());
 	}
 
 	/**
@@ -137,6 +142,7 @@ public class AppManager {
 					.getSystemService(Context.ACTIVITY_SERVICE);
 			activityMgr.restartPackage(context.getPackageName());
 			System.exit(0);
+			
 		} catch (Exception e) {
 		}
 	}

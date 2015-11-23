@@ -33,7 +33,7 @@ import com.pictureAir.widget.MyToast;
  * 为注册，type == 1为修改密码
  * PS：暂时因为注册和修改密码界面几乎一样，所以放在一个activity中完成，但后续如果改变注册页面布局的话最好和修改密码分开处理，使业务逻辑清晰化
  * */
-public class SignOrForgetActivity extends Activity implements OnClickListener {
+public class SignOrForgetActivity extends BaseActivity implements OnClickListener {
 	private EditText username, pwd1, pwd2;
 	private Button sure;
 	private ImageView back;

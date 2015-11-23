@@ -52,7 +52,7 @@ import com.pictureAir.widget.MyToast;
  * @author bauer_bao
  *
  */
-public class PreviewProductActivity extends Activity implements OnClickListener{
+public class PreviewProductActivity extends BaseActivity implements OnClickListener{
 	private ImageView returnButton;
 	private Button buynowButton;
 	private Button addtocartButton;

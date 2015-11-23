@@ -26,7 +26,7 @@ import com.pictureAir.widget.NoScrollListView;
  * @author bauer_bao
  *
  */
-public class OrderDetailActivity extends Activity implements OnClickListener{
+public class OrderDetailActivity extends BaseActivity implements OnClickListener{
 
 	private Button deliveryButton;
 	private TextView orderNumber, orderTime, payMethod, orderStatus, customer, phoneNumber, address, productPrice, shippingPrice, totalPrice, productCurrency, shipCurrency, totalCurrency;

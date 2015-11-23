@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 /**邮箱地址添加页面*/
-public class EmailAddActiviy extends Activity {
+public class EmailAddActiviy extends BaseActivity {
 	private EditText head, end;
 	private Button confirm;
 

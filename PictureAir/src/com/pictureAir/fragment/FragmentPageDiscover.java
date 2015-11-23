@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.pictureAir.BaseFragment;
 import com.pictureAir.MyApplication;
 import com.pictureAir.R;
 import com.pictureAir.UpdateCallback;
@@ -53,7 +54,7 @@ import com.pictureAir.widget.MyToast;
  * @author bauer_bao
  *
  */
-public class FragmentPageDiscover extends Fragment implements UpdateCallback, OnClickListener{
+public class FragmentPageDiscover extends BaseFragment implements UpdateCallback, OnClickListener{
 	
 	//声明控件
 	private LinearLayout discoverPopularityLinearLayout, discoverDistanceLinearLayout, discoverSelectionLinearLayout, discoverCollectionLinearLayout, discoverTopLinearLayout;

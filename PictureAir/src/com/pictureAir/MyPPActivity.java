@@ -38,7 +38,7 @@ import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.XListViewHeader;
 
 /** 显示用户所有的PP或某张PP+可绑定的PP */
-public class MyPPActivity extends Activity implements OnClickListener {
+public class MyPPActivity extends BaseActivity implements OnClickListener {
 	private ImageView back;
 	private ListView listPP;
 	private ImageView delete;

@@ -23,7 +23,7 @@ import android.widget.TextView;
  * 答案界面 实现问题的回答
  * 
  */
-public class AnswerActivity extends Activity {
+public class AnswerActivity extends BaseActivity {
 
 	private final String TAG = "AnswerActivity ";
 	// 申明控件

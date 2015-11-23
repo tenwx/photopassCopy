@@ -58,7 +58,7 @@ import com.pictureAir.widget.wheelview.adapter.NumericWheelAdapter;
  * 
  * @author bass
  */
-public class OtherRegisterActivity extends Activity implements OnClickListener {
+public class OtherRegisterActivity extends BaseActivity implements OnClickListener {
 	// 声明控件
 	private ImageView back;
 	private EditTextWithClear etEmail, etPwd, etPwd2, etName, etCounry;

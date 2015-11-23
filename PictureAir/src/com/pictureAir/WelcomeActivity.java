@@ -29,7 +29,7 @@ import com.pictureAir.util.ScreenUtil;
  * @author bauer_bao
  *
  */
-public class WelcomeActivity extends Activity implements OnPageChangeListener, OnTouchListener {
+public class WelcomeActivity extends BaseActivity implements OnPageChangeListener, OnTouchListener {
 	private ViewPager mViewPager;
 	private View view1, view2, view3, view4;
 	private List<View> list;

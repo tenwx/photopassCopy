@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class UpdateUserinfoActivity extends Activity implements OnClickListener {
+public class UpdateUserinfoActivity extends BaseActivity implements OnClickListener {
 	private ImageView back;  // back btn
 	private ImageButton ibSave;   // save btn
 	

@@ -27,7 +27,7 @@ import com.pictureAir.widget.SharePop;
  * @author bauer_bao
  *
  */
-@SuppressLint({ "FloatMath", "NewApi" }) public class PreviewPhotoActivity extends Activity implements OnClickListener{
+@SuppressLint({ "FloatMath", "NewApi" }) public class PreviewPhotoActivity extends BaseActivity implements OnClickListener{
 	//工具条
 	private TextView editButton;
 	private TextView shareButton;

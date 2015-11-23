@@ -42,7 +42,7 @@ import com.pictureAir.widget.MyToast;
  * @author bauer_bao
  *
  */
-public class OrderActivity extends Activity implements OnClickListener{
+public class OrderActivity extends BaseActivity implements OnClickListener{
 
 	private ViewPager viewPager;
 	private Order_ViewPagerAdapter orderAdapter;

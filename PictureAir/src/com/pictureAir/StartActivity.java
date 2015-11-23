@@ -11,6 +11,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
@@ -18,13 +19,14 @@ import android.widget.ImageView;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
+import com.pictureAir.util.UmengUtil;
 
 /**
  * 开始的启动页面，如果第一次进入，则进入第一次的引导页，如果不是，则进入登录页面
  * @author bauer_bao
  *
  */
-public class StartActivity extends Activity{
+public class StartActivity extends BaseActivity{
 	private SharedPreferences spApp;
 	private int code = 0;
 	private String languageType;
@@ -32,6 +34,7 @@ public class StartActivity extends Activity{
 	private DisplayMetrics displayMetrics;
 	private ImageView imageView1, imageView2;
 	private static final String TAG = "StartActivity";
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,15 @@ public class StartActivity extends Activity{
 			e.printStackTrace(System.err);
 		}
 	}
+	
+	
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+	
 
 	@Override
 	protected void onDestroy() {

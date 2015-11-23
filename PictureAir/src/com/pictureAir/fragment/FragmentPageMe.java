@@ -2,15 +2,12 @@ package com.pictureAir.fragment;
 
 import java.io.File;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.pictureAir.AboutActivity;
+import com.pictureAir.BaseFragment;
 import com.pictureAir.HelpActivity;
 import com.pictureAir.MyPPActivity;
 import com.pictureAir.MyPPPActivity;
@@ -31,7 +29,6 @@ import com.pictureAir.ProfileActivity;
 import com.pictureAir.R;
 import com.pictureAir.SettingActivity;
 import com.pictureAir.selectHeadorBg.SetHeadPhotoAct;
-import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
@@ -42,7 +39,7 @@ import com.pictureAir.widget.MyToast;
  * @author bauer_bao
  *
  */
-public class FragmentPageMe extends Fragment implements OnClickListener{
+public class FragmentPageMe extends BaseFragment implements OnClickListener{
 	private RelativeLayout rl_myprofile, rl_myorder,rl_pp, rl_ppp, rl_help,rl_setting, rl_about, rl7;
 	private ImageView headPhoto, icon2, code_pic;
 	private TextView hint2, hint4, name;// hint是条目右边的小标签，根据需要添加信息

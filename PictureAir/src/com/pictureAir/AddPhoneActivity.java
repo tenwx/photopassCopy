@@ -14,7 +14,7 @@ import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.widget.MyToast;
 
-public class AddPhoneActivity extends Activity implements OnClickListener{
+public class AddPhoneActivity extends BaseActivity implements OnClickListener{
 	private Button saveButton;
 	private ImageButton returnButton;
 	private EditText addphoneEditText;

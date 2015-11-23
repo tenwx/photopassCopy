@@ -40,7 +40,7 @@ import android.widget.TextView;
  * @author bauer_bao
  *
  */
-public class EditStoryAlbumActivity extends Activity implements OnClickListener{
+public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
 	private ImageView backRelativeLayout;
 	private TextView selectAllTextView;
 	private TextView shareTextView;

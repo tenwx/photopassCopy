@@ -41,7 +41,7 @@ import com.pictureAir.widget.MyToast;
  *
  */
 
-public class SelectPhotoActivity extends Activity implements OnClickListener {
+public class SelectPhotoActivity extends BaseActivity implements OnClickListener {
 	//申明控件
 	private ImageView rtLayout;
 	private Button okButton;
