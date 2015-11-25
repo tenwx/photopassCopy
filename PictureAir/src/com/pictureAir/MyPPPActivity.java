@@ -8,8 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ActionBar.LayoutParams;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -51,7 +48,7 @@ import com.pictureAir.entity.PPinfo;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.widget.BannerView_PPPIntroduce;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
@@ -810,7 +807,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 						RequestParams params = new RequestParams();
 						params.put(Common.USERINFO_TOKENID, sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
 						params.put(Common.CUSTOMERID, PPCode);
-						HttpUtil.get(Common.BASE_URL+Common.ADD_CODE_TO_USER, params, new JsonHttpResponseHandler(){
+						HttpsUtil.get(Common.BASE_URL+Common.ADD_CODE_TO_USER, params, new JsonHttpResponseHandler(){
 							@Override
 							public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 								// TODO Auto-generated method stub

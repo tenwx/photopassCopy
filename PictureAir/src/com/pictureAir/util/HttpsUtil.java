@@ -44,7 +44,7 @@ public class HttpsUtil {
 		}
 	}
 	
-	public static void post(Context context, String urlString, RequestParams params, JsonHttpResponseHandler res) {
+	public static void post(String urlString, RequestParams params, JsonHttpResponseHandler res) {
 		client.post(urlString, params, res);
 	}
 
@@ -52,7 +52,7 @@ public class HttpsUtil {
 		client.post(urlString, res);
 	}
 
-	public static void get(Context context, String urlString, RequestParams params, JsonHttpResponseHandler res) // 带参数，获取json对象或者数组
+	public static void get(String urlString, RequestParams params, JsonHttpResponseHandler res) // 带参数，获取json对象或者数组
 	{
 		client.get(urlString, params, res);
 	}

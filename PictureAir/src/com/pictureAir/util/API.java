@@ -149,7 +149,7 @@ public class API {
 		sb.append(Common.BASE_URL).append(Common.IS_EXIST_PHONE);
 		RequestParams params = new RequestParams();
 		params.put("phone", phone);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -179,7 +179,7 @@ public class API {
 		RequestParams params = new RequestParams();
 		params.put(Common.TERMINAL, "android");
 		params.put(Common.UUID, Installation.id(context));
-		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -225,7 +225,7 @@ public class API {
 		params.put(Common.USERINFO_USERNAME, userName);
 		params.put(Common.USERINFO_PASSWORD, password);
 		params.put(Common.USERINFO_TOKENID, tokenId);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -285,7 +285,7 @@ public class API {
 		String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
 		System.out.println("login _ tokenid = "+tokenId);
 		params.put(Common.USERINFO_TOKENID, tokenId);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -324,7 +324,7 @@ public class API {
 		params.put(Common.USERINFO_PASSWORD, password);
 		System.out.println("sign tokenid = "+sp.getString(Common.USERINFO_TOKENID, null));
 		params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
-		HttpUtil.post(url.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url.toString(), params, new JsonHttpResponseHandler() {
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
@@ -349,7 +349,7 @@ public class API {
 						params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
 						params.put(Common.USERINFO_USERNAME, userName);
 						params.put(Common.USERINFO_PASSWORD, password);
-						HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+						HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 							public void onStart() {
 								System.out.println("login after sign start======");
 							};
@@ -402,7 +402,7 @@ public class API {
 			params.put(Common.OLD_PASSWORD, oldPwd);
 		}
 		System.out.println("sign tokenid = "+sp.getString(Common.USERINFO_TOKENID, null));
-		HttpUtil.post(url.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url.toString(), params, new JsonHttpResponseHandler() {
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
@@ -448,7 +448,7 @@ public class API {
 	public static void SetPhoto(String url , RequestParams params,final Handler handler,final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
 		// 需要更新服务器中用户背景图片信息
 
-		HttpUtil.post(url, params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url, params, new JsonHttpResponseHandler() {
 			Message msg = handler.obtainMessage();
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -497,7 +497,7 @@ public class API {
 	public static void getPhoto(String url, String tokenId, final String path , Handler handler) {
 		RequestParams params = new RequestParams();
 		params.put(Common.USERINFO_TOKENID, tokenId);
-		HttpUtil.post(url, params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -541,7 +541,7 @@ public class API {
 		RequestParams params = new RequestParams();
 		//		params.put(Common.USER_ID, "54780d447eac676ae8cdcd44");
 		params.put(Common.USER_ID, userid);
-		HttpUtil.post(url, params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -605,7 +605,7 @@ public class API {
 		params.put(Common.EMBEDPHOTOS, embedphotos);
 		System.out.println("photoid=="+photoId+"storeid=="+storeId+"userid=="+userid);
 //System.out.println("params == "+params.toString());
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -646,7 +646,7 @@ public class API {
 		RequestParams params = new RequestParams();
 		params.put(Common.USER_ID, userid);
 		params.put(Common.CART_ITEM_IDS, cartItemId);
-		HttpUtil.post(url, params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -686,7 +686,7 @@ public class API {
 		params.put(Common.USER_ID, userid);
 		params.put(Common.ITEM, cartItem);
 		System.out.println("传递的参数的jsonobject对象="+cartItem.toString());
-		HttpUtil.post(url, params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(url, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -728,7 +728,7 @@ public class API {
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		params.put(Common.LAST_UPDATE_TIME, timeString);
 		System.out.println("the time of start get photos = "+timeString);
-		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -787,7 +787,7 @@ public class API {
 		StringBuffer sb2 = new StringBuffer();
 		sb2.append(Common.BASE_URL).append(Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP);
 		final Message message = handler.obtainMessage();
-		HttpUtil.get(sb2.toString(),null, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sb2.toString(),null, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -820,7 +820,7 @@ public class API {
 		params.put(Common.LANGUAGE_NAME, language);
 		StringBuffer sb = new StringBuffer();
 		sb.append(Common.BASE_URL).append(Common.GET_ALL_GOODS);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -851,7 +851,7 @@ public class API {
 		params.put(Common.LANGUAGE_NAME, language);
 		StringBuffer sb = new StringBuffer();
 		sb.append(Common.BASE_URL).append(Common.GET_TOP_GOODS);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -884,7 +884,7 @@ public class API {
 		params.put(Common.STORE_ID, storeId);
 		StringBuffer sb = new StringBuffer();
 		sb.append(Common.BASE_URL).append(Common.GET_BANNER_GOODS);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -925,7 +925,7 @@ public class API {
 		sb.append(Common.GET_PHOTO_PASS_PLUS);
 		params.put(Common.IP, ipString);
 		params.put(Common.LANGUAGE_NAME, language);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -963,7 +963,7 @@ public class API {
 		StringBuffer sb = new StringBuffer();
 		sb.append(Common.BASE_URL);
 		sb.append(targetURL);
-		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -998,7 +998,7 @@ public class API {
 		sb.append(Common.BASE_URL);
 		sb.append(Common.GET_STORE_BY_IP);
 		params.put(Common.IP, ipString);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1031,7 +1031,7 @@ public class API {
 		sb.append(Common.GET_CART_COUNT);
 		params.put(Common.USER_ID, userId);
 
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -1094,7 +1094,7 @@ public class API {
 System.out.println("-------->"+params.toString());
 		System.out.println("addressid:"+addressId+";\npaytype:"+payType+";\nstoreaddress:"+storeAddress+";\ncartitemids:"+cartitemids.toString());
 
-		HttpUtil.post(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
+		HttpsUtil.post(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(int statusCode, Header[] headers,
 					JSONObject response) {
@@ -1169,7 +1169,7 @@ System.out.println("-------->"+params.toString());
 		RequestParams params = new RequestParams();
 		params.put(Common.USER_ID, userid);
 
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1209,7 +1209,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.USER_ID, userid);
 		params.put(Common.ADDRESS_INFO, addressinfo);
 
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1248,7 +1248,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.NEW_ADDRESS_INFO, addressinfo);
 		System.out.println(addressinfo+"======jiekouzhongde ");
 
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1287,7 +1287,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.USER_ID, userid);
 		params.put(Common.ADDRESS_ID, addressId);
 
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1325,7 +1325,7 @@ System.out.println("-------->"+params.toString());
 		RequestParams params = new RequestParams();
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		System.out.println("get ppp tokenid ======= "+tokenId);
-		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -1404,7 +1404,7 @@ System.out.println("-------->"+params.toString());
 		RequestParams params = new RequestParams();
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		Log.d(TAG, "getPPSByUserId get ppcode tokenid ======= "+tokenId);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1439,7 +1439,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		params.put(Common.PPPCode, pppcode);
 		params.put(Common.bindDate, binddate);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -1505,7 +1505,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.PPS, pps);
 		params.put(Common.bindDate, binddate);
 		params.put(Common.ppp1, ppp);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -1577,7 +1577,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.PHOTO_ID, photoid);
 		params.put(Common.PPPCode, pppcode);
 		System.out.println("info:"+tokenid+"_"+photoid+"_"+pppcode);
-		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -1686,7 +1686,7 @@ System.out.println("-------->"+params.toString());
 
 		RequestParams params = new RequestParams();
 		params.put(Common.CODE, code);
-		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1736,7 +1736,7 @@ System.out.println("-------->"+params.toString());
 		
 		RequestParams params = new RequestParams();
 		params.put(Common.USER_ID, userId);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1779,7 +1779,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.USERINFO_COUNTRY, country);
 		params.put(Common.USERINFO_BIRTHDAY, birthday);
 		params.put(Common.USERINFO_GENDER, gender);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -1825,7 +1825,7 @@ System.out.println("-------->"+params.toString());
 		
 		RequestParams params = new RequestParams();
 		params.put(Common.USERINFO_TOKENID, tokenId);
-		HttpUtil.get(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
+		HttpsUtil.get(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(int statusCode, Header[] headers,
 					JSONObject response) {
@@ -1865,7 +1865,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		params.put(Common.LOCATION_ID, locationId);
 		params.put(Common.ACTION, action);
-		HttpUtil.post(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
+		HttpsUtil.post(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(int statusCode, Header[] headers,
 					JSONObject response) {
@@ -1905,7 +1905,7 @@ System.out.println("-------->"+params.toString());
 		RequestParams params = new RequestParams();
 		params.put(Common.USER_ID, userId);
 		params.put(Common.ORDER_ID, orderId);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			
 			
 			@Override
@@ -1960,7 +1960,7 @@ System.out.println("-------->"+params.toString());
 		RequestParams params = new RequestParams();
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		params.put(Common.bindDate, bindDate);
-		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -2015,7 +2015,7 @@ System.out.println("-------->"+params.toString());
 		params.put(Common.USERINFO_TOKENID, tokenid);
 		params.put(Common.PPS, pps);
 		params.put(Common.ppp1, ppp);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
 				// TODO Auto-generated method stub
@@ -2066,7 +2066,7 @@ System.out.println("-------->"+params.toString());
 		sBuffer.append(Common.BASE_URL);
 		sBuffer.append(Common.HIDE_PPS);
 		
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
+		HttpsUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
 			
 			
 			@Override
@@ -2115,7 +2115,7 @@ System.out.println("-------->"+params.toString());
 				sb.append(Common.BASE_URL2);
 				sb.append(Common.CHECK_VERSION);
 				params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-				HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+				HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
 						super.onSuccess(statusCode, headers, response);
@@ -2210,7 +2210,7 @@ System.out.println("-------->"+params.toString());
 			 */
 			public static void downloadAPK(String downloadURL, final CustomProgressBarPop customProgressBarPop, final String version, final Handler handler){
 				String [] allowedContentTypes = new String[] {"application/vnd.android.package-archive" };
-				HttpUtil.get(downloadURL, new BinaryHttpResponseHandler(allowedContentTypes){
+				HttpsUtil.get(downloadURL, new BinaryHttpResponseHandler(allowedContentTypes){
 					@Override
 					public void onFailure(int arg0, Header[] arg1, byte[] arg2,
 							Throwable arg3) {

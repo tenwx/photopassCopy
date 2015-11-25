@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +30,6 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.FloatMath;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,9 +55,8 @@ import com.pictureAir.service.DownloadService;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.ScreenUtil;
-import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 //import com.pictureAir.widget.NewToast;
@@ -417,7 +414,7 @@ public class BlurActivity extends Activity implements OnClickListener {
 			});
 		}else {//如果文件不存在，下载文件到缓存
 			System.out.println("file is not exist");
-			HttpUtil.get(photo.photoThumbnail_1024, new BinaryHttpResponseHandler() {
+			HttpsUtil.get(photo.photoThumbnail_1024, new BinaryHttpResponseHandler() {
 //				@Override
 //				public void onStart() {
 //					// TODO Auto-generated method stub

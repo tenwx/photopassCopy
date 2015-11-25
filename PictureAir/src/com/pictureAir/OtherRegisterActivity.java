@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,15 +17,11 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -43,7 +38,7 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.Installation;
 import com.pictureAir.widget.EditTextWithClear;
 import com.pictureAir.widget.MyToast;
@@ -439,7 +434,7 @@ public class OtherRegisterActivity extends BaseActivity implements OnClickListen
 			params.put(Common.TERMINAL, "android");
 			params.put(Common.UUID, Installation.id(this));
 
-			HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+			HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 				@Override
 				public void onStart() {
 					super.onStart();

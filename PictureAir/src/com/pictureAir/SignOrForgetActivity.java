@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -24,7 +23,7 @@ import com.loopj.android.http.RequestParams;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.Installation;
 import com.pictureAir.widget.MyToast;
 
@@ -202,7 +201,7 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 					params.put(Common.TERMINAL, "android");
 					params.put(Common.UUID, Installation.id(this));
 					
-					HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+					HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 						@Override
 						public void onStart() {
 							super.onStart();

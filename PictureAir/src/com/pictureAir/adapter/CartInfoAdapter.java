@@ -19,8 +19,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -30,10 +30,9 @@ import com.pictureAir.R;
 import com.pictureAir.entity.CartItemInfo;
 import com.pictureAir.entity.CartPhotosInfo;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.JsonUtil;
 import com.pictureAir.util.ScreenUtil;
-import com.pictureAir.widget.BadgeView;
 import com.pictureAir.widget.DashedLineView;
 import com.pictureAir.widget.ListViewImageView;
 import com.pictureAir.widget.MyToast;
@@ -334,7 +333,7 @@ public class CartInfoAdapter extends BaseAdapter{
 				RequestParams params = new RequestParams();
 				params.put(Common.USER_ID, userId);
 				params.put(Common.ITEM, cartItem);
-				HttpUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
+				HttpsUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 						// TODO Auto-generated method stub

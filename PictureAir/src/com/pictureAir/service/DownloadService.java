@@ -29,10 +29,9 @@ import com.loopj.android.http.RequestParams;
 import com.pictureAir.R;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.util.UmengUtil;
-import com.umeng.analytics.MobclickAgent;
 
 /** 下载网络图片服务类 */
 public class DownloadService extends Service {
@@ -273,7 +272,7 @@ public class DownloadService extends Service {
 				saveFile(file, arg2);
 			} else {// 如果缓存中不存在目标文件，需要调用接口去下载文件
 				System.out.println("url====" + sb.toString());
-				HttpUtil.get(sb.toString(), params,
+				HttpsUtil.get(sb.toString(), params,
 						new BinaryHttpResponseHandler() {
 
 							@Override
