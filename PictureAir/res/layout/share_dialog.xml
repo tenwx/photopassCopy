@@ -14,29 +14,80 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <ImageButton
+        <TextView
             android:id="@+id/wechat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:src="@drawable/share_wechat" />
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/share_wechat"
+            android:gravity="center"
+            android:text="@string/wechatmoments"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_middle_size" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/qqzone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:src="@drawable/share_qqzone" />
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/share_qqzone"
+            android:gravity="center"
+            android:text="@string/qzone"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_middle_size" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/sina"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:src="@drawable/share_sina" />
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/share_sina"
+            android:gravity="center"
+            android:text="@string/sinaweibo"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_middle_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/twitter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/share_twitter"
+            android:text="@string/twitter"
+            android:gravity="center"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_middle_size" />
+
+        <TextView
+            android:id="@+id/facebook"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/share_facebook"
+            android:background="@color/transparent"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <TextView
@@ -49,6 +100,6 @@
         android:padding="10dp"
         android:text="@string/cancel1"
         android:textColor="@color/gray"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_middle_size" />
 
 </LinearLayout>

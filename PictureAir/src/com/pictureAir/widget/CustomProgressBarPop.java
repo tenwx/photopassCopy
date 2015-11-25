@@ -21,9 +21,24 @@ public class CustomProgressBarPop{
 	private View defaultView;
 	private PopupWindow popupWindow;
 	private View parentView;
+	private boolean isDelete;//删除文件的总文件数量，仅针对删除文件操作
+	
 	public CustomProgressBarPop(Context context, View parentView) {
 		this.context = context;
 		this.parentView = parentView;
+		initPopupWindow();
+	}
+	
+	/**
+	 * 初始化
+	 * @param context
+	 * @param parentView 父控件
+	 * @param isDelete 删除文件操作
+	 */
+	public CustomProgressBarPop(Context context, View parentView, boolean isDelete) {
+		this.context = context;
+		this.parentView = parentView;
+		this.isDelete = isDelete;
 		initPopupWindow();
 	}
 	
@@ -63,6 +78,23 @@ public class CustomProgressBarPop{
 		popupWindow.showAtLocation(parentView, Gravity.CENTER, 0, 0);
 		imageView.setImageResource(R.drawable.loading_0);
 		textView.setText(String.format(context.getString(R.string.loading_percent), 0) + "%");
+	}
+	
+	/**
+	 * 显示对话框
+	 * @param stringResource 如果是删除文件，，如果是上传
+	 * @param totalCount 删除文件的文件数量，如果是上传下载图片操作，可以传0
+	 * 
+	 */
+	public void show(int stringResource, int totalCount){
+		popupWindow.showAtLocation(parentView, Gravity.CENTER, 0, 0);
+		imageView.setImageResource(R.drawable.loading_0);
+		if (isDelete) {//删除文件操作
+			textView.setText(String.format(context.getString(stringResource), 0, totalCount));
+		}else {//上传下载操作
+			textView.setText(String.format(context.getString(stringResource), 0) + "%");
+			
+		}
 	}
 	
 	public void dismiss(){
@@ -112,6 +144,51 @@ public class CustomProgressBarPop{
 		}
 		imageView.setImageResource(result);
 		textView.setText(String.format(context.getString(R.string.loading_percent), progress * 100 / total) + "%");
+	}
+	
+	/**
+	 * 更新进度条
+	 * @param stringResource
+	 * @param progress
+	 * @param total
+	 */
+	public void setProgress(int stringResource, int progress, int total){
+//		System.out.println("--------->"+ progress);
+		int currentProgress = progress * 100 / total;
+		int result = R.drawable.loading_0;
+		if (currentProgress >=0 && currentProgress <= 8) {
+			result = R.drawable.loading_0;
+		}else if (currentProgress >8 && currentProgress <= 16) {
+			result = R.drawable.loading_1;
+		}else if (currentProgress >16 && currentProgress <= 25) {
+			result = R.drawable.loading_2;
+		}else if (currentProgress >25 && currentProgress <= 33) {
+			result = R.drawable.loading_3;
+		}else if (currentProgress >33 && currentProgress <= 41) {
+			result = R.drawable.loading_4;
+		}else if (currentProgress >41 && currentProgress <= 50) {
+			result = R.drawable.loading_5;
+		}else if (currentProgress >50 && currentProgress <= 58) {
+			result = R.drawable.loading_6;
+		}else if (currentProgress >58 && currentProgress <= 66) {
+			result = R.drawable.loading_7;
+		}else if (currentProgress >66 && currentProgress <= 75) {
+			result = R.drawable.loading_8;
+		}else if (currentProgress >75 && currentProgress <= 83) {
+			result = R.drawable.loading_9;
+		}else if (currentProgress >83 && currentProgress <= 91) {
+			result = R.drawable.loading_10;
+		}else if (currentProgress >91 && currentProgress < 100) {
+			result = R.drawable.loading_11;
+		}else {
+			result = R.drawable.loading_12;
+		}
+		imageView.setImageResource(result);
+		if (isDelete) {//删除文件操作
+			textView.setText(String.format(context.getString(stringResource), progress, total));
+		}else {//上传下载操作
+			textView.setText(String.format(context.getString(stringResource), progress * 100 / total) + "%");
+		}
 	}
 	
 }

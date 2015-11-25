@@ -54,24 +54,24 @@
 			2fa794c6c3b8      53f05a239bee
     -->
 
-    <ShareSDK AppKey="2fa794c6c3b8" />
+    <ShareSDK AppKey="8c6f00e8cf38" />
  <!-- 修改成你在sharesdk后台注册的应用的appkey" -->
 
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
 
     <SinaWeibo
-        AppKey="2944397348"
-        AppSecret="07325278f1c41aab9dd5354b37d500be"
+        AppKey="2073292968"
+        AppSecret="d1245524e61777c0e6acff87ade4baf8"
         Enable="true"
         Id="1"
         RedirectUrl="http://www.pictureair.com"
-        ShareByAppClient="false"
+        ShareByAppClient="true"
         SortId="1" />
 
     <QZone
-        AppId="1104063863"
-        AppKey="jaTjIjJOFGzk2BNU"
+        AppId="1104727541"
+        AppKey="wbfSdVstNhlyTXIH"
         Enable="true"
         Id="2"
         ShareByAppClient="true"
@@ -91,32 +91,32 @@
     -->
 
     <Wechat
-        AppId="wxe1c45f0ca53dae77"
-        AppSecret="75aa161df2fa9685b11b1c239de935f0"
+        AppId="wxb41738d7ee3af024"
+        AppSecret="c04d17ea8acf7aa0fbf82b86ea3b12cc"
         BypassApproval="false"
         Enable="true"
         Id="3"
         SortId="3" />
 
     <WechatMoments
-        AppId="wxe1c45f0ca53dae77"
-        AppSecret="75aa161df2fa9685b11b1c239de935f0"
+        AppId="wxb41738d7ee3af024"
+        AppSecret="c04d17ea8acf7aa0fbf82b86ea3b12cc"
         BypassApproval="false"
         Enable="true"
         Id="4"
         SortId="4" />
 
     <Facebook
-        ConsumerKey="107704292745179"
-        ConsumerSecret="38053202e1a5fe26c80c753071f0b573"
+        ConsumerKey="188501484544514"
+        ConsumerSecret="317c094c348dc023312fe5067245840c"
         Enable="true"
         Id="5"
         SortId="5" />
 
     <Twitter
-        CallbackUrl="http://www.sharesdk.cn"
-        ConsumerKey="mnTGqtXk0TYMXYTN7qUxg"
-        ConsumerSecret="ROkFqr8c3m1HXqS3rm3TJ0WkAJuwBOSaWhPbZ9Ojuc"
+        CallbackUrl="http://www.pictureair.com/"
+        ConsumerKey="hcCGQuwtWBNBgNII7TlIIMeif"
+        ConsumerSecret="BjOf3dvToshjiPJUtlgfipuB3Q9xXMMT6T6SThtfrGwk5SRFT5"
         Enable="true"
         Id="6"
         SortId="6" />

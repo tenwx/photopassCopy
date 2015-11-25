@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
@@ -456,4 +459,23 @@ public class AppUtil {
 	         
 	        return bitmapQR;
 	    }
+		
+		
+		/**
+		 * 获取应用的版本号
+		 * @param context
+		 * @param deviceInfo
+		 */
+		public static ArrayList<String> getDeviceInfos(Context context) {
+			ArrayList<String> deviceInfo = new ArrayList<String>();
+			try {
+				PackageManager manager = context.getPackageManager();
+				PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+				deviceInfo.add(info.versionCode + "");
+				deviceInfo.add(info.versionName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return deviceInfo;
+		}
 }

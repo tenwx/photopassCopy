@@ -27,6 +27,7 @@ import com.pictureAir.entity.PPCodeInfo;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.entity.PhotoItemInfo;
 import com.pictureAir.util.Common;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.UmengUtil;
 
 /**
@@ -69,6 +70,7 @@ public class MyApplication extends Application {
 				Common.PACKGE_NAME)) {
 			System.err.println("application on create----->");
 			initImageLoader(getApplicationContext());
+			HttpsUtil.init(instance);
 			InitLocation();
 			codeList = new ArrayList<HashMap<String, String>>();
 			photoPassPicList = new ArrayList<PhotoInfo>();

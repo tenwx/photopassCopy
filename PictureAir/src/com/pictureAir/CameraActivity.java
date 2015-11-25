@@ -1193,6 +1193,8 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 			mSensorManager.registerListener(lsn, mSensor, SensorManager.SENSOR_DELAY_UI);
 		}
 		System.out.println("resume------");
+		
+		
 	}
 
 	@Override

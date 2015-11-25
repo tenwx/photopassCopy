@@ -27,6 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import cn.smssdk.EventHandler;
@@ -42,6 +43,7 @@ import com.pictureAir.util.Common;
 import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.Installation;
 import com.pictureAir.util.SignAndLoginPhoneNumberUtil;
+import com.pictureAir.widget.CheckUpdateManager;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.EditTextWithClear;
 import com.pictureAir.widget.MyToast;
@@ -54,6 +56,7 @@ import com.pictureAir.widget.MyToast;
 public class LoginActivity extends BaseActivity implements OnClickListener {
 	private static final String TAG = "LoginActivity";
 	// 申明控件
+	private RelativeLayout parentRelativeLayout;
 	private TextView tv_country, tv_country_num;// 国家，区号
 	private TextView otherLogin;// 其他方式登录
 	private Button login, sign;
@@ -70,7 +73,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private static final int START_OTHER_REGISTER_ACTIVITY = 1;// 启动 其他注册的侧面
 	private static final int START_NATIONAL_LIST_SELECTION_ACTIVITY = 2; // 启动国家列表窗口
 	// 申明其他类
-	private SharedPreferences sp;
+	private SharedPreferences sp, appPreferences;
 	private Editor editor;
 	private MyToast myToast;
 	@SuppressWarnings("unused")
@@ -78,6 +81,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	// 区号,国家
 	private String countryCode = "+86";
 	private String country = "";
+	
+	private CheckUpdateManager checkUpdateManager;//自动检查更新
 
 	private Handler handler = new Handler() {
 		@Override
@@ -274,7 +279,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private void initview() {
 		loginUrl.append(Common.BASE_URL).append(Common.LOGIN);// 链接地址
 		sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);// userInfo
+		appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);// userInfo
+		
 		myToast = new MyToast(LoginActivity.this);// 获取toast
+		parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
 		login = (Button) findViewById(R.id.login);// 登录按钮
 		sign = (Button) findViewById(R.id.sign);// 注册按钮
 		userName = (EditTextWithClear) findViewById(R.id.login_username);// 文本框
@@ -291,6 +299,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		forgot.setOnClickListener(this);
 		otherLogin.setOnClickListener(this);
 
+		//自动检查更新
+		checkUpdateManager = new CheckUpdateManager(this, appPreferences.getString(Common.LANGUAGE_TYPE, ""), parentRelativeLayout);
+		checkUpdateManager.startCheck();
+		
 		myApplication = (MyApplication) getApplication();
 		userName.setOnKeyListener(new OnKeyListener() {
 

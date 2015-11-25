@@ -468,8 +468,14 @@
     <string name="show_password">显示密码</string>
     <string name="magic_location">魔法相册</string>
     <string name="order_detail_activity">订单详情</string>
-	<string name="mobile_exist">手机号已经存在</string>
-	<string name="loading_percent">正在上传%1$d</string>
-	<string name="launching_camera">相机启动中...</string>
-	<string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass  mobile app or website.</string>
+    <string name="mobile_exist">手机号已经存在</string>
+    <string name="loading_percent">正在上传%1$d</string>
+    <string name="launching_camera">相机启动中...</string>
+    <string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass  mobile app or website.</string>
+    <string name="share_text">我愿和你分享每一刻在相集app的美妙体验!</string>
+    <string name="generate_apk_failed">下载失败</string>
+    <string name="downloading_percent">正在下载%1$d</string>
+    <string name="update_version">新版本: %1$s</string>
+    <string name="generate_apk">正在处理...</string>
+
 </resources>

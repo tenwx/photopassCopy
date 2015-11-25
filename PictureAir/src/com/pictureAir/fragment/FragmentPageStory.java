@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -375,12 +377,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		Log.d(TAG, "saveJsonToSQLite json" + jsonObject.toString());
 		try {
 			final JSONArray responseArray = jsonObject.getJSONArray("photos");
-			if (responseArray != null && responseArray.length() > 0) {
-				// 统计用户是否有图片、 提交友盟统计
-				System.out.println("responseArray" + responseArray.length());
-				UmengUtil.totalPeopleNumByPicture(context);
-			}
-
 			String updatetimeString = jsonObject.getString("time");
 			System.out.println("updatetime:" + updatetimeString
 					+ "new data count = " + responseArray.length());
@@ -438,11 +434,62 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					} else {
 						handler.sendEmptyMessage(DEAL_REFRESH_PHOTO_DATA_DONE);
 					}
+					// 友盟数据统计1，有多少人有图片2，总共有多少张图片
+					Umeng();
 
 				};
 			}.start();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 友盟数据统计
+	 */
+	public void Umeng() {
+		System.out.println("Umeng ==>>");
+		if (MyApplication.getInstance().photoPassPicList != null
+				&& MyApplication.getInstance().photoPassPicList.size() > 0) {
+			// 统计用户是否有图片、 提交友盟统计
+			// 1. 统计多少人有图片
+			String isHave = sharedPreferences
+					.getString(Common.IS_HAVE_PIC, "0");
+			Editor editor = sharedPreferences.edit();
+			// 判断之前是否添加过 1- 添加过，不需要再统计；0-没有，需要统计
+			if (isHave.equals("0")) {
+				// 之前没有添加该用户
+				Map<String, String> map = new HashMap<String, String>();
+				String name = sharedPreferences.getString(Common.USERINFO_ID, "");
+				map.put("UserName", name);// 添加用户名称属性
+				System.out.println("Umeng ==>>" + "onEvent1");
+				UmengUtil.onEvent(context,
+						Common.EVENT_CONTAIN_PICTURE_PEOPLES, map);
+
+				// 保存统计记录
+				editor.putString(Common.IS_HAVE_PIC, "1");
+				editor.commit();
+			}
+
+			// 2. 统计所有人所有图片
+			int size_last = sharedPreferences.getInt(Common.PICTURE_COUNT, 0);
+			// 获取增量
+			int duration = MyApplication.getInstance().photoPassPicList.size()
+					- size_last;
+			if (duration != 0) {
+				// 之前没有添加该用户
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("UserName",
+						sharedPreferences.getString(Common.USERINFO_ID, ""));// 添加用户名称属性
+				UmengUtil.onEvent(context, Common.EVENT_TOTAL_PICTURES, map,
+						duration);
+				System.out.println("Umeng ==>>" + "onEvent2");
+				// 保存统计记录
+				editor.putInt(Common.PICTURE_COUNT,
+						MyApplication.getInstance().photoPassPicList.size());
+				editor.commit();
+			}
+
 		}
 	}
 
@@ -819,7 +866,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		// }
 		super.onResume();
 	}
-	
+
 	@Override
 	public void onDestroyView() {
 		// TODO Auto-generated method stub

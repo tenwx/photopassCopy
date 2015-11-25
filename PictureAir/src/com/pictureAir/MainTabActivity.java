@@ -1,5 +1,6 @@
 package com.pictureAir;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.util.UmengUtil;
 import com.pictureAir.widget.BadgeView;
+import com.pictureAir.widget.CheckUpdateManager;
 import com.pictureAir.widget.MyToast;
 import com.umeng.analytics.MobclickAgent;
 
@@ -31,6 +34,7 @@ import com.umeng.analytics.MobclickAgent;
  * */
 public class MainTabActivity extends BaseActivity {
 	public static MainTabActivity instances;
+	private LinearLayout linearLayout;
 	// 定义FragmentTabHost对象
 	private FragmentTabHost mTabHost;
 	// 定义一个布局
@@ -55,6 +59,9 @@ public class MainTabActivity extends BaseActivity {
 	private MyToast newToast;
 
 	private MyApplication application;
+	private SharedPreferences sharedPreferences;
+	private CheckUpdateManager checkUpdateManager;
+	private String currentLanguage;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -114,10 +121,19 @@ public class MainTabActivity extends BaseActivity {
 	private void initView() {
 		// 实例化布局对象
 		layoutInflater = LayoutInflater.from(this);
+		linearLayout = (LinearLayout) findViewById(R.id.parent);
 		// 实例化TabHost对象，得到TabHost
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		newToast = new MyToast(this);
+
+		// 自动检查更新
+		sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+		currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, "");
+		checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
+				linearLayout);
+		checkUpdateManager.startCheck();
+
 		// 得到fragment的个数
 		int count = fragmentArray.length;
 		for (int i = 0; i < count; i++) {

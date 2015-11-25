@@ -17,15 +17,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
-import cn.sharesdk.framework.m;
-
-import com.pictureAir.CameraActivity;
 import com.pictureAir.R;
-import com.pictureAir.SelectPhotoActivity;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.Common;
 import com.pictureAir.widget.MyToast;
-import com.pictureAir.widget.SelectAlbumPop;
 /**
  * 故事页面的ViewPager适配器
  * @author bauer_bao

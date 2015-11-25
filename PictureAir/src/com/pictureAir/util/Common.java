@@ -6,6 +6,9 @@ import android.os.Environment;
  * 常量类
  * */
 public class Common {
+	public static final String APP_NAME = "appName";
+	public static String APPLICATION_NAME = "pictureAir";// app英文名字
+	public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
 	public static String PACKGE_NAME = "com.pictureAir";// 应用包名
 	public static final String APPKEY = "7c07eba9fe66"; // SMSS，公司的账号
 	public static final String APPSECRET = "c3e30ac3daba694656287afef2686edf"; // SMSS
@@ -15,6 +18,7 @@ public class Common {
 	// 服务器地址
 	// public static final String BASE_URL = "http://192.168.8.3:3001";
 	public static final String BASE_URL = "http://pictureAir.com.cn:3001";// 外网
+	public static final String BASE_URL2 = "http://pictureair.com.cn:3001";// 2.0johnny服务器
 	// public static final String BASE_URL = "http://192.168.8.171:3001";//harry
 	// public static final String BASE_URL = "http://140.206.125.194:3001";//外网
 	// public static final String BASE_URL =
@@ -150,6 +154,8 @@ public class Common {
 			.getExternalStorageDirectory().getPath() + "/pictureAir/user/";
 	public static final String HEADPHOTO_PATH = "headphoto";
 	public static final String BGPHOTO_PAHT = "bgphoto";
+	public static final String DOWNLOAD_APK_PATH = Environment
+			.getExternalStorageDirectory().getPath() + "/pictureAir/app/";
 	public static final String PHOTO_SAVE_PATH = Environment
 			.getExternalStorageDirectory().getPath() + "/pictureAir/";
 	public static final String PHOTO_DOWNLOAD_PATH = Environment
@@ -244,17 +250,31 @@ public class Common {
 	public static final String GOOD_NAME_TSHIRT = "Duffy T-shirt";
 	public static final String GOOD_NAME_COOK = "Personal cookies gift";
 
-	// 友盟参数
-	public static final String UMENG_CHANNEL = "360";// 打包渠道
+	// 渠道号，打包的时候需要更改
+	public static String UMENG_CHANNEL = "360";// 渠道
+	// public static String CHANNEL = "tencent";// 渠道
+	// public static String CHANNEL = "baidu";// 渠道
+	// public static String CHANNEL = "PICTUREAIRCOM_HOME";// 渠道
+	// public static String CHANNEL = "PICTUREAIRCOM_PHOTO";// 渠道
+
 	// 友盟自定义事件
 	public static final String EVENT_CONTAIN_PICTURE_PEOPLES = "event_contain_picture_peoples";// 有图片的总人数
 	public static final String EVENT_TOTAL_PICTURES = "event_total_pictures";// 图片总数
 	public static final String EVENT_ONCLICK_DOWNLOAD = "event_onclick_dwonload";// 点击下载
 	public static final String EVENT_DOWNLOAD_FINISH = "event_dwonload_finish";// 下载成功
+
 	public static final String EVENT_ONCLICK_SHARE_QQ = "event_onclick_share_qq";// 点击qq分享
 	public static final String EVENT_SHARE_QQ_FINISH = "event_share_qq_finish";// qq分享成功
+
 	public static final String EVENT_ONCLICK_SHARE_WEIXIN = "event_onclick_share_weixin";// 点击微信分享
 	public static final String EVENT_SHARE_WEIXIN_FINISH = "event_share_weixin_finish";// 微信分享成功
+
+	public static final String EVENT_ONCLICK_SHARE_SINA_WEIBO = "event_onclick_share_sina_weibo";// 点击微信分享
+	public static final String EVENT_SHARE_SINA_WEIBO_FINISH = "event_share_sina_weibo_finish";// 微信分享成功
+
+	public static final String EVENT_ONCLICK_SHARE_TWITTER = "event_onclick_share_twitter";// 点击微信分享
+	public static final String EVENT_SHARE_TWITTER_FINISH = "event_share_twitter_finish";// 微信分享成功
+
 	public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
 	public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
 
@@ -262,5 +282,10 @@ public class Common {
 
 	public static final String IS_HAVE_PIC = "IS_HAVE_PIC";// 是否包含图片
 	public static final String PICTURE_COUNT = "PICTURE_COUNT";// 用户图片总数（PhotoPass）
+
+	// 分享参数
+	public static final int PREVIEW_SHARE = 203;
+	public static final String SHARE_PATH = Environment
+			.getExternalStorageDirectory().getPath() + "/pictureAir/share/";
 
 }

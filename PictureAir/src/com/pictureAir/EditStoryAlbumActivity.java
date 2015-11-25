@@ -61,6 +61,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private int currentProgress = 0;
 	private boolean isSelectAll = false;
 	private SharePop sharePop;//分享
+	private int shareType = 0;
 	private MyToast myToast;
 	private CustomDialog customdialog;
 	
@@ -127,6 +128,10 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					removeDialog(msg.arg2);//删除对应ID的dialog
 				}
 				((MyApplication)getApplication()).scanMagicFinish = false;
+				break;
+				
+			case SharePop.TWITTER:
+				shareType = msg.what;
 				break;
 
 			default:
@@ -248,13 +253,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						myToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online");
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL,null, "online",mhHandler);
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					System.out.println("本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local");
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, null,"local",mhHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张
