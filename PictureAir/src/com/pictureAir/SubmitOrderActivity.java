@@ -10,8 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +22,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -36,7 +33,7 @@ import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.JsonUtil;
 import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
@@ -149,7 +146,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 				RequestParams params = new RequestParams();
 				params.put(Common.USER_ID, sharedPreferences.getString(Common.USERINFO_ID, ""));
 				params.put(Common.ITEM, cartItem);
-				HttpUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
+				HttpsUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
 
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

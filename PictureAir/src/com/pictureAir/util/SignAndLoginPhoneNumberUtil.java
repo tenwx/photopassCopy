@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceActivity.Header;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -194,7 +193,7 @@ public class SignAndLoginPhoneNumberUtil {
 				params.put(Common.TERMINAL, "android");
 				params.put(Common.UUID, Installation.id(context));
 				
-				HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+				HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 					@Override
 					public void onStart() {
 						super.onStart();

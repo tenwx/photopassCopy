@@ -33,9 +33,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
-import android.widget.ImageView.ScaleType;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
@@ -43,7 +42,7 @@ import com.pictureAir.R;
 import com.pictureAir.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.ScreenUtil;
 
 
@@ -175,7 +174,7 @@ public class UrlTouchImageView extends RelativeLayout {
 
 	private void loadImage(String url) {
 		// TODO Auto-generated method stub
-		HttpUtil.get(url, new BinaryHttpResponseHandler() {
+		HttpsUtil.get(url, new BinaryHttpResponseHandler() {
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
 				// TODO Auto-generated method stub

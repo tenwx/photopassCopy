@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,7 +24,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -34,7 +32,7 @@ import com.loopj.android.http.RequestParams;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.widget.MyToast;
 /**
  * 手动输入条码的页面
@@ -349,7 +347,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		}
 		System.out.println("return32");
 
-		HttpUtil.get(urlString, params, new JsonHttpResponseHandler(){
+		HttpsUtil.get(urlString, params, new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub

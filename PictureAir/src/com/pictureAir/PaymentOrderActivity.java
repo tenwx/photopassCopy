@@ -11,7 +11,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,10 +24,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -47,7 +44,7 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AliPayUtil;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.PaypalUtil;
 import com.pictureAir.weChatPay.Constants;
 import com.pictureAir.weChatPay.Util;
@@ -492,7 +489,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 				requestParams.put("payType", payType);
 				requestParams.put("userId", sPreferences.getString(Common.USERINFO_ID, ""));
 				System.out.println("orderid"+orderid+"_userId_"+sPreferences.getString(Common.USERINFO_ID, ""));
-				HttpUtil.post(Common.BASE_URL+"/shopping/modifyOrderStatus", requestParams, new JsonHttpResponseHandler(){
+				HttpsUtil.post(Common.BASE_URL+"/shopping/modifyOrderStatus", requestParams, new JsonHttpResponseHandler(){
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 						System.out.println(response+"result");
 						try {

@@ -7,9 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,7 +36,7 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.Installation;
 import com.pictureAir.util.SignAndLoginPhoneNumberUtil;
 import com.pictureAir.widget.CustomProgressDialog;
@@ -284,7 +281,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 				RequestParams params = new RequestParams();
 				params.put(Common.TERMINAL, "android");
 				params.put(Common.UUID, Installation.id(this));
-				HttpUtil.get(sb.toString(), params,
+				HttpsUtil.get(sb.toString(), params,
 						new JsonHttpResponseHandler() {
 							@Override
 							public void onStart() {

@@ -15,7 +15,6 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.mapapi.SDKInitializer;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -194,7 +193,7 @@ public class MyApplication extends Application {
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				// .diskCacheFileCount(100)
 				// 缓存的文件数量
-				.diskCache(new UnlimitedDiscCache(cacheDir))
+//				.diskCache(new UnlimitedDiscCache(cacheDir))
 				// 自定义缓存路径
 				// UnlimitedDiskCache 不限制缓存大小（默认）
 				// TotalSizeLimitedDiskCache (设置总缓存大小，超过时删除最久之前的缓存)

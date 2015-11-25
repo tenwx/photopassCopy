@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.apache.http.Header;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -47,7 +46,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.InputMethodManager;
@@ -79,6 +77,7 @@ import com.pictureAir.filter.OldFilter;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.HorizontalListView;
 import com.pictureAir.widget.MyToast;
@@ -452,7 +451,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener {
 
 				} else {// 6.如果缓存不存在，从网络获取图片信息，
 					System.out.println("cache not exist");
-					HttpUtil.get(photoURL, new BinaryHttpResponseHandler() {
+					HttpsUtil.get(photoURL, new BinaryHttpResponseHandler() {
 						@Override
 						public void onSuccess(int arg0, Header[] arg1,
 								byte[] arg2) {
@@ -1439,7 +1438,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener {
 
 				} else {// 6.如果缓存不存在，从网络获取图片信息，
 					System.out.println("cache not exist");
-					HttpUtil.get(path, new BinaryHttpResponseHandler() {
+					HttpsUtil.get(path, new BinaryHttpResponseHandler() {
 						@Override
 						public void onSuccess(int arg0, Header[] arg1,
 								byte[] arg2) {

@@ -17,8 +17,10 @@ public class Common {
 	// "d84d81d7e39a1e99427878c3f871f642"; // SMSS
 	// 服务器地址
 	// public static final String BASE_URL = "http://192.168.8.3:3001";
-	public static final String BASE_URL = "http://pictureAir.com.cn:3001";// 外网
-	public static final String BASE_URL2 = "http://pictureair.com.cn:3001";// 2.0johnny服务器
+	 public static final String BASE_URL = "https://192.168.8.3/pictureAir";
+	 public static final String BASE_URL2 = "https://192.168.8.3/pictureAir";
+//	public static final String BASE_URL = "http://pictureAir.com.cn:3001";// 外网
+//	public static final String BASE_URL2 = "http://pictureair.com.cn:3001";// 2.0johnny服务器
 	// public static final String BASE_URL = "http://192.168.8.171:3001";//harry
 	// public static final String BASE_URL = "http://140.206.125.194:3001";//外网
 	// public static final String BASE_URL =
@@ -26,7 +28,8 @@ public class Common {
 	// public static final String BASE_URL =
 	// "http://191.236.87.204:3001";//美国服务器
 	// public static final String BASE_URL = "http://54.148.133.105:3001";
-	public static final String PHOTO_URL = "http://pictureAir.com.cn:80/";// 外网
+	  public static final String PHOTO_URL = "https://192.168.8.3/";
+//	public static final String PHOTO_URL = "http://pictureAir.com.cn:80/";// 外网
 	// public static final String PHOTO_URL =
 	// "http://192.168.8.171:4000/";//harry
 	// public static final String PHOTO_URL = "http://192.168.8.3:4000/";

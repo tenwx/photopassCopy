@@ -183,7 +183,7 @@ public class JsonUtil {
 			// 更新头像图片
 			headUrl = Common.PHOTO_URL+headUrl;
 			System.out.println("get head image");
-			HttpUtil.get(headUrl, new BinaryHttpResponseHandler(){
+			HttpsUtil.get(headUrl, new BinaryHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
@@ -223,7 +223,7 @@ public class JsonUtil {
 		if (bgUrl != null) {
 			// 更新背景图片
 			bgUrl = Common.PHOTO_URL+bgUrl;
-			HttpUtil.get(bgUrl, new BinaryHttpResponseHandler(){
+			HttpsUtil.get(bgUrl, new BinaryHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
