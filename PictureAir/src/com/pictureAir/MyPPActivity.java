@@ -3,6 +3,10 @@ package com.pictureAir;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,8 +16,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -49,7 +51,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 	// private ArrayList<PPCodeInfo1> saveDeletePPCodeList;// 存放删的List
 
 	private SQLiteDatabase database;
-	private PhotoInfoDBHelper dbHelper;
+	private SQLiteOpenHelper dbHelper;
 	private SharedPreferences sharedPreferences;
 
 	private static final int UPDATE_UI = 10000;
@@ -406,7 +408,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 			selectedTag = -1;
 			listPPAdapter.notifyDataSetChanged();
 			//根据photoId，更新数据库中的字段
-			database = dbHelper.getWritableDatabase();
+			database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 			database.execSQL("update "+Common.PHOTOPASS_INFO_TABLE+" set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
 			database.close();
 			selectedPhotoId = null;
@@ -420,7 +422,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 	// 处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
 	private ArrayList<PPCodeInfo1> getPhotoUrlFromDatabase() {
 		showPPCodeList = new ArrayList<PPCodeInfo1>();
-		database = dbHelper.getWritableDatabase();
+		database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 		// int skipCount = 0;//设置跳过的数量
 		// 获取需要显示的PP(去掉重复、隐藏的)
 		for (int j = 0; j < pPCodeList.size(); j++) {

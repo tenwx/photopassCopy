@@ -1,20 +1,19 @@
 package com.pictureAir;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,7 +22,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureAir.adapter.ListOfPPAdapter;
@@ -49,7 +47,7 @@ public class SelectPPActivity extends BaseActivity implements OnClickListener {
 	private SharedPreferences sharedPreferences;
 	private MyToast newToast;
 	private SQLiteDatabase database;
-	private PhotoInfoDBHelper dbHelper;
+	private SQLiteOpenHelper dbHelper;
 	
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -202,7 +200,7 @@ public class SelectPPActivity extends BaseActivity implements OnClickListener {
 	
 	//处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
 		private void getPhotoUrlFromDatabase() {
-			database = dbHelper.getWritableDatabase();
+			database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 			new Thread(){
 				public void run() {
 					Cursor cursor = null;

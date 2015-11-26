@@ -2,7 +2,10 @@ package com.pictureAir.db;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.database.sqlite.SQLiteDatabase;
+import com.pictureAir.util.Common;
+
+import net.sqlcipher.database.SQLiteDatabase;
+
 
 /**
  * 数据库管理类
@@ -51,7 +54,7 @@ public class DatabaseManager {
 	public synchronized SQLiteDatabase getWritableDatabase() {
 		if (mAtomicInteger.incrementAndGet() == 1) {// 自增值为1的时候，允许执行
 			// Opening new database
-			mDatabase = mDbHelper.getWritableDatabase();
+			mDatabase = mDbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 		}
 		return mDatabase;
 	}
@@ -64,7 +67,7 @@ public class DatabaseManager {
 	public synchronized SQLiteDatabase getReadableDatabase() {
 		if (mAtomicInteger.incrementAndGet() == 1) {// 自增值为1的时候，允许执行
 			// Opening new database
-			mDatabase = mDbHelper.getReadableDatabase();
+			mDatabase = mDbHelper.getReadableDatabase(Common.SQLCIPHER_KEY);
 		}
 		return mDatabase;
 	}

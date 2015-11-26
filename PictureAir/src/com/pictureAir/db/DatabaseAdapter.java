@@ -1,16 +1,13 @@
 package com.pictureAir.db;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import android.content.Context;
 
 import com.pictureAir.entity.Question;
 import com.pictureAir.util.PinYin;
-
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * 数据库操作类

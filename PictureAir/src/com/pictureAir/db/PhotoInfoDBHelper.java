@@ -1,12 +1,14 @@
 package com.pictureAir.db;
 
-import com.pictureAir.util.Common;
-
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase.CursorFactory;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.util.Log;
+
+import cn.sharesdk.facebook.c;
+
+import com.pictureAir.util.Common;
 /**
  * Photo页的图片信息数据库的databasehelper
  * photopass图片表，记录所有的photopass的照片数据
@@ -19,6 +21,10 @@ public class PhotoInfoDBHelper extends SQLiteOpenHelper {
 	
 	private static final int VERSION = 1;
 	private static final String TAG = "PhotoInfoDBHelper";
+	
+	public PhotoInfoDBHelper(Context context){
+		this(context, Common.PHOTOPASS_INFO_NAME);
+	}
 	
 	public PhotoInfoDBHelper(Context context, String name, CursorFactory factory,
 			int version) {

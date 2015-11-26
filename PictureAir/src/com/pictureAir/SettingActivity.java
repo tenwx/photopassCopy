@@ -2,6 +2,8 @@ package com.pictureAir;
 
 import java.io.UnsupportedEncodingException;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -75,7 +76,7 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 				//清空photopass数据库
 				PhotoInfoDBHelper dbHelper;
 				dbHelper = new PhotoInfoDBHelper(SettingActivity.this, Common.PHOTOPASS_INFO_NAME, Common.PHOTOPASS_INFO_VERSION);
-				SQLiteDatabase db = dbHelper.getWritableDatabase();
+				SQLiteDatabase db = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 				System.out.println("delete all data from table");
 				db.execSQL("delete from "+Common.PHOTOPASS_INFO_TABLE);
 				db.close();

@@ -3,6 +3,10 @@ package com.pictureAir;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,8 +16,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,7 +86,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 	private ArrayList<DayOfPP> list3;// 对应pp+可以绑定的pp
 	private SharedPreferences sharedPreferences;
 	private SQLiteDatabase database;
-	private PhotoInfoDBHelper dbHelper;
+	private SQLiteOpenHelper dbHelper;
 
 	private final static int DEAL_PP_JSON_SUCCESS = 4;
 	private boolean hasOtherAvailablePPP = false;//判断是否还有其他可用的ppp
@@ -134,7 +136,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 					Editor editor = sharedPreferences.edit();
 					editor.putInt(Common.PPP_COUNT, API.PPPlist.size());
 					editor.commit();
-					database = dbHelper.getWritableDatabase();
+					database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 					Cursor cursor = null;
 //					int count = 0;
 					for (int i = 0; i < API.PPPlist.size(); i++) {
@@ -473,7 +475,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
 	//处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
 	private void getPhotoUrlFromDatabase() {
-		database = dbHelper.getWritableDatabase();
+		database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 		new Thread(){
 			public void run() {
 				Cursor cursor = null;

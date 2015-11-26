@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,13 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -47,6 +48,7 @@ import com.pictureAir.MyApplication;
 import com.pictureAir.R;
 import com.pictureAir.adapter.StoryViewPagerAdapter;
 import com.pictureAir.db.PhotoInfoDBHelper;
+import com.pictureAir.db.SQLiteHelperFactory;
 import com.pictureAir.entity.DiscoverLocationItemInfo;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.entity.PhotoItemInfo;
@@ -60,7 +62,6 @@ import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.StoryMenuPop;
 import com.pictureAir.widget.XListView;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * PhotoPass照片的图片墙，用来显示从服务器返回的照片信息，以及通过magic相机拍摄的图片 可以左右滑动切换不同的相册
@@ -117,7 +118,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	public static Context context;
 	private SimpleDateFormat sdf;
 	private static SharedPreferences sharedPreferences;
-	private PhotoInfoDBHelper dbHelper;
+	private SQLiteOpenHelper dbHelper;
 	private SQLiteDatabase db;
 	private MyToast myToast;
 	private PhotoInfo selectPhotoItemInfo;
@@ -367,7 +368,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	 * 
 	 */
 	private void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll) {
-		db = dbHelper.getWritableDatabase();
+		db = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
 		if (isAll) {// 获取全部数据，需要先清空数据库，反之，插入到后面
 			Log.d(TAG, "delete all data from table");
 			db.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE);
@@ -543,8 +544,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		// refreshTabMap.put("refreshTab", 0);
 		myToast = new MyToast(getActivity());
 		app = (MyApplication) getActivity().getApplication();
-		dbHelper = new PhotoInfoDBHelper(context, Common.PHOTOPASS_INFO_NAME,
-				Common.PHOTOPASS_INFO_VERSION);
+		dbHelper = SQLiteHelperFactory.create(context);
+//		dbHelper = new PhotoInfoDBHelper(context, Common.PHOTOPASS_INFO_NAME,
+//				Common.PHOTOPASS_INFO_VERSION);
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		locationList.clear();
 		screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this
@@ -756,7 +758,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		boolean hasPhoto = false;
 		// dbHelper = new PhotoInfoDBHelper(context, Common.PHOTOPASS_INFO_NAME,
 		// Common.PHOTOPASS_INFO_VERSION);
-		db = dbHelper.getReadableDatabase();
+		db = dbHelper.getReadableDatabase(Common.SQLCIPHER_KEY);
 		// 查询photo表的信息
 		System.out.println("start query");
 		Cursor cursor = db.rawQuery("select * from "

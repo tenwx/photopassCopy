@@ -1,13 +1,12 @@
 package com.pictureAir.db;
 
-import java.io.File;
-import java.util.jar.Attributes.Name;
+import com.pictureAir.util.Common;
 
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase.CursorFactory;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * 数据库助手类
@@ -82,13 +81,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	// 封装更新数据库的sql语句
 	public void exeUpdate(String sql, Object[] params) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		SQLiteDatabase db = this.getWritableDatabase(Common.SQLCIPHER_KEY);
 		db.execSQL(sql, params);
 	}
 
 	// 封装查询数据库的sql语句
 	public Cursor exeQuery(String sql, String[] params) {
-		SQLiteDatabase db = this.getReadableDatabase();
+		SQLiteDatabase db = this.getReadableDatabase(Common.SQLCIPHER_KEY);
 		return db.rawQuery(sql, params);
 	}
 

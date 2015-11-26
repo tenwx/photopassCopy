@@ -197,6 +197,7 @@ public class Common {
 	public static final String FAVORITE_INFO_TABLE = "favoriteinfo";
 	public static final String PHOTOPASS_CODE_INFO_TABLE = "photopass_code";
 	public static final String FIRST_START_ACTIVITY_INFO_TABLE = "first_start_activity";
+	public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
 	public static final int PHOTOPASS_INFO_VERSION = 1;
 
 	// 相册名称字段

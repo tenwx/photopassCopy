@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +17,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
 import com.baidu.mapapi.model.LatLng;
