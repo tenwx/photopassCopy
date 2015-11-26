@@ -30,8 +30,10 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.tencent.qzone.QZone;
 import cn.sharesdk.twitter.Twitter;
+import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 import cn.sharesdk.wechat.moments.WechatMoments.ShareParams;
 
@@ -41,8 +43,10 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureAir.R;
 import com.pictureAir.util.Common;
+import com.pictureAir.util.PictureAirLog;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.util.UmengUtil;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 此控件负责photo页面中menu下拉菜单的内容
@@ -56,7 +60,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	private Context context;
 	private LayoutInflater inflater;
 	private View defaultView;
-	private TextView wechat, qqzone, sina, facebook, twitter;
+	private TextView wechat, wechatMoments, qq, qqzone, sina, facebook,
+			twitter;
 	private TextView sharecancel;
 	// private PlatformActionListener callback;
 	private String imagePath, imageUrl, shareUrl, type;
@@ -97,6 +102,9 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		setOutsideTouchable(true);
 
 		wechat = (TextView) defaultView.findViewById(R.id.wechat);
+		wechatMoments = (TextView) defaultView
+				.findViewById(R.id.wechat_moments);
+		qq = (TextView) defaultView.findViewById(R.id.qq);
 		qqzone = (TextView) defaultView.findViewById(R.id.qqzone);
 		sina = (TextView) defaultView.findViewById(R.id.sina);
 		facebook = (TextView) defaultView.findViewById(R.id.facebook);
@@ -104,6 +112,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		sharecancel = (TextView) defaultView.findViewById(R.id.share_cancel);
 
 		wechat.setOnClickListener(this);
+		wechatMoments.setOnClickListener(this);
+		qq.setOnClickListener(this);
 		qqzone.setOnClickListener(this);
 		sina.setOnClickListener(this);
 		twitter.setOnClickListener(this);
@@ -165,6 +175,38 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			shareParams.imagePath = imagePath;
 		} else if ("online".equals(type)) {// 网络图片
 			shareParams.shareType = Platform.SHARE_WEBPAGE;// 以网页的形式分享图片
+			shareParams.imageUrl = imageUrl;
+			shareParams.url = shareUrl;// share_webpage的时候需要这个参数
+		}
+		platform.share(shareParams);
+	}
+
+	/**
+	 * 微信好友分享，不支持图文分享，只能分享图片，或者图片以链接的形式分享出去，但是都不能添加文字
+	 * 
+	 * @param context
+	 * @param imagePath
+	 *            本地图片路径
+	 * @param imageUrl
+	 *            网络图片url
+	 * @param type
+	 *            判断是否是本地还是网络，类型有“local”“online”
+	 */
+	private void wechatFriendsShare(Context context, String imagePath,
+			String imageUrl, String shareUrl, String type) {
+		// TODO Auto-generated method stub
+		Platform platform = ShareSDK.getPlatform(context, Wechat.NAME);
+		platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
+		// platform.isValid()
+		ShareParams shareParams = new ShareParams();
+		shareParams.title = context.getString(R.string.share_text);
+		// shareParams.text = "PhotoPass";
+		// 本地图片可以
+		if ("local".equals(type)) {// 本地图片
+			shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
+			shareParams.imagePath = imagePath;
+		} else if ("online".equals(type)) {// 网络图片
+			shareParams.shareType = Platform.SHARE_WEBPAGE;// 以网页的形式分享图片
 			// shareParams.imageUrl = imageUrl;
 			shareParams.url = shareUrl;// share_webpage的时候需要这个参数
 		}
@@ -202,6 +244,46 @@ public class SharePop extends PopupWindow implements OnClickListener,
 				shareParams.siteUrl = shareUrl;
 			}
 			shareParams.site = context.getString(R.string.app_name);
+			platform.share(shareParams);
+		} else {
+			if (dialog.isShowing()) {
+				dialog.dismiss();
+				isOpenning = false;
+			}
+			showNotification(2000,
+					context.getString(R.string.share_failure_qzone));
+		}
+	}
+
+	/**
+	 * qq好友分享
+	 * 
+	 * @param context
+	 * @param imagePath
+	 * @param imageUrl
+	 * @param shareUrl
+	 * @param type
+	 */
+	private void qqShare(Context context, String imagePath, String imageUrl,
+			String shareUrl, String type) {
+		// TODO Auto-generated method stub
+		Platform platform = ShareSDK.getPlatform(context, QQ.NAME);
+		if (platform.isClientValid()) {
+			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
+			cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
+			shareParams.title = "pictureAir";
+			shareParams.text = context.getResources().getString(
+					R.string.share_text);
+			if ("local".equals(type)) {// 本地图片
+				shareParams.imagePath = imagePath;
+				shareParams.titleUrl = "http://www.pictureair.com";
+				// shareParams.siteUrl = "http://www.pictureair.com";
+			} else if ("online".equals(type)) {// 网络图片
+				shareParams.imageUrl = imageUrl;
+				shareParams.titleUrl = shareUrl;
+				// shareParams.siteUrl = shareUrl;
+			}
+			// shareParams.site = context.getString(R.string.app_name);
 			platform.share(shareParams);
 		} else {
 			if (dialog.isShowing()) {
@@ -333,12 +415,23 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		// Message msg = mHandler.obtainMessage();
 		// 显示进度条，等待app打开
 		dialog = CustomProgressDialog.show(context, null, false, null);
+		// dialog = CustomProgressDialog.show(context,
+		// context.getString(R.string.launching_app), false, null);
 		isOpenning = true;
 		switch (v.getId()) {
-		case R.id.wechat:
-			shareType = Common.EVENT_ONCLICK_SHARE_WEIXIN;
+		case R.id.wechat_moments:
+			System.out.println("wechat share");
+			shareType = Common.EVENT_ONCLICK_SHARE_WECHAT_MOMENTS;
 			UmengUtil.onEvent(context, shareType);
 			wechatmonentsShare(context, imagePath, imageUrl, shareUrl, type);
+			// mHandler.sendEmptyMessage(WECHAT);
+			break;
+
+		case R.id.wechat:
+			// System.out.println("wechat share");
+			shareType = Common.EVENT_ONCLICK_SHARE_WECHAT;
+			UmengUtil.onEvent(context, shareType);
+			wechatFriendsShare(context, imagePath, imageUrl, shareUrl, type);
 			// mHandler.sendEmptyMessage(WECHAT);
 			break;
 
@@ -346,8 +439,20 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			isOpenning = false;
 			dialog.dismiss();
 			break;
-		case R.id.qqzone:
+
+		case R.id.qq:
 			shareType = Common.EVENT_ONCLICK_SHARE_QQ;
+			UmengUtil.onEvent(context, shareType);
+			if (type.equals("local")) {// 本地
+				createThumbNail(v.getId());
+			} else {
+				qqShare(context, imagePath, imageUrl, shareUrl, type);
+			}
+			// mHandler.sendEmptyMessage(QZONE);
+			break;
+
+		case R.id.qqzone:
+			shareType = Common.EVENT_ONCLICK_SHARE_QQZONE;
 			UmengUtil.onEvent(context, shareType);
 			qzoneShare(context, imagePath, imageUrl, shareUrl, type);
 			// mHandler.sendEmptyMessage(QZONE);
@@ -367,6 +472,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.facebook:
+			PictureAirLog.out("fb on click");
 			shareType = Common.EVENT_ONCLICK_SHARE_FACEBOOK;
 			UmengUtil.onEvent(context, shareType);
 			facebookShare(context, imagePath, imageUrl, shareUrl, type);
@@ -392,7 +498,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
 		if (isShowing()) {
 			dismiss();
-			// ShareSDK.stopSDK();
+			ShareSDK.stopSDK();
 
 		}
 
@@ -471,6 +577,11 @@ public class SharePop extends PopupWindow implements OnClickListener,
 											shareUrl, type);
 									break;
 
+								case R.id.qq:
+									qqShare(context, imagePath, imageUrl,
+											shareUrl, type);
+									break;
+
 								default:
 									break;
 								}
@@ -493,6 +604,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	public void dismissDialog() {
 		// TODO Auto-generated method stub
 		if (dialog != null && dialog.isShowing() && isOpenning) {
+			PictureAirLog.out("share pop dismiss");
 			// System.out.println("sharePop----dismiss");
 			dialog.dismiss();
 			isOpenning = false;
@@ -515,6 +627,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		case MSG_ACTION_CCALLBACK: {
 			switch (msg.arg1) {
 			case 1: {
+				// System.out.println("share 1");
 				// 成功
 				int resId = getStringRes(context, "share_completed");
 				if (resId > 0) {
@@ -594,7 +707,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	@Override
 	public void onComplete(Platform arg0, int arg1, HashMap<String, Object> arg2) {
 		// TODO Auto-generated method stub
-
+		// System.out.println("complete");
 		if (dialog.isShowing()) {
 			dialog.dismiss();
 			isOpenning = false;
@@ -604,47 +717,13 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		msg.arg1 = 1;
 		msg.arg2 = arg1;
 		msg.obj = arg0;
-		UIHandler.sendMessage(msg, this);
-		System.out.println("onComplete()" + arg0.getName());
-		onEventUmeng(arg0);
 
+		UIHandler.sendMessage(msg, this);
+		//统计分享成功
+		onEventUmeng(arg0);
 		if (sharePlatform.equals("twitter")) {
 			arg0.removeAccount(true);
 		}
-
-	}
-
-	/**
-	 * 分享完成后统计分享数据
-	 * 
-	 * @param platform
-	 */
-	public void onEventUmeng(Platform platform) {
-		if (platform == null) {
-			return;
-		}
-		String typeName = platform.getName();
-		String eventName = null;
-		if (typeName.equals("SinaWeibo")) {
-			eventName = Common.EVENT_SHARE_SINA_WEIBO_FINISH;
-		} else if (typeName.equals("QZone")) {
-			eventName = Common.EVENT_SHARE_QQ_FINISH;
-
-		} else if (typeName.equals("WechatMoments")) {
-			eventName = Common.EVENT_SHARE_WEIXIN_FINISH;
-
-		} else if (typeName.equals("Facebook")) {
-			eventName = Common.EVENT_SHARE_FACEBOOK_FINISH;
-
-		} else if (typeName.equals("Twitter")) {
-			eventName = Common.EVENT_SHARE_TWITTER_FINISH;
-		}
-
-		// 分享完成统计事件
-		if (!TextUtils.isEmpty(eventName)) {
-			UmengUtil.onEvent(context, eventName);
-		}
-
 	}
 
 	@Override
@@ -665,6 +744,46 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
 		// 分享失败的统计
 		ShareSDK.logDemoEvent(4, arg0);
+	}
+
+	/**
+	 * 分享完成后统计分享数据
+	 * 
+	 * @param platform
+	 */
+	public void onEventUmeng(Platform platform) {
+		if (platform == null) {
+			return;
+		}
+		String typeName = platform.getName();
+		String eventName = null;
+		if (typeName.equals("SinaWeibo")) {
+			eventName = Common.EVENT_SHARE_SINA_WEIBO_FINISH;
+		}  else if (typeName.equals("QZone")) {
+			eventName = Common.EVENT_SHARE_QQZONE_FINISH;
+
+		}
+		else if (typeName.equals("QZone")) {
+			eventName = Common.EVENT_SHARE_QQZONE_FINISH;
+
+		} else if (typeName.equals("Wechat")) {
+			eventName = Common.EVENT_SHARE_WECHAT_FINISH;
+
+		} else if (typeName.equals("WechatMoments")) {
+			eventName = Common.EVENT_SHARE_WECHAT_MOMENTS_FINISH;
+
+		} else if (typeName.equals("Facebook")) {
+			eventName = Common.EVENT_SHARE_FACEBOOK_FINISH;
+
+		} else if (typeName.equals("Twitter")) {
+			eventName = Common.EVENT_SHARE_TWITTER_FINISH;
+		}
+
+		// 分享完成统计事件
+		if (!TextUtils.isEmpty(eventName)) {
+			UmengUtil.onEvent(context, eventName);
+		}
+
 	}
 
 	// 在状态栏提示分享操作

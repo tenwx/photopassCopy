@@ -269,15 +269,24 @@ public class Common {
 
 	public static final String EVENT_ONCLICK_SHARE_QQ = "event_onclick_share_qq";// 点击qq分享
 	public static final String EVENT_SHARE_QQ_FINISH = "event_share_qq_finish";// qq分享成功
+	
+	
+	public static final String EVENT_ONCLICK_SHARE_QQZONE = "event_onclick_share_qqzone";// 点击qqzone分享
+	public static final String EVENT_SHARE_QQZONE_FINISH = "event_share_qqzone_finish";// qqzone分享成功
+	
 
-	public static final String EVENT_ONCLICK_SHARE_WEIXIN = "event_onclick_share_weixin";// 点击微信分享
-	public static final String EVENT_SHARE_WEIXIN_FINISH = "event_share_weixin_finish";// 微信分享成功
+	public static final String EVENT_ONCLICK_SHARE_WECHAT = "event_onclick_share_wechat";// 点击微信好友分享
+	public static final String EVENT_SHARE_WECHAT_FINISH = "event_share_wechat_finish";// 微信好友分享成功
+	
+	public static final String EVENT_ONCLICK_SHARE_WECHAT_MOMENTS = "event_onclick_share_wechat_moments";// 点击微信朋友圈分享
+	public static final String EVENT_SHARE_WECHAT_MOMENTS_FINISH = "event_share_wechat_moments_finish";// 微信朋友圈分享成功
+	
 
-	public static final String EVENT_ONCLICK_SHARE_SINA_WEIBO = "event_onclick_share_sina_weibo";// 点击微信分享
-	public static final String EVENT_SHARE_SINA_WEIBO_FINISH = "event_share_sina_weibo_finish";// 微信分享成功
+	public static final String EVENT_ONCLICK_SHARE_SINA_WEIBO = "event_onclick_share_sina_weibo";// 点击新浪微博分享
+	public static final String EVENT_SHARE_SINA_WEIBO_FINISH = "event_share_sina_weibo_finish";// 新浪微博分享成功
 
-	public static final String EVENT_ONCLICK_SHARE_TWITTER = "event_onclick_share_twitter";// 点击微信分享
-	public static final String EVENT_SHARE_TWITTER_FINISH = "event_share_twitter_finish";// 微信分享成功
+	public static final String EVENT_ONCLICK_SHARE_TWITTER = "event_onclick_share_twitter";// 点击Twitter分享
+	public static final String EVENT_SHARE_TWITTER_FINISH = "event_share_twitter_finish";// Twitter分享成功
 
 	public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
 	public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功

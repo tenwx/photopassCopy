@@ -65,7 +65,7 @@
         AppSecret="d1245524e61777c0e6acff87ade4baf8"
         Enable="true"
         Id="1"
-        RedirectUrl="http://www.pictureair.com"
+        RedirectUrl="http://www.pictureair.com/"
         ShareByAppClient="true"
         SortId="1" />
 
@@ -109,6 +109,7 @@
     <Facebook
         ConsumerKey="188501484544514"
         ConsumerSecret="317c094c348dc023312fe5067245840c"
+        RedirectUrl="http://www.pictureair.com/"
         Enable="true"
         Id="5"
         SortId="5" />
