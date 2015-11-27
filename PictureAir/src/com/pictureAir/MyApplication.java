@@ -9,7 +9,6 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -32,6 +31,7 @@ import com.pictureAir.util.Common;
 public class MyApplication extends Application {
 //	public LocationClient mLocationClient;
 //	public BDLocation mLocation;
+	private static MyApplication instance;
 	private boolean isLogin;
 	private boolean needScanPhoto = false;//判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
 	private int pushPhotoCount = 0;//推送图片的数量，作为是否刷新的标记
@@ -164,7 +164,7 @@ public class MyApplication extends Application {
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 //				.diskCacheFileCount(100)
 				// 缓存的文件数量
-				.diskCache(new UnlimitedDiscCache(cacheDir))
+//				.diskCache(new UnlimitedDiscCache(cacheDir))
 				// 自定义缓存路径
 				//UnlimitedDiskCache   不限制缓存大小（默认）
 //TotalSizeLimitedDiskCache (设置总缓存大小，超过时删除最久之前的缓存)
@@ -178,6 +178,19 @@ public class MyApplication extends Application {
 //		ImageLoader.getInstance().clearDiskCache();
 	}
 
+	/*
+	 * 获取全局Context
+	 * 
+	 * @return
+	 */
+	public static MyApplication getInstance() {
+		if (instance == null) {
+			instance = new MyApplication();
+		}
+		return instance;
+	}
+
+	
 	/**
 	 * 判断当前状态是否为登录
 	 * @return

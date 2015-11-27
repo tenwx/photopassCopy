@@ -12,7 +12,7 @@
         android:padding="10dp"
         android:adjustViewBounds="true"
         android:layout_weight="2"
-        android:src="@drawable/air_logo" />
+        android:src="@drawable/launching_logo" />
     
     <TextView
         android:id="@+id/startNow"

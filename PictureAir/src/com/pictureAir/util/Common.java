@@ -240,6 +240,23 @@ public class Common {
 	public static final String GOOD_NAME_6R = "6R Print (6\"x 8\")";
 	public static final String GOOD_NAME_TSHIRT = "Duffy T-shirt";
 	public static final String GOOD_NAME_COOK = "Personal cookies gift";
+	
+	// 友盟参数
+	public static final String UMENG_CHANNEL = "360";// 打包渠道
+	// 友盟自定义事件
+	public static final String EVENT_CONTAIN_PICTURE_PEOPLES = "event_contain_picture_peoples";// 有图片的总人数
+	public static final String EVENT_TOTAL_PICTURES = "event_total_pictures";// 图片总数
+	public static final String EVENT_ONCLICK_DOWNLOAD = "event_onclick_dwonload";// 点击下载
+	public static final String EVENT_DOWNLOAD_FINISH = "event_dwonload_finish";// 下载成功
+	public static final String EVENT_ONCLICK_SHARE_QQ = "event_onclick_share_qq";// 点击qq分享
+	public static final String EVENT_SHARE_QQ_FINISH = "event_share_qq_finish";// qq分享成功
+	public static final String EVENT_ONCLICK_SHARE_WEIXIN = "event_onclick_share_weixin";// 点击微信分享
+	public static final String EVENT_SHARE_WEIXIN_FINISH = "event_share_weixin_finish";// 微信分享成功
+	public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
+	public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
+	public static final String IS_HAVE_PIC = "IS_HAVE_PIC";// 是否包含图片
+	public static final String PICTURE_COUNT = "PICTURE_COUNT";// 用户图片总数（PhotoPass）
+
 
 	// 保存设置。
 	public static final String SETTING_WIFI = "onlyWifi";

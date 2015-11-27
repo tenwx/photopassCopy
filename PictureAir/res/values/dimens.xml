@@ -10,5 +10,8 @@
     <dimen name="indicator_internal_padding">4dp</dimen>
     <dimen name="header_footer_left_right_padding">24dp</dimen>
     <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+    <dimen name="text_large_size">18sp</dimen>
+    <dimen name="text_middle_size">15sp</dimen>
+    <dimen name="text_small_size">12sp</dimen>
 
 </resources>

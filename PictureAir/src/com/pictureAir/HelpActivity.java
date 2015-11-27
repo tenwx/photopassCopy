@@ -170,17 +170,17 @@ public class HelpActivity extends Activity implements OnClickListener{
 			break;
 			
 		case R.id.relativeLayout1:
-			diaLogFeedBack();
+//			diaLogFeedBack();
 			break;
 		// Feedback
-		case R.id.tVCancel:
-			myFeedbackDialog.dismiss();
-			break;
-		case R.id.tVsend:
-			myFeedbackDialog.dismiss();
-			String feedbackStr = eTFeedback.getText().toString();
-			System.out.println("-------:" + feedbackStr);
-			break;
+//		case R.id.tVCancel:
+//			myFeedbackDialog.dismiss();
+//			break;
+//		case R.id.tVsend:
+//			myFeedbackDialog.dismiss();
+//			String feedbackStr = eTFeedback.getText().toString();
+//			System.out.println("-------:" + feedbackStr);
+//			break;
 
 		default:
 			break;
@@ -194,22 +194,22 @@ public class HelpActivity extends Activity implements OnClickListener{
 		AppManager.getInstance().killActivity(this);
 	}
 	
-	 private void diaLogFeedBack() {
-			View v = LayoutInflater.from(this).inflate(
-					R.layout.custom_dialog_feedback, null);
-			AlertDialog.Builder myBuilder = new AlertDialog.Builder(this);
-			myFeedbackDialog = myBuilder.create();
-			myFeedbackDialog.setView(new EditText(this));//自定义的dialog，必须在show（）之前加入此行，不然显示不了软键盘
-			myFeedbackDialog.show();
-			myFeedbackDialog.getWindow().setContentView(v);
-			eTFeedback = (EditText) v.findViewById(R.id.eTFeedback);
-			tVsend = (TextView) v.findViewById(R.id.tVsend);
-			tVCancel = (TextView) v.findViewById(R.id.tVCancel);
-			tVsend.setOnClickListener(this);
-			tVCancel.setOnClickListener(this);
-			eTFeedback.setOnClickListener(this);
-
-		}
+//	 private void diaLogFeedBack() {
+//			View v = LayoutInflater.from(this).inflate(
+//					R.layout.custom_dialog_feedback, null);
+//			AlertDialog.Builder myBuilder = new AlertDialog.Builder(this);
+//			myFeedbackDialog = myBuilder.create();
+//			myFeedbackDialog.setView(new EditText(this));//自定义的dialog，必须在show（）之前加入此行，不然显示不了软键盘
+//			myFeedbackDialog.show();
+//			myFeedbackDialog.getWindow().setContentView(v);
+//			eTFeedback = (EditText) v.findViewById(R.id.eTFeedback);
+//			tVsend = (TextView) v.findViewById(R.id.tVsend);
+//			tVCancel = (TextView) v.findViewById(R.id.tVCancel);
+//			tVsend.setOnClickListener(this);
+//			tVCancel.setOnClickListener(this);
+//			eTFeedback.setOnClickListener(this);
+//
+//		}
 	 
 	   @Override
 		protected void onPause() {

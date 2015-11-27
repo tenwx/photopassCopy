@@ -7,7 +7,7 @@
         android:id="@+id/rl01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_dislog_top" >
+        android:background="@drawable/bg_dialog_blue_top" >
 
         <TextView
             android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl01"
-        android:background="@drawable/bg_dialog_centent"
+        android:background="@drawable/bg_dialog_white_content"
         android:orientation="vertical" >
 
         <RelativeLayout
