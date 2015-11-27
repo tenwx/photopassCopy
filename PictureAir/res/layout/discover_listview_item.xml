@@ -30,6 +30,7 @@
             android:layout_marginTop="5dp"
             android:adjustViewBounds="true"
             android:padding="5dp"
+            android:visibility="gone"
             android:src="@drawable/discover_magic_shoot" />
     </RelativeLayout>
 
@@ -77,8 +78,9 @@
                 android:layout_margin="25dp"
                 android:gravity="center|left"
                 android:layout_toLeftOf="@+id/empty_view"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad"
+                android:text=""
                 android:textColor="@color/white"
+                android:maxLines="5"
                 android:textSize="15sp" />
         </RelativeLayout>
 
@@ -113,7 +115,8 @@
                 android:paddingLeft="13dp"
                 android:paddingRight="13dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/direction_icon" />
+                android:src="@drawable/direction_icon"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/discover_distance"

@@ -23,17 +23,6 @@
             android:paddingTop="13dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
-        <!--
-             <ImageView
-            android:id="@+id/back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
-        -->
 
         <Button
             android:id="@+id/save"
@@ -187,46 +176,6 @@
             android:layout_marginRight="10dp"
             android:background="@color/line_color" />
 
-        <!--
-        <RelativeLayout
-            android:id="@+id/item_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="2dp"
-                android:text="@string/Email"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="2dp"
-                android:maxWidth="200dp"
-                android:singleLine="true"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-        </RelativeLayout>
-        -->
-
-
-        <!--
-              <View
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="1px"
-                android:background="@color/gray_light" />
-        -->
-
         <RelativeLayout
             android:id="@+id/item_qq"
             android:layout_width="match_parent"
@@ -254,83 +203,6 @@
                 android:textColor="@color/gray"
                 android:textSize="15sp" />
         </RelativeLayout>
-
-        <!--
-             <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/gray_light" />
-        -->
-
-
-        <!--
-        <RelativeLayout
-            android:id="@+id/item_wechat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="2dp"
-                android:text="@string/weichat"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/wechat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="2dp"
-                android:maxWidth="200dp"
-                android:singleLine="true"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-        </RelativeLayout>
-        -->
-
-
-        <!--
-             <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/gray_light" />
-        -->
-
-
-        <!--
-        <RelativeLayout
-            android:id="@+id/item_twitter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="2dp"
-                android:text="@string/twitter"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/twitter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="2dp"
-                android:maxWidth="200dp"
-                android:singleLine="true"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-        </RelativeLayout>
-        -->
 
         <View
             android:layout_width="match_parent"
@@ -372,6 +244,14 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@color/line_color" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/time_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
     </LinearLayout>
 
 </RelativeLayout>

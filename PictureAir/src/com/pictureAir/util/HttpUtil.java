@@ -1,16 +1,5 @@
 package com.pictureAir.util;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import android.os.StrictMode;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -54,4 +43,6 @@ public class HttpUtil {
 	public static AsyncHttpClient getClient() {
 		return client;
 	}
+
+
 }

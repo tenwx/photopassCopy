@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.baidu.location.BDLocation;
+import com.amap.api.location.AMapLocation;
 import com.nineoldandroids.view.ViewHelper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -55,7 +55,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 	//距离的小数点数量
 	private NumberFormat distanceFormat;
 	//距离和方向
-	private BDLocation mLocation;
+	private AMapLocation mLocation;
 	private float x = 0;// x轴的旋转角度
 	private UpdateCallback updateCallback;
 	private int screenWidth = 0;
@@ -75,7 +75,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 	
 	private ImageLoader imageLoader;
 	
-	public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Activity context, Handler hander, BDLocation location, float x) {
+	public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Activity context, Handler hander, AMapLocation location, float x) {
 		this.list = list;
 		this.context = context;
 		this.mHandler = hander;
@@ -185,7 +185,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 		viewHolder.locationNameTextView.setText(info.place);
 //		viewHolder.locationDetailNameTextView.setText(info.place);
 		//设置地点详情
-//		viewHolder.locationDetailInfoTextView.setText(info.placeDetailIntroduce);
+		viewHolder.locationDetailInfoTextView.setText(info.placeDetailIntroduce);
 		//设置背景图片
 //		UniversalImageLoadTool.loadDiscoverImage(info.placeUrl, viewHolder.locationPhotoImageView, options);
 		if (viewHolder.locationPhotoImageView.getTag() != null && viewHolder.locationPhotoImageView.getTag().equals(info.placeUrl)) {//直接显示，不需要tag
@@ -241,7 +241,9 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 		double lng_a = info.longitude;// 经度
 		double lat_b = mLocation.getLatitude();
 		double lng_b = mLocation.getLongitude();
-		double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
+//		double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
+		double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
+		System.out.println("distance--in adapter--------->"+distance);
 		viewHolder.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
 		//获取旋转角度
 		double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);

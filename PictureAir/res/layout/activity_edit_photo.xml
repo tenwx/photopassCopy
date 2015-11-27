@@ -115,14 +115,46 @@
         android:layout_above="@+id/edittoolsbar"
         android:layout_below="@id/preview_titlebar"
         android:background="@color/transparent" >
+  
+       <!--  <com.pictureAir.editPhoto.ImageViewTouch
+            android:id="@+id/main_image"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/gray_light2"
+            android:layout_centerInParent="true"
+            />  -->
+                 <ImageView
+            android:id="@+id/main_image"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/gray_light2"
+            android:layout_centerInParent="true"
+            />  
+         
+         <com.pictureAir.editPhoto.StickerView
+            android:id="@+id/sticker_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+         
+         <!-- 字体 view -->
+         <com.pictureAir.editPhoto.FontView
+            android:id="@+id/font_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+         
 
-        <ImageView
+     <!--    <ImageView
             android:id="@+id/previewphoto_imageView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/gray_light2"
-            android:src="@drawable/ic_stub" />
+            android:src="@drawable/ic_stub" />  -->
 
+      <!-- 相框 -->
         <ImageView
             android:id="@+id/framephoto_imageView1"
             android:layout_width="match_parent"
@@ -223,7 +255,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/edit_rotate"
+            android:id="@+id/edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -246,7 +278,7 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/rotate_bar"
+        android:id="@+id/font_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

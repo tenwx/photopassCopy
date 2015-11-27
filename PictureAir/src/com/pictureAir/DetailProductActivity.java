@@ -35,12 +35,13 @@ import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.BannerView_Detail;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 /**
  * 商品明细类，此页面可以加入购物车
  * @author bauer_bao
  *
  */
-public class DetailProductActivity extends BaseActivity implements OnClickListener{
+public class DetailProductActivity extends Activity implements OnClickListener{
 	//申明控件
 	private ViewGroup animMaskLayout;//动画层
 	private ImageView buyImg;// 这是在界面上跑的小图片
@@ -89,7 +90,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.detail_product_activity);
+		setContentView(R.layout.activity_detail_product);
 		initView();
 	}
 
@@ -137,11 +138,13 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		}
 		if (goodsInfo.good_type == 1) {//需要自提的商品
 			if (goodsInfo.good_name.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-			receiveAdress.setText(getString(R.string.address_digital_goods));
+				receiveAdress.setVisibility(View.VISIBLE);
+				receiveAdress.setText(getString(R.string.address_digital_goods));
 				
 			}else {
 				
-				receiveAdress.setText(getString(R.string.address_goods));
+//				receiveAdress.setText(getString(R.string.address_goods));
+				receiveAdress.setVisibility(View.GONE);
 			}
 			
 //		}else {
@@ -235,6 +238,8 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("DetailProductActivity");
+		MobclickAgent.onResume(this);
 		updateCartCount();
 	}
 
@@ -308,7 +313,8 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 						0, endY);
 				translateAnimationY.setInterpolator(new AccelerateInterpolator());
 				translateAnimationY.setRepeatCount(0);// 动画重复执行的次数
-				ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 0.1f, 1.0f, 0.1f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+				ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 0.1f, 1.0f, 0.1f, 
+						Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
 				AnimationSet set2 = new AnimationSet(false);
 				//要先添加形状的，后添加位移的，不然动画效果不能达到要求
 				set2.addAnimation(scaleAnimation);
@@ -378,4 +384,16 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("DetailProductActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	
+	
+	
 }

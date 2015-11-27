@@ -221,5 +221,14 @@
         android:dividerHeight="5dp"
         android:scrollbars="none" >
     </ListView>
+    
+    <com.pictureAir.widget.NoNetWorkOrNoCountView
+        android:id="@+id/discoverNoNetWorkView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/discover_top"
+        android:visibility="gone"
+        />
+    
 
 </RelativeLayout>

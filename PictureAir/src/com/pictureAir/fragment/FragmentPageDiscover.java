@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -32,8 +31,8 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.pictureAir.BaseFragment;
 import com.pictureAir.MyApplication;
 import com.pictureAir.R;
 import com.pictureAir.UpdateCallback;
@@ -45,16 +44,19 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.JsonUtil;
+import com.pictureAir.util.LocationUtil;
+import com.pictureAir.util.LocationUtil.LocationNotification;
 import com.pictureAir.util.ScreenUtil;
-import com.pictureAir.util.UniversalImageLoadTool;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
+import com.pictureAir.widget.NoNetWorkOrNoCountView;
+import com.umeng.analytics.MobclickAgent;
 /**
  * 发现页面，显示各个地点的与当前的距离，可以筛选各个地方，可支持导航
  * @author bauer_bao
  *
  */
-public class FragmentPageDiscover extends BaseFragment implements UpdateCallback, OnClickListener{
+public class FragmentPageDiscover extends Fragment implements UpdateCallback, OnClickListener, LocationNotification{
 	
 	//声明控件
 	private LinearLayout discoverPopularityLinearLayout, discoverDistanceLinearLayout, discoverSelectionLinearLayout, discoverCollectionLinearLayout, discoverTopLinearLayout;
@@ -62,6 +64,8 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 	private ListView discoverListView;
 	private ImageView moreImageView;
 	private ImageView popularityIconImageView, distanceIconImageView, selectionIconImageView, collectionIconImageView;
+	private TextView popularityTextView, distanceTextView, selectionTextView, collectionTextView;
+	private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
 	
 	//申明类
 	private MyToast myToast;
@@ -72,8 +76,9 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 	private MyApplication app;
 	private Thread locationThread;
 	private DiscoverLocationItemInfo info;
-	private CustomProgressDialog dialog;
+//	private CustomProgressDialog dialog;
 	private SharedPreferences sharedPreferences;
+	private LocationUtil locationUtil;
 	
 	//申明变量
 	private static String TAG = "FragmentPageDiscover";
@@ -109,6 +114,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 						locationInfo = JsonUtil.getLocation(object);
 						locationList.add(locationInfo);
 					}
+					locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
 				} catch (JSONException e1) {
 					e1.printStackTrace();
 				}
@@ -117,11 +123,30 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 				
 			case API.GET_FAVORITE_LOCATION_FAILED:
 			case API.GET_LOCATION_FAILED://获取地址失败	
-				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-				if(dialog.isShowing()){
-					dialog.dismiss();
-				}
-				stopService();
+				noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+				noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
+				discoverListView.setVisibility(View.GONE);
+//				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+//				if(dialog.isShowing()){
+//					dialog.dismiss();
+//				}
+				break;
+				
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+				//重新加载购物车数据
+				System.out.println("onclick with reload");
+				locationList.clear();
+				favoriteList.clear();
+//				dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+				API.getLocationInfo(getActivity(),handler);//获取所有的location
+//				if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
+//					API.getLocationInfo(getActivity(),handler);//获取所有的location
+//				}else {//地址获取成功，但是照片获取失败
+//					Message message = handler.obtainMessage();
+//					message.what = API.GET_LOCATION_SUCCESS;
+//					message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+//					handler.sendMessage(message);
+//				}
 				break;
 				
 			//获取收藏地址成功
@@ -150,11 +175,11 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 				new Thread(){
 					public void run() {
 						while (!isLoading) {
-							if (app.mLocation!=null) {
+							if (locationUtil.mapLocation != null) {
 								Looper.prepare();
 								isLoading = true;
 								Log.d(TAG, "location is ready");
-								discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), handler, app.mLocation, rotate_degree);
+								discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), handler, locationUtil.mapLocation, rotate_degree);
 								discoverLocationAdapter.setUpdateCallback(FragmentPageDiscover.this);
 								handler.sendEmptyMessage(FINISH_LOADING);
 							}
@@ -165,12 +190,13 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 				
 			//加载完毕之后
 			case FINISH_LOADING:
+				discoverListView.setVisibility(View.VISIBLE);
+				noNetWorkOrNoCountView.setVisibility(View.GONE);
 				discoverListView.setAdapter(discoverLocationAdapter);
 				discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
-				if(dialog.isShowing()){
-					dialog.dismiss();
-				}
-				stopService();
+//				if(dialog.isShowing()){
+//					dialog.dismiss();
+//				}
 				break;
 				
 			//定位的时候
@@ -179,9 +205,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 				LocationItem item = (LocationItem) msg.obj;
 				final double lat_a = info.latitude;// 纬度,目标地点不会变化
 				final double lng_a = info.longitude;// 经度
-				double lat_b = app.mLocation.getLatitude();//获取当前app经纬度
-				double lng_b = app.mLocation.getLongitude();
-				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
+				double lat_b = locationUtil.mapLocation.getLatitude();//获取当前app经纬度
+				double lng_b = locationUtil.mapLocation.getLongitude();
+				double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
+//				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
 				// 距离
 				item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
 				double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
@@ -237,6 +264,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		discoverSelectionLinearLayout = (LinearLayout)view.findViewById(R.id.discover_linearlayout_selection);
 		discoverCollectionLinearLayout = (LinearLayout)view.findViewById(R.id.discover_linearlayout_collection);
 		discoverTopLinearLayout = (LinearLayout)view.findViewById(R.id.discover_top);
+		noNetWorkOrNoCountView = (NoNetWorkOrNoCountView)view.findViewById(R.id.discoverNoNetWorkView);
 		cursorImageView = (ImageView)view.findViewById(R.id.discover_cursor);
 		discoverListView = (ListView)view.findViewById(R.id.discover_listView);
 		moreImageView = (ImageView)view.findViewById(R.id.discover_more);
@@ -244,6 +272,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		distanceIconImageView = (ImageView)view.findViewById(R.id.discover_imageview_distance);
 		selectionIconImageView = (ImageView)view.findViewById(R.id.discover_imageview_selection);
 		collectionIconImageView = (ImageView)view.findViewById(R.id.discover_imageview_collection);
+		popularityTextView = (TextView)view.findViewById(R.id.discover_textview_popularity);
+		distanceTextView = (TextView)view.findViewById(R.id.discover_textview_distance);
+		selectionTextView = (TextView)view.findViewById(R.id.discover_textview_selection);
+		collectionTextView = (TextView)view.findViewById(R.id.discover_textview_collection);
 		
 		//声明方向传感器
 		mySensorEventListener = new MySensorEventListener();
@@ -256,11 +288,12 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		discoverSelectionLinearLayout.setOnClickListener(new LeadingTabOnClickListener(2));
 		discoverCollectionLinearLayout.setOnClickListener(new LeadingTabOnClickListener(3));
 		moreImageView.setOnClickListener(this);
-		
+		   
 		//初始化数据
 		changeClickEffect(0);
 		offset = ScreenUtil.getScreenWidth(getActivity()) / 4;//偏移量
 		myToast = new MyToast(getActivity());
+		locationUtil = new LocationUtil(getActivity());
 		app = (MyApplication) getActivity().getApplication();
 		locationStart = true;
 		startService();
@@ -271,12 +304,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		
 		//获取数据
-//		dialog = CustomProgressDialog.createDialog(getActivity());
-//		dialog.setMessage(getString(R.string.is_loading));
-		dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-//		dialog = new CustomProgressDialog(getActivity(), getString(R.string.loading___), false);
-//		dialog.show();
-//		dialog = ProgressDialog.show(getActivity(), getString(R.string.loading___), getString(R.string.is_loading), false, false);
+//		dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
 		getLocationData();
 		
 		return view;
@@ -304,14 +332,20 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 	
 	@Override
 	public void onResume() {
+		MobclickAgent.onPageStart("FragmentPageDiscover"); //统计页面
 		isLoading = false;
 		locationStart = true;
+		startService();
 		super.onResume();
 	}
 	
 	@Override
 	public void onPause() {
+		 MobclickAgent.onPageEnd("FragmentPageDiscover"); 
 		locationStart = false;
+//		if(dialog.isShowing()){
+//			dialog.dismiss();
+//		}
 		super.onPause();
 	}
 	
@@ -348,6 +382,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 			distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
 			selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
 			collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
+			popularityTextView.setTextColor(getResources().getColor(R.color.blue));
+			distanceTextView.setTextColor(getResources().getColor(R.color.gray));
+			selectionTextView.setTextColor(getResources().getColor(R.color.gray));
+			collectionTextView.setTextColor(getResources().getColor(R.color.gray));
 			break;
 			
 		case 1:
@@ -355,6 +393,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 			distanceIconImageView.setImageResource(R.drawable.discover_collection_sele);
 			selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
 			collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
+			popularityTextView.setTextColor(getResources().getColor(R.color.gray));
+			distanceTextView.setTextColor(getResources().getColor(R.color.blue));
+			selectionTextView.setTextColor(getResources().getColor(R.color.gray));
+			collectionTextView.setTextColor(getResources().getColor(R.color.gray));
 			break;
 			
 		case 2:
@@ -362,6 +404,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 			distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
 			selectionIconImageView.setImageResource(R.drawable.discover_collection_sele);
 			collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
+			popularityTextView.setTextColor(getResources().getColor(R.color.gray));
+			distanceTextView.setTextColor(getResources().getColor(R.color.gray));
+			selectionTextView.setTextColor(getResources().getColor(R.color.blue));
+			collectionTextView.setTextColor(getResources().getColor(R.color.gray));
 			break;
 			
 		case 3:
@@ -369,6 +415,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 			distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
 			selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
 			collectionIconImageView.setImageResource(R.drawable.discover_collection_sele);
+			popularityTextView.setTextColor(getResources().getColor(R.color.gray));
+			distanceTextView.setTextColor(getResources().getColor(R.color.gray));
+			selectionTextView.setTextColor(getResources().getColor(R.color.gray));
+			collectionTextView.setTextColor(getResources().getColor(R.color.blue));
 			break;
 
 		default:
@@ -380,26 +430,15 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 	 * 开启定位服务
 	 * */
 	private void startService() {
-		if (!app.getLocationState()) {
-			Log.d(TAG, "--------->start location");
-			app.disableLocation(false);
-		}
+		locationUtil.startLocation();
 	}
+	
 	/**
 	 * 关闭定位服务
 	 * */
 	private void stopService() {
 		Log.d(TAG, "stop location------->");
-		new Thread(){
-			public void run() {
-				while (app.getLocationState()) {
-					if (app.mLocationClient.isStarted()) {
-						Log.d(TAG, "------>location is running");
-						app.disableLocation(true);
-					}
-				}
-			};
-		}.start();
+		locationUtil.stopLocation();
 	}
 	
 	/**
@@ -431,6 +470,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		public void onSensorChanged(SensorEvent event) {
 			if (Sensor.TYPE_ORIENTATION == event.sensor.getType()) {
 				rotate_degree = event.values[0];
+//				System.out.println("--------->sensor changed");
 			}
 		}
 	}
@@ -441,9 +481,6 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			// TODO Auto-generated method stub
-//			if (scrollState == SCROLL_STATE_IDLE) {
-//				UniversalImageLoadTool.getImageLoader().resume();
-//			}
 		}
 
 		@Override
@@ -451,11 +488,10 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 				int visibleItemCount, int totalItemCount) {
 			if (locationActivatedIndex != -1) {//说明有激活的position
 				if (locationActivatedIndex < firstVisibleItem || locationActivatedIndex > discoverListView.getLastVisiblePosition()) {//超出屏幕
-					Log.d(TAG, "out of window------->");
+//					Log.d(TAG, "out of window------->");
 					locationStart = false;
 				}
 			}
-//			UniversalImageLoadTool.getImageLoader().pause();
 		}
 		
 	}
@@ -481,7 +517,6 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		if (activateLocationCount == 0 ) {
 			//SENSOR_DELAY_UI采样频率是中等的，比normal要快一点，比game和fast都慢。如果定位觉得不准，是因为没有进行校正。目前校正只能通过画8字手动校准
 			sensorManager.registerListener(mySensorEventListener, sensor_orientation, SensorManager.SENSOR_DELAY_UI);//点击定位的时候，注册监听
-			startService();
 		}
 		activateLocationCount ++;
 		locationThread = new Thread(new Runnable() {
@@ -507,7 +542,6 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 					sensorManager.unregisterListener(mySensorEventListener);//不使用的时候，取消监听
 					discoverLocationAdapter.disableLocationActivated(position);
 					locationActivatedIndex = -1;
-					stopService();
 				}
 			}
 		});
@@ -533,4 +567,11 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 		
 	}
 
+	@Override
+	public void inOrOutPlace(String locationIds, boolean in) {
+		// TODO Auto-generated method stub
+		System.out.println("in or out special location......");
+	}
+
+	
 }

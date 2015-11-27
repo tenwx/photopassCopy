@@ -22,7 +22,10 @@ import java.util.List;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureAir.entity.PhotoInfo;
+import com.pictureAir.util.UniversalImageLoadTool;
 
 
 /**
@@ -44,9 +47,11 @@ public class UrlPagerAdapter extends BasePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup collection, final int position){
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
-        if (mResources.get(position).onLine == 1) {
+        if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
+        	System.out.println("---------online and ispayed"+position);
         	iv.setUrl(mResources.get(position).photoPathOrURL, mResources.get(position).photoId);
-		}else {
+		}else if (mResources.get(position).onLine == 0) {
+			System.out.println("--------local photo"+position);
 			iv.setImagePath(mResources.get(position).photoPathOrURL);
 		}
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

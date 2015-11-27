@@ -14,136 +14,59 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageButton
             android:id="@+id/wechat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_wechat"
-            android:gravity="center"
-            android:text="@string/wechat"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
+            android:src="@drawable/share_wechat" />
 
-        <TextView
-            android:id="@+id/wechat_moments"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_wechat_moment"
-            android:gravity="center"
-            android:text="@string/wechatmoments"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
-
-        <TextView
-            android:id="@+id/qq"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_qq"
-            android:gravity="center"
-            android:text="@string/qq"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal" >
-
-        <TextView
+        <ImageButton
             android:id="@+id/qqzone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_qqzone"
-            android:gravity="center"
-            android:text="@string/qzone"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
+            android:src="@drawable/share_qqzone" />
 
-        <TextView
+        <ImageButton
             android:id="@+id/sina"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_sina"
-            android:gravity="center"
-            android:text="@string/sinaweibo"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
-
-        <TextView
-            android:id="@+id/facebook"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_facebook"
-            android:gravity="center"
-            android:text="@string/facebook"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
+            android:src="@drawable/share_sina" />
     </LinearLayout>
-
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageButton
+            android:id="@+id/facebook"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:src="@drawable/share_facebook" />
+
+        <ImageButton
             android:id="@+id/twitter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_twitter"
-            android:gravity="center"
-            android:text="@string/twitter"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
+            android:src="@drawable/share_twitter" />
 
-        <TextView
+        <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_twitter"
-            android:gravity="center"
-            android:text="@string/twitter"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size"
-            android:visibility="invisible" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableTop="@drawable/share_twitter"
-            android:gravity="center"
-            android:text="@string/twitter"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size"
-            android:visibility="invisible" />
+            android:visibility="invisible"/>
     </LinearLayout>
 
     <TextView
@@ -156,6 +79,6 @@
         android:padding="10dp"
         android:text="@string/cancel1"
         android:textColor="@color/gray"
-        android:textSize="@dimen/text_middle_size" />
+        android:textSize="15sp" />
 
 </LinearLayout>

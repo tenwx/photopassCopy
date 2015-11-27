@@ -23,11 +23,9 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.pictureAir.adapter.Order_ViewPagerAdapter;
+import com.pictureAir.adapter.OrderViewPagerAdapter;
 import com.pictureAir.entity.CartItemInfo;
 import com.pictureAir.entity.OrderInfo;
 import com.pictureAir.util.API;
@@ -35,17 +33,19 @@ import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.JsonUtil;
 import com.pictureAir.util.ScreenUtil;
-import com.pictureAir.widget.MyToast;
+import com.pictureAir.widget.CustomProgressDialog;
+import com.pictureAir.widget.NoNetWorkOrNoCountView;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order
  * @author bauer_bao
  *
  */
-public class OrderActivity extends BaseActivity implements OnClickListener{
+public class OrderActivity extends Activity implements OnClickListener{
 
 	private ViewPager viewPager;
-	private Order_ViewPagerAdapter orderAdapter;
+	private OrderViewPagerAdapter orderAdapter;
 	private ArrayList<View> listViews;
 	private ImageView cursorImageView;//动画图片
 	private TextView paymentOrderTextView, deliveryOrderTextView, allOrderTextView;//选项卡
@@ -55,27 +55,32 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 	private ArrayList<OrderInfo> paymentOrderArrayList;
 	private ArrayList<OrderInfo> deliveryOrderArrayList;
 	private ArrayList<OrderInfo> allOrderArrayList;
+	private ArrayList<OrderInfo> downOrderArrayList;
+	
 	private OrderInfo orderInfo;
 	//child列表信息
 	private ArrayList<ArrayList<CartItemInfo>> paymentOrderChildArrayList;
 	private ArrayList<ArrayList<CartItemInfo>> deliveryOrderChildArrayList;
 	private ArrayList<ArrayList<CartItemInfo>> allOrderChildArrayList;
+	private ArrayList<ArrayList<CartItemInfo>> downOrderChildArrayList;
 	private ArrayList<CartItemInfo> cartItemInfo;
 
 	private SharedPreferences sharedPreferences;
-	private MyToast toast;
-
 	private int currentIndex = 0;//viewpager当前编号
 	private int screenW;//屏幕宽度
+	
+	private NoNetWorkOrNoCountView netWorkOrNoCountView;
 
 	private static String TAG = "OrderActivity";
+	
+	private CustomProgressDialog customProgressDialog;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.order_activity);
+		setContentView(R.layout.activity_order);
 		initView();
 	}
 
@@ -84,8 +89,12 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 		AppManager.getInstance().addActivity(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		//获取订单接口
+		// 显示进度条。
+		customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
 		API.getOrderInfo(sharedPreferences.getString(Common.USERINFO_ID, ""), handler);
 
+		netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
+		
 		paymentOrderTextView = (TextView)findViewById(R.id.order_payment);
 		deliveryOrderTextView = (TextView)findViewById(R.id.order_delivery);
 		allOrderTextView = (TextView)findViewById(R.id.order_all);
@@ -93,31 +102,27 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 		cursorImageView = (ImageView)findViewById(R.id.cursor);
 		backLayout = (ImageView)findViewById(R.id.order_return);
 
-		toast = new MyToast(this);
 		screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
 		Matrix matrix = new Matrix();
 		matrix.postTranslate(0, 0);
 		cursorImageView.setImageMatrix(matrix);// 设置动画初始位置
-		
-		
 		
 		listViews = new ArrayList<View>();
 		//初始化expandablelistview需要的数据
 		paymentOrderArrayList = new ArrayList<OrderInfo>();
 		deliveryOrderArrayList = new ArrayList<OrderInfo>();
 		allOrderArrayList = new ArrayList<OrderInfo>();
+		downOrderArrayList = new ArrayList<OrderInfo>();
 		paymentOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
 		deliveryOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
 		allOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
+		downOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
 
 		LayoutInflater mInflater = getLayoutInflater();
 		listViews.add(mInflater.inflate(R.layout.order_list, null));
 		listViews.add(mInflater.inflate(R.layout.order_list, null));
 		listViews.add(mInflater.inflate(R.layout.order_list, null));
-		orderAdapter = new Order_ViewPagerAdapter(this, listViews, paymentOrderArrayList, deliveryOrderArrayList, allOrderArrayList,
-				paymentOrderChildArrayList, deliveryOrderChildArrayList, allOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-		viewPager.setAdapter(orderAdapter);
-		viewPager.setCurrentItem(0);
+		
 		paymentOrderTextView.setTextColor(getResources().getColor(R.color.blue));
 		deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
 		allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
@@ -134,12 +139,18 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 			switch (msg.what) {
 			case API.GET_ORDER_SUCCESS:
 				Log.d(TAG, "get success----");
+				viewPager.setVisibility(View.VISIBLE);
+				netWorkOrNoCountView.setVisibility(View.INVISIBLE);
+				
+				customProgressDialog.dismiss();
 				paymentOrderArrayList.clear();
 				paymentOrderChildArrayList.clear();
 				deliveryOrderArrayList.clear();
 				deliveryOrderChildArrayList.clear();
 				allOrderArrayList.clear();
 				allOrderChildArrayList.clear();
+				downOrderArrayList.clear();
+				downOrderChildArrayList.clear();
 				JSONObject resultJsonObject = (JSONObject) msg.obj;
 				try {
 					JSONObject allTypeOrders = resultJsonObject.getJSONObject("data");//得到所有类型的订单信息
@@ -155,8 +166,10 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 						}else if (orderInfo.orderStatus==2||orderInfo.orderStatus==3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
 							deliveryOrderArrayList.add(orderInfo);
 							deliveryOrderChildArrayList.add(cartItemInfo);
+						}else if (orderInfo.orderStatus==4||orderInfo.orderStatus==5) {
+							downOrderArrayList.add(orderInfo);
+							downOrderChildArrayList.add(cartItemInfo);
 						}
-
 						allOrderArrayList.add(orderInfo);
 						allOrderChildArrayList.add(cartItemInfo);
 					}
@@ -164,18 +177,44 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+//				if (getIntent().getStringExtra("flag") != null) {
+//					viewPager.setCurrentItem(1);
+//				}
+				orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
+						paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+				
+				viewPager.setAdapter(orderAdapter);
+				
+				
 				if (getIntent().getStringExtra("flag") != null) {
+					
 					viewPager.setCurrentItem(1);
+				}else {
+					viewPager.setCurrentItem(0);
+					
 				}
-				orderAdapter.notifyDataSetChanged();
+//				
+//				orderAdapter.notifyDataSetChanged();
 				orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
+				
+				if (allOrderArrayList.size() == 0) {
+					customProgressDialog.dismiss();
+//					netWorkOrNoCountView.setVisibility(View.VISIBLE);
+//					netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
+//					viewPager.setVisibility(View.INVISIBLE);
+				}
 				break;
 
 			case API.GET_ORDER_FAILED:
-				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+//				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+				customProgressDialog.dismiss();
+				netWorkOrNoCountView.setVisibility(View.VISIBLE);
+				netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
+				viewPager.setVisibility(View.INVISIBLE);
 				break;
 			case API.DELETE_ORDER_SUCCESS:
-				int deletePosition = msg.arg1;
+//				int deletePosition = msg.arg1;
 				allOrderArrayList.remove(0);
 				allOrderChildArrayList.remove(0);
 				
@@ -183,9 +222,24 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 				deliveryOrderChildArrayList.remove(0);
 
 				orderAdapter.notifyDataSetChanged();
-				Toast.makeText(getApplicationContext(), "text", 1000).show();
+				break;
+				
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+				//重新加载购物车数据
+				customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
+				customProgressDialog.show();
+				API.getOrderInfo(sharedPreferences.getString(Common.USERINFO_ID, ""), handler);
+				break;
+				
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
+				//去跳转到商品页面
+				//需要删除页面，保证只剩下mainTab页面，
+				AppManager.getInstance().killOtherActivity(MainTabActivity.class);
+				//同时将mainTab切换到shop Tab
+				MainTabActivity.changeToShopTab = true;
 				
 				break;
+				
 				
 			default:
 				break;
@@ -296,5 +350,22 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("OrderActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("OrderActivity");
+		MobclickAgent.onResume(this);
 	}
 }

@@ -9,33 +9,17 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.pictureAir.R;
 import com.pictureAir.blur.UtilOfDraw;
 
 public class UniversalImageLoadTool {
 	private static final String TAG = "UniversalImageLoadTool";
 	private static ImageLoader imageLoader = ImageLoader.getInstance();
-	
+
 	public static ImageLoader getImageLoader(){
 		return imageLoader;
 	}
-	
-	/**
-	 * 加载失败，加载中显示默认图片
-	 * @param uri
-	 * @param imageView
-	 */
-	public static void loadImage1(String uri, ImageView imageView) {
-		// 显示图片的配置
-		DisplayImageOptions options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.drawable.ic_loading)//加载时
-				.showImageForEmptyUri(R.drawable.default_pp)//url为空时
-				.showImageOnFail(R.drawable.default_pp).cacheInMemory(true)//加载失败
-				.cacheOnDisk(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-		ImageLoader.getInstance().displayImage(uri, imageView, options);
-	}
-	
+
+
 	/**
 	 * 使用imageloader加载图片，可以解决图片闪烁问题
 	 * @param uri
@@ -43,7 +27,10 @@ public class UniversalImageLoadTool {
 	 */
 	public static void loadImage(final String uri, final ImageView imageView){
 		if (imageView.getTag() == null || !imageView.getTag().toString().equals(uri)) {
-			System.out.println("no tag");
+			System.out.println("no tag"+"___"+uri);
+			if (imageView.getTag() != null) {
+				System.out.println("old tag is "+imageView.getTag().toString());
+			}
 			imageLoader.displayImage(uri, imageView, new ImageLoadingListener() {
 
 				@Override
@@ -70,13 +57,14 @@ public class UniversalImageLoadTool {
 					// TODO Auto-generated method stub
 
 				}
+
 			});
 		}else {
 			System.out.println("tag--"+imageView.getTag().toString()+"___"+uri);
 		}
 	}
-	
-	
+
+
 	/**
 	 * 使用imageloader加载图片，可以解决图片闪烁问题
 	 * @param uri
@@ -86,30 +74,30 @@ public class UniversalImageLoadTool {
 		if (imageView.getTag() == null || !imageView.getTag().toString().equals(uri)) {
 			System.out.println("no tag" + imageView.getTag());
 			imageLoader.displayImage(uri, imageView, option, new ImageLoadingListener() {
-				
+
 				@Override
 				public void onLoadingStarted(String imageUri, View view) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void onLoadingFailed(String imageUri, View view,
 						FailReason failReason) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 					// TODO Auto-generated method stub
 					imageView.setTag(uri);
 				}
-				
+
 				@Override
 				public void onLoadingCancelled(String imageUri, View view) {
 					// TODO Auto-generated method stub
-					
+
 				}
 			});
 		}else {

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/font_input_bg"
+    android:paddingBottom="4.5dip"
+    android:paddingTop="4.5dip" >
+
+    <ImageButton
+        android:id="@+id/imgbtn_submit"
+        android:padding="10dp"
+        android:scaleType="centerCrop"
+        android:layout_width="42.0dip"
+        android:layout_height="32.0dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5.0dip"
+        android:background="@drawable/btn_font_input_ok_bg"
+        android:src="@drawable/font_input_ok" />
+
+    <ImageButton
+        android:id="@+id/imgbtn_cancel"
+        android:padding="10dp"
+        android:scaleType="centerCrop"
+        android:layout_width="42.0dip"
+        android:layout_height="32.0dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5.0dip"
+        android:background="@drawable/btn_font_input_cancel_bg"
+        android:src="@drawable/font_input_cancel" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="4.0dip"
+        android:layout_marginRight="4.0dip"
+        android:layout_toLeftOf="@id/imgbtn_submit"
+        android:layout_toRightOf="@id/imgbtn_cancel"
+        android:background="@drawable/font_input_edittext_bg" >
+
+        <ImageButton
+            android:id="@+id/imgbtn_clear"
+            android:scaleType="centerCrop"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7.0dip"
+            android:layout_marginRight="7.0dip"
+            android:background="@null"
+            android:src="@drawable/btn_font_input_clear" />
+
+        <EditText
+            android:id="@+id/et_message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7.0dip"
+            android:layout_toLeftOf="@id/imgbtn_clear"
+            android:background="@null"
+            android:maxLines="3"
+            android:minHeight="32.0dip" />
+    </RelativeLayout>
+
+</RelativeLayout>

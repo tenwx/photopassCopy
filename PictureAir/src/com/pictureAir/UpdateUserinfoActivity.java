@@ -1,6 +1,7 @@
 package com.pictureAir;
 
 import com.pictureAir.util.Common;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class UpdateUserinfoActivity extends BaseActivity implements OnClickListener {
+public class UpdateUserinfoActivity extends Activity implements OnClickListener {
 	private ImageView back;  // back btn
 	private ImageButton ibSave;   // save btn
 	
@@ -97,4 +98,19 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("UpdateUserinfoActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("UpdateUserinfoActivity");
+		MobclickAgent.onResume(this);
+	}
 }

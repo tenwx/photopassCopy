@@ -175,7 +175,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter{
 			hView = (ChildHolderView) convertView.getTag();
 		}
 		//初始化控件值
-		if (Common.PHOTOPASS_NAME.equals(childlist.get(groupPosition).get(childPosition).cart_productName)) {//单张照片
+		if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(childlist.get(groupPosition).get(childPosition).cart_productName)) {//单张照片
 			if (childlist.get(groupPosition).get(childPosition).cart_productImageUrl.contains("http")) {
 				imageLoader.displayImage(childlist.get(groupPosition).get(childPosition).cart_productImageUrl, hView.goodsImageView);
 				
@@ -194,7 +194,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter{
 		if (childlist.get(groupPosition).get(childPosition).cart_photoUrls == null || childlist.get(groupPosition).get(childPosition).cart_photoUrls.size() == 0) {
 			hView.gridLayout.setVisibility(View.GONE);
 		}else {
-			if (Common.PHOTOPASS_NAME.equals(childlist.get(groupPosition).get(childPosition).cart_productName)) {//单张照片
+			if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(childlist.get(groupPosition).get(childPosition).cart_productName)) {//单张照片
 				hView.gridLayout.setVisibility(View.GONE);
 			}else {
 				hView.gridLayout.setVisibility(View.GONE);

@@ -3,6 +3,7 @@ package com.pictureAir.adapter;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pictureAir.R;
-import com.pictureAir.entity.DayOfPPP;
+import com.pictureAir.entity.PPPinfo;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.util.UniversalImageLoadTool;
 
@@ -54,7 +55,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
-		DayOfPPP dpp = null;
+		PPPinfo dpp = null;
 		//初始化view
 		if (null == convertView) {
 			holder = new ViewHolder();
@@ -71,10 +72,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		}
 
 		//初始化数据
-		dpp = (DayOfPPP) arrayList.get(position);
+		dpp = (PPPinfo) arrayList.get(position);
 
 		//初始化时间
-		if (null==dpp.time||"".equals(dpp.time)) {
+		if (null==dpp.ownOn||"".equals(dpp.ownOn)) {
 //			if (dpp.usedNumber == 0) {
 //				
 //				holder.time.setText(mContext.getString(R.string.empty_ppp));
@@ -84,18 +85,18 @@ public class ListOfPPPAdapter extends BaseAdapter {
 //			}
 			holder.time.setText("");
 		}else {
-			holder.time.setText(dpp.time.replace("-", "."));
+			holder.time.setText(dpp.ownOn.replace("-", "."));
 		}
 
 		//初始化ppp号码
-		pppCode = dpp.pppId.substring(0, 4);
+		pppCode = dpp.PPPCode.substring(0, 4);
 		for (int i = 0; i < 3; i++) {//4-7，8-11，12-15
-			pppCode += "-"+ dpp.pppId.substring(4 * i + 4, 4 * i + 8);
+			pppCode += "-"+ dpp.PPPCode.substring(4 * i + 4, 4 * i + 8);
 		}
 		holder.pppNumber.setText(pppCode);
 
 		//初始化ppp三个格子
-		switch (dpp.usedNumber) {
+		switch (dpp.bindInfo.size()) {
 		case 0://全新的
 			holder.pp1_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
@@ -125,7 +126,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		} 
 		
 		//初始化背景图片
-		System.out.println("load bg url------------>"+dpp.pppBgUrl);
+//		System.out.println("load bg url------------>"+dpp.pppBgUrl);
 //		LayoutParams params = (LayoutParams) holder.ppp_imageView.getLayoutParams();
 //		params.width = ScreenUtil.getScreenWidth(mContext);
 //		params.height = ScreenUtil.getScreenHeight(mContext) * 2 / 5;

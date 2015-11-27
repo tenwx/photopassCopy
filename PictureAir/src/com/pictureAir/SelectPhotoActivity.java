@@ -33,6 +33,7 @@ import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 预览照片，总共有4大类，1，全部的照片，2，pictureair网络获取的图片，3，本软件拍的照片，4，已经购买的照片
@@ -41,7 +42,7 @@ import com.pictureAir.widget.MyToast;
  *
  */
 
-public class SelectPhotoActivity extends BaseActivity implements OnClickListener {
+public class SelectPhotoActivity extends Activity implements OnClickListener {
 	//申明控件
 	private ImageView rtLayout;
 	private Button okButton;
@@ -90,7 +91,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.select_photo_activity);
+		setContentView(R.layout.activity_select_photo);
 		initview();
 	}
 
@@ -440,6 +441,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("SelectPhotoActivity");
+		MobclickAgent.onResume(this);
 		if (myApplication.needScanPhoto()) {//需要刷新
 			System.out.println("need scan photo--------------");
 			checkNewPhotos(Common.PHOTO_SAVE_PATH, magicArrayList, Common.ALBUM_MAGIC);
@@ -695,5 +698,14 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 			newToast.setTextAndShow(String.format(getString(R.string.limit_photos), photocount), Common.TOAST_SHORT_TIME);
 		}
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("SelectPhotoActivity");
+		MobclickAgent.onPause(this);
+	}
+
 
 }

@@ -1,10 +1,20 @@
 package com.pictureAir.adapter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.R.integer;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -12,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -20,67 +29,67 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.pictureAir.EditStoryAlbumActivity;
+import com.pictureAir.MyPPActivity;
 import com.pictureAir.R;
-import com.pictureAir.entity.DayOfPP;
-import com.pictureAir.entity.DayOfPPP;
+import com.pictureAir.entity.DiscoverLocationItemInfo;
+import com.pictureAir.entity.PPPinfo;
+import com.pictureAir.entity.PPinfo;
+import com.pictureAir.entity.PhotoInfo;
+import com.pictureAir.entity.PhotoItemInfo;
+import com.pictureAir.util.ACache;
 import com.pictureAir.util.Common;
+import com.pictureAir.util.JsonUtil;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.util.UniversalImageLoadTool;
 import com.pictureAir.widget.MyToast;
 
-/**pp数据的适配器*/
-public class ListOfPPAdapter extends BaseAdapter {
-	/**设置一个最初对比时间，防止空指针异常*/
-	private ArrayList<?> arrayList = null;
+/** pp数据的适配器 */
+public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
+	private ArrayList<PPinfo> arrayList;
 	private Context mContext;
-	private HashMap<Integer, Boolean> map;//统计被勾选的子项
-	private OnItemChildClickListener childClickListener;
-	private Handler mHandler;
-	private DayOfPPP dpp;
-	private int useNumber = 0;//已经使用的个数
+	private int screenWidth = 0;// 屏幕宽度
+	private ViewHolder holder;
+    private doShowPhotoListener listener;
+    private doDeletePhotoListener deleteListner;
+    private LinearLayout.LayoutParams params;
+    private RelativeLayout.LayoutParams params2;
+    private MyToast myToast;
+    private SimpleDateFormat sdf;
+    
+    private boolean isSelete;
+    private Handler mHandler;
+    private OnItemChildClickListener childClickListener;
+    private int useNumber = 0;//已经使用的个数
 	private int choice = 0;//选中的个数
-
-	private MyToast newToast;
-	private ImageLoader imageLoader;
-
-	int requestWidth = 0;
-
-	public ListOfPPAdapter(ArrayList<?> arrayList, Context mContext) {
-		this.arrayList = arrayList;
-		this.mContext = mContext;
-		map = new HashMap<Integer, Boolean>();
-		newToast = new MyToast(mContext);
-		imageLoader = ImageLoader.getInstance();
-	}
-
-	public ListOfPPAdapter(ArrayList<?> arrayList, Context mContext, Handler mHandler, DayOfPPP dpp) {
-		this.arrayList = arrayList;
-		this.mContext = mContext;
-		this.mHandler = mHandler;
-		this.dpp = dpp;
-		map = new HashMap<Integer, Boolean>();
-		useNumber = dpp.usedNumber;
-		newToast = new MyToast(mContext);
-		imageLoader = ImageLoader.getInstance();
-		requestWidth = (ScreenUtil.getScreenWidth(mContext) - ScreenUtil.dip2px(mContext, 30)) / 6;
-	}
-
-	public ArrayList<?> getArrayList() {
-		return arrayList;
-	}
-
-	public void setArrayList(ArrayList<?> arrayList) {
-		this.arrayList = arrayList;
-	}
-
-	public HashMap<Integer, Boolean> getMap() {
-		return map;
-	}
-
-	public void setMap(HashMap<Integer, Boolean> map) {
-		this.map = map;
-	}
+	private HashMap<Integer, Boolean> map;//统计被勾选的子项
+	private PPPinfo pppInfo;
+	
+    public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext,final doShowPhotoListener listener,final doDeletePhotoListener deleteListner, boolean isSelete,Handler mHandler, PPPinfo pppInfo) {
+    	this.arrayList = list;
+    	this.mContext = mContext;
+    	this.listener = listener;
+    	this.deleteListner = deleteListner;
+    	this.isSelete = isSelete;
+    	this.mHandler = mHandler;
+    	myToast = new MyToast(mContext);
+    	sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	screenWidth = ScreenUtil.getScreenWidth(mContext);// 获取屏幕宽度
+    	params = new LinearLayout.LayoutParams(
+    			(screenWidth - 24) / 6, (screenWidth - 24) / 6);
+    	params.setMargins(2, 2, 2, 2);
+    	
+    	params2 = new RelativeLayout.LayoutParams(
+    			(screenWidth - 24) / 6, (screenWidth - 24) / 6);
+    	
+    	this.pppInfo = pppInfo;
+    	map = new HashMap<Integer, Boolean>();
+    	if (isSelete) {
+    		useNumber = pppInfo.bindInfo.size();
+		}
+		
+    	
+    }
 
 	@Override
 	public int getCount() {
@@ -98,359 +107,438 @@ public class ListOfPPAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder = null;
-		DayOfPP dp = null;
-		childClickListener = new OnItemChildClickListener(position);
-		//		if (position == 0) {
-		//			convertView = null;
-		//		}
-		//初始化view
-		if (null == convertView) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		// 初始化view
+		holder = null;
+		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = LayoutInflater.from(mContext).inflate(R.layout.my_pp_list, null);
-			holder.time = (TextView) convertView.findViewById(R.id.time);
-			holder.img1 = (ImageView) convertView.findViewById(R.id.pp_img1);
-			holder.img2 = (ImageView) convertView.findViewById(R.id.pp_img2);
-			holder.img3 = (ImageView) convertView.findViewById(R.id.pp_img3);
-			holder.img4 = (ImageView) convertView.findViewById(R.id.pp_img4);
-			holder.img5 = (ImageView) convertView.findViewById(R.id.pp_img5);
-			holder.img6 = (ImageView) convertView.findViewById(R.id.pp_img6);
-			holder.img7 = (ImageView) convertView.findViewById(R.id.pp_img7);
-			holder.img8 = (ImageView) convertView.findViewById(R.id.pp_img8);
-			holder.img9 = (ImageView) convertView.findViewById(R.id.pp_img9);
-			holder.img10 = (ImageView) convertView.findViewById(R.id.pp_img10);
-			holder.img11 = (ImageView) convertView.findViewById(R.id.pp_img11);
-
-			holder.img12 = (ImageView) convertView.findViewById(R.id.pp_img12);
-			holder.relativeLayout = (RelativeLayout) convertView.findViewById(R.id.rl);
-			holder.number = (TextView) convertView.findViewById(R.id.tv_number);
-
-			holder.img_no_check = (ImageView) convertView.findViewById(R.id.img);
-			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
-			holder.pp_image_layout2 = (LinearLayout) convertView.findViewById(R.id.pp_image_layout2);
-			holder.img_miqi = (ImageView) convertView.findViewById(R.id.lefttop);
+			holder.ppCode = (TextView) convertView.findViewById(R.id.pp_code);
+			holder.deleteMyPP = (ImageView) convertView.findViewById(R.id.delete_my_pp);
+			holder.image1 = (ImageView) convertView.findViewById(R.id.pp_img1);
+			holder.image2 = (ImageView) convertView.findViewById(R.id.pp_img2);
+			holder.image3 = (ImageView) convertView.findViewById(R.id.pp_img3);
+			holder.image4 = (ImageView) convertView.findViewById(R.id.pp_img4);
+			holder.image5 = (ImageView) convertView.findViewById(R.id.pp_img5);
+			holder.image6 = (ImageView) convertView.findViewById(R.id.pp_img6);
+			holder.image7 = (ImageView) convertView.findViewById(R.id.pp_img7);
+			holder.image8 = (ImageView) convertView.findViewById(R.id.pp_img8);
+			holder.image9 = (ImageView) convertView.findViewById(R.id.pp_img9);
+			holder.image10 = (ImageView) convertView.findViewById(R.id.pp_img10);
+			holder.image11 = (ImageView) convertView.findViewById(R.id.pp_img11);
+			holder.image12 = (ImageView) convertView.findViewById(R.id.pp_img12);
+			
+			holder.ppImageLayout1 = (LinearLayout) convertView.findViewById(R.id.pp_image_layout1);
+			holder.ppImageLayout2 = (LinearLayout) convertView.findViewById(R.id.pp_image_layout2);
+			holder.showCconutLayout = (RelativeLayout) convertView.findViewById(R.id.show_conut_layout);
+			holder.photoCount = (TextView) convertView.findViewById(R.id.photo_count);
+			holder.conerImageView = (ImageView) convertView.findViewById(R.id.my_pp_miqi);
 			convertView.setTag(holder);
-		} else {
+		}else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		
+		
+		if (isSelete) {
+			holder.deleteMyPP.setVisibility(View.GONE);
+			childClickListener = new OnItemChildClickListener(position);
+			holder.img_no_check = (ImageView) convertView.findViewById(R.id.img);
+			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
+			//初始化选中与否
+			if (arrayList.get(position).isSelected == 0){//未选中
+				holder.img_no_check.setImageResource(R.drawable.nosele);
+			}else if (arrayList.get(position).isSelected == 1) {//选中
+				holder.img_no_check.setImageResource(R.drawable.sele);
+			}else {//不可选
+				holder.img_no_check.setImageResource(R.drawable.del1);
+			}
+			holder.itemLayout.setOnClickListener(childClickListener);
+		}else{
+			//判断是否显示删除按钮
+			if (MyPPActivity.isDeletePhoto) {
+				holder.deleteMyPP.setVisibility(View.VISIBLE);
+			}else {
+				holder.deleteMyPP.setVisibility(View.GONE);
+			}
 
-		LinearLayout.LayoutParams paramTest = (LinearLayout.LayoutParams)holder.img1.getLayoutParams();  
-		paramTest.setMargins(2, 2, 2, 2);
-		paramTest.height = requestWidth;
-		//初始化照片控件大小
-		//		LayoutParams params1 = holder.img1.getLayoutParams();
-		//		params1.height = requestWidth;
-		holder.img1.setLayoutParams(paramTest);
-		holder.img1.setScaleType(ScaleType.CENTER_CROP);
-		holder.img2.setLayoutParams(paramTest);
-		holder.img2.setScaleType(ScaleType.CENTER_CROP);
-		holder.img3.setLayoutParams(paramTest);
-		holder.img3.setScaleType(ScaleType.CENTER_CROP);
-		holder.img4.setLayoutParams(paramTest);
-		holder.img4.setScaleType(ScaleType.CENTER_CROP);
-		holder.img5.setLayoutParams(paramTest);
-		holder.img5.setScaleType(ScaleType.CENTER_CROP);
-		holder.img6.setLayoutParams(paramTest);
-		holder.img6.setScaleType(ScaleType.CENTER_CROP);
-		holder.img7.setLayoutParams(paramTest);
-		holder.img7.setScaleType(ScaleType.CENTER_CROP);
-		holder.img8.setLayoutParams(paramTest);
-		holder.img8.setScaleType(ScaleType.CENTER_CROP);
-		holder.img9.setLayoutParams(paramTest);
-		holder.img9.setScaleType(ScaleType.CENTER_CROP);
-		holder.img10.setLayoutParams(paramTest);
-		holder.img10.setScaleType(ScaleType.CENTER_CROP);
-		holder.img11.setLayoutParams(paramTest);
-		holder.img11.setScaleType(ScaleType.CENTER_CROP);
-		//		holder.img12.setLayoutParams(paramTest);
-		holder.relativeLayout.setLayoutParams(paramTest);
+			holder.showCconutLayout.setOnClickListener(new PhotoPassManagerOnClickListener(position, 11, false));
+			holder.deleteMyPP.setOnClickListener(new PhotoPassManagerOnClickListener(position, 0, true));//删除图片
+			holder.image1.setOnClickListener(new PhotoPassManagerOnClickListener(position, 0, false));
+			holder.image2.setOnClickListener(new PhotoPassManagerOnClickListener(position, 1, false));
+			holder.image3.setOnClickListener(new PhotoPassManagerOnClickListener(position, 2, false));
+			holder.image4.setOnClickListener(new PhotoPassManagerOnClickListener(position, 3, false));
+			holder.image5.setOnClickListener(new PhotoPassManagerOnClickListener(position, 4, false));
+			holder.image6.setOnClickListener(new PhotoPassManagerOnClickListener(position, 5, false));
+			holder.image7.setOnClickListener(new PhotoPassManagerOnClickListener(position, 6, false));
+			holder.image8.setOnClickListener(new PhotoPassManagerOnClickListener(position, 7, false));
+			holder.image9.setOnClickListener(new PhotoPassManagerOnClickListener(position, 8, false));
+			holder.image10.setOnClickListener(new PhotoPassManagerOnClickListener(position, 9, false));
+			holder.image11.setOnClickListener(new PhotoPassManagerOnClickListener(position, 10, false));
+			holder.showCconutLayout.setOnClickListener(new PhotoPassManagerOnClickListener(position, 11, false));
+		}
+			
 
+		if (arrayList == null || arrayList.size() <= 0) {
+			return convertView;
+		}
 
-
-		dp = (DayOfPP) arrayList.get(position);
-		if (dp.number == 0) {
-			holder.img_miqi.setImageResource(R.drawable.my_pp_miqi_no_photo);
+		
+		// 初始化数据
+		// 初始化pp码
+		PPinfo ppInfo1 = new PPinfo();
+		ppInfo1 = arrayList.get(position);
+		ArrayList<String> urlList = new ArrayList<String>();
+		holder.ppCode.setText(ppInfo1.getPpCode());
+		if (ppInfo1.getUrlList() == null || ppInfo1.getUrlList().size() <= 0) {
+			ppInfo1.setUrlList(new ArrayList<String>());
+		}
+		
+		// 图片显示
+		int photoCount = ppInfo1.getUrlList().size();
+//		Log.v("===================================开始=====================================",
+//				"");
+//		Log.v("===========", "PP卡: PPCode:" + ppInfo1.getPpCode());
+//		Log.v("===========", "图片显示 photoCount:" + photoCount);
+		urlList.removeAll(urlList);
+		urlList.addAll(ppInfo1.getUrlList());
+//		Log.v("============", "urlList.size()" + urlList.size());
+		if (photoCount == 0) {
+			holder.conerImageView.setImageResource(R.drawable.my_pp_miqi_no_photo);
 		}else {
-			holder.img_miqi.setImageResource(R.drawable.my_pp_miqi);
+			holder.conerImageView.setImageResource(R.drawable.my_pp_miqi);
 		}
-		//		db.number  数量
-		holder.time.setText(dp.ppId);
+		if (photoCount <= 6) {
+			holder.ppImageLayout2.setVisibility(View.GONE);
+			holder.photoCount.setVisibility(View.GONE);
+			for (int i = 0; i < 6; i++) {
+				int num = 6 - photoCount;
+				if (num > 0 && i > photoCount - 1) {
+					// 显示默认图片
+					String defaultUrl = "";
+					urlList.add(i, defaultUrl);
+				}
+			}
+			
 
-		if (dp.number<=6) {
-			holder.pp_image_layout2.setVisibility(View.GONE);
-			if (dp.pp_url1 == null || "".equals(dp.pp_url1)) {
-				holder.img1.setImageResource(R.drawable.default_pp);
-				holder.img1.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img1.setTag("null");//要全部设置tag，不然获取tag的时候，会数据混乱
+		} else if (photoCount > 6) {
+			
+			holder.ppImageLayout2.setVisibility(View.VISIBLE);
+			if (photoCount <= 12) {
+				holder.photoCount.setVisibility(View.GONE);
+				for (int i = 0; i < 12; i++) {
+					int num = 12 - photoCount;
+					if (num > 0 && i > photoCount - 1) {
+						// 显示默认图片
+						String defaultUrl = "";
+						urlList.add(i, defaultUrl);
+					}
+				}
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url1, holder.img1);
+				holder.photoCount.setVisibility(View.VISIBLE);
+				holder.photoCount.setText(urlList.size() + "");
 			}
-			if (dp.pp_url2 == null || "".equals(dp.pp_url2)) {
-				holder.img2.setImageResource(R.drawable.default_pp);
-				holder.img2.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img2.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url2, holder.img2);
-			}
-			if (dp.pp_url3 == null || "".equals(dp.pp_url3)) {
-				holder.img3.setImageResource(R.drawable.default_pp);
-				holder.img3.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img3.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url3, holder.img3);
-			}
+			
+			holder.image7.setLayoutParams(params);
+			holder.image8.setLayoutParams(params);
+			holder.image9.setLayoutParams(params);
+			holder.image10.setLayoutParams(params);
+			holder.image11.setLayoutParams(params);
+			holder.showCconutLayout.setLayoutParams(params);
+			holder.image12.setLayoutParams(params2);
 
-			if (dp.pp_url4 == null || "".equals(dp.pp_url4)) {
-				holder.img4.setImageResource(R.drawable.default_pp);
-				holder.img4.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img4.setTag("null");
+			if (urlList.get(6) == null || urlList.get(6).equals("")) {
+				holder.image7.setImageResource(R.drawable.default_pp);
+				holder.image7.setTag("null");
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url4, holder.img4);
+				UniversalImageLoadTool.loadImage(urlList.get(6), holder.image7);
 			}
-
-
-			if (dp.pp_url5 == null || "".equals(dp.pp_url5)) {
-				holder.img5.setImageResource(R.drawable.default_pp);
-				holder.img5.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img5.setTag("null");
+			if (urlList.get(7) == null || urlList.get(7).equals("")) {
+				holder.image8.setImageResource(R.drawable.default_pp);
+				holder.image8.setTag("null");
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url5, holder.img5);
+				UniversalImageLoadTool.loadImage(urlList.get(7), holder.image8);
 			}
-
-			if (dp.pp_url6 == null || "".equals(dp.pp_url6)) {
-				holder.img6.setImageResource(R.drawable.default_pp);
-				holder.img6.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img6.setTag("null");
+			if (urlList.get(8) == null || urlList.get(8).equals("")) {
+				holder.image9.setImageResource(R.drawable.default_pp);
+				holder.image9.setTag("null");
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url6, holder.img6);
+				UniversalImageLoadTool.loadImage(urlList.get(8), holder.image9);
 			}
-
-		}else if(dp.number>6 && dp.number <= 12){
-			holder.number.setVisibility(View.GONE);
-			holder.pp_image_layout2.setVisibility(View.VISIBLE);
-			if (dp.pp_url1 == null || "".equals(dp.pp_url1)) {
-				holder.img1.setImageResource(R.drawable.default_pp);
-				holder.img1.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img1.setTag("null");//要全部设置tag，不然获取tag的时候，会数据混乱
+			if (urlList.get(9) == null || urlList.get(9).equals("")) {
+				holder.image10.setImageResource(R.drawable.default_pp);
+				holder.image10.setTag("null");
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url1, holder.img1);
+				UniversalImageLoadTool.loadImage(urlList.get(9), holder.image10);
 			}
-			if (dp.pp_url2 == null || "".equals(dp.pp_url2)) {
-				holder.img2.setImageResource(R.drawable.default_pp);
-				holder.img2.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img2.setTag("null");
+			if (urlList.get(10) == null || urlList.get(10).equals("")) {
+				holder.image11.setImageResource(R.drawable.default_pp);
+				holder.image11.setTag("null");
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url2, holder.img2);
+				UniversalImageLoadTool.loadImage(urlList.get(10), holder.image11);
 			}
-			if (dp.pp_url3 == null || "".equals(dp.pp_url3)) {
-				holder.img3.setImageResource(R.drawable.default_pp);
-				holder.img3.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img3.setTag("null");
+			if (urlList.get(11) == null || urlList.get(11).equals("")) {
+				holder.image12.setImageResource(R.drawable.default_pp);
+				holder.image12.setTag("null");
 			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url3, holder.img3);
-			}
-
-			if (dp.pp_url4 == null || "".equals(dp.pp_url4)) {
-				holder.img4.setImageResource(R.drawable.default_pp);
-				holder.img4.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img4.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url4, holder.img4);
+				UniversalImageLoadTool.loadImage(urlList.get(11), holder.image12);
 			}
 
+		} 
+		
+		holder.image1.setLayoutParams(params);
+		holder.image2.setLayoutParams(params);
+		holder.image3.setLayoutParams(params);
+		holder.image4.setLayoutParams(params);
+		holder.image5.setLayoutParams(params);
+		holder.image6.setLayoutParams(params);
 
-			if (dp.pp_url5 == null || "".equals(dp.pp_url5)) {
-				holder.img5.setImageResource(R.drawable.default_pp);
-				holder.img5.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img5.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url5, holder.img5);
-			}
-
-			if (dp.pp_url6 == null || "".equals(dp.pp_url6)) {
-				holder.img6.setImageResource(R.drawable.default_pp);
-				holder.img6.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img6.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url6, holder.img6);
-			}
-
-			if (dp.pp_url7 == null || "".equals(dp.pp_url7)) {
-				holder.img7.setImageResource(R.drawable.default_pp);
-				holder.img7.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img7.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url7, holder.img7);
-			}
-
-			if (dp.pp_url8 == null || "".equals(dp.pp_url8)) {
-				holder.img8.setImageResource(R.drawable.default_pp);
-				holder.img8.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img8.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url8, holder.img8);
-			}
-
-			if (dp.pp_url9 == null || "".equals(dp.pp_url9)) {
-				holder.img9.setImageResource(R.drawable.default_pp);
-				holder.img9.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img9.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url9, holder.img9);
-			}
-
-			if (dp.pp_url10 == null || "".equals(dp.pp_url10)) {
-				holder.img10.setImageResource(R.drawable.default_pp);
-				holder.img10.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img10.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url10, holder.img10);
-			}
-
-			if (dp.pp_url11 == null || "".equals(dp.pp_url11)) {
-				holder.img11.setImageResource(R.drawable.default_pp);
-				holder.img11.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img11.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url11, holder.img11);
-			}
-
-			if (dp.pp_url12 == null || "".equals(dp.pp_url12)) {
-				holder.img12.setImageResource(R.drawable.default_pp);
-				holder.img12.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img12.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url12, holder.img12);
-			}
-		}else if(dp.number > 12){
-			holder.pp_image_layout2.setVisibility(View.VISIBLE);
-
-			Log.e("dp.number", "dp number :"+dp.number);
-			if (dp.pp_url1 == null || "".equals(dp.pp_url1)) {
-				holder.img1.setImageResource(R.drawable.default_pp);
-				holder.img1.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img1.setTag("null");//要全部设置tag，不然获取tag的时候，会数据混乱
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url1, holder.img1);
-			}
-			if (dp.pp_url2 == null || "".equals(dp.pp_url2)) {
-				holder.img2.setImageResource(R.drawable.default_pp);
-				holder.img2.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img2.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url2, holder.img2);
-			}
-			if (dp.pp_url3 == null || "".equals(dp.pp_url3)) {
-				holder.img3.setImageResource(R.drawable.default_pp);
-				holder.img3.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img3.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url3, holder.img3);
-			}
-
-			if (dp.pp_url4 == null || "".equals(dp.pp_url4)) {
-				holder.img4.setImageResource(R.drawable.default_pp);
-				holder.img4.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img4.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url4, holder.img4);
-			}
-
-
-			if (dp.pp_url5 == null || "".equals(dp.pp_url5)) {
-				holder.img5.setImageResource(R.drawable.default_pp);
-				holder.img5.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img5.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url5, holder.img5);
-			}
-
-			if (dp.pp_url6 == null || "".equals(dp.pp_url6)) {
-				holder.img6.setImageResource(R.drawable.default_pp);
-				holder.img6.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img6.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url6, holder.img6);
-			}
-
-			if (dp.pp_url7 == null || "".equals(dp.pp_url7)) {
-				holder.img7.setImageResource(R.drawable.default_pp);
-				holder.img7.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img7.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url7, holder.img7);
-			}
-
-			if (dp.pp_url8 == null || "".equals(dp.pp_url8)) {
-				holder.img8.setImageResource(R.drawable.default_pp);
-				holder.img8.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img8.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url8, holder.img8);
-			}
-
-			if (dp.pp_url9 == null || "".equals(dp.pp_url9)) {
-				holder.img9.setImageResource(R.drawable.default_pp);
-				holder.img9.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img9.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url9, holder.img9);
-			}
-
-			if (dp.pp_url10 == null || "".equals(dp.pp_url10)) {
-				holder.img10.setImageResource(R.drawable.default_pp);
-				holder.img10.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img10.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url10, holder.img10);
-			}
-
-			if (dp.pp_url11 == null || "".equals(dp.pp_url11)) {
-				holder.img11.setImageResource(R.drawable.default_pp);
-				holder.img11.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img11.setTag("null");
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url11, holder.img11);
-			}
-
-			if (dp.pp_url12 == null || "".equals(dp.pp_url12)) {
-				holder.img12.setImageResource(R.drawable.default_pp);
-				holder.img12.setScaleType(ScaleType.CENTER_INSIDE);
-				holder.img12.setTag("null");
-
-			}else {
-				UniversalImageLoadTool.loadImage(dp.pp_url12, holder.img12);
-				holder.number.setVisibility(View.VISIBLE);
-				holder.number.setText(""+dp.number);
-			}
-
+		if (urlList.get(0) == null || urlList.get(0).equals("")) {
+			holder.image1.setImageResource(R.drawable.default_pp);
+			holder.image1.setTag("null");
+		}else {
+			UniversalImageLoadTool.loadImage(urlList.get(0), holder.image1);
 		}
-
-
-
-		//初始化选中与否
-		if (dp.isSelected == 0){//未选中
-			holder.img_no_check.setImageResource(R.drawable.nosele);
-		}else if (dp.isSelected == 1) {//选中
-			holder.img_no_check.setImageResource(R.drawable.sele);
-		}else {//不可选
-			holder.img_no_check.setImageResource(R.drawable.del1);
+		
+		if (urlList.get(1) == null || urlList.get(1).equals("")) {
+			holder.image2.setImageResource(R.drawable.default_pp);
+			holder.image2.setTag("null");
+		}else {
+			UniversalImageLoadTool.loadImage(urlList.get(1), holder.image2);
 		}
-		holder.itemLayout.setOnClickListener(childClickListener);
-
+		
+		if (urlList.get(2) == null || urlList.get(2).equals("")) {
+			holder.image3.setImageResource(R.drawable.default_pp);
+			holder.image3.setTag("null");
+		}else {
+			UniversalImageLoadTool.loadImage(urlList.get(2), holder.image3);
+		}
+		
+		if (urlList.get(3) == null || urlList.get(3).equals("")) {
+			holder.image4.setImageResource(R.drawable.default_pp);
+			holder.image4.setTag("null");
+		}else {
+			UniversalImageLoadTool.loadImage(urlList.get(3), holder.image4);
+		}
+		
+		if (urlList.get(4) == null || urlList.get(4).equals("")) {
+			holder.image5.setImageResource(R.drawable.default_pp);
+			holder.image5.setTag("null");
+		}else {
+			UniversalImageLoadTool.loadImage(urlList.get(4), holder.image5);
+		}
+		
+		if (urlList.get(5) == null || urlList.get(5).equals("")) {
+			holder.image6.setImageResource(R.drawable.default_pp);
+			holder.image6.setTag("null");
+		}else {
+			UniversalImageLoadTool.loadImage(urlList.get(5), holder.image6);
+		}
+		
 		return convertView;
 	}
 
 	private class ViewHolder {
-		TextView time, ppCode,number;//pp的时间，pp码，pp对应的照片的数量
-		ImageView img1, img2, img3,img4,img5,img6,img7,img8,img9,img10,img11,img12, img_no_check, img_miqi;//pp显示的三个imageview，一个不可选择的imageview
-		LinearLayout itemLayout,pp_image_layout2;//每一项
-		RelativeLayout relativeLayout; //最后一个图片的布局
+		TextView ppCode;// pp的时间，pp码，pp对应的照片的数量,
+		ImageView deleteMyPP;//删除PP
+		ImageView image1, image2, image3, image4, image5, image6, image7,
+				image8, image9, image10, image11, image12,img_no_check;
+		LinearLayout ppImageLayout1, ppImageLayout2;
+		RelativeLayout showCconutLayout;
+		TextView photoCount;
+		ImageView conerImageView;
+		LinearLayout itemLayout;
+	}
+	
+	/**
+	 * 检测是否包含图片
+	 * @param position
+	 * @param n
+	 * @return
+	 */
+	public boolean checkUrl(int position ,int n){
+		if (arrayList == null || arrayList.size() <= 0 || arrayList.get(position).getUrlList() == null || arrayList.get(position).getUrlList().size() <= 0) {
+			return false;
+		}
+		if (arrayList.get(position).getUrlList() == null || arrayList.get(position).getUrlList().size() < n+1 || arrayList.get(position).getUrlList().get(n).equals("")) {
+			return false;
+		}
+		return true;
+	}
+	
+	//获取地点信息
+	private ArrayList<DiscoverLocationItemInfo> createLocationList() {
+		ArrayList<DiscoverLocationItemInfo> resultArrayList = new ArrayList<DiscoverLocationItemInfo>();
+		if (ACache.get(mContext).getAsString(Common.LOCATION_INFO)==null) {
+			myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+		}else {
+			try {
+				JSONObject response = new JSONObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));
+				JSONArray resultArray = response.getJSONArray("locations");
+				for (int i = 0; i < resultArray.length(); i++) {
+					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
+					JSONObject object = resultArray.getJSONObject(i);
+					locationInfo = JsonUtil.getLocation(object);
+					resultArrayList.add(locationInfo);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return resultArrayList;		
+	}
+	
+	/**
+	 * 生成photoItemInfo的列表
+	 * @param index
+	 * @return
+	 */
+	private ArrayList<PhotoItemInfo> createPhotoItemInfoList(int index){
+		ArrayList<PhotoItemInfo> resultArrayList = new ArrayList<PhotoItemInfo>();
+		ArrayList<PhotoInfo> photoInfos = new ArrayList<PhotoInfo>();
+		photoInfos.addAll(arrayList.get(index).getSelectPhotoItemInfos());
+		
+		ArrayList<DiscoverLocationItemInfo> locationList = createLocationList();
+		
+		PhotoItemInfo photoItemInfo = new PhotoItemInfo();
 
+		//遍历所有photopass信息
+		boolean clone_contains = false;
+		Date date1;
+		Date date2;
+		for (int l = 0; l < photoInfos.size(); l++) {
+			PhotoInfo info = photoInfos.get(l);
+//			Log.d(TAG, "scan photo list:"+l);
+			//先挑选出相同的locationid信息
+			for (int i = 0; i < locationList.size(); i++) {
+//				Log.d(TAG, "scan location:"+i);
+				if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
+//					Log.d(TAG, "find the location");
+					//如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
+					try {
+						for (int j = 0; j < resultArrayList.size(); j++) {
+							//						Log.d(TAG, "weather already exists:"+j);
+							if (info.shootTime.equals(resultArrayList.get(j).shootTime)
+									&&(info.locationId.equals(resultArrayList.get(j).locationId) || resultArrayList.get(j).locationIds.contains(info.locationId))) {
+								info.locationName = resultArrayList.get(j).place;
+								resultArrayList.get(j).list.add(info);
+								date1 = sdf.parse(info.shootOn);
+								date2 = sdf.parse(resultArrayList.get(j).shootOn);
+								if (date1.after(date2)) {
+									resultArrayList.get(j).shootOn = info.shootOn;
+								}
+								clone_contains = true;
+								break;
+							}
+						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (!clone_contains) {
+						//初始化item的信息
+						photoItemInfo = new PhotoItemInfo();
+						photoItemInfo.locationId = locationList.get(i).locationId;
+						photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
+						photoItemInfo.shootTime = info.shootTime;
+						photoItemInfo.place = locationList.get(i).place;
+						info.locationName = locationList.get(i).place;
+						photoItemInfo.list.add(info);
+						photoItemInfo.placeUrl = locationList.get(i).placeUrl;
+						photoItemInfo.latitude = locationList.get(i).latitude;
+						photoItemInfo.longitude = locationList.get(i).longitude;
+						photoItemInfo.islove = 0;
+						photoItemInfo.shootOn = info.shootOn;
+						resultArrayList.add(photoItemInfo);
+					}else {
+						clone_contains = false;
+					}
+					break;
+				}
+			}
+		}
+
+		Collections.sort(resultArrayList);//对all进行排序
+	
+		return resultArrayList;
 	}
 
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.pp_code:
 
+			break;
+		case R.id.delete_my_pp:
+
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 刷新界面
+	 * 
+	 * @param ppInfo1s
+	 *            数据
+	 */
+	public void refresh(ArrayList<PPinfo> ppInfo1s) {
+		this.arrayList = ppInfo1s;
+		this.notifyDataSetChanged();
+	}
+	
+	//删除图片监听
+	public interface doDeletePhotoListener{
+		public void deletePhoto(int position);
+	}
+	
+	//显示图片监听
+	public interface doShowPhotoListener{
+		public void previewPhoto(int position, int tag);
+	}
+	
+	class PhotoPassManagerOnClickListener implements OnClickListener{
+		private int position;
+		private int tag;
+		private boolean delete;
+		public PhotoPassManagerOnClickListener(int position, int tag, boolean delete) {
+			this.position = position;
+			this.tag = tag;
+			this.delete = delete;
+		}
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if (delete) {
+				Log.v("=========", "doDeletePhotoListener onClick: " + position);
+				deleteListner.deletePhoto(position);
+			}else if (checkUrl(position, tag)) {
+				if (tag == 11 && arrayList.get(position).getUrlList().size() > 12) {
+					//进入相册
+					ArrayList<PhotoItemInfo> allPhotoItemInfos = createPhotoItemInfoList(position);
+					Intent i = new Intent(mContext, EditStoryAlbumActivity.class);
+					Bundle b = new Bundle();
+					b.putParcelableArrayList("photos", allPhotoItemInfos);
+					i.putExtra("photos", b);
+					i.putExtra("mode", "noedit");
+					mContext.startActivity(i);
+				}else {
+					listener.previewPhoto(position, tag);
+				}
+			}
+//			if (checkUrl(position, tag)) {
+//				listener.doShowPhotoListener(position, tag);
+//			}
+		}
+		
+	}
+
+	
+	
+	//点击一个item的事件
+	
 	private class OnItemChildClickListener implements OnClickListener {
 		private int position;
 
@@ -460,56 +548,67 @@ public class ListOfPPAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			if (arrayList.get(position) instanceof DayOfPP) {
-				DayOfPP dp = (DayOfPP) arrayList.get(position);
+			if (arrayList.get(position) instanceof PPinfo) {
+				PPinfo ppInfo = (PPinfo) arrayList.get(position);
 				switch (v.getId()) {
 				case R.id.pp_item:
 					System.out.println("adapter---size="+map.size());
 					if (null != mHandler) {
 						Message msg = mHandler.obtainMessage();
-						if (dp.isSelected == 0) {
-							if (useNumber >= dpp.amount) {
-								newToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
+						if (ppInfo.isSelected == 0) {
+							if (useNumber >=pppInfo.capacity) {
+								myToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
 								break;
 							} else {
 								++choice;
 								for (int j = 0; j < arrayList.size(); j++) {
-									DayOfPP pp = (DayOfPP) arrayList.get(j);
-									if (!pp.time.equals(dp.time)) {// && !pp.time.equals("")
+									PPinfo pp = (PPinfo) arrayList.get(j);
+									if (!pp.getShootDate().equals(ppInfo.getShootDate())) {// && !pp.time.equals("")
 										pp.isSelected = 2;
 									}
 								}
-								dp.isSelected = 1;
+								ppInfo.isSelected = 1;
 								++useNumber;
+								map.put(position, ppInfo.isSelected == 1);
 							}
-						} else if (dp.isSelected == 2) {
+						} else if (ppInfo.isSelected == 2) {
 
 						}else {
 							--choice;
 							if (choice == 0) {
 								for (int j = 0; j < arrayList.size(); j++) {
-									DayOfPP pp = (DayOfPP) arrayList.get(j);
+									PPinfo pp = (PPinfo) arrayList.get(j);
 									if (pp.isSelected == 2) {
 										pp.isSelected = 0;
 									}
 								}
 							}
-							dp.isSelected = 0;
+							ppInfo.isSelected = 0;
 							--useNumber;
+							map.remove(position);
 						}
 						notifyDataSetChanged();
 						msg.arg1 = useNumber;
 						msg.what = 2;
 						mHandler.sendMessage(msg);
 					}
-					map.put(position, dp.isSelected == 1);
+//					map.put(position, ppInfo.isSelected == 1);
 					break;
 
 				default:
 					break;
 				}
-			} 
+				}
 		}
 	}
 
+	public HashMap<Integer, Boolean> getMap() {
+		return map;
+	}
+
+	public void setMap(HashMap<Integer, Boolean> map) {
+		this.map = map;
+	}
+	
+	
 }

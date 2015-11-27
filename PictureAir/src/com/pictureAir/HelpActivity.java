@@ -1,42 +1,34 @@
 package com.pictureAir;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONObject;
-
-import cn.sharesdk.framework.authorize.a;
-
-import com.paypal.android.sdk.ca;
-import com.pictureAir.adapter.MyAdapter;
-import com.pictureAir.db.DatabaseAdapter;
-import com.pictureAir.entity.Question;
-import com.pictureAir.util.AppManager;
-import com.pictureAir.util.PinYin;
-import com.pictureAir.util.UmengUtil;
-import com.pictureAir.widget.EditTextWithClear;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
+
+import com.pictureAir.adapter.QuestionAdapter;
+import com.pictureAir.db.PictureAirDbManager;
+import com.pictureAir.entity.QuestionInfo;
+import com.pictureAir.util.AppManager;
+import com.pictureAir.util.PinYin;
+import com.pictureAir.widget.EditTextWithClear;
+import com.umeng.analytics.MobclickAgent;
 
 
 
@@ -44,55 +36,68 @@ import android.widget.Toast;
  * 搜索界面 实现问题的搜索功能 支持关键字搜索
  * 
  */
-public class HelpActivity extends BaseActivity implements OnClickListener{
+public class HelpActivity extends Activity implements OnClickListener{
 
 	private final String TAG = "MainActivity ";
 	// 申明控件
 	private EditTextWithClear editText;
 	private ListView mListView;
-	//	private ImageButton cancel_btn;
-	private ArrayList<Question> testArray = new ArrayList<Question>();
-	private MyAdapter adapter;
+	private ArrayList<QuestionInfo> testArray = new ArrayList<QuestionInfo>();
+	private QuestionAdapter adapter;
 	private ImageView back;
-	private RelativeLayout feedBackRl;
-	private Question question;
+	private QuestionInfo question;
 
-	private DatabaseAdapter databaseAdapter;
+	private PictureAirDbManager pictureAirDbManager;
+	
+	//feedback
+		private EditText eTFeedback;
+		private TextView tVsend;
+		private TextView tVCancel;
+		private AlertDialog myFeedbackDialog;
+		private RelativeLayout relativeLayout1;
 
 	/**
 	 * 数组
 	 */
-
-
-	String[] items = { "How to use PhotoPass?", "How do I make purchases？", "Where can I collect my purchased items?", "What if I lose my park ticket/PhotoPass card?" };
-
-	String[] answer = { "How to use PhotoPass?", "How do I make purchases？", "Where can I collect my purchased items?", "What if I lose my park ticket/PhotoPass card?" };
+	String[] items = { "How to use PhotoPass?", "How do I make purchases?", "Where can I collect my purchased items?", "What if I lose my park ticket/PhotoPass card?" };
+	String[] answer = { "How to use PhotoPass?", "How do I make purchases?", "Where can I collect my purchased items?", "What if I lose my park ticket/PhotoPass card?" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help);
 		initView();
-		databaseAdapter = DatabaseAdapter.getIntance(this);
-		// 每次进入前清空一下
-		databaseAdapter.deleteAll();
-		findAll();
+		pictureAirDbManager = new PictureAirDbManager(this);
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				for (int i = 0; i < items.length; i++) {
 					System.out.println("------>" + i);
-					question = new Question();
-					// question.questionId = i;
+					question = new QuestionInfo();
 					question.questionName = items[i];
 					question.answer = answer[i];
-					// i+"s answer";
 					testArray.add(question);
 				}
 				// 向数据库中插入指定数据
-				databaseAdapter.insertInfo(testArray);
+				pictureAirDbManager.insertIntoQuestionTable(testArray);
+				handler.sendEmptyMessage(111);
 			}
-		}).start();	}
+		}).start();	
+	}
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 111:
+				adapter.notifyDataSetChanged();
+				break;
+
+			default:
+				break;
+			}
+		};
+	};
 
 	/**
 	 * 初始化视图
@@ -101,35 +106,12 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 		AppManager.getInstance().addActivity(this);
 		editText = (EditTextWithClear) findViewById(R.id.input_edit);
 		mListView = (ListView) findViewById(R.id.auto_list);
-		//		cancel_btn = (ImageButton) findViewById(R.id.cancel_btn);
 		back = (ImageView) findViewById(R.id.back);
-		// lvSearch=(ListView) findViewById(R.id.lvSearch);
-		feedBackRl = (RelativeLayout) findViewById(R.id.relativeLayout1);
-
-		adapter = new MyAdapter(this, testArray);
+		relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relativeLayout1.setOnClickListener(this);
+		adapter = new QuestionAdapter(this, testArray);
 		mListView.setAdapter(adapter);
-		// adapter = new MyAdapter(this, toastArray);
 
-		// mListView.setAdapter(adapter);// 设置Adapter，初始值为空
-		// lvSearch.setAdapter(toastAdapter);
-
-		//		OnClickListener myClickListener = new OnClickListener() {
-		//
-		//			@Override
-		//			public void onClick(View v) {
-		//				int vid = v.getId();
-		//				if (vid == cancel_btn.getId()) {
-		//					editText.setText("");// 清空编辑框
-		//				}
-		//				if (vid == back.getId()) {
-		//					finish();
-		//				}
-		//			}
-		//		};
-
-		// 删除按钮的单击操作
-		//		cancel_btn.setOnClickListener(myClickListener);
-		feedBackRl.setOnClickListener(this);
 		back.setOnClickListener(this);
 		// listView点击事件
 		mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -138,17 +120,12 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Log.d(TAG, "test step 1------>");
-
-				mListView.setVisibility(View.VISIBLE);
-
 				Intent intent = new Intent();
 				intent.setClass(HelpActivity.this, AnswerActivity.class);
 				Log.d(TAG, "step 3---->" + testArray.size());
 
 				intent.putExtra("question", adapter.getItem(position));
 				startActivity(intent);
-				adapter.refreshData(testArray);// Adapter刷新数据
-				editText.setText(adapter.getItem(position).questionName);
 			}
 		});
 
@@ -161,65 +138,28 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-
-				testArray = new ArrayList<Question>();// 每次输入的时候，重新初始化数据列表
-				// toastArray=new ArrayList<String>();
 				testArray.clear();
-
-				if (!TextUtils.isEmpty(editText.getText().toString())) {// 判断输入内容是否为空，为空则跳过
+				if (!TextUtils.isEmpty(editText.getText().toString())) {// 判断输入内容是否为空，不为空，查找当前值
 					// 查询相似数据--传入一个转换为拼音的字符串
-
-					testArray = databaseAdapter
-							.queryInfo(
-									PinYin.getPinYin(editText.getText()
-											.toString()));
-					//					cancel_btn.setVisibility(View.VISIBLE);
-
-				} else {
-
-					testArray = databaseAdapter
-							.findAll();
-					//					cancel_btn.setVisibility(View.INVISIBLE);
+					testArray = pictureAirDbManager.queryQuestionInfo(PinYin.getPinYin(editText.getText().toString()));
+				} else {//如果数据为空
+					testArray = pictureAirDbManager.findAllQuestions();
 				}
 				Log.d(TAG, "step 2 ------>" + testArray.size());
-
 				adapter.refreshData(testArray);// Adapter刷新数据
-				mListView.setVisibility(View.VISIBLE);
 			}
 
-			/**
-			 * 输入之前
-			 */
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				// TODO Auto-generated method stub
-
 			}
 
-			/**
-			 * 输入之后
-			 */
 			@Override
 			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 	}
 
-
-	// 查找所有问题
-
-	private void findAll() {
-		// testArray = new ArrayList<String>();
-		testArray.clear();
-		testArray = databaseAdapter.findAll();
-		Log.d(TAG, "test array size = " + testArray.size());
-		adapter.refreshData(testArray);// Adapter刷新数据
-		mListView.setAdapter(adapter);
-		mListView.setVisibility(View.VISIBLE);
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -228,9 +168,18 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 		case R.id.back:
 			finish();
 			break;
+			
 		case R.id.relativeLayout1:
-			//意见反馈弹出框
-			UmengUtil.startFeedbackActivity(this);
+			diaLogFeedBack();
+			break;
+		// Feedback
+		case R.id.tVCancel:
+			myFeedbackDialog.dismiss();
+			break;
+		case R.id.tVsend:
+			myFeedbackDialog.dismiss();
+			String feedbackStr = eTFeedback.getText().toString();
+			System.out.println("-------:" + feedbackStr);
 			break;
 
 		default:
@@ -244,4 +193,37 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
 	}
+	
+	 private void diaLogFeedBack() {
+			View v = LayoutInflater.from(this).inflate(
+					R.layout.custom_dialog_feedback, null);
+			AlertDialog.Builder myBuilder = new AlertDialog.Builder(this);
+			myFeedbackDialog = myBuilder.create();
+			myFeedbackDialog.setView(new EditText(this));//自定义的dialog，必须在show（）之前加入此行，不然显示不了软键盘
+			myFeedbackDialog.show();
+			myFeedbackDialog.getWindow().setContentView(v);
+			eTFeedback = (EditText) v.findViewById(R.id.eTFeedback);
+			tVsend = (TextView) v.findViewById(R.id.tVsend);
+			tVCancel = (TextView) v.findViewById(R.id.tVCancel);
+			tVsend.setOnClickListener(this);
+			tVCancel.setOnClickListener(this);
+			eTFeedback.setOnClickListener(this);
+
+		}
+	 
+	   @Override
+		protected void onPause() {
+			// TODO Auto-generated method stub
+			super.onPause();
+			MobclickAgent.onPageEnd("HelpActivity");
+			MobclickAgent.onPause(this);
+		}
+
+		@Override
+		protected void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+			MobclickAgent.onPageStart("HelpActivity");
+			MobclickAgent.onResume(this);
+		}
 }

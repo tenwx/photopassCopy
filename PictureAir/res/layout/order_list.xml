@@ -14,5 +14,14 @@
         android:divider="@null"
         android:scrollbars="none" >
     </ExpandableListView>
+    
+    
+    
+    <com.pictureAir.widget.NoNetWorkOrNoCountView 
+        android:id="@+id/nonetwork"
+        android:layout_below="@id/cursor_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
 
 </LinearLayout>

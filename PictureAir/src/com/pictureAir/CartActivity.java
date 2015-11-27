@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -35,19 +37,21 @@ import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.JsonUtil;
 import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
+import com.pictureAir.widget.NoNetWorkOrNoCountView;
 import com.pictureAir.widget.XListViewHeader;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 购物车页面
  * @author bauer_bao
  * 
  */
-public class CartActivity extends BaseActivity implements OnClickListener {
+public class CartActivity extends Activity implements OnClickListener {
 	private ListView listView;
 	private ImageView rtButton;
 	private Button paymentButton;
@@ -55,6 +59,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 	private ImageView cartSelectAllImageView;
 	private TextView editTextView;
 	private LinearLayout cartPriceLinearLayout;
+	private RelativeLayout bottomRelativeLayout;
+	private View line;
 
 	private ArrayList<CartItemInfo> cartInfoList;// 订单list
 	private CartItemInfo cartItemInfo;
@@ -71,12 +77,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
 	private SharedPreferences sPreferences;
 
-//	private ProgressDialog dialog;
 	private CustomProgressBarPop dialog;
 	private CustomProgressDialog customProgressDialog;
+	
 	private String userId = "";
 
 	private MyToast newToast;
+	
+	private NoNetWorkOrNoCountView netWorkOrNoCountView;
 
 	private Handler handler = new Handler(){
 		@Override
@@ -124,15 +132,32 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					e.printStackTrace();
 				}
 				editTextView.setEnabled(true);
+				customProgressDialog.dismiss();
+				if (cartInfoList.size() == 0) {//没有数量
+					netWorkOrNoCountView.setVisibility(View.VISIBLE);
+					netWorkOrNoCountView.setResult(R.string.no_cart, R.string.want_to_buy, R.string.to_add_good, R.drawable.no_cart, handler, false);
+					bottomRelativeLayout.setVisibility(View.INVISIBLE);
+					listView.setVisibility(View.INVISIBLE);
+					line.setVisibility(View.INVISIBLE);
+					editTextView.setVisibility(View.INVISIBLE);
+				}else {//有数量
+					netWorkOrNoCountView.setVisibility(View.GONE);
+					bottomRelativeLayout.setVisibility(View.VISIBLE);
+					listView.setVisibility(View.VISIBLE);
+					line.setVisibility(View.VISIBLE);
+				}
 				break;
 				
-//			case API.UPLOADING_PHOTO:
-////				dialog.setMessage(String.format(getString(R.string.loading_percent), msg.arg1));
-//				System.out.println("update progress--------------->");
-//				dialog.setProgress(msg.arg1);
-//				break;
-
-			case API.GET_CART_FAILED:
+			case API.GET_CART_FAILED://请求失败
+				customProgressDialog.dismiss();
+				netWorkOrNoCountView.setVisibility(View.VISIBLE);
+				netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
+				bottomRelativeLayout.setVisibility(View.INVISIBLE);
+				listView.setVisibility(View.INVISIBLE);
+				line.setVisibility(View.INVISIBLE);
+				editTextView.setVisibility(View.INVISIBLE);
+				break;
+				
 			case API.DELETE_CART_FAILED:
 			case API.UPLOAD_PHOTO_FAILED:
 				isDelete = false;
@@ -157,7 +182,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 							if (cartItemInfo.isSelect) {
 								iterator.remove();
 							}else {
-//								totalprice += cartItemInfo.cart_promotionPrice;
 								count += cartItemInfo.cart_quantity;
 							}
 						}
@@ -168,15 +192,17 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 						editor.commit();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				if (cartInfoList.size() == 0) {
 					paymentButton.setBackgroundResource(R.color.gray_light3);
+					cancelEdit();
+					ShowNoNetOrNoCountView();
 				}
 				break;
+				
 			case API.UPLOAD_PHOTO_SUCCESS:
-				System.out.println(msg.obj);
+				System.out.println("upload photo success ======>"+msg.obj);
 				JSONObject result = (JSONObject) msg.obj;
 				String photoUrlString = null;
 				String photoIdString = null;
@@ -202,8 +228,11 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 				RequestParams params = new RequestParams();
 				params.put(Common.USER_ID, userId);
 				params.put(Common.ITEM, cartItem);
-				HttpsUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
-
+				HttpUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
+					@Override
+					public void onStart() {
+						System.out.println("start chang count------->");
+					};
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 						// TODO Auto-generated method stub
@@ -237,6 +266,25 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					};
 				});
 				break;
+				
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+				//重新加载购物车数据
+				System.out.println("onclick with reload");
+				customProgressDialog = CustomProgressDialog.show(CartActivity.this, getString(R.string.is_loading), false, null);
+				API.getcart(CartActivity.this,Common.BASE_URL+Common.GET_CART, userId, handler);
+				cartInfoList.clear();
+				break;
+				
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
+				//去跳转到购物车
+				System.out.println("onclick with no reload");
+				//需要删除页面，保证只剩下mainTab页面，
+				AppManager.getInstance().killOtherActivity(MainTabActivity.class);
+				//同时将mainTab切换到shop Tab
+				MainTabActivity.changeToShopTab = true;
+				
+				break;
+				
 			default:
 				break;
 			}
@@ -252,14 +300,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					totalprice = Float.parseFloat(totalTextView.getText().toString());
 					totalprice -= Float.parseFloat(msg.obj.toString());
 					totalTextView.setText((int)totalprice + "");
-//					cartInfoList.get(msg.arg2).cart_promotionPrice -= Float.parseFloat(msg.obj.toString());
-//					Editor editor = sPreferences.edit();
-//					editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0)-1);
-//					editor.commit();
-				}else {
-//					totalprice = Float.parseFloat(totalTextView.getText().toString());
-//					totalprice -= Float.parseFloat(msg.obj.toString());
-//					totalTextView.setText((int)totalprice + "");
 				}
 				cartInfoList.get(msg.arg2).cart_promotionPrice -= Float.parseFloat(msg.obj.toString());
 				Editor editor = sPreferences.edit();
@@ -272,15 +312,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					totalprice = Float.parseFloat(totalTextView.getText().toString());
 					totalprice += Float.parseFloat(msg.obj.toString());
 					totalTextView.setText((int)totalprice + "");
-//					cartInfoList.get(msg.arg2).cart_promotionPrice += Float.parseFloat(msg.obj.toString());
-//					Editor editor = sPreferences.edit();
-//					editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0)+1);
-//					editor.commit();
-				}else {
-//					totalprice = Float.parseFloat(totalTextView.getText().toString());
-//					totalprice += Float.parseFloat(msg.obj.toString());
-//					totalTextView.setText((int)totalprice + "");
-
 				}
 				cartInfoList.get(msg.arg2).cart_promotionPrice += Float.parseFloat(msg.obj.toString());
 				Editor editor1 = sPreferences.edit();
@@ -299,6 +330,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					if (isEdit) {
 						paymentButton.setBackgroundResource(R.color.orange);
 						
+					}else {//购买状态
+						if (cartInfoList.size() == disSelectedCount) {//没有选中任何
+							paymentButton.setBackgroundResource(R.color.gray_light3);
+							
+						}else {//选中
+							paymentButton.setBackgroundResource(R.color.blue);
+							
+						}
 					}
 				}else {
 					cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
@@ -356,13 +395,11 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-//		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.cart_activity);
+		setContentView(R.layout.activity_cart);
 		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
-		dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout));
+		dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout), false);
 		rtButton = (ImageView) findViewById(R.id.ret_relyt);
 		rtButton.setOnClickListener(this);
 		paymentButton = (Button) findViewById(R.id.button3_pm);
@@ -376,10 +413,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 		editTextView.setEnabled(false);
 		cartPriceLinearLayout = (LinearLayout) findViewById(R.id.cartPriceLinearLayout);
 		cartInfoList = new ArrayList<CartItemInfo>();
+		line = (View) findViewById(R.id.line);
+		bottomRelativeLayout = (RelativeLayout)findViewById(R.id.linearLayout1);
+		netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.noNetWorkView);
 
 		sPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		userId = sPreferences.getString(Common.USERINFO_ID, "");
 		currencyTextView.setText(sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+		customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
 		API.getcart(this,Common.BASE_URL+Common.GET_CART, userId, handler);
 		totalTextView.setText((int)totalprice + "");
 		listView = (ListView) findViewById(R.id.cartListView);
@@ -388,7 +429,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 		listView.setAdapter(cartAdapter);
 		listView.setHeaderDividersEnabled(true);
 		listView.setFooterDividersEnabled(false);
-//		listView.setOnItemClickListener(null);
 	}
 
 	@Override
@@ -419,6 +459,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 				}
 				if (cartitemidsArray.length() == 0) {
 					newToast.setTextAndShow(R.string.select_cart, Common.TOAST_SHORT_TIME);
+					isDelete = false;
 					return;
 				}
 				API.deletecart(CartActivity.this, Common.BASE_URL+Common.REMOVE_CART, userId, cartitemidsArray, handler);
@@ -462,12 +503,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 				cartInfoList.get(i).show_edit = isEdit ? 0 : 1;
 			}
 			if (isEdit) {//取消编辑状态
-				isEdit = false;
-				editTextView.setText(R.string.edit);
-				cartPriceLinearLayout.setVisibility(View.VISIBLE);
-				paymentButton.setBackgroundResource(R.color.blue);
-				paymentButton.setText(String.format(getString(R.string.go_pay), cartInfoList.size() - disSelectedCount));
-				rtButton.setVisibility(View.VISIBLE);
+				cancelEdit();
 			}else {//开始编辑
 				isEdit = true;
 				editTextView.setText(R.string.ok);
@@ -485,7 +521,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.cartSelectAllImageView:
-//			cartInfoList = cartAdapter.getGoodArrayList();
 			totalprice = 0;
 			for (int i = 0; i < cartInfoList.size(); i++) {
 				cartInfoList.get(i).isSelect = (disSelectedCount == 0) ? false : true;
@@ -519,6 +554,35 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 			break;
 		}
 	}
+	
+	/**
+	 * 取消编辑
+	 */
+	private void cancelEdit() {
+		// TODO Auto-generated method stub
+		isEdit = false;
+		editTextView.setText(R.string.edit);
+		cartPriceLinearLayout.setVisibility(View.VISIBLE);
+		paymentButton.setText(String.format(getString(R.string.go_pay), cartInfoList.size() - disSelectedCount));
+		if (cartInfoList.size() == disSelectedCount) {//没有选中
+			
+			paymentButton.setBackgroundResource(R.color.gray_light3);
+		}else {
+			
+			paymentButton.setBackgroundResource(R.color.blue);
+		}
+		rtButton.setVisibility(View.VISIBLE);
+	}
+	
+	/**
+	 * 展示无数据的页面
+	 */
+	private void ShowNoNetOrNoCountView() {
+		bottomRelativeLayout.setVisibility(View.INVISIBLE);
+		netWorkOrNoCountView.setVisibility(View.VISIBLE);
+		netWorkOrNoCountView.setResult(R.string.no_cart, R.string.want_to_buy, R.string.to_add_good, R.drawable.no_cart, handler, false);
+		editTextView.setVisibility(View.INVISIBLE);
+	}
 
 	//选择照片
 	private void selectPhoto(int requestCode) {
@@ -546,10 +610,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 				msg.arg1 = requestCode;
 				msg.obj = object;
 				handler.sendMessage(msg);
-//				dialog = CustomProgressDialog.show(this, getString(R.string.photo_is_uploading), false, null);
-//				dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-				dialog.show();
-//				dialog.showAtLocation(findViewById(R.id.cart_activity_relativeLayout), Gravity.CENTER, 0, 0);
+				dialog.show(0);
 			}else {
 				String photourl = updatephotolist.get(0).photoPathOrURL;
 				// 需要上传选择的图片
@@ -561,11 +622,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 				try {
 					params.put("file", new File(photourl),"application/octet-stream");
 					params.put(Common.USERINFO_TOKENID, tokenId);
-//					dialog = CustomProgressDialog.show(this, getString(R.string.photo_is_uploading), false, null);
 					API.SetPhoto(sb.toString(), params, handler,requestCode, dialog);
-//					dialog.showAtLocation(findViewById(R.id.cart_activity_relativeLayout), Gravity.CENTER, 0, 0);
-//					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-					dialog.show();
+					dialog.show(0);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -585,7 +643,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 		List<CartPhotosInfo> oriphoto = cartInfoList.get(position/10).cart_photoUrls;
 		System.out.println("oriphoto size = "+ oriphoto.size());
 		CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
-//		cartPhotosInfo.cart_photo_local_album = photoList.get(0).albumName;
 		cartPhotosInfo.cart_photoUrl = photoList.get(0).photoPathOrURL;
 		oriphoto.set(position%10, cartPhotosInfo);//替换图片
 		System.out.println("重新选择的图片");
@@ -603,4 +660,24 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 		AppManager.getInstance().killActivity(this);
 	}
 
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		System.out.println("test pause");
+		MobclickAgent.onPageEnd("CartActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		System.out.println("test resume");
+		MobclickAgent.onPageStart("CartActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	
 }

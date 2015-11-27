@@ -11,6 +11,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,14 +38,13 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.paypal.android.sdk.payments.ShippingAddress;
 import com.pictureAir.alipay.PayResult;
-import com.pictureAir.blur.BlurActivity;
 import com.pictureAir.entity.OrderInfo;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AliPayUtil;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.PaypalUtil;
 import com.pictureAir.weChatPay.Constants;
 import com.pictureAir.weChatPay.Util;
@@ -53,8 +53,9 @@ import com.pictureAir.widget.MyToast;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 
-public class PaymentOrderActivity extends BaseActivity implements OnClickListener{
+public class PaymentOrderActivity extends Activity implements OnClickListener{
 	private ImageView lrtLayout;
 	private TextView sbmtButton;
 	private String nameString;
@@ -96,6 +97,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 	private MyApplication myApplication;
 
 	private boolean needAddress = false;
+	
+	private boolean isPaying = false;
 
 	/**
 	 * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
@@ -131,7 +134,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.paymentorder);
+		setContentView(R.layout.activity_payment_order);
 		AppManager.getInstance().addActivity(this);
 		findViewById();
 		init();
@@ -332,6 +335,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 			break;
 
 		case R.id.button_smpm://提交支付
+			sbmtButton.setEnabled(false);
+			System.out.println("-------------pay on click");
 			//直接调用接口
 			pay(orderid);
 			break;
@@ -352,7 +357,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 			paypalButton.setImageResource(R.drawable.nosele);
 			wechatButton.setImageResource(R.drawable.nosele);
 			System.out.println("YL");
-			
 			break;
 
 		case R.id.paypal://paypal支付
@@ -425,11 +429,12 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 	private void ErrorInPayment() {
 		// TODO Auto-generated method stub
 		newToast.setTextAndShow(R.string.alipay_error, Common.TOAST_SHORT_TIME);
-		myApplication.setIsBuyingPhotoInfo(null);
+//		myApplication.setIsBuyingPhotoInfo(null);
+		myApplication.clearIsBuyingPhotoList();
 		myApplication.setRefreshViewAfterBuyBlurPhoto("");
 		AppManager.getInstance().killActivity(SubmitOrderActivity.class);
 		AppManager.getInstance().killActivity(PreviewProductActivity.class);
-		AppManager.getInstance().killActivity(BlurActivity.class);
+//		AppManager.getInstance().killActivity(BlurActivity.class);
 		AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
 		AppManager.getInstance().killActivity(SelectPhotoActivity.class);
 		AppManager.getInstance().killActivity(MakegiftActivity.class);
@@ -438,12 +443,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 	//取消操作处理
 	private void CancelInPayment() {
 		// TODO Auto-generated method stub
-		myApplication.setIsBuyingPhotoInfo(null);
+//		myApplication.setIsBuyingPhotoInfo(null);
+		myApplication.clearIsBuyingPhotoList();
 		myApplication.setRefreshViewAfterBuyBlurPhoto("");
 		newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
 		AppManager.getInstance().killActivity(SubmitOrderActivity.class);
 		AppManager.getInstance().killActivity(PreviewProductActivity.class);
-		AppManager.getInstance().killActivity(BlurActivity.class);
+//		AppManager.getInstance().killActivity(BlurActivity.class);
 		AppManager.getInstance().killActivity(SelectPhotoActivity.class);
 		AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
 		AppManager.getInstance().killActivity(MakegiftActivity.class);
@@ -455,7 +461,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 		System.out.println("start finish expired activity");
 		AppManager.getInstance().killActivity(SubmitOrderActivity.class);
 		AppManager.getInstance().killActivity(PreviewProductActivity.class);
-		AppManager.getInstance().killActivity(BlurActivity.class);
+//		AppManager.getInstance().killActivity(BlurActivity.class);
 		AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
 		AppManager.getInstance().killActivity(SelectPhotoActivity.class);
 		AppManager.getInstance().killActivity(DetailProductActivity.class);
@@ -469,6 +475,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 		public void handleMessage(android.os.Message msg) {
 			//			Result result = new Result((String) msg.obj);
 			//			System.out.println((String) msg.obj);
+//			sbmtButton.setEnabled(true);
 			switch (msg.what) {
 			case RQF_ERROR:
 				Intent intent1 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
@@ -489,7 +496,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 				requestParams.put("payType", payType);
 				requestParams.put("userId", sPreferences.getString(Common.USERINFO_ID, ""));
 				System.out.println("orderid"+orderid+"_userId_"+sPreferences.getString(Common.USERINFO_ID, ""));
-				HttpsUtil.post(Common.BASE_URL+"/shopping/modifyOrderStatus", requestParams, new JsonHttpResponseHandler(){
+				HttpUtil.post(Common.BASE_URL+"/shopping/modifyOrderStatus", requestParams, new JsonHttpResponseHandler(){
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 						System.out.println(response+"result");
 						try {
@@ -504,25 +511,27 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
 
 										//获取存放的photopass信息
-										PhotoInfo photopassmap = myApplication.getIsBuyingPhotoInfo();
+//										PhotoInfo photopassmap = myApplication.getIsBuyingPhotoInfo();
 										Intent intent;
 										//以下三种情况要回到清晰图片页面
 										if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY) ||
 												myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS) || 
 												myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_BLUR)) {
 											System.out.println("flag is -------------------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
+											myApplication.setPhotoIsPaid(true);
 											ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-											photopassmap.isPayed = 1;
-											photopassArrayList.add(photopassmap);
+											photopassArrayList.addAll(myApplication.getIsBuyingPhotoInfoList());
+											//找出购买的info，并且将购买属性改为1
+											photopassArrayList.get(myApplication.getIsBuyingIndex()).isPayed = 1;
+											
 											intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
 											intent.putExtra("activity", "paymentorderactivity");
-											intent.putExtra("flag", photopassmap.onLine);//哪个相册的标记
-											intent.putExtra("position", 0+"");//在那个相册中的位置
-											intent.putExtra("photoId", photopassmap.photoId);
+											intent.putExtra("position", myApplication.getIsBuyingIndex() + "");//在那个相册中的位置
+											intent.putExtra("photoId", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
 											intent.putExtra("photos", photopassArrayList);//那个相册的全部图片路径
-											intent.putExtra("targetphotos", new ArrayList<PhotoInfo>());
+											intent.putExtra("targetphotos", myApplication.magicPicList);
 											//清空标记
-											myApplication.setIsBuyingPhotoInfo(null);
+											myApplication.clearIsBuyingPhotoList();
 
 											SuccessAfterPayment();
 
@@ -843,4 +852,20 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 		
 		api.sendReq(req);
 	} 
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("PaymentOrderActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("PaymentOrderActivity");
+		MobclickAgent.onResume(this);
+	}
 }

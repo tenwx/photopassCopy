@@ -3,14 +3,12 @@ package com.pictureAir;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -20,10 +18,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -31,16 +29,17 @@ import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.pictureAir.adapter.HorizontalScrollViewAdapter;
+import com.pictureAir.adapter.MakegiftGoodsAdapter;
 import com.pictureAir.entity.CartItemInfo;
 import com.pictureAir.entity.CartPhotosInfo;
 import com.pictureAir.entity.GoodsInfo;
@@ -50,18 +49,16 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
-import com.pictureAir.widget.BannerView_Preview;
 import com.pictureAir.widget.BannerView_PreviewCompositeProduct;
 import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
-import com.pictureAir.widget.MyHorizontalScrollView;
-import com.pictureAir.widget.MyHorizontalScrollView.OnItemClickListener;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 
-public class MakegiftActivity extends BaseActivity implements OnClickListener{
+public class MakegiftActivity extends Activity implements OnClickListener{
 	//选择商品的horizontalscrollview的popupwindow
-	private MyHorizontalScrollView myHorizontalScrollView;
-	private HorizontalScrollViewAdapter mAdapter;
+	private GridView goodsGridView;
+	private MakegiftGoodsAdapter mAdapter;
 	private ArrayList<GoodsInfo> allList;
 	private GoodsInfo goodsInfo;
 
@@ -244,7 +241,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 							goodsInfo.good_price = price;
 							goodsInfo.good_detail = detail;
 							goodsInfo.good_productId = productid;
-							if (Common.PHOTOPASSPLUS.equals(nameString)) {//区分商品
+							if (Common.GOOD_NAME_PPP.equals(nameString)) {//区分商品
 								//如果是PPP
 								goodsInfo.good_embedPhotoCount = 0;
 								goodsInfo.good_type = 3;
@@ -253,7 +250,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 								goodsInfo.good_embedPhotoCount = 1;
 								goodsInfo.good_type = 1;
 							}
-							if (!Common.PHOTOPASSPLUS.equals(nameString)) {
+							if (!Common.GOOD_NAME_PPP.equals(nameString)) {
 								allList.add(goodsInfo);
 							}
 						}
@@ -378,7 +375,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.makegift_activity);
+		setContentView(R.layout.activity_makegift);
 		AppManager.getInstance().addActivity(this);
 		init();
 	}
@@ -401,7 +398,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 		buyButton = (Button)findViewById(R.id.button_buy);
 		addtocartButton = (Button)findViewById(R.id.button_addtocart);
 		cartButton.setOnClickListener(this);
-		progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate));
+		progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), false);
 		selectButton.setOnClickListener(this);
 		buyButton.setOnClickListener(this);
 		addtocartButton.setOnClickListener(this);
@@ -461,13 +458,20 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 		selproductPopupWindow = new PopupWindow(selproductView_popwindow, android.widget.LinearLayout.LayoutParams.MATCH_PARENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
 		selproductPopupWindow.setFocusable(true);//设置能够获得焦点
 		selproductPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//此代码和上一条代码两者结合，实现能够点击popupwindow外面将popupwindow关闭
-		myHorizontalScrollView = (MyHorizontalScrollView)selproductView_popwindow.findViewById(R.id.id_horizontalScrollView);
-		myHorizontalScrollView.setOnItemClickListener(new OnItemClickListener() {
+		goodsGridView = (GridView)selproductView_popwindow.findViewById(R.id.id_horizontalScrollView);
+		mAdapter = new MakegiftGoodsAdapter(MakegiftActivity.this, allList);
+		
+		
+		goodsGridView.setAdapter(mAdapter);
+//		goodsGridView.setNumColumns(allList.size());
+//		goodsGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / allList.size());
+		goodsGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+		goodsGridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onClick(View view, int pos) {
-				// TODO Auto-generated method stub
-				if (allList.get(pos).good_name.equals("Album")) {
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				if (allList.get(position).good_name.equals("Album")) {
 					System.out.println("album");
 					buyButton.setText("Buy ("+count+")");
 					addphotoButton.setVisibility(View.VISIBLE);
@@ -476,12 +480,12 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 						addphotoButton.setVisibility(View.INVISIBLE);
 					}
 				}
-				productname = allList.get(pos).good_nameAlias;
-				productOriginalName = allList.get(pos).good_name;
-				productIdString = allList.get(pos).good_productId;
-				productImageUrlString = allList.get(pos).good_previewUrls;
-				priceTextView.setText(allList.get(pos).good_price);
-				introduceTextView.setText(allList.get(pos).good_detail);
+				productname = allList.get(position).good_nameAlias;
+				productOriginalName = allList.get(position).good_name;
+				productIdString = allList.get(position).good_productId;
+				productImageUrlString = allList.get(position).good_previewUrls;
+				priceTextView.setText(allList.get(position).good_price);
+				introduceTextView.setText(allList.get(position).good_detail);
 				String[] urlStrings = productImageUrlString.split(",");
 				
 				setProductImage(productOriginalName, urlStrings[0]);
@@ -490,6 +494,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 				}
 			}
 		});
+		
+		
 	}
 	
 	/**
@@ -507,14 +513,14 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 			//		 预览图片宽 355-20-19 = 316
 			//		 预览图片高 258-12-19 = 227
 			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 355, 258, 20, 12, 316, 227, 0, 0, 0, "canvas");//设置bannerview的图片
-		}else if (productName.equals("iphone5Case")) {
-			//2.手机后盖，商品宽 480
-			//		 商品高 946
-			//       左边留白 0
-			//		 上边留白 0
-			//		 预览图片宽 480
-			//		 预览图片高 946
-			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
+//		}else if (productName.equals("iphone5Case")) {
+//			//2.手机后盖，商品宽 480
+//			//		 商品高 946
+//			//       左边留白 0
+//			//		 上边留白 0
+//			//		 预览图片宽 480
+//			//		 预览图片高 946
+//			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
 		}else if (productName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
 			//3.数码商品，商品宽 300
 			//		 商品高 217
@@ -547,14 +553,14 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 			//		 预览图片宽 205-88-21 = 205 - 109 = 96
 			//		 预览图片高 89-18-16 = 55
 			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 205, 89, 88, 18, 96, 55, 0.15f, 0, 0, "keyChain");//设置bannerview的图片
-		}else if (productName.equals("mug")) {
-			//7.杯子，商品宽 185
-			//		 商品高 160
-			//       左边留白 10
-			//		 上边留白 12
-			//		 预览图片宽 185-10-61 = 114
-			//		 预览图片高 160-12-34 = 114
-			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
+//		}else if (productName.equals("mug")) {
+//			//7.杯子，商品宽 185
+//			//		 商品高 160
+//			//       左边留白 10
+//			//		 上边留白 12
+//			//		 预览图片宽 185-10-61 = 114
+//			//		 预览图片高 160-12-34 = 114
+//			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
 		}
 	}
 	
@@ -563,6 +569,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("MakegiftActivity");
+		MobclickAgent.onResume(this);
 		recordcount = sp.getInt(Common.CART_COUNT, 0);
 		if (recordcount<=0) {
 			cartcountTextView.setVisibility(View.INVISIBLE);
@@ -589,8 +597,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 			
 		case R.id.button_selectproduct:
 			System.out.println("选择商品");
-			mAdapter = new HorizontalScrollViewAdapter(MakegiftActivity.this, allList);
-			myHorizontalScrollView.initDatas(mAdapter);
+			mAdapter.notifyDataSetChanged();
+			goodsGridView.setNumColumns(allList.size());
+			goodsGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / allList.size());
 			selproductPopupWindow.showAsDropDown(findViewById(R.id.makegift_titlebar));
 			break;
 			
@@ -601,7 +610,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 				isbuynow = true;//buy now
 				message.obj = "start";
 				handler.sendMessage(message);
-				progressBarPop.show();
+				progressBarPop.show(0);
 			}else {
 				intent = new Intent(this, LoginActivity.class);
 				startActivity(intent);
@@ -615,7 +624,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 				isbuynow = false;//add to cart
 				message.obj = "start";
 				handler.sendMessage(message);
-				progressBarPop.show();
+				progressBarPop.show(0);
 			}else {
 				intent = new Intent(this, LoginActivity.class);
 				startActivity(intent);
@@ -785,4 +794,15 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("MakegiftActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	
+	
 }

@@ -10,11 +10,6 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.baidu.mapapi.model.LatLng;
-import com.pictureAir.MyApplication;
-import com.pictureAir.fragment.FragmentPageStory;
-import com.pictureAir.util.AppUtil;
-
 public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 	public String locationId;// 地点ID
 	public String locationIds;//地点ID集合

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 import com.hb.views.PinnedSectionListView.PinnedSectionListAdapter;
 import com.pictureAir.PreviewPhotoActivity;
 import com.pictureAir.R;
-import com.pictureAir.blur.BlurActivity;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.entity.PhotoItemInfo;
 import com.pictureAir.util.AppUtil;
@@ -37,19 +35,21 @@ import com.pictureAir.util.UniversalImageLoadTool;
  */
 public class StoryPinnedListViewAdapter extends BaseAdapter implements PinnedSectionListAdapter, SectionIndexer{
 	private ArrayList<PhotoItemInfo> picList;//照片列表
+	private ArrayList<PhotoInfo> magicPhotoInfoList;
 	private PhotoItemInfo [] sectionList;//section悬浮列表
 	private LayoutInflater layoutInflater;
-	private PhotoItemInfo photoItemInfo;
 	private Context context;
 	private static final int SECTION = 0;
 	private static final int ITEM = 1;
 	private static final String TAG = "StoryPinnedListView";
 	
-	public StoryPinnedListViewAdapter(Context context, ArrayList<PhotoItemInfo> list) {
+	public StoryPinnedListViewAdapter(Context context, ArrayList<PhotoItemInfo> list, ArrayList<PhotoInfo> magicList) {
 		picList = list;
+		magicPhotoInfoList = magicList;
 		this.context = context;
 		sectionList = (PhotoItemInfo[]) list.toArray(new PhotoItemInfo[list.size()]);
 		layoutInflater = LayoutInflater.from(context);
+		
 	}
 	
 	@Override
@@ -149,7 +149,7 @@ public class StoryPinnedListViewAdapter extends BaseAdapter implements PinnedSec
 				imageView.setScaleType(ScaleType.CENTER_CROP);
 				imageView.setId(position*10+j);//给添加的imageview添加id
 				//imageview设置监听
-				imageView.setOnClickListener(new PhotoOnClickListener(picList.get(position / 2).list.get(j), picList.get(position / 2).place));
+				imageView.setOnClickListener(new PhotoOnClickListener(picList.get(position / 2).list.get(j)));
 				viewHolder.picGridLayout.addView(imageView,params);
 				
 			}
@@ -190,33 +190,27 @@ public class StoryPinnedListViewAdapter extends BaseAdapter implements PinnedSec
 	//照片点击的监听类
 	private class PhotoOnClickListener implements OnClickListener{
 		private PhotoInfo info;
-		private String locationName;
-		public PhotoOnClickListener(PhotoInfo info, String locationName) {
+		public PhotoOnClickListener(PhotoInfo info) {
 			this.info = info;
 		}
 		@Override
 		public void onClick(View v) {
 			Log.d(TAG, "photo on " + v.getId() / 10 +" row "+ v.getId() % 10 +" column");
 			Intent i = new Intent();
-			if (info.onLine == 0 || info.isPayed == 1) {
-				System.out.println("has bought");
-				ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-				photopassArrayList.add(info);
-				i.setClass(context, PreviewPhotoActivity.class);
-				i.putExtra("activity", "fragmentpage1");
-				i.putExtra("flag", info.onLine);//哪个相册的标记
-				i.putExtra("position", 0+"");//在那个相册中的位置
-				i.putExtra("photoId", info.photoId);
-//				i.putExtra("locationName", locationName);
-				i.putExtra("photos", photopassArrayList);//那个相册的全部图片路径
-				i.putExtra("targetphotos", new ArrayList<PhotoInfo>());
-			}else {
-				i.setClass(context, BlurActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelable("photo", info);
-//				bundle.putString("locationName", locationName);
-				i.putExtras(bundle);
+			ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
+			//需要将picList中的图片数据全部转到成photopassArrayList
+			for (int j = 0; j < picList.size(); j++) {
+				photopassArrayList.addAll(picList.get(j).list);
 			}
+			System.out.println("photopass list size is ----->"+ photopassArrayList.size());
+			System.out.println("photopass list index is ----->"+ photopassArrayList.indexOf(info));
+			i.setClass(context, PreviewPhotoActivity.class);
+			i.putExtra("activity", "storyPinnedListViewAdapter");
+			i.putExtra("position", photopassArrayList.indexOf(info)+"");//在那个相册中的位置
+			i.putExtra("photoId", info.photoId);
+			i.putExtra("photos", photopassArrayList);//那个相册的全部图片路径
+			i.putExtra("targetphotos", magicPhotoInfoList);
+
 			context.startActivity(i);
 		}
 		

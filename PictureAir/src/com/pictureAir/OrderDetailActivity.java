@@ -2,78 +2,73 @@ package com.pictureAir;
 
 import java.util.ArrayList;
 
+import com.pictureAir.adapter.OrderProductDetailAdapter;
+import com.pictureAir.entity.CartItemInfo;
+import com.pictureAir.entity.OrderInfo;
+import com.pictureAir.util.Common;
+import com.pictureAir.widget.NoScrollListView;
+import com.umeng.analytics.MobclickAgent;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureAir.adapter.OrderProductDetailAdapter;
-import com.pictureAir.entity.CartItemInfo;
-import com.pictureAir.entity.OrderInfo;
-import com.pictureAir.util.AppManager;
-import com.pictureAir.util.Common;
-import com.pictureAir.widget.NoScrollListView;
+
 /**
  * 订单详情界面
  * @author bauer_bao
  *
  */
-public class OrderDetailActivity extends BaseActivity implements OnClickListener{
+public class OrderDetailActivity extends Activity implements OnClickListener{
 
 	private Button deliveryButton;
-	private TextView orderNumber, orderTime, payMethod, orderStatus, customer, phoneNumber, address, productPrice, shippingPrice, totalPrice, productCurrency, shipCurrency, totalCurrency;
-	private NoScrollListView noScrollListView;
-	private ImageView backLayout;
-	private LinearLayout addressLayout;
-	
+	private TextView orderNumber,orderTime,payMethod,orderStatus,productPrice,address;
 	private OrderInfo orderInfo;
 	private ArrayList<CartItemInfo> orderDetailArrayList;
+	private SharedPreferences sharedPreferences;
+	private LinearLayout deliveryInfo;
 	
-	private String paymethod = null;
-	private String orderstatus = null;
+	private ImageView back;
+	
+	private String paymethod = null; //支付方式
+	private String orderstatus = null; //订单状态
 	private String currency = null;
 	
-	private SharedPreferences sharedPreferences;
-	
+	private NoScrollListView noScrollListView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.order_detail_activity);
+		setContentView(R.layout.activity_order_detail);
 		initView();
 	}
 	
-	private void initView() {
-		// TODO Auto-generated method stub
-		AppManager.getInstance().addActivity(this);
-		deliveryButton = (Button)findViewById(R.id.order_detail_payment);
-		backLayout = (ImageView)findViewById(R.id.order_detail_return);
-		orderNumber = (TextView)findViewById(R.id.order_detail_number);
-		orderTime = (TextView)findViewById(R.id.order_detail_time);
-		payMethod = (TextView)findViewById(R.id.order_detail_paymethod);
-		orderStatus = (TextView)findViewById(R.id.order_status);
-		customer = (TextView)findViewById(R.id.order_customer);
-		phoneNumber = (TextView)findViewById(R.id.order_phone_number);
-		address = (TextView)findViewById(R.id.order_delivery_address);
-		productPrice = (TextView)findViewById(R.id.order_productprice);
-		productCurrency = (TextView)findViewById(R.id.order_productprice_currency);
-		shipCurrency = (TextView)findViewById(R.id.order_shipping_currency);
-		shippingPrice = (TextView)findViewById(R.id.order_shipping);
-		totalPrice = (TextView)findViewById(R.id.order_totalprice);
-		totalCurrency = (TextView)findViewById(R.id.order_totalprice_currency);
-		noScrollListView = (NoScrollListView)findViewById(R.id.product_detail_listview);
-		addressLayout = (LinearLayout)findViewById(R.id.order_address);
-		backLayout.setOnClickListener(this);
-		deliveryButton.setOnClickListener(this);
+	private void initView(){
+		deliveryButton = (Button) findViewById(R.id.order_detail_payment);
+		orderNumber = (TextView) findViewById(R.id.order_detail_number);
+		orderTime = (TextView) findViewById(R.id.order_detail_time);
+		payMethod = (TextView) findViewById(R.id.order_detail_paymethod);
+		orderStatus = (TextView) findViewById(R.id.order_status);
+		productPrice = (TextView) findViewById(R.id.order_productprice);
 		
+		address = (TextView) findViewById(R.id.order_delivery_address);
+		
+		noScrollListView = (NoScrollListView)findViewById(R.id.product_detail_listview);
+		
+		back = (ImageView) findViewById(R.id.order_detail_return);
+		deliveryInfo = (LinearLayout) findViewById(R.id.deliveryInfo);
+		
+		deliveryButton.setOnClickListener(this);
+		back.setOnClickListener(this);
 		getData();
 		
 		orderNumber.setText(orderInfo.orderNumber);
@@ -96,8 +91,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 			break;
 		}
 		
-		payMethod.setText(paymethod);
-		
+		payMethod.setText(paymethod);  //支付方式
 		switch (orderInfo.orderStatus) {
 		//订单当前状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结
 		case 1:
@@ -135,78 +129,72 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 		}
 		orderStatus.setText(orderstatus);
 		
-		if (orderInfo.deliveryCustomer != null && !"".equals(orderInfo.deliveryCustomer)) {//有地址
-			addressLayout.setVisibility(View.VISIBLE);
-			customer.setText(orderInfo.deliveryCustomer);
-			phoneNumber.setText(orderInfo.deliveryPhoneNumber + "  " + orderInfo.deliveryHomeNumber);
-			address.setText(orderInfo.deliveryAddress);
-		}else {//没有地址，隐藏
-			addressLayout.setVisibility(View.GONE);
-		}
-		
 		productPrice.setText((int)orderInfo.productPrice + "");
-		shippingPrice.setText((int)orderInfo.deliveryShipping + "");
-		totalPrice.setText((int)orderInfo.orderTotalPrice + "");
-		productCurrency.setText(currency);
-		shipCurrency.setText(currency);
-		totalCurrency.setText(currency);
-		noScrollListView.setAdapter(new OrderProductDetailAdapter(this, orderDetailArrayList, currency));
-	}
-	
-	//获取初始化的数据
-	private void getData() {
-		Bundle bundle = getIntent().getExtras();
-		orderInfo = bundle.getParcelable("groupitem");
-		orderDetailArrayList = bundle.getParcelableArrayList("childitemlist");
-		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE);
-		currency = sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.order_detail_return:
-			finish();
+		
+		
+		Log.e("＝＝＝＝＝＝＝＝＝", "orderInfo.deliveryMethod： "+orderInfo.deliveryMethod);
+		Log.e("＝＝＝＝＝＝＝＝＝", "orderInfo.deliveryCustomer： "+orderInfo.deliveryCustomer);
+		switch (orderInfo.deliveryMethod) {
+		case 1:
+			//自提
+			address.setText(R.string.disney_address);
 			break;
-			
-		case R.id.order_detail_payment:
-			Intent intent = null;
-			switch (orderInfo.orderStatus) {
-			case 1://1等待买家付款
-				intent = new Intent(this, PaymentOrderActivity.class);
-				intent.putExtra("flag", "order");
-				intent.putExtra("deliveryInfo", orderInfo);
-				startActivity(intent);
-				finish();
-				break;
-
-//			case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-//			case 3:
-//				intent = new Intent(this, DeliveryActivity.class);
-//				Bundle bundle = new Bundle();
-//				bundle.putParcelable("deliveryInfo", orderInfo);
-//				intent.putExtras(bundle);
-//				startActivity(intent);
-//				break;
-
-			case 4://4交易成功，5交易关闭,订单冻结
-			case 5:
-				System.out.println("buyagain");
-				break;
-
-			default:
-				break;
-			}
+		case 3:
+			//虚拟类商品无须快递,
+			deliveryInfo.setVisibility(View.GONE);
 			break;
 
 		default:
 			break;
 		}
+		
+		noScrollListView.setAdapter(new OrderProductDetailAdapter(this, orderDetailArrayList, currency));
+	}
+	
+	
+	// 获取初始化的数据
+	private void getData() {
+		Bundle bundle = getIntent().getExtras();
+		orderInfo = bundle.getParcelable("groupitem");
+		orderDetailArrayList = bundle.getParcelableArrayList("childitemlist");
+		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
+				Context.MODE_PRIVATE);
+		currency = sharedPreferences.getString(Common.CURRENCY,
+				Common.DEFAULT_CURRENCY);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.order_detail_return:
+			this.finish();
+			break;
+		case R.id.order_detail_payment:
+			Intent intent = new Intent(this, PaymentOrderActivity.class);
+			intent.putExtra("flag", "order");
+			intent.putExtra("deliveryInfo", orderInfo);
+			startActivity(intent);
+			finish();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("OrderDetailActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("OrderDetailActivity");
+		MobclickAgent.onResume(this);
 	}
 }

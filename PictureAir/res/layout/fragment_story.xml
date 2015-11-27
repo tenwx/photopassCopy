@@ -15,26 +15,26 @@
         <RelativeLayout
             android:id="@+id/storyScanRelativeLayout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" 
-            android:padding="10dp">
+            android:layout_height="match_parent"
+            android:padding="10dp" >
 
             <ImageView
                 android:id="@+id/story_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:padding="1dp"
                 android:adjustViewBounds="true"
+                android:padding="1dp"
                 android:src="@drawable/scan_box4" />
 
             <ImageView
                 android:id="@+id/scan_red_point"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
                 android:layout_alignRight="@id/story_scan"
-                android:visibility="gone"
-                android:src="@drawable/notificaitonpoint" />
+                android:adjustViewBounds="true"
+                android:src="@drawable/notificaitonpoint"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <TextView
@@ -59,11 +59,48 @@
             android:src="@drawable/menu_icon" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/loop_relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/story_title"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/loop_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/close_loop_button"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="8"
+            android:shadowRadius="1"
+            android:singleLine="true"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/close_loop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@drawable/address_delete_press" />
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/story_lead_bar"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@id/story_title"
+        android:layout_below="@id/loop_relativeLayout"
         android:background="@color/white"
         android:orientation="horizontal"
         android:visibility="gone" >
@@ -181,8 +218,9 @@
         android:id="@+id/story_no_pp_to_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/story_title"
-        android:orientation="vertical" >
+        android:layout_below="@id/loop_relativeLayout"
+        android:orientation="vertical"
+        android:visibility="gone" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -217,15 +255,10 @@
             android:layout_marginRight="40dp"
             android:orientation="horizontal" >
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/story_scan_tips_icon" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="20dp"
                 android:text="@string/story_no_pp"
                 android:textColor="@color/gray"
                 android:textSize="15sp" />
@@ -237,6 +270,45 @@
             android:layout_weight="2"
             android:adjustViewBounds="true"
             android:background="@drawable/story_tips_bg" />
+    </LinearLayout>
+
+    <com.pictureAir.widget.NoNetWorkOrNoCountView
+        android:id="@+id/storyNoNetWorkView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/loop_relativeLayout"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/no_photo_view_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/loop_relativeLayout"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="40dp"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/story_no_photo_1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/story_no_photo"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:src="@drawable/story_no_photo" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -27,6 +27,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public long lastModify;//文件最后修改的时间
 	public int isLove;//是否收藏 0：未收藏；1：已收藏
 	public int onLine;//1线上图片，0，本地图片
+	public String locationName;//每张图片的地点名称
 	
 
 	public static final Parcelable.Creator<PhotoInfo> CREATOR = new Creator<PhotoInfo>() {
@@ -66,6 +67,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		lastModify = source.readLong();
 		isLove = source.readInt();
 		onLine = source.readInt();
+		locationName = source.readString();
 	}
 
 	@Override
@@ -94,6 +96,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeLong(lastModify);
 		dest.writeInt(isLove);
 		dest.writeInt(onLine);
+		dest.writeString(locationName);
 	}
 
 	@Override

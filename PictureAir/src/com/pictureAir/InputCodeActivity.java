@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -32,12 +34,13 @@ import com.loopj.android.http.RequestParams;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 /**
  * 手动输入条码的页面
  * */
-public class InputCodeActivity extends BaseActivity implements OnClickListener{
+public class InputCodeActivity extends Activity implements OnClickListener{
 	private Button ok;
 	private EditText input;
 	private ImageView back;
@@ -52,7 +55,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.inputcode);
+		setContentView(R.layout.activity_inputcode);
 		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		initview();
@@ -347,7 +350,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		}
 		System.out.println("return32");
 
-		HttpsUtil.get(urlString, params, new JsonHttpResponseHandler(){
+		HttpUtil.get(urlString, params, new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -385,6 +388,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		case R.id.back:
 			//			Intent intent = new Intent(this, MipcaActivityCapture.class);
 			//			startActivity(intent);
+			if (getIntent().getBooleanExtra("needCallBack", false)) {
+				setResult(RESULT_CANCELED);
+			}
 			finish();
 			break;
 		case R.id.sure:
@@ -397,11 +403,17 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 			}else {
 				//如果有键盘显示，把键盘取消掉
 				hideInputMethodManager(v);
-				//				API.checkCodeAvailable(input.getText().toString(), handler2);
-				Intent intent = new Intent();
-				intent.putExtra("code", input.getText().toString().trim().toUpperCase());
-				setResult(RESULT_OK, intent);
-				finish();
+				if (!getIntent().getBooleanExtra("needCallBack", false)) {//不需要传递回去
+					System.out.println("不需要传递回去");
+					API.checkCodeAvailable(input.getText().toString().trim().toUpperCase(), handler2);
+
+				}else {//需要传递回去
+					System.out.println("需要传递回去");
+					Intent intent = new Intent();
+					intent.putExtra("code", input.getText().toString().trim().toUpperCase());
+					setResult(RESULT_OK, intent);
+					finish();
+				}
 			}
 			break;
 		default:
@@ -413,5 +425,21 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("InputCodeActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("InputCodeActivity");
+		MobclickAgent.onResume(this);
 	}
 }

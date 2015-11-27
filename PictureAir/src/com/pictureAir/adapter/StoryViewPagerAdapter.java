@@ -17,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshPinnedSectionListView;
 import com.pictureAir.R;
+import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.entity.PhotoItemInfo;
 import com.pictureAir.fragment.FragmentPageStory;
 /**
@@ -40,6 +41,7 @@ public class StoryViewPagerAdapter extends PagerAdapter{
 	private ArrayList<PhotoItemInfo> photoPassArrayList;
 	private ArrayList<PhotoItemInfo> magicArrayList;
 	private ArrayList<PhotoItemInfo> boughtArrayList;
+	private ArrayList<PhotoInfo> magicPhotoList;
 	private final static String TAG = "StoryViewPagerAdapter";
 	private Handler handler;
 	
@@ -52,13 +54,14 @@ public class StoryViewPagerAdapter extends PagerAdapter{
 //	};
 	
 	public StoryViewPagerAdapter(Context context, List<View> list, ArrayList<PhotoItemInfo> allList, ArrayList<PhotoItemInfo> photoPassList, 
-			ArrayList<PhotoItemInfo> magicList, ArrayList<PhotoItemInfo> boughtList, Handler handler) {
+			ArrayList<PhotoItemInfo> magicList, ArrayList<PhotoItemInfo> boughtList, ArrayList<PhotoInfo> magicPhotoList, Handler handler) {
 		listViews = list;
 		this.context = context;
 		allArrayList = allList;
 		photoPassArrayList = photoPassList;
 		magicArrayList = magicList;
 		boughtArrayList = boughtList;
+		this.magicPhotoList = magicPhotoList;
 		this.handler = handler;
 		Log.d(TAG, "arraylist size---->"+list.size());
 		
@@ -81,7 +84,7 @@ public class StoryViewPagerAdapter extends PagerAdapter{
 		switch (position) {
 		case 0:
 			pullToRefreshPinnedSectionAllListView = (PullToRefreshPinnedSectionListView)listViews.get(position).findViewById(R.id.pullToRefreshPinnedSectionListView);
-			storyPinnedAllListViewAdapter = new StoryPinnedListViewAdapter(context, allArrayList);
+			storyPinnedAllListViewAdapter = new StoryPinnedListViewAdapter(context, allArrayList, magicPhotoList);
 //			pullToRefreshPinnedSectionAllListView.getRefreshableView().setFastScrollEnabled(true);
 //			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 //				pullToRefreshPinnedSectionAllListView.getRefreshableView().setFastScrollAlwaysVisible(true);
@@ -92,7 +95,7 @@ public class StoryViewPagerAdapter extends PagerAdapter{
 			
 		case 1:
 			pullToRefreshPinnedSectionPhotoPassListView = (PullToRefreshPinnedSectionListView)listViews.get(position).findViewById(R.id.pullToRefreshPinnedSectionListView);
-			storyPinnedPhotoPassListViewAdapter = new StoryPinnedListViewAdapter(context, photoPassArrayList);
+			storyPinnedPhotoPassListViewAdapter = new StoryPinnedListViewAdapter(context, photoPassArrayList, magicPhotoList);
 //			pullToRefreshPinnedSectionPhotoPassListView.getRefreshableView().setFastScrollEnabled(true);
 //			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 //				pullToRefreshPinnedSectionPhotoPassListView.getRefreshableView().setFastScrollAlwaysVisible(true);
@@ -103,7 +106,7 @@ public class StoryViewPagerAdapter extends PagerAdapter{
 			
 		case 2:
 			pullToRefreshPinnedSectionMagicListView = (PullToRefreshPinnedSectionListView)listViews.get(position).findViewById(R.id.pullToRefreshPinnedSectionListView);
-			storyPinnedMagicListViewAdapter = new StoryPinnedListViewAdapter(context, magicArrayList);
+			storyPinnedMagicListViewAdapter = new StoryPinnedListViewAdapter(context, magicArrayList, magicPhotoList);
 //			pullToRefreshPinnedSectionMagicListView.getRefreshableView().setFastScrollEnabled(true);
 //			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 //				pullToRefreshPinnedSectionMagicListView.getRefreshableView().setFastScrollAlwaysVisible(true);
@@ -114,7 +117,7 @@ public class StoryViewPagerAdapter extends PagerAdapter{
 			
 		case 3:
 			pullToRefreshPinnedSectionBoughtListView = (PullToRefreshPinnedSectionListView)listViews.get(position).findViewById(R.id.pullToRefreshPinnedSectionListView);
-			storyPinnedBoughtListViewAdapter = new StoryPinnedListViewAdapter(context, boughtArrayList);
+			storyPinnedBoughtListViewAdapter = new StoryPinnedListViewAdapter(context, boughtArrayList, magicPhotoList);
 //			pullToRefreshPinnedSectionBoughtListView.getRefreshableView().setFastScrollEnabled(true);
 //			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 //				pullToRefreshPinnedSectionBoughtListView.getRefreshableView().setFastScrollAlwaysVisible(true);

@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +30,9 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -37,18 +41,19 @@ import com.loopj.android.http.RequestParams;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.zxing.camera.CameraManager;
 import com.pictureAir.zxing.decoding.CaptureActivityHandler;
 import com.pictureAir.zxing.decoding.InactivityTimer;
 import com.pictureAir.zxing.view.ViewfinderView;
+import com.umeng.analytics.MobclickAgent;
 /**
  * Initial the camera
  * @author Talon
  */
-public class MipCaptureActivity extends BaseActivity implements Callback {
+public class MipCaptureActivity extends Activity implements Callback {
 
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;
@@ -172,7 +177,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 				
 			case SCAN_FAILED:
 			case API.FAILURE://网络异常
-				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+				newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
 				finish();
 				break;
 			case API.CHECK_CODE_FAILED://返回数据的tip提示，并且结束当前界面
@@ -325,6 +330,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 			public void onClick(View arg0) {
 				//跳转到输入  code 的界面。
 				Intent i = new Intent(MipCaptureActivity.this, com.pictureAir.InputCodeActivity.class);
+				i.putExtra("needCallBack", true);
 				startActivityForResult(i, MANUAL_INPUT_CODE);
 			}
 		});
@@ -335,6 +341,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onPageStart("MipCaptureActivity");
+		MobclickAgent.onResume(this);
 		System.out.println("resume==============");
 
 		SurfaceHolder surfaceHolder = surfaceView.getHolder();
@@ -360,6 +368,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		MobclickAgent.onPageEnd("MipCaptureActivity");
+		MobclickAgent.onPause(this);
 		System.out.println("----------pause");
 		if (handler != null) {
 			handler.quitSynchronously();
@@ -417,8 +427,15 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 		try {
 			CameraManager.get().openDriver(surfaceHolder);
 		} catch (IOException ioe) {
+			System.out.println("meiyou dakai xiangji1");
 			return;
 		} catch (RuntimeException e) {
+			newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
+			Intent intent = new Intent();
+			intent.putExtra("needCallBack", false);
+			intent.setClass(this, InputCodeActivity.class);
+			startActivity(intent);
+			finish();
 			return;
 		}
 		if (handler == null) {
@@ -532,7 +549,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 		}
 		System.out.println("return32");
 
-		HttpsUtil.get(urlString, params, new JsonHttpResponseHandler(){
+		HttpUtil.get(urlString, params, new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
@@ -602,4 +619,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 			
 		}
 	}
+	
+	
+	
+	
 }

@@ -90,7 +90,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 		imageViews = new ArrayList<ImageView>();
 		
 		//初始化数据
-		if (Common.PHOTOPASS_NAME.equals(arrayList.get(position).cart_productName)) {//照片产品
+		if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(arrayList.get(position).cart_productName)) {//照片产品
 			Log.d(TAG, "pp product");
 			if (arrayList.get(position).cart_productImageUrl.contains("http")) {
 				imageLoader.displayImage(arrayList.get(position).cart_productImageUrl, viewHolder.goodImageView);

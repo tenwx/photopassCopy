@@ -4,25 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import cn.sharesdk.facebook.b;
-
-import com.handmark.pulltorefresh.library.PullToRefreshPinnedSectionListView;
-import com.pictureAir.adapter.EditStoryPinnedListViewAdapter;
-import com.pictureAir.customDialog.CustomDialog;
-import com.pictureAir.entity.CartItemInfo;
-import com.pictureAir.entity.PhotoInfo;
-import com.pictureAir.entity.PhotoItemInfo;
-import com.pictureAir.util.AppManager;
-import com.pictureAir.util.Common;
-import com.pictureAir.widget.MyToast;
-import com.pictureAir.widget.SharePop;
-
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,23 +15,41 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshPinnedSectionListView;
+import com.pictureAir.adapter.EditStoryPinnedListViewAdapter;
+import com.pictureAir.customDialog.CustomDialog;
+import com.pictureAir.entity.PhotoInfo;
+import com.pictureAir.entity.PhotoItemInfo;
+import com.pictureAir.util.AppManager;
+import com.pictureAir.util.Common;
+import com.pictureAir.widget.CustomProgressBarPop;
+import com.pictureAir.widget.MyToast;
+import com.pictureAir.widget.SharePop;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 编辑story中的相册页面
  * @author bauer_bao
  *
  */
-public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
+public class EditStoryAlbumActivity extends Activity implements OnClickListener{
 	private ImageView backRelativeLayout;
+	private ImageView editPhotoImageView;
 	private TextView selectAllTextView;
 	private TextView shareTextView;
 	private TextView deleteTextView;
 	private TextView buyTextView;
 	private TextView selectDisAllTextView;
-	private ProgressDialog deleteFileDialog;
+	private LinearLayout editBarLinearLayout;
+//	private ProgressDialog deleteFileDialog;
+	private CustomProgressBarPop customProgressBarPop;
 	private PullToRefreshPinnedSectionListView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
 	
@@ -56,14 +58,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private ArrayList<PhotoInfo> photoURLlist = new ArrayList<PhotoInfo>();//选择的图片的list
 	private static final String TAG = "EditStoryAlbumActivity";
 	private final static int DELETEFILE = 12;
-	private final static int PROGRESSDIALOG = 0x112;
+//	private final static int PROGRESSDIALOG = 0x112;
 	private int photoCount = 0;
 	private int currentProgress = 0;
-	private boolean isSelectAll = false;
 	private SharePop sharePop;//分享
-	private int shareType = 0;
 	private MyToast myToast;
 	private CustomDialog customdialog;
+	private boolean editMode = false;
+	private ImageView footerView;//防止点击编辑的时候，listview会跳动，所以加了一个footerView，绕道解决了跳动的问题
+	private int bottomBarHeight = 0;//记录底部编辑栏的高度
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -89,8 +92,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
-			case DELETEFILE:
-				deleteFileDialog.setProgress(msg.arg1);
+			case DELETEFILE://删除图片操作
+//				deleteFileDialog.setProgress(msg.arg1);
+				customProgressBarPop.setProgress(msg.arg1, photoURLlist.size());
 				if (msg.arg1 == photoURLlist.size()) {
 					System.out.println("has delete all files");
 					Iterator<PhotoInfo> iterator2 = photoURLlist.iterator();
@@ -102,7 +106,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							iterator2.remove();
 						}
 					}
-//					photoURLlist.clear();
 					currentProgress = 0;
 					Iterator<PhotoItemInfo> iterator = albumArrayList.iterator();
 					while (iterator.hasNext()) {
@@ -114,24 +117,17 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						}
 					}
 					
-//					for (int i = 0; i < albumArrayList.size(); i++) {
-//						System.out.println("name = "+ albumArrayList.get(i).place);
-//						System.out.println("shoot time = "+ albumArrayList.get(i).shootTime);
-//					}
 					editStoryPinnedListViewAdapter.updateData(albumArrayList);
 					if (photoURLlist.size() == 0) {
 						shareTextView.setEnabled(false);
 						deleteTextView.setEnabled(false);
 						buyTextView.setEnabled(false);
 					}
-					deleteFileDialog.dismiss();
-					removeDialog(msg.arg2);//删除对应ID的dialog
+//					deleteFileDialog.dismiss();
+					customProgressBarPop.dismiss();
+//					removeDialog(msg.arg2);//删除对应ID的dialog
 				}
 				((MyApplication)getApplication()).scanMagicFinish = false;
-				break;
-				
-			case SharePop.TWITTER:
-				shareType = msg.what;
 				break;
 
 			default:
@@ -144,8 +140,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit_story_photo_activity);
+		setContentView(R.layout.activity_edit_story_photo);
 		AppManager.getInstance().addActivity(this);
+		
 		//find控件
 		backRelativeLayout = (ImageView) findViewById(R.id.rlrt);
 		selectAllTextView = (TextView) findViewById(R.id.select_all);
@@ -153,8 +150,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		deleteTextView = (TextView) findViewById(R.id.select_delete);
 		buyTextView = (TextView) findViewById(R.id.select_makegift);
 		selectDisAllTextView = (TextView) findViewById(R.id.select_disall);
+		editBarLinearLayout = (LinearLayout) findViewById(R.id.select_tools_linearlayout);
 		pinnedSectionListView = (PullToRefreshPinnedSectionListView) findViewById(R.id.pullToRefreshPinnedSectionListView);
+		editPhotoImageView = (ImageView) findViewById(R.id.imageButton_edit);
 		pinnedSectionListView.setPullToRefreshEnabled(false);
+		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.editStoryPhotoRelativeLayout), true);
 		
 		//绑定监听
 		backRelativeLayout.setOnClickListener(this);
@@ -174,18 +174,60 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		Bundle b = getIntent().getBundleExtra("photos");
 		albumArrayList = new ArrayList<PhotoItemInfo>();
 		originalAlbumArrayList = b.getParcelableArrayList("photos");
-		albumArrayList.addAll(originalAlbumArrayList);
-		for (int i = 0; i < albumArrayList.size(); i++) {
-			for (int j = 0; j < albumArrayList.get(i).list.size(); j++) {
-				albumArrayList.get(i).list.get(j).isSelected = 0;
-				albumArrayList.get(i).list.get(j).isChecked = 1;
-				photoCount++;
-			}
+		if (getIntent().getStringExtra("mode").equals("edit")) {//编辑模式
+			editMode = true;
+			editPhotoImageView.setVisibility(View.GONE);
+		}else if (getIntent().getStringExtra("mode").equals("noedit")) {//非编辑模式
+			editMode = false;
+			
+			editPhotoImageView.setOnClickListener(this);
 		}
-		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, albumArrayList, handler);
+		albumArrayList.addAll(originalAlbumArrayList);
+		setListCheckedStatus(editMode);
+		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, albumArrayList, handler, editMode, ((MyApplication)getApplication()).magicPicList);
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
 		sharePop = new SharePop(this);
 		myToast = new MyToast(this);
+		
+		footerView = new ImageView(EditStoryAlbumActivity.this);
+		
+		ViewTreeObserver viewTreeObserver = editBarLinearLayout.getViewTreeObserver();
+		viewTreeObserver.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+
+			@Override
+			public void onGlobalLayout() {
+				// TODO Auto-generated method stub
+				editBarLinearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				bottomBarHeight = editBarLinearLayout.getHeight();
+				System.out.println("editBarLinearLayout height is "+ editBarLinearLayout.getHeight());
+				LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, bottomBarHeight);
+				footerView.setLayoutParams(layoutParams);
+				if (!editMode) {
+					editBarLinearLayout.setVisibility(View.GONE);
+				}else {
+					pinnedSectionListView.getRefreshableView().addFooterView(footerView);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * 设置列表的编辑状态
+	 * @param isEdit
+	 */
+	private void setListCheckedStatus(boolean isEdit) {
+		photoCount = 0;
+		for (int i = 0; i < albumArrayList.size(); i++) {
+			for (int j = 0; j < albumArrayList.get(i).list.size(); j++) {
+				albumArrayList.get(i).list.get(j).isSelected = 0;
+				if (isEdit) {
+					albumArrayList.get(i).list.get(j).isChecked = 1;
+				}else {
+					albumArrayList.get(i).list.get(j).isChecked = 0;
+				}
+				photoCount++;
+			}
+		}
 	}
 
 	@Override
@@ -204,7 +246,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		case R.id.select_disall:
 			//全取消操作
 			System.out.println("disselect all");
-			isSelectAll = false;
 			selectAllTextView.setVisibility(View.VISIBLE);
 			selectDisAllTextView.setVisibility(View.GONE);
 			editStoryPinnedListViewAdapter.startSelectPhoto(1, 0);
@@ -217,27 +258,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			break;
 			
 		case R.id.select_all:
-//			if (!isSelectAll) {
 			//全选操作
-				isSelectAll = true;
-				selectDisAllTextView.setVisibility(View.VISIBLE);
-				selectAllTextView.setVisibility(View.GONE);
-//				selectAllTextView.setText(R.string.disall);
-				System.out.println("select all");
-				editStoryPinnedListViewAdapter.startSelectPhoto(1, 1);
-				selectall(originalAlbumArrayList);
-				shareTextView.setEnabled(true);
-				deleteTextView.setEnabled(true);
-				buyTextView.setEnabled(true);
-//			}else {//全取消操作
-//				System.out.println("disselect all");
-//				isSelectAll = false;
-//				selectAllTextView.setText(R.string.all);
-//				editStoryPinnedListViewAdapter.startSelectPhoto(1, 0);
-//				System.out.println("size======"+photoURLlist.size());
-//				photoURLlist.clear();//每次全选，清空全部数据
-//				System.out.println("size======"+photoURLlist.size());
-//			}
+			selectDisAllTextView.setVisibility(View.VISIBLE);
+			selectAllTextView.setVisibility(View.GONE);
+			System.out.println("select all");
+			editStoryPinnedListViewAdapter.startSelectPhoto(1, 1);
+			selectall(originalAlbumArrayList);
+			shareTextView.setEnabled(true);
+			deleteTextView.setEnabled(true);
+			buyTextView.setEnabled(true);
 			break;
 			
 		case R.id.select_share:
@@ -253,13 +282,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						myToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL,null, "online",mhHandler);
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online");
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					System.out.println("本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, null,"local",mhHandler);
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local");
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张
@@ -290,19 +319,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			boolean hasNetWorkPhoto = false;
 			boolean hasLocalPhoto = false;
 			for (int i = 0; i < photoURLlist.size(); i++) {
-//				if (!hasNetWorkPhoto) {
-					if (photoURLlist.get(i).onLine == 1) {
-						if (!hasNetWorkPhoto) {
-							hasNetWorkPhoto = true;
-							
-						}
-					}else {
-						if (!hasLocalPhoto) {
-							
-							hasLocalPhoto = true;
-						}
+				if (photoURLlist.get(i).onLine == 1) {
+					if (!hasNetWorkPhoto) {
+						hasNetWorkPhoto = true;
 					}
-//				}
+				}else {
+					if (!hasLocalPhoto) {
+						hasLocalPhoto = true;
+					}
+				}
 			}
 			
 			if (hasNetWorkPhoto && hasLocalPhoto) {//如果有网络图片，也有本地照片，弹框提示
@@ -317,8 +342,36 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			}else if (hasNetWorkPhoto && !hasLocalPhoto) {//只有网络图片，没有本地图片
 				myToast.setTextAndShow(R.string.cannot_delete_in_PhotoPass, Common.TOAST_SHORT_TIME);
 			}else if (!hasNetWorkPhoto && hasLocalPhoto) {//只有本地图片
-				showDialog(PROGRESSDIALOG);
+//				showDialog(PROGRESSDIALOG);
+				customProgressBarPop.show(photoURLlist.size());
+				new Thread(){
+					public void run() {
+						doWork();
+//						doWork(PROGRESSDIALOG);
+					};
+				}.start();
 			}
+			break;
+			
+		case R.id.imageButton_edit://编辑操作
+			if (!editMode) {//开始编辑操作
+				editMode = true;
+				editBarLinearLayout.setVisibility(View.VISIBLE);
+				backRelativeLayout.setVisibility(View.GONE);
+				pinnedSectionListView.getRefreshableView().addFooterView(footerView);
+				setListCheckedStatus(editMode);
+			}else {//取消编辑操作
+				editMode = false;
+				editBarLinearLayout.setVisibility(View.GONE);
+				backRelativeLayout.setVisibility(View.VISIBLE);
+				pinnedSectionListView.getRefreshableView().removeFooterView(footerView);
+				setListCheckedStatus(editMode);
+				System.out.println("select photo count is "+ photoURLlist.size());
+				photoURLlist.clear();
+				System.out.println("select photo count is "+ photoURLlist.size());
+			}
+			editStoryPinnedListViewAdapter.setEditMode(editMode);
+			editStoryPinnedListViewAdapter.notifyDataSetChanged();
 			break;
 			
 		default:
@@ -346,7 +399,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				Log.d(TAG, "找不到删除项");
 				
 			}
-			isSelectAll = false;
 			selectAllTextView.setVisibility(View.VISIBLE);
 			selectDisAllTextView.setVisibility(View.GONE);
 			if (photoURLlist.size() == 0) {
@@ -355,19 +407,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				buyTextView.setEnabled(false);
 			}
 			
-//			for (int i = 0; i < photoURLlist.size(); i++) {
-//				if (bundle.getString("pathOrUrl").equals(photoURLlist.get(i).photoPathOrURL)) {//如果找到之后立刻删除，会对list的长度有影响，for循环会报错
-//					result = i;
-//					resultString = true;
-//				}
-//			}
-//			if (resultString) {
-//				photoURLlist.remove(result);
-//				result = 0;
-//				resultString = false;
-//			}
-//			isSelectAll = false;
-//			selectall.setText(R.string.all);
 		}
 
 		//添加到list，首先遍历list，如果能够找到目标，则说明之前已经添加过，所以不需要做什么，如果没有找到目标，则添加到list中
@@ -392,10 +431,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			//判断是否已经全部选中，如果是，则将标记改为true
 			if (photoURLlist.size()==photoCount) {
-				isSelectAll = true;
 				selectAllTextView.setVisibility(View.GONE);
 				selectDisAllTextView.setVisibility(View.VISIBLE);
-//				selectAllTextView.setText(R.string.disall);
 			}
 			if (photoURLlist.size() > 0) {//如果有
 				shareTextView.setEnabled(true);
@@ -406,50 +443,50 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		}
 		
 		//创建dialog
-		@Override
-		@Deprecated
-		protected Dialog onCreateDialog(int id, Bundle args) {
-			switch (id) {
-			case PROGRESSDIALOG:
-				System.out.println("onCreateDialog------->"+photoURLlist.size());
-				deleteFileDialog = new ProgressDialog(EditStoryAlbumActivity.this);
-				deleteFileDialog.setTitle("Deleting");
-				deleteFileDialog.setCancelable(false);
-				deleteFileDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				break;
-
-			default:
-				break;
-			}
-			return deleteFileDialog;
-		}
+//		@Override
+//		@Deprecated
+//		protected Dialog onCreateDialog(int id, Bundle args) {
+//			switch (id) {
+//			case PROGRESSDIALOG:
+//				System.out.println("onCreateDialog------->"+photoURLlist.size());
+//				deleteFileDialog = new ProgressDialog(EditStoryAlbumActivity.this);
+//				deleteFileDialog.setTitle("Deleting");
+//				deleteFileDialog.setCancelable(false);
+//				deleteFileDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//				break;
+//
+//			default:
+//				break;
+//			}
+//			return deleteFileDialog;
+//		}
 		//创建完dialog之后会调用的方法
-		@Override
-		@Deprecated
-		protected void onPrepareDialog(final int id, Dialog dialog) {
-			// TODO Auto-generated method stub
-			super.onPrepareDialog(id, dialog);
-			System.out.println("onPrepareDialog------->"+photoURLlist.size());
-			deleteFileDialog.setMax(photoURLlist.size());
-			deleteFileDialog.setProgress(0);
-			switch (id) {
-			case PROGRESSDIALOG:
-				new Thread(){
-					public void run() {
-						doWork(id);
-					};
-				}.start();
-				break;
-
-			default:
-				break;
-			}
-		}
+//		@Override
+//		@Deprecated
+//		protected void onPrepareDialog(final int id, Dialog dialog) {
+//			// TODO Auto-generated method stub
+//			super.onPrepareDialog(id, dialog);
+//			System.out.println("onPrepareDialog------->"+photoURLlist.size());
+//			deleteFileDialog.setMax(photoURLlist.size());
+//			deleteFileDialog.setProgress(0);
+//			switch (id) {
+//			case PROGRESSDIALOG:
+//				new Thread(){
+//					public void run() {
+//						doWork(id);
+//					};
+//				}.start();
+//				break;
+//
+//			default:
+//				break;
+//			}
+//		}
 
 		/**
 		 * 删除文件的操作，完成比较耗时的操作
 		 */
-		private void doWork(int id) {
+		private void doWork() {
 			File file;
 			Message message; 
 			boolean hasFound = false;
@@ -464,8 +501,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					//删除Media数据库中的对应图片信息
 					System.out.println("删除Media表中的对应数据");
 					getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, Media.DATA+" like ?", params);
-					
-					
 					
 //					System.out.println(",需要删除的索引值----->"+photoURLlist.get(i).index.toString());
 					System.out.println("arraylist需要移除的文件是"+photoURLlist.get(i).photoPathOrURL);
@@ -503,7 +538,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				message = mhHandler.obtainMessage();
 				message.what = DELETEFILE;
 				message.arg1 = currentProgress;
-				message.arg2 = id;
+//				message.arg2 = id;
 //				message.obj = photoURLlist.get(i).photoPathOrURL;
 				mhHandler.sendMessage(message);
 			}
@@ -516,17 +551,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		 */
 		private void selectall(ArrayList<PhotoItemInfo> arraylist) {
 			Log.d(TAG, "select all");
-//			PhotoInfo selectedInfo;
 			System.out.println(photoURLlist.size());
 			photoURLlist.clear();//每次全选，清空全部数据
 			System.out.println(photoURLlist.size());
 			for (int i = 0; i < arraylist.size(); i++) {
 				photoURLlist.addAll(arraylist.get(i).list);
-//				selectedInfo = new PhotoInfo();
-//				selectedInfo.albumName = album;
-//				selectedInfo.photoPathOrURL = arraylist.get(i).photoPathOrURL;
-//				selectedInfo.index = i+"";
-//				photoURLlist.add(selectedInfo);//加入到list中
 			}
 			System.out.println(photoURLlist.size());
 		}
@@ -539,7 +568,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
 					System.out.println("ok");
-					showDialog(PROGRESSDIALOG);
+//					showDialog(PROGRESSDIALOG);
+					customProgressBarPop.show(photoURLlist.size());
+					new Thread(){
+						public void run() {
+							doWork();
+//							doWork(PROGRESSDIALOG);
+						};
+					}.start();
 					break;
 
 				case DialogInterface.BUTTON_NEGATIVE:
@@ -552,6 +588,22 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				}
 				dialog.dismiss();
 			}
-			
 		}
+		
+		@Override
+		protected void onPause() {
+			// TODO Auto-generated method stub
+			super.onPause();
+			MobclickAgent.onPageEnd("EditStoryAlbumActivity");
+			MobclickAgent.onPause(this);
+		}
+
+		@Override
+		protected void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+			MobclickAgent.onPageStart("EditStoryAlbumActivity");
+			MobclickAgent.onResume(this);
+		}
+		
 }

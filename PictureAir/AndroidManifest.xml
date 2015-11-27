@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pictureAir"
     android:versionCode="2"
-    android:versionName="1.28" >
+    android:versionName="1.42" >
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="21" />
 
     <supports-screens
         android:anyDensity="true"
@@ -44,7 +44,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:name="com.pictureAir.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
@@ -281,7 +281,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".widget.calendar.CalendarActivity"
+            android:name=".CalendarActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -300,6 +300,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
+        <activity
+            android:name=".PreviewFavoritePhotosActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
 
         <!-- alipay sdk begin -->
         <activity
@@ -351,15 +355,6 @@
                 <data android:scheme="wxd930ea5d5a258f4f" />
             </intent-filter>
         </activity>
-        <!-- 友盟反馈 -->
-        <activity android:name="com.umeng.fb.ConversationActivity" />
-
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="564c08dee0f55a15de002a72" />
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="360" />
 
         <receiver android:name=".wxapi.AppRegister" >
             <intent-filter>
@@ -368,24 +363,6 @@
         </receiver>
 
         <!-- shareSDK分享 -->
-        <!-- <activity
-            android:name="cn.sharesdk.framework.ShareSDKUIShell"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-            <intent-filter>
-                <data android:scheme="tencent1104063863" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity> -->
-        
-        
-         <!-- shareSDK分享 -->
         <activity
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -416,7 +393,7 @@
             	则分享结束以后不能得到正确的回调
             -->
             <intent-filter>
-                <data android:scheme="tencent1104727541" />
+                <data android:scheme="tencent1104063863" />
 
                 <action android:name="android.intent.action.VIEW" />
 
@@ -447,42 +424,15 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        
-          <!-- 调用新浪客户端分享，需要注册的回调activity -->
-        <activity
-            android:name="cn.sharesdk.sina.weibo.SinaActivity">
-            <intent-filter>
-				<action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-        </activity>
-        
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="67e009eeb01ae95ab229247e3d1153e0" />
-
-        <!-- 百度定位服务相关，需要开发者key -->
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" />
-
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="L0gfzo9mimQd0dEPLLWpDyOl" />
 
         <!-- notification 服务 -->
         <!-- 开启notification的服务 -->
         <service android:name="com.pictureAir.service.NotificationService" >
         </service>
-
-        <!-- notification里面的  广播接受 -->
-        <receiver android:name="com.pictureAir.receiver.AlertManagerRecriver" >
-            <intent-filter android:priority="500" >
-                <action android:name="com.receiver.AlertManagerRecriver" >
-                </action>
-            </intent-filter>
-        </receiver>
 
         <!-- 开机自启 -->
         <receiver
@@ -502,6 +452,24 @@
                 </action>
             </intent-filter>
         </receiver>
+
+        <!-- 广播 不需要在 配置文件中注册，否则无法取消。 -->
+        <receiver android:name="com.pictureAir.receiver.NetBroadCastReciver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 友盟 统计 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="55c1b7dde0f55a39b3000c47" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="TEST_CHANNEL" />
     </application>
 
 </manifest>

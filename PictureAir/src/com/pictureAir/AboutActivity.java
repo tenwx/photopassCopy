@@ -5,15 +5,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class AboutActivity extends BaseActivity implements OnClickListener{
+import com.umeng.analytics.MobclickAgent;
+
+public class AboutActivity extends Activity implements OnClickListener{
     private TextView logo_text;
     private TextView tv_versionCode;
     private String versionCode;
@@ -59,8 +58,24 @@ public class AboutActivity extends BaseActivity implements OnClickListener{
 		default:
 			break;
 		}
-		
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("AboutActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("AboutActivity");
+		MobclickAgent.onResume(this);
+	}
+	
+	
 
 }

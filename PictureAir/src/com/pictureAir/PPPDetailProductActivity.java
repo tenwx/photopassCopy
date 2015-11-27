@@ -1,8 +1,6 @@
 package com.pictureAir;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,31 +26,26 @@ import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureAir.adapter.MyHorizontalListViewAdapter;
 import com.pictureAir.entity.CartItemInfo;
-import com.pictureAir.entity.GoodsInfo;
 import com.pictureAir.util.ACache;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.BannerView_Detail;
-import com.pictureAir.widget.HorizontalListView;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 /**
  * PP+商品明细类
  * @author bauer_bao
  *
  */
-public class PPPDetailProductActivity extends BaseActivity implements OnClickListener{
+public class PPPDetailProductActivity extends Activity implements OnClickListener{
 	//申明控件
 	private ViewGroup animMaskLayout;//动画层
 	private ImageView buyImg;// 这是在界面上跑的小图片
@@ -192,7 +183,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.detail_product_activity);
+		setContentView(R.layout.activity_detail_product);
 		//初始化控件
 		returnLayout = (ImageView)findViewById(R.id.rt);
 		cartImageView = (ImageView)findViewById(R.id.button_bag);
@@ -237,6 +228,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onPageStart("PPPDetailProductActivity");
+		MobclickAgent.onResume(this);
 		recordCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
 		if (recordCount<=0) {
 			cartCountTextView.setVisibility(View.INVISIBLE);
@@ -440,4 +433,14 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 		AppManager.getInstance().killActivity(this);
 
 	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("PPPDetailProductActivity");
+		MobclickAgent.onPause(this);
+	}
+
+
+	
 }

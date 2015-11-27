@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">PhotoPass</string>
+    <string name="app_name">pictureAir</string>
     <string name="xlistview_header_hint_normal">Pull to refresh</string>
     <string name="xlistview_header_hint_ready">Release to refresh</string>
     <string name="xlistview_header_hint_loading">Loading...</string>
@@ -11,7 +11,6 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">Confirm</string>
     <string name="msg_camera_framework_bug">Camera is busy</string>
-    <string name="action_settings">Settings</string>
     <string name="username">User name</string>
     <string name="pwd">Password</string>
     <string name="pwd_again">Repeat password</string>
@@ -19,14 +18,14 @@
     <string name="login">Login</string>
     <string name="sign">Sign Up</string>
     <string name="forgot">Forgot password?</string>
-    <string name="exit">"Double tap to exit PhotoPass"</string>
+    <string name="exit">"Double tap to exit PictureAir"</string>
     <string name="EM">Email/Mobile</string>
     <string name="send_captcha">Send text messages</string>
     <string name="scan_sign">Sign up</string>
     <string name="scan_middle">Connecting memories</string>
     <string name="scan_login">Have an account? Login</string>
-    <string name="whatspp">What is PhotoPass?</string>
-    <string name="whatsppp">What is PhotoPass+?</string>
+    <!-- <string name="whatspp">What is PhotoPass?</string> -->
+    <!-- <string name="whatsppp">What is PhotoPass+?</string> -->
     <string name="profile">Personal Profile</string>
     <string name="nn">Name</string>
     <string name="grender">Gender</string>
@@ -36,8 +35,8 @@
     <string name="share_photo">My shared photos</string>
     <string name="my_order">My Orders</string>
     <string name="order_history">Order History</string>
-    <string name="my_pp">My PhotoPass</string>
-    <string name="my_ppp">My PhotoPass+</string>
+    <!-- <string name="my_pp">My PhotoPass</string> -->
+    <string name="my_ppp">VIP</string>
     <string name="inputCode">Input your code</string>
     <string name="auto">Scan</string>
     <string name="manual">Manual</string>
@@ -47,7 +46,7 @@
     <string name="view">View</string>
     <string name="filter">Filter</string>
     <string name="shop">Shop</string>
-    <string name="pp">PhotoPass+</string>
+    <!-- <string name="pp">PhotoPass+</string> -->
     <string name="gifts">Gifts</string>
     <string name="like_it">Promotion</string>
     <string name="more">All the goods</string>
@@ -74,7 +73,6 @@
     <string name="revise">Revise</string>
     <string name="totalprice">Total:</string>
     <string name="mobile">Your Mobile Phone</string>
-    <string name="submit">Submit</string>
     <string name="checkout">Confirm</string>
     <string name="sample1">Sample: 13838382438</string>
     <string name="phone">Phone</string>
@@ -90,7 +88,7 @@
     <string name="pmtprc">Payment Price：</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
-    <string name="paypalzf">PayPal</string>
+    <string name="paypalzf">International Bank</string>
     <string name="zfbsm">Recommended</string>
     <string name="yhksm">Supported</string>
     <string name="at">\@</string>
@@ -106,20 +104,24 @@
     <string name="logout">Log Out</string>
     <string name="submit_opinions">Feedback</string>
     <string name="clear_cache">Clear Cache</string>
+    <!--
     <string name="scan_pp">Scan PhotoPass</string>
     <string name="scan_ppp">Scan PhotoPass+</string>
+    -->
     <string name="ppwith">Have pictures</string>
     <string name="ppwithout">No pictures</string>
     <string name="pppwith">Has been used</string>
     <string name="pppwithout">Not used</string>
-    <string name="upgrade_ppp">Upgrade \n PhotoPass+</string>
+    <!-- <string name="upgrade_ppp">Upgrade \n PhotoPass+</string> -->
     <string name="upgrade">Upgrade </string>
     <string name="preview">Preview Gift</string>
     <string name="picture_number">pic(%s)</string>
     <string name="tag_used">Tag(%1$d/%2$d)</string>
     <string name="set_head_photo">Set your Profile Photo</string>
+    <!--
     <string name="buy_ppp">Buy PhotoPass+</string>
     <string name="buy_ppp1">PhotoPass+</string>
+    -->
     <string name="ppp_bottom_text">This PhotoPass can upgrade and bind PhotoPass+</string>
     <string name="pp_bottom_text">Select PhotoPass on the same day</string>
     <string name="pp_ok">OK(%1$d/%2$d)</string>
@@ -142,17 +144,19 @@
     <string name="city">City</string>
     <string name="ad">Address</string>
     <string name="district">District</string>
-    <string name="up_ppp_money">Upgrade to PhotoPass+</string>
+    <string name="up_ppp_money">Upgrade to VIP</string>
+    <!--
     <string name="getphotos">Scan Your PhotoPass</string>
     <string name="up_ppp">Upgrade to PhotoPass+</string>
+    -->
     <string name="hint_name">Input your name</string>
     <string name="hint_phone">Input phone number</string>
     <string name="hint_telephone">Input telephone number</string>
     <string name="hint_address">Input detail address</string>
     <string name="delete">Delete</string>
-    <string name="photopass">PhotoPass</string>
-    <string name="photopassplus">PhotoPass+</string>
-    <string name="getitnow">Get it now</string>
+    <!-- <string name="photopass">PhotoPass</string> -->
+    <string name="photopassplus">VIP</string>
+    <!-- <string name="getitnow">Get it now</string> -->
     <string name="mylocation">My location</string>
     <string name="myfavourite">My favourite</string>
     <string name="cancel1">Cancel</string>
@@ -177,10 +181,12 @@
     <string name="magicbrush">Filter</string>
     <string name="decoration">Sticker</string>
     <string name="rotate">Text</string>
-    <string name="selectionpp">Select PhotoPass</string>
+    <string name="selectionpp">Select AirPass</string>
+    <!--
     <string name="addpp">Add PhotoPass</string>
     <string name="scanpp">Scan Your Disney PhotoPass</string>
     <string name="scanppp">Scan Your Disney PhotoPass+</string>
+    -->
     <string name="QRCODE">Scan QR Code To Upgrade.</string>
     <string name="input_right_phone_number">Please input correct phone number</string>
     <string name="is_taking">Processing</string>
@@ -195,8 +201,10 @@
     <string name="user_not_exist">User not exist, please Sign up</string>
     <string name="failed">Failed</string>
     <string name="select_your_pp">Please select your PhotoPass</string>
+    <!--
     <string name="noppp_user">Not PhotoPass+ user</string>
     <string name="get_ppp_failed">Get PhotoPass+ failed</string>
+    -->
     <string name="pay_failed">Payment failed</string>
     <string name="add_address">Please add your address</string>
     <string name="need_express">Reselect your post method</string>
@@ -205,7 +213,7 @@
     <string name="order_in_progress">Your order in the process</string>
     <string name="save_success">Updated</string>
     <string name="photo_selected">The picture has been selected</string>
-    <string name="nophoto_in_PhotoPass">No photos in PhotoPass album</string>
+    <string name="nophoto_in_PhotoPass">No photos in Air album</string>
     <string name="cannot_delete_in_PhotoPass">Cannot delete</string>
     <string name="select_photos">Please select your photos</string>
     <string name="share_photo_count">Please select ONE picture  only</string>
@@ -213,7 +221,7 @@
     <string name="pw_is_inconsistency">Password is inconsistency</string>
     <string name="upload_failed_retry">Upload failed, please retry</string>
     <string name="outofrange">Out of range</string>
-    <string name="no_space_in_ppp">No space in this PhotoPass+</string>
+    <string name="no_space_in_ppp">No space in this VIP</string>
     <string name="add_address_success">Add address success!</string>
     <string name="modify_success">Modify address success!</string>
     <string name="input_name">Input your name</string>
@@ -221,8 +229,8 @@
     <string name="retry">Error,please retry</string>
     <string name="not_open">It is coming soon</string>
     <string name="Tokenexpired">TokenExpired, please login again</string>
-    <string name="invalidPP">Invalid PhotoPass</string>
-    <string name="invalidPPP">Invalid PhotoPass+</string>
+    <string name="invalidPP">Invalid AirPass</string>
+    <string name="invalidPPP">Invalid VIP</string>
     <string name="please_login">Please Login</string>
     <string name="please_pay_first">Please pay first</string>
     <string name="input_phone_number">Input your phone number</string>
@@ -240,7 +248,7 @@
     <string name="order_no">Order Number:</string>
     <string name="product_details">Product Details:</string>
     <string name="order_detail">Order Products:</string>
-    <string name="order_information">Order Detail:</string>
+    <string name="order_information">Order Detail</string>
     <string name="paymethod">Payment Method:</string>
     <string name="order_status">Order Status:</string>
     <string name="product_information">Product Information</string>
@@ -271,44 +279,51 @@
     <string name="dialog_ok">Yes, I do</string>
     <string name="dialog_ok1">OK, I know</string>
     <string name="scanedPPOrPPP">You had scaned %1$d %2$s %3$d %4$s before, are you sure want to tag it?</string>
+    <!--
     <string name="ppp_bind">Buy PhotoPass+</string>
     <string name="ppp_scan">Scan PhotoPass+</string>
-    <string name="ppp_info1">Dears, would you like choose one PhotoPass to bind right now to download all your High-definition pictures？ Let’s do it.</string>
-    <string name="ppp_info2">Sorry, you do not have any PhotoPass yet, please add your PhotoPass by scan your PhotoPass QR code. \n(Maximum THREE PhotoPass in ONE PhotoPass+)</string>
-    <string name="ppp_info2_2">Dears, you do not have any PhotoPass yet, please add your PhotoPass by scan your PhotoPass QR code. \n(Maximum THREE PhotoPass in ONE PhotoPass+)</string>
+    -->
+    <!-- <string name="ppp_info1">Dears, would you like choose one PhotoPass to bind right now to download all your High-definition pictures？ Let’s do it.</string> -->
+    <!-- <string name="ppp_info2">Sorry, you do not have any PhotoPass yet, please add your PhotoPass by scan your PhotoPass QR code. \n(Maximum THREE PhotoPass in ONE PhotoPass+)</string> -->
+    <!-- <string name="ppp_info2_2">Dears, you do not have any PhotoPass yet, please add your PhotoPass by scan your PhotoPass QR code. \n(Maximum THREE PhotoPass in ONE PhotoPass+)</string> -->
+    <!--
     <string name="ppp_info3">Dears, now you available to choose THREE PhotoPass ON THE SAME DAY to bind, then you can download all and get all your high-resolution pictures.</string>
     <string name="ppp_info4">Dear, this PhotoPass+ has been fully used already (Maximum THREE PhotoPass bind in ONE PhotoPass+). Please use others PhotoPass+ OR purchases a new one please.</string>
     <string name="ppp_info5">Dear, this PhotoPass+ has been fully used already ，one PhotoPass+ available to bind THREE PhotoPass ONLY. Please purchase new one for continues using.</string>
-    <string name="has_ppp_intro">The PhotoPass+ has bind one PhotoPass</string>
-    <string name="no_ppp_intro">You can choose one PhotoPass to bind</string>
-    <string name="not_pp_card">The card is not PhotoPass card</string>
-    <string name="not_ppp_card">The card is not PhotoPass+ card</string>
-    <string name="bind_pp_now">You have one PhotoPass, do you want to bind it now?</string>
-    <string name="wrong_length">Please check your card</string>
-    <string name="choose_one_pp">Please choose one PhotoPass</string>
-    <string name="choose_three_pp">Please choose three PhotoPass</string>
-    <string name="scan_pp">Scan your PhotoPass</string>
-    <string name="use_other_ppp">Please use other PhotoPass+</string>
-    <string name="buy_another_ppp">Please purchase one PhotoPass+</string>
-    <string name="also_scan_pp">Please scan your PhotoPass</string>
-    <string name="also_buy_ppp">Please purchase one PhotoPass+</string>
+    -->
+    <string name="has_ppp_intro">The VIP has bind one AirPass</string>
+    <string name="no_ppp_intro">You can choose one AirPass to bind</string>
+    <string name="not_pp_card">The card is not AirPass</string>
+    <string name="not_ppp_card">The card is not VIP</string>
+    <string name="bind_pp_now">You have one AirPass, do you want to bind it now?</string>
+    <string name="wrong_length">Please check your AirPass</string>
+    <string name="choose_one_pp">Please choose one AirPass</string>
+    <string name="choose_three_pp">Please choose three AirPass</string>
+    <string name="scan_pp">Scan your AirPass</string>
+    <string name="use_other_ppp">Please use other VIP</string>
+    <string name="buy_another_ppp">Please purchase one VIP</string>
+    <string name="also_scan_pp">Please scan your AirPass</string>
+    <string name="also_buy_ppp">Please purchase one VIP</string>
     <string name="invalidecode">Invalide code</string>
-    <string name="album_photopass">PhotoPass</string>
+
+    <!-- <string name="album_photopass">PhotoPass</string> -->
+    <!--
     <string name="album_magic">Magic</string>
     <string name="album_download">Download</string>
     <string name="album_other">Other</string>
+    -->
     <string name="payment_ways">Payment methods</string>
     <!-- Just use standard Pull Down String when pulling up. These can be set for languages which require it -->
     <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>
     <string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
     <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
-    <string name="lead_page_text1">Keep your cameras at home, travel light and have our Disney PhotoPass photographer capture those special family moments that last a lifetime.</string>
-    <string name="lead_page_text2">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass mobile app or website.</string>
+    <string name="lead_page_text1">Keep your cameras at home, travel light and have our Disney AirPass photographer capture those special family moments that last a lifetime.</string>
+    <string name="lead_page_text2">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass mobile app or website.</string>
     <string name="copyright1">Copyright © 2015 Pictureworks</string>
     <string name="copyright2">All Rights Reserved.</string>
     <string name="selectedphoto">Select(%1$d/%2$d)</string>
     <string name="hasselectedphoto">OK(%1$d/%2$d)</string>
-    <string name="repeatPPbind">This PhotoPass has alredy added to this user</string>
+    <string name="repeatPPbind">This AirPass has alredy added to this user</string>
     <string name="tab_story">Story</string>
     <string name="tab_discover">Discover</string>
     <string name="tab_camera"></string>
@@ -322,25 +337,25 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="do_you_save">Do you want to save this photo?</string>
-    <string name="start_now">[Enjoy the PhotoPass]</string>
+    <string name="start_now">[Enjoy the PictureAir]</string>
     <string name="discover_popularity">Popularity</string>
     <string name="discover_distance">Distance</string>
     <string name="discover_selection">Filter</string>
     <string name="discover_collect">Favourite</string>
-    <string name="http_failed">Get data failed</string>
+    <string name="http_failed">Connect server failed, please check network</string>
     <string name="story_tab_all">All</string>
-    <string name="story_tab_photopass">PhotoPass</string>
+    <string name="story_tab_photopass">pictureAir</string>
     <string name="story_tab_magic">MagicCam</string>
     <string name="story_tab_bought">Purchased</string>
-    <string name="story_no_pp">Please scan your park ticket or PhotoPass card to start associating your pictures!</string>
+    <string name="story_no_pp">Please scan your AirPass to start associating your pictures!</string>
     <string name="story_scan">Scan</string>
     <string name="suprise_price">Special Price</string>
     <string name="privilege_today">Special Offer</string>
     <string name="original_price">Original price:</string>
     <string name="pick_up_address">Self-collect： </string>
     <string name="disney_address"> Carefree Corner</string>
-    <string name="scan_intro">Please put your PhotoPass or PhotoPass+ on the scanning center, scan to get your photos</string>
-    <string name="manul_input_intro">Please input the back of PhotoPass or PhotoPass+ 16 digits barcode to get your photos</string>
+    <string name="scan_intro">Please put your AirPass on the scanning center, scan to get your photos</string>
+    <string name="manul_input_intro">Please input the back of AirPass 16 digits barcode to get your photos</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="two_days_ago">2 days ago</string>
@@ -354,7 +369,7 @@
     <string name="paypalsm">Supported</string>
     <string name="wxzf">Wechat</string>
     <string name="weixinsm">Supported</string>
-    <string name="delete_with_photopass">PhotoPass photos can not be deleted, do you want to delete local Magic photos?</string>
+    <string name="delete_with_photopass">AirPass photos can not be deleted, do you want to delete local Magic photos?</string>
     <!-- 微信支付string字段 -->
     <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
     <string name="app_tip">Tips</string>
@@ -388,8 +403,8 @@
     <string name="mypage_coupons">Coupons</string>
     <string name="mypage_myprofile">My Profile</string>
     <string name="mypage_myorder">My Orders</string>
-    <string name="mypage_pp">PhotoPass</string>
-    <string name="mypage_ppp">PhotoPass+</string>
+    <string name="mypage_pp">AirPass</string>
+    <string name="mypage_ppp">VIP</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About us</string>
@@ -402,7 +417,7 @@
     <string name="search_hint">Search</string>
     <!-- 扫一扫 -->
     <string name="auto_auto">Scan</string>
-    <string name="buy_ppp_tips">PhotoPass+ has used, do you want to buy another one?</string>
+    <string name="buy_ppp_tips">VIP has used, do you want to buy another one?</string>
 
     <!-- 日期 -->
 
@@ -440,7 +455,7 @@
     <string name="email_exist">Email exists</string>
     <string name="no_cart">You have no any carts</string>
     <string name="select_cart">Please select your cart</string>
-    <string name="add_pp_first">Please add PhotoPass first</string>
+    <string name="add_pp_first">Please add AirPass first</string>
     <string name="like_and_buy">Touch to review high-quality photo. Just buy if like!</string>
     <string name="know">I know</string>
     <string name="add_text">Add text</string>
@@ -471,17 +486,32 @@
     <string name="mobile_exist">Mobile exists</string>
     <string name="loading_percent">Is uploading %1$d</string>
     <string name="launching_camera">Initiating camera...</string>
-    <string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass  mobile app or website.</string>
-    <string name="share_text">I would like to share my wonderful experience at pictureAir app with you.</string>
-    <string name="generate_apk_failed">Download Failed</string>
-    <string name="downloading_percent">Downloading %1$d</string>
-    <string name="update_version">New Version: %1$s</string>
-    <string name="generate_apk">Processing...</string>
-    
-     <string name="connecting">Connecting...</string>
-    <string name="notify_password_hint">Password must be at least 6 characters!</string>
-    <string name="pw_is_inconsistency">Input Passwords do not match!</string>
-    <string name="pwd_no_all_space">Password\'s first or last character cannot be space!</string>
-    <string name="pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
+    <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass  mobile app or website.</string>
+    <string name="photo_index">%1$d/%2$d</string>
+    <string name="saving">Saving...</string>
+    <string name="dealing">Dealing...</string>
+    <string name="exit_hint">Do you want to save this picture?</string>
+    <string name="delete_percent">Deleting %1$d/%2$d</string>
+    <string name="no_network">Please check your network</string>
+    <string name="click_button_reload">Click button to reload</string>
+    <string name="reload">Reload</string>
+    <string name="no_cart">No goods</string>
+    <string name="want_to_buy">Look around to buy something</string>
+    <string name="to_add_good">Go shopping</string>
+    <string name="dialog_download_message">Do you want to continue to download via GPRS?</string>
+    <string name="dialog_sync_message">Do you want to sync to download your Air album?</string>
+    <string name="dialog_sync_download">Open "WiFi Only" in Settings can save your cellular mobile data!</string>
+    <string name="dialog_intent_buy_ppp">Update your AirPass to get your all high-quality photos!</string>
+    <string name="order_empty_buttonString">Look around to buy something</string>
+    <string name="order_empty_resultString">No orders</string>
+    <string name="select_pp_faile">Update failed, please check your network</string>
+    <string name="select_bind_pp_faile">Update failed</string>
+    <string name="select_pp_hasUpgraded">AirPass has been updated</string>
+    <string name="no_favorite_photo">No favorite photos</string>
+    <string name="qq_zone_share">I would like to share my wonderful experience at PictureAir app with you.</string>
+    <string name="story_no_photo">Hi, look for your photographer to take photos.</string>
+    <string name="app_crash">Application crash</string>
+    <string name="camera_closed">Please agree camera permission in Settings</string>
+    <string name="camera_closed_jump_to_manual">Please input manually cause you did not aggree the camera permission</string>
 
 </resources>

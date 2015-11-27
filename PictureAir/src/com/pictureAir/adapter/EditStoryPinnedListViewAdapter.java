@@ -11,25 +11,19 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView.PinnedSectionListAdapter;
 import com.pictureAir.PreviewPhotoActivity;
 import com.pictureAir.R;
-import com.pictureAir.ViewPhotoActivity;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.entity.PhotoItemInfo;
 import com.pictureAir.util.AppUtil;
-import com.pictureAir.util.Common;
-import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.NoScrollGridView;
 
 /**
@@ -40,22 +34,41 @@ import com.pictureAir.widget.NoScrollGridView;
  */
 public class EditStoryPinnedListViewAdapter extends BaseAdapter implements PinnedSectionListAdapter, SectionIndexer{
 	private ArrayList<PhotoItemInfo> picList;//照片列表
+	private ArrayList<PhotoInfo> magicPhotoList;
 	private PhotoItemInfo [] sectionList;//section悬浮列表
 	private LayoutInflater layoutInflater;
+	
 //	private PhotoItemInfo photoItemInfo;
 	private Context context;
 	private Handler handler;
 	private static final int SECTION = 0;
 	private static final int ITEM = 1;
 	private static final String TAG = "StoryPinnedListView";
-	public EditStoryPinnedListViewAdapter(Context context, ArrayList<PhotoItemInfo> list, Handler handler) {
+	private boolean editMode;
+	public EditStoryPinnedListViewAdapter(Context context, ArrayList<PhotoItemInfo> list, Handler handler, boolean editMode, ArrayList<PhotoInfo> magicPhotoList) {
 		picList = list;
 		this.context = context;
 		this.handler = handler;
+		this.editMode = editMode;
+		this.magicPhotoList = magicPhotoList;
 		sectionList = (PhotoItemInfo[]) list.toArray(new PhotoItemInfo[list.size()]);
 		layoutInflater = LayoutInflater.from(context);
 	}
 	
+	
+	
+	public boolean isEditMode() {
+		return editMode;
+	}
+
+
+
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+	}
+
+
+
 	/**
 	 * 更新数据
 	 * @param list
@@ -204,11 +217,12 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Pinne
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 
+			PhotoInfo info = photoArrayList.get(position);
+			if (editMode) {
 				System.out.println("select"+position);
 				Message msg = handler.obtainMessage();
 				int visiblePos = viewHolder.storyGridView.getFirstVisiblePosition();
 				//选择事件
-				PhotoInfo info = photoArrayList.get(position);
 				Bundle bundle = new Bundle();
 				if (info.isSelected == 1) {//取消选择
 					info.isSelected = 0;
@@ -224,6 +238,26 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Pinne
 				msg.setData(bundle);
 				handler.sendMessage(msg);
 //				photoArrayList.set(position, info);
+				
+			}else {//非编辑模式，需要预览大图
+				Intent i = new Intent();
+				ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
+				//需要将picList中的图片数据全部转到成photopassArrayList
+				for (int j = 0; j < picList.size(); j++) {
+					photopassArrayList.addAll(picList.get(j).list);
+				}
+				System.out.println("photopass list size is ----->"+ photopassArrayList.size());
+				System.out.println("photopass list index is ----->"+ photopassArrayList.indexOf(info));
+				i.setClass(context, PreviewPhotoActivity.class);
+				i.putExtra("activity", "storyPinnedListViewAdapter");
+				i.putExtra("position", photopassArrayList.indexOf(info)+"");//在那个相册中的位置
+				i.putExtra("photoId", info.photoId);
+				i.putExtra("photos", photopassArrayList);//那个相册的全部图片路径
+				i.putExtra("targetphotos", magicPhotoList);
+
+				context.startActivity(i);
+				
+			}
 					
 		}
 		

@@ -19,8 +19,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -30,9 +30,10 @@ import com.pictureAir.R;
 import com.pictureAir.entity.CartItemInfo;
 import com.pictureAir.entity.CartPhotosInfo;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.JsonUtil;
 import com.pictureAir.util.ScreenUtil;
+import com.pictureAir.widget.BadgeView;
 import com.pictureAir.widget.DashedLineView;
 import com.pictureAir.widget.ListViewImageView;
 import com.pictureAir.widget.MyToast;
@@ -131,14 +132,22 @@ public class CartInfoAdapter extends BaseAdapter{
 		gridviewlist = goodArrayList.get(position).cart_photoUrls;
 		gridlayoutList = new ArrayList<ImageView>();
 		//设置商品图片
-		if (Common.PHOTOPASS_NAME.equals(goodArrayList.get(position).cart_productName)) {//照片商品
+		if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(goodArrayList.get(position).cart_productName)) {//照片商品
 			Log.d(TAG, "picture product");
+			String url = null;
 			if (goodArrayList.get(position).cart_productImageUrl.contains("http")) {
-				imageLoader.displayImage(goodArrayList.get(position).cart_productImageUrl, viewHolder.cartGoodImageView);
+				url = goodArrayList.get(position).cart_productImageUrl;
 			}else {
-				imageLoader.displayImage(Common.PHOTO_URL + goodArrayList.get(position).cart_productImageUrl, viewHolder.cartGoodImageView);
-				
+				url = Common.PHOTO_URL + goodArrayList.get(position).cart_productImageUrl;
 			}
+			/*****temp code*****/
+			if (url.contains("productImage/gift-singleDigital.jpg")) {
+				System.out.println(url);
+				url = url.replace("4000", "3001");
+				System.out.println(url);
+			}
+			/*****temp code*****/
+			imageLoader.displayImage(url, viewHolder.cartGoodImageView);
 			viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
 			viewHolder.cartLineImageView.setVisibility(View.GONE);
 			viewHolder.hideImageView.setVisibility(View.GONE);
@@ -302,6 +311,7 @@ public class CartInfoAdapter extends BaseAdapter{
 		@Override
 		public void onClick(View v) {
 			if (!ishandle) {//如果已经在处理中，则忽略响应，反之，进行处理
+				System.out.println("start change count");
 				if (cartItemInfo.cart_productType == 2) {//如果是pp不允许添加或者减少数量
 					myToast.setTextAndShow(R.string.cannot_change_count, Common.TOAST_SHORT_TIME);
 					return;
@@ -333,7 +343,7 @@ public class CartInfoAdapter extends BaseAdapter{
 				RequestParams params = new RequestParams();
 				params.put(Common.USER_ID, userId);
 				params.put(Common.ITEM, cartItem);
-				HttpsUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
+				HttpUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 						// TODO Auto-generated method stub
@@ -378,6 +388,8 @@ public class CartInfoAdapter extends BaseAdapter{
 						ishandle = false;
 					}
 				});
+			}else {
+				System.out.println("is still change count");
 			}
 		}
 	}

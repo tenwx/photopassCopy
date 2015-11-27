@@ -10,6 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -33,14 +36,15 @@ import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.JsonUtil;
 import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.XListViewHeader;
+import com.umeng.analytics.MobclickAgent;
 
-public class SubmitOrderActivity extends BaseActivity implements OnClickListener{
+public class SubmitOrderActivity extends Activity implements OnClickListener{
 	private TextView submitButton;
 	private ImageView llrtLayout;
 	private TextView totalpriceTextView,currencyTextView, allGoodsTextView;
@@ -57,7 +61,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 	private float totalprice = 0;
 	private boolean needAddressGood = false;//是否有需要地址的商品
 	private static final int CHANGE_PHOTO = 1;//修改图片
-	private static final int DELIVERY_PICKUP = 1;//选择自提
+//	private static final int DELIVERY_EXPRESS = 0;//物流
+	private static final int DELIVERY_PICKUP = 1;//选择自提   
+	private static final int DELIVERY_NOEXPRESS = 3;//虚拟类商品无须快递
 	private int payType = 0;//支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
 //	private ProgressDialog dialog;
 
@@ -75,7 +81,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.submitorder);
+		setContentView(R.layout.activity_submit_order);
 		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		initview();
@@ -146,7 +152,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 				RequestParams params = new RequestParams();
 				params.put(Common.USER_ID, sharedPreferences.getString(Common.USERINFO_ID, ""));
 				params.put(Common.ITEM, cartItem);
-				HttpsUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
+				HttpUtil.post(Common.BASE_URL+Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
 
 					@Override
 					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -194,7 +200,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 		submitButton.setOnClickListener(this);
 		llrtLayout = (ImageView)findViewById(R.id.llrt);
 		llrtLayout.setOnClickListener(this);
-		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout));
+		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), false);
 		list = getIntent().getParcelableArrayListExtra("orderinfo");//获取照片路径
 		infoListView = (ListView)findViewById(R.id.listView_submitorder);
 		submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), mHandler);
@@ -238,7 +244,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 			if (orderid.equals("")) {
 //				dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.is_loading), false, false);
 				customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-				API.addOnOrder(this, mHandler, sharedPreferences.getString(Common.USERINFO_ID, ""), null, payType, getString(R.string.disney_address), cartItemIds, DELIVERY_PICKUP);
+				int deliveryType = DELIVERY_PICKUP;
+				if (nameString.equals(Common.GOOD_NAME_PPP) || nameString.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//ppp, pp
+					deliveryType = DELIVERY_NOEXPRESS;
+				}else {//other goods
+					deliveryType = DELIVERY_PICKUP;
+				}
+				API.addOnOrder(this, mHandler, sharedPreferences.getString(Common.USERINFO_ID, ""), null, payType, getString(R.string.disney_address), cartItemIds, deliveryType);
 				
 			}else {
 				Intent intent2 = new Intent(SubmitOrderActivity.this,PaymentOrderActivity.class);
@@ -286,7 +298,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 				msg.obj = object;
 				mHandler.sendMessage(msg);
 //				dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-				customProgressBarPop.show();
+				customProgressBarPop.show(0);
 			}else {
 				String photourl = updatephotolist.get(0).photoPathOrURL;
 				// 需要上传选择的图片
@@ -300,7 +312,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 					params.put(Common.USERINFO_TOKENID, tokenId);
 					API.SetPhoto(sb.toString(), params, mHandler,requestCode, customProgressBarPop);
 //					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-					customProgressBarPop.show();
+					customProgressBarPop.show(0);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -324,5 +336,20 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
+	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("SubmitOrderActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("SubmitOrderActivity");
+		MobclickAgent.onResume(this);
 	}
 }

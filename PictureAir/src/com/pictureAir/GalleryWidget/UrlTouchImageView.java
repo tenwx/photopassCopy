@@ -30,19 +30,25 @@ import org.apache.http.Header;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.view.View;
 import android.widget.ImageView.ScaleType;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureAir.R;
 import com.pictureAir.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.ScreenUtil;
 
 
@@ -54,6 +60,35 @@ public class UrlTouchImageView extends RelativeLayout {
 	protected Context mContext;
 
 	protected File dirfile;
+	
+	private Bitmap bitmap;
+	private ImageLoader imageLoader;
+	
+	private static final int LOAD_FILE_DONE = 1;
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case LOAD_FILE_DONE:
+				if (bitmap != null) {
+					mImageView.setScaleType(ScaleType.MATRIX);
+					mImageView.setImageBitmap(bitmap);
+				}else {
+					mImageView.setScaleType(ScaleType.CENTER);
+					bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
+					mImageView.setImageBitmap(bitmap);
+				}
+				progressImageView.setImageResource(R.drawable.loading_12);
+				//			 mProgressBar.setProgress(100);
+				mImageView.setVisibility(VISIBLE);
+				progressImageView.setVisibility(GONE);
+				break;
+				
+			default:
+				break;
+			}
+		};
+	};
 
 	public UrlTouchImageView(Context ctx)
 	{
@@ -78,6 +113,7 @@ public class UrlTouchImageView extends RelativeLayout {
 		mImageView.setLayoutParams(params);
 		this.addView(mImageView);
 		mImageView.setVisibility(GONE);
+		imageLoader = ImageLoader.getInstance();
 
 		progressImageView = new ImageView(mContext);
 		//		mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
@@ -111,55 +147,61 @@ public class UrlTouchImageView extends RelativeLayout {
 		File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
 		if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
 			System.out.println("file in sd card");
-			Bitmap bitmap = BitmapFactory.decodeFile(file.toString());
-			if (bitmap != null) {
-				mImageView.setScaleType(ScaleType.MATRIX);
-				mImageView.setImageBitmap(bitmap);
-			}else {
-				mImageView.setScaleType(ScaleType.CENTER);
-				bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
-				mImageView.setImageBitmap(bitmap);
-			}
-			progressImageView.setImageResource(R.drawable.loading_12);
-			//			 mProgressBar.setProgress(100);
-			mImageView.setVisibility(VISIBLE);
-			progressImageView.setVisibility(GONE);
+//			final File file2 = file;
+			//使用imageloader加载图片
+			imageLoader.loadImage("file://"+file.toString(), new SimpleImageLoadingListener(){
+				@Override
+				public void onLoadingComplete(String imageUri, View view,
+						Bitmap loadedImage) {
+					// TODO Auto-generated method stub
+					super.onLoadingComplete(imageUri, view, loadedImage);
+					bitmap = loadedImage;
+					handler.sendEmptyMessage(LOAD_FILE_DONE);
+					
+				}
+			});
+//			new Thread(){
+//				public void run() {
+//					
+//					bitmap = BitmapFactory.decodeFile(file2.toString());
+//				};
+//			}.start();
+			
+			
 		}else {//4、如果SD卡不存在，判断是否在缓存中
 			System.out.println("file not in sd card");
 			dirfile = new File(mContext.getCacheDir()+"/"+photoId+"_ori");
 			if (dirfile.exists()) {//5、如果缓存存在，则从缓存中获取图片信息
 				System.out.println("file in cache");
-				ByteArrayOutputStream outStream = new ByteArrayOutputStream();  
-				byte[] buffer = new byte[1024];  
-				int len = 0;  
-				FileInputStream inStream;
-				try {
-					inStream = new FileInputStream(new File(dirfile.toString()));
-					while( (len = inStream.read(buffer))!= -1){  
-						outStream.write(buffer, 0, len);  
-					}  
-					outStream.close();  
-					inStream.close();  
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				byte[] arg2 = outStream.toByteArray();
-				Bitmap bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-				if (bitmap != null) {
-					mImageView.setScaleType(ScaleType.MATRIX);
-					mImageView.setImageBitmap(bitmap);
-				}else {
-					mImageView.setScaleType(ScaleType.CENTER);
-					bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
-					mImageView.setImageBitmap(bitmap);
-				}
-				progressImageView.setImageResource(R.drawable.loading_12);
-				mImageView.setVisibility(VISIBLE);
-				progressImageView.setVisibility(GONE);
+				new Thread(){
+					public void run() {
+						
+						ByteArrayOutputStream outStream = new ByteArrayOutputStream();  
+						byte[] buffer = new byte[1024];  
+						int len = 0;  
+						FileInputStream inStream;
+						try {
+							inStream = new FileInputStream(new File(dirfile.toString()));
+							while( (len = inStream.read(buffer))!= -1){  
+								outStream.write(buffer, 0, len);  
+							}  
+							outStream.close();  
+							inStream.close();  
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						byte[] arg2 = outStream.toByteArray();
+						Options options = new Options();
+						options.inSampleSize = 2;//缩小为原来的1/2
+						bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length, options);
+						handler.sendEmptyMessage(LOAD_FILE_DONE);
+					};
+				}.start();
+				
 			}else {//6.如果缓存不存在，从网络获取图片信息，
 				System.out.println("file not in cache and load from network");
 				//				new ImageLoadTask().execute(imageUrl);
@@ -167,6 +209,7 @@ public class UrlTouchImageView extends RelativeLayout {
 			}
 		}
 	}
+	
 
 	public void setScaleType(ScaleType scaleType) {
 		mImageView.setScaleType(scaleType);
@@ -174,7 +217,7 @@ public class UrlTouchImageView extends RelativeLayout {
 
 	private void loadImage(String url) {
 		// TODO Auto-generated method stub
-		HttpsUtil.get(url, new BinaryHttpResponseHandler() {
+		HttpUtil.get(url, new BinaryHttpResponseHandler() {
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
 				// TODO Auto-generated method stub
@@ -209,7 +252,7 @@ public class UrlTouchImageView extends RelativeLayout {
 					mImageView.setImageBitmap(bitmap);
 				}else {
 					mImageView.setScaleType(ScaleType.CENTER);
-					bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
+					bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
 					mImageView.setImageBitmap(bitmap);
 				}
 				mImageView.setVisibility(VISIBLE);
@@ -220,7 +263,7 @@ public class UrlTouchImageView extends RelativeLayout {
 			public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
 				System.out.println(arg3.toString());
 				mImageView.setScaleType(ScaleType.CENTER);
-				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
+				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
 				mImageView.setImageBitmap(bitmap);
 				mImageView.setVisibility(VISIBLE);
 				progressImageView.setVisibility(GONE);
@@ -302,7 +345,7 @@ public class UrlTouchImageView extends RelativeLayout {
 			if (bitmap == null) 
 			{
 				mImageView.setScaleType(ScaleType.CENTER);
-				bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
+				bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
 				mImageView.setImageBitmap(bitmap);
 			}
 			else 

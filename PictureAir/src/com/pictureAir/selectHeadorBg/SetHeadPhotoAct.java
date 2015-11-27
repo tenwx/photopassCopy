@@ -40,29 +40,50 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 	private SharedPreferences sp;
 	private CustomProgressBarPop dialog;
 	private MyToast myToast;
+	private File headPhoto;
 	
 	private Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
 //			Intent intent = null;
 			switch (msg.what) {
 			case API.UPLOAD_PHOTO_SUCCESS:
+				Editor e = sp.edit();
+				e.putString(Common.USERINFO_HEADPHOTO, Common.HEADPHOTO_PATH);
+				e.commit();
+				
+				//上传成功之后，需要将临时的头像文件的名字改为正常的名字
+				File oldFile = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
+				if (oldFile.exists()) {//如果之前的文件存在
+					//先删除之前的文件
+					oldFile.delete();
+					//修改现在的文件名字
+					if (headPhoto.exists()) {
+						headPhoto.renameTo(oldFile);
+					}
+				}
+				
 				dialog.dismiss();
-//				Toast.makeText(SetHeadPhotoAct.this, "头像修改成功", 0).show();
-//				intent = new Intent(SetHeadPhotoAct.this, MainTabActivity.class);
 				myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
+				
+				
 				finish();
 //				startActivity(intent);
 				break;
 				
 			case API.UPLOAD_PHOTO_FAILED:
+				//删除头像的临时文件
+				if (headPhoto.exists()) {
+					headPhoto.delete();
+				}
+				
 				dialog.dismiss();
-				myToast.setTextAndShow(msg.obj.toString(), Common.TOAST_SHORT_TIME);
+				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
 				finish();
 				break;
 				
 			case API.FAILURE:
 				dialog.dismiss();
-				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
 //				Toast.makeText(SetHeadPhotoAct.this, "修改失败请重试", 0).show();
 //				intent = new Intent(SetHeadPhotoAct.this, MainTabActivity.class);
 				finish();
@@ -80,7 +101,7 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		
-		setContentView(R.layout.set_head_photo);
+		setContentView(R.layout.activity_set_head_photo);
 		myToast = new MyToast(this);
 		Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
 		getAlbum.setType(IMAGE_TYPE);
@@ -101,9 +122,9 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.clip:
 //			MainTabActivity.instances.finish(); //上传成功之后结束 主要的Activity。
-			dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout));
+			dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), false);
 //			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-			dialog.show();
+			dialog.show(0);
 			Bitmap bitmap = mClipImageLayout.clip();
 			bitmap = UtilOfDraw.comp(bitmap);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -113,7 +134,7 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 			if (!userFile.exists()) {
 				userFile.mkdirs();
 			}
-			File headPhoto = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
+			headPhoto = new File(Common.USER_PATH + Common.HEADPHOTO_PATH + "_temp");
 			BufferedOutputStream stream = null;
 			try {
 				headPhoto.createNewFile();
@@ -123,9 +144,7 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				Editor e = sp.edit();
-				e.putString(Common.USERINFO_HEADPHOTO, Common.HEADPHOTO_PATH);
-				e.commit();
+				
 				if (stream != null) {
 					try {
 						stream.close();

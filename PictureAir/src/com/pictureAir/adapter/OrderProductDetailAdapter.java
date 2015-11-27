@@ -74,7 +74,7 @@ public class OrderProductDetailAdapter extends BaseAdapter{
 			hView = (OrderHolderView) convertView.getTag();
 		}
 		//初始化控件值
-		if (Common.PHOTOPASS_NAME.equals(list.get(position).cart_productName)) {//单张照片
+		if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(list.get(position).cart_productName)) {//单张照片
 			if (list.get(position).cart_productImageUrl.contains("http")) {
 				imageLoader.displayImage(list.get(position).cart_productImageUrl, hView.goodsImageView);
 				
@@ -95,7 +95,7 @@ public class OrderProductDetailAdapter extends BaseAdapter{
 		if (list.get(position).cart_photoUrls == null || list.get(position).cart_photoUrls.size() == 0) {
 			hView.gridLayout.setVisibility(View.GONE);
 		}else {
-			if (Common.PHOTOPASS_NAME.equals(list.get(position).cart_productName)) {
+			if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(list.get(position).cart_productName)) {
 				hView.gridLayout.setVisibility(View.GONE);
 				
 			}else {

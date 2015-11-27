@@ -47,12 +47,13 @@ import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.BannerView_PreviewCompositeProduct;
 import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 /**
  * 产品预览，处理商品的合成
  * @author bauer_bao
  *
  */
-public class PreviewProductActivity extends BaseActivity implements OnClickListener{
+public class PreviewProductActivity extends Activity implements OnClickListener{
 	private ImageView returnButton;
 	private Button buynowButton;
 	private Button addtocartButton;
@@ -247,7 +248,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.preview_activity);
+		setContentView(R.layout.activity_preview);
 		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		//获取从selectphotoactivity传递过来的信息
@@ -272,7 +273,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 		shoppingcartButton.setOnClickListener(this);
 		sb = new StringBuffer();
 		sb.append(Common.BASE_URL).append(Common.UPLOAD_PHOTOS);
-		dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout));
+		dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), false);
 		
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, null);
@@ -304,15 +305,15 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 					//		 预览图片高 258-12-19 = 227
 					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
 							355, 258, 20, 12, 316, 227, 0, 0, 0, "canvas");//设置bannerview的图片
-				}else if (getIntent().getStringExtra("name").equals("iphone5Case")) {
-					//2.手机后盖，商品宽 480
-					//		 商品高 946
-					//       左边留白 0
-					//		 上边留白 0
-					//		 预览图片宽 480
-					//		 预览图片高 946
-					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
-							480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
+//				}else if (getIntent().getStringExtra("name").equals("iphone5Case")) {
+//					//2.手机后盖，商品宽 480
+//					//		 商品高 946
+//					//       左边留白 0
+//					//		 上边留白 0
+//					//		 预览图片宽 480
+//					//		 预览图片高 946
+//					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
+//							480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
 				}else if (getIntent().getStringExtra("name").equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
 					//3.数码商品，商品宽 300
 					//		 商品高 217
@@ -351,15 +352,15 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 					//		 预览图片高 89-18-16 = 55
 					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
 							205, 89, 88, 18, 96, 55, 0.15f, 0, 0, "keyChain");//设置bannerview的图片
-				}else if (getIntent().getStringExtra("name").equals("mug")) {
-					//7.杯子，商品宽 185
-					//		 商品高 160
-					//       左边留白 10
-					//		 上边留白 12
-					//		 预览图片宽 185-10-61 = 114
-					//		 预览图片高 160-12-34 = 114
-					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
-							185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
+//				}else if (getIntent().getStringExtra("name").equals("mug")) {
+//					//7.杯子，商品宽 185
+//					//		 商品高 160
+//					//       左边留白 10
+//					//		 上边留白 12
+//					//		 预览图片宽 185-10-61 = 114
+//					//		 预览图片高 160-12-34 = 114
+//					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
+//							185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
 				}
 				
 			}
@@ -371,6 +372,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("PreviewProductActivity");
+		MobclickAgent.onResume(this);
 		recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
 		if (recordcount <= 0) {
 			counTextView.setVisibility(View.INVISIBLE);
@@ -396,7 +399,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 			msg.obj = "start";
 			handler.sendMessage(msg);
 //			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, false);
-			dialog.show();
+			dialog.show(0);
 			break;
 			
 		case R.id.button_add_to_cart://先要上传选择的图片，然后再加入购物车
@@ -406,7 +409,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 			message.obj = "start";
 			handler.sendMessage(message);
 //			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, false);
-			dialog.show();
+			dialog.show(0);
 			break;
 			
 		case R.id.textview_cart_count:
@@ -544,5 +547,12 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
+	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("PreviewProductActivity");
+		MobclickAgent.onPause(this);
 	}
 }

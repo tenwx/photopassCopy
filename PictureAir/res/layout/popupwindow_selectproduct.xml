@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" 
-    android:background="#b3ffffff">
+    android:layout_height="wrap_content"
+    android:background="#b3ffffff" >
 
+    <!--
     <com.pictureAir.widget.MyHorizontalScrollView
         android:id="@+id/id_horizontalScrollView"
         android:layout_width="match_parent"
@@ -18,5 +19,14 @@
             android:orientation="horizontal" >
         </LinearLayout>
     </com.pictureAir.widget.MyHorizontalScrollView>
+    -->
+
+    <GridView
+        android:id="@+id/id_horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:listSelector="@color/transparent"
+        android:scrollbars="none" >
+    </GridView>
 
 </RelativeLayout>

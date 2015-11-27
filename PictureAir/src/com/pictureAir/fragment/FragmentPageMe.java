@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,7 +21,6 @@ import android.widget.TextView;
 
 import com.google.zxing.WriterException;
 import com.pictureAir.AboutActivity;
-import com.pictureAir.BaseFragment;
 import com.pictureAir.HelpActivity;
 import com.pictureAir.MyPPActivity;
 import com.pictureAir.MyPPPActivity;
@@ -34,12 +34,13 @@ import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 /**
  * Camera界面，需要跳转至camera界面
  * @author bauer_bao
  *
  */
-public class FragmentPageMe extends BaseFragment implements OnClickListener{
+public class FragmentPageMe extends Fragment implements OnClickListener{
 	private RelativeLayout rl_myprofile, rl_myorder,rl_pp, rl_ppp, rl_help,rl_setting, rl_about, rl7;
 	private ImageView headPhoto, icon2, code_pic;
 	private TextView hint2, hint4, name;// hint是条目右边的小标签，根据需要添加信息
@@ -73,7 +74,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	
-		View view = inflater.inflate(R.layout.user, null);
+		View view = inflater.inflate(R.layout.fragment_me, null);
 		context = getActivity();
 		//初始化控件
 		sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
@@ -240,7 +241,9 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 			originalHeadLastModifyTime = 0L;
 		}else {//如果有数据，加载图片
 			Bitmap bm1 = null;
-			bm1 = BitmapFactory.decodeFile(Common.USER_PATH + Common.HEADPHOTO_PATH);
+			Options options = new Options();
+			options.inSampleSize = 2;
+			bm1 = BitmapFactory.decodeFile(Common.USER_PATH + Common.HEADPHOTO_PATH, options);
 			
 			originalHeadLastModifyTime = file.lastModified();
 			if (bm1 != null) {
@@ -263,7 +266,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("FragmentPageMe"); //统计页面
 		if (!"".equals(sp.getString(Common.USERINFO_HEADPHOTO, ""))) {
+//			if (!file.exists()) {
+//				
+//			}
 			long nowLastModify = file.lastModified();
 			if (nowLastModify > originalHeadLastModifyTime) {
 				originalHeadLastModifyTime = nowLastModify;
@@ -274,4 +281,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 		name.setText(un);
 	}
 	
+	public void onPause() {
+	    super.onPause();
+	    MobclickAgent.onPageEnd("FragmentPageMe"); 
+	}
 }

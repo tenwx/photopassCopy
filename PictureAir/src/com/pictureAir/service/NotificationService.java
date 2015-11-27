@@ -17,15 +17,19 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
+import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.pictureAir.MyApplication;
 import com.pictureAir.R;
+import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 
@@ -39,8 +43,40 @@ public class NotificationService extends android.app.Service {
 	
 	private MyApplication application;
 	
-
 	private boolean isConnected = false;
+	private String sendType ;
+	
+	private Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+
+			super.handleMessage(msg);
+
+			switch (msg.what) {
+
+			case 1111: // 链接成功
+				API.noticeSocketConnect(preferences.getString(Common.USERINFO_TOKENID, null));
+				break;
+
+//			case 2222: // 退出账号。
+//				API.getDisConnect(preferences.getString(Common.USERINFO_TOKENID, null));
+//				break;
+
+			case 3333: // 接受到信息之后。
+				API.clearSocketCachePhotoCount(preferences.getString(Common.USERINFO_TOKENID, null),sendType);
+				break;
+
+			default:
+
+				break;
+
+			}
+
+		}
+
+	};
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
@@ -57,17 +93,19 @@ public class NotificationService extends android.app.Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
+		Log.e("＝＝＝＝＝＝＝＝＝＝＝", "onStartCommand");
 		preferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		userId = preferences.getString(Common.USERINFO_ID, null);
 //		editor = preferences.edit();
 		if (intent != null && intent.getStringExtra("status") != null) {//断开连接
 			if ("disconnect".equals(intent.getStringExtra("status"))) {
 				System.out.println("-----------disconnect-------socketio--------");
-				
-				socket.disconnect();
+				if (socket != null) {
+					socket.disconnect();
+					isConnected = false;
+				}
 //				editor.putInt(Common.SOCKETPUSHCONNECTED, 0);
 //				editor.commit();
-				isConnected = false;
 				stopSelf();//停止服务
 				
 			}
@@ -76,6 +114,7 @@ public class NotificationService extends android.app.Service {
 			if (!isConnected) {
 				System.out.println("-----------connect-------socketio--------");
 				application = (MyApplication) getApplication();
+				Log.e("＝＝＝＝＝＝＝＝＝＝＝", "show Notification");
 				showNotification();
 			}
 		}
@@ -129,11 +168,14 @@ public class NotificationService extends android.app.Service {
 		super.onDestroy();
 		System.out.println("===========service destroy");
 	}
+	
+	int i = 0;
 
 	public void showNotification() {
 		new Thread() {
 			public void run() {
-				Log.e("===userId=====", "=============:+"+userId);
+				Log.e("i ", "======i =====:+"+i);
+				++i;
 				try {
 					socket = new SocketIO(Common.BASE_URL);
 
@@ -173,6 +215,7 @@ public class NotificationService extends android.app.Service {
 //							editor.putInt(Common.SOCKETPUSHCONNECTED, 0);
 //							editor.commit();
 							isConnected = false;
+//							showNotification();
 							socket.reconnect();
 						}
 
@@ -183,16 +226,18 @@ public class NotificationService extends android.app.Service {
 //							editor.putInt(Common.SOCKETPUSHCONNECTED, 0);
 //							editor.commit();
 							isConnected = false;
+//							handler.sendEmptyMessage(2222);
 						}
 
 						@Override
 						public void onConnect() {
 							// TODO Auto-generated method stub
-							socket.emit("getNewPhotosCountOfUser",userId);
+							socket.emit("getNewPhotosCountOfUser",preferences.getString(Common.USERINFO_TOKENID, null));
 //							editor.putInt(Common.SOCKETPUSHCONNECTED, 1);
 //							editor.commit();
 							isConnected = true;
 							Log.e("======", "Connection established");
+							handler.sendEmptyMessage(1111);
 						}
 
 						@Override
@@ -202,6 +247,8 @@ public class NotificationService extends android.app.Service {
 							Log.e("  ====  arg2", " :"+arg2);
 							Log.e("===on===","Server triggered event '" + event + "'");
 							if (event.toString().equals("catchOrderInfoOf"+userId)) {
+								sendType = "orderSend";
+								handler.sendEmptyMessage(3333);
 //								Log.e("   订单事件中 ", " === ");
 								JSONObject message = (JSONObject) arg2[0];
 								try {
@@ -210,31 +257,14 @@ public class NotificationService extends android.app.Service {
 									Log.e(" 接受的订单信息 ", " === "+info);
 									
 									NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-									
-									
+									Notification notification = new Notification(R.drawable.pp_icon, "New Message",System.currentTimeMillis());
+									notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
+									notification.defaults = Notification.DEFAULT_ALL;
 									Intent intent = new Intent(getApplicationContext(),
 											com.pictureAir.MainTabActivity.class);
 									
 									PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
-									Notification notification = new NotificationCompat.Builder(NotificationService.this).
-								        	setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle("New Order").
-								        	setContentIntent(pendingIntent)
-								        	.setContentText(info).setWhen(System.currentTimeMillis()).setTicker("New Message").build();
-//										PendingIntent pi = PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT);
-//										notificationBuilder.setContentIntent(pi);
-										
-										notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
-										notification.defaults = Notification.DEFAULT_ALL;//默认下载完成声音
-//										notificationManager.notify(1, notification);
-									
-									
-									
-									
-									
-//									Notification notification = new Notification(R.drawable.pp_icon, "New Message",System.currentTimeMillis());
-//									notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
-//									notification.defaults = Notification.DEFAULT_ALL;
-//									notification.setLatestEventInfo(NotificationService.this, "New Order", info, pendingIntent);
+									notification.setLatestEventInfo(NotificationService.this, "New Order", info, pendingIntent);
 									manager.notify(0, notification);
 									
 									Log.e("=====", "执行");
@@ -258,7 +288,8 @@ public class NotificationService extends android.app.Service {
 									photoCount = Integer.valueOf(message.getString("c"));
 									System.out.println("receive photo count =====" + photoCount);
 									if (photoCount > 0) {
-										
+										sendType = "photoSend";
+										handler.sendEmptyMessage(3333);
 //										System.out.println("photocount ========== > 0");
 
 										if (!isTopActivity()) {
@@ -268,20 +299,15 @@ public class NotificationService extends android.app.Service {
 //											Log.e("photoCountLocal ", "photoCountLocal:"+photoCountLocal);
 											photoCount = photoCount + photoCountLocal;
 											NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-											
+											Notification notification = new Notification(R.drawable.pp_icon, "New Message",System.currentTimeMillis());
+											notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
+											notification.defaults = Notification.DEFAULT_ALL;
 											Intent intent = new Intent(getApplicationContext(),
 													com.pictureAir.MainTabActivity.class);
 											
 											PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
-											Notification notification = new NotificationCompat.Builder(NotificationService.this).
-										        	setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle("New Message").
-										        	setContentIntent(pendingIntent)
-										        	.setContentText("You have new photos").setWhen(System.currentTimeMillis()).setTicker("New Message").build();
-												
-												notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
-												notification.defaults = Notification.DEFAULT_ALL;//默认下载完成声音
+											notification.setLatestEventInfo(NotificationService.this, "New Message", "You have new photos", pendingIntent);
 											manager.notify(0, notification);
-											
 											Editor editor = preferences.edit();// 获取编辑器
 											editor.putInt("photoCount",photoCount);
 											editor.commit();// 提交修改
@@ -315,4 +341,8 @@ public class NotificationService extends android.app.Service {
 			};
 		}.start();
 	}
+
+	
+	
+	
 }

@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sqlcipher.database.SQLiteDatabase;
-
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,13 +15,16 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
-import com.baidu.mapapi.model.LatLng;
+import com.amap.api.location.core.CoordinateConvert;
+import com.amap.api.maps.model.LatLng;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.pictureAir.entity.CartItemInfo;
 import com.pictureAir.entity.CartPhotosInfo;
 import com.pictureAir.entity.DiscoverLocationItemInfo;
+import com.pictureAir.entity.FrameOrStikerInfo;
 import com.pictureAir.entity.OrderInfo;
 import com.pictureAir.entity.PhotoInfo;
 
@@ -38,11 +39,16 @@ public class JsonUtil {
 		info.placeUrl = (Common.PHOTO_URL + object.getString("defaultPhoto")).trim();
 		if (object.has("GPS")) {
 			JSONObject obj = (JSONObject) object.get("GPS");
-			LatLng latLng = AppUtil.converterFromGPS2BD(obj);
+//			System.out.println("转换之前的坐标"+obj.toString());
+//			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
+			LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
 			info.latitude = latLng.latitude;
 			info.longitude = latLng.longitude;
+//			System.out.println("转换之后的坐标"+latLng.toString());
 		}
-//		info.placeDetailIntroduce = "introduce";
+		if (object.has("description")) {
+			info.placeDetailIntroduce = object.getString("description");
+		}
 		info.popularity = "popularity";
 		info.islove = 0;
 		info.showDetail = 0;
@@ -140,6 +146,8 @@ public class JsonUtil {
 	public static void getUserInfo(final Context context, JSONObject object , Handler handler) throws JSONException {
 		SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		Editor e = sp.edit();
+		System.out.println("jsonObject======="+object.toString());
+		
 		e.putString(Common.USERINFO_TOKENID, object.getString(Common.USERINFO_TOKENID));
 		System.out.println("jsonutil======="+object.getString(Common.USERINFO_TOKENID));
 		JSONObject obj = object.getJSONObject("user");
@@ -151,6 +159,15 @@ public class JsonUtil {
 		if (obj.has(Common.USERINFO_NICKNAME)) {
 			
 			e.putString(Common.USERINFO_NICKNAME, obj.getString(Common.USERINFO_NICKNAME));
+		}
+		
+		if (obj.has(Common.USERINFO_QQ)) {
+			e.putString(Common.USERINFO_QQ, obj.getString(Common.USERINFO_QQ));
+		}
+		
+		if (obj.has(Common.USERINFO_COUNTRY)) {
+			e.putString(Common.USERINFO_COUNTRY,
+					obj.getString(Common.USERINFO_COUNTRY));
 		}
 		
 		//如果 用户存在ppCode，存入 USERINFO_USER_PP 字段。
@@ -184,7 +201,7 @@ public class JsonUtil {
 			// 更新头像图片
 			headUrl = Common.PHOTO_URL+headUrl;
 			System.out.println("get head image");
-			HttpsUtil.get(headUrl, new BinaryHttpResponseHandler(){
+			HttpUtil.get(headUrl, new BinaryHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
@@ -224,7 +241,7 @@ public class JsonUtil {
 		if (bgUrl != null) {
 			// 更新背景图片
 			bgUrl = Common.PHOTO_URL+bgUrl;
-			HttpsUtil.get(bgUrl, new BinaryHttpResponseHandler(){
+			HttpUtil.get(bgUrl, new BinaryHttpResponseHandler(){
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
@@ -394,9 +411,9 @@ public class JsonUtil {
 			cartInfo.cart_originalPrice = productJsonObject.getDouble("price");
 			cartInfo.cart_storeId = productJsonObject.getString("storeId");
 			cartInfo.cart_productName = productJsonObject.getString("name");
-			if (cartInfo.cart_productName.equals(Common.PHOTOPASSPLUS)) {//ppp
+			if (cartInfo.cart_productName.equals(Common.GOOD_NAME_PPP)) {//ppp
 				cartInfo.cart_productType = 3;
-			}else if (cartInfo.cart_productName.equals(Common.PHOTOPASS_NAME)) {//pp
+			}else if (cartInfo.cart_productName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//pp
 				cartInfo.cart_productType = 2;
 			}else {//other goods
 				cartInfo.cart_productType = 1;
@@ -413,6 +430,16 @@ public class JsonUtil {
 			JSONArray embedphotoArray = productJsonObject.getJSONArray("embedPhotos");
 			ArrayList<CartPhotosInfo> gridviewphotolist = new ArrayList<CartPhotosInfo>();
 			CartPhotosInfo cartPhotosInfo;
+			/****临时添加*****/
+//			if (cartInfo.cart_productType == 2) {//如果是pp商品
+//				
+//				if (0 == embedphotoArray.length()) {//应该没有添加图片的商品
+//					
+//				}else {//数码商品
+//					cartInfo.cart_productType = 1;
+//				}
+//			}
+			/****临时添加*****/
 			if (0==embedphotoArray.length()) {
 				System.out.println("0000000000000");
 				final int count = quantity;
@@ -590,5 +617,115 @@ public class JsonUtil {
 			e.printStackTrace();
 		}
 		return orderDetailsArrayList;
+	}
+	
+	/**
+	 * 获取边框信息
+	 * @param frameJsonObject
+	 * @return
+	 */
+	public static FrameOrStikerInfo getFrameInfo(JSONObject frameJsonObject){
+		FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
+		try {
+			frameInfo.onLine = 1;
+			frameInfo.isDownload = 0;
+//			frameInfo.needShow = 0;
+			if (frameJsonObject.has("assetName")) {
+				frameInfo.frameName = frameJsonObject.getString("assetName");
+			}
+			if (frameJsonObject.has("imgUrl_H")) {
+				frameInfo.frameOriginalPathLandscape = frameJsonObject.getString("imgUrl_H");
+			}
+			if (frameJsonObject.has("imgUrl_V")) {
+				frameInfo.frameOriginalPathPortrait = frameJsonObject.getString("imgUrl_V");
+			}
+			if (frameJsonObject.has("locationId")) {//特定场馆
+				frameInfo.locationId = frameJsonObject.getString("locationId");
+			}else {
+				frameInfo.locationId = "common";//通用边框
+			}
+			if (frameJsonObject.has("active_H")) {
+				frameInfo.isActive = frameJsonObject.getBoolean("active_H") ? 1 : 0;
+			}
+			if (frameJsonObject.has("thumbnail_H")) {
+				JSONObject thumbnailJsonObject = frameJsonObject.getJSONObject("thumbnail_H");
+				if (thumbnailJsonObject.has("x400")) {
+					JSONObject x400JsonObject = thumbnailJsonObject.getJSONObject("x400");
+					if (x400JsonObject.has("url")) {
+						frameInfo.frameThumbnailPathLandscape400 = x400JsonObject.getString("url");
+					}
+				}
+			}
+			if (frameJsonObject.has("thumbnail_V")) {
+				JSONObject thumbNailPortraritJsonObject = frameJsonObject.getJSONObject("thumbnail_V");
+				if (thumbNailPortraritJsonObject.has("x300")) {
+					JSONObject x400JsonObject = thumbNailPortraritJsonObject.getJSONObject("x300");
+					if (x400JsonObject.has("url")) {
+						frameInfo.frameThumbnailPathPortrait400 = x400JsonObject.getString("url");
+					}
+				}
+				if (thumbNailPortraritJsonObject.has("x120")) {
+					JSONObject x160JsonObject = thumbNailPortraritJsonObject.getJSONObject("x120");
+					if (x160JsonObject.has("url")) {
+						frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
+					}
+				}
+			}
+			if (frameJsonObject.has("fileSize_V")) {
+				frameInfo.fileSize = frameJsonObject.getInt("fileSize_V");
+			}else {
+				frameInfo.fileSize = 0;
+			}
+			if (frameJsonObject.has("fileSize_H")) {
+				frameInfo.fileSize += frameJsonObject.getInt("fileSize_H");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return frameInfo;
+	}
+	
+	/**
+	 * 获取饰品信息
+	 * @param stickerJsonObject
+	 * @return
+	 */
+	public static FrameOrStikerInfo getStickerInfo(JSONObject stickerJsonObject){
+		FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
+		try {
+			frameInfo.onLine = 1;
+			frameInfo.isDownload = 0;
+			if (stickerJsonObject.has("assetName")) {
+				frameInfo.frameName = stickerJsonObject.getString("assetName");
+			}
+			if (stickerJsonObject.has("imgUrl")) {
+				frameInfo.frameOriginalPathPortrait = stickerJsonObject.getString("imgUrl");
+			}
+			if (stickerJsonObject.has("locationId")) {//特定场馆
+				frameInfo.locationId = stickerJsonObject.getString("locationId");
+			}else {
+				frameInfo.locationId = "common";//通用边框
+			}
+			if (stickerJsonObject.has("active")) {
+				frameInfo.isActive = stickerJsonObject.getBoolean("active") ? 1 : 0;
+			}
+			if (stickerJsonObject.has("thumbnail")) {
+				JSONObject thumbnailJsonObject = stickerJsonObject.getJSONObject("thumbnail");
+				if (thumbnailJsonObject.has("x160")) {
+					JSONObject x160JsonObject = thumbnailJsonObject.getJSONObject("x160");
+					if (x160JsonObject.has("url")) {
+						frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
+					}
+				}
+			}
+			if (stickerJsonObject.has("fileSize")) {
+				frameInfo.fileSize = stickerJsonObject.getInt("fileSize");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return frameInfo;
 	}
 }

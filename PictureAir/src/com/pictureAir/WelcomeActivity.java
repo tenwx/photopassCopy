@@ -23,13 +23,14 @@ import android.widget.TextView;
 
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.ScreenUtil;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 第一次进入app的引导页，引导页结束，要么继续左滑，要么点击立即体验按钮进入登录页面
  * @author bauer_bao
  *
  */
-public class WelcomeActivity extends BaseActivity implements OnPageChangeListener, OnTouchListener {
+public class WelcomeActivity extends Activity implements OnPageChangeListener, OnTouchListener {
 	private ViewPager mViewPager;
 	private View view1, view2, view3, view4;
 	private List<View> list;
@@ -46,7 +47,7 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.viewpager);
+		setContentView(R.layout.activity_welcome);
 		AppManager.getInstance().addActivity(this);
 		pointLLayout = (LinearLayout) findViewById(R.id.llayout);
 		count = pointLLayout.getChildCount();
@@ -75,11 +76,11 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	
 	//初始化viewpager
 	public void initpage(LayoutInflater flater) {
-		view1 = flater.inflate(R.layout.loading, null);
+		view1 = flater.inflate(R.layout.activity_start, null);
 		view1.setBackgroundResource(R.drawable.loding_1);
-		view2 = flater.inflate(R.layout.loading, null);
+		view2 = flater.inflate(R.layout.activity_start, null);
 		view2.setBackgroundResource(R.drawable.loding_2);
-		view3 = flater.inflate(R.layout.loading, null);
+		view3 = flater.inflate(R.layout.activity_start, null);
 		view3.setBackgroundResource(R.drawable.loding_3);
 		view4 = flater.inflate(R.layout.loading_start, null);
 		startNow = (TextView)view4.findViewById(R.id.startNow);
@@ -185,5 +186,21 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		startActivity(intent);
 		finish();
 	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		System.out.println("test onpause");
+		MobclickAgent.onPageEnd("WelcomeActivity");
+		MobclickAgent.onPause(this);
+	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		System.out.println("test onresume");
+		MobclickAgent.onPageStart("WelcomeActivity");
+		MobclickAgent.onResume(this);
+	}
 }

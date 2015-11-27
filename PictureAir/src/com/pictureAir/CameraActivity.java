@@ -2,10 +2,8 @@ package com.pictureAir;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,14 +19,9 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.OnZoomChangeListener;
@@ -47,40 +39,32 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.transition.ChangeBounds;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-import com.pictureAir.adapter.FrameGridViewAdapter;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
@@ -88,6 +72,7 @@ import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.RotateView;
 import com.pictureAir.widget.RotatetextView;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 拍照界面
@@ -96,7 +81,7 @@ import com.pictureAir.widget.RotatetextView;
  * 
  */
 @SuppressLint("NewApi")
-public class CameraActivity extends BaseActivity implements SurfaceHolder.Callback, OnClickListener, OnZoomChangeListener {
+public class CameraActivity extends Activity implements SurfaceHolder.Callback, OnClickListener, OnZoomChangeListener {
 	private SurfaceView mySurfaceView = null;
 	private SurfaceHolder mySurfaceHolder = null;
 	private ImageButton recordButton;
@@ -117,42 +102,25 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	private boolean taking_flag = false;// 是否在拍摄中的标志
 	private Bitmap bitmap = null;
 	private RotatetextView textView_time;
-	private PopupWindow framePopupWindow;
 	private int currentpicposition = 0;// 边框选择序号
-	private View frameView_popwindow;
-	private GridView framegridview;
-	private FrameGridViewAdapter frameGridViewAdapter;
-	private ArrayList<String> framelist;// 最新下载的边框的list
-	private int[] pic = { R.drawable.frame_none, R.drawable.frame1_1,
-			R.drawable.frame2_2, R.drawable.frame3_3, R.drawable.frame4_4,
-			R.drawable.frame5_5, R.drawable.frame6_6, R.drawable.frame7_7,
-			R.drawable.frame8_8 };// 缩略图
-	private int[] pic2 = { 0, R.drawable.frame1, R.drawable.frame2,
-			R.drawable.frame3, R.drawable.frame4, R.drawable.frame5,
-			R.drawable.frame6, R.drawable.frame7, R.drawable.frame8 };// 原图
-	int cntSave = 0;
-	int x, y;
-	int myzoommax;
-	int zoom = 0;
-	int time;
-	private int degree = 0;
+	private int screenWidth;
+	private int myzoommax;
+	private int zoom = 0;
+	private int time;
 	private int mTargetZoomValue;
 	private static final int ZOOM_STOPPED = 0;
 	private static final int ZOOM_START = 1;
-	private static final int ZOOM_STOPPING = 2;
 	private int mZoomState = ZOOM_STOPPED;
 	private final ZoomListener mZoomListener = new ZoomListener();
-	
+
 	private int cameraPosition = 1; // 0代表前置摄像头，1代表后置摄像头
-	
+
 	private int camera_flash = 1;// 1代表off，2代表on，3代表auto
 	private Camera.AutoFocusCallback myAutoFocusCallback;
 	private SimpleDateFormat dateFormat;
 	private File nameFile;
 	private ImageView frame_imageView;
 	private Bitmap pictBitmap;
-	private Bitmap heBitmap;
-	private Bitmap frameBitmap = null;
 	private SensorManager mSensorManager = null;
 	private Sensor mSensor = null;
 	private float axis_x, axis_y, axis_z;
@@ -169,14 +137,10 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	private SharedPreferences.Editor editor;
 	private ImageLoader imageLoader;
 	private DisplayImageOptions options;
- 
-	// 记录下触摸屏幕的坐标
-	float fx;
-	float fy;
 
-	float x1 = 0;
-	float y1 = 0;
-	float z1 = 0;
+	private float x1 = 0;
+	private float y1 = 0;
+	private float z1 = 0;
 
 	private View view_focus = null;
 
@@ -194,10 +158,10 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	private long timeLong;
 
 	private String lastPhotoUrl = "";
-	
+
 	//	记录屏幕是横屏还是竖屏   竖屏 1， 横屏 0。
 	private int screenType = 1;
- 
+
 	private ImageView magicShow;
 	private ImageView decoration;
 	private int showX = 0;
@@ -206,37 +170,34 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	private ViewGroup anim_mask_layout;//动画层
 	//判断 是否是 magicShot 模式
 	private boolean isMagicShot = false;
-	
+
 	//用于解决 点击相册 再返回camera，还有动画的bug
 	private boolean isCurActivity = true;
-	
+
 	//播放音效。
-	SoundPool soundPool;
-	HashMap<Integer,Integer> hashMap;
-	int currentStreamId;
+	private SoundPool soundPool;
+	private HashMap<Integer,Integer> hashMap;
+	private int currentStreamId;
+	private boolean openSuccess = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		System.out.println("oncreate--------");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		initSoundPool();
-		
+
 		isCurActivity = true;
 		AppManager.getInstance().addActivity(this);
 		int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
 		Window myWindow = this.getWindow();
 		myWindow.setFlags(flag, flag);// 设置为全屏
-		setContentView(R.layout.camera_activity);
+		setContentView(R.layout.activity_camera);
 
-//		DisplayMetrics metrics = new DisplayMetrics();
-//		getWindowManager().getDefaultDisplay().getMetrics(metrics);// 获取屏幕宽高
-//		x = metrics.widthPixels;// 获取宽度
-//		y = metrics.heightPixels;
-		x = ScreenUtil.getScreenWidth(this);
-		y = ScreenUtil.getScreenHeight(this);
-		
+		screenWidth = ScreenUtil.getScreenWidth(this);
+
 		Log.v("utils", "max mem in mb:" + (Runtime.getRuntime().maxMemory() / 1024 / 1024));// 获取分配给app的内存
 		// 获取手机牌子和型号
 		mobiletype = android.os.Build.MANUFACTURER;
@@ -266,28 +227,16 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		view_focus = findViewById(R.id.view_focus);
 		relativeLayout = (RelativeLayout) findViewById(R.id.previewview);
 		magicShow = (ImageView) findViewById(R.id.magic_show);
-		// 获取最新的framelist数量
-		framelist = new ArrayList<String>();
-		for (int i = 0; i < pic.length; i++) {
-			framelist.add(String.valueOf(pic[i]));
-		}
 
 		textView_time = (RotatetextView) findViewById(R.id.textView_time);
 		frame_imageView = (ImageView) findViewById(R.id.imageView1);
-		frame_imageView.setLayoutParams(new RelativeLayout.LayoutParams(x, (int) (x * 4 / 3)));
+		frame_imageView.setLayoutParams(new RelativeLayout.LayoutParams(screenWidth, (int) (screenWidth * 4 / 3)));
 		mySurfaceHolder.addCallback(this);
 		mySurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		viewButton = (RotateView) findViewById(R.id.button2);
 		viewButton.setOnClickListener(this);
 		magicButton = (RotateView) findViewById(R.id.imagebutton_magic);
 		magicButton.setOnClickListener(this);
-
-		frameView_popwindow = getLayoutInflater().inflate(R.layout.popupwindow_gridview, null);
-		framePopupWindow = new PopupWindow(frameView_popwindow, LayoutParams.MATCH_PARENT, ScreenUtil.getScreenWidth(this) / 3);
-		framePopupWindow.setFocusable(true);// 设置能够获得焦点
-		framePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));// 此代码和上一条代码两者结合，实现能够点击popupwindow外面将popupwindow关闭
-
-		framegridview = (GridView) frameView_popwindow.findViewById(R.id.horizontal_gridView1);
 
 		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
 		editor = sharedPreferences.edit();
@@ -307,25 +256,16 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				// "Parameters.FLASH_MODE_ON :"+Parameters.FLASH_MODE_ON);
 				// if(myParameters.getFocusMode().equals(Parameters.FLASH_MODE_ON)){
 
-				//				if (!taking_flag) {
-				//				if(time > 1){
 				if (success)  {
-					// mode = MODE.FOCUSED;
 					view_focus.setBackgroundResource(R.drawable.ic_focus_focused);
 				} else {
-					// mode = MODE.FOCUSFAIL;
 					view_focus.setBackgroundResource(R.drawable.ic_focus_failed);
 				}
-				//					if (!taking_flag) {
 				setFocusView();
 				x1 = 0;
 				y1 = 0;
 				z1 = 0;
-				//					}
-				//						
 				isfocus = false;
-				////				}
-				////				}
 				if(camera_flash == 2){
 					myParameters.setFlashMode(Parameters.FLASH_MODE_ON);
 					mycamera.setParameters(myParameters);
@@ -387,7 +327,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+
 				if (!taking_flag) {
 					System.out.println("ok");
 					if (time_flag == DELAY_TIME_3S) {// 如果延迟开关打开，则开始计时，计时结束之后再拍照
@@ -406,7 +346,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 						mycamera.takePicture(null, null, myjpegCallback);
 						handler2.postDelayed(runnable5, 500);
 					}
-										
+
 					taking_flag = true;
 				} else {
 					System.out.println("fail");
@@ -441,9 +381,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		if (!myParameters.isZoomSupported())
 			return;
 
-		// mGestureDetector = new GestureDetector(this, new
-		// ZoomGestureListener());
-
 		mycamera.setZoomChangeListener(mZoomListener);
 	}
 
@@ -469,73 +406,73 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				if(isMagicShot){
 					//消失掉  magicShow 的模版，动画继续
 					magicShow.setVisibility(View.GONE);
-					
+
 					decoration = new ImageView(CameraActivity.this);// buyImg是动画的图片
 					Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.decorationtest); 
 					decoration.setImageResource(R.drawable.decorationtest);
-					
-					showX = x*90/584-bitmap.getWidth()/2;  //减去的50和饰品的高度有关
+
+					showX = screenWidth * 90 / 584-bitmap.getWidth()/2;  //减去的50和饰品的高度有关
 					showY = (magicShow.getHeight()*4/7)+(relativeLayout.getHeight()-magicShow.getHeight())/2+titlebar.getHeight()-bitmap.getHeight();
-                    if(isCurActivity){
-                    	setAnim(decoration,showX,showY, bitmap);
-                    }
-					
+					if(isCurActivity){
+						setAnim(decoration,showX,showY, bitmap);
+					}
+
 					//原始的 饰品
-//					Bitmap decorationBitmap = BitmapFactory.decodeResource(
-//							getResources(), R.drawable.decoration13);
+					//					Bitmap decorationBitmap = BitmapFactory.decodeResource(
+					//							getResources(), R.drawable.decoration13);
 					int decorationWidth = bitmap.getWidth();
 					int decorationHeight = bitmap.getHeight();
 					Log.e("decorationWidth :", " :"+decorationWidth+"_:"+decorationHeight);
-					
+
 					pictBitmap = BitmapFactory.decodeByteArray(data, 0,
 							data.length);// data是字节数据，将其解析成位图
-					
-					 
-					 change1(pictBitmap.getWidth(),pictBitmap.getHeight());
-					 //  获取的是新的 pictBitmap 的高度
-					 int picBitmapWidth = pictBitmap.getWidth();
-					 int picBitmapHeight = pictBitmap.getHeight();
-					 Matrix matrix = new Matrix();
-					 //计算出 饰品的缩放比例。
-				     matrix.postScale((float)((float)picBitmapWidth*decorationWidth/x)/decorationWidth, (float)((float)picBitmapHeight*decorationHeight/((float)x*4/3))/decorationHeight);    
 
-				     Bitmap newDecorationBitmap = Bitmap.createBitmap(bitmap, 0, 0, decorationWidth,    
-				    		 decorationHeight, matrix, true);   
-				     
-					 // 接下来图片合成
-				     
-					 Bitmap newbmp = Bitmap.createBitmap(picBitmapWidth, picBitmapHeight, Config.ARGB_8888); 
-					 
-					 int drawX = picBitmapWidth*showX/x + picBitmapWidth*45/relativeLayout.getWidth();  // 加上的数字和 图片有关，45与 20 
-					 int drawY = picBitmapHeight*(showY-titlebar.getHeight())/(x*4/3) + picBitmapHeight*20/relativeLayout.getHeight();
-					 Log.e(" == ", "picBitmapWidth:"+picBitmapWidth);
-					 Log.e("==", "drawX:"+drawX+"_drawY:"+drawY);
-					 Canvas cv = new Canvas(newbmp);
-					 cv.drawBitmap(pictBitmap, 0, 0, null);
-					 pictBitmap.recycle();
-					 cv.drawBitmap(newDecorationBitmap, drawX, drawY, null);
-					 newDecorationBitmap.recycle();
-					 cv.save(Canvas.ALL_SAVE_FLAG);//保存   
-			         cv.restore();//存储
-			         // 保存图片到sdcard
-						if (null != newbmp) {
-							System.out.println(photoFile.toString());
-							FileOutputStream fileOutputStream2 = null;
-							try {
-								fileOutputStream2 = new FileOutputStream(
-										photoFile);
-								BufferedOutputStream bos = new BufferedOutputStream(
-										fileOutputStream2);
-								newbmp.compress(Bitmap.CompressFormat.JPEG,
-										100, bos);
-								bos.flush();
-								bos.close();
-								fileOutputStream2.close();
-							} catch (IOException e) {
-								// TODO: handle exception
-							}
+
+					change1(pictBitmap.getWidth(),pictBitmap.getHeight());
+					//  获取的是新的 pictBitmap 的高度
+					int picBitmapWidth = pictBitmap.getWidth();
+					int picBitmapHeight = pictBitmap.getHeight();
+					Matrix matrix = new Matrix();
+					//计算出 饰品的缩放比例。
+					matrix.postScale((float)((float)picBitmapWidth*decorationWidth/screenWidth)/decorationWidth, (float)((float)picBitmapHeight*decorationHeight/((float)screenWidth*4/3))/decorationHeight);    
+
+					Bitmap newDecorationBitmap = Bitmap.createBitmap(bitmap, 0, 0, decorationWidth,    
+							decorationHeight, matrix, true);   
+
+					// 接下来图片合成
+
+					Bitmap newbmp = Bitmap.createBitmap(picBitmapWidth, picBitmapHeight, Config.ARGB_8888); 
+
+					int drawX = picBitmapWidth*showX/screenWidth + picBitmapWidth*45/relativeLayout.getWidth();  // 加上的数字和 图片有关，45与 20 
+					int drawY = picBitmapHeight*(showY-titlebar.getHeight())/(screenWidth*4/3) + picBitmapHeight*20/relativeLayout.getHeight();
+					Log.e(" == ", "picBitmapWidth:"+picBitmapWidth);
+					Log.e("==", "drawX:"+drawX+"_drawY:"+drawY);
+					Canvas cv = new Canvas(newbmp);
+					cv.drawBitmap(pictBitmap, 0, 0, null);
+					pictBitmap.recycle();
+					cv.drawBitmap(newDecorationBitmap, drawX, drawY, null);
+					newDecorationBitmap.recycle();
+					cv.save(Canvas.ALL_SAVE_FLAG);//保存   
+					cv.restore();//存储
+					// 保存图片到sdcard
+					if (null != newbmp) {
+						System.out.println(photoFile.toString());
+						FileOutputStream fileOutputStream2 = null;
+						try {
+							fileOutputStream2 = new FileOutputStream(
+									photoFile);
+							BufferedOutputStream bos = new BufferedOutputStream(
+									fileOutputStream2);
+							newbmp.compress(Bitmap.CompressFormat.JPEG,
+									100, bos);
+							bos.flush();
+							bos.close();
+							fileOutputStream2.close();
+						} catch (IOException e) {
+							// TODO: handle exception
 						}
-						newbmp.recycle();
+					}
+					newbmp.recycle();
 				}else{
 					FileOutputStream outputStream;
 
@@ -558,8 +495,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 					mycamera.startPreview();
 					taking_flag = false;
 				}
-//				mycamera.startPreview();
-//				taking_flag = false;
 				((MyApplication)getApplication()).scanMagicFinish = false;
 				scan(photoFile.toString());
 			} else {
@@ -576,7 +511,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	 *            需要扫描的文件
 	 */
 	private void scan(final String file) {
-		// TODO Auto-generated method stub
 		MediaScannerConnection.scanFile(this, new String[] { file },
 				new String[] { "image/*" },
 				new MediaScannerConnection.OnScanCompletedListener() {
@@ -637,7 +571,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 							if(!taking_flag){
 								handler2.postDelayed(runnable2, 2000);
 							}
-						
+
 							isfocus = true;
 						}
 					}
@@ -648,15 +582,11 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				if (axis_y > Math.abs(axis_x) + 1) {// 通过+1，区分临界点
 					screenType = 1;
 					dorotate(0);
-					degree = 0;
-					// System.out.println("degree = "+degree);
 				}
 			} else if (axis_x > Math.abs(axis_y)) {// 向左旋转了90的状态
 				if (axis_x > Math.abs(axis_y) + 1) {
 					screenType = 0;
 					dorotate(270);
-					degree = 270;
-					// System.out.println("degree = "+degree);
 				}
 			} else if ((axis_y < axis_x && axis_x < 0)
 					|| (Math.abs(axis_y) > axis_x && axis_x > 0)) {// 手机倒立的状态
@@ -664,8 +594,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				if ((axis_y < axis_x - 1 && axis_x < 0)
 						|| (Math.abs(axis_y) > axis_x + 1 && axis_x > 0)) {
 					dorotate(180);
-					degree = 180;
-					// System.out.println("degree = "+degree);
 				}
 			} else if ((axis_x < axis_y && axis_y < 0)
 					|| (Math.abs(axis_x) > axis_y && axis_y > 0)) {// 向右旋转了90的状态
@@ -673,8 +601,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				if ((axis_x < axis_y - 1 && axis_y < 0)
 						|| (Math.abs(axis_x) > axis_y + 1 && axis_y > 0)) {
 					dorotate(90);
-					degree = 90;
-					// System.out.println("degree = "+degree);
 				}
 			}
 		}
@@ -762,9 +688,9 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 						mycamera = null;// 取消原来摄像头
 						System.out.println("--------------");
 						mycamera = Camera.open(i);// 打开当前选中的摄像头
-						
+
 						Log.e("iiiiiiiiiiiiii", "i 1"+i);
-						
+
 						isview = false;
 						initcamera(270, i);// 因为前置本来拍出来的就是镜像，所以要旋转270°
 						cameraPosition = 0;
@@ -795,7 +721,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 
 				flashButton.setImageResource(R.drawable.camera_flash_on);
 				flashButton.setScaleType(ScaleType.CENTER_INSIDE);
-				// mycamera.stopPreview();
 				myParameters.setFlashMode(Parameters.FLASH_MODE_ON);
 				Log.e("Parameters.FLASH_MODE_ON ",
 						"Parameters.FLASH_MODE_ON : "
@@ -808,7 +733,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				camera_flash = 2;
 				zoom += 1;
 
-				// flashButton.setText("on");
 			} else if (camera_flash == 2) {
 				flashButton.setImageResource(R.drawable.camera_flash_auto);
 				flashButton.setScaleType(ScaleType.CENTER_INSIDE);
@@ -819,36 +743,28 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				camera_flash = 3;
 				zoom += 1;
 
-				// flashButton.setText("auto");
 			} else if (camera_flash == 3) {
 				flashButton.setImageResource(R.drawable.camera_flash_off);
 				flashButton.setScaleType(ScaleType.CENTER_INSIDE);
-				// mycamera.stopPreview();
 				myParameters.setFlashMode(Parameters.FLASH_MODE_OFF);
 				mycamera.setParameters(myParameters);
-				// mycamera.startPreview();
 				camera_flash = 1;
 				zoom += 1;
-
-				// flashButton.setText("off");
 			}
 			break;
 		case R.id.imageButton_time:// 倒计时按钮
 			System.out.println("time");
 
 			if (time_flag == DELAY_TIME_0S) {
-				//				time = 3;
 				time_flag = DELAY_TIME_3S;
 				timetextView.setText("3'S");
 				System.out.println("3s");
 			} else if (time_flag == DELAY_TIME_3S) {
-				//				time = 10;
 				time_flag = DELAY_TIME_10S;
 				timetextView.setText("10'S");
 				System.out.println("10s");
 
 			} else {
-				//				time = 0;
 				time_flag = DELAY_TIME_0S;
 				timetextView.setText("0'S");
 				System.out.println("0s");
@@ -856,31 +772,26 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 			break;
 		case R.id.camera_return:// 返回按钮
 			System.out.println("return");
-			// intent = new Intent(this, MainTabActivity.class);
-			//
-			// startActivity(intent);
 			finish();
 			break;
+
 		case R.id.button2:// 图片预览按钮
 			if (taking_flag) {
 				newToast.setTextAndShow(R.string.is_taking, Common.TOAST_SHORT_TIME);
 			}else{
-			isCurActivity = false;
-			//取消当前的倒计时操作
-			view_focus.setVisibility(View.GONE);
-			timetextView.setText("0'S");
-			time = 0;
-			time_flag = DELAY_TIME_0S;
-			taking_flag = false;
-			textView_time.setVisibility(View.GONE);
-			handler.removeCallbacks(runnable);
-			handler.removeCallbacks(runnable_10);
+				isCurActivity = false;
+				//取消当前的倒计时操作
+				view_focus.setVisibility(View.GONE);
+				timetextView.setText("0'S");
+				time = 0;
+				time_flag = DELAY_TIME_0S;
+				taking_flag = false;
+				textView_time.setVisibility(View.GONE);
+				handler.removeCallbacks(runnable);
+				handler.removeCallbacks(runnable_10);
 
-			intent = new Intent(this, ViewPhotoActivity.class);
-			//			intent = new Intent(this, ViewOrSelectPhotoActivity.class);
-			// intent2.putExtra("activity", "cameraactivity");
-			// CameraActivity.this.finish();
-			CameraActivity.this.startActivity(intent);
+				intent = new Intent(this, ViewPhotoActivity.class);
+				CameraActivity.this.startActivity(intent);
 			}
 			break;
 		case R.id.imagebutton_magic:// 设置 magic
@@ -893,71 +804,11 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 				magicButton.setImageResource(R.drawable.magic_btn_sele);
 				isMagicShot = true;
 			}
-			
-//			int[] loaction = new int[2];
-//			findViewById(R.id.bottombar).getLocationOnScreen(loaction);// 获取底部菜单栏的坐标
-//
-//			// 加载边框
-//			frameGridViewAdapter = new FrameGridViewAdapter(
-//					CameraActivity.this, framelist, pic.length);
-//			framegridview.setAdapter(frameGridViewAdapter);
-//			int frameWidth = ScreenUtil.getScreenWidth(this);
-//
-//			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//					framelist.size() * (frameWidth / 4 + 5) + 10,
-//					LinearLayout.LayoutParams.WRAP_CONTENT);// 设置gridview的宽和高
-//			framegridview.setLayoutParams(params);
-//
-//			framegridview.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-//			framegridview.setNumColumns(framelist.size());
-//			framegridview.setHorizontalSpacing(10);
-//			framegridview.setColumnWidth(frameWidth / 4 - 5);
-//			framegridview.setOnItemClickListener(new OnItemClickListener() {
-//
-//				@Override
-//				public void onItemClick(AdapterView<?> parent, View view,
-//						int position, long id) {
-//					// TODO Auto-generated method stub
-//					currentpicposition = position;
-//					System.out.println("positon:" + currentpicposition);
-//					// popupWindow.showAtLocation(findViewById(R.id.button2_frame),
-//					// Gravity.CENTER, 0, 0);
-//					loadframe(currentpicposition);
-//				}
-//			});
-//			framePopupWindow.showAtLocation(findViewById(R.id.bottombar),
-//					Gravity.NO_GRAVITY, loaction[0], loaction[1]
-//							- framePopupWindow.getHeight());// 显示在控件的上方
+
 			break;
+
 		default:
 			break;
-		}
-	}
-
-	/**
-	 * 加载边框函数
-	 */
-	private void loadframe(final int positon) {
-		if (positon != 0) {
-
-			new Thread(){
-				public void run() {
-					bitmap = BitmapFactory.decodeResource(getResources(), pic2[positon]);
-					Matrix m = new Matrix();
-					// 缩放尺寸，保持和边框一致
-					m.postScale((float) x / (bitmap.getWidth()), (float) x / (bitmap.getWidth()));
-
-					bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-					handler3.sendEmptyMessage(1111);
-				};
-			}.start();
-
-		} else {
-			frame_imageView.setVisibility(View.INVISIBLE);
-		}
-
-		if (framePopupWindow.isShowing()) {
-			framePopupWindow.dismiss();
 		}
 	}
 
@@ -976,18 +827,19 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		// TODO Auto-generated method stub
 		System.out.println("surfacecreated===============");
 		//判断。
+		
 		if (cameraPosition == 1) {
-			initcamera(90, 0);
+			openSuccess = initcamera(90, 0);
 		}else{
-			initcamera(270, 1);
+			openSuccess = initcamera(270, 1);
 		}
-		initializeZoom();
-		// mycamera.startPreview();
-		mySurfaceView.setLayoutParams(new RelativeLayout.LayoutParams(x, (int) (x * 4 / 3)));// 设置surfaceview的高度，实现4：3
-//		magicShow.setLayoutParams(new RelativeLayout.LayoutParams(x, (int) (x * 4 / 3)));
-
-		// 默认加载第一张，暂时没有图片，需要图片
-		loadframe(currentpicposition);
+		if (openSuccess) {
+			initializeZoom();
+			mySurfaceView.setLayoutParams(new RelativeLayout.LayoutParams(screenWidth, (int) (screenWidth * 4 / 3)));// 设置surfaceview的高度，实现4：3
+		}else {
+			System.out.println("open failed");
+			finish();
+		}
 	}
 
 	// surfaceview改变的时候
@@ -1006,11 +858,12 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 
 		handler2.removeCallbacks(runnable2);
 		handler2.removeCallbacks(runnable3);
-
-		mycamera.stopPreview();
-		mycamera.release();
-		mycamera = null;
-		isview = false;
+		if (mycamera != null) {
+			mycamera.stopPreview();
+			mycamera.release();
+			mycamera = null;
+			isview = false;
+		}	
 		if (currentpicposition != 0) {
 			bitmap.recycle();
 			bitmap = null;
@@ -1048,19 +901,22 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	/**
 	 * 初始化camera
 	 */
-	public void initcamera(int rotation, int cameraId) {
+	public boolean initcamera(int rotation, int cameraId) {
 		Log.e("＝＝＝＝", "cameraId :"+cameraId);
 		CameraInfo info = new CameraInfo();
 		Camera.getCameraInfo(cameraId, info);// 得到每一个摄像头的信息
 
 		int result = 0;
 		if (mycamera == null && !isview) {
-//			mycamera = Camera.open(1);
-//			if (cameraPosition == 0) {
+			try {
+				
 				mycamera = Camera.open(cameraId);// 打开相机
-//			}else{
-//				mycamera = Camera.open(0);// 打开相机
-//			}
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println("无法打开相机");
+				newToast.setTextAndShow(R.string.camera_closed, Common.TOAST_SHORT_TIME);
+				return false;
+			}
 		}
 		if (mycamera != null && !isview) {
 			try {
@@ -1110,7 +966,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 					}
 				}
 
-				
+
 				myParameters.setPreviewSize(previewsize_width,
 						previewsize_height);
 				Log.d("previewSize", "SET width:" + previewsize_width
@@ -1161,30 +1017,30 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 			isfocus = true;
 			mycamera.autoFocus(myAutoFocusCallback);
 		}
+		return true;
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("CameraActivity");
+		MobclickAgent.onResume(this);
 		//测试返回时 cameraposition是多少。
 		isCurActivity = true;
 		Log.e("＝＝＝＝", "position:"+cameraPosition);
-//		if (decoration!=null) {
-//			decoration.clearAnimation();
-//		}
-		
+
 		//更新 最新照片信息。
 		lastPhotoUrl = sharedPreferences.getString(Common.LAST_PHOTO_URL, "");
 		File thumbnialFile = new File(lastPhotoUrl);
 		if (lastPhotoUrl.equals("") || !thumbnialFile.exists()) {//变量中没有这个字段，查找文件
-			
+
 			lastPhotoUrl = AppUtil.findLatestPic();
 			//将找到的路径存放在sharedprefrence中
 			editor.putString(Common.LAST_PHOTO_URL, lastPhotoUrl);
 			editor.commit();
 		}
-		
+
 		UpdateLastPhoto(lastPhotoUrl);
 
 		if (null == mSensorManager) {
@@ -1193,8 +1049,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 			mSensorManager.registerListener(lsn, mSensor, SensorManager.SENSOR_DELAY_UI);
 		}
 		System.out.println("resume------");
-		
-		
 	}
 
 	@Override
@@ -1212,6 +1066,8 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		MobclickAgent.onPageEnd("CameraActivity");
+		MobclickAgent.onPause(this);
 		System.out.println("pause-------");
 		if (decoration != null) {//清除动画
 			decoration.clearAnimation();
@@ -1244,16 +1100,12 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		Camera.Parameters parameters = mycamera.getParameters();
 		parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
-		// System.out.println("CustomCameraView getMaxNumFocusAreas = " +
-		// parameters.getMaxNumFocusAreas());
 		if (parameters.getMaxNumFocusAreas() > 0) {
 			List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
 			focusAreas.add(new Camera.Area(focusRect, 1000));
 			parameters.setFocusAreas(focusAreas);
 		}
 
-		// System.out.println("CustomCameraView getMaxNumMeteringAreas = " +
-		// parameters.getMaxNumMeteringAreas());
 		if (parameters.getMaxNumMeteringAreas() > 0) {
 			List<Camera.Area> meteringAreas = new ArrayList<Camera.Area>();
 			meteringAreas.add(new Camera.Area(meteringRect, 1000));
@@ -1266,7 +1118,6 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		} catch (Exception e) {
 
 		}
-		//			if (!taking_flag) {
 		if(taking_flag){
 			handler2.postDelayed(runnable4, 1000);
 		}else{
@@ -1311,14 +1162,12 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 	 */
 	private void caculateBig(int arg) {
 		// 大于放大尺寸的时候 不做操作、
-		System.out.println(arg + "+++++++++++++" + lastzoom);
 		progressInt = progressInt + arg - lastzoom;
 		if (arg > lastzoom) {// 放大
 			progressInt = progressInt > myzoommax ? myzoommax : progressInt;
 		} else {// 缩小
 			progressInt = progressInt < 0 ? 0 : progressInt;
 		}
-		System.out.println("zoom value:" + progressInt);
 		setZoom(progressInt);
 		lastzoom = arg;
 	}
@@ -1408,16 +1257,16 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		}
 		mycamera.setParameters(myParameters);
 	}
-	
+
 	//data转化为bitmap后显示方向不对问题。
 	private void change1(int width,int height){
-		
+
 		if (screenType == 1) {
-				if (cameraPosition == 0) {
-					pictBitmap = rotate(pictBitmap, 270,width,height);// 旋转角度
-				} else {
-					pictBitmap = rotate(pictBitmap, 90,width,height);// 旋转角度
-				}
+			if (cameraPosition == 0) {
+				pictBitmap = rotate(pictBitmap, 270,width,height);// 旋转角度
+			} else {
+				pictBitmap = rotate(pictBitmap, 90,width,height);// 旋转角度
+			}
 		} else if (screenType == 0) {
 			myParameters.set("rotation", 0);
 		} else if (screenType == 2) {
@@ -1430,14 +1279,11 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 			}
 		}
 	}
-	
-	
-	
-	
-    //设置动画。
+
+	//设置动画。
 	private void setAnim(final View v, int endLocationX, int endLocationY, final Bitmap animBitmap){
 		PlaySound(1,0);
-		
+
 		anim_mask_layout = null;
 		anim_mask_layout = createAnimLayout();
 		int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
@@ -1453,7 +1299,7 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		final int endY = end_location[1] - start_location[1]+20;// 动画位移的y坐标    加的数字和图片有关系  正常图片不需要
 		//设置放大动画
 		ScaleAnimation scaleAnimation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-		
+
 		scaleAnimation.setInterpolator(new LinearInterpolator());//匀速
 		scaleAnimation.setRepeatCount(0);//不重复
 		scaleAnimation.setFillAfter(true);//停在最后动画
@@ -1461,147 +1307,145 @@ public class CameraActivity extends BaseActivity implements SurfaceHolder.Callba
 		set.setFillAfter(false);
 		set.addAnimation(scaleAnimation);
 		set.setDuration(500);//动画整个时间
-//		set.set
+		//		set.set
 		view.startAnimation(set);//开始动画
 		// 动画监听事件
-				set.setAnimationListener(new AnimationListener() {
-					// 动画的开始
+		set.setAnimationListener(new AnimationListener() {
+			// 动画的开始
+			@Override
+			public void onAnimationStart(Animation animation) {
+				//					v.setVisibility(View.VISIBLE);
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+			}
+
+			// 动画的结束
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				//x轴的路径动画，匀速
+				TranslateAnimation translateAnimationX = new TranslateAnimation(0,
+						endX, 0, 0);
+				translateAnimationX.setInterpolator(new LinearInterpolator());
+				translateAnimationX.setRepeatCount(0);// 动画重复执行的次数
+				//y轴的路径动画，加速
+				TranslateAnimation translateAnimationY = new TranslateAnimation(0, 0,
+						0, endY);
+				translateAnimationY.setInterpolator(new AccelerateInterpolator());
+				translateAnimationY.setRepeatCount(0);// 动画重复执行的次数
+				//						ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f);
+				AnimationSet set2 = new AnimationSet(false);
+				//						set2.addAnimation(scaleAnimation);
+				set2.addAnimation(translateAnimationY);
+				set2.addAnimation(translateAnimationX);
+
+				set2.setFillAfter(true);
+				set2.setStartOffset(200);//等待时间
+				set2.setDuration(800);// 动画的执行时间
+				view.startAnimation(set2);
+				set2.setAnimationListener(new AnimationListener() {
+
 					@Override
 					public void onAnimationStart(Animation animation) {
-						//					v.setVisibility(View.VISIBLE);
-						
+						// TODO Auto-generated method stub
+
 					}
 
 					@Override
 					public void onAnimationRepeat(Animation animation) {
 						// TODO Auto-generated method stub
+
 					}
 
-					// 动画的结束
 					@Override
 					public void onAnimationEnd(Animation animation) {
-						//x轴的路径动画，匀速
-						TranslateAnimation translateAnimationX = new TranslateAnimation(0,
-								endX, 0, 0);
-						translateAnimationX.setInterpolator(new LinearInterpolator());
-						translateAnimationX.setRepeatCount(0);// 动画重复执行的次数
-						//y轴的路径动画，加速
-						TranslateAnimation translateAnimationY = new TranslateAnimation(0, 0,
-								0, endY);
-						translateAnimationY.setInterpolator(new AccelerateInterpolator());
-						translateAnimationY.setRepeatCount(0);// 动画重复执行的次数
-//						ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f);
-						AnimationSet set2 = new AnimationSet(false);
-//						set2.addAnimation(scaleAnimation);
-						set2.addAnimation(translateAnimationY);
-						set2.addAnimation(translateAnimationX);
+						// TODO Auto-generated method stub
 
-						set2.setFillAfter(true);
-						set2.setStartOffset(200);//等待时间
-						set2.setDuration(800);// 动画的执行时间
-						view.startAnimation(set2);
-						set2.setAnimationListener(new AnimationListener() {
 
-							@Override
-							public void onAnimationStart(Animation animation) {
-								// TODO Auto-generated method stub
+						//延迟两秒  camera 再次预览
+						new Handler().postDelayed(new Runnable() {
+							public void run() {
+								// execute the task
+								soundPool.stop(currentStreamId);
+								v.clearAnimation();
+								isMagicShot = false; //延迟两秒之后  取消掉Magic shoot 模式
+								magicButton.setImageResource(R.drawable.magic_btn);
 
-							}
-
-							@Override
-							public void onAnimationRepeat(Animation animation) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onAnimationEnd(Animation animation) {
-								// TODO Auto-generated method stub
-								
-								
-							   //延迟两秒  camera 再次预览
-						       new Handler().postDelayed(new Runnable() {
-							    public void run() {
-								  // execute the task
-							      soundPool.stop(currentStreamId);
-							      v.clearAnimation();
-							      isMagicShot = false; //延迟两秒之后  取消掉Magic shoot 模式
-							      magicButton.setImageResource(R.drawable.magic_btn);
-							      
-								   if (mycamera != null) {
+								if (mycamera != null) {
 									mycamera.startPreview();
-								   }
-								  taking_flag = false;
-								  animBitmap.recycle();
-								  v.setVisibility(View.GONE);
-							    }
-						       }, 2000);
-						       
-						       
-						       
+								}
+								taking_flag = false;
+								animBitmap.recycle();
+								v.setVisibility(View.GONE);
 							}
-						});
-						}
+						}, 2000);
+
+
+
+					}
 				});
+			}
+		});
 	}
 
 	//创建动画图层
-		private ViewGroup createAnimLayout() {
-			ViewGroup rootView = (ViewGroup) this.getWindow().getDecorView();
-			LinearLayout animLayout = new LinearLayout(this);
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.MATCH_PARENT,
-					LinearLayout.LayoutParams.MATCH_PARENT);
-			animLayout.setLayoutParams(lp);
-			animLayout.setBackgroundResource(android.R.color.transparent);
-			rootView.addView(animLayout);
-			return animLayout;
-		}
-		//添加试图到动画图层
-		private View addViewToAnimLayout( ViewGroup vg, final View view,
-				int[] location) {
-			int x = location[0];
-			int y = location[1];
-			vg.addView(view);
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.WRAP_CONTENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT);
-			lp.leftMargin = x;
-			lp.topMargin = y;
-			view.setLayoutParams(lp);
-			return view;
-		}
-		
-		private  Bitmap rotate(Bitmap in, int angle,int width,int height) {
-			 Matrix mat = new Matrix();
-			if(width>height){
-				mat.postRotate(angle);
-			}
-			if(cameraPosition == 0){
-				mat.postScale(-1, 1);
-			}
-		    
-		    return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
-		}
-		
-		
-				
-		  protected void PlaySound(int sound, int loop) {
-				// TODO Auto-generated method stub
-				AudioManager audioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
-				float streamVolumeCurrent = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-				float streamVolumeMax=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-				float volume=streamVolumeCurrent/streamVolumeMax;
-				currentStreamId=soundPool.play(hashMap.get(sound), volume, volume, 1, loop, 1.0f);
-				
-			}
+	private ViewGroup createAnimLayout() {
+		ViewGroup rootView = (ViewGroup) this.getWindow().getDecorView();
+		LinearLayout animLayout = new LinearLayout(this);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
+		animLayout.setLayoutParams(lp);
+		animLayout.setBackgroundResource(android.R.color.transparent);
+		rootView.addView(animLayout);
+		return animLayout;
+	}
+	//添加试图到动画图层
+	private View addViewToAnimLayout( ViewGroup vg, final View view,
+			int[] location) {
+		int x = location[0];
+		int y = location[1];
+		vg.addView(view);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		lp.leftMargin = x;
+		lp.topMargin = y;
+		view.setLayoutParams(lp);
+		return view;
+	}
 
-			private void initSoundPool() {
-				// TODO Auto-generated method stub
-				soundPool=new SoundPool(4,AudioManager.STREAM_MUSIC,0);
-				hashMap=new HashMap<Integer,Integer>();
-				hashMap.put(1, soundPool.load(this,R.raw.bling,1));
-			}
+	private  Bitmap rotate(Bitmap in, int angle,int width,int height) {
+		Matrix mat = new Matrix();
+		if(width>height){
+			mat.postRotate(angle);
+		}
+		if(cameraPosition == 0){
+			mat.postScale(-1, 1);
+		}
+		return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+	}
 
-		 		
+	protected void PlaySound(int sound, int loop) {
+		// TODO Auto-generated method stub
+		AudioManager audioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+		float streamVolumeCurrent = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		float streamVolumeMax=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		float volume=streamVolumeCurrent/streamVolumeMax;
+		currentStreamId=soundPool.play(hashMap.get(sound), volume, volume, 1, loop, 1.0f);
+	}
+
+	private void initSoundPool() {
+		// TODO Auto-generated method stub
+		soundPool=new SoundPool(4,AudioManager.STREAM_MUSIC,0);
+		hashMap=new HashMap<Integer,Integer>();
+		hashMap.put(1, soundPool.load(this,R.raw.bling,1));
+	}
+	
+	
+
+
 }

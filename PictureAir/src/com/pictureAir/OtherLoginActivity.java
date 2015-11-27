@@ -7,6 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,20 +39,21 @@ import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.HttpsUtil;
+import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.Installation;
-import com.pictureAir.util.SignAndLoginPhoneNumberUtil;
+import com.pictureAir.util.SignAndLoginUtil;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.EditTextWithClear;
 import com.pictureAir.widget.MyToast;
+import com.umeng.analytics.MobclickAgent;
 
 /** 其他登录 bass */
-public class OtherLoginActivity extends BaseActivity implements OnClickListener {
+public class OtherLoginActivity extends Activity implements OnClickListener {
 	private static final String TAG = "OtherLoginActivity";
 	// 申明控件
 	private Button sign, login;
 	private EditTextWithClear userName, password;
-
+	
 	private TextView forgot;
 	private ImageView back;
 	private CustomProgressDialog dialog;
@@ -59,7 +63,10 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 	private String storeIdString = "";// 商店ID字符串
 	private String currency = "";// 货币
 	private static final int START_OTHER_REGISTER_ACTIVITY = 1;// 启动 其他注册的侧面
-
+	private static final int GET_IP_SUCCESS = 3;
+	private static final int GET_IP_FAILED = 4;
+	private static final int GET_TOKENID_FAILED = 5;
+	
 	// 申明其他类
 	private SharedPreferences sp;
 	private Editor editor;
@@ -84,6 +91,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		password = (EditTextWithClear) findViewById(R.id.otherLogin_password);
 		forgot = (TextView) findViewById(R.id.forgot);
 		back = (ImageView) findViewById(R.id.login_back);// 返回按键
+
 
 		back.setOnClickListener(this);
 		sign.setOnClickListener(this);
@@ -120,36 +128,41 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 			}
 		});
 
-		initSSMSSDK();// 初始化
+//		initSSMSSDK();// 初始化
 	}
-
 	/**
 	 * 点击键盘之外，隐藏键盘
 	 */
-	@Override
+	@Override  
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-			View v = getCurrentFocus();
-			if (AppUtil.isShouldHideInput(v, ev)) {
-				// if (!password.hasFocus() && !userName.hasFocus()) {
-				hideInputMethodManager(v);
-				// }
-			}
-			return super.dispatchTouchEvent(ev);
-		}
-		// 必不可少，否则所有的组件都不会有TouchEvent了
-		if (getWindow().superDispatchTouchEvent(ev)) {
-			return true;
-		}
-		return onTouchEvent(ev);
+	    if (ev.getAction() == MotionEvent.ACTION_DOWN) {  
+	        View v = getCurrentFocus();  
+	        if (AppUtil.isShouldHideInput(v, ev)) {  
+//	        	if (!password.hasFocus() && !userName.hasFocus()) {
+	        		hideInputMethodManager(v);
+//				}
+	        }  
+	        return super.dispatchTouchEvent(ev);  
+	    }  
+	    // 必不可少，否则所有的组件都不会有TouchEvent了  
+	    if (getWindow().superDispatchTouchEvent(ev)) {  
+	        return true;  
+	    }  
+	    return onTouchEvent(ev);  
 	}
-
 	//
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
+			case GET_TOKENID_FAILED:
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				break;
+			
 			case API.SUCCESS:// 登录成功
 				API.getcartcount(OtherLoginActivity.this,
 						sp.getString(Common.USERINFO_ID, ""), handler);
@@ -177,6 +190,10 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 				dialog.dismiss();
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
+				
+			case GET_IP_SUCCESS:
+				API.getStoreIdbyIP(msg.obj.toString(), handler);
+				break;
 
 			case API.GET_PPS_SUCCESS:// 获取pp列表成功
 				/**
@@ -197,10 +214,28 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 				} else {
 					Log.d(TAG, "pp size == 0");
 				}
+				
+				new Thread(){
+					public void run() {
+//						String netIP = AppUtil.GetNetIp();
+						String netIP = "211.95.27.34";
+						System.out.println("netIP-----------> "+ netIP);
+						if (netIP.equals("")) {//获取失败
+							handler.sendEmptyMessage(GET_IP_FAILED);
+						}else {//获取成功
+							Message message = handler.obtainMessage();
+							message.what = GET_IP_SUCCESS;
+							message.obj = netIP;
+							handler.sendMessage(message);
+						}
+						
+					};
+				}.start();
 
-				API.getStoreIdbyIP("140.206.125.195", handler);
+//				API.getStoreIdbyIP("140.206.125.195", handler);
 				break;
 
+			case GET_IP_FAILED:
 			case API.GET_PPS_FAILED:// 获取pp列表失败
 				dialog.dismiss();
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
@@ -229,7 +264,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 				dialog.dismiss();
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
-
+				
 			case START_OTHER_REGISTER_ACTIVITY:
 
 				// 其他注册的按钮//
@@ -251,7 +286,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		case R.id.login_back:
 			finish();
 			break;
-
+			
 		case R.id.btnOtherLogin:
 			System.out.println("登录按钮");
 			// 登录
@@ -266,39 +301,66 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 						Common.TOAST_SHORT_TIME);
 				break;
 			}
-
-			String pwd = password.getText().toString();
-			// 判断密码的合法性
-			switch (AppUtil.checkPwd(pwd, pwd)) {
-			case AppUtil.PWD_ALL_SAPCE:// 全部为空格
-				myToast.setTextAndShow(R.string.pwd_no_all_space,
+			if (password.getText().toString().trim().isEmpty()) {
+				myToast.setTextAndShow(R.string.pw_null,
 						Common.TOAST_SHORT_TIME);
 				break;
+			}
+//			dialog = ProgressDialog.show(this, getString(R.string.loading___),
+//					getString(R.string.is_loading), false, true);
+			dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+			// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
+			if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
+				System.out.println("no tokenid");
+				final StringBuffer sb = new StringBuffer();
+				sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
+				RequestParams params = new RequestParams();
+				params.put(Common.TERMINAL, "android");
+				params.put(Common.UUID, Installation.id(this));
+				HttpUtil.get(sb.toString(), params,
+						new JsonHttpResponseHandler() {
+							@Override
+							public void onStart() {
+								super.onStart();
+								System.out.println("get tokenid start");
+							}
 
-			case AppUtil.PWD_AVAILABLE:// 密码可用
-				login();// 登录
-				break;
+							public void onSuccess(int statusCode,
+									Header[] headers, JSONObject response) {
+								super.onSuccess(statusCode, headers, response);
+								try {
+									System.out.println("tokenid==" + response);
+									Editor e = sp.edit();
+									if (response.has(Common.USERINFO_TOKENID)) {
+										System.out
+												.println("add tokenid=============");
+										e.putString(
+												Common.USERINFO_TOKENID,
+												response.getString(Common.USERINFO_TOKENID));
+									}
+									e.commit();
+									API.Login(OtherLoginActivity.this, userName
+											.getText().toString().trim(),
+											password.getText().toString()
+													.trim(), handler);
+								} catch (JSONException e1) {
+									e1.printStackTrace();
+								}
+							}
 
-			case AppUtil.PWD_EMPTY:// 空
-				myToast.setTextAndShow(R.string.pwd_is_empty,
-						Common.TOAST_SHORT_TIME);
-				break;
-
-			case AppUtil.PWD_INCONSISTENCY:// 不一致
-//				myToast.setTextAndShow(R.string.pw_is_inconsistency,
-//						Common.TOAST_SHORT_TIME);
-				break;
-
-			case AppUtil.PWD_SHORT:// 小于6位
-				myToast.setTextAndShow(R.string.notify_password_hint,
-						Common.TOAST_SHORT_TIME);
-
-				break;
-
-			case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
-				myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
-						Common.TOAST_SHORT_TIME);
-				break;
+							@Override
+							public void onFailure(int statusCode,
+									Header[] headers, Throwable throwable,
+									JSONObject errorResponse) {
+								// TODO Auto-generated method stub
+								super.onFailure(statusCode, headers, throwable, errorResponse);
+								handler.sendEmptyMessage(GET_TOKENID_FAILED);
+							}
+						});
+			} else {
+				System.out.println("has tokenid");
+				API.Login(this, userName.getText().toString().trim(), password
+						.getText().toString().trim(), handler);
 			}
 			break;
 		case R.id.sign:
@@ -313,63 +375,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		default:
 			break;
 		}
-	}
-
-	/**
-	 * 登录
-	 */
-	public void login() {
-		dialog = CustomProgressDialog.show(this,
-				getString(R.string.is_loading), true, null);
-		// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
-		if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
-			System.out.println("no tokenid");
-			final StringBuffer sb = new StringBuffer();
-			sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
-			RequestParams params = new RequestParams();
-			params.put(Common.TERMINAL, "android");
-			params.put(Common.UUID, Installation.id(this));
-			HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-				@Override
-				public void onStart() {
-					super.onStart();
-					System.out.println("get tokenid start");
-				}
-
-				public void onSuccess(int statusCode, Header[] headers,
-						JSONObject response) {
-					super.onSuccess(statusCode, headers, response);
-					try {
-						System.out.println("tokenid==" + response);
-						Editor e = sp.edit();
-						if (response.has(Common.USERINFO_TOKENID)) {
-							System.out.println("add tokenid=============");
-							e.putString(Common.USERINFO_TOKENID,
-									response.getString(Common.USERINFO_TOKENID));
-						}
-						e.commit();
-						API.Login(OtherLoginActivity.this, userName.getText()
-								.toString().trim(), password.getText()
-								.toString().trim(), handler);
-					} catch (JSONException e1) {
-						e1.printStackTrace();
-					}
-				}
-
-				@Override
-				public void onFailure(int statusCode, Header[] headers,
-						String responseString, Throwable throwable) {
-					super.onFailure(statusCode, headers, responseString,
-							throwable);
-					throwable.printStackTrace();
-				}
-			});
-		} else {
-			System.out.println("has tokenid");
-			API.Login(this, userName.getText().toString().trim(), password
-					.getText().toString().trim(), handler);
-		}
-
 	}
 
 	/** 隐藏软键盘 */
@@ -403,10 +408,10 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		finish();
 	}
 
-	/** 初始化发短信 **/
-	private void initSSMSSDK() {
-		SMSSDK.initSDK(this, Common.APPKEY, Common.APPSECRET);
-	}
+//	/** 初始化发短信 **/
+//	private void initSSMSSDK() {
+//		SMSSDK.initSDK(this, Common.APPKEY, Common.APPSECRET);
+//	}
 
 	/**
 	 * 第三方短信验证方法
@@ -428,18 +433,17 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 					// 把手机号发送到服务器判断账号是否存在，存在则跳转到重置密码页面
 					System.out.println("type -------->" + type);
 					if (type == 0) {
-						/*
-						 * 服务器返回手机号不存在，注册 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd
-						 * 拿到值。就直接注册。 注册成功：跳转到主页ok
+						/* 服务器返回手机号不存在，注册
+						 * 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd 拿到值。就直接注册。
+						 * 注册成功：跳转到主页ok
 						 */
 						System.out.println("phone:" + phone);
 						System.out.println("pwd:" + pwd);
 						/*
-						 * ＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
+						 *	＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
 						 */
-						// sendSign(phone, pwd);
-						new SignAndLoginPhoneNumberUtil(
-								OtherLoginActivity.this, phone, pwd);
+//						sendSign(phone, pwd);
+						new SignAndLoginUtil(OtherLoginActivity.this, phone, pwd);
 
 					} else if (type == 1) {
 						// 服务器返回手机号存在，修改密码
@@ -461,4 +465,19 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		AppManager.getInstance().killActivity(this);
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("OtherLoginActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("OtherLoginActivity");
+		MobclickAgent.onResume(this);
+	}
 }

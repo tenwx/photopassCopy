@@ -128,40 +128,40 @@ public class EditStoryPhotoGridViewAdapter extends BaseAdapter
 			convertView.setTag(holderView);
 		}
 		PhotoInfo selectPhotoItemInfo = arrayList.get(position);
-			holderView.imageView_photo.setLayoutParams(params);//设置图片显示的大小，使得每张图片显示为正方形
-			holderView.imageview_maskImageView.setLayoutParams(params);//设置蒙版的大小
-			holderView.imageView_photo.setScaleType(ScaleType.CENTER_CROP);
-			holderView.imageView_photo.setVisibility(View.VISIBLE);
-			if (selectPhotoItemInfo.isChecked == 1) {//如果已经有点过了
-				holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
-				holderView.imageview_select.setVisibility(View.VISIBLE);
-				System.out.println(selectPhotoItemInfo.isChecked + "_______");
-				if (selectPhotoItemInfo.isSelected == 1) {
-					holderView.imageview_select.setImageResource(R.drawable.sel2);
-					System.out.println("isSelected------>" + selectPhotoItemInfo.isSelected);
-				}else {
-					System.out.println("no select--》"+selectPhotoItemInfo.isSelected);
-					holderView.imageview_select.setImageResource(R.drawable.sel3);
-				}
-				holderView.imageview_select.setBackgroundColor(Color.TRANSPARENT);
-			} else {
-				holderView.imageview_maskImageView.setVisibility(View.INVISIBLE);
-				holderView.imageview_select.setVisibility(View.INVISIBLE);
+		holderView.imageView_photo.setLayoutParams(params);//设置图片显示的大小，使得每张图片显示为正方形
+		holderView.imageview_maskImageView.setLayoutParams(params);//设置蒙版的大小
+		holderView.imageView_photo.setScaleType(ScaleType.CENTER_CROP);
+		holderView.imageView_photo.setVisibility(View.VISIBLE);
+		if (selectPhotoItemInfo.isChecked == 1) {//如果已经有点过了
+			holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
+			holderView.imageview_select.setVisibility(View.VISIBLE);
+			System.out.println(selectPhotoItemInfo.isChecked + "_______");
+			if (selectPhotoItemInfo.isSelected == 1) {
+				holderView.imageview_select.setImageResource(R.drawable.sel2);
+				System.out.println("isSelected------>" + selectPhotoItemInfo.isSelected);
+			}else {
+				System.out.println("no select--》"+selectPhotoItemInfo.isSelected);
+				holderView.imageview_select.setImageResource(R.drawable.sel3);
 			}
-			if (selectPhotoItemInfo.onLine == 0) {
-				System.out.println("开始加载图片");
-				System.out.println("加载原图---------->"+selectPhotoItemInfo.photoPathOrURL);
-				UniversalImageLoadTool.loadImage("file://"+selectPhotoItemInfo.photoPathOrURL, holderView.imageView_photo);
-				System.out.println("-------->原图加载完毕");
-			}else if (selectPhotoItemInfo.onLine == 1) {
-				if (selectPhotoItemInfo.isPayed == 1) {//如果已经购买，显示512的缩略图
-					System.out.println("开始加载512图片" + selectPhotoItemInfo.photoThumbnail_512);
-					UniversalImageLoadTool.loadImage(Common.PHOTO_URL + selectPhotoItemInfo.photoThumbnail_512, holderView.imageView_photo);
-				}else {//反之显示128的缩略图
-					System.out.println("开始加载128图片"+selectPhotoItemInfo.photoThumbnail);
-					UniversalImageLoadTool.loadImage(selectPhotoItemInfo.photoThumbnail, holderView.imageView_photo);
-				}
+			holderView.imageview_select.setBackgroundColor(Color.TRANSPARENT);
+		} else {
+			holderView.imageview_maskImageView.setVisibility(View.INVISIBLE);
+			holderView.imageview_select.setVisibility(View.INVISIBLE);
+		}
+		if (selectPhotoItemInfo.onLine == 0) {
+			System.out.println("开始加载图片");
+			System.out.println("加载原图---------->"+selectPhotoItemInfo.photoPathOrURL);
+			UniversalImageLoadTool.loadImage("file://"+selectPhotoItemInfo.photoPathOrURL, holderView.imageView_photo);
+			System.out.println("-------->原图加载完毕");
+		}else if (selectPhotoItemInfo.onLine == 1) {
+			if (selectPhotoItemInfo.isPayed == 1) {//如果已经购买，显示512的缩略图
+				System.out.println("开始加载512图片" + selectPhotoItemInfo.photoThumbnail_512);
+				UniversalImageLoadTool.loadImage(Common.PHOTO_URL + selectPhotoItemInfo.photoThumbnail_512, holderView.imageView_photo);
+			}else {//反之显示128的缩略图
+				System.out.println("开始加载128图片"+selectPhotoItemInfo.photoThumbnail);
+				UniversalImageLoadTool.loadImage(selectPhotoItemInfo.photoThumbnail, holderView.imageView_photo);
 			}
+		}
 		return convertView;
 	}
 	class HolderView{

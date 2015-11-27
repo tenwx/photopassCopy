@@ -25,7 +25,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import com.pictureAir.BaseFragment;
 import com.pictureAir.CartActivity;
 import com.pictureAir.DetailProductActivity;
 import com.pictureAir.MyApplication;
@@ -37,7 +36,10 @@ import com.pictureAir.util.ACache;
 import com.pictureAir.util.API;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.UniversalImageLoadTool;
+import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
+import com.pictureAir.widget.NoNetWorkOrNoCountView;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * shop类
@@ -45,11 +47,13 @@ import com.pictureAir.widget.MyToast;
  * @author bauer_bao
  * 
  */
-public class FragmentPageShop extends BaseFragment implements OnClickListener{
+public class FragmentPageShop extends Fragment implements OnClickListener{
 	//申明控件
 	private ImageView shoppingBag;
 	private TextView cartCountTextView;
 	private ListView xListView;
+	private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
+	private CustomProgressDialog customProgressDialog;
 	
 	//申明变量
 	private static String TAG = "FragmentPage3";
@@ -103,7 +107,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 							goodsInfo.good_detail = message.getString("description");
 							goodsInfo.good_productId = message.getString("productId");
 							goodsInfo.good_promotionPrice = message.getString("promotionPrice");
-							if (Common.PHOTOPASSPLUS.equals(goodsInfo.good_name)) {//区分商品
+							if (Common.GOOD_NAME_PPP.equals(goodsInfo.good_name)) {//区分商品
 								//如果是PPP
 								goodsInfo.good_embedPhotoCount = 0;
 								goodsInfo.good_type = 3;
@@ -118,13 +122,25 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 						e.printStackTrace();
 					}
 				}
+				customProgressDialog.dismiss();
+				noNetWorkOrNoCountView.setVisibility(View.GONE);
 				shopGoodListViewAdapter.notifyDataSetChanged();
 //				onLoad();
 				break;
 				
 			case API.GET_ALL_GOODS_FAILED://获取商品失败
-				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				customProgressDialog.dismiss();
+				noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+				noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
+				
 //				onLoad();
+				break;
+				
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+				//重新加载购物车数据
+				System.out.println("onclick with reload");
+				customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+				API.getAllGoods(mHandler, storeIdString, ((MyApplication)getActivity().getApplication()).getLanguageType());
 				break;
 				
 			default:
@@ -141,6 +157,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 		shoppingBag = (ImageView) view.findViewById(R.id.frag3_cart);
 		cartCountTextView = (TextView) view.findViewById(R.id.textview_cart_count);
 		xListView = (ListView) view.findViewById(R.id.shopListView);
+		noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.shopNoNetWorkView);
 		
 		//申明类
 		myToast = new MyToast(getActivity());
@@ -159,6 +176,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 			cartCountTextView.setText(cartCount + "");
 		}
 		allGoodsList = new ArrayList<GoodsInfo>();//初始化商品列表
+		customProgressDialog = CustomProgressDialog.show(getActivity(), getActivity().getString(R.string.is_loading), false, null);
 		API.getAllGoods(mHandler, storeIdString, ((MyApplication)getActivity().getApplication()).getLanguageType());
 		shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
 		xListView.setAdapter(shopGoodListViewAdapter);
@@ -207,6 +225,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 	@Override
 	public void onResume() {
 		super.onResume();
+		 MobclickAgent.onPageStart("FragmentPageShop"); //统计页面
 		cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
 		if (cartCount<=0) {
 			cartCountTextView.setVisibility(View.INVISIBLE);
@@ -214,6 +233,12 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 			cartCountTextView.setVisibility(View.VISIBLE);
 			cartCountTextView.setText(cartCount + "");
 		}
+	}
+	
+	
+	public void onPause() {
+	    super.onPause();
+	    MobclickAgent.onPageEnd("FragmentPageShop"); 
 	}
 
 //	//下拉刷新
@@ -232,4 +257,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 //	private void onLoad() {
 //		xListView.stopRefresh();
 //	}
+	
+	
+	
 }

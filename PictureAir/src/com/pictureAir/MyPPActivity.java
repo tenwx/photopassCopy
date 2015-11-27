@@ -1,18 +1,14 @@
 package com.pictureAir;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import net.sqlcipher.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.integer;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -24,58 +20,67 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.RequestParams;
-import com.pictureAir.adapter.ListOfPPAdapter1;
-import com.pictureAir.blur.BlurActivity;
-import com.pictureAir.db.PhotoInfoDBHelper;
-import com.pictureAir.entity.PPCodeInfo;
-import com.pictureAir.entity.PPCodeInfo1;
+import com.pictureAir.adapter.ListOfPPAdapter;
+import com.pictureAir.customDialog.CustomDialog;
+import com.pictureAir.db.PictureAirDbManager;
+import com.pictureAir.entity.PPPinfo;
+import com.pictureAir.entity.PPinfo;
 import com.pictureAir.entity.PhotoInfo;
+import com.pictureAir.service.DownloadService;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
+import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
+import com.pictureAir.widget.NoNetWorkOrNoCountView;
 import com.pictureAir.widget.XListViewHeader;
+import com.umeng.analytics.MobclickAgent;
 
 /** 显示用户所有的PP或某张PP+可绑定的PP */
-public class MyPPActivity extends BaseActivity implements OnClickListener {
+public class MyPPActivity extends Activity implements OnClickListener {
 	private ImageView back;
 	private ListView listPP;
 	private ImageView delete;
-	private ListOfPPAdapter1 listPPAdapter;
-	private ArrayList<PPCodeInfo> pPCodeList;
-	private ArrayList<PPCodeInfo1> showPPCodeList;// 需要显示的List
-	// private ArrayList<PPCodeInfo1> showDeletePPCodeList;// 删除后的List
-	// private ArrayList<PPCodeInfo1> saveDeletePPCodeList;// 存放删的List
+	private ListOfPPAdapter listPPAdapter;
+	private ArrayList<PPinfo> showPPCodeList;// 需要显示的List
 
-	private SQLiteDatabase database;
-	private SQLiteOpenHelper dbHelper;
 	private SharedPreferences sharedPreferences;
+	private PictureAirDbManager pictureAirDbManager;
 
 	private static final int UPDATE_UI = 10000;
 	private static final int DELETE_PHOTO = 10001;
-	public static final int REQUEST_DELETE_PHOTO_SUCCESS = 10002;
-	public static final int REQUEST_DELETE_PHOTO_FAIL = 10005;
-	private List<PhotoInfo> selectPhotoItemInfos;
-	private List<String> urlList;// 存放图片路径
 	public static boolean isDeletePhoto = false;//是否是编辑状态
 	private MyToast myToast;
 	
-	private static  int deletePosition;
 	private MyApplication myApplication;
 	private int selectedCurrent = -1;
 	private int selectedTag = -1;
-	private String selectedPhotoId;//记录已经购买了的照片的photoId
-
+	private String selectedPhotoId = null;//记录已经购买了的照片的photoId
+	
+	private NoNetWorkOrNoCountView netWorkOrNoCountView;
+	private CustomProgressDialog customProgressDialog;
+	
+	boolean isSeletePP;
+	private TextView tvTitle;
+	
+	//selectPP 中需要的。
+	private TextView ok;
+	private PPPinfo dppp;
+	private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
+	private CustomProgressDialog dialog;
+	private CustomDialog customdialog; //  对话框
+	
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case UPDATE_UI:
-				showPPCodeList = getPhotoUrlFromDatabase();// 根据条码从数据库获取图片
+				showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList,1);// 根据条码从数据库获取图片
 				// 更新界面
 				if (showPPCodeList != null && showPPCodeList.size() > 0) {
 					if (!isDeletePhoto) {
@@ -83,12 +88,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 					}
 					listPPAdapter.refresh(showPPCodeList);
 				}else {
-					listPPAdapter.refresh(new ArrayList<PPCodeInfo1>());
+					listPPAdapter.refresh(new ArrayList<PPinfo>());
 					delete.setVisibility(View.GONE);
 				}
 
 				break;
-			case REQUEST_DELETE_PHOTO_SUCCESS:
+				
+			case API.HIDE_PP_SUCCESS:
 				// 请求删除API成功
 				JSONObject objectSuccess;
 				try {
@@ -116,24 +122,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
 				break;
 				
-			case REQUEST_DELETE_PHOTO_FAIL:
+			case API.HIDE_PP_FAILED:
 				// 请求删除API失败
-				JSONObject objectFail;
-				try {
 					Log.v("=========", "请求删除API" + msg.obj.toString());
-					objectFail = new JSONObject(msg.obj.toString());
 					myToast.setTextAndShow(R.string.http_failed,Toast.LENGTH_LONG);
-//					boolean result = objectFail.getBoolean("--------");
-//					if (result) {
-//						Log.v("=========", "删除成功。。。");
-//					} else {
-//						Log.v("=========", "删除失败。。。");
-//					}
-
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
 				break;
 			case DELETE_PHOTO:
@@ -147,11 +139,11 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 				JSONObject ppsJsonObject = (JSONObject) msg.obj;
 				System.out.println("pps===" + ppsJsonObject);
 				if (ppsJsonObject.has("PPList")) {
-					pPCodeList.clear();
+					showPPCodeList.clear();
 					try {
 						JSONArray pplists = ppsJsonObject
 								.getJSONArray("PPList");
-						PPCodeInfo ppCodeInfo = null;
+						PPinfo ppCodeInfo = null;
 						String ppcode = null;
 						int isupgrade = 0;
 						boolean createnew = false;
@@ -162,17 +154,16 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 							isupgrade = pplist.getInt("isUpgrade");
 							createnew = false;
 							// 查看是否有重复的ppcode，需要更新isupgrade和图片属性
-							for (int j = 0; j < pPCodeList.size(); j++) {
-								if (ppcode.equals(pPCodeList.get(j).ppCode)) {
+							for (int j = 0; j < showPPCodeList.size(); j++) {
+								if (ppcode.equals(showPPCodeList.get(j).getPpCode())) {
 									createnew = true;
-									ppCodeInfo = pPCodeList.get(j);
-									if (ppCodeInfo.isUpgrade == 1) {
+									ppCodeInfo = showPPCodeList.get(j);
+									if (ppCodeInfo.getIsUpgrade() == 1) {
 
 									} else {
 										if (isupgrade == 1) {
-											ppCodeInfo.isUpgrade = 1;
-											ppCodeInfo.photoCount += pplist
-													.getInt("photoCount");
+											ppCodeInfo.setIsUpgrade(1);
+											ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount()+pplist.getInt("photoCount"));
 											System.out
 													.println("changing------------");
 										}
@@ -181,32 +172,139 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 								}
 							}
 							if (!createnew) {
-								ppCodeInfo = new PPCodeInfo();
-								ppCodeInfo.ppCode = pplist
-										.getString("customerId");
-								ppCodeInfo.photoCount = pplist
-										.getInt("photoCount");
-								ppCodeInfo.isUpgrade = pplist
-										.getInt("isUpgrade");
-								ppCodeInfo.shootDate = pplist
-										.getString("shootDate");
-								ppCodeInfo.isHidden = pplist.getInt("isHidden");
-								pPCodeList.add(ppCodeInfo);
+								ppCodeInfo = new PPinfo();
+								ppCodeInfo.setPpCode(pplist
+										.getString("customerId"));
+								ppCodeInfo.setPhotoCount(pplist.getInt("photoCount"));
+								ppCodeInfo.setIsUpgrade(pplist.getInt("isUpgrade")); 
+								ppCodeInfo.setShootDate(pplist
+										.getString("shootDate"));
+								ppCodeInfo.setIsHidden(pplist.getInt("isHidden"));
+								showPPCodeList.add(ppCodeInfo);
 							}
 						}
-						System.out.println("ppcodelist size = "
-								+ pPCodeList.size());
+//						System.out.println("ppcodelist size = "
+//								+ pPCodeList.size());
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					updateUI(UPDATE_UI);
+					customProgressDialog.dismiss();
 				} else {
 					System.out.println("pp size == 0");
 				}
+				listPP.setVisibility(View.VISIBLE);
+				netWorkOrNoCountView.setVisibility(View.GONE);
 				break;
+				
 			case API.GET_PPS_FAILED:// 获取pp列表失败
-				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+//				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+				customProgressDialog.dismiss();
+				netWorkOrNoCountView.setVisibility(View.VISIBLE);
+				netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
+				listPP.setVisibility(View.INVISIBLE);
+				break;
+			case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+				customProgressDialog = CustomProgressDialog.show(MyPPActivity.this, getString(R.string.is_loading), false, null);
+				API.getPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null),mHandler);
+				break;
+				
+		    // seletePP的页面
+			case 2222:
+				listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, null,true,mHandler,dppp);
+				listPP.setAdapter(listPPAdapter);
+				
+				if (showPPCodeList.size() == 0) {
+					ok.setEnabled(false);
+				}
+				break;
+			case 2:
+				ok.setText(formaStringPPP(msg.arg1 - dppp.bindInfo.size(), dppp.capacity - dppp.bindInfo.size()));
+				break;
+				
+			case API.BIND_PP_FAILURE://网络获取失败
+				if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
+					myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+				}else {//获取失败
+					myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+					listPP.setVisibility(View.GONE);
+				}
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+				break;
+
+			case API.FAILURE://连接失败
+				if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
+					myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+				}else {//获取失败
+					myToast.setTextAndShow(R.string.select_bind_pp_faile, Common.TOAST_SHORT_TIME);
+				}
+				break;
+
+			case API.SUCCESS://绑定成功
+				Editor editor = sharedPreferences.edit();
+				editor.putBoolean(Common.NEED_FRESH, true);
+				editor.commit();
+				((MyApplication)getApplication()).setNeedRefreshPPPList(true);
+
+				boolean notFirstGoBuyOnePhotoFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));  //不是第一次。
+				boolean syncFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
+				if (!notFirstGoBuyOnePhotoFlag) {
+					//如果没有设置过。
+					if (syncFlag) {
+						// 下载。
+						downloadPhotoList();
+					}else{
+						//弹框提示
+						customdialog = new CustomDialog.Builder(MyPPActivity.this)
+						.setMessage(getResources().getString(R.string.dialog_sync_message)) 
+						.setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								// TODO Auto-generated method stub
+								//结束第一次的状态。
+								pictureAirDbManager.insertSettingStatus(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));
+								customdialog.dismiss();
+								goIntent();
+							}
+						})
+						.setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								// TODO Auto-generated method stub
+								//记录用户的设置
+								pictureAirDbManager.insertSettingStatus(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
+								//结束第一次的状态。
+								pictureAirDbManager.insertSettingStatus(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));
+								//下载
+								downloadPhotoList();
+								customdialog.dismiss();
+							}
+						})
+						.setCancelable(false)
+						.create();
+						customdialog.show();
+					}
+
+				}else{
+					if (syncFlag) {
+						// 下载。
+						downloadPhotoList();
+					}else{
+						goIntent();
+					}
+				}
+
+				//				Intent intent = new Intent(SelectPPActivity.this, MyPPPActivity.class);
+				//				API.PPPlist.clear();
+				//				if (dialog.isShowing()) {
+				//					dialog.dismiss();
+				//				}
+				//				startActivity(intent);
+				//				finish();
 				break;
 
 			default:
@@ -220,73 +318,80 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.my_pp_1);
-		initView();
+		setContentView(R.layout.activity_my_pp);
+		
+		initView_common();
+		isSeletePP = getIntent().getBooleanExtra("isSeletePP", false);
+		Log.e("cccc", "isSeletePP :"+isSeletePP);
+		if (isSeletePP) {
+			initView_selectPP();
+			tvTitle.setText(R.string.selectionpp);
+		}else{
+			initView_notSelectPP();
+			tvTitle.setText(R.string.mypage_pp);
+		}
+		
+	}
+	
+	private void initView_common(){
+		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
+				MODE_PRIVATE);
+		AppManager.getInstance().addActivity(this);
+		listPP = (ListView) findViewById(R.id.list_pp);
+		tvTitle = (TextView) findViewById(R.id.mypp);
+		back = (ImageView) findViewById(R.id.back);
+		myToast = new MyToast(this);
+		netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
+		
+		pictureAirDbManager = new PictureAirDbManager(this);
+		back.setOnClickListener(this);
+	}
+	
+	private void initView_selectPP(){
+		dppp = getIntent().getParcelableExtra("ppp");
+		ok = (TextView) findViewById(R.id.ok);
+		ok.setVisibility(View.VISIBLE);
+		ok.setOnClickListener(this);
+		ok.setText(formaStringPPP(0, dppp.capacity - dppp.bindInfo.size()));
+		getPhotoUrlFromDatabase();
 	}
 
-	private void initView() {
-		listPP = (ListView) findViewById(R.id.list_pp);
-		back = (ImageView) findViewById(R.id.back);
+	private void initView_notSelectPP() {
 		delete = (ImageView) findViewById(R.id.cancel);
 		myApplication = (MyApplication) getApplication();
 		delete.setOnClickListener(this);
-		back.setOnClickListener(this);
-		myToast = new MyToast(this);
-		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
-				MODE_PRIVATE);
-		dbHelper = new PhotoInfoDBHelper(this, Common.PHOTOPASS_INFO_NAME,
-				Common.PHOTOPASS_INFO_VERSION);
-		AppManager.getInstance().addActivity(this);
-		// 获取PP信息
-		pPCodeList = new ArrayList<PPCodeInfo>();
+				// 获取PP信息
+//		pPCodeList = new ArrayList<PPCodeInfo>();
+		customProgressDialog = CustomProgressDialog.show(MyPPActivity.this, getString(R.string.is_loading), false, null);
 		API.getPPSByUserId(
 				sharedPreferences.getString(Common.USERINFO_TOKENID, null),
 				mHandler);
 		// pPCodeList = getIntent().getParcelableArrayListExtra("pPCodeList");
-		showPPCodeList = new ArrayList<PPCodeInfo1>();
-		// showDeletePPCodeList = new ArrayList<PPCodeInfo1>();
-		// saveDeletePPCodeList = new ArrayList<PPCodeInfo1>();
-		urlList = new ArrayList<String>();
-		selectPhotoItemInfos = new ArrayList<PhotoInfo>();
-		listPPAdapter = new ListOfPPAdapter1(showPPCodeList, MyPPActivity.this,
-				new ListOfPPAdapter1.doShowPhotoListener() {
+		showPPCodeList = new ArrayList<PPinfo>();
+		listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this,
+				new ListOfPPAdapter.doShowPhotoListener() {
 
 					@Override
-					public void doShowPhotoListener(int position, int tag) {
+					public void previewPhoto(int position, int tag) {
 						// TODO Auto-generated method stub
 						// 进入图片详情
 						showPhotoDetail(position, tag);
 					}
-				}, new ListOfPPAdapter1.doDeletePhotoListener() {
+				}, new ListOfPPAdapter.doDeletePhotoListener() {
 
 					@Override
-					public void doDeletePhotoListener(int position) {
+					public void deletePhoto(int position) {
 						// TODO Auto-generated method stub
-						// 删除图片
-						// Log.v("=========",
-						// "doDeletePhotoListener showDeletePPCodeList: "
-						// + showDeletePPCodeList.size());
-						// Log.v("=========", "doDeletePhotoListener position: "
-						// + position);
-						// if (showDeletePPCodeList != null
-						// && showDeletePPCodeList.size() > 0) {
-						// saveDeletePPCodeList.add(showDeletePPCodeList
-						// .get(position));
-						// showDeletePPCodeList.remove(position);
-						// updateUI(DELETE_PHOTO);
-						// }
-						deletePosition = position;
 						deleteAPI(position);// 提交删除PP
-//						updateUI(DELETE_PHOTO);
 					}
-				});
+				},false,null,null);
 
 		listPP.addHeaderView(new XListViewHeader(this));
 		listPP.setAdapter(listPPAdapter);
 		listPP.setHeaderDividersEnabled(true);
 		listPP.setFooterDividersEnabled(false);
 
-		if (pPCodeList == null || pPCodeList.size() <= 0) {
+		if (showPPCodeList == null || showPPCodeList.size() <= 0) {
 			return;
 		}
 		
@@ -309,45 +414,31 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 		if (photoInfo.photoPathOrURL.equals("")) {
 			return;
 		}
-		Log.v("============", "showPhotoDetail curIndex : " + curInedx
-				+ "url-->" + photoInfo.photoPathOrURL);
+		selectedTag = tag;
+		selectedCurrent = curInedx;
+		selectedPhotoId = showPPCodeList.get(curInedx).getSelectPhotoItemInfos().get(tag).photoId;
+		myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASS);
+		
+		Log.v("============", "showPhotoDetail curIndex : " + curInedx + "url-->" + photoInfo.photoPathOrURL);
 		Intent i = new Intent();
+		
 		ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-		// PhotoInfo photopassmap = new PhotoInfo();
-		// photopassmap.photoPathOrURL = showPPCodeList.get(curInedx)
-		// .getSelectPhotoItemInfos().get(tag).photoPathOrURL;
-		// photopassmap.photoThumbnail = showPPCodeList.get(curInedx)
-		// .getSelectPhotoItemInfos().get(tag).photoThumbnail;
-		// photopassmap.isPayed = showPPCodeList.get(curInedx)
-		// .getSelectPhotoItemInfos().get(tag).isPayed;
-		// photopassmap.photoId = showPPCodeList.get(curInedx)
-		// .getSelectPhotoItemInfos().get(tag).photoId;
-		// photopassmap.photoThumbnail_512 = showPPCodeList.get(curInedx)
-		// .getSelectPhotoItemInfos().get(tag).photoThumbnail_512;
-		// photopassmap.photoThumbnail_1024 = showPPCodeList.get(curInedx)
-		// .getSelectPhotoItemInfos().get(tag).photoThumbnail_1024;
-		photoInfo.onLine = 1;
-		photopassArrayList.add(photoInfo);
-
-		if (photoInfo.isPayed == 1) {
-			System.out.println("has bought");
-			i.setClass(this, PreviewPhotoActivity.class);
-			i.putExtra("activity", "fragmentpage1");
-			i.putExtra("flag", 1);// 哪个相册的标记
-			i.putExtra("position", tag + "");// 在那个相册中的位置
-			i.putExtra("photoId", photoInfo.photoId);
-			i.putExtra("photos", photopassArrayList);// 那个相册的全部图片路径
-			i.putExtra("targetphotos", new ArrayList<PhotoInfo>());
-		} else {
-			i.setClass(this, BlurActivity.class);
-			Bundle bundle = new Bundle();
-			bundle.putParcelable("photo", photoInfo);
-			i.putExtras(bundle);
-			selectedCurrent = curInedx;
-			selectedTag = tag;
-			selectedPhotoId = photoInfo.photoId;
-			myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASS);
-		}
+		//需要将picList中的图片数据全部转到成photopassArrayList
+//		for (int j = 0; j < picList.size(); j++) {
+			photopassArrayList.addAll(showPPCodeList.get(curInedx)
+					.getSelectPhotoItemInfos());
+//		}
+			for (int j = 0; j < photopassArrayList.size(); j++) {
+				photopassArrayList.get(j).onLine = 1;
+			}
+//			photoInfo.onLine = 1;
+		i.setClass(this, PreviewPhotoActivity.class);
+		i.putExtra("activity", "myPPActivity");
+		i.putExtra("position", photopassArrayList.indexOf(photoInfo)+"");//在那个相册中的位置
+		i.putExtra("photoId", photoInfo.photoId);
+		i.putExtra("photos", photopassArrayList);//那个相册的全部图片路径
+		i.putExtra("targetphotos", myApplication.magicPicList);
+		
 		startActivity(i);
 
 	}
@@ -387,7 +478,44 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 				delete.setVisibility(View.GONE);
 				updateUI(DELETE_PHOTO);
 			}
-
+			break;
+	    //  seletePP 界面的 点击事件
+		case R.id.ok://确认绑定按钮
+			HashMap<Integer, Boolean> map = listPPAdapter.getMap();
+			if (map.size() == 0) {
+				myToast.setTextAndShow(R.string.select_your_pp, Common.TOAST_SHORT_TIME);
+				return;
+			}
+			for (int i = 0; i < map.size(); i++) {
+				System.out.println("->"+map.get(i));
+			}
+			JSONArray pps = new JSONArray();
+			tempPhotoLists = new ArrayList<PhotoInfo>();
+			//			String binddate = null;
+			System.out.println("size="+map.size());
+			for (int j = 0; j < showPPCodeList.size(); j++) {
+				JSONObject jsonObject = new JSONObject();
+				if (null != map.get(j) && map.get(j)) {
+					System.out.println(showPPCodeList.get(j).getPpCode());
+					try {
+						PhotoInfo photoInfo = new PhotoInfo();
+						jsonObject.put("code", showPPCodeList.get(j).getPpCode());
+						jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
+						photoInfo.photoId = showPPCodeList.get(j).getPpCode();
+						photoInfo.shootTime = showPPCodeList.get(j).getPpCode();
+						tempPhotoLists.add(photoInfo);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					pps.put(jsonObject);
+				}
+			}
+			//			if (null == binddate) {
+			//			}else {
+			//			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.is_loading), false, true);
+			dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+			API.bindPPsDateToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null),pps, dppp.PPPCode, mHandler);
 			break;
 		default:
 			break;
@@ -399,96 +527,38 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
-			System.out.println("deal data after bought photo");
-			myApplication.setRefreshViewAfterBuyBlurPhoto("");
-			//找到之前选择的图片的索引值，并且更新购买信息
-			showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).isPayed = 1;
-			selectedCurrent = -1;
-			selectedTag = -1;
-			listPPAdapter.notifyDataSetChanged();
-			//根据photoId，更新数据库中的字段
-			database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
-			database.execSQL("update "+Common.PHOTOPASS_INFO_TABLE+" set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
-			database.close();
-			selectedPhotoId = null;
-//			Editor editor = sharedPreferences.edit();
-//			editor.putBoolean(Common.NEED_FRESH, false);
-//			editor.commit();
+		MobclickAgent.onPageStart("MyPPActivity");
+		MobclickAgent.onResume(this);
+		if (isSeletePP) {
+			
+		}else{
+//			System.out.println("MyPPActivity----->"+myApplication.getRefreshViewAfterBuyBlurPhoto());
+			if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
+				System.out.println("deal data after bought photo");
+				myApplication.setRefreshViewAfterBuyBlurPhoto("");
+				//找到之前选择的图片的索引值，并且更新购买信息
+				showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).isPayed = 1;
+				selectedCurrent = -1;
+				selectedTag = -1;
+				listPPAdapter.notifyDataSetChanged();
+				//根据photoId，更新数据库中的字段
+				pictureAirDbManager.updatePhotoBought(selectedPhotoId);
+				selectedPhotoId = null;
+			}
 		}
 	}
 	
-	
-	// 处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
-	private ArrayList<PPCodeInfo1> getPhotoUrlFromDatabase() {
-		showPPCodeList = new ArrayList<PPCodeInfo1>();
-		database = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
-		// int skipCount = 0;//设置跳过的数量
-		// 获取需要显示的PP(去掉重复、隐藏的)
-		for (int j = 0; j < pPCodeList.size(); j++) {
-			if (j + 1 < pPCodeList.size()
-					&& pPCodeList.get(j).ppCode
-							.equals(pPCodeList.get(j + 1).ppCode)) {
-				pPCodeList.remove(j);
-			}
-		}
-		Cursor cursor = null;
-		for (int i = 0; i < pPCodeList.size(); i++) {
-			if (pPCodeList.get(i).isHidden == 1) {
-				// skipCount ++;
-				continue;
-			}
-			urlList = new ArrayList<String>();
-			selectPhotoItemInfos = new ArrayList<PhotoInfo>();
-			PPCodeInfo ppInfo = pPCodeList.get(i);
-			Log.v("=======", "PP卡:" + ppInfo.ppCode);
-			cursor = database.rawQuery("select * from "
-					+ Common.PHOTOPASS_INFO_TABLE
-					+ " where photoCode like ? order by shootOn desc",
-					new String[] { "%" + ppInfo.ppCode + "%" });
-			if (cursor != null && cursor.moveToFirst()) {
-				do {
-					// 获取图片路径
-					urlList.add(cursor.getString(cursor
-							.getColumnIndex("previewUrl")));
-					PhotoInfo sInfo = new PhotoInfo();
-					sInfo.photoId = cursor.getString(cursor
-							.getColumnIndex("photoId"));
-					sInfo.photoPathOrURL = cursor.getString(cursor
-							.getColumnIndex("originalUrl"));
-					sInfo.photoThumbnail = cursor.getString(cursor
-							.getColumnIndex("previewUrl"));
-					sInfo.photoThumbnail_512 = cursor.getString(cursor
-							.getColumnIndex("previewUrl_512"));
-					sInfo.photoThumbnail_1024 = cursor.getString(cursor
-							.getColumnIndex("previewUrl_1024"));
-					sInfo.photoPassCode = cursor.getString(cursor
-							.getColumnIndex("photoCode"));
-					sInfo.isPayed = Integer.valueOf(cursor.getString(cursor
-							.getColumnIndex("isPay")));
-
-					selectPhotoItemInfos.add(sInfo);
-				} while (cursor.moveToNext());
-
-			}
-			Log.v("=======", "图片数量" + urlList.size());
-			PPCodeInfo1 ppInfo1 = new PPCodeInfo1();
-			ppInfo1.setPpCode(ppInfo.ppCode);
-			ppInfo1.setShootDate(ppInfo.shootDate);
-			// ppInfo1.setLocation(cursor.getString(cursor.getColumnIndex("location")));
-			ppInfo1.setUrlList(urlList);
-			ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
-			showPPCodeList.add(ppInfo1);
-			// showPPCodeList.add(i - skipCount, ppInfo1);
-		}
-		// 处理完了，通知处理之后的信息
-		if (cursor != null) {
-			cursor.close();
-		}
-		database.close();
-		return showPPCodeList;
+	//处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
+	private void getPhotoUrlFromDatabase() {
+		new Thread(){
+			public void run() {
+				Log.e("API.PPlist.size()", "API.PPlist.size():"+API.PPlist.size());
+				showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(API.PPlist, 2);
+				Log.e("＝＝＝＝＝＝", "showPPCodeList："+showPPCodeList.size());
+				mHandler.sendEmptyMessage(2222);
+			};
+		}.start();
 	}
-
 	// 请求删除API
 	public boolean deleteAPI(int position) {
 		RequestParams params = new RequestParams();
@@ -522,4 +592,54 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
 	}
+	
+	
+	private String formaStringPPP(int count1, int count2) {
+		return String.format(getString(R.string.pp_ok), count1, count2);
+	}
+	
+	//下载照片
+	private void downloadPhotoList(){
+		Log.e("＝＝＝＝＝", "downloadPhotoList");
+		if (tempPhotoLists.size()>0) {
+			for (int i = 0; i < tempPhotoLists.size(); i++) {
+				download(pictureAirDbManager.getPhotoUrlByPhotoIDAndShootOn(tempPhotoLists.get(i).photoId, tempPhotoLists.get(i).shootTime));
+			}
+		}
+		goIntent();
+	}
+
+	private void download(ArrayList<PhotoInfo> arrayList){
+		Log.e("=======", "arrayList.size()："+arrayList.size());
+		if (arrayList.size()>0) {
+			Intent intent = new Intent(MyPPActivity.this,
+					DownloadService.class);
+			Bundle bundle = new Bundle();
+			bundle.putParcelableArrayList("photos", arrayList);
+			intent.putExtras(bundle);
+			startService(intent);
+		}
+	}
+
+	private void goIntent(){
+		Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
+		API.PPPlist.clear();
+		if (dialog.isShowing()) {
+			dialog.dismiss();
+		}
+		startActivity(intent);
+		finish();
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageStart("MyPPActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	
+	
+	
 }

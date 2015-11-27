@@ -11,7 +11,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
@@ -19,14 +18,13 @@ import android.widget.ImageView;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.pictureAir.util.UmengUtil;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 开始的启动页面，如果第一次进入，则进入第一次的引导页，如果不是，则进入登录页面
  * @author bauer_bao
- *
  */
-public class StartActivity extends BaseActivity{
+public class StartActivity extends Activity{
 	private SharedPreferences spApp;
 	private int code = 0;
 	private String languageType;
@@ -35,12 +33,13 @@ public class StartActivity extends BaseActivity{
 	private ImageView imageView1, imageView2;
 	private static final String TAG = "StartActivity";
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.loading);
+		setContentView(R.layout.activity_start);
+		
+		MobclickAgent.openActivityDurationTrack(false);   //禁止默认的页面统计方式，这样将不会再自动统计Activity。
 		
 		spApp = getSharedPreferences(Common.APP, MODE_PRIVATE);
 		AppManager.getInstance().addActivity(this);
@@ -48,11 +47,13 @@ public class StartActivity extends BaseActivity{
 		displayMetrics = getResources().getDisplayMetrics();
 		
 		//获取手机设置的语言
-		languageType = spApp.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-		if(languageType.equals(Common.ENGLISH)){
-			config.locale = Locale.US;
-		}else if (languageType.equals(Common.SIMPLE_CHINESE)) {
-			config.locale = Locale.SIMPLIFIED_CHINESE;
+		languageType = spApp.getString(Common.LANGUAGE_TYPE, "");
+		if (!languageType.equals("")) {
+			if(languageType.equals(Common.ENGLISH)){
+				config.locale = Locale.US;
+			}else if (languageType.equals(Common.SIMPLE_CHINESE)) {
+				config.locale = Locale.SIMPLIFIED_CHINESE;
+			}
 		}
 		
 		imageView1 = (ImageView)findViewById(R.id.img);
@@ -63,7 +64,7 @@ public class StartActivity extends BaseActivity{
 
 		((MyApplication) this.getApplicationContext()).setLanguageType(languageType);
 		getResources().updateConfiguration(config, displayMetrics);
-		
+
 		try {
 			PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
 			final int versionCode = info.versionCode;
@@ -81,9 +82,9 @@ public class StartActivity extends BaseActivity{
 						if(_id != null){//判断是否已经登录
 							//发送广播
 							Log.d(TAG, "start push service");
-							Intent intent2 = new Intent();
-							intent2.setAction("com.receiver.AlertManagerRecriver");
-							StartActivity.this.sendBroadcast(intent2);
+//							Intent intent2 = new Intent();
+//							intent2.setAction("com.receiver.AlertManagerRecriver");
+//							StartActivity.this.sendBroadcast(intent2);
 							intent = new Intent(StartActivity.this, MainTabActivity.class);
 						}else{
 							intent = new Intent(StartActivity.this, LoginActivity.class);
@@ -109,21 +110,28 @@ public class StartActivity extends BaseActivity{
 		} catch (NameNotFoundException e) {
 			e.printStackTrace(System.err);
 		}
+	
 	}
-	
-	
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
-	
 
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
+	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPageEnd("StartActivity");
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onPageStart("StartActivity");
+		MobclickAgent.onResume(this);
 	}
 }
