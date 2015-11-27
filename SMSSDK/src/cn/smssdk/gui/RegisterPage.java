@@ -48,7 +48,7 @@ import cn.smssdk.framework.FakeActivity;
 
 /** 短信注册页面 */
 public class RegisterPage extends FakeActivity implements OnClickListener,
-TextWatcher {
+		TextWatcher {
 
 	// 默认使用中国区号
 	private static final String DEFAULT_COUNTRY_ID = "42";
@@ -87,6 +87,7 @@ TextWatcher {
 	private Button btnSubmit;// 提交按钮
 
 	private MyToast myToast;
+
 	// 用来传递一个值到项目中去。其他注册
 
 	public RegisterPage(int type, Handler handler) {
@@ -142,7 +143,7 @@ TextWatcher {
 
 			resId = getIdRes(activity, "rl_country");// 选择国家的按钮
 			View viewCountry = activity.findViewById(resId);
-			resId = getIdRes(activity, "btn_next");// 下一步按钮
+			resId = getIdRes(activity, "btn_next");// 获取验证码按钮
 			btnNext = (Button) activity.findViewById(resId);
 			btnNext.setEnabled(false);// 先让按钮变灰，不可点击
 
@@ -165,16 +166,16 @@ TextWatcher {
 			etPhoneNum.addTextChangedListener(this);// 添加文本改变的监听事件
 			etPhoneNum.requestFocus();// 点击tab键或enter键焦点自动进入下一个输入框
 			// 当输入值的时候，显示清空图标
-//			if (etPhoneNum.getText().length() > 0) {
-//				btnNext.setEnabled(true);// 如果为不能点击，变灰setEnabled(false)
-//				// resId = getIdRes(activity, "iv_clear");
-//				// ivClear = (ImageView) activity.findViewById(resId);// 找到清除图标
-//				// ivClear.setVisibility(View.VISIBLE);// 显示它
-//				resId = getBitmapRes(activity, "smssdk_btn_enable");
-//				// if (resId > 0) {
-//				// btnNext.setBackgroundResource(resId);
-//				// }
-//			}
+			// if (etPhoneNum.getText().length() > 0) {
+			// btnNext.setEnabled(true);// 如果为不能点击，变灰setEnabled(false)
+			// // resId = getIdRes(activity, "iv_clear");
+			// // ivClear = (ImageView) activity.findViewById(resId);// 找到清除图标
+			// // ivClear.setVisibility(View.VISIBLE);// 显示它
+			// resId = getBitmapRes(activity, "smssdk_btn_enable");
+			// // if (resId > 0) {
+			// // btnNext.setBackgroundResource(resId);
+			// // }
+			// }
 
 			tv_otherRegistered = (TextView) activity.findViewById(getIdRes(
 					activity, "tv_otherRegistered"));
@@ -197,26 +198,27 @@ TextWatcher {
 			initIdentify();
 
 			resId = getIdRes(activity, "iv_clear");
-			//			ivClear = (ImageView) activity.findViewById(resId);// 找到清除图标
+			// ivClear = (ImageView) activity.findViewById(resId);// 找到清除图标
 
 			llBack.setOnClickListener(this);
 			btnNext.setOnClickListener(this);
-			//			ivClear.setOnClickListener(this);
+			// ivClear.setOnClickListener(this);
 			viewCountry.setOnClickListener(this);// 选择国家的按钮
 
-//			smsReceiver = new SMSReceiver(new SMSSDK.VerifyCodeReadListener() {
-//				@Override
-//				public void onReadVerifyCode(final String verifyCode) {
-//					runOnUIThread(new Runnable() {
-//						@Override
-//						public void run() {
-//							etIdentifyNum.setText(verifyCode);
-//						}
-//					});
-//				}
-//			});
-//			activity.registerReceiver(smsReceiver, new IntentFilter(
-//					"android.provider.Telephony.SMS_RECEIVED"));
+			// smsReceiver = new SMSReceiver(new SMSSDK.VerifyCodeReadListener()
+			// {
+			// @Override
+			// public void onReadVerifyCode(final String verifyCode) {
+			// runOnUIThread(new Runnable() {
+			// @Override
+			// public void run() {
+			// etIdentifyNum.setText(verifyCode);
+			// }
+			// });
+			// }
+			// });
+			// activity.registerReceiver(smsReceiver, new IntentFilter(
+			// "android.provider.Telephony.SMS_RECEIVED"));
 
 			handler = new EventHandler() {
 				@SuppressWarnings("unchecked")
@@ -263,8 +265,8 @@ TextWatcher {
 									String des = object.optString("detail");
 									if (!TextUtils.isEmpty(des)) {
 										myToast.setTextAndShow(des, 100);
-//										Toast.makeText(activity, des,
-//												Toast.LENGTH_SHORT).show();
+										// Toast.makeText(activity, des,
+										// Toast.LENGTH_SHORT).show();
 										return;
 									}
 								} catch (Exception e) {
@@ -275,8 +277,8 @@ TextWatcher {
 										"smssdk_network_error");
 								if (resId > 0) {
 									myToast.setTextAndShow(resId, 100);
-//									Toast.makeText(activity, resId,
-//											Toast.LENGTH_SHORT).show();
+									// Toast.makeText(activity, resId,
+									// Toast.LENGTH_SHORT).show();
 								}
 							}
 						}
@@ -286,7 +288,7 @@ TextWatcher {
 		}
 
 	}
-	
+
 	private String[] getCurrentCountry() {
 		String mcc = getMCC();
 		String[] country = null;
@@ -341,41 +343,147 @@ TextWatcher {
 
 	}
 
-	private void onChangedEditTestiSempet() {
-		if (etPhoneNum.getText().toString().length() > 0
-				&& etIdentifyNum.getText().toString().length() > 0
-				&& etPwd.getText().toString().length() > 0
-				&& etPwd2.getText().toString().length() > 0) {
+	/**
+	 * 设置获取验证码按钮是否可用
+	 * 
+	 * @param isAvailable
+	 */
+	public void setNextBtnAvailable(boolean isAvailable) {
+		int bgId;
+		int colorId;
+		if (isAvailable) {
+			bgId = getBitmapRes(activity, "button_green");
+			colorId = Color.WHITE;
+			btnSubmit.setEnabled(true);
 
-			int rresId = getBitmapRes(activity, "button_blue");
-			if (rresId > 0) {
-				btnSubmit.setBackgroundResource(rresId);
-				btnSubmit.setTextColor(Color.WHITE);
-				btnSubmit.setEnabled(true);
-			}
 		} else {
-			int rresId = getBitmapRes(activity, "button_gray");
-			if (rresId > 0) {
-				btnSubmit.setBackgroundResource(rresId);
-				btnSubmit.setTextColor(activity.getResources().getColor(R.color.gray3));
-				btnSubmit.setEnabled(false);
+			bgId = getBitmapRes(activity, "button_gray");
+			colorId = activity.getResources().getColor(R.color.gray3);
+			btnSubmit.setEnabled(false);
+		}
+		if (bgId > 0) {
+			btnNext.setBackgroundResource(bgId);
+		}
+		btnNext.setTextColor(colorId);
+
+	}
+
+	/**
+	 * 设置提交注册按钮是否可用
+	 * 
+	 * @param isAvailable
+	 */
+	public void setSubmitAvailable(boolean isAvailable) {
+		int bgId;
+		int colorId;
+		if (isAvailable) {
+			bgId = getBitmapRes(activity, "button_blue");
+			colorId = Color.WHITE;
+			btnSubmit.setEnabled(true);
+		} else {
+			bgId = getBitmapRes(activity, "button_gray");
+			colorId = activity.getResources().getColor(R.color.gray3);
+			btnSubmit.setEnabled(false);
+		}
+		if (bgId > 0) {
+			btnSubmit.setBackgroundResource(bgId);
+		}
+		btnSubmit.setTextColor(colorId);
+
+	}
+
+	/**
+	 * 监控密码框和验证码框输入情况
+	 */
+	@SuppressLint("NewApi")
+	private void onChangedEditTestiSempet() {
+		String pwd1 = etPwd.getText().toString();
+		String pwd2 = etPwd2.getText().toString();
+		if (etPhoneNum.getText().toString().length() > 0) {
+			// 已填手机号/验证码按钮可点
+			setNextBtnAvailable(true);
+			if (pwd1.length() > 0 && pwd2.length() > 0
+					&& etIdentifyNum.getText().toString().length() > 0) {
+				// 已填密码、已填验证码 /提交注册可点
+				setSubmitAvailable(true);
+			} else {
+				// 提交按钮不可点
+				setSubmitAvailable(false);
 			}
+
+		} else {
+			setNextBtnAvailable(false);
+			setSubmitAvailable(false);
 		}
 	}
 
+	// 监听手机号编辑框
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
 		onChangedEditTestiSempet();
 		if (s.length() > 0) {
 			btnNext.setEnabled(true);
-			//			ivClear.setVisibility(View.VISIBLE);
+			// ivClear.setVisibility(View.VISIBLE);
 		} else {
 			btnNext.setEnabled(false);
-			//			ivClear.setVisibility(View.GONE);
+			// ivClear.setVisibility(View.GONE);
 		}
 	}
 
 	public void afterTextChanged(Editable s) {
 
+	}
+
+	/**
+	 * 检查密码
+	 */
+	@SuppressLint("NewApi")
+	public boolean checkPwd() {
+		String pwd1 = etPwd.getText().toString();
+		String pwd2 = etPwd2.getText().toString();
+		if (pwd1.isEmpty() || pwd2.isEmpty()) {
+			// 密码为空
+			int resId = getStringRes(activity,
+					"smssdk_modify_password_empty_hint");
+			if (resId > 0) {
+				myToast.setTextAndShow(resId, 100);
+			}
+			return false;
+
+		} else if (pwd1.length() < 6 || pwd2.length() < 6) {
+			// 密码小于6位
+			int resId = getStringRes(activity, "smssdk_notify_password_hint");
+			if (resId > 0) {
+				myToast.setTextAndShow(resId, 100);
+			}
+			return false;
+
+		} else if (!pwd1.equals(pwd2)) {
+			// 密码两次不一致
+			int resId = getStringRes(activity, "smssdk_pw_is_inconsistency");
+			if (resId > 0) {
+				myToast.setTextAndShow(resId, 100);
+			}
+			return false;
+
+		} else if (!pwd1.isEmpty() && pwd1.trim().isEmpty()) {
+			// 密码全部为空格
+			int resId = getStringRes(activity, "smssdk_pwd_no_all_space");
+			if (resId > 0) {
+				myToast.setTextAndShow(resId, 100);
+			}
+			return false;
+
+		} else if (pwd1.trim().length() < pwd1.length()) {
+			// 密码首尾有空格
+			int resId = getStringRes(activity, "smssdk_pwd_head_or_foot_space");
+			if (resId > 0) {
+				myToast.setTextAndShow(resId, 100);
+			}
+			return false;
+
+		}
+
+		return true;
 	}
 
 	public void onClick(View v) {
@@ -387,6 +495,11 @@ TextWatcher {
 		int id_btnSubmit = getIdRes(activity, "sure");
 
 		if (id == id_btnSubmit) {
+			// 验证密码的合法性
+			if (!checkPwd()) {
+				return;
+			}
+
 			/**
 			 * 提交按钮， 1. 先验证验证码 2. 成功后，将手机号 区号 传入到LoginActivity中。
 			 * ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -415,8 +528,8 @@ TextWatcher {
 				int resId = getStringRes(activity, "smssdk_write_identify_code");// 填写验证码
 				if (resId > 0) {
 					myToast.setTextAndShow(resId, 100);
-//					Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT)
-//					.show();
+					// Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT)
+					// .show();
 				}
 			}
 			// 验证验证码＝＝＝＝＝＝完毕
@@ -475,13 +588,13 @@ TextWatcher {
 				}
 
 				if (result == SMSSDK.RESULT_COMPLETE) {
-//					int resId = getStringRes(activity,
-//							"smssdk_virificaition_code_sent");
-//					if (resId > 0) {
-//						myToast.setTextAndShow(resId, 100);
-////						Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
-////						.show();
-//					}
+					// int resId = getStringRes(activity,
+					// "smssdk_virificaition_code_sent");
+					// if (resId > 0) {
+					// myToast.setTextAndShow(resId, 100);
+					// // Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
+					// // .show();
+					// }
 					// resId = getStringRes(activity, "smssdk_receive_msg");
 					// if (resId > 0) {
 					// // String unReceive = getContext().getString(resId,
@@ -501,8 +614,8 @@ TextWatcher {
 						String des = object.optString("detail");
 						if (!TextUtils.isEmpty(des)) {
 							myToast.setTextAndShow(des, 100);
-//							Toast.makeText(activity, des, Toast.LENGTH_SHORT)
-//							.show();
+							// Toast.makeText(activity, des, Toast.LENGTH_SHORT)
+							// .show();
 							return;
 						}
 					} catch (JSONException e) {
@@ -512,8 +625,8 @@ TextWatcher {
 					int resId = getStringRes(activity, "smssdk_network_error");
 					if (resId > 0) {
 						myToast.setTextAndShow(resId, 100);
-//						Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
-//						.show();
+						// Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
+						// .show();
 					}
 				}
 			}
@@ -560,13 +673,13 @@ TextWatcher {
 									.get("phone");
 							phoneMap.put("pwd", pwd);
 							// 32；
-//							int resId = getStringRes(activity,
-//									"smssdk_your_ccount_is_verified");
-//							if (resId > 0) {
-//								myToast.setTextAndShow(resId, 100);
-////								Toast.makeText(activity, resId,
-////										Toast.LENGTH_SHORT).show();
-//							}
+							// int resId = getStringRes(activity,
+							// "smssdk_your_ccount_is_verified");
+							// if (resId > 0) {
+							// myToast.setTextAndShow(resId, 100);
+							// // Toast.makeText(activity, resId,
+							// // Toast.LENGTH_SHORT).show();
+							// }
 
 							if (callback != null) {
 								callback.afterEvent(
@@ -583,8 +696,8 @@ TextWatcher {
 									"smssdk_virificaition_code_wrong");
 							if (resId > 0) {
 								myToast.setTextAndShow(resId, 100);
-//								Toast.makeText(activity, resId,
-//										Toast.LENGTH_SHORT).show();
+								// Toast.makeText(activity, resId,
+								// Toast.LENGTH_SHORT).show();
 							}
 						}
 					} else {
@@ -594,8 +707,9 @@ TextWatcher {
 						int resId = getStringRes(activity, "smssdk_pwd_no");
 						if (resId > 0) {
 							myToast.setTextAndShow(resId, 100);
-//							Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
-//							.show();
+							// Toast.makeText(activity, resId,
+							// Toast.LENGTH_SHORT)
+							// .show();
 						}
 					}
 
@@ -604,8 +718,8 @@ TextWatcher {
 					int resId = getStringRes(activity, "smssdk_pwd_is_empty");
 					if (resId > 0) {
 						myToast.setTextAndShow(resId, 100);
-//						Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
-//						.show();
+						// Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
+						// .show();
 					}
 				}
 
@@ -705,7 +819,8 @@ TextWatcher {
 			int resId = getStringRes(activity, "smssdk_write_mobile_phone");
 			if (resId > 0) {
 				myToast.setTextAndShow(resId, 100);
-//				Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getContext(), resId,
+				// Toast.LENGTH_SHORT).show();
 			}
 			return;
 		}
@@ -719,7 +834,8 @@ TextWatcher {
 			resId = getStringRes(activity, "smssdk_write_right_mobile_phone");
 			if (resId > 0) {
 				myToast.setTextAndShow(resId, 100);
-//				Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getContext(), resId,
+				// Toast.LENGTH_SHORT).show();
 			}
 			return;
 		}
@@ -750,38 +866,38 @@ TextWatcher {
 				// 选择发送短信
 				if (resId > 0) {
 					((Button) dialog.findViewById(resId))
-					.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							// 跳转到验证码页面
-							dialog.dismiss();
+							.setOnClickListener(new OnClickListener() {
+								public void onClick(View v) {
+									// 跳转到验证码页面
+									dialog.dismiss();
 
-							if (pd != null && pd.isShowing()) {
-								pd.dismiss();
-							}
-							pd = CommonDialog.ProgressDialog(activity);
-							if (pd != null) {
-								pd.show();
-							}
-							Log.e("verification phone ==>>", phone);
+									if (pd != null && pd.isShowing()) {
+										pd.dismiss();
+									}
+									pd = CommonDialog.ProgressDialog(activity);
+									if (pd != null) {
+										pd.show();
+									}
+									Log.e("verification phone ==>>", phone);
 
-							// 开始发送短信
-							System.out.println("提示框，确定按钮触动，确认号码："
-									+ code + "===" + phone.trim());
-							// 86===18771711071 验证的时候 没有＋号
-							SMSSDK.getVerificationCode(code,
-									phone.trim(), osmHandler);
-						}
-					});
+									// 开始发送短信
+									System.out.println("提示框，确定按钮触动，确认号码："
+											+ code + "===" + phone.trim());
+									// 86===18771711071 验证的时候 没有＋号
+									SMSSDK.getVerificationCode(code,
+											phone.trim(), osmHandler);
+								}
+							});
 				}
 				// 取消发送短信
 				resId = getIdRes(activity, "btn_dialog_cancel");
 				if (resId > 0) {
 					((Button) dialog.findViewById(resId))
-					.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							dialog.dismiss();
-						}
-					});
+							.setOnClickListener(new OnClickListener() {
+								public void onClick(View v) {
+									dialog.dismiss();
+								}
+							});
 				}
 				dialog.setCanceledOnTouchOutside(true);// 可以在提示框外面触摸取消
 				dialog.show();
@@ -814,7 +930,7 @@ TextWatcher {
 		etPwd2.addTextChangedListener(new MyTextWatcher());
 	}
 
-	private class MyTextWatcher implements TextWatcher{
+	private class MyTextWatcher implements TextWatcher {
 
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count,

@@ -49,7 +49,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 	// 申明控件
 	private Button sign, login;
 	private EditTextWithClear userName, password;
-	
+
 	private TextView forgot;
 	private ImageView back;
 	private CustomProgressDialog dialog;
@@ -84,7 +84,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		password = (EditTextWithClear) findViewById(R.id.otherLogin_password);
 		forgot = (TextView) findViewById(R.id.forgot);
 		back = (ImageView) findViewById(R.id.login_back);// 返回按键
-
 
 		back.setOnClickListener(this);
 		sign.setOnClickListener(this);
@@ -123,26 +122,28 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 
 		initSSMSSDK();// 初始化
 	}
+
 	/**
 	 * 点击键盘之外，隐藏键盘
 	 */
-	@Override  
+	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-	    if (ev.getAction() == MotionEvent.ACTION_DOWN) {  
-	        View v = getCurrentFocus();  
-	        if (AppUtil.isShouldHideInput(v, ev)) {  
-//	        	if (!password.hasFocus() && !userName.hasFocus()) {
-	        		hideInputMethodManager(v);
-//				}
-	        }  
-	        return super.dispatchTouchEvent(ev);  
-	    }  
-	    // 必不可少，否则所有的组件都不会有TouchEvent了  
-	    if (getWindow().superDispatchTouchEvent(ev)) {  
-	        return true;  
-	    }  
-	    return onTouchEvent(ev);  
+		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+			View v = getCurrentFocus();
+			if (AppUtil.isShouldHideInput(v, ev)) {
+				// if (!password.hasFocus() && !userName.hasFocus()) {
+				hideInputMethodManager(v);
+				// }
+			}
+			return super.dispatchTouchEvent(ev);
+		}
+		// 必不可少，否则所有的组件都不会有TouchEvent了
+		if (getWindow().superDispatchTouchEvent(ev)) {
+			return true;
+		}
+		return onTouchEvent(ev);
 	}
+
 	//
 	private Handler handler = new Handler() {
 		@Override
@@ -228,7 +229,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 				dialog.dismiss();
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
-				
+
 			case START_OTHER_REGISTER_ACTIVITY:
 
 				// 其他注册的按钮//
@@ -250,7 +251,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		case R.id.login_back:
 			finish();
 			break;
-			
+
 		case R.id.btnOtherLogin:
 			System.out.println("登录按钮");
 			// 登录
@@ -265,66 +266,39 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 						Common.TOAST_SHORT_TIME);
 				break;
 			}
-			if (password.getText().toString().trim().isEmpty()) {
-				myToast.setTextAndShow(R.string.pw_null,
+
+			String pwd = password.getText().toString();
+			// 判断密码的合法性
+			switch (AppUtil.checkPwd(pwd, pwd)) {
+			case AppUtil.PWD_ALL_SAPCE:// 全部为空格
+				myToast.setTextAndShow(R.string.pwd_no_all_space,
 						Common.TOAST_SHORT_TIME);
 				break;
-			}
-//			dialog = ProgressDialog.show(this, getString(R.string.loading___),
-//					getString(R.string.is_loading), false, true);
-			dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
-			// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
-			if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
-				System.out.println("no tokenid");
-				final StringBuffer sb = new StringBuffer();
-				sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
-				RequestParams params = new RequestParams();
-				params.put(Common.TERMINAL, "android");
-				params.put(Common.UUID, Installation.id(this));
-				HttpsUtil.get(sb.toString(), params,
-						new JsonHttpResponseHandler() {
-							@Override
-							public void onStart() {
-								super.onStart();
-								System.out.println("get tokenid start");
-							}
 
-							public void onSuccess(int statusCode,
-									Header[] headers, JSONObject response) {
-								super.onSuccess(statusCode, headers, response);
-								try {
-									System.out.println("tokenid==" + response);
-									Editor e = sp.edit();
-									if (response.has(Common.USERINFO_TOKENID)) {
-										System.out
-												.println("add tokenid=============");
-										e.putString(
-												Common.USERINFO_TOKENID,
-												response.getString(Common.USERINFO_TOKENID));
-									}
-									e.commit();
-									API.Login(OtherLoginActivity.this, userName
-											.getText().toString().trim(),
-											password.getText().toString()
-													.trim(), handler);
-								} catch (JSONException e1) {
-									e1.printStackTrace();
-								}
-							}
+			case AppUtil.PWD_AVAILABLE:// 密码可用
+				login();// 登录
+				break;
 
-							@Override
-							public void onFailure(int statusCode,
-									Header[] headers, String responseString,
-									Throwable throwable) {
-								super.onFailure(statusCode, headers,
-										responseString, throwable);
-								throwable.printStackTrace();
-							}
-						});
-			} else {
-				System.out.println("has tokenid");
-				API.Login(this, userName.getText().toString().trim(), password
-						.getText().toString().trim(), handler);
+			case AppUtil.PWD_EMPTY:// 空
+				myToast.setTextAndShow(R.string.pwd_is_empty,
+						Common.TOAST_SHORT_TIME);
+				break;
+
+			case AppUtil.PWD_INCONSISTENCY:// 不一致
+//				myToast.setTextAndShow(R.string.pw_is_inconsistency,
+//						Common.TOAST_SHORT_TIME);
+				break;
+
+			case AppUtil.PWD_SHORT:// 小于6位
+				myToast.setTextAndShow(R.string.notify_password_hint,
+						Common.TOAST_SHORT_TIME);
+
+				break;
+
+			case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
+				myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
+						Common.TOAST_SHORT_TIME);
+				break;
 			}
 			break;
 		case R.id.sign:
@@ -339,6 +313,63 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * 登录
+	 */
+	public void login() {
+		dialog = CustomProgressDialog.show(this,
+				getString(R.string.is_loading), true, null);
+		// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
+		if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
+			System.out.println("no tokenid");
+			final StringBuffer sb = new StringBuffer();
+			sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
+			RequestParams params = new RequestParams();
+			params.put(Common.TERMINAL, "android");
+			params.put(Common.UUID, Installation.id(this));
+			HttpsUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+				@Override
+				public void onStart() {
+					super.onStart();
+					System.out.println("get tokenid start");
+				}
+
+				public void onSuccess(int statusCode, Header[] headers,
+						JSONObject response) {
+					super.onSuccess(statusCode, headers, response);
+					try {
+						System.out.println("tokenid==" + response);
+						Editor e = sp.edit();
+						if (response.has(Common.USERINFO_TOKENID)) {
+							System.out.println("add tokenid=============");
+							e.putString(Common.USERINFO_TOKENID,
+									response.getString(Common.USERINFO_TOKENID));
+						}
+						e.commit();
+						API.Login(OtherLoginActivity.this, userName.getText()
+								.toString().trim(), password.getText()
+								.toString().trim(), handler);
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+				}
+
+				@Override
+				public void onFailure(int statusCode, Header[] headers,
+						String responseString, Throwable throwable) {
+					super.onFailure(statusCode, headers, responseString,
+							throwable);
+					throwable.printStackTrace();
+				}
+			});
+		} else {
+			System.out.println("has tokenid");
+			API.Login(this, userName.getText().toString().trim(), password
+					.getText().toString().trim(), handler);
+		}
+
 	}
 
 	/** 隐藏软键盘 */
@@ -397,17 +428,18 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 					// 把手机号发送到服务器判断账号是否存在，存在则跳转到重置密码页面
 					System.out.println("type -------->" + type);
 					if (type == 0) {
-						/* 服务器返回手机号不存在，注册
-						 * 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd 拿到值。就直接注册。
-						 * 注册成功：跳转到主页ok
+						/*
+						 * 服务器返回手机号不存在，注册 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd
+						 * 拿到值。就直接注册。 注册成功：跳转到主页ok
 						 */
 						System.out.println("phone:" + phone);
 						System.out.println("pwd:" + pwd);
 						/*
-						 *	＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
+						 * ＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
 						 */
-//						sendSign(phone, pwd);
-						new SignAndLoginPhoneNumberUtil(OtherLoginActivity.this, phone, pwd);
+						// sendSign(phone, pwd);
+						new SignAndLoginPhoneNumberUtil(
+								OtherLoginActivity.this, phone, pwd);
 
 					} else if (type == 1) {
 						// 服务器返回手机号存在，修改密码

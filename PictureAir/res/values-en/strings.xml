@@ -477,5 +477,11 @@
     <string name="downloading_percent">Downloading %1$d</string>
     <string name="update_version">New Version: %1$s</string>
     <string name="generate_apk">Processing...</string>
+    
+     <string name="connecting">Connecting...</string>
+    <string name="notify_password_hint">Password must be at least 6 characters!</string>
+    <string name="pw_is_inconsistency">Input Passwords do not match!</string>
+    <string name="pwd_no_all_space">Password\'s first or last character cannot be space!</string>
+    <string name="pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
 
 </resources>

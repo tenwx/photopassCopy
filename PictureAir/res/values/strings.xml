@@ -477,5 +477,11 @@
     <string name="downloading_percent">正在下载%1$d</string>
     <string name="update_version">新版本: %1$s</string>
     <string name="generate_apk">正在处理...</string>
+    
+    <string name="connecting">请稍后...</string>
+    <string name="notify_password_hint">密码不能小于6位!</string>
+    <string name="pw_is_inconsistency">密码输入不一致!</string>
+    <string name="pwd_no_all_space">密码首或尾不能为空格!</string>
+    <string name="pwd_head_or_foot_space">密码首或尾不能为空格!</string>
 
 </resources>

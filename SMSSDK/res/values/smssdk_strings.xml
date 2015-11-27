@@ -56,4 +56,12 @@
     <string name="smssdk_make_sure_send_sounds">确认发送？</string>
     <string name="smssdk_send_sounds_success">语音验证码发送成功</string>
     <string name="smssdk_send_sounds_verify">点击发送语音验证</string>
+    
+    
+    <string name="smssdk_connecting">请稍后...</string>
+     <string name="smssdk_modify_password_empty_hint">请输入密码</string>
+    <string name="smssdk_notify_password_hint">密码不能小于6位!</string>
+    <string name="smssdk_pw_is_inconsistency">密码输入不一致!</string>
+    <string name="smssdk_pwd_no_all_space">密码首或尾不能为空格!</string>
+    <string name="smssdk_pwd_head_or_foot_space">密码首或尾不能为空格!</string>
 </resources>
