@@ -55,7 +55,7 @@ import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.umeng.analytics.MobclickAgent;
 
-public class MakegiftActivity extends Activity implements OnClickListener{
+public class MakegiftActivity extends BaseActivity implements OnClickListener{
 	//选择商品的horizontalscrollview的popupwindow
 	private GridView goodsGridView;
 	private MakegiftGoodsAdapter mAdapter;
@@ -569,8 +569,6 @@ public class MakegiftActivity extends Activity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("MakegiftActivity");
-		MobclickAgent.onResume(this);
 		recordcount = sp.getInt(Common.CART_COUNT, 0);
 		if (recordcount<=0) {
 			cartcountTextView.setVisibility(View.INVISIBLE);
@@ -799,8 +797,6 @@ public class MakegiftActivity extends Activity implements OnClickListener{
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("MakegiftActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	

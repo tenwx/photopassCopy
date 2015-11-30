@@ -13,6 +13,12 @@
     <string name="kakaotalk_client_inavailable">KakaoTalk client not exists or the version is too low</string>
     <string name="kakaostory_client_inavailable">KakaoStory client not exists or the version is too low</string>
     
+    <string name="share_failure_wechat">Please download and install WeChat before sharing!</string>
+    <string name="share_failure_weibo">Please download and install SinaWeibo before sharing!</string>
+    <string name="share_failure_qzone">Please download and install QQ before sharing!</string>
+    <string name="share_failure_facebook">Please download and install Facebook before sharing!</string>
+    <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
+    
 	<string name="sinaweibo">Sina Weibo</string>
 	<string name="tencentweibo">Tencent Weibo</string>
 	<string name="qzone">QZone</string>

@@ -6,7 +6,10 @@ import android.os.Environment;
  * 常量类
  * */
 public class Common {
-	public static String PACKGE_NAME = "com.pictureAir";//应用包名
+	public static final String APP_NAME = "appName";
+	public static String APPLICATION_NAME = "pictureAir";// app英文名字
+	public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
+	public static String PACKGE_NAME = "com.pictureAir";// 应用包名
 	public static final String APPKEY = "7c07eba9fe66"; // SMSS，公司的账号
 	public static final String APPSECRET = "c3e30ac3daba694656287afef2686edf"; // SMSS
 	//		public static final String APPKEY = "50394dcd763f"; // SMSS，bauer的账号
@@ -14,9 +17,10 @@ public class Common {
 	//服务器地址
 //		public static final String BASE_URL = "http://pwsh.pictureworks.biz:3001";//外网域名
 	//		public static final String BASE_URL = "http://192.168.9.43:3001";//齐超
+//	public static final String BASE_URL = "http://192.168.8.3:3001";
+	public static final String BASE_URL2 = "http://192.168.8.3:3001";
 	public static final String BASE_URL = "http://192.168.8.171:3001";//harry
 //	public static final String BASE_URL = "http://pictureAir.com.cn:3001";//harry
-	//		public static final String BASE_URL = "http://192.168.8.3:3001";
 	//public static final String BASE_URL = "http://140.206.125.194:3001";//外网
 	//public static final String BASE_URL = "http://pictureAir.cloudapp.net:3001";//美国服务器
 	//public static final String BASE_URL = "http://191.236.87.204:3001";//美国服务器
@@ -150,6 +154,7 @@ public class Common {
 	public static final String HEADPHOTO_PATH = "headphoto";
 	public static final String BGPHOTO_PAHT = "bgphoto";
 	public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/pictureAir/";
+public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/pictureAir/app/";
 	public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/pictureAir/download/";
 	//	public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/pictureAir/download/frames/";
 	public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/pictureAir/temppic/";
@@ -250,12 +255,36 @@ public class Common {
 	public static final String EVENT_DOWNLOAD_FINISH = "event_dwonload_finish";// 下载成功
 	public static final String EVENT_ONCLICK_SHARE_QQ = "event_onclick_share_qq";// 点击qq分享
 	public static final String EVENT_SHARE_QQ_FINISH = "event_share_qq_finish";// qq分享成功
-	public static final String EVENT_ONCLICK_SHARE_WEIXIN = "event_onclick_share_weixin";// 点击微信分享
-	public static final String EVENT_SHARE_WEIXIN_FINISH = "event_share_weixin_finish";// 微信分享成功
+	
+	
+	public static final String EVENT_ONCLICK_SHARE_QQZONE = "event_onclick_share_qqzone";// 点击qqzone分享
+	public static final String EVENT_SHARE_QQZONE_FINISH = "event_share_qqzone_finish";// qqzone分享成功
+	
+
+	public static final String EVENT_ONCLICK_SHARE_WECHAT = "event_onclick_share_wechat";// 点击微信好友分享
+	public static final String EVENT_SHARE_WECHAT_FINISH = "event_share_wechat_finish";// 微信好友分享成功
+	
+	public static final String EVENT_ONCLICK_SHARE_WECHAT_MOMENTS = "event_onclick_share_wechat_moments";// 点击微信朋友圈分享
+	public static final String EVENT_SHARE_WECHAT_MOMENTS_FINISH = "event_share_wechat_moments_finish";// 微信朋友圈分享成功
+	
+
+	public static final String EVENT_ONCLICK_SHARE_SINA_WEIBO = "event_onclick_share_sina_weibo";// 点击新浪微博分享
+	public static final String EVENT_SHARE_SINA_WEIBO_FINISH = "event_share_sina_weibo_finish";// 新浪微博分享成功
+
+	public static final String EVENT_ONCLICK_SHARE_TWITTER = "event_onclick_share_twitter";// 点击Twitter分享
+	public static final String EVENT_SHARE_TWITTER_FINISH = "event_share_twitter_finish";// Twitter分享成功
+
 	public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
 	public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
+
+	// 友盟sharedPreferences
+
 	public static final String IS_HAVE_PIC = "IS_HAVE_PIC";// 是否包含图片
 	public static final String PICTURE_COUNT = "PICTURE_COUNT";// 用户图片总数（PhotoPass）
+	
+	// 分享参数
+	public static final int PREVIEW_SHARE = 203;
+	public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/pictureAir/share/";
 
 
 	// 保存设置。

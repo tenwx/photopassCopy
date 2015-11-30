@@ -21,6 +21,7 @@ import com.pictureAir.entity.PPinfo;
 import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.entity.PhotoItemInfo;
 import com.pictureAir.util.Common;
+import com.pictureAir.util.UmengUtil;
 
 /**
  * ImageLoader的配置
@@ -58,6 +59,10 @@ public class MyApplication extends Application {
 	public void onCreate() {
 		CrashHandler handler = CrashHandler.getInstance();  
 		handler.init(getApplicationContext());
+		
+		instance = this;
+		// 初始化友盟 
+		UmengUtil.initUmeng();
 		if (getCurProcessName(getApplicationContext()).equals(Common.PACKGE_NAME)) {
 			System.err.println("application on create----->");
 			initImageLoader(getApplicationContext());

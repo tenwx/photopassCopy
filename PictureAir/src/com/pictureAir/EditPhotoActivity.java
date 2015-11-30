@@ -98,7 +98,7 @@ import com.pictureAir.widget.MyToast;
 import com.umeng.analytics.MobclickAgent;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
-public class EditPhotoActivity extends Activity implements OnClickListener, LocationNotification{
+public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationNotification{
 	//视图
 	public StickerView mStickerView;// 贴图层View
 	public FontView fontView; //文字view
@@ -512,8 +512,6 @@ public class EditPhotoActivity extends Activity implements OnClickListener, Loca
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("EditPhotoActivity");
-		MobclickAgent.onResume(this);
 		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
 			try {
 				JSONObject response = new JSONObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
@@ -536,8 +534,6 @@ public class EditPhotoActivity extends Activity implements OnClickListener, Loca
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("EditPhotoActivity");
-		MobclickAgent.onPause(this);
 		locationUtil.stopLocation();
 	}
 

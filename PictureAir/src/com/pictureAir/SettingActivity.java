@@ -28,10 +28,12 @@ import com.pictureAir.util.ACache;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.umeng.analytics.MobclickAgent;
+import com.pictureAir.util.ScreenUtil;
+import com.pictureAir.util.UmengUtil;
+import com.umeng.fb.FeedbackAgent;
 
 /**用户功能设置*/
-public class SettingActivity  extends Activity implements OnClickListener{
+public class SettingActivity  extends BaseActivity implements OnClickListener{
 	private Configuration config;
 	private DisplayMetrics dm;
 	//	private Resources resources;
@@ -200,6 +202,9 @@ public class SettingActivity  extends Activity implements OnClickListener{
 //				}
 //			});
 //			builder.show();
+			//意见反馈弹出框
+			UmengUtil.startFeedbackActivity(this);
+			
 			break;
 
 		case R.id.setting_language:
@@ -258,9 +263,7 @@ public class SettingActivity  extends Activity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("SettingActivity");
-		MobclickAgent.onResume(this);
-		onCreate(null);
+		//onCreate(null);
 	}
 	
 	//监听返回键
@@ -297,8 +300,6 @@ public class SettingActivity  extends Activity implements OnClickListener{
 		protected void onPause() {
 			// TODO Auto-generated method stub
 			super.onPause();
-			MobclickAgent.onPageEnd("SettingActivity");
-			MobclickAgent.onPause(this);
 		}
 	 
 }

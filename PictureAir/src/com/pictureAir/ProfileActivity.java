@@ -31,10 +31,9 @@ import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.wheelview.OnWheelScrollListener;
 import com.pictureAir.widget.wheelview.WheelView;
 import com.pictureAir.widget.wheelview.adapter.NumericWheelAdapter;
-import com.umeng.analytics.MobclickAgent;
 
 /** 个人信息页面 */
-public class ProfileActivity extends Activity implements OnClickListener {
+public class ProfileActivity extends BaseActivity implements OnClickListener {
 	private TextView tvNickName, tvGender, tvBirthday,tvQq;
 	private RelativeLayout nn, g, bd,q, item_password;
 	private LinearLayout timePickerLinearLayout;
@@ -409,15 +408,11 @@ public class ProfileActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("ProfileActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("ProfileActivity");
-		MobclickAgent.onResume(this);
 	}
 }

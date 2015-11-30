@@ -81,7 +81,7 @@ import com.umeng.analytics.MobclickAgent;
  * 
  */
 @SuppressLint("NewApi")
-public class CameraActivity extends Activity implements SurfaceHolder.Callback, OnClickListener, OnZoomChangeListener {
+public class CameraActivity extends BaseActivity implements SurfaceHolder.Callback, OnClickListener, OnZoomChangeListener {
 	private SurfaceView mySurfaceView = null;
 	private SurfaceHolder mySurfaceHolder = null;
 	private ImageButton recordButton;
@@ -1024,8 +1024,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("CameraActivity");
-		MobclickAgent.onResume(this);
 		//测试返回时 cameraposition是多少。
 		isCurActivity = true;
 		Log.e("＝＝＝＝", "position:"+cameraPosition);
@@ -1066,8 +1064,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("CameraActivity");
-		MobclickAgent.onPause(this);
 		System.out.println("pause-------");
 		if (decoration != null) {//清除动画
 			decoration.clearAnimation();

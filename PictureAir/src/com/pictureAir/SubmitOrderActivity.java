@@ -42,9 +42,8 @@ import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.XListViewHeader;
-import com.umeng.analytics.MobclickAgent;
 
-public class SubmitOrderActivity extends Activity implements OnClickListener{
+public class SubmitOrderActivity extends BaseActivity implements OnClickListener{
 	private TextView submitButton;
 	private ImageView llrtLayout;
 	private TextView totalpriceTextView,currencyTextView, allGoodsTextView;
@@ -336,20 +335,5 @@ public class SubmitOrderActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
-	}
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		MobclickAgent.onPageEnd("SubmitOrderActivity");
-		MobclickAgent.onPause(this);
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		MobclickAgent.onPageStart("SubmitOrderActivity");
-		MobclickAgent.onResume(this);
 	}
 }

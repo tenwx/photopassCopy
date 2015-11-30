@@ -41,7 +41,7 @@ import com.umeng.analytics.MobclickAgent;
  * @author bauer_bao
  *
  */
-public class DetailProductActivity extends Activity implements OnClickListener{
+public class DetailProductActivity extends BaseActivity implements OnClickListener{
 	//申明控件
 	private ViewGroup animMaskLayout;//动画层
 	private ImageView buyImg;// 这是在界面上跑的小图片
@@ -238,8 +238,6 @@ public class DetailProductActivity extends Activity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("DetailProductActivity");
-		MobclickAgent.onResume(this);
 		updateCartCount();
 	}
 
@@ -389,8 +387,6 @@ public class DetailProductActivity extends Activity implements OnClickListener{
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("DetailProductActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	

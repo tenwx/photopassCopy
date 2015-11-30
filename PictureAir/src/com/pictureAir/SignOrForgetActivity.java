@@ -28,14 +28,13 @@ import com.pictureAir.util.Common;
 import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.Installation;
 import com.pictureAir.widget.MyToast;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * 注册和修改密码的页面，前提都是通过了手机号码验证才会来到这个页面， 根据intent传递过来的type值判断是注册还是修改密码 type == 0
  * 为注册，type == 1为修改密码
  * PS：暂时因为注册和修改密码界面几乎一样，所以放在一个activity中完成，但后续如果改变注册页面布局的话最好和修改密码分开处理，使业务逻辑清晰化
  * */
-public class SignOrForgetActivity extends Activity implements OnClickListener {
+public class SignOrForgetActivity extends BaseActivity implements OnClickListener {
 	private EditText username, pwd1, pwd2;
 	private Button sure;
 	private ImageView back;
@@ -345,20 +344,5 @@ public class SignOrForgetActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
-	}
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		MobclickAgent.onPageEnd("SignOrForgetActivity");
-		MobclickAgent.onPause(this);
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		MobclickAgent.onPageStart("SignOrForgetActivity");
-		MobclickAgent.onResume(this);
 	}
 }

@@ -30,7 +30,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="6dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
             <ImageButton
                 android:id="@+id/umeng_fb_record_tag_btn"
@@ -49,8 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="6dp">
+                android:layout_centerVertical="true">
 
                 <ImageButton
                     android:id="@+id/umeng_fb_plus_btn"
@@ -71,6 +71,8 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
                     android:textSize="@dimen/text_middle_size"
                     android:paddingRight="10dp"
                     android:textColor="@color/white"
@@ -82,9 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
+                android:paddingLeft="5dp"
                 android:layout_above="@+id/under_line"
                 android:layout_toLeftOf="@id/umeng_fb_send_layout"
                 android:layout_toRightOf="@id/umeng_fb_record_tag_btn"
@@ -104,7 +104,6 @@
                 android:layout_toRightOf="@id/umeng_fb_record_tag_btn"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="2dp"
-                android:layout_marginRight="5dp"
                 android:background="@color/umeng_fb_lightblue"
                 />
         </RelativeLayout>

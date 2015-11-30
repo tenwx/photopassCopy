@@ -53,7 +53,7 @@ import com.umeng.analytics.MobclickAgent;
  * Initial the camera
  * @author Talon
  */
-public class MipCaptureActivity extends Activity implements Callback {
+public class MipCaptureActivity extends BaseActivity implements Callback {
 
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;
@@ -341,8 +341,6 @@ public class MipCaptureActivity extends Activity implements Callback {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MobclickAgent.onPageStart("MipCaptureActivity");
-		MobclickAgent.onResume(this);
 		System.out.println("resume==============");
 
 		SurfaceHolder surfaceHolder = surfaceView.getHolder();
@@ -368,8 +366,6 @@ public class MipCaptureActivity extends Activity implements Callback {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		MobclickAgent.onPageEnd("MipCaptureActivity");
-		MobclickAgent.onPause(this);
 		System.out.println("----------pause");
 		if (handler != null) {
 			handler.quitSynchronously();

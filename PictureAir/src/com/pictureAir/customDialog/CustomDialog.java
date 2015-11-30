@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -39,6 +40,7 @@ public class CustomDialog extends Dialog {
 		private DialogInterface.OnClickListener positiveButtonClickListener;
 		private DialogInterface.OnClickListener negativeButtonClickListener;
 		private boolean cancelable = true;
+		private boolean textCenter = true;
 		
 		public Builder(Context context) {
 			this.mContext = context;
@@ -64,6 +66,16 @@ public class CustomDialog extends Dialog {
 		//设置message
 		public Builder setMessage(String message) {
 			this.message = message;
+			return this;
+		}
+		
+		/**
+		 * 设置文字居中属性， 默认居中
+		 * @param gravity
+		 * @return
+		 */
+		public Builder setGravity(boolean gravity){
+			textCenter = gravity;
 			return this;
 		}
 		
@@ -125,6 +137,7 @@ public class CustomDialog extends Dialog {
 			if (message != null) {
 				TextView tvMessage = (TextView) layout.findViewById(R.id.tv_message);
 				tvMessage.setText(message);
+				tvMessage.setGravity(textCenter ? Gravity.CENTER : Gravity.START | Gravity.CENTER_VERTICAL);
 			}
 			
 			final GroupButton btnGroup = (GroupButton) layout.findViewById(R.id.btn_group);

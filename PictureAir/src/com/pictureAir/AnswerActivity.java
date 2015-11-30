@@ -16,7 +16,7 @@ import com.umeng.analytics.MobclickAgent;
  * 答案界面 实现问题的回答
  * 
  */
-public class AnswerActivity extends Activity {
+public class AnswerActivity extends BaseActivity {
 
 	private final String TAG = "AnswerActivity ";
 	// 申明控件
@@ -57,16 +57,12 @@ public class AnswerActivity extends Activity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("AnswerActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("AnswerActivity");
-		MobclickAgent.onResume(this);
 	}
 	
 }

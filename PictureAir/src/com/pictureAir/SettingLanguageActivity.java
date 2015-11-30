@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-public class SettingLanguageActivity extends Activity implements OnClickListener{
+public class SettingLanguageActivity extends BaseActivity implements OnClickListener{
 	private Configuration config;
 	private DisplayMetrics dm;
 	
@@ -120,21 +119,5 @@ public class SettingLanguageActivity extends Activity implements OnClickListener
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
-	}
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		MobclickAgent.onPageEnd("SettingLanguageActivity");
-		MobclickAgent.onPause(this);
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		MobclickAgent.onPageStart("SettingLanguageActivity");
-		MobclickAgent.onResume(this);
 	}
 }

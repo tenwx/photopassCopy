@@ -43,7 +43,7 @@ import com.pictureAir.widget.NoNetWorkOrNoCountView;
 import com.pictureAir.widget.PPPPop;
 import com.umeng.analytics.MobclickAgent;
 /**显示用户所有的PP+或是对应某个PP而言可使用的PP+*/
-public class MyPPPActivity extends Activity implements OnClickListener {
+public class MyPPPActivity extends BaseActivity implements OnClickListener {
 	private final static int PPP_CODE = 1;
 	private final static int PP_CODE = 2;
 
@@ -283,8 +283,6 @@ public class MyPPPActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MobclickAgent.onPageStart("MyPPPActivity");
-		MobclickAgent.onResume(this);
 		System.out.println("ppp----->resume");
 		if (application.getNeedRefreshPPPList()) {
 			GetPPPList();
@@ -566,8 +564,6 @@ public class MyPPPActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("MyPPPActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	

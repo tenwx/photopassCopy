@@ -55,7 +55,7 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
-public class PaymentOrderActivity extends Activity implements OnClickListener{
+public class PaymentOrderActivity extends BaseActivity implements OnClickListener{
 	private ImageView lrtLayout;
 	private TextView sbmtButton;
 	private String nameString;
@@ -857,15 +857,11 @@ public class PaymentOrderActivity extends Activity implements OnClickListener{
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("PaymentOrderActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("PaymentOrderActivity");
-		MobclickAgent.onResume(this);
 	}
 }

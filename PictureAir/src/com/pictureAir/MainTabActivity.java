@@ -1,6 +1,7 @@
 package com.pictureAir;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -24,7 +26,9 @@ import com.pictureAir.util.ACache;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
+import com.pictureAir.util.UmengUtil;
 import com.pictureAir.widget.BadgeView;
+import com.pictureAir.widget.CheckUpdateManager;
 import com.pictureAir.widget.MyToast;
 import com.umeng.analytics.MobclickAgent;
 
@@ -42,8 +46,9 @@ import com.umeng.analytics.MobclickAgent;
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  * */
-public class MainTabActivity extends FragmentActivity {
+public class MainTabActivity extends BaseActivity {
 	public static MainTabActivity instances;
+	private LinearLayout linearLayout;
 	// 定义FragmentTabHost对象
 	private FragmentTabHost mTabHost;
 	// 定义一个布局
@@ -65,6 +70,9 @@ public class MainTabActivity extends FragmentActivity {
 	public static boolean changeToShopTab = false;
 	
 	private MyApplication application;
+	private SharedPreferences sharedPreferences;
+	private CheckUpdateManager checkUpdateManager;
+	private String currentLanguage;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,8 +106,7 @@ public class MainTabActivity extends FragmentActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("MainTabActivity");
-		MobclickAgent.onResume(this);
+		
 		System.out.println("maintab ==== resume");
 		Intent intent1 = new Intent(this, com.pictureAir.service.NotificationService.class);
 		this.startService(intent1);
@@ -118,14 +125,14 @@ public class MainTabActivity extends FragmentActivity {
 			MainTabActivity.maintabbadgeView.show();
 			application.setPushPhotoCount(0);
 		}
+		// 接收消息回复
+		UmengUtil.syncFeedback(this);
 	}
 
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("MainTabActivity");
-		MobclickAgent.onPause(this);
 		System.out.println("maintab ===== pause");
 	}
 	/**
@@ -134,10 +141,17 @@ public class MainTabActivity extends FragmentActivity {
 	private void initView() {
 		// 实例化布局对象
 		layoutInflater = LayoutInflater.from(this);
+		linearLayout = (LinearLayout) findViewById(R.id.parent);
 		// 实例化TabHost对象，得到TabHost
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		newToast = new MyToast(this);
+		// 自动检查更新
+		sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+		currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, "");
+		checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
+				linearLayout);
+		checkUpdateManager.startCheck();
 		// 得到fragment的个数
 		int count = fragmentArray.length;
 		for (int i = 0; i < count; i++) {
@@ -236,7 +250,6 @@ public class MainTabActivity extends FragmentActivity {
 			Intent intent = new Intent(MainTabActivity.this, NotificationService.class);
 			intent.putExtra("status", "disconnect");
 			startService(intent);
-			MobclickAgent.onKillProcess(this);    //友盟统计，杀死应用前调用。用于保存用户。
 			AppManager.getInstance().killAllActivity();
 		}
 	}

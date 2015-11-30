@@ -59,7 +59,8 @@ import com.umeng.analytics.MobclickAgent;
  * 
  * @author bass
  */
-public class OtherRegisterActivity extends Activity implements OnClickListener {
+public class OtherRegisterActivity extends BaseActivity implements
+		OnClickListener {
 	// 声明控件
 	private ImageView back;
 	private EditTextWithClear etEmail, etPwd, etPwd2, etName, etCounry;
@@ -121,7 +122,7 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 				// &&&&&&&&&&&&&& 调用个人信息里的进行添加个人资料
 				API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""),
 						name, birthday, sex, country, "", handler);
-//				finish();
+				// finish();
 				break;
 			case API.UPDATE_PROFILE_SUCCESS:
 				// 获取购物车数量
@@ -131,10 +132,12 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 				break;
 			case API.UPDATE_PROFILE_FAILED:
 				/**
-				 * 注册成功，但是保存个人信息失败的话，提示注册成功，保存个人信息失败。应该跳转到登录页面，并且将信息保存在sharedpreference中
+				 * 注册成功，但是保存个人信息失败的话，提示注册成功，保存个人信息失败。应该跳转到登录页面，
+				 * 并且将信息保存在sharedpreference中
 				 */
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				Intent intent = new Intent(OtherRegisterActivity.this, OtherLoginActivity.class);
+				Intent intent = new Intent(OtherRegisterActivity.this,
+						OtherLoginActivity.class);
 				startActivity(intent);
 				finish();
 				break;
@@ -142,23 +145,28 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 			case API.GET_CART_COUNT_FAILED:
 			case API.GET_PPP_FAILED:
 			case API.GET_STOREID_FAILED:
-				
+
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
-				
+
 			case API.SIGN_FAILED:
 				try {
 					JSONObject infoJsonObject = (JSONObject) msg.obj;
 					if (infoJsonObject.has("type")) {
-						if (infoJsonObject.getString("type").equals("shortPassword")) {
-							myToast.setTextAndShow(R.string.pwd_is_short, Common.TOAST_SHORT_TIME);
-							
-						}else if (infoJsonObject.getString("type").equals("existedEmail")) {
-							myToast.setTextAndShow(R.string.email_exist, Common.TOAST_SHORT_TIME);
-							
+						if (infoJsonObject.getString("type").equals(
+								"shortPassword")) {
+							myToast.setTextAndShow(R.string.pwd_is_short,
+									Common.TOAST_SHORT_TIME);
+
+						} else if (infoJsonObject.getString("type").equals(
+								"existedEmail")) {
+							myToast.setTextAndShow(R.string.email_exist,
+									Common.TOAST_SHORT_TIME);
+
 						}
-					}else {
-						myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+					} else {
+						myToast.setTextAndShow(R.string.http_failed,
+								Common.TOAST_SHORT_TIME);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -171,17 +179,17 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 				API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null),
 						handler);// 获取pp列表
 				break;
-				
+
 			case GET_IP_SUCCESS:
 				API.getStoreIdbyIP(msg.obj.toString(), handler);
 				break;
-				
+
 			case API.GET_PPS_SUCCESS:// 获取pp列表成功
 				/**
 				 * 获取pp成功之后，需要放入sharedPrefence中
 				 */
 				JSONObject ppsJsonObject = (JSONObject) msg.obj;
-//				Log.d(TAG, "pps===" + ppsJsonObject);
+				// Log.d(TAG, "pps===" + ppsJsonObject);
 				if (ppsJsonObject.has("PPList")) {
 					try {
 						JSONArray pplists = ppsJsonObject
@@ -193,30 +201,30 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 						e.printStackTrace();
 					}
 				} else {
-//					Log.d(TAG, "pp size == 0");
+					// Log.d(TAG, "pp size == 0");
 				}
-				new Thread(){
+				new Thread() {
 					public void run() {
-//						String netIP = AppUtil.GetNetIp();
+						// String netIP = AppUtil.GetNetIp();
 						String netIP = "211.95.27.34";
-						System.out.println("netIP-----------> "+ netIP);
-						if (netIP.equals("")) {//获取失败
+						System.out.println("netIP-----------> " + netIP);
+						if (netIP.equals("")) {// 获取失败
 							handler.sendEmptyMessage(GET_IP_FAILED);
-						}else {//获取成功
+						} else {// 获取成功
 							Message message = handler.obtainMessage();
 							message.what = GET_IP_SUCCESS;
 							message.obj = netIP;
 							handler.sendMessage(message);
 						}
-						
+
 					};
 				}.start();
-//				API.getStoreIdbyIP("140.206.125.195", handler);
+				// API.getStoreIdbyIP("140.206.125.195", handler);
 				break;
-				
+
 			case GET_IP_FAILED:
 			case API.GET_PPS_FAILED:// 获取pp列表失败
-//				dialog.dismiss();
+				// dialog.dismiss();
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
 
@@ -303,44 +311,42 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 		etMonth.setOnClickListener(this);
 		etDay.setOnClickListener(this);
 
-		//点击完成后，隐藏软键盘
+		// 点击完成后，隐藏软键盘
 		etCounry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
-						// 隐藏软键盘
-						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(
-								etCounry.getWindowToken(), 0);
-						return true;
+					// 隐藏软键盘
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(etCounry.getWindowToken(), 0);
+					return true;
 				}
 				return false;
 			}
 		});
 	}
-	
-	
+
 	/**
 	 * 点击键盘之外，隐藏键盘
 	 */
-	@Override  
+	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-	    if (ev.getAction() == MotionEvent.ACTION_DOWN) {  
-	        View v = getCurrentFocus();  
-	        if (AppUtil.isShouldHideInput(v, ev)) {  
-//	        	if (!password.hasFocus() && !userName.hasFocus()) {
-	        		hideInputMethodManager(v);
-//				}
-	        }  
-	        return super.dispatchTouchEvent(ev);  
-	    }  
-	    // 必不可少，否则所有的组件都不会有TouchEvent了  
-	    if (getWindow().superDispatchTouchEvent(ev)) {  
-	        return true;  
-	    }  
-	    return onTouchEvent(ev);  
+		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+			View v = getCurrentFocus();
+			if (AppUtil.isShouldHideInput(v, ev)) {
+				// if (!password.hasFocus() && !userName.hasFocus()) {
+				hideInputMethodManager(v);
+				// }
+			}
+			return super.dispatchTouchEvent(ev);
+		}
+		// 必不可少，否则所有的组件都不会有TouchEvent了
+		if (getWindow().superDispatchTouchEvent(ev)) {
+			return true;
+		}
+		return onTouchEvent(ev);
 	}
 
 	/** 隐藏软键盘 */
@@ -352,7 +358,7 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 			imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
 		}
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 
@@ -382,19 +388,44 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 			} else if (!AppUtil.isEmail(email)) {
 				myToast.setTextAndShow(R.string.email_error,
 						Common.TOAST_SHORT_TIME);
-			} else if (pwd.isEmpty() || pwd2.isEmpty()) {
-				myToast.setTextAndShow(R.string.pwd_is_empty,
-						Common.TOAST_SHORT_TIME);
 			} else if (name.isEmpty()) {
 				myToast.setTextAndShow(R.string.name_is_empty,
 						Common.TOAST_SHORT_TIME);
-			} else if (!pwd.equals(pwd2)) {
-				myToast.setTextAndShow(R.string.pw_is_inconsistency,
-						Common.TOAST_SHORT_TIME);
 			} else {
+				// 比较密码合法性
+				switch (AppUtil.checkPwd(etPwd.getText().toString(), etPwd2
+						.getText().toString())) {
+				case AppUtil.PWD_ALL_SAPCE:// 全部为空格
+					myToast.setTextAndShow(R.string.pwd_no_all_space,
+							Common.TOAST_SHORT_TIME);
+					break;
 
-				sign(email, pwd);// 注册 用户名和 密码。成功后将保存个人信息
+				case AppUtil.PWD_AVAILABLE:// 密码可用
+					sign(email, pwd);// 注册 用户名和 密码。成功后将保存个人信息
+					break;
 
+				case AppUtil.PWD_EMPTY:// 空
+					myToast.setTextAndShow(R.string.pwd_is_empty,
+							Common.TOAST_SHORT_TIME);
+					break;
+
+				case AppUtil.PWD_INCONSISTENCY:// 不一致
+					myToast.setTextAndShow(R.string.pw_is_inconsistency,
+							Common.TOAST_SHORT_TIME);
+					break;
+
+				case AppUtil.PWD_SHORT:// 小于6位
+					myToast.setTextAndShow(R.string.notify_password_hint,
+							Common.TOAST_SHORT_TIME);
+
+					break;
+
+				case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
+					myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
+							Common.TOAST_SHORT_TIME);
+					break;
+
+				}
 			}
 			break;
 
@@ -402,13 +433,15 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 		case R.id.other_sign_day:
 		case R.id.other_sign_year:
 		case R.id.ll_birth:
-			
+
 			// 弹出出生年月日
 			if (ll.getVisibility() == View.GONE) {
-				ll.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_from_bottom));
+				ll.startAnimation(AnimationUtils.loadAnimation(this,
+						R.anim.slide_in_from_bottom));
 				ll.setVisibility(View.VISIBLE);
 			} else {
-				ll.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_to_bottom));
+				ll.startAnimation(AnimationUtils.loadAnimation(this,
+						R.anim.slide_out_to_bottom));
 				ll.setVisibility(View.GONE);
 			}
 			etEmail.clearFocus();
@@ -450,7 +483,8 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 									response.getString(Common.USERINFO_TOKENID));
 						}
 						e.commit();
-						API.Sign(OtherRegisterActivity.this, email, pwd, handler);
+						API.Sign(OtherRegisterActivity.this, email, pwd,
+								handler);
 					} catch (JSONException e1) {
 						e1.printStackTrace();
 					}
@@ -461,7 +495,8 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 				public void onFailure(int statusCode, Header[] headers,
 						Throwable throwable, JSONObject errorResponse) {
 					// TODO Auto-generated method stub
-					super.onFailure(statusCode, headers, throwable, errorResponse);
+					super.onFailure(statusCode, headers, throwable,
+							errorResponse);
 					myToast.setTextAndShow(R.string.http_failed,
 							Common.TOAST_SHORT_TIME);
 				}
@@ -493,7 +528,8 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onClick(View arg0) {
-				ll.startAnimation(AnimationUtils.loadAnimation(OtherRegisterActivity.this, R.anim.slide_out_to_bottom));
+				ll.startAnimation(AnimationUtils.loadAnimation(
+						OtherRegisterActivity.this, R.anim.slide_out_to_bottom));
 				ll.setVisibility(View.GONE);
 			}
 		});
@@ -504,7 +540,8 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 				etYear.setText(mYear_Str);
 				etMonth.setText(mMonth_Str);
 				etDay.setText(mDay_Str);
-				ll.startAnimation(AnimationUtils.loadAnimation(OtherRegisterActivity.this, R.anim.slide_out_to_bottom));
+				ll.startAnimation(AnimationUtils.loadAnimation(
+						OtherRegisterActivity.this, R.anim.slide_out_to_bottom));
 				ll.setVisibility(View.GONE);
 			}
 		});
@@ -585,33 +622,29 @@ public class OtherRegisterActivity extends Activity implements OnClickListener {
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
 	}
-	
-	private void getDateYMD(){
+
+	private void getDateYMD() {
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
 		String currentDate = sdf.format(date); // 当期日期
 		mYear = Integer.parseInt(currentDate.split("-")[0]);
 		mMonth = Integer.parseInt(currentDate.split("-")[1]);
 		mDay = Integer.parseInt(currentDate.split("-")[2]);
-		
-		mYear_Str = mYear+"";
-		mMonth_Str = mMonth +"";
-		mDay_Str = mDay+"";
+
+		mYear_Str = mYear + "";
+		mMonth_Str = mMonth + "";
+		mDay_Str = mDay + "";
 	}
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("OtherRegisterActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("OtherRegisterActivity");
-		MobclickAgent.onResume(this);
 	}
 }

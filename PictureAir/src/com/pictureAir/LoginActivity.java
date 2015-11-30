@@ -34,6 +34,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import cn.smssdk.EventHandler;
@@ -47,8 +48,10 @@ import com.pictureAir.util.AppManager;
 import com.pictureAir.util.AppUtil;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.HttpUtil;
+import com.pictureAir.util.HttpsUtil;
 import com.pictureAir.util.Installation;
 import com.pictureAir.util.SignAndLoginUtil;
+import com.pictureAir.widget.CheckUpdateManager;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.EditTextWithClear;
 import com.pictureAir.widget.MyToast;
@@ -59,9 +62,10 @@ import com.umeng.analytics.MobclickAgent;
  * 3.全部获取之后，需要确认之前有扫描过pp或者ppp，如果有，则自动绑定
  * */
 
-public class LoginActivity extends Activity implements OnClickListener {
+public class LoginActivity extends BaseActivity implements OnClickListener {
 	private static final String TAG = "LoginActivity";
 	// 申明控件
+	private RelativeLayout parentRelativeLayout;
 	private TextView tv_country, tv_country_num;// 国家，区号
 	private TextView otherLogin;// 其他方式登录
 	private Button login, sign;
@@ -81,15 +85,16 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private static final int GET_IP_FAILED = 4;
 	private static final int GET_TOKENID_FAILED = 5;
 	// 申明其他类
-	private SharedPreferences sp;
+	private SharedPreferences sp, appPreferences;
 	private Editor editor;
 	private MyToast myToast;
 	@SuppressWarnings("unused")
 	private MyApplication myApplication;
 	// 区号,国家
-	private String countryCode = "86";
+	private String countryCode = "+86";
 	private String country = "";
 	private RegisterPage registerPage;
+	private CheckUpdateManager checkUpdateManager;// 自动检查更新
 
 	private Handler handler = new Handler() {
 		@Override
@@ -100,9 +105,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 				if (dialog.isShowing()) {
 					dialog.dismiss();
 				}
-				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				myToast.setTextAndShow(R.string.http_failed,
+						Common.TOAST_SHORT_TIME);
 				break;
-				
+
 			case API.SUCCESS:// 登录成功，获取购物车的数量
 				API.getcartcount(LoginActivity.this,
 						sp.getString(Common.USERINFO_ID, ""), handler);
@@ -120,7 +126,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 				}
 				break;
 
-//			case API.GET_PPP_FAILED:
+			// case API.GET_PPP_FAILED:
 
 			case API.GET_CART_COUNT_SUCCESS:// 成功获取购物车数量
 				Log.d(TAG, "get cart count success---------------");
@@ -136,30 +142,30 @@ public class LoginActivity extends Activity implements OnClickListener {
 				dialog.dismiss();
 				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
-				
+
 			case GET_IP_SUCCESS:
 				API.getStoreIdbyIP(msg.obj.toString(), handler);
 				break;
 
-//			case API.GET_PPP_SUCCESS:
-//				System.out.println("get ppp success ----------------");
-//				JSONObject ppplistJsonObject = (JSONObject) msg.obj;
-//				try {
-//					JSONArray ppplistArray = ppplistJsonObject
-//							.getJSONArray("PPPList");
-//					if (0 != ppplistArray.length()) {// 说明有ppp
-//						System.out.println("length=" + ppplistArray.length());
-//						Editor editor = sp.edit();
-//						editor.putInt(Common.PPP_COUNT, ppplistArray.length());
-//						editor.commit();
-//					}
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				System.out.println("netIP-----------> "+ AppUtil.GetNetIp());
-//				API.getStoreIdbyIP("140.206.125.195", handler);
-//				break;
+			// case API.GET_PPP_SUCCESS:
+			// System.out.println("get ppp success ----------------");
+			// JSONObject ppplistJsonObject = (JSONObject) msg.obj;
+			// try {
+			// JSONArray ppplistArray = ppplistJsonObject
+			// .getJSONArray("PPPList");
+			// if (0 != ppplistArray.length()) {// 说明有ppp
+			// System.out.println("length=" + ppplistArray.length());
+			// Editor editor = sp.edit();
+			// editor.putInt(Common.PPP_COUNT, ppplistArray.length());
+			// editor.commit();
+			// }
+			// } catch (JSONException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+			// System.out.println("netIP-----------> "+ AppUtil.GetNetIp());
+			// API.getStoreIdbyIP("140.206.125.195", handler);
+			// break;
 
 			case API.GET_PPS_SUCCESS:// 获取pp列表成功
 				/**
@@ -181,20 +187,20 @@ public class LoginActivity extends Activity implements OnClickListener {
 					Log.d(TAG, "pp size == 0");
 				}
 
-				new Thread(){
+				new Thread() {
 					public void run() {
 						String netIP = "211.95.27.34";
-//						String netIP = AppUtil.GetNetIp();
-						System.out.println("netIP-----------> "+ netIP);
-						if (netIP.equals("")) {//获取失败
+						// String netIP = AppUtil.GetNetIp();
+						System.out.println("netIP-----------> " + netIP);
+						if (netIP.equals("")) {// 获取失败
 							handler.sendEmptyMessage(GET_IP_FAILED);
-						}else {//获取成功
+						} else {// 获取成功
 							Message message = handler.obtainMessage();
 							message.what = GET_IP_SUCCESS;
 							message.obj = netIP;
 							handler.sendMessage(message);
 						}
-						
+
 					};
 				}.start();
 				break;
@@ -259,36 +265,34 @@ public class LoginActivity extends Activity implements OnClickListener {
 		}
 	};
 
-	
-
 	/**
 	 * 点击键盘之外，隐藏键盘
 	 */
-	@Override  
+	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-	    if (ev.getAction() == MotionEvent.ACTION_DOWN) {  
-	        View v = getCurrentFocus();  
-	        if (AppUtil.isShouldHideInput(v, ev)) {  
-//	        	if (!password.hasFocus() && !userName.hasFocus()) {
-	        		hideInputMethodManager(v);
-//				}
-	        }  
-	        return super.dispatchTouchEvent(ev);  
-	    }  
-	    // 必不可少，否则所有的组件都不会有TouchEvent了  
-	    if (getWindow().superDispatchTouchEvent(ev)) {  
-	        return true;  
-	    }  
-	    return onTouchEvent(ev);  
-	} 
-	
+		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+			View v = getCurrentFocus();
+			if (AppUtil.isShouldHideInput(v, ev)) {
+				// if (!password.hasFocus() && !userName.hasFocus()) {
+				hideInputMethodManager(v);
+				// }
+			}
+			return super.dispatchTouchEvent(ev);
+		}
+		// 必不可少，否则所有的组件都不会有TouchEvent了
+		if (getWindow().superDispatchTouchEvent(ev)) {
+			return true;
+		}
+		return onTouchEvent(ev);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		AppManager.getInstance().addActivity(this);// 添加到activity管理器
 		initview();// 初始化
-		
+
 	}
 
 	/**
@@ -300,9 +304,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 		// 发送广播
 		Log.d(TAG, "start push service");
 		Intent intent = new Intent();
-//		intent.setAction("com.receiver.AlertManagerRecriver");
-//		sendBroadcast(intent);
-//		intent = new Intent();
+		// intent.setAction("com.receiver.AlertManagerRecriver");
+		// sendBroadcast(intent);
+		// intent = new Intent();
 		// 判断是否需要到主界面还是到商品界面
 		if (null == getIntent().getStringExtra("activity")) {// 没有标记表示进入主界面
 			intent.setClass(LoginActivity.this, MainTabActivity.class);
@@ -314,7 +318,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private void initview() {
 		loginUrl.append(Common.BASE_URL).append(Common.LOGIN);// 链接地址
 		sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);// userInfo
+		appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);// userInfo
+
 		myToast = new MyToast(LoginActivity.this);// 获取toast
+		parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
 		login = (Button) findViewById(R.id.login);// 登录按钮
 		sign = (Button) findViewById(R.id.sign);// 注册按钮
 		userName = (EditTextWithClear) findViewById(R.id.login_username);// 文本框
@@ -330,6 +337,12 @@ public class LoginActivity extends Activity implements OnClickListener {
 		sign.setOnClickListener(this);
 		forgot.setOnClickListener(this);
 		otherLogin.setOnClickListener(this);
+
+		// 自动检查更新
+		checkUpdateManager = new CheckUpdateManager(this,
+				appPreferences.getString(Common.LANGUAGE_TYPE, ""),
+				parentRelativeLayout);
+		checkUpdateManager.startCheck();
 
 		myApplication = (MyApplication) getApplication();
 		userName.setOnKeyListener(new OnKeyListener() {
@@ -391,67 +404,38 @@ public class LoginActivity extends Activity implements OnClickListener {
 						Common.TOAST_SHORT_TIME);
 				break;
 			}
-			if (password.getText().toString().trim().isEmpty()) {
-				myToast.setTextAndShow(R.string.pw_null,
+			String pwd = password.getText().toString();
+			// 比较密码合法性
+			switch (AppUtil.checkPwd(pwd, pwd)) {
+			case AppUtil.PWD_ALL_SAPCE:// 全部为空格
+				myToast.setTextAndShow(R.string.pwd_no_all_space,
 						Common.TOAST_SHORT_TIME);
 				break;
-			}
-//			dialog = ProgressDialog.show(this, getString(R.string.loading___),
-//					getString(R.string.is_loading), false, true);
-			dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
-			// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
-			if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
-				System.out.println("no tokenid");
-				final StringBuffer sb = new StringBuffer();
-				sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
-				RequestParams params = new RequestParams();
-				params.put(Common.TERMINAL, "android");
-				params.put(Common.UUID, Installation.id(this));
-				HttpUtil.get(sb.toString(), params,
-						new JsonHttpResponseHandler() {
-					@Override
-					public void onStart() {
-						// TODO Auto-generated method stub
-						super.onStart();
-						System.out.println("get tokenid start");
-					}
 
-					public void onSuccess(int statusCode,
-							Header[] headers, JSONObject response) {
-						super.onSuccess(statusCode, headers, response);
-						try {
-							System.out.println("tokenid==" + response);
-							Editor e = sp.edit();
-							if (response.has(Common.USERINFO_TOKENID)) {
-								System.out
-								.println("add tokenid=============");
-								e.putString(
-										Common.USERINFO_TOKENID,
-										response.getString(Common.USERINFO_TOKENID));
-							}
-							e.commit();
-							API.Login(LoginActivity.this, countryCode + userName.getText().toString().trim(),
-									password.getText().toString().trim(), handler);
-						} catch (JSONException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
+			case AppUtil.PWD_AVAILABLE:// 密码可用
+				login();// 登录
+				break;
 
-					
-					@Override
-							public void onFailure(int statusCode,
-									Header[] headers, Throwable throwable,
-									JSONObject errorResponse) {
-								// TODO Auto-generated method stub
-								super.onFailure(statusCode, headers, throwable, errorResponse);
-								handler.sendEmptyMessage(GET_TOKENID_FAILED);
-							}
-				});
-			} else {
-				System.out.println("has tokenid");
-				API.Login(this, countryCode + userName.getText().toString().trim(), password
-						.getText().toString().trim(), handler);
+			case AppUtil.PWD_EMPTY:// 空
+				myToast.setTextAndShow(R.string.pwd_is_empty,
+						Common.TOAST_SHORT_TIME);
+				break;
+
+			case AppUtil.PWD_INCONSISTENCY:// 不一致
+				// myToast.setTextAndShow(R.string.pw_is_inconsistency,
+				// Common.TOAST_SHORT_TIME);
+				break;
+
+			case AppUtil.PWD_SHORT:// 小于6位
+				myToast.setTextAndShow(R.string.notify_password_hint,
+						Common.TOAST_SHORT_TIME);
+
+				break;
+
+			case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
+				myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
+						Common.TOAST_SHORT_TIME);
+				break;
 			}
 			break;
 
@@ -477,6 +461,69 @@ public class LoginActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	/**
+	 * 登录
+	 * 
+	 * @param name
+	 * @param pwd
+	 */
+	public void login() {
+		dialog = CustomProgressDialog.show(this,
+				getString(R.string.is_loading), false, null);
+		// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
+		if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
+			System.out.println("no tokenid");
+			final StringBuffer sb = new StringBuffer();
+			sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
+			RequestParams params = new RequestParams();
+			params.put(Common.TERMINAL, "android");
+			params.put(Common.UUID, Installation.id(this));
+			HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+				@Override
+				public void onStart() {
+					// TODO Auto-generated method stub
+					super.onStart();
+					System.out.println("get tokenid start");
+				}
+
+				public void onSuccess(int statusCode, Header[] headers,
+						JSONObject response) {
+					super.onSuccess(statusCode, headers, response);
+					try {
+						System.out.println("tokenid==" + response);
+						Editor e = sp.edit();
+						if (response.has(Common.USERINFO_TOKENID)) {
+							System.out.println("add tokenid=============");
+							e.putString(Common.USERINFO_TOKENID,
+									response.getString(Common.USERINFO_TOKENID));
+						}
+						e.commit();
+						API.Login(LoginActivity.this, userName.getText()
+								.toString().trim(), password.getText()
+								.toString().trim(), handler);
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+
+				@Override
+				public void onFailure(int statusCode, Header[] headers,
+						String responseString, Throwable throwable) {
+					// TODO Auto-generated method stub
+					super.onFailure(statusCode, headers, responseString,
+							throwable);
+					throwable.printStackTrace();
+				}
+			});
+		} else {
+			System.out.println("has tokenid");
+			API.Login(this, userName.getText().toString().trim(), password
+					.getText().toString().trim(), handler);
+		}
+
+	}
+
 	/** 初始化发短信 **/
 	private void initSSMSSDK() {
 		SMSSDK.initSDK(this, Common.APPKEY, Common.APPSECRET);
@@ -491,7 +538,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 		registerPage.setRegisterCallback(new EventHandler() {
 			public void afterEvent(int event, int result, Object data) {
 				System.out.println("type ---- >" + type + ",result--->"
-						+ result + "data-->"+data);
+						+ result + "data-->" + data);
 				// 解析注册结果
 				if (result == SMSSDK.RESULT_COMPLETE) {
 					@SuppressWarnings("unchecked")
@@ -512,8 +559,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 						 * ＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
 						 */
 						// sendSign(phone, pwd);
-						new SignAndLoginUtil(LoginActivity.this,
-								phone, pwd);
+						new SignAndLoginUtil(LoginActivity.this, phone, pwd);
 
 					} else if (type == 1) {
 						// 服务器返回手机号存在，修改密码
@@ -620,23 +666,16 @@ public class LoginActivity extends Activity implements OnClickListener {
 			registerPage.finish();
 		}
 	}
-	
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		
-		MobclickAgent.onPageEnd("LoginActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
-		MobclickAgent.onPageStart("LoginActivity");
-		MobclickAgent.onResume(this);
 	}
 }

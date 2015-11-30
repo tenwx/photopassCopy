@@ -10,9 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.umeng.analytics.MobclickAgent;
-
-public class AboutActivity extends Activity implements OnClickListener{
+public class AboutActivity extends BaseActivity implements OnClickListener{
     private TextView logo_text;
     private TextView tv_versionCode;
     private String versionCode;
@@ -64,18 +62,12 @@ public class AboutActivity extends Activity implements OnClickListener{
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("AboutActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("AboutActivity");
-		MobclickAgent.onResume(this);
 	}
-	
-	
 
 }

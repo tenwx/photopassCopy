@@ -36,7 +36,7 @@ import com.umeng.analytics.MobclickAgent;
  * 搜索界面 实现问题的搜索功能 支持关键字搜索
  * 
  */
-public class HelpActivity extends Activity implements OnClickListener{
+public class HelpActivity extends BaseActivity implements OnClickListener{
 
 	private final String TAG = "MainActivity ";
 	// 申明控件
@@ -215,15 +215,11 @@ public class HelpActivity extends Activity implements OnClickListener{
 		protected void onPause() {
 			// TODO Auto-generated method stub
 			super.onPause();
-			MobclickAgent.onPageEnd("HelpActivity");
-			MobclickAgent.onPause(this);
 		}
 
 		@Override
 		protected void onResume() {
 			// TODO Auto-generated method stub
 			super.onResume();
-			MobclickAgent.onPageStart("HelpActivity");
-			MobclickAgent.onResume(this);
 		}
 }

@@ -107,16 +107,16 @@
         SortId="4" />
 
     <Facebook
-        ConsumerKey="107704292745179"
-        ConsumerSecret="38053202e1a5fe26c80c753071f0b573"
+        ConsumerKey="188501484544514"
+        ConsumerSecret="317c094c348dc023312fe5067245840c"
         Enable="true"
         Id="5"
         SortId="5" />
 
     <Twitter
-        CallbackUrl="http://www.sharesdk.cn"
-        ConsumerKey="mnTGqtXk0TYMXYTN7qUxg"
-        ConsumerSecret="ROkFqr8c3m1HXqS3rm3TJ0WkAJuwBOSaWhPbZ9Ojuc"
+        CallbackUrl="http://www.pictureair.com/"
+        ConsumerKey="hcCGQuwtWBNBgNII7TlIIMeif"
+        ConsumerSecret="BjOf3dvToshjiPJUtlgfipuB3Q9xXMMT6T6SThtfrGwk5SRFT5"
         Enable="true"
         Id="6"
         SortId="6" />

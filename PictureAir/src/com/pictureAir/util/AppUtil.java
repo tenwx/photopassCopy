@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -33,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
@@ -64,6 +67,35 @@ import com.pictureAir.widget.EditTextWithClear;
  */
 public class AppUtil {
 	private final static String TAG = "AppUtil";
+	
+		/**
+	 * 密码为空
+	 */
+	public static final int PWD_EMPTY = 3;
+	/**
+	 * 密码长度小于6位
+	 */
+	public static final int PWD_SHORT = 4;
+	/**
+	 * 密码两次输入不一致
+	 */
+	public static final int PWD_INCONSISTENCY = 5;
+	/**
+	 * 密码不能全部为空格
+	 */
+	public static final int PWD_ALL_SAPCE = 6;
+	/**
+	 * 密码可用
+	 */
+	public static final int PWD_AVAILABLE = 7;
+	
+	/**
+	 * 密码首尾不能为空格
+	 */
+	public static final int PWD_HEAD_OR_FOOT_IS_SPACE = 8;
+
+	
+	
 	/** 没有网络 */
 	public static final int NETWORKTYPE_INVALID = 0;
 	/** 流量网络，或统称为快速网络 */
@@ -631,6 +663,27 @@ public class AppUtil {
 		return latLng;
 	}
 	
+		/**
+	 * 获取应用的版本号
+	 * 
+	 * @param context
+	 * @param deviceInfo
+	 */
+	public static ArrayList<String> getDeviceInfos(Context context) {
+		ArrayList<String> deviceInfo = new ArrayList<String>();
+		try {
+			PackageManager manager = context.getPackageManager();
+			PackageInfo info = manager.getPackageInfo(context.getPackageName(),
+					0);
+			deviceInfo.add(info.versionCode + "");
+			deviceInfo.add(info.versionName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deviceInfo;
+	}
+	
+	
 	public static String md5(String str) {
 		MessageDigest messageDigest = null;
 		try {
@@ -662,4 +715,30 @@ public class AppUtil {
 		//32位
 		return md5StrBuff.toString();
 	}
+
+	/**
+	 * 验证密码是否可用
+	 * 
+	 * @param pwd1
+	 *            第一次输入的密码
+	 * @param pwd2
+	 *            第二次输入的密码
+	 * @return
+	 */
+	public static final int checkPwd(String pwd1, String pwd2) {
+		if (pwd1.isEmpty() || pwd2.isEmpty()) {// 密码为空
+			return PWD_EMPTY;
+		} else if (pwd1.length() < 6 || pwd2.length() < 6) {// 密码小于6位
+			return PWD_SHORT;
+		} else if (!pwd1.equals(pwd2)) {// 密码两次不一致
+			return PWD_INCONSISTENCY;
+		} else if (!pwd1.isEmpty() && pwd1.trim().isEmpty()) {// 密码全部为空格
+			return PWD_ALL_SAPCE;
+		} else if (pwd1.trim().length() < pwd1.length()) {// 密码首尾有空格
+			return PWD_HEAD_OR_FOOT_IS_SPACE;
+		} else {// 密码可用
+			return PWD_AVAILABLE;
+		}
+	}
+
 }

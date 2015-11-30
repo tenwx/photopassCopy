@@ -46,7 +46,7 @@ import com.umeng.analytics.MobclickAgent;
  * @author bass
  * 
  */
-public class CalendarActivity extends Activity implements View.OnClickListener {
+public class CalendarActivity extends BaseActivity implements View.OnClickListener {
 
 	private GestureDetector gestureDetector = null;
 	private CalendarAdapter calV = null;
@@ -393,8 +393,6 @@ public class CalendarActivity extends Activity implements View.OnClickListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		MobclickAgent.onPageEnd("CalendarActivity");
-		MobclickAgent.onPause(this);
 		dayC = "0";
 		positionC = -1;
 		monthC = "0";
@@ -413,8 +411,6 @@ public class CalendarActivity extends Activity implements View.OnClickListener {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("CalendarActivity");
-		MobclickAgent.onResume(this);
 	}
 
 }

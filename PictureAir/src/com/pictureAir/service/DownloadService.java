@@ -30,7 +30,9 @@ import com.pictureAir.entity.PhotoInfo;
 import com.pictureAir.util.Common;
 import com.pictureAir.util.HttpUtil;
 import com.pictureAir.util.ScreenUtil;
-/**下载网络图片服务类*/
+import com.pictureAir.util.UmengUtil;
+
+/** 下载网络图片服务类 */
 public class DownloadService extends Service {
 	private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
 	private ArrayList<PhotoInfo> downloadList = new ArrayList<PhotoInfo>();
@@ -200,6 +202,8 @@ public class DownloadService extends Service {
 
 
 		if (!file.exists()) {
+			// 使用友盟统计点击下载次数
+			UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
 			System.out.println("file not exist"+sb.toString()+"_"+params.toString());
 			System.out.println(originalUrl);
 
@@ -287,6 +291,8 @@ public class DownloadService extends Service {
 					stream.flush();
 					stream.close();
 					++downed_num;
+					// 使用友盟统计下载成功次数
+					UmengUtil.onEvent(mContext, Common.EVENT_DOWNLOAD_FINISH);
 					scan(file.toString());
 					
 					//					sendMsg(file);

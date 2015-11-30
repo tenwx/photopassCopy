@@ -39,7 +39,7 @@ import com.umeng.analytics.MobclickAgent;
  * @author bauer_bao
  *
  */
-public class EditStoryAlbumActivity extends Activity implements OnClickListener{
+public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
 	private ImageView backRelativeLayout;
 	private ImageView editPhotoImageView;
 	private TextView selectAllTextView;
@@ -62,6 +62,7 @@ public class EditStoryAlbumActivity extends Activity implements OnClickListener{
 	private int photoCount = 0;
 	private int currentProgress = 0;
 	private SharePop sharePop;//分享
+	private int shareType = 0;
 	private MyToast myToast;
 	private CustomDialog customdialog;
 	private boolean editMode = false;
@@ -282,13 +283,13 @@ public class EditStoryAlbumActivity extends Activity implements OnClickListener{
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						myToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online");
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL,null, "online",mhHandler);
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					System.out.println("本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local");
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, null,"local",mhHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张
@@ -588,22 +589,6 @@ public class EditStoryAlbumActivity extends Activity implements OnClickListener{
 				}
 				dialog.dismiss();
 			}
+			
 		}
-		
-		@Override
-		protected void onPause() {
-			// TODO Auto-generated method stub
-			super.onPause();
-			MobclickAgent.onPageEnd("EditStoryAlbumActivity");
-			MobclickAgent.onPause(this);
-		}
-
-		@Override
-		protected void onResume() {
-			// TODO Auto-generated method stub
-			super.onResume();
-			MobclickAgent.onPageStart("EditStoryAlbumActivity");
-			MobclickAgent.onResume(this);
-		}
-		
 }

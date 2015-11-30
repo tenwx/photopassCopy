@@ -34,7 +34,6 @@ import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.CustomProgressDialog;
 import com.pictureAir.widget.MyToast;
 import com.pictureAir.widget.SharePop;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * 预览magic的照片，可以预览大图，可以对整个相册进行编辑
@@ -42,7 +41,7 @@ import com.umeng.analytics.MobclickAgent;
  *
  */
 
-public class ViewPhotoActivity extends Activity implements OnClickListener {
+public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 	private ImageView rtLayout;
 	private TextView viewTextView;
@@ -209,8 +208,6 @@ public class ViewPhotoActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("ViewPhotoActivity");
-		MobclickAgent.onResume(this);
 		if (!myApplication.scanMagicFinish) {
 			//			myApplication.setneedScanPhoto(false);
 			myApplication.scanMagicFinish = true;
@@ -310,13 +307,13 @@ public class ViewPhotoActivity extends Activity implements OnClickListener {
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						newToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online");
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, null,"online",mHandler);
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					System.out.println("本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local");
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null,null, "local",mHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张
@@ -647,14 +644,6 @@ public class ViewPhotoActivity extends Activity implements OnClickListener {
 			selectedInfo.index = i+"";
 			photoURLlist.add(selectedInfo);//加入到list中
 		}
-	}
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		MobclickAgent.onPageEnd("ViewPhotoActivity");
-		MobclickAgent.onPause(this);
 	}
 
 

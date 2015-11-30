@@ -30,13 +30,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.pictureAir.R;
 import com.pictureAir.entity.BindPPInfo;
 import com.pictureAir.entity.CartItemInfo;
 import com.pictureAir.entity.OrderInfo;
 import com.pictureAir.entity.PPPinfo;
 import com.pictureAir.entity.PPinfo;
+import com.pictureAir.widget.CheckUpdateManager;
 import com.pictureAir.widget.CustomProgressBarPop;
 
 /** 所有与后台的交互都封装到此类 */
@@ -132,6 +135,12 @@ public class API {
 
 	public static final int GET_LAST_CONTENT_SUCCESS = 541;
 	public static final int GET_LAST_CONTENT_FAILED = 540;
+	
+    public static final int APK_NEED_UPDATE = 551;
+	public static final int APK_NEED_NOT_UPDATE = 550;
+
+	public static final int DOWNLOAD_APK_SUCCESS = 561;
+	public static final int DOWNLOAD_APK_FAILED = 560;
 
 
 
@@ -215,7 +224,7 @@ public class API {
 		String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
 //		System.out.println("login _ tokenid = "+tokenId);
 		params.put(Common.USERINFO_USERNAME, userName);
-		params.put(Common.USERINFO_PASSWORD, userName.startsWith("860101") ? password : AppUtil.md5(password));
+		params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
 		params.put(Common.USERINFO_TOKENID, tokenId);
 //		System.out.println("login--->"+params.toString());
 		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
@@ -2222,6 +2231,187 @@ public class API {
 				// TODO Auto-generated method stub
 				super.onFailure(statusCode, headers, throwable, errorResponse);
 				Log.e("＝收到推送 访问失败＝＝＝＝＝＝", "＝＝＝");
+			}
+		});
+	}
+	
+	public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
+			+ "'version': '2.1.2', 'createdOn': '2015-09-23T06:06:17.371Z', "
+			+ " 'mandatory': 'false',  '__v': 0, "
+			+ " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
+			+ " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
+			+ "'downloadChannel':[ {'channel':'360',"
+			+ "'downloadUrl':'http://gdown.baidu.com/data/wisegame/1f10e30a23693de1/baidushoujizhushou_16786079.apk'},"
+			+ " { 'channel':'tencent',"
+			+ "'downloadUrl':'http://mmgr.myapp.com/myapp/gjbig/packmanage/24/2/3/102027/tencentmobilemanager5.7.0_android_build3146_102027.apk'}]}}";
+
+	/**
+	 * 检查更新
+	 * 
+	 * @param context
+	 * @param handler
+	 * @param thisVerName
+	 */
+	public static void checkUpdate(final Context context,
+			final Handler handler, final String thisVerName,
+			final String language) {
+		RequestParams params = new RequestParams();
+		StringBuffer sb = new StringBuffer();
+		sb.append(Common.BASE_URL2);
+		sb.append(Common.CHECK_VERSION);
+		params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(int statusCode,
+					org.apache.http.Header[] headers, JSONObject response) {
+				super.onSuccess(statusCode, headers, response);
+				if (statusCode == 200) {
+					try {
+						// *******测试**********、
+						response = new JSONObject(checkUpdateTestingString);
+						 PictureAirLog.out("RESPONSE---->"+response);
+						// *******测试**********、
+						if (null != response.optJSONObject("version")) {
+							JSONObject jsonObject = response
+									.optJSONObject("version");
+							String versionName = jsonObject
+									.optString("version");
+							String mandatory = jsonObject
+									.optString("mandatory");
+							String content_EN = jsonObject
+									.optString("content_EN");
+							String content = jsonObject.optString("content");
+							String channel = "";
+							String downloadUrl = "";
+							JSONArray array = jsonObject
+									.optJSONArray("downloadChannel");
+							for (int i = 0; i < array.length(); i++) {
+								channel = array.optJSONObject(i).optString(
+										"channel");
+								if (Common.UMENG_CHANNEL.equals(channel)) {
+									downloadUrl = array.optJSONObject(i)
+											.optString("downloadUrl");
+									break;
+								}
+							}
+
+							boolean flag = false;// 为false则不更新
+							int[] number = CheckUpdateManager
+									.verNameChangeInt(thisVerName);
+							int[] newNumber = CheckUpdateManager
+									.verNameChangeInt(versionName);
+							for (int i = 0; i < number.length; i++) {
+								if (number[i] < newNumber[i]) {
+									// 需要更新
+									flag = true;
+									break;
+								}
+							}
+							if (flag) {
+								// 更新
+								String[] objsStrings = new String[4];
+								objsStrings[0] = versionName;
+								objsStrings[1] = mandatory;
+
+								objsStrings[3] = downloadUrl;
+
+								if (null != language && language.equals("en")) {
+									objsStrings[2] = content_EN;
+								} else {
+									objsStrings[2] = content;
+								}
+								Message message = new Message();
+								message.what = APK_NEED_UPDATE;
+								message.obj = objsStrings;
+								handler.sendMessage(message);
+							} else {
+								handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+							}
+						} else {
+							handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+						}
+
+					} catch (Exception e) {
+						handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+					}
+				} else {
+					// 访问服务器失败,不更新
+					handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+				}
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					String responseString, Throwable throwable) {
+				super.onFailure(statusCode, headers, responseString, throwable);
+				 System.out.println("-------statusCode=" + statusCode);
+				// 访问服务器失败,不更新
+				handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					Throwable throwable, JSONObject errorResponse) {
+				super.onFailure(statusCode, headers, throwable, errorResponse);
+				// System.out.println("-------statusCode=" + statusCode);
+				// 访问服务器失败,不更新
+				handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+			}
+		});
+	}
+
+	/**
+	 * 下载apk文件
+	 * 
+	 * @param downloadURL
+	 * @param handler
+	 */
+	public static void downloadAPK(String downloadURL,
+			final CustomProgressBarPop customProgressBarPop,
+			final String version, final Handler handler) {
+		String[] allowedContentTypes = new String[] { "application/vnd.android.package-archive" };
+		HttpUtil.get(downloadURL, new BinaryHttpResponseHandler(
+				allowedContentTypes) {
+			@Override
+			public void onFailure(int arg0, Header[] arg1, byte[] arg2,
+					Throwable arg3) {
+				// for (Header header : arg1)
+				// {
+				// Log.i(TAG, header.getName()+" / "+header.getValue());
+				// }
+				handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
+			}
+
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
+				Message message = handler.obtainMessage();
+				message.what = DOWNLOAD_APK_SUCCESS;
+				message.obj = arg2;
+				handler.sendMessage(message);
+				// File downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH);
+				// if (!downloadAPKFile.exists()) {
+				// downloadAPKFile.mkdirs();
+				// }
+				// File downloadFile = new File(Common.DOWNLOAD_APK_PATH +
+				// "pictureAir_"+ version +".apk");
+				// try {
+				// downloadFile.createNewFile();
+				//
+				// FileOutputStream fos = new FileOutputStream(downloadFile);
+				// fos.write(arg2);
+				// fos.close();
+				// handler.sendEmptyMessage(DOWNLOAD_APK_SUCCESS);
+				// } catch (IOException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// downloadFile.delete();
+				// handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
+				// }
+			}
+
+			@Override
+			public void onProgress(int bytesWritten, int totalSize) {
+				customProgressBarPop.setProgress(bytesWritten, totalSize);
 			}
 		});
 	}

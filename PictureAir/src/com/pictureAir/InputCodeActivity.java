@@ -40,7 +40,7 @@ import com.umeng.analytics.MobclickAgent;
 /**
  * 手动输入条码的页面
  * */
-public class InputCodeActivity extends Activity implements OnClickListener{
+public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	private Button ok;
 	private EditText input;
 	private ImageView back;
@@ -431,15 +431,11 @@ public class InputCodeActivity extends Activity implements OnClickListener{
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("InputCodeActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("InputCodeActivity");
-		MobclickAgent.onResume(this);
 	}
 }

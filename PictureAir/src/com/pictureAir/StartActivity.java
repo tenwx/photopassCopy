@@ -18,13 +18,12 @@ import android.widget.ImageView;
 import com.pictureAir.util.API;
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.Common;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * 开始的启动页面，如果第一次进入，则进入第一次的引导页，如果不是，则进入登录页面
  * @author bauer_bao
  */
-public class StartActivity extends Activity{
+public class StartActivity extends BaseActivity{
 	private SharedPreferences spApp;
 	private int code = 0;
 	private String languageType;
@@ -38,8 +37,6 @@ public class StartActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start);
-		
-		MobclickAgent.openActivityDurationTrack(false);   //禁止默认的页面统计方式，这样将不会再自动统计Activity。
 		
 		spApp = getSharedPreferences(Common.APP, MODE_PRIVATE);
 		AppManager.getInstance().addActivity(this);
@@ -118,20 +115,5 @@ public class StartActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
-	}
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		MobclickAgent.onPageEnd("StartActivity");
-		MobclickAgent.onPause(this);
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		MobclickAgent.onPageStart("StartActivity");
-		MobclickAgent.onResume(this);
 	}
 }

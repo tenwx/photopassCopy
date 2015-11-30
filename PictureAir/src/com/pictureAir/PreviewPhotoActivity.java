@@ -71,7 +71,7 @@ import com.umeng.analytics.MobclickAgent;
  * @author bauer_bao
  *
  */
-@SuppressLint({ "FloatMath", "NewApi" }) public class PreviewPhotoActivity extends Activity implements OnClickListener{
+@SuppressLint({ "FloatMath", "NewApi" }) public class PreviewPhotoActivity extends BaseActivity implements OnClickListener{
 	private String s;
 	//工具条
 	private TextView editButton;
@@ -1005,13 +1005,13 @@ import com.umeng.analytics.MobclickAgent;
 				dia.dismiss();
 				System.out.println("start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
 				if (isEdited) {//编辑后
-					sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local");
+					sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null,null, "local",handler);
 				}else {//编辑前
 					//判断图片是本地还是网路图片
 					if (photoInfo.onLine == 1) {//网络图片
-						sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, "online");
+						sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL,null, "online",handler);
 					}else {
-						sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local");
+						sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null,null ,"local",handler);
 					}
 
 				}
@@ -1231,8 +1231,6 @@ import com.umeng.analytics.MobclickAgent;
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("PreviewPhotoActivity");
-		MobclickAgent.onPause(this);
 		//如果手指在上面的时候，如果同时休眠，在唤醒之后，页面上有个清晰圈
 		//需要通知handler释放清晰圈
 		if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
@@ -1418,8 +1416,6 @@ import com.umeng.analytics.MobclickAgent;
 		// TODO Auto-generated method stub
 		super.onResume();
 		System.out.println("------------------>resume");
-		MobclickAgent.onPageEnd("PreviewPhotoActivity");
-		MobclickAgent.onResume(this);
 		
 	}
 

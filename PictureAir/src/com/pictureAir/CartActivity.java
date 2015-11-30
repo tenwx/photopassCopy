@@ -51,7 +51,7 @@ import com.umeng.analytics.MobclickAgent;
  * @author bauer_bao
  * 
  */
-public class CartActivity extends Activity implements OnClickListener {
+public class CartActivity extends BaseActivity implements OnClickListener {
 	private ListView listView;
 	private ImageView rtButton;
 	private Button paymentButton;
@@ -666,8 +666,6 @@ public class CartActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onPause();
 		System.out.println("test pause");
-		MobclickAgent.onPageEnd("CartActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
@@ -675,8 +673,6 @@ public class CartActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		System.out.println("test resume");
-		MobclickAgent.onPageStart("CartActivity");
-		MobclickAgent.onResume(this);
 	}
 	
 	

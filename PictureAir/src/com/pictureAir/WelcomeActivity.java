@@ -23,14 +23,13 @@ import android.widget.TextView;
 
 import com.pictureAir.util.AppManager;
 import com.pictureAir.util.ScreenUtil;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * 第一次进入app的引导页，引导页结束，要么继续左滑，要么点击立即体验按钮进入登录页面
  * @author bauer_bao
  *
  */
-public class WelcomeActivity extends Activity implements OnPageChangeListener, OnTouchListener {
+public class WelcomeActivity extends BaseActivity implements OnPageChangeListener, OnTouchListener {
 	private ViewPager mViewPager;
 	private View view1, view2, view3, view4;
 	private List<View> list;
@@ -186,21 +185,5 @@ public class WelcomeActivity extends Activity implements OnPageChangeListener, O
 		startActivity(intent);
 		finish();
 	}
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		System.out.println("test onpause");
-		MobclickAgent.onPageEnd("WelcomeActivity");
-		MobclickAgent.onPause(this);
-	}
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		System.out.println("test onresume");
-		MobclickAgent.onPageStart("WelcomeActivity");
-		MobclickAgent.onResume(this);
-	}
 }

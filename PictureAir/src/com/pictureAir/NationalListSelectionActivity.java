@@ -16,14 +16,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pictureAir.util.AppManager;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * 国家列表
  * @author bass
  *
  */
-public class NationalListSelectionActivity extends Activity {
+public class NationalListSelectionActivity extends BaseActivity {
 	// 组件
 	private ListView lv;
 	private myAdapter adapter;
@@ -143,15 +142,11 @@ public class NationalListSelectionActivity extends Activity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("NationalListSelectionActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("NationalListSelectionActivity");
-		MobclickAgent.onResume(this);
 	}
 }

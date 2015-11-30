@@ -41,7 +41,7 @@ import com.pictureAir.widget.XListViewHeader;
 import com.umeng.analytics.MobclickAgent;
 
 /** 显示用户所有的PP或某张PP+可绑定的PP */
-public class MyPPActivity extends Activity implements OnClickListener {
+public class MyPPActivity extends BaseActivity implements OnClickListener {
 	private ImageView back;
 	private ListView listPP;
 	private ImageView delete;
@@ -527,8 +527,6 @@ public class MyPPActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("MyPPActivity");
-		MobclickAgent.onResume(this);
 		if (isSeletePP) {
 			
 		}else{
@@ -635,8 +633,6 @@ public class MyPPActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageStart("MyPPActivity");
-		MobclickAgent.onPause(this);
 	}
 
 	

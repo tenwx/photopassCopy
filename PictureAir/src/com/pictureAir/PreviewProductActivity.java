@@ -47,13 +47,12 @@ import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.BannerView_PreviewCompositeProduct;
 import com.pictureAir.widget.CustomProgressBarPop;
 import com.pictureAir.widget.MyToast;
-import com.umeng.analytics.MobclickAgent;
 /**
  * 产品预览，处理商品的合成
  * @author bauer_bao
  *
  */
-public class PreviewProductActivity extends Activity implements OnClickListener{
+public class PreviewProductActivity extends BaseActivity implements OnClickListener{
 	private ImageView returnButton;
 	private Button buynowButton;
 	private Button addtocartButton;
@@ -372,8 +371,6 @@ public class PreviewProductActivity extends Activity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("PreviewProductActivity");
-		MobclickAgent.onResume(this);
 		recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
 		if (recordcount <= 0) {
 			counTextView.setVisibility(View.INVISIBLE);
@@ -547,12 +544,5 @@ public class PreviewProductActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
-	}
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		MobclickAgent.onPageEnd("PreviewProductActivity");
-		MobclickAgent.onPause(this);
 	}
 }

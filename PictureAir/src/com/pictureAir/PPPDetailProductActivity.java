@@ -39,13 +39,12 @@ import com.pictureAir.util.Common;
 import com.pictureAir.util.ScreenUtil;
 import com.pictureAir.widget.BannerView_Detail;
 import com.pictureAir.widget.MyToast;
-import com.umeng.analytics.MobclickAgent;
 /**
  * PP+商品明细类
  * @author bauer_bao
  *
  */
-public class PPPDetailProductActivity extends Activity implements OnClickListener{
+public class PPPDetailProductActivity extends BaseActivity implements OnClickListener{
 	//申明控件
 	private ViewGroup animMaskLayout;//动画层
 	private ImageView buyImg;// 这是在界面上跑的小图片
@@ -228,8 +227,6 @@ public class PPPDetailProductActivity extends Activity implements OnClickListene
 	@Override
 	protected void onResume() {
 		super.onResume();
-		MobclickAgent.onPageStart("PPPDetailProductActivity");
-		MobclickAgent.onResume(this);
 		recordCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
 		if (recordCount<=0) {
 			cartCountTextView.setVisibility(View.INVISIBLE);
@@ -437,8 +434,6 @@ public class PPPDetailProductActivity extends Activity implements OnClickListene
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		MobclickAgent.onPageEnd("PPPDetailProductActivity");
-		MobclickAgent.onPause(this);
 	}
 
 
