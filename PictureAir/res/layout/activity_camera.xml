@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black" >
-
     <RelativeLayout
         android:id="@+id/previewview"
         android:layout_width="fill_parent"
@@ -32,7 +31,7 @@
             android:background="@null" />
 
         <com.pictureAir.widget.RotatetextView
-            android:id="@+id/textView_time"
+            android:id="@+id/textView_time_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -41,34 +40,15 @@
             android:textSize="60sp"
             android:visibility="invisible" />
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:layout_alignParentBottom="true" />
-
-        <SeekBar
-            android:id="@+id/seekBar1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imageView1"
-            android:layout_alignParentLeft="true"
-            android:max="9"
-            android:progress="0"
-            android:progressDrawable="@drawable/seekbar_style"
-            android:thumb="@drawable/ic_launcher"
-            android:thumbOffset="0dp"
-            android:visibility="gone" />
     </RelativeLayout>
-
+    
+    <!-- bottombar  start -->
 
     <RelativeLayout
-        android:id="@+id/bottombar"
+        android:id="@+id/camera_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/previewview"
         android:background="@color/gray_light" >
 
         <com.pictureAir.widget.RotateView
@@ -99,9 +79,10 @@
             android:layout_marginLeft="20dp"
             android:background="@color/transparent"
             android:padding="5dp"
-            android:visibility="gone"
             android:src="@drawable/magic_btn" />
     </RelativeLayout>
+    <!-- bottombar  end -->
+
 
     <LinearLayout
         android:id="@+id/titlebar"
@@ -117,9 +98,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:background="@color/transparent"
             android:scaleType="centerInside"
-            android:adjustViewBounds="true"
             android:src="@drawable/camera_return" />
 
         <com.pictureAir.widget.RotateView
@@ -128,9 +109,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:background="@color/transparent"
             android:scaleType="centerInside"
-            android:adjustViewBounds="true"
             android:src="@drawable/camera_flash_off" />
 
         <RelativeLayout
@@ -143,13 +124,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
                 android:background="@color/transparent"
                 android:scaleType="centerInside"
-                android:adjustViewBounds="true"
                 android:src="@drawable/camera_time" />
 
             <com.pictureAir.widget.RotatetextView
-                android:id="@+id/textview_time"
+                android:id="@+id/textView_time_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -166,10 +147,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:background="@color/transparent"
             android:scaleType="centerInside"
-            android:adjustViewBounds="true"
             android:src="@drawable/camera_toggle" />
     </LinearLayout>
+    <!-- titile  end -->
 
 </RelativeLayout>

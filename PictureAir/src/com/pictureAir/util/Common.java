@@ -294,4 +294,6 @@ public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDir
 
 	public static final String SETTING_NOT_FIRST_PP10 = "notFirstpp10";
 
+	// 纪录 MainTab 中 tab 的高度。
+	public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
 }

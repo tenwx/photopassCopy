@@ -186,6 +186,7 @@ public class MainTabActivity extends BaseActivity {
 				
 			case 2:
 				System.out.println("camera tab on click");
+				Common.TAB_HEIGHT = mTabHost.getHeight();
 				mTabHost.setCurrentTab(2);
 				break;
 				

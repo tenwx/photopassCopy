@@ -1,6 +1,9 @@
 package com.pictureAir.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.Window;
+import android.view.WindowManager;
 /**屏幕计算*/
 public class ScreenUtil {
 	
@@ -49,6 +52,16 @@ public class ScreenUtil {
 		String filename = url;  
 		filename = filename.substring(filename.lastIndexOf("/") + 1);
 		return filename;  
+	}
+	
+	/**
+	 * 设置全屏显示
+	 * @param context
+	 */
+	public static void setFullScreen(Activity context){
+		int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		Window myWindow = context.getWindow();
+		myWindow.setFlags(flag, flag);// 设置为全屏
 	}
 	
 }
