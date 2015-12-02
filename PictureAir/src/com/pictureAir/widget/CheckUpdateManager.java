@@ -56,15 +56,15 @@ public class CheckUpdateManager {
 				break;
 				
 			case DialogInterface.BUTTON_POSITIVE:
-				PictureAirLog.out("yes");
+				PictureAirLog.out("apk yes");
 				//开始下载
 				downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH + "pictureAir_"+ version +".apk");
 				if (downloadAPKFile.exists()) {//文件已经存在
 					PictureAirLog.out("apk exist");
 					handler.sendEmptyMessage(INSTALL_APK);
 				} else {//文件不存在，需要去下载
-					//弹出下载进度条
-					customProgressBarPop = new CustomProgressBarPop(context, parentView, false);
+					//直线型进度条
+					customProgressBarPop = new CustomProgressBarPop(context, parentView, CustomProgressBarPop.TYPE_DOWNLOAD);
 					customProgressBarPop.show(0);
 					baseCheckUpdate.downloadAPK(downloadURL, customProgressBarPop, version, handler);
 				}
@@ -151,7 +151,7 @@ public class CheckUpdateManager {
 	public CheckUpdateManager(Context context, String currentLanguage, View parent) {
 		this.context = context;
 		this.currentLanguage = currentLanguage;
-		parentView = parent;
+		this.parentView = parent;
 		myToast = new MyToast(context);
 		baseCheckUpdate = CheckUpdate.getInstance();
 

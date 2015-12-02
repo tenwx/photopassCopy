@@ -122,7 +122,7 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.clip:
 //			MainTabActivity.instances.finish(); //上传成功之后结束 主要的Activity。
-			dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), false);
+			dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
 //			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
 			dialog.show(0);
 			Bitmap bitmap = mClipImageLayout.clip();

@@ -141,7 +141,7 @@ public class MainTabActivity extends BaseActivity {
 	private void initView() {
 		// 实例化布局对象
 		layoutInflater = LayoutInflater.from(this);
-		linearLayout = (LinearLayout) findViewById(R.id.parent);
+		linearLayout = (LinearLayout) findViewById(R.id.parent_view);
 		// 实例化TabHost对象，得到TabHost
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);

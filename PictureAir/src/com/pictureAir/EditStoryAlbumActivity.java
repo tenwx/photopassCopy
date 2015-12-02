@@ -155,7 +155,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		pinnedSectionListView = (PullToRefreshPinnedSectionListView) findViewById(R.id.pullToRefreshPinnedSectionListView);
 		editPhotoImageView = (ImageView) findViewById(R.id.imageButton_edit);
 		pinnedSectionListView.setPullToRefreshEnabled(false);
-		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.editStoryPhotoRelativeLayout), true);
+		//删除图片进度条
+		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.editStoryPhotoRelativeLayout), CustomProgressBarPop.TYPE_DELETE);
 		
 		//绑定监听
 		backRelativeLayout.setOnClickListener(this);

@@ -398,7 +398,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 		buyButton = (Button)findViewById(R.id.button_buy);
 		addtocartButton = (Button)findViewById(R.id.button_addtocart);
 		cartButton.setOnClickListener(this);
-		progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), false);
+		progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate),CustomProgressBarPop.TYPE_UPLOAD);
 		selectButton.setOnClickListener(this);
 		buyButton.setOnClickListener(this);
 		addtocartButton.setOnClickListener(this);

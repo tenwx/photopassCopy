@@ -199,7 +199,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 		submitButton.setOnClickListener(this);
 		llrtLayout = (ImageView)findViewById(R.id.llrt);
 		llrtLayout.setOnClickListener(this);
-		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), false);
+		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
 		list = getIntent().getParcelableArrayListExtra("orderinfo");//获取照片路径
 		infoListView = (ListView)findViewById(R.id.listView_submitorder);
 		submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), mHandler);

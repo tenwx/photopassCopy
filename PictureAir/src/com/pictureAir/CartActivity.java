@@ -399,7 +399,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_cart);
 		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
-		dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout), false);
+		//上传进度条
+		dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
 		rtButton = (ImageView) findViewById(R.id.ret_relyt);
 		rtButton.setOnClickListener(this);
 		paymentButton = (Button) findViewById(R.id.button3_pm);

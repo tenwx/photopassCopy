@@ -93,7 +93,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
 		sdCardExist = Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);//判断sd卡是否存在 
 		sharePop = new SharePop(this);
-		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.viewSelectRelativeLayout), true);
+		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.viewSelectRelativeLayout), CustomProgressBarPop.TYPE_DELETE);
 		//初始化控件
 		selectllLayout = (LinearLayout)findViewById(R.id.select_tools_linearlayout);
 		selectAll = (TextView)findViewById(R.id.select_all);

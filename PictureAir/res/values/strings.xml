@@ -369,6 +369,7 @@
     <string name="paying">支付中</string>
     <string name="get_prepayid_succ">获取prepayid成功</string>
     <string name="get_prepayid_fail" formatted="false">获取prepayid失败，原因%s</string>
+    	<string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
     <!-- 微信支付string字段 -->
     <string name="add_photo"> 添加照片 </string>
     <string name="all_goods">共%1$d件商品</string>

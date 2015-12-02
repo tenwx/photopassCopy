@@ -272,7 +272,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 		shoppingcartButton.setOnClickListener(this);
 		sb = new StringBuffer();
 		sb.append(Common.BASE_URL).append(Common.UPLOAD_PHOTOS);
-		dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), false);
+		//上传进度条
+		dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
 		
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, null);
