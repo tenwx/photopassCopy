@@ -1,0 +1,129 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_light"
+    tools:context="com.pictureair.photopass.activity.SettingLanguageActivity" >
+
+    <RelativeLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/blue" >
+
+        <RelativeLayout
+            android:id="@+id/back_set"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingRight="10dp" >
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_white" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/setting_language"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        
+        <RelativeLayout 
+            android:id="@+id/save"
+            android:paddingRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            >
+        <TextView 
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="@string/save"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <LinearLayout 
+        android:layout_below="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        
+        <RelativeLayout 
+            android:id="@+id/language_chinese"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            >
+            
+            <TextView 
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Chinese"
+                android:padding="15dp"
+                android:textSize="15sp"
+                android:textColor="@color/gray"
+                />
+            
+            <ImageView 
+                android:id="@+id/chinese_imageView"
+                android:visibility="invisible"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sele"/>
+            
+        </RelativeLayout>
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/gray_light3" />
+        
+        <RelativeLayout 
+            android:id="@+id/language_english"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            >
+            
+            <TextView 
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/English"
+                android:padding="15dp"
+                android:textSize="15sp"
+                android:textColor="@color/gray"
+                />
+            
+            <ImageView 
+                android:id="@+id/english_imageView"
+                android:visibility="invisible"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sele"/>
+            
+        </RelativeLayout>
+        
+    </LinearLayout>
+
+</RelativeLayout>

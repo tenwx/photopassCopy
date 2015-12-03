@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/makegift_relativate"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shop_bg" >
+
+    <RelativeLayout
+        android:id="@+id/makegift_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue" >
+
+        <ImageView
+            android:id="@+id/button_selectproduct"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/make_gift_product" />
+
+        <ImageView
+            android:id="@+id/button_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="27dp"
+            android:layout_toLeftOf="@id/button_selectproduct"
+            
+            
+            
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/cart" />
+
+        <TextView
+            android:id="@+id/textview_cart_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="3dp"
+            android:layout_toLeftOf="@id/button_selectproduct"
+            android:background="@drawable/bg1"
+            android:gravity="center"
+            android:padding="1dp"
+            android:text="0"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/rt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="13dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="13dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <ImageView
+            android:id="@+id/addimage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:layout_toLeftOf="@id/button_cart"
+            android:scaleType="fitCenter"
+            android:src="@drawable/addphoto"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <com.pictureair.photopass.widget.MyScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonllout"
+        android:layout_below="@id/makegift_titlebar"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct
+                android:id="@+id/bannerview_makegift_detail"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp" />
+            <!--
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginTop="30dp" >
+
+                <ImageView
+                    android:id="@+id/makegift_imageview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/ic_stub" />
+
+                <com.pictureAir.widget.BannerView_Preview
+                    android:id="@+id/bannerview_makegift"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical" />
+            </RelativeLayout>
+            -->
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp" >
+
+                <RelativeLayout
+                    android:id="@+id/product_detail2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp" >
+
+                    <TextView
+                        android:id="@+id/textview_productprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="13dp"
+                        android:layout_toRightOf="@+id/textView2"
+                        android:text="@string/price"
+                        android:textColor="#e84320"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="13dp"
+                        android:text="@string/price"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/product_detail"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/textview_productprice"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/button_white"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/detail"
+                        android:textColor="#455560"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </com.pictureair.photopass.widget.MyScrollView>
+
+    <LinearLayout
+        android:id="@+id/buttonllout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#b3ffffff"
+        android:orientation="horizontal"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp" >
+
+        <Button
+            android:id="@+id/button_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="11dp"
+            android:layout_marginRight="11dp"
+            android:layout_weight="2"
+            android:background="@drawable/button_blue"
+            android:padding="10dp"
+            android:text="@string/buy_good2"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_addtocart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="11dp"
+            android:layout_marginRight="11dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_green"
+            android:padding="10dp"
+            android:text="@string/add_to_cart"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/gray_light"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/frag3_rl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/blue" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/tab_shops"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/frag3_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="14dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="22dp"
+            android:paddingTop="14dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/cart" />
+
+        <TextView
+            android:id="@+id/textview_cart_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/bg1"
+            android:gravity="center"
+            android:padding="1dp"
+            android:text="1"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/shopListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@color/white"
+            android:divider="@color/gray_light"
+            android:dividerHeight="5dp"
+            android:scrollbars="none" />
+
+        <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+            android:id="@+id/shopNoNetWorkView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tt"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</LinearLayout>

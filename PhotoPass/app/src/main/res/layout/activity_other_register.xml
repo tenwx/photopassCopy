@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_light" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/blue" >
+
+        <ImageView
+            android:id="@+id/login_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="13dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="13dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <TextView
+            android:id="@+id/photopass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/smssdk_regist"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- 内容 -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/login_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_white_with_line"
+                android:paddingRight="5dp" >
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/email_icon" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/gray_light3" />
+
+                <com.pictureair.photopass.widget.EditTextWithClear
+                    android:id="@+id/other_sign_email"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="5"
+                    android:background="@null"
+                    android:hint="@string/Email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_white_with_line"
+                android:paddingRight="5dp" >
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/locking_pwd" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/gray_light3" />
+
+                <com.pictureair.photopass.widget.EditTextWithClear
+                    android:id="@+id/other_sign_password"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="5"
+                    android:background="@null"
+                    android:hint="@string/pwd"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_white_with_line"
+                android:paddingRight="5dp" >
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/locking_pwd" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/gray_light3" />
+
+                <com.pictureair.photopass.widget.EditTextWithClear
+                    android:id="@+id/other_sign_password2"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="5"
+                    android:background="@null"
+                    android:hint="@string/smssdk_pwd2"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_white_with_line"
+                android:paddingRight="5dp" >
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/login_user_icon" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/gray_light3" />
+
+                <com.pictureair.photopass.widget.EditTextWithClear
+                    android:id="@+id/other_sign_name"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="5"
+                    android:background="@null"
+                    android:hint="@string/other_sign_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:text="@string/counry"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+
+                <com.pictureair.photopass.widget.EditTextWithClear
+                    android:id="@+id/other_sign_country"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/textedit"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="15dp"
+                    android:text="@string/sex"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+
+                <RadioGroup
+                    android:id="@+id/rg_sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/rb_btn_man"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/readio_group_sex_readio_button"
+                        android:button="@null"
+                        android:checked="false" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/man"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_btn_woman"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="30dp"
+                        android:background="@drawable/readio_group_sex_readio_button"
+                        android:button="@null"
+                        android:checked="false" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/woman"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_birth"
+                android:layout_width="match_parent"
+                android:layout_height="46dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/date_of_birth"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp" />
+
+                <!-- <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/year"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" /> -->
+
+                <TextView
+                    android:id="@+id/other_sign_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/textedit"
+                    android:hint="YYYY"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+
+                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:text="-"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" /> 
+
+                <TextView
+                    android:id="@+id/other_sign_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/textedit"
+                    android:gravity="center"
+                    android:hint="MM"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+
+               <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:text="-"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" /> 
+
+                <TextView
+                    android:id="@+id/other_sign_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/textedit"
+                    android:hint="DD"
+                    android:gravity="center"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_other_sign_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_blue"
+                android:padding="10dp"
+                android:text="@string/sign"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <!-- 其他方式 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/smssdk_explain_briefly"
+                android:textColor="@color/gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </ScrollView>
+    <!-- 年月日选择 -->
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</RelativeLayout>

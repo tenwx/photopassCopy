@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/gray_light"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/llt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/blue" >
+
+        <RelativeLayout
+            android:id="@+id/lrt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingRight="10dp" >
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_white" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/address"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/address_confim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="#00000000"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/china"
+            style="@drawable/add_nor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/address_china_button"
+            android:button="@null"
+            android:gravity="center"
+            android:checked="true"
+            android:textSize="15sp"
+            android:textColor="@drawable/radiobutton_selector"
+            android:text="@string/china" />
+
+        <RadioButton
+            android:id="@+id/other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:textSize="15sp"
+            android:background="@drawable/address_other_button"
+			android:gravity="center"
+            android:textColor="@drawable/radiobutton_selector"
+            android:text="@string/other" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="15dp"
+        android:background="@color/gray_deep" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white" >
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:shrinkColumns="1"
+            android:stretchColumns="1" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/name"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/edit_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit"
+                    android:hint="@string/hint_name"
+                    android:textColor="#455560"
+                    android:textColorHint="@color/hint"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:textSize="15sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/gray_light" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/mobilephone"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/edit_mobilephone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit"
+                    android:hint="@string/hint_phone"
+                    android:inputType="phone"
+                    android:textColor="#455560"
+                    android:textColorHint="@color/hint"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:textSize="15sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/gray_light" />
+            
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/telephone"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/edit_telephone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit"
+                    android:hint="@string/hint_telephone"
+                    android:inputType="phone"
+                    android:textColor="#455560"
+                    android:textColorHint="@color/hint"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:textSize="15sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/gray_light" />
+
+            <TableRow
+                android:id="@+id/tablerow_province"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/province"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <com.photopass.cityaddress.tools.CustomerSpinner
+                    android:id="@+id/spinner_province"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit" />
+            </TableRow>
+
+            <View
+                android:id="@+id/view_province"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/gray_light" />
+
+            <TableRow
+                android:id="@+id/tablerow_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/city"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <com.photopass.cityaddress.tools.CustomerSpinner
+                    android:id="@+id/spinner_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit" />
+            </TableRow>
+
+            <View
+                android:id="@+id/view_city"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/gray_light" />
+
+            <TableRow
+                android:id="@+id/tablerow_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/district"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <com.photopass.cityaddress.tools.CustomerSpinner
+                    android:id="@+id/spinner_district"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit" />
+            </TableRow>
+
+            <View
+                android:id="@+id/view_district"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/gray_light" />
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingBottom="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/ad"
+                    android:textColor="#455560"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/edit_detailaddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/textedit"
+                    android:hint="@string/hint_address"
+                    android:textColor="#455560"
+                    android:textColorHint="@color/hint"
+                    android:imeOptions="actionGo"
+                    android:singleLine="true"
+                    android:textSize="15sp" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray_deep" />
+
+</LinearLayout>
