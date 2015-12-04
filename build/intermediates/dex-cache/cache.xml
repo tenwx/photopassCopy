@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/universal-image-loader-1.9.3-with-sources.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="0880c54a0a5478a5b81fddc43118a5f607684da3">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/universal-image-loader-1.9.3-with-sources-25c4713a453060411ac63da4b869deee2560c214.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/org.apache.http.legacy.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="fa331331b626ee78c52bea16ce1e34b39e666ce5">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/org.apache.http.legacy-0fe5f04ce6e86f3408ed0529268de396b5d9c61d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/sqlcipher.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5f81ea2fe26cedec962e6a943b5dd52428726d2e">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/sqlcipher-0cd05564024cb23c1b7e604c2c7d686618d9abe5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/zxing.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e88c14e6e7daa0fa65172a62b54ee6a16ff4162d">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/zxing-03e21a0e7d2523f96e4e5b779ee8d9b974509ec0.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-QZone-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="606a553246f241278b45e19d5029c915ae49c316">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-QZone-2.6.4-854614f19d67c5fcd38abf6c31f32e9b4f666ba5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/MobCommons.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="86052ea3c2fcfa2f2d25d71ae34ab20b8c2dca9a">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/MobCommons-1c54d173c4b54f81d7b699dc72bcee7b6ed6ea5f.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Core-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="7bb32fc69b3520f10333fcc5cdd78a4495761a64">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Core-2.6.4-ad431d392263e72e9a94fc2488587d7328575b82.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-Moments-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="dc2b46a70ccf00592d33c3afde812993d9db4ac9">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-Moments-2.6.4-f2743cafb7c912072167a2096b9aa5597ca03683.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/classes-66d5f98b829fb5bf19bda1aaa3899eca8c5f0163.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/universal-image-loader-1.9.3-with-sources.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="0880c54a0a5478a5b81fddc43118a5f607684da3">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/universal-image-loader-1.9.3-with-sources-25c4713a453060411ac63da4b869deee2560c214.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/umeng-analytics-v5.6.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="b2705cbb19f52bb4d242458163a98d9e889c1292">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/umeng-analytics-v5.6.1-a6aa2b1bcd9ad91bd3b1694c5197fd3f17bbcfda.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/com.umeng.fb.5.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="993055275c65a58d47e98493d8028a74a0e1c06e">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/com.umeng.fb.5.4.0-2f35aac40f3f8666a93f61c169c7f0e4a7183745.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/PayPalAndroidSDK-2.8.7.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c0f164e9e5e7e4c4078abd9917489da491a2df7b">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/PayPalAndroidSDK-2.8.7-15bc9765612f89d5ec21bf9aca6e0774c192de21.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/alipayutdid.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="4345fa0a5a7768f2f9c86aaab7db9e2906765193">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/alipayutdid-644b471d46003eaf9fcff61aa03f9fe83a589c49.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-QZone-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="606a553246f241278b45e19d5029c915ae49c316">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-QZone-2.6.4-854614f19d67c5fcd38abf6c31f32e9b4f666ba5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Twitter-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="a775a859ea2688efad670dba4a90770ea740c8b4">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Twitter-2.6.4-369d00185b003393f3d05c6c68aa2dd22ec3bfbd.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/SMSSDK/unspecified/jars/libs/SMSSDK-1.1.9.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="96383506ac3f109eea7f9f11e075347808aa37c3">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/SMSSDK-1.1.9-6550065382bb93ea27077c94f01315feea4b3790.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/nineoldandroids-2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/nineoldandroids-2.4.0-8b42a1910b6eeb94679749dd37d520678d081668.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/alipaysecsdk.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="7413c074c9edf523050267b93d0875151dc4b644">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/alipaysecsdk-6ea5a60361fe5ba24419000117173eff260ddd2d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/socketio.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="eca5028ad55e28377b67718e1608c96e0eb509b5">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/socketio-b4f5e47ed65e8c91794c338368667ebbbbd2d172.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-QQ-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e8d59be1960d4e1b1f9119cc77966e5f7c9fb7bd">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-QQ-2.6.4-c2f3e7a8fe56aff99b21c254073e73c417066252.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-SinaWeibo-2.6.3.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="a080389406bbb3b21310f84df77d7391f355addc">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-SinaWeibo-2.6.3-27c3fe2bc26d34c00c3e5434c981e8760e1683d5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/classes-66d5f98b829fb5bf19bda1aaa3899eca8c5f0163.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/PullToRefreshLibrary/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e08a58be78adc829f5dc03fe2d4333c1530db8d7">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/classes-688125581e3c2e8ba615d5f633660b20f362f1ae.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/sqlcipher.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5f81ea2fe26cedec962e6a943b5dd52428726d2e">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/sqlcipher-0cd05564024cb23c1b7e604c2c7d686618d9abe5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/MobTools.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="4aae467e0a293d5d5cd0643e51b7b854bcc397c8">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/MobTools-8badce0f3717547bc7b0bb58b319514d7c233067.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/alipaysdk.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="b40481f01537a329936ce54ee2fe15ef2537f010">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/alipaysdk-4912d4db460cd638c79410f2b8a048b435975187.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/SMSSDK/unspecified/jars/libs/mframework.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="25509058b34a5ee08dbf66e57078e3083735d200">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/mframework-9b7686bca24764e947e79dec27578c8c2613ef97.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/MobLogCollector.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="0488dc80a5addc72b2fcb515f792a130c164ab5f">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/MobLogCollector-132e38970120793a3d9abd1243eddc070ec5f72d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/PullToRefreshLibrary/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="9e88bee59341ffabc6d4cbf721f5acff7d62be21">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/classes-688125581e3c2e8ba615d5f633660b20f362f1ae.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/MobTools.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="4aae467e0a293d5d5cd0643e51b7b854bcc397c8">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/MobTools-8badce0f3717547bc7b0bb58b319514d7c233067.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-SinaWeibo-2.6.3.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a080389406bbb3b21310f84df77d7391f355addc">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-SinaWeibo-2.6.3-27c3fe2bc26d34c00c3e5434c981e8760e1683d5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/Android_Location_V1.3.2.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="b64d1f38ef7ee28b538d61a39d040f249c65587c">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/Android_Location_V1.3.2-ad4921ec51f006e8923d9dee42385f643ab1c33d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/AMap_3DMap_V2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="37703c4a641f0f61d4567c987da1f26cd071cc0e">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/AMap_3DMap_V2.4.0-6ca0439c0564c5504546c80a62253da1c1a1a0f0.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/tools/android/sdk/android-sdk-macosx/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-608419956bf0883d465837bc5c3b3a63964b4d58.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Facebook-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="2ba586e55d03ba7a738212c0be4963c1e0a8ab66">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Facebook-2.6.4-d57aa2b5bd99ba3069492bf4448694ccc34b8cdd.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="100546a136041bcbeb9b90790b6361c932545676">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-2.6.4-e6ad696e62fffd277e39a939abe8aeb4cf4ba33a.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-Favorite-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="bd820f646c7b0315feb16ec95ae4686fa50ac74f">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-Favorite-2.6.4-6a61aa10764e909db445e7884c67d53fe1374ba6.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/libammsdk.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="47f4993168154fa73377d7470b9f6887d48a8023">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/libammsdk-aa9903e0ca45bd7fa956120556a53d65c1b82096.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-Core-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="a6e8417962070d895b3567c68f104f628462bc35">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-Core-2.6.4-e29688f77dc0b3085d64f4e50d4b51cdce18bb8d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/alipayutdid.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="4345fa0a5a7768f2f9c86aaab7db9e2906765193">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/alipayutdid-644b471d46003eaf9fcff61aa03f9fe83a589c49.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/android-async-http-1.4.5.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.5-9d84cee612c02786430ab4fffec4ff6f4d71fdb5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/PayPalAndroidSDK-2.8.7.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c0f164e9e5e7e4c4078abd9917489da491a2df7b">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/PayPalAndroidSDK-2.8.7-15bc9765612f89d5ec21bf9aca6e0774c192de21.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/SMSSDK/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="416cc70cee964ade87cd108fe4c40b4e914e8632">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/classes-54dc75218e925215376187fec7336a6b7b5346c1.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/pinyin4j-2.5.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ae353005f973da1cd8545b54354504c2503f6865">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/pinyin4j-2.5.0-6be738a6b668676aac8238a9a0476000b3759694.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/tools/android/sdk/android-sdk-macosx/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-608419956bf0883d465837bc5c3b3a63964b4d58.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Core-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="7bb32fc69b3520f10333fcc5cdd78a4495761a64">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Core-2.6.4-ad431d392263e72e9a94fc2488587d7328575b82.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-QQ-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e8d59be1960d4e1b1f9119cc77966e5f7c9fb7bd">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-QQ-2.6.4-c2f3e7a8fe56aff99b21c254073e73c417066252.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/zxing.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e88c14e6e7daa0fa65172a62b54ee6a16ff4162d">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/zxing-03e21a0e7d2523f96e4e5b779ee8d9b974509ec0.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-Favorite-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="bd820f646c7b0315feb16ec95ae4686fa50ac74f">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-Favorite-2.6.4-6a61aa10764e909db445e7884c67d53fe1374ba6.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Facebook-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="2ba586e55d03ba7a738212c0be4963c1e0a8ab66">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Facebook-2.6.4-d57aa2b5bd99ba3069492bf4448694ccc34b8cdd.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="100546a136041bcbeb9b90790b6361c932545676">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-2.6.4-e6ad696e62fffd277e39a939abe8aeb4cf4ba33a.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/Android_Location_V1.3.2.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="b64d1f38ef7ee28b538d61a39d040f249c65587c">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/Android_Location_V1.3.2-ad4921ec51f006e8923d9dee42385f643ab1c33d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/AMap_3DMap_V2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="37703c4a641f0f61d4567c987da1f26cd071cc0e">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/AMap_3DMap_V2.4.0-6ca0439c0564c5504546c80a62253da1c1a1a0f0.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/SMSSDK/unspecified/jars/libs/mframework.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="25509058b34a5ee08dbf66e57078e3083735d200">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/mframework-9b7686bca24764e947e79dec27578c8c2613ef97.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/libammsdk.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="47f4993168154fa73377d7470b9f6887d48a8023">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/libammsdk-aa9903e0ca45bd7fa956120556a53d65c1b82096.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/alipaysdk.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="b40481f01537a329936ce54ee2fe15ef2537f010">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/alipaysdk-4912d4db460cd638c79410f2b8a048b435975187.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/MobLogCollector.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="0488dc80a5addc72b2fcb515f792a130c164ab5f">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/MobLogCollector-132e38970120793a3d9abd1243eddc070ec5f72d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/socketio.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="eca5028ad55e28377b67718e1608c96e0eb509b5">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/socketio-b4f5e47ed65e8c91794c338368667ebbbbd2d172.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Twitter-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a775a859ea2688efad670dba4a90770ea740c8b4">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Twitter-2.6.4-369d00185b003393f3d05c6c68aa2dd22ec3bfbd.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/com.umeng.fb.5.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="993055275c65a58d47e98493d8028a74a0e1c06e">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/com.umeng.fb.5.4.0-2f35aac40f3f8666a93f61c169c7f0e4a7183745.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/android-async-http-1.4.5.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/android-async-http-1.4.5-9d84cee612c02786430ab4fffec4ff6f4d71fdb5.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/umeng-analytics-v5.6.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="b2705cbb19f52bb4d242458163a98d9e889c1292">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/umeng-analytics-v5.6.1-a6aa2b1bcd9ad91bd3b1694c5197fd3f17bbcfda.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-Core-2.6.4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a6e8417962070d895b3567c68f104f628462bc35">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-Core-2.6.4-e29688f77dc0b3085d64f4e50d4b51cdce18bb8d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/alipaysecsdk.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="7413c074c9edf523050267b93d0875151dc4b644">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/alipaysecsdk-6ea5a60361fe5ba24419000117173eff260ddd2d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/pinyin4j-2.5.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ae353005f973da1cd8545b54354504c2503f6865">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/pinyin4j-2.5.0-6be738a6b668676aac8238a9a0476000b3759694.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/ShareSDK-Wechat-Moments-2.6.4.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="dc2b46a70ccf00592d33c3afde812993d9db4ac9">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/ShareSDK-Wechat-Moments-2.6.4-f2743cafb7c912072167a2096b9aa5597ca03683.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/org.apache.http.legacy.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="fa331331b626ee78c52bea16ce1e34b39e666ce5">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/org.apache.http.legacy-0fe5f04ce6e86f3408ed0529268de396b5d9c61d.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/MobCommons.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="86052ea3c2fcfa2f2d25d71ae34ab20b8c2dca9a">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/MobCommons-1c54d173c4b54f81d7b699dc72bcee7b6ed6ea5f.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/SMSSDK/unspecified/jars/libs/SMSSDK-1.1.9.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="96383506ac3f109eea7f9f11e075347808aa37c3">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/SMSSDK-1.1.9-6550065382bb93ea27077c94f01315feea4b3790.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/exploded-aar/PhotoPass/SMSSDK/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5c2d09126a5ada2b5067459e3e6b8be3a29e9b6a">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/classes-54dc75218e925215376187fec7336a6b7b5346c1.jar" />
+    </item>
+    <item
+        jar="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/libs/nineoldandroids-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
+        <dex dex="/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/app/build/intermediates/pre-dexed/debug/nineoldandroids-2.4.0-8b42a1910b6eeb94679749dd37d520678d081668.jar" />
+    </item>
+
+</items>

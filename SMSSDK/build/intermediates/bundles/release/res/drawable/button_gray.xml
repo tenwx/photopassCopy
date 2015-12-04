@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <solid android:color="@color/gray2" />
+
+    <corners android:radius="20dp" />
+
+</shape><!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/SMSSDK/src/main/res/drawable/button_gray.xml -->
