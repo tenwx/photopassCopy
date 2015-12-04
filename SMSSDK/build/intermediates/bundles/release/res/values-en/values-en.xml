@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_arrays.xml -->
+    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_arrays.xml -->
     <eat-comment/>
     <string-array name="smssdk_country_group_a">
 		<item>Afghanistan,93,45,412</item>
@@ -268,7 +268,7 @@
 		<item>Zambia,260,90,645</item>
 		<item>Zimbabwe,263,93,648</item>
     </string-array>
-    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_strings.xml -->
+    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_strings.xml -->
     <eat-comment/>
     <string name="smssdk_add_contact">Add</string>
     <string name="smssdk_back">Back </string>
@@ -283,7 +283,7 @@
     <string name="smssdk_contacts_phones">Phone: </string>
     <string name="smssdk_country">Country</string>
     <string name="smssdk_country_not_support_currently">Country not support, please choose other</string>
-    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_errors.xml -->
+    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_errors.xml -->
     <eat-comment/>
     <string name="smssdk_error_desc_511">Invalid request</string>
     <string name="smssdk_error_desc_512">Forbidden</string>
@@ -318,7 +318,7 @@
     <string name="smssdk_error_detail_524">The client request verification code messages too frequently</string>
     <string name="smssdk_error_detail_525">Need signature verification</string>
     <string name="smssdk_error_detail_526">Insufficient balance</string>
-    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_strings.xml -->
+    <!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/SMSSDK/src/main/res/values-en/smssdk_strings.xml -->
     <eat-comment/>
     <string name="smssdk_explain_briefly">By signing up, you agree to our terms and conditions</string>
     <string name="smssdk_forget">Forgot password</string>

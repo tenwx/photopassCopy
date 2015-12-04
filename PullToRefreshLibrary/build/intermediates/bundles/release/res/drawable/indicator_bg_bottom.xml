@@ -15,4 +15,4 @@
         android:topLeftRadius="@dimen/indicator_corner_radius"
         android:topRightRadius="@dimen/indicator_corner_radius" />
 
-</shape><!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/PullToRefreshLibrary/src/main/res/drawable/indicator_bg_bottom.xml -->
+</shape><!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PullToRefreshLibrary/src/main/res/drawable/indicator_bg_bottom.xml -->

@@ -82,4 +82,4 @@
     	android:textSize="16sp"
     	android:textColor="#ffffff"
 	    android:background="@drawable/smssdk_btn_enable"/>
-</LinearLayout><!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/PhotoPass/SMSSDK/src/main/res/layout/smssdk_contact_detail_page.xml -->
+</LinearLayout><!-- From: file:/Users/milo/Desktop/git_source/PhotoPass/SMSSDK/src/main/res/layout/smssdk_contact_detail_page.xml -->
