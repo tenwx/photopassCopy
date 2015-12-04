@@ -1,4 +1,3 @@
-.gitignore
 /build
 /.idea
 # Built application files
@@ -31,7 +30,3 @@ local.properties
 *.ipr
 *.iws
 .idea/*
-
-/PullToRefreshLibrary/build/
-
-/SMSSDK/build/
