@@ -37,7 +37,6 @@ import com.pictureair.photopass.widget.wheelview.OnWheelScrollListener;
 import com.pictureair.photopass.widget.wheelview.WheelView;
 import com.pictureair.photopass.widget.wheelview.adapter.NumericWheelAdapter;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +44,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 其他注册实现规则 先调用注册的接口（ 返回成功后再调用修改个人信息的接口 ） 修改个人信息，API.updateProfile这个接口

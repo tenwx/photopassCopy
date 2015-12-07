@@ -31,11 +31,12 @@ import com.pictureair.photopass.widget.DashedLineView;
 import com.pictureair.photopass.widget.ListViewImageView;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.apache.http.Header;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 购物车页面的ExpandableListView的适配器

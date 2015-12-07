@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.core.CoordinateConvert;
 import com.amap.api.location.core.GeoPoint;
 import com.amap.api.maps.AMapUtils;
@@ -28,8 +30,6 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.widget.EditTextWithClear;
 
 import org.apache.http.conn.util.InetAddressUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -205,8 +205,7 @@ public class AppUtil {
 
 	/**
 	 * 获取图片的角度，确定是否需要旋转。
-	 * @param String filepath
-	 * @return degree   角度，0 代表不旋转
+	 * @param filepath filepath
 	 */
 	public static int getExifOrientation(String filepath) {
 		int degree = 0;
@@ -237,8 +236,8 @@ public class AppUtil {
 
 	/**
 	 * 移动角度
-	 * @param String filepath
-	 * @return degree   角度，0 代表不旋转
+	 * @param bitmap
+	 * @return angle   角度，0 代表不旋转
 	 */
 	public static Bitmap rotaingImageView(int angle , Bitmap bitmap) {  
 		//旋转图片 动作  
@@ -404,7 +403,6 @@ public class AppUtil {
 	/**
 	 * 根据之前的日期转换成更加人性化的日期
 	 * @param compareDate 需要转化的日期
-	 * @param todayDate 当前的日期
 	 * @param context
 	 * @return 返回页面需要暂时的结果
 	 * @throws ParseException
@@ -644,12 +642,12 @@ public class AppUtil {
 
 	/**
 	 * 将GPS设备采集的原始GPS坐标转换成高德坐标 
-	 * @param object json对象
+	 * @param obj json对象
 	 * @throws JSONException 
 	 * @throws NumberFormatException 
 	 * @return 转换后的经纬度
 	 */
-	public static LatLng converterFromGPS2AMAP(JSONObject obj) throws NumberFormatException, JSONException{
+	public static LatLng converterFromGPS2AMAP(JSONObject obj) throws NumberFormatException, JSONException {
 				double lat = Double.valueOf("31.1616667");//我的座位
 				double lng = Double.valueOf("121.7083333");
 //		double lat = Double.valueOf(obj.getString("GPSLatitude"));
@@ -667,7 +665,6 @@ public class AppUtil {
 	 * 获取应用的版本号
 	 * 
 	 * @param context
-	 * @param deviceInfo
 	 */
 	public static ArrayList<String> getDeviceInfos(Context context) {
 		ArrayList<String> deviceInfo = new ArrayList<String>();

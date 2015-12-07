@@ -517,5 +517,6 @@
     <string name="pwd_head_or_foot_space">密码首或尾不能为空格!</string>
     <string name="umeng_fb_questions_anwser">回答:</string>
     <string name="umeng_fb_questions_question">问题</string>
+    <string name="login_failed">登录失败</string>
 
 </resources>

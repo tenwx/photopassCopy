@@ -32,14 +32,14 @@ import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.apache.http.Header;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class EditActivityAdapter extends BaseAdapter {
 	private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
@@ -52,8 +52,8 @@ public class EditActivityAdapter extends BaseAdapter {
 	private boolean firstFileFailOrExist = false;
 	private boolean secondFileFailOrExist = false;
 	private static final int UPDATE_PROGRESS = 101;//更新进度条
-	private int firstFileProgress = 0;//文件下载的进度
-	private int secondFileProgress = 0;//文件下载进度
+	private long firstFileProgress = 0;//文件下载的进度
+	private long secondFileProgress = 0;//文件下载进度
 	private CustomDialog customDialog;
 	private MyToast myToast;
 	private PictureAirDbManager pictureAirDbManager;
@@ -382,7 +382,7 @@ public class EditActivityAdapter extends BaseAdapter {
 			}
 			
 			@Override
-			public void onProgress(int bytesWritten, int totalSize) {
+			public void onProgress(long bytesWritten, long totalSize) {
 				super.onProgress(bytesWritten, totalSize);
 				if (firstTime) {
 					firstFileProgress = bytesWritten * 50 / totalSize;
@@ -394,9 +394,9 @@ public class EditActivityAdapter extends BaseAdapter {
 				message.what = UPDATE_PROGRESS;
 				message.obj = holderView;
 				if (firstFileFailOrExist || secondFileFailOrExist) {//有文件存在，或者下载失败，需要在进度上加50
-					message.arg1 = 50 + bytesWritten * 50 / totalSize;
+					message.arg1 = (int)(50 + bytesWritten * 50 / totalSize);
 				}else {//都可以正常下载，下载进度取两者平均值
-					message.arg1 = firstFileProgress + secondFileProgress;
+					message.arg1 = (int)(firstFileProgress + secondFileProgress);
 				}
 				downloadHandler.sendMessage(message);
 				if (firstFileProgress + secondFileProgress == 100) {//下载完成的处理

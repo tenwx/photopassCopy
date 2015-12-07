@@ -36,12 +36,13 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import cz.msebera.android.httpclient.Header;
 
 /**显示用户所有的PP+或是对应某个PP而言可使用的PP+*/
 public class MyPPPActivity extends BaseActivity implements OnClickListener {

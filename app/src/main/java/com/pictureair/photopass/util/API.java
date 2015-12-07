@@ -1,24 +1,5 @@
 package com.pictureair.photopass.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -31,6 +12,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
+import com.loopj.android.http.HttpGet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.entity.BindPPInfo;
@@ -40,6 +22,25 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.ClientProtocolException;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.protocol.HTTP;
+import cz.msebera.android.httpclient.util.EntityUtils;
 
 /** 所有与后台的交互都封装到此类 */
 public class API {
@@ -228,7 +229,7 @@ public class API {
 //		System.out.println("login--->"+params.toString());
 		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
 				if (statusCode == 200) {
@@ -288,7 +289,7 @@ public class API {
 		params.put(Common.USERINFO_TOKENID, tokenId);
 		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
 				if (statusCode == 200) {
@@ -474,7 +475,7 @@ public class API {
 			}
 
 			@Override
-			public void onProgress(int bytesWritten, int totalSize) {
+			public void onProgress(long bytesWritten, long totalSize) {
 				// TODO Auto-generated method stub
 				super.onProgress(bytesWritten, totalSize);
 				//				msg.what = UPLOADING_PHOTO;
@@ -929,7 +930,7 @@ public class API {
 		params.put(Common.LANGUAGE_NAME, language);
 		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
 				Message msg = handler.obtainMessage();
@@ -967,7 +968,7 @@ public class API {
 		sb.append(targetURL);
 		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
 				System.out.println("banner----get detail success-----"+response);
@@ -990,7 +991,6 @@ public class API {
 
 	/**
 	 * 获取storeid
-	 * @param context
 	 * @param ipString ip地址
 	 * @param handler
 	 */
@@ -1002,7 +1002,7 @@ public class API {
 		params.put(Common.IP, ipString);
 		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
 				Message msg = handler.obtainMessage();
@@ -1040,7 +1040,7 @@ public class API {
 				super.onStart();
 			}
 			@Override
-			public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 				// TODO Auto-generated method stub
 				super.onSuccess(statusCode, headers, response);
 				System.err.println("get caount "+ response);
@@ -1076,7 +1076,6 @@ public class API {
 	 * @param addressId
 	 * @param payType  支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5自提 
 	 * @param storeAddress  商店地址
-	 * @param terminal  使用终端 web:'web', android:'android', ios:'ios', anonymous:'anonymous'
 	 * @param cartitemids  购物车id
 	 * @param deliveryType  快递方式   物流(0)、自提(1)、直送(2),虚拟类商品无须快递(3)
 	 */
@@ -1564,9 +1563,8 @@ public class API {
 	/**
 	 * 通过photoid将pp绑定到ppp，此方法只通过购买图片的时候调用
 	 * @param tokenid
-	 * @param pps
-	 * @param binddate
-	 * @param ppp
+	 * @param photoid
+	 * @param pppcode
 	 * @param handler
 	 */
 	public static void bindPPToPPByPhotoId(String tokenid, String photoid, String pppcode, final Handler handler) {
@@ -1897,8 +1895,6 @@ public class API {
 
 	/**
 	 * 删除订单信息
-	 * @param userid
-	 * @param orderid
 	 * @param handler
 	 */
 	public static void deleteOrder(String userId, String orderId, final OrderInfo groupInfo,
@@ -2013,7 +2009,6 @@ public class API {
 	 * 将pp绑定到ppp
 	 * @param tokenid
 	 * @param pps
-	 * @param binddate
 	 * @param ppp
 	 * @param handler
 	 */
@@ -2262,7 +2257,7 @@ public class API {
 		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode,
-					org.apache.http.Header[] headers, JSONObject response) {
+					Header[] headers, JSONObject response) {
 				super.onSuccess(statusCode, headers, response);
 				if (statusCode == 200) {
 					try {
@@ -2409,7 +2404,7 @@ public class API {
 			}
 
 			@Override
-			public void onProgress(int bytesWritten, int totalSize) {
+			public void onProgress(long bytesWritten, long totalSize) {
 				customProgressBarPop.setProgress(bytesWritten, totalSize);
 			}
 		});

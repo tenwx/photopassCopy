@@ -6,6 +6,9 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -14,10 +17,6 @@ import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,15 +28,15 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 /** 数据解析 */
-public class JsonUtil {
+public class JsonUtil1 {
 	/** 地点信息解析 */
-	public static DiscoverLocationItemInfo getLocation(JSONObject object) throws JSONException {
+	public static DiscoverLocationItemInfo getLocation(JSONObject object){
 		DiscoverLocationItemInfo info = new DiscoverLocationItemInfo();
 		info.locationId = object.getString("locationId");
 		info.locationIds = object.getJSONArray("shootSpots").toString();
 		info.place = object.getString("location");
 		info.placeUrl = (Common.PHOTO_URL + object.getString("defaultPhoto")).trim();
-		if (object.has("GPS")) {
+		if (object.containsKey("GPS")) {
 			JSONObject obj = (JSONObject) object.get("GPS");
 //			System.out.println("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
@@ -46,7 +45,7 @@ public class JsonUtil {
 			info.longitude = latLng.longitude;
 //			System.out.println("转换之后的坐标"+latLng.toString());
 		}
-		if (object.has("description")) {
+		if (object.containsKey("description")) {
 			info.placeDetailIntroduce = object.getString("description");
 		}
 		info.popularity = "popularity";
@@ -56,53 +55,53 @@ public class JsonUtil {
 	}
 
 	/** 照片信息解析 ，并且把数据插入到数据库中作为缓存数据*/
-	public static PhotoInfo getPhoto(SQLiteDatabase db,JSONObject object) throws JSONException {
+	public static PhotoInfo getPhoto(SQLiteDatabase db,JSONObject object){
 		PhotoInfo info = new PhotoInfo();
 		info.onLine = 1;
 		//获取图片的ID
-		if (object.has("_id"))
+		if (object.containsKey("_id"))
 			info.photoId = object.getString("_id");
 		
 		//获取图片的购买状态
-		if (object.has("isPaid")&&"true".equals(object.getString("isPaid"))) {
+		if (object.containsKey("isPaid")&&"true".equals(object.getString("isPaid"))) {
 			info.isPayed = 1;
 		}else {
 			info.isPayed = 0;
 		}
 		//获取图片的location信息
-		if (object.has("locationId"))
+		if (object.containsKey("locationId"))
 			info.locationId = object.getString("locationId");
 		//获取图片的原始路径信息
-		if (object.has("originalInfo")) {
+		if (object.containsKey("originalInfo")) {
 			JSONObject obj = (JSONObject) object.get("originalInfo");
-			if (obj.has("url")) {
+			if (obj.containsKey("url")) {
 				StringBuffer sb = new StringBuffer();
 				sb.append(Common.PHOTO_URL).append(obj.getString("url"));
 				info.photoPathOrURL = sb.toString().trim();
 			}
 		}
 		//获取图片的缩略图路径
-		if (object.has("thumbnail")) {
+		if (object.containsKey("thumbnail")) {
 			JSONObject obj = (JSONObject) object.get("thumbnail");
-			if (obj.has("x128")) {
+			if (obj.containsKey("x128")) {
 				JSONObject x216 = (JSONObject) obj.get("x128");
-				if (x216.has("url")) {
+				if (x216.containsKey("url")) {
 					StringBuffer sb = new StringBuffer();
 					sb.append(Common.PHOTO_URL).append(x216.getString("url"));
 					info.photoThumbnail = sb.toString().trim();
 				}
 			}
-			if (obj.has("x512")) {
+			if (obj.containsKey("x512")) {
 				JSONObject x512 = (JSONObject) obj.get("x512");
-				if (x512.has("url")) {
+				if (x512.containsKey("url")) {
 					StringBuffer sb = new StringBuffer();
 					sb.append(x512.getString("url"));
 					info.photoThumbnail_512 = sb.toString().trim();
 				}
 			}
-			if (obj.has("x1024")) {
+			if (obj.containsKey("x1024")) {
 				JSONObject x1024 = (JSONObject) obj.get("x1024");
-				if (x1024.has("url")) {
+				if (x1024.containsKey("url")) {
 					StringBuffer sb = new StringBuffer();
 					sb.append(Common.PHOTO_URL).append(x1024.getString("url"));
 					info.photoThumbnail_1024 = sb.toString().trim();
@@ -111,23 +110,23 @@ public class JsonUtil {
 		}
 		//获取图片对应的pp码
 		String ppCode = "";
-		if (object.has("customerIds")){
+		if (object.containsKey("customerIds")){
 			JSONArray customerIdsArray = object.getJSONArray("customerIds");
 			JSONObject customerId;
-			for (int i = 0; i < customerIdsArray.length(); i++) {
+			for (int i = 0; i < customerIdsArray.size(); i++) {
 				customerId = customerIdsArray.getJSONObject(i);
-				if (customerId.has("code")) {
+				if (customerId.containsKey("code")) {
 					ppCode += customerId.getString("code") + ",";
 				}
 			}
 			info.photoPassCode = ppCode;
 		}
 		//获取图片的拍摄日期
-		if (object.has("shootDate")){
+		if (object.containsKey("shootDate")){
 			String time = object.getString("shootDate");
 			info.shootTime = time;
 		}
-		if (object.has("strShootOn")) {
+		if (object.containsKey("strShootOn")) {
 			info.shootOn = object.getString("strShootOn");
 		}
 		info.isChecked = 0;
@@ -143,7 +142,7 @@ public class JsonUtil {
 	}
 
 	/** 用户信息解析 */
-	public static void getUserInfo(final Context context, JSONObject object , Handler handler) throws JSONException {
+	public static void getUserInfo(final Context context, JSONObject object , Handler handler){
 		SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 		Editor e = sp.edit();
 		System.out.println("jsonObject======="+object.toString());
@@ -152,31 +151,31 @@ public class JsonUtil {
 		System.out.println("jsonutil======="+object.getString(Common.USERINFO_TOKENID));
 		JSONObject obj = object.getJSONObject("user");
 		System.out.println(obj.toString());
-		if (obj.has(Common.USERINFO_ID)) {
+		if (obj.containsKey(Common.USERINFO_ID)) {
 			
 			e.putString(Common.USERINFO_ID, obj.getString(Common.USERINFO_ID));
 		}
-		if (obj.has(Common.USERINFO_NICKNAME)) {
+		if (obj.containsKey(Common.USERINFO_NICKNAME)) {
 			
 			e.putString(Common.USERINFO_NICKNAME, obj.getString(Common.USERINFO_NICKNAME));
 		}
 		
-		if (obj.has(Common.USERINFO_QQ)) {
+		if (obj.containsKey(Common.USERINFO_QQ)) {
 			e.putString(Common.USERINFO_QQ, obj.getString(Common.USERINFO_QQ));
 		}
 		
-		if (obj.has(Common.USERINFO_COUNTRY)) {
+		if (obj.containsKey(Common.USERINFO_COUNTRY)) {
 			e.putString(Common.USERINFO_COUNTRY,
 					obj.getString(Common.USERINFO_COUNTRY));
 		}
 		
 		//如果 用户存在ppCode，存入 USERINFO_USER_PP 字段。
-		if(obj.has(Common.USERINFO_USER_PP)){
+		if(obj.containsKey(Common.USERINFO_USER_PP)){
 			// 存入 USERINFO_USER_PP 字段。
 			e.putString(Common.USERINFO_USER_PP, obj.getString(Common.USERINFO_USER_PP));
 		}
 
-		if (obj.has(Common.USERINFO_GENDER)) {
+		if (obj.containsKey(Common.USERINFO_GENDER)) {
 			
 			if ("1".equals(obj.getString(Common.USERINFO_GENDER)) || "male".equals(obj.getString(Common.USERINFO_GENDER))) {
 				e.putString(Common.USERINFO_GENDER, "male");
@@ -186,13 +185,13 @@ public class JsonUtil {
 				e.putString(Common.USERINFO_GENDER, "male");
 			}
 		}
-		if (obj.has(Common.USERINFO_BIRTHDAY)) {
+		if (obj.containsKey(Common.USERINFO_BIRTHDAY)) {
 			
 			e.putString(Common.USERINFO_BIRTHDAY, obj.getString(Common.USERINFO_BIRTHDAY).split("T")[0]);
 		}
 		
 		String headUrl = null;
-		if(obj.has(Common.USERINFO_HEADPHOTO)){
+		if(obj.containsKey(Common.USERINFO_HEADPHOTO)){
 			System.out.println("");
 			headUrl = obj.getString(Common.USERINFO_HEADPHOTO);
 			e.putString(Common.USERINFO_HEADPHOTO, headUrl);
@@ -234,7 +233,7 @@ public class JsonUtil {
 				}});
 		}
 		String bgUrl = null;
-		if(obj.has(Common.USERINFO_BGPHOTO)){
+		if(obj.containsKey(Common.USERINFO_BGPHOTO)){
 			bgUrl = obj.getString(Common.USERINFO_BGPHOTO);
 			e.putString(Common.USERINFO_BGPHOTO,bgUrl);
 		}
@@ -294,7 +293,7 @@ public class JsonUtil {
 			JSONArray embedphotos = new JSONArray();//放入图片的json数组
 			List<CartPhotosInfo> photoslist;
 			if (cartitem.cart_photoUrls != null && !"".equals(cartitem.cart_photoUrls)) {
-				System.out.println("has photopath product");
+				System.out.println("containsKey photopath product");
 				photoslist = cartitem.cart_photoUrls;//获取每一个item中的图片数组
 			}else {
 				photoslist = new ArrayList<CartPhotosInfo>();
@@ -323,7 +322,7 @@ public class JsonUtil {
 //				embedphoto.put("svg", "");
 //				embedphotos.put(embedphoto);
 			}else {
-				System.out.println("----------------> has count");
+				System.out.println("----------------> containsKey count");
 				for (int i = 0; i < photoslist.size(); i++) {
 					JSONObject embedphoto = new JSONObject();
 					JSONArray photoids = new JSONArray();//放入图片的图片id数组
@@ -331,18 +330,18 @@ public class JsonUtil {
 						JSONObject photoid = new JSONObject();
 						photoid.put("photoId", photoArrayList.get(j).photoId);
 						photoid.put("photoUrl", photoArrayList.get(j).photoPathOrURL);
-						photoids.put(photoid);
+						photoids.add(photoid);
 					}
 					embedphoto.put("photosIds", photoids);
 					embedphoto.put("svg", "svg info");
-					embedphotos.put(embedphoto);
+					embedphotos.add(embedphoto);
 				}
 			}
 			JSONObject productJsonObject = new JSONObject();
 			productJsonObject.put("storeId", cartitem.cart_storeId);
 			productJsonObject.put("productId", cartitem.cart_productId);
 			productJsonObject.put("embedPhotos", embedphotos);
-			productsJsonArray.put(productJsonObject);
+			productsJsonArray.add(productJsonObject);
 			//			}
 			itemJsonObject.put("_id", cartitem.cart_id);
 			itemJsonObject.put("qty", count);
@@ -402,7 +401,7 @@ public class JsonUtil {
 		CartItemInfo cartInfo = new CartItemInfo();
 		int quantity;
 		try {
-			quantity = itemObject.getInt("qty");
+			quantity = itemObject.getInteger("qty");
 			cartInfo.cart_quantity = quantity;
 			cartInfo.cart_promotionPrice = itemObject.getDouble("price");
 			cartInfo.cart_id = itemObject.getString("_id");
@@ -419,13 +418,13 @@ public class JsonUtil {
 				cartInfo.cart_productType = 1;
 			}
 			cartInfo.cart_productId = productJsonObject.getString("productId");
-			if (productJsonObject.has("productDescription")) {
+			if (productJsonObject.containsKey("productDescription")) {
 				cartInfo.cart_productIntroduce = productJsonObject.getString("productDescription");
 			}else {
 				cartInfo.cart_productIntroduce = "Made by PictureAir";
 			}
 			cartInfo.cart_productImageUrl = productJsonObject.getString("productImage");
-//			cartInfo.cart_embedPhotoCount = productJsonObject.getInt("embedPhotosCount");
+//			cartInfo.cart_embedPhotoCount = productJsonObject.getInteger("embedPhotosCount");
 			cartInfo.cart_embedPhotoCount = 2;//暂时写死，应该是1，但是后面空的购物车也会加个空白的项，所以为2
 			JSONArray embedphotoArray = productJsonObject.getJSONArray("embedPhotos");
 			ArrayList<CartPhotosInfo> gridviewphotolist = new ArrayList<CartPhotosInfo>();
@@ -433,14 +432,14 @@ public class JsonUtil {
 			/****临时添加*****/
 //			if (cartInfo.cart_productType == 2) {//如果是pp商品
 //				
-//				if (0 == embedphotoArray.length()) {//应该没有添加图片的商品
+//				if (0 == embedphotoArray.size()) {//应该没有添加图片的商品
 //					
 //				}else {//数码商品
 //					cartInfo.cart_productType = 1;
 //				}
 //			}
 			/****临时添加*****/
-			if (0==embedphotoArray.length()) {
+			if (0==embedphotoArray.size()) {
 				System.out.println("0000000000000");
 				final int count = quantity;
 				cartPhotosInfo = new CartPhotosInfo();
@@ -453,7 +452,7 @@ public class JsonUtil {
 				System.out.println("---------buwei000000000");
 				JSONObject embedphotoObject = embedphotoArray.getJSONObject(0);//一般一个svg文件只有一个孔去添加图片
 				JSONArray photosidJsonArray = embedphotoObject.getJSONArray("photosIds");
-				for (int j = 0; j < photosidJsonArray.length(); j++) {
+				for (int j = 0; j < photosidJsonArray.size(); j++) {
 					JSONObject photoidJsonObject = photosidJsonArray.getJSONObject(j);
 					final int count = quantity;
 					cartPhotosInfo = new CartPhotosInfo();
@@ -497,64 +496,64 @@ public class JsonUtil {
 		OrderInfo orderInfo = new OrderInfo();
 		try {
 			orderInfo.orderId = orderJsonObject.getString("_id");//订单ID
-			orderInfo.orderStatus = orderJsonObject.getInt("status");//订单状态
+			orderInfo.orderStatus = orderJsonObject.getInteger("status");//订单状态
 			
 			JSONObject resumeJsonObject = orderJsonObject.getJSONObject("resume");
 			orderInfo.orderTime = resumeJsonObject.getString("time");//订单时间
-			orderInfo.orderPayMentMethod = resumeJsonObject.getInt("payType");//支付类型
+			orderInfo.orderPayMentMethod = resumeJsonObject.getInteger("payType");//支付类型
 			orderInfo.orderNumber = resumeJsonObject.getString("code");//订单号
 			
 			JSONObject deliveryJsonObject = orderJsonObject.getJSONObject("deliveryInfo");
-			if (deliveryJsonObject.has("deliveryType")) {//快递方式
-				orderInfo.deliveryMethod = deliveryJsonObject.getInt("deliveryType");
+			if (deliveryJsonObject.containsKey("deliveryType")) {//快递方式
+				orderInfo.deliveryMethod = deliveryJsonObject.getInteger("deliveryType");
 			}
 			
 			JSONObject logisticJsonObject = deliveryJsonObject.getJSONObject("logisticsInfo");
-			if (logisticJsonObject.has("company")) {//快递公司
+			if (logisticJsonObject.containsKey("company")) {//快递公司
 				orderInfo.deliveryCompany = logisticJsonObject.getString("company");
 			}else {
 				orderInfo.deliveryCompany = "";
 			}
-			if (logisticJsonObject.has("code")) {//快递单号
+			if (logisticJsonObject.containsKey("code")) {//快递单号
 				orderInfo.deliveryNumber = logisticJsonObject.getString("code");
 			}else {
 				orderInfo.deliveryNumber = "";
 			}
 			
 			JSONObject deliveryAddressJsonObject = deliveryJsonObject.getJSONObject("deliveryAddress");
-			if (deliveryAddressJsonObject.has("consignee")) {//收货人
+			if (deliveryAddressJsonObject.containsKey("consignee")) {//收货人
 				orderInfo.deliveryCustomer = deliveryAddressJsonObject.getString("consignee");
 			}else {
 				orderInfo.deliveryCustomer = "";
 			}
-			if (deliveryAddressJsonObject.has("mobileNum")) {//手机
+			if (deliveryAddressJsonObject.containsKey("mobileNum")) {//手机
 				orderInfo.deliveryPhoneNumber = deliveryAddressJsonObject.getString("mobileNum");
 			}else {
 				orderInfo.deliveryPhoneNumber = "";
 			}
-			if (deliveryAddressJsonObject.has("telephone")) {//固电
+			if (deliveryAddressJsonObject.containsKey("telephone")) {//固电
 				orderInfo.deliveryHomeNumber = deliveryAddressJsonObject.getString("telephone");
 			}else {
 				orderInfo.deliveryHomeNumber = "";
 			}
-			if (deliveryAddressJsonObject.has("zip")) {//邮编
+			if (deliveryAddressJsonObject.containsKey("zip")) {//邮编
 				orderInfo.deliveryPostNumber = deliveryAddressJsonObject.getString("zip");
 			}else {
 				orderInfo.deliveryPostNumber = "";
 			}
-			if (deliveryAddressJsonObject.has("area")) {//国家
+			if (deliveryAddressJsonObject.containsKey("area")) {//国家
 				orderInfo.deliveryAddress = deliveryAddressJsonObject.getString("area") + ",";
 			}
-			if (deliveryAddressJsonObject.has("provinces")) {//省
+			if (deliveryAddressJsonObject.containsKey("provinces")) {//省
 				orderInfo.deliveryAddress += deliveryAddressJsonObject.getString("provinces") + ",";
 			}
-			if (deliveryAddressJsonObject.has("city")) {//市
+			if (deliveryAddressJsonObject.containsKey("city")) {//市
 				orderInfo.deliveryAddress += deliveryAddressJsonObject.getString("city") + ",";
 			}
-			if (deliveryAddressJsonObject.has("county")) {//区
+			if (deliveryAddressJsonObject.containsKey("county")) {//区
 				orderInfo.deliveryAddress += deliveryAddressJsonObject.getString("county") + ",";
 			}
-			if (deliveryAddressJsonObject.has("detailedAddress")) {//街道
+			if (deliveryAddressJsonObject.containsKey("detailedAddress")) {//街道
 				orderInfo.deliveryAddress += deliveryAddressJsonObject.getString("detailedAddress");
 			}
 			if (orderInfo.deliveryAddress == null) {
@@ -589,20 +588,20 @@ public class JsonUtil {
 			CartPhotosInfo cartPhotosInfo = null;
 			JSONArray usePhotosArray;
 			JSONObject usePhotoObject;
-			for (int i = 0; i < productsArray.length(); i++) {
+			for (int i = 0; i < productsArray.size(); i++) {
 				cartItemInfo = new CartItemInfo();
 				JSONObject productJsonObject = productsArray.getJSONObject(i);
 				cartItemInfo.cart_productName = productJsonObject.getString("productName");//商品名字
 				cartItemInfo.cart_productImageUrl = productJsonObject.getString("productImage");//商品预览图URL
-				cartItemInfo.cart_quantity = productJsonObject.getInt("qty");//商品数量
+				cartItemInfo.cart_quantity = productJsonObject.getInteger("qty");//商品数量
 				cartItemInfo.cart_promotionPrice = productJsonObject.getDouble("unitPrice");//商品单价
 				//获取添加照片的信息
 				usePhotosArray = productJsonObject.getJSONArray("usePhotos");
-				if (usePhotosArray.length() == 0) {//如果为0，不赋值
+				if (usePhotosArray.size() == 0) {//如果为0，不赋值
 					
 				}else {
 					ArrayList<CartPhotosInfo> photourlsArrayList = new ArrayList<CartPhotosInfo>();
-					for (int j = 0; j < usePhotosArray.length(); j++) {
+					for (int j = 0; j < usePhotosArray.size(); j++) {
 						usePhotoObject = usePhotosArray.getJSONObject(j);
 						cartPhotosInfo = new CartPhotosInfo();
 						cartPhotosInfo.cart_photoUrl = usePhotoObject.getString("photoUrl");//商品添加图片的URL
@@ -630,54 +629,54 @@ public class JsonUtil {
 			frameInfo.onLine = 1;
 			frameInfo.isDownload = 0;
 //			frameInfo.needShow = 0;
-			if (frameJsonObject.has("assetName")) {
+			if (frameJsonObject.containsKey("assetName")) {
 				frameInfo.frameName = frameJsonObject.getString("assetName");
 			}
-			if (frameJsonObject.has("imgUrl_H")) {
+			if (frameJsonObject.containsKey("imgUrl_H")) {
 				frameInfo.frameOriginalPathLandscape = frameJsonObject.getString("imgUrl_H");
 			}
-			if (frameJsonObject.has("imgUrl_V")) {
+			if (frameJsonObject.containsKey("imgUrl_V")) {
 				frameInfo.frameOriginalPathPortrait = frameJsonObject.getString("imgUrl_V");
 			}
-			if (frameJsonObject.has("locationId")) {//特定场馆
+			if (frameJsonObject.containsKey("locationId")) {//特定场馆
 				frameInfo.locationId = frameJsonObject.getString("locationId");
 			}else {
 				frameInfo.locationId = "common";//通用边框
 			}
-			if (frameJsonObject.has("active_H")) {
+			if (frameJsonObject.containsKey("active_H")) {
 				frameInfo.isActive = frameJsonObject.getBoolean("active_H") ? 1 : 0;
 			}
-			if (frameJsonObject.has("thumbnail_H")) {
+			if (frameJsonObject.containsKey("thumbnail_H")) {
 				JSONObject thumbnailJsonObject = frameJsonObject.getJSONObject("thumbnail_H");
-				if (thumbnailJsonObject.has("x400")) {
+				if (thumbnailJsonObject.containsKey("x400")) {
 					JSONObject x400JsonObject = thumbnailJsonObject.getJSONObject("x400");
-					if (x400JsonObject.has("url")) {
+					if (x400JsonObject.containsKey("url")) {
 						frameInfo.frameThumbnailPathLandscape400 = x400JsonObject.getString("url");
 					}
 				}
 			}
-			if (frameJsonObject.has("thumbnail_V")) {
+			if (frameJsonObject.containsKey("thumbnail_V")) {
 				JSONObject thumbNailPortraritJsonObject = frameJsonObject.getJSONObject("thumbnail_V");
-				if (thumbNailPortraritJsonObject.has("x300")) {
+				if (thumbNailPortraritJsonObject.containsKey("x300")) {
 					JSONObject x400JsonObject = thumbNailPortraritJsonObject.getJSONObject("x300");
-					if (x400JsonObject.has("url")) {
+					if (x400JsonObject.containsKey("url")) {
 						frameInfo.frameThumbnailPathPortrait400 = x400JsonObject.getString("url");
 					}
 				}
-				if (thumbNailPortraritJsonObject.has("x120")) {
+				if (thumbNailPortraritJsonObject.containsKey("x120")) {
 					JSONObject x160JsonObject = thumbNailPortraritJsonObject.getJSONObject("x120");
-					if (x160JsonObject.has("url")) {
+					if (x160JsonObject.containsKey("url")) {
 						frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
 					}
 				}
 			}
-			if (frameJsonObject.has("fileSize_V")) {
-				frameInfo.fileSize = frameJsonObject.getInt("fileSize_V");
+			if (frameJsonObject.containsKey("fileSize_V")) {
+				frameInfo.fileSize = frameJsonObject.getInteger("fileSize_V");
 			}else {
 				frameInfo.fileSize = 0;
 			}
-			if (frameJsonObject.has("fileSize_H")) {
-				frameInfo.fileSize += frameJsonObject.getInt("fileSize_H");
+			if (frameJsonObject.containsKey("fileSize_H")) {
+				frameInfo.fileSize += frameJsonObject.getInteger("fileSize_H");
 			}
 			
 		} catch (Exception e) {
@@ -696,31 +695,31 @@ public class JsonUtil {
 		try {
 			frameInfo.onLine = 1;
 			frameInfo.isDownload = 0;
-			if (stickerJsonObject.has("assetName")) {
+			if (stickerJsonObject.containsKey("assetName")) {
 				frameInfo.frameName = stickerJsonObject.getString("assetName");
 			}
-			if (stickerJsonObject.has("imgUrl")) {
+			if (stickerJsonObject.containsKey("imgUrl")) {
 				frameInfo.frameOriginalPathPortrait = stickerJsonObject.getString("imgUrl");
 			}
-			if (stickerJsonObject.has("locationId")) {//特定场馆
+			if (stickerJsonObject.containsKey("locationId")) {//特定场馆
 				frameInfo.locationId = stickerJsonObject.getString("locationId");
 			}else {
 				frameInfo.locationId = "common";//通用边框
 			}
-			if (stickerJsonObject.has("active")) {
+			if (stickerJsonObject.containsKey("active")) {
 				frameInfo.isActive = stickerJsonObject.getBoolean("active") ? 1 : 0;
 			}
-			if (stickerJsonObject.has("thumbnail")) {
+			if (stickerJsonObject.containsKey("thumbnail")) {
 				JSONObject thumbnailJsonObject = stickerJsonObject.getJSONObject("thumbnail");
-				if (thumbnailJsonObject.has("x160")) {
+				if (thumbnailJsonObject.containsKey("x160")) {
 					JSONObject x160JsonObject = thumbnailJsonObject.getJSONObject("x160");
-					if (x160JsonObject.has("url")) {
+					if (x160JsonObject.containsKey("url")) {
 						frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
 					}
 				}
 			}
-			if (stickerJsonObject.has("fileSize")) {
-				frameInfo.fileSize = stickerJsonObject.getInt("fileSize");
+			if (stickerJsonObject.containsKey("fileSize")) {
+				frameInfo.fileSize = stickerJsonObject.getInteger("fileSize");
 			}
 			
 		} catch (Exception e) {

@@ -29,12 +29,13 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 手动输入条码的页面

@@ -14,10 +14,11 @@ import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 接受loginActicity中传来的手机号和密码

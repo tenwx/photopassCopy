@@ -33,7 +33,6 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.XListViewHeader;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +42,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 购物车页面
@@ -258,7 +259,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					}
 					
 					@Override
-					public void onProgress(int bytesWritten, int totalSize) {
+					public void onProgress(long bytesWritten, long totalSize) {
 						super.onProgress(bytesWritten, totalSize);
 						dialog.setProgress(bytesWritten, totalSize);
 					};

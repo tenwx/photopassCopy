@@ -30,7 +30,6 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.XListViewHeader;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +38,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener{
 	private TextView submitButton;
@@ -166,7 +167,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 					}
 
 					@Override
-					public void onProgress(int bytesWritten, int totalSize) {
+					public void onProgress(long bytesWritten, long totalSize) {
 						super.onProgress(bytesWritten, totalSize);
 						customProgressBarPop.setProgress(bytesWritten, totalSize);
 					};

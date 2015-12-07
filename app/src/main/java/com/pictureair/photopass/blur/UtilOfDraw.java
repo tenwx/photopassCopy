@@ -1,9 +1,5 @@
 package com.pictureair.photopass.blur;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -16,13 +12,17 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 public class UtilOfDraw {
 	/** 模糊 */
 	public static Bitmap blur(Bitmap bkg) {
 		// 缩放尺寸
 		float scaleFactor = 6.0f;
 		// 模糊度，数字越小，高斯效果越小，越清晰
-		float radius = 1;
+		float radius = 3;
 		Bitmap overlay = Bitmap.createBitmap((int) (bkg.getWidth() / scaleFactor), (int) (bkg.getHeight() / scaleFactor), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(overlay);
 		canvas.scale(1.0f / scaleFactor, 1.0f / scaleFactor);

@@ -40,8 +40,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 
-import org.apache.http.Header;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +47,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class UrlTouchImageView extends RelativeLayout {
@@ -269,8 +269,8 @@ public class UrlTouchImageView extends RelativeLayout {
 			}
 
 			@Override
-			public void onProgress(int bytesWritten, int totalSize) {
-				// TODO Auto-generated method stub
+			public void onProgress(long bytesWritten, long totalSize) {
+				super.onProgress(bytesWritten, totalSize);
 				super.onProgress(bytesWritten, totalSize);
 				progressImageView.setImageResource(getImageResource(bytesWritten * 100 / totalSize));
 			}
@@ -370,7 +370,7 @@ public class UrlTouchImageView extends RelativeLayout {
 	 * @param currentProgress
 	 * @return
 	 */
-	private int getImageResource(int currentProgress){
+	private int getImageResource(long currentProgress){
 		int result = R.drawable.loading_0;
 		if (currentProgress >=0 && currentProgress <= 8) {
 			result = R.drawable.loading_0;

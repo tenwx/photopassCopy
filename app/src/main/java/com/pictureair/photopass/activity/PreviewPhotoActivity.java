@@ -44,12 +44,12 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +64,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -246,7 +248,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                     if (flag == true) {
                         if (out == true) {
-                            //						System.out.println(x1+"_"+y1+"_"+sizeW+"+"+sizeH+bitmap1.getWidth()+"__"+bitmap1.getHeight()+"+"+bitmap2.getWidth()+"__"+bitmap2.getHeight());
+                            //						PictureAirLog.v(TAG,x1+"_"+y1+"_"+sizeW+"+"+sizeH+bitmap1.getWidth()+"__"+bitmap1.getHeight()+"+"+bitmap2.getWidth()+"__"+bitmap2.getHeight());
 
                             bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, sizeW, sizeH);
                             bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, sizeW, sizeH);
@@ -273,28 +275,28 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     out = false;
                     break;
                 case 2:
-                    System.out.println("------->2");
+                    PictureAirLog.v(TAG,"------->2");
                     //				if (image02 != null) {
-                    //					System.out.println("image2 not null and set null");
+                    //					PictureAirLog.v(TAG,"image2 not null and set null");
                     //					image02.setImageBitmap(null);
                     //				}
                     if (image02.isShown()) {
-                        System.out.println("image2 is shown");
+                        PictureAirLog.v(TAG,"image2 is shown");
                         image02.setVisibility(View.GONE);
                     } else {
-                        System.out.println("image2 is not shown");
+                        PictureAirLog.v(TAG,"image2 is not shown");
                     }
 
                     if (null != bitmap3) {
                         bitmap3.recycle();
                         bitmap3 = null;
-                        System.out.println("bitmap3 recycle-------->");
+                        PictureAirLog.v(TAG,"bitmap3 recycle-------->");
                     }
                     break;
                 case 3:
                     x1 = msg.arg1 - sizeW / 2;
                     y1 = msg.arg2 - sizeH / 2;
-                    System.out.println("current xy = " + x1 + "+" + y1);
+                    PictureAirLog.v(TAG,"current xy = " + x1 + "+" + y1);
                     if (x1 < 0) {
                         x1 = 0;
                     }
@@ -307,7 +309,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     if (y1 > bitmap1.getHeight() - sizeH) {
                         y1 = bitmap1.getHeight() - sizeH;
                     }
-                    System.out.println("after currnet xy = " + x1 + "_" + y1);
+                    PictureAirLog.v(TAG,"after currnet xy = " + x1 + "_" + y1);
                     if (flag == false) {
                         bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, sizeW, sizeH);
                         bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, sizeW, sizeH);
@@ -329,7 +331,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     break;
                 case API.ADD_TO_CART_SUCCESS:
                     JSONObject addcart = (JSONObject) msg.obj;
-                    System.out.println(addcart);
+                    PictureAirLog.v(TAG,addcart.toString());
                     String itemidString = "";
                     try {
                         itemidString = addcart.getString("cartItemId");
@@ -390,7 +392,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     //初始化底部索引按钮
                     updateIndexTools(true);
 
-                    System.out.println("----------------------->initing...3");
+                    PictureAirLog.v(TAG,"----------------------->initing...3");
                     r = (int) (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
 
                     mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -398,10 +400,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         @Override
                         public void onPageSelected(int arg0) {
                             //初始化每张图片的love图标
-                            System.out.println("----------------------->initing...4");
-                            //				System.out.println("viewPager pageSelected--------->"+ arg0 + "____" + mViewPager.getCurrentItem()+"____"+currentPosition);
+                            PictureAirLog.v(TAG,"----------------------->initing...4");
+                            //				PictureAirLog.v(TAG,"viewPager pageSelected--------->"+ arg0 + "____" + mViewPager.getCurrentItem()+"____"+currentPosition);
                             currentPosition = arg0;
-                            //				System.out.println("viewPager pageSelected--------->"+ arg0 + "____" + mViewPager.getCurrentItem()+"____"+currentPosition);
+                            //				PictureAirLog.v(TAG,"viewPager pageSelected--------->"+ arg0 + "____" + mViewPager.getCurrentItem()+"____"+currentPosition);
 
                             //				if (fasdflag) {
                             //					updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
@@ -416,16 +418,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         @Override
                         public void onPageScrollStateChanged(int arg0) {
                             // TODO Auto-generated method stub
-                            //				System.out.println("--------onPageScrollStateChanged-------"+arg0);
-                            System.out.println("----------------------->initing...5");
+                            //				PictureAirLog.v(TAG,"--------onPageScrollStateChanged-------"+arg0);
+                            PictureAirLog.v(TAG,"----------------------->initing...5");
                             if (arg0 == 0) {//结束滑动
-                                //					System.out.println("--------scroll end-------");
+                                //					PictureAirLog.v(TAG,"--------scroll end-------");
                                 updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
                             }
                         }
                     });
 
-                    System.out.println("----------------------->initing...6");
+                    PictureAirLog.v(TAG,"----------------------->initing...6");
 
                     break;
                 default:
@@ -444,12 +446,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
+                    //添加模糊
                     if (null != bitmap2) {
-                        System.out.println("bitmap 2 not null");
+                        PictureAirLog.v(TAG,"bitmap 2 not null");
                         progressDialog.dismiss();
                         initBlur();
                     } else {
-                        System.out.println("bitmap2 null-->");
+                        PictureAirLog.v(TAG,"bitmap2 null-->");
                         progressDialog.dismiss();
                         loadFailed = true;
                         newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
@@ -495,13 +498,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
         AppManager.getInstance().addActivity(this);
-        init();
-        judge();
+        init();//初始化UI
+        judge();//判断 照片是否购买，并弹出相应的tips
     }
 
     private void init() {
         // TODO Auto-generated method stub
-        System.out.println("----------------------->start init");
         newToast = new MyToast(this);
         sharePop = new SharePop(this);
         pictureAirDbManager = new PictureAirDbManager(this);
@@ -555,18 +557,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         lastPhotoImageView.setOnClickListener(this);
         nextPhotoImageView.setOnClickListener(this);
-        System.out.println("----------------------->initing...1");
-        System.out.println("photoid ===== " + getIntent().getStringExtra("photoId"));
+        PictureAirLog.v(TAG,"----------------------->initing...1");
+        PictureAirLog.v(TAG,"photoid ===== " + getIntent().getStringExtra("photoId"));
 
         //获取intent传递过来的信息
         photolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photos");//获取图片路径list
         targetphotolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("targetphotos");
         currentPosition = Integer.valueOf(getIntent().getStringExtra("position"));
-        System.out.println("photo size is " + photolist.size());
-        System.out.println("thumbnail is " + photolist.get(currentPosition).photoThumbnail);
-        System.out.println("thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);
-        System.out.println("thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
-        System.out.println("original is " + photolist.get(currentPosition).photoPathOrURL);
+        PictureAirLog.v(TAG,"photo size is " + photolist.size());
+        PictureAirLog.v(TAG,"thumbnail is " + photolist.get(currentPosition).photoThumbnail);
+        PictureAirLog.v(TAG,"thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);
+        PictureAirLog.v(TAG,"thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
+        PictureAirLog.v(TAG,"original is " + photolist.get(currentPosition).photoPathOrURL);
         //如果是从viewphotoactivity界面进来，因为第一项为拍照按钮，所以这里的数据都要删除第一项
         if ("viewphotoactivity".equals(getIntent().getStringExtra("activity"))) {
             photolist.remove(0);
@@ -576,10 +578,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 //			if (targetphotolist != null && targetphotolist.size() > 0) {
 //				targetphotolist.remove(0);
 //			}
-            System.out.println("need not to reduce or delete");
+            PictureAirLog.v(TAG,"need not to reduce or delete");
         }
 
-        System.out.println("----------------------->initing...2");
+        PictureAirLog.v(TAG, "----------------------->initing...2");
         handler.sendEmptyMessage(7);
 
     }
@@ -592,10 +594,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void loadPhotoPassPhoto(PhotoInfo loadPhotoInfo, boolean isOnCreate) {
         // TODO Auto-generated method stub
         dirFile = new File(getApplicationContext().getCacheDir() + "/" + loadPhotoInfo.photoId);//创建一个以ID为名字的文件，放入到app缓存文件下
-        System.out.println(dirFile.toString());
-        System.out.println("photo URL ------->" + loadPhotoInfo.photoThumbnail_1024);
+        PictureAirLog.v(TAG,dirFile.toString());
+        PictureAirLog.v(TAG,"photo URL ------->" + loadPhotoInfo.photoThumbnail_1024);
         if (dirFile.exists()) {//如果文件存在
-            System.out.println("file exists");
+            PictureAirLog.v(TAG,"file exists");
             if (isOnCreate) {
                 //创建一个画图的监听，等到这个控件画好之后，触发监听函数，同时移除对应的监听
                 ViewTreeObserver viewTreeObserver = photoFraRelativeLayout.getViewTreeObserver();
@@ -613,7 +615,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 mHandler.sendEmptyMessage(1);
             }
         } else {//如果文件不存在，下载文件到缓存
-            System.out.println("file is not exist");
+            PictureAirLog.v(TAG,"file is not exist");
             HttpUtil.get(loadPhotoInfo.photoThumbnail_1024, new BinaryHttpResponseHandler() {
 
                 @Override
@@ -621,7 +623,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     // TODO Auto-generated method stub
                     BufferedOutputStream stream = null;
                     try {
-                        System.out.println(dirFile.toString());
+                        PictureAirLog.v(TAG,dirFile.toString());
                         FileOutputStream fsStream = new FileOutputStream(dirFile);
                         stream = new BufferedOutputStream(fsStream);
                         stream.write(arg2);
@@ -638,7 +640,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                        System.out.println("done");
+                        PictureAirLog.v(TAG,"done");
                     }
                     bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
                     mHandler.sendEmptyMessage(0);
@@ -647,7 +649,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 @Override
                 public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
                     // TODO Auto-generated method stub
-                    System.out.println(arg3.toString());
+                    PictureAirLog.v(TAG,arg3.toString());
                     mHandler.sendEmptyMessage(0);
                 }
             });
@@ -658,7 +660,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      * 更新底部索引工具
      */
     private void updateIndexTools(boolean isOnCreate) {
-        System.out.println("updateIndexTools-------->" + currentPosition);
+        PictureAirLog.v(TAG,"updateIndexTools-------->" + currentPosition);
         //初始化图片收藏按钮，需要判断isLove=1或者是否在数据库中
         if (isEdited) {
             photoInfo = targetphotolist.get(currentPosition);
@@ -695,7 +697,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         locationTextView.setText(photoInfo.locationName);
         //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
-            System.out.println("need show blur view");
+            PictureAirLog.v(TAG,"need show blur view");
             image01.setVisibility(View.INVISIBLE);
             progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
             touchtoclean.setVisibility(View.VISIBLE);
@@ -704,7 +706,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             loadPhotoPassPhoto(photoInfo, isOnCreate);
             if (!isFirst) {
                 if (pictureAirDbManager.checkFirstTimeStartActivity("blurActivity", sharedPreferences.getString(Common.USERINFO_ID, ""))) {//第一次进入
-                    System.out.println("new user");
+                    PictureAirLog.v(TAG,"new user");
                     leadView.setVisibility(View.VISIBLE);
                     knowImageView.setOnClickListener(this);
                     isFirst = true;
@@ -720,17 +722,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      * 根据照片的购买情况确定布局和显示模式
      */
     private void initBlur() {
-        System.out.println("initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
+        PictureAirLog.v(TAG,"initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
         if (!loadFailed) {//加载成功
             int w = bitmap2.getWidth();
             int h = bitmap2.getHeight();
-            System.out.println("bitmap2 width, height" + w + "?" + h);
+            PictureAirLog.v(TAG,"bitmap2 width, height" + w + "?" + h);
             scaleW = ScreenUtil.getScreenWidth(this);
             scaleH = photoFraRelativeLayout.getHeight();
             int[] location = new int[2];
-            photoFraRelativeLayout.getLocationOnScreen(location);
+            photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
             marginTop = location[1];
-            System.out.println("------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
+            PictureAirLog.v(TAG,"------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
             //			if(w/h > scaleW/scaleH){
             if (w > h) {//进入横屏模式
                 bitmap2 = UtilOfDraw.rotaingImageView(90, bitmap2);
@@ -738,7 +740,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 h = bitmap2.getHeight();
                 //			Toast.makeText(this, "进入横屏模式", 0).show();
                 //			newToast.setTextAndShow("Into landscape mode", Common.TOAST_SHORT_TIME);
-                System.out.println("landscape+" + w + "+" + h);
+                PictureAirLog.v(TAG,"landscape+" + w + "+" + h);
                 scaleH = photoFraRelativeLayout.getHeight();
                 scaleW = scaleH * w / (float) h;
                 if (scaleW > ScreenUtil.getScreenWidth(this)) {
@@ -755,16 +757,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             matrix = new Matrix();
             matrix.postScale(sw, sw);
             bitmap2 = Bitmap.createBitmap(bitmap2, 0, 0, w, h, matrix, true);
-            System.out.println(bitmap2.getWidth() + "----" + bitmap2.getHeight());
+            PictureAirLog.v(TAG,bitmap2.getWidth() + "----" + bitmap2.getHeight());
             sizeW = (int) (scaleW / 2);
             sizeH = (int) (scaleH / 2);
             if (photoInfo.isPayed == 0) {// 未购买的照片
 
                 bm = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
-                bitmap1 = UtilOfDraw.blur(bitmap2);
-                System.out.println("bitmap1 = " + bitmap1.getWidth() + "_" + bitmap1.getHeight());
+                bitmap1 = UtilOfDraw.blur(bitmap2);//添加模糊度
+                PictureAirLog.v(TAG,"bitmap1 = " + bitmap1.getWidth() + "_" + bitmap1.getHeight());
                 image01.setImageBitmap(bitmap1);
-                System.out.println("---------->" + image01.getWidth() + "_____" + image01.getHeight());
+                PictureAirLog.v(TAG,"---------->" + image01.getWidth() + "_____" + image01.getHeight());
             }
             //			else {
             //				image01.setImageBitmap(bitmap2);
@@ -789,8 +791,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     if (mode == MODE_MOVE) {
 
                     } else {
-                        System.out.println("out of photo range");
-                        //				System.out.println("up");
+                        PictureAirLog.v(TAG,"out of photo range");
+                        //				PictureAirLog.v(TAG,"up");
                         //				fads；
                         Message msg = handler.obtainMessage();
                         msg.what = 2;
@@ -808,13 +810,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                     case MotionEvent.ACTION_DOWN:
                         mode = MODE_DOWN;
-                        System.out.println("-------->down");
+                        PictureAirLog.v(TAG,"-------->down");
                         downX = event.getX();
                         downY = event.getY();
 
                         //					if (downY < marginTop || downY > scaleH + marginTop) {
-                        //						System.out.println("out of photo range");
-                        ////						System.out.println("up");
+                        //						PictureAirLog.v(TAG,"out of photo range");
+                        ////						PictureAirLog.v(TAG,"up");
                         ////						Message msg = handler.obtainMessage();
                         ////						msg.what = 2;
                         ////						touchtoclean.setVisibility(View.VISIBLE);
@@ -826,12 +828,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         count++;
                         touchtoclean.setVisibility(View.INVISIBLE);
                         if (count == 1) {
-                            System.out.println("---->1");
+                            PictureAirLog.v(TAG,"---->1");
                             fir = System.currentTimeMillis();
                             msg.what = 1;
                         }
                         if (count == 2) {
-                            System.out.println("------>2");
+                            PictureAirLog.v(TAG,"------>2");
                             sec = System.currentTimeMillis();
                             if (sec - fir < 500) {// 双击放大
                                 msg.what = 3;
@@ -842,13 +844,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 count = 0;
                             }
                         } else {
-                            System.out.println("------->" + count);
+                            PictureAirLog.v(TAG,"------->" + count);
                         }
 
                         break;
                     case MotionEvent.ACTION_MOVE:
                         mode = MODE_MOVE;
-                        System.out.println("----->move");
+                        PictureAirLog.v(TAG,"----->move");
                         float moveX = event.getX() - downX;
                         float moveY = event.getY() - downY;
                         if (moveX != 0 | moveY != 0) {
@@ -860,7 +862,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         break;
                     case MotionEvent.ACTION_UP:
                         mode = MODE_UP;
-                        System.out.println("up");
+                        PictureAirLog.v(TAG,"up");
                         msg.what = 2;
                         touchtoclean.setVisibility(View.VISIBLE);
                         break;
@@ -994,7 +996,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (photoInfo.isPayed == 1) {
                     dia.dismiss();
-                    System.out.println("start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
+                    PictureAirLog.v(TAG,"start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
                         sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", handler);
                     } else {//编辑前
@@ -1038,7 +1040,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             //						bundle.putParcelableArrayList("photos", list);
                             //						intent.putExtras(bundle);
                             //						startService(intent);
-                            //						System.out.println("start");
+                            //						PictureAirLog.v(TAG,"start");
                         } else {
                             newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
                         }
@@ -1070,7 +1072,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
 
-                System.out.println("makegift");
+                PictureAirLog.v(TAG,"makegift");
                 intent = new Intent(this, MakegiftActivity.class);
                 //判断是否已经被编辑过
                 if (isEdited) {//已经被编辑过，那么取得是targetList中的值
@@ -1131,12 +1133,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 dia.dismiss();
                 break;
             case R.id.leadknow:
-                System.out.println("know");
+                PictureAirLog.v(TAG,"know");
                 leadView.setVisibility(View.GONE);
                 break;
 
             case R.id.index_last://上一张
-                System.out.println("--------->last");
+                PictureAirLog.v(TAG,"--------->last");
                 lastPhotoImageView.setEnabled(false);
                 nextPhotoImageView.setEnabled(false);
 
@@ -1144,7 +1146,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.index_next://下一张
-                System.out.println("--------->next");
+                PictureAirLog.v(TAG,"--------->next");
                 changeTab(true);
                 lastPhotoImageView.setEnabled(false);
                 nextPhotoImageView.setEnabled(false);
@@ -1160,14 +1162,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      */
     private void changeTab(boolean next) {
         if (leadView.isShown()) {
-            System.out.println("leadView is shown----->");
+            PictureAirLog.v(TAG,"leadView is shown----->");
             return;
         }
         if (next) {
-            System.out.println("--------->next");
+            PictureAirLog.v(TAG,"--------->next");
             currentPosition++;
         } else {
-            System.out.println("--------->last");
+            PictureAirLog.v(TAG,"--------->last");
             currentPosition--;
         }
         mViewPager.setVisibility(View.VISIBLE);
@@ -1182,7 +1184,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (requestCode == 1) {
             if (resultCode == 11) {
                 //保存完图片的处理
-                System.out.println("save success");
+                PictureAirLog.v(TAG,"save success");
                 //1.获取新图片的数据，生成一个新的对象
                 PhotoInfo selectPhotoItemInfo = new PhotoInfo();
                 selectPhotoItemInfo.photoPathOrURL = data.getStringExtra("photoUrl");
@@ -1210,7 +1212,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 isEdited = true;
                 currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
                 currentPhotoInfoTextView.setText(selectPhotoItemInfo.shootOn);
-                System.out.println("targetphotolist size is " + targetphotolist.size());
+                PictureAirLog.v(TAG,"targetphotolist size is " + targetphotolist.size());
                 myApplication.setneedScanPhoto(true);
                 myApplication.scanMagicFinish = false;
                 //				flag = 0;
@@ -1233,7 +1235,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        System.out.println("----------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
+        PictureAirLog.v(TAG,"----------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
 

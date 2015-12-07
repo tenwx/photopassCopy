@@ -24,10 +24,11 @@ import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * 注册和修改密码的页面，前提都是通过了手机号码验证才会来到这个页面， 根据intent传递过来的type值判断是注册还是修改密码 type == 0
