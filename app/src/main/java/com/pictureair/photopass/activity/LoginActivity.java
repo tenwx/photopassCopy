@@ -30,6 +30,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.Installation;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressDialog;
@@ -109,7 +110,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				dialog.dismiss();
 				myToast.setTextAndShow(result, Common.TOAST_SHORT_TIME);
 				if ("tokenExpired".equals(result)) {
-					System.out.println("tokenExpired");
+					PictureAirLog.v(TAG,"tokenExpired");
 					editor = sp.edit();
 					editor.putString(Common.USERINFO_TOKENID, null);
 					editor.commit();
@@ -138,13 +139,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				break;
 
 			// case API.GET_PPP_SUCCESS:
-			// System.out.println("get ppp success ----------------");
+			// PictureAirLog.v(TAG,"get ppp success ----------------");
 			// JSONObject ppplistJsonObject = (JSONObject) msg.obj;
 			// try {
 			// JSONArray ppplistArray = ppplistJsonObject
 			// .getJSONArray("PPPList");
 			// if (0 != ppplistArray.length()) {// 说明有ppp
-			// System.out.println("length=" + ppplistArray.length());
+			// PictureAirLog.v(TAG,"length=" + ppplistArray.length());
 			// Editor editor = sp.edit();
 			// editor.putInt(Common.PPP_COUNT, ppplistArray.length());
 			// editor.commit();
@@ -153,7 +154,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			// // TODO Auto-generated catch block
 			// e.printStackTrace();
 			// }
-			// System.out.println("netIP-----------> "+ AppUtil.GetNetIp());
+			// PictureAirLog.v(TAG,"netIP-----------> "+ AppUtil.GetNetIp());
 			// API.getStoreIdbyIP("140.206.125.195", handler);
 			// break;
 
@@ -181,7 +182,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					public void run() {
 						String netIP = "211.95.27.34";
 						// String netIP = AppUtil.GetNetIp();
-						System.out.println("netIP-----------> " + netIP);
+						PictureAirLog.v(TAG,"netIP-----------> " + netIP);
 						if (netIP.equals("")) {// 获取失败
 							handler.sendEmptyMessage(GET_IP_FAILED);
 						} else {// 获取成功
@@ -221,19 +222,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				break;
 
 			case API.MODIFY_PWD_FAILED:
-				System.out.println("signorfotget------modify pwd failed");
+				PictureAirLog.v(TAG,"signorfotget------modify pwd failed");
 				// 提示错误
 				break;
 
 			case API.MODIFY_PWD_SUCCESS:
-				System.out.println("signorforget------modify pwd success");
+				PictureAirLog.v(TAG,"signorforget------modify pwd success");
 				// 跳转至登录界面
 				break;
 
 			case START_OTHER_REGISTER_ACTIVITY:
 
 				// 其他注册的按钮//
-				System.out.println("other way on click----------");
+				PictureAirLog.v(TAG,"other way on click----------");
 				startActivity(new Intent(LoginActivity.this,
 						OtherRegisterActivity.class));
 
@@ -289,7 +290,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	 * 登录成功之后的跳转
 	 */
 	private void loginsuccess() {
-		System.out.println("loginsuccess----------------");
+		PictureAirLog.v(TAG,"loginsuccess----------------");
 		dialog.dismiss();
 		// 发送广播
 		Log.d(TAG, "start push service");
@@ -382,7 +383,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.rl_country:
 			// NationalListSelectionActivity
-			System.out.println("国家按钮");
+			PictureAirLog.v(TAG,"国家按钮");
 			startActivityForResult(new Intent(LoginActivity.this,
 					NationalListSelectionActivity.class), 0);
 			break;
@@ -430,17 +431,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.sign:
-			System.out.println("tap sign");
+			PictureAirLog.v(TAG,"tap sign");
 			sendSMS(0);
 			break;
 
 		case R.id.forgot:
-			System.out.println("tap forget password");
+			PictureAirLog.v(TAG,"tap forget password");
 			sendSMS(1);
 			break;
 
 		case R.id.otherLogin:
-			System.out.println("tap other login 其他方式登录");
+			PictureAirLog.v(TAG,"tap other login 其他方式登录");
 			Intent intent = new Intent(LoginActivity.this,
 					OtherLoginActivity.class);
 			startActivity(intent);
@@ -453,16 +454,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	/**
 	 * 登录
-	 *
-	 * @param name
-	 * @param pwd
 	 */
 	public void login() {
 		dialog = CustomProgressDialog.show(this,
 				getString(R.string.is_loading), false, null);
 		// 登录成功时可把一些后续需要使用到的信息保存起来，比如地点收藏状态，pp和pp+信息等，具体看后台返回的数据决定
 		if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
-			System.out.println("no tokenid");
+			PictureAirLog.v(TAG,"no tokenid");
 			final StringBuffer sb = new StringBuffer();
 			sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
 			RequestParams params = new RequestParams();
@@ -473,17 +471,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				public void onStart() {
 					// TODO Auto-generated method stub
 					super.onStart();
-					System.out.println("get tokenid start");
+					PictureAirLog.v(TAG,"get tokenid start");
 				}
 
 				public void onSuccess(int statusCode, Header[] headers,
 						JSONObject response) {
 					super.onSuccess(statusCode, headers, response);
 					try {
-						System.out.println("tokenid==" + response);
+						PictureAirLog.v(TAG,"tokenid==" + response);
 						Editor e = sp.edit();
 						if (response.has(Common.USERINFO_TOKENID)) {
-							System.out.println("add tokenid=============");
+							PictureAirLog.v(TAG,"add tokenid=============");
 							e.putString(Common.USERINFO_TOKENID,
 									response.getString(Common.USERINFO_TOKENID));
 						}
@@ -507,7 +505,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				}
 			});
 		} else {
-			System.out.println("has tokenid");
+			PictureAirLog.v(TAG,"has tokenid");
 			API.Login(this, userName.getText().toString().trim(), password
 					.getText().toString().trim(), handler);
 		}
@@ -527,7 +525,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 		registerPage.setRegisterCallback(new EventHandler() {
 			public void afterEvent(int event, int result, Object data) {
-				System.out.println("type ---- >" + type + ",result--->"
+				PictureAirLog.v(TAG,"type ---- >" + type + ",result--->"
 						+ result + "data-->" + data);
 				// 解析注册结果
 				if (result == SMSSDK.RESULT_COMPLETE) {
@@ -537,14 +535,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					String pwd = phoneMap.get("pwd").toString();
 					String phone = phoneMap.get("phone").toString();
 					// 把手机号发送到服务器判断账号是否存在，存在则跳转到重置密码页面
-					System.out.println("type -------->" + type);
+					PictureAirLog.v(TAG,"type -------->" + type);
 					if (type == 0) {
 						/*
 						 * 服务器返回手机号不存在，注册 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd
 						 * 拿到值。就直接注册。 注册成功：跳转到主页ok
 						 */
-						System.out.println("phone:" + phone);
-						System.out.println("pwd:" + pwd);
+						PictureAirLog.v(TAG,"phone:" + phone);
+						PictureAirLog.v(TAG,"pwd:" + pwd);
 						/*
 						 * ＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
 						 */
@@ -564,68 +562,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		});
 		registerPage.show(this);
 	}
-
-	// 得验证手机号是否注册过;
-	/** 向服务器发送注册请求 */
-	// private void sendSign(final String phone, final String pwd) {
-	// System.out.println("=====sendSign：" + phone);
-	// System.out.println("=====sendSign：" + pwd);
-	// // 注册请求
-	// if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
-	// System.out.println("需要重新获取一次tokenid=====sendSign：" + phone);
-	// System.out.println("需要重新获取一次tokenid=====sendSign：" + pwd);
-	// // 需要重新获取一次tokenid
-	// System.out.println("no tokenid, need to obtain one");
-	// final StringBuffer sb = new StringBuffer();
-	// sb.append(Common.BASE_URL).append(Common.GET_TOKENID);// 获取地址
-	//
-	// RequestParams params = new RequestParams();
-	// params.put(Common.TERMINAL, "android");
-	// params.put(Common.UUID, Installation.id(this));
-	//
-	// HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-	// @Override
-	// public void onStart() {
-	// super.onStart();
-	// System.out.println("get tokenid start");
-	// }
-	//
-	// public void onSuccess(int statusCode, Header[] headers,
-	// JSONObject response) {
-	// super.onSuccess(statusCode, headers, response);
-	// try {
-	// System.out.println("tokenid==" + response);
-	// Editor e = sp.edit();
-	// if (response.has(Common.USERINFO_TOKENID)) {
-	// System.out.println("add tokenid=============");
-	// e.putString(Common.USERINFO_TOKENID,
-	// response.getString(Common.USERINFO_TOKENID));
-	// }
-	// e.commit();
-	// API.Sign(LoginActivity.this, phone, pwd, handler);
-	// } catch (JSONException e1) {
-	// e1.printStackTrace();
-	// }
-	// }
-	//
-	// @Override
-	// public void onFailure(int statusCode, Header[] headers,
-	// String responseString, Throwable throwable) {
-	// super.onFailure(statusCode, headers, responseString,
-	// throwable);
-	// throwable.printStackTrace();
-	// myToast.setTextAndShow(R.string.failed,
-	// Common.TOAST_SHORT_TIME);
-	// }
-	// });
-	// }
-	// else {
-	// System.out.println("else=====sendSign：" + phone);
-	// System.out.println("else=====sendSign：" + pwd);
-	// API.Sign(LoginActivity.this, phone, pwd, handler);
-	// }
-	//
-	// }
 
 	@Override
 	public void onBackPressed() {
@@ -652,7 +588,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		super.onDestroy();
 		AppManager.getInstance().killActivity(this);
 		if (registerPage != null) {
-			System.out.println("logout onDestroy, need finish registerPage");
+			PictureAirLog.v(TAG,"logout onDestroy, need finish registerPage");
 			registerPage.finish();
 		}
 	}

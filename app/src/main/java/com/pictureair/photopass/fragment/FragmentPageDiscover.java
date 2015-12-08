@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pictureair.photopass.R;
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.UpdateCallback;
 import com.pictureair.photopass.adapter.DiscoverLocationAdapter;
@@ -42,7 +41,6 @@ import com.pictureair.photopass.util.LocationUtil.LocationNotification;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -332,7 +330,6 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 	
 	@Override
 	public void onResume() {
-		MobclickAgent.onPageStart("FragmentPageDiscover"); //统计页面
 		isLoading = false;
 		locationStart = true;
 		startService();
@@ -341,7 +338,6 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 	
 	@Override
 	public void onPause() {
-		 MobclickAgent.onPageEnd("FragmentPageDiscover"); 
 		locationStart = false;
 //		if(dialog.isShowing()){
 //			dialog.dismiss();

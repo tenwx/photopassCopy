@@ -11,6 +11,10 @@ import java.io.File;
  */
 public abstract class HttpCallback implements HttpInterface{
     //实现所有方法，方便后面任意调用其中某一个
+    @Override
+    public void onStart() {
+
+    }
 
     @Override
     public void onSuccess(JSONObject jsonObject) {
@@ -19,6 +23,11 @@ public abstract class HttpCallback implements HttpInterface{
 
     @Override
     public void onSuccess(String result) {
+
+    }
+
+    @Override
+    public void onSuccess(byte[] binaryData) {
 
     }
 

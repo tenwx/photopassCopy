@@ -1,6 +1,5 @@
 package com.pictureair.photopass.selectHeadorBg;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.activity.BaseActivity;
 import com.pictureair.photopass.blur.UtilOfDraw;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.Common;
@@ -29,7 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /** 头像选取 */
-public class SetHeadPhotoAct extends Activity implements OnClickListener {
+public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 	private ClipImageLayout mClipImageLayout;
 	private final String IMAGE_TYPE = "image/*";
 	private final int IMAGE_CODE = 0; // 这里的IMAGE_CODE是自己任意定义的
@@ -41,6 +41,7 @@ public class SetHeadPhotoAct extends Activity implements OnClickListener {
 	private File headPhoto;
 	
 	private Handler handler = new Handler() {
+
 		public void handleMessage(Message msg) {
 //			Intent intent = null;
 			switch (msg.what) {
