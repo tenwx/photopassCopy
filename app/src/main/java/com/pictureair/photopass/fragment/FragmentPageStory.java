@@ -47,7 +47,6 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.StoryMenuPop;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -760,7 +759,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		System.out.println("on resume-----------");
-	    MobclickAgent.onPageStart("FragmentPageStory"); //统计页面
 		if (sharedPreferences.getBoolean(Common.NEED_FRESH, false)) {
 			System.out.println("need refresh");
 			Editor editor = sharedPreferences.edit();
@@ -1174,7 +1172,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	
 	public void onPause() {
 	    super.onPause();
-	    MobclickAgent.onPageEnd("FragmentPageStory"); 
 	}
 
 }

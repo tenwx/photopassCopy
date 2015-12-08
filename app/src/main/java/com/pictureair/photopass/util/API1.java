@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
-import android.os.Message;
 
 import com.loopj.android.http.RequestParams;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import org.json.JSONException;
@@ -272,10 +270,10 @@ public class API1 {
     /**
      * 注册
      *
-     * @param context 上下文
+     * @param context  上下文
      * @param userName name
      * @param password pwd
-     * @param handler handler
+     * @param handler  handler
      */
     public static void Sign(final Context context, final String userName, final String password, final Handler handler) {
         final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
@@ -326,10 +324,11 @@ public class API1 {
 
     /**
      * 修改密码或者忘记密码接口
+     *
      * @param context
-     * @param oldPwd 旧密码，修改的时候用到，如果是忘记密码的话，设为null
-     * @param newPwd 新密码
-     * @param type 判断是否是修改密码（null）还是忘记密码（forget）
+     * @param oldPwd  旧密码，修改的时候用到，如果是忘记密码的话，设为null
+     * @param newPwd  新密码
+     * @param type    判断是否是修改密码（null）还是忘记密码（forget）
      * @param handler
      */
     public static void modifyPwd(Context context, String oldPwd, String newPwd, String type, final Handler handler) {
@@ -339,7 +338,7 @@ public class API1 {
         params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
         if (type.equals("forget")) {//忘记密码，不需要填写oldpassword
             params.put(Common.MODIFY_OR_FORGET, type);
-        }else {//修改密码操作，type不要填写
+        } else {//修改密码操作，type不要填写
             params.put(Common.OLD_PASSWORD, AppUtil.md5(oldPwd));
         }
 
@@ -353,7 +352,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(MODIFY_PWD_FAILED,getStringByStatus(status));
+                handler.obtainMessage(MODIFY_PWD_FAILED, getStringByStatus(status));
 
             }
         });
@@ -361,31 +360,29 @@ public class API1 {
 
 
     /**
-     *上传个人图片信息，头像或背景图
+     * 上传个人图片信息，头像或背景图
+     *
      * @param url
      * @param params
      * @param handler
      * @param position 修改图片的时候需要这个参数来定位
      * @throws FileNotFoundException
      */
-    public static void SetPhoto(String url , RequestParams params,final Handler handler,final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
+    public static void SetPhoto(String url, RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-
-        HttpUtil1.asynUploadFile(url, params, MyApplication.getInstance(), new HttpCallback() {
+        HttpUtil1.asynUploadFile(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                Message message = handler.obtainMessage(UPLOAD_PHOTO_SUCCESS);
-                message.arg1 = position;
-                message.obj = jsonObject;
-                handler.sendMessage(message);
+                handler.obtainMessage(UPLOAD_PHOTO_SUCCESS, position, 0, jsonObject);
 
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(UPLOAD_PHOTO_FAILED,getStringByStatus(status));
+                handler.obtainMessage(UPLOAD_PHOTO_FAILED, getStringByStatus(status));
+
             }
 
             @Override
@@ -395,5 +392,11 @@ public class API1 {
             }
         });
     }
+
+    /***************************************我的模块start**************************************/
+
+
+
+
 
 }

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CartActivity;
 import com.pictureair.photopass.activity.DetailProductActivity;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
 import com.pictureair.photopass.entity.GoodsInfo;
@@ -34,7 +33,6 @@ import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -226,7 +224,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 	@Override
 	public void onResume() {
 		super.onResume();
-		 MobclickAgent.onPageStart("FragmentPageShop"); //统计页面
 		cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
 		if (cartCount<=0) {
 			cartCountTextView.setVisibility(View.INVISIBLE);
@@ -239,7 +236,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 	
 	public void onPause() {
 	    super.onPause();
-	    MobclickAgent.onPageEnd("FragmentPageShop"); 
 	}
 
 //	//下拉刷新

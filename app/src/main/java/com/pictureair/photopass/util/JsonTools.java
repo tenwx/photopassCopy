@@ -2,7 +2,7 @@ package com.pictureair.photopass.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.entity.BaseJson;
+import com.pictureair.photopass.entity.HttpBaseJson;
 
 /**
  * Created by milo on 15/12/7.
@@ -16,12 +16,12 @@ public class JsonTools {
      * @param jsonStr 字符串
      * @return
      */
-    public static BaseJson parseObject(String jsonStr) {
-        return JSON.parseObject(jsonStr, BaseJson.class);
+    public static HttpBaseJson parseObject(String jsonStr) {
+        return JSON.parseObject(jsonStr, HttpBaseJson.class);
     }
 
-    public static BaseJson parseObject(org.json.JSONObject jsonObject) {
-        return JSON.parseObject(jsonObject.toString(), BaseJson.class);
+    public static HttpBaseJson parseObject(org.json.JSONObject jsonObject) {
+        return JSON.parseObject(jsonObject.toString(), HttpBaseJson.class);
     }
 
 

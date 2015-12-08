@@ -30,9 +30,9 @@ import com.pictureair.photopass.selectHeadorBg.SetHeadPhotoAct;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 /**
@@ -41,36 +41,16 @@ import java.io.File;
  *
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener{
+	private static final String TAG = "FragmentPageMe";
 	private RelativeLayout rl_myprofile, rl_myorder,rl_pp, rl_ppp, rl_help,rl_setting, rl_about, rl7;
 	private ImageView headPhoto, icon2, code_pic;
 	private TextView hint2, hint4, name;// hint是条目右边的小标签，根据需要添加信息
 	private TextView title1;
 	private SharedPreferences sp;
-//	private ProgressDialog dialog;
 	private MyToast newToast;
-//	private ArrayList<PPCodeInfo> pPCodeList;
 	private Context context;
 	private Long originalHeadLastModifyTime;
 	private File file;
-	
-//	private Handler handler = new Handler() {
-//		public void handleMessage(Message msg) {
-//			switch (msg.what) {
-//			case API.UPLOAD_PHOTO_SUCCESS:
-//				System.out.println("success");
-//				dialog.dismiss();
-//				newToast.setTextAndShow(R.string.success1, Common.TOAST_SHORT_TIME);
-//				break;
-//			case API.FAILURE:
-//				dialog.dismiss();
-//				newToast.setTextAndShow(R.string.upload_failed_retry, Common.TOAST_SHORT_TIME);
-//				break;
-//			
-//			default:
-//				break;
-//			}
-//		};
-//	};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	
@@ -236,7 +216,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 	private void setHeadImage() {
 		// TODO Auto-generated method stub
 		if ("".equals(sp.getString(Common.USERINFO_HEADPHOTO, ""))) {//如果user中的头像为空，显示默认头像
-			System.out.println("weikong"+sp.getString(Common.USERINFO_HEADPHOTO, ""));
+			PictureAirLog.v(TAG, "weikong" + sp.getString(Common.USERINFO_HEADPHOTO, ""));
 			headPhoto.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
 			originalHeadLastModifyTime = 0L;
 		}else {//如果有数据，加载图片
@@ -247,7 +227,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 			
 			originalHeadLastModifyTime = file.lastModified();
 			if (bm1 != null) {
-				System.out.println("tupian meiyou");
+				PictureAirLog.v(TAG, "tupian meiyou");
 				headPhoto.setImageBitmap(bm1);
 			} else {
 				headPhoto.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
@@ -266,7 +246,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		MobclickAgent.onPageStart("FragmentPageMe"); //统计页面
 		if (!"".equals(sp.getString(Common.USERINFO_HEADPHOTO, ""))) {
 //			if (!file.exists()) {
 //				
@@ -280,9 +259,9 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener{
 		String un = sp.getString(Common.USERINFO_NICKNAME, "pictureAir");
 		name.setText(un);
 	}
-	
+
+	@Override
 	public void onPause() {
 	    super.onPause();
-	    MobclickAgent.onPageEnd("FragmentPageMe"); 
 	}
 }
