@@ -453,7 +453,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	/**
 	 * 登录
-	 * 
+	 *
 	 * @param name
 	 * @param pwd
 	 */

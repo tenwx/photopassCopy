@@ -14,8 +14,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.core.CoordinateConvert;
 import com.amap.api.location.core.GeoPoint;
 import com.amap.api.maps.AMapUtils;
@@ -30,6 +28,8 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.widget.EditTextWithClear;
 
 import org.apache.http.conn.util.InetAddressUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;

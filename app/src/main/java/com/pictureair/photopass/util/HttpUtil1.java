@@ -8,6 +8,8 @@ import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.entity.BaseJson;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +25,8 @@ import cz.msebera.android.httpclient.Header;
 public class HttpUtil1 extends HttpCallback {
     private static AsyncHttpClient asyncHttpClient;//异步处理网络请求
     private static ExecutorService threadPool;//线程重用，减少线程开销
-    private static String BASE_URL;
+    private static String BASE_URL = "http://192.168.8.3:3006";
+    private static final String TAG = "HttpUtil1";
 
 
     static {
@@ -58,7 +61,7 @@ public class HttpUtil1 extends HttpCallback {
      * 设置BASE URL
      *
      * @param baseUrl 请求base url
-     * @return
+     * @return 返回baseURL
      */
     public static String setBaseUrl(String baseUrl) {
         BASE_URL = baseUrl;
@@ -75,16 +78,17 @@ public class HttpUtil1 extends HttpCallback {
     public static void asyncGet(final String url, final HttpCallback httpCallback) {
         asyncHttpClient.get(getAbsoluteUrl(url), new BaseJsonHttpResponseHandler<BaseJson>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, BaseJson baseJson) {
+            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, BaseJson response) {
+                BaseJson baseJson = JsonTools.parseObject(rawJsonResponse);
                 // called when response HTTP status is "200 OK"
                 if (baseJson == null) {
-                    return;
-                }
-                if (baseJson.getStatus() == 200) {
-                    httpCallback.onSuccess(baseJson.getResult());
-                } else {
-                    //失败返回错误码
-                    httpCallback.onFailure(baseJson.getStatus());
+                    if (baseJson.getStatus() == 200) {
+                        httpCallback.onSuccess(baseJson.getResult().toString());
+                        httpCallback.onSuccess((JSONObject)baseJson.getResult());
+                    } else {
+                        //失败返回错误码
+                        httpCallback.onFailure(baseJson.getStatus());
+                    }
                 }
 
             }
@@ -98,8 +102,8 @@ public class HttpUtil1 extends HttpCallback {
 
             @Override
             protected BaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //解析响应
-                return null;
+                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                return JsonTools.parseObject(rawJsonData);
             }
         });
     }
@@ -114,17 +118,17 @@ public class HttpUtil1 extends HttpCallback {
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
         asyncHttpClient.get(getAbsoluteUrl(url), params, new BaseJsonHttpResponseHandler<BaseJson>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, BaseJson baseJson) {
+            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, BaseJson response) {
+                BaseJson baseJson = JsonTools.parseObject(rawJsonResponse);
                 // called when response HTTP status is "200 OK"
                 if (baseJson == null) {
-                    return;
-                }
-                if (baseJson.getStatus() == 200) {
-
-                    httpCallback.onSuccess(baseJson.getResult());
-                } else {
-                    //失败返回错误码
-                    httpCallback.onFailure(baseJson.getStatus());
+                    if (baseJson.getStatus() == 200) {
+                        httpCallback.onSuccess(baseJson.getResult().toString());
+                        httpCallback.onSuccess((JSONObject)baseJson.getResult());
+                    } else {
+                        //失败返回错误码
+                        httpCallback.onFailure(baseJson.getStatus());
+                    }
                 }
 
             }
@@ -138,8 +142,8 @@ public class HttpUtil1 extends HttpCallback {
 
             @Override
             protected BaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                //解析响应
-                return null;
+                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                return JsonTools.parseObject(rawJsonData);
             }
         });
     }
@@ -157,14 +161,14 @@ public class HttpUtil1 extends HttpCallback {
                 // called when response HTTP status is "200 OK"
                 //获取服务器返回内容,并解析.
                 if (baseJson == null) {
-                    return;
-                }
-                if (baseJson.getStatus() == 200) {
-                    //成功,返回内容
-                    httpCallback.onSuccess(baseJson.getResult());
-                } else {
-                    //失败返回错误码
-                    httpCallback.onFailure(baseJson.getStatus());
+                    if (baseJson.getStatus() == 200) {
+                        //成功,返回内容
+                        httpCallback.onSuccess(baseJson.getResult().toString());
+                        httpCallback.onSuccess((JSONObject)baseJson.getResult());
+                    } else {
+                        //失败返回错误码
+                        httpCallback.onFailure(baseJson.getStatus());
+                    }
                 }
             }
 
@@ -177,7 +181,8 @@ public class HttpUtil1 extends HttpCallback {
 
             @Override
             protected BaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                return null;
+                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                return JsonTools.parseObject(rawJsonData);
             }
         });
     }
@@ -191,33 +196,36 @@ public class HttpUtil1 extends HttpCallback {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, RequestParams params, final HttpCallback httpCallback) {
+        PictureAirLog.v(TAG, "asyncPost" + "url: " + getAbsoluteUrl(url));
         asyncHttpClient.post(getAbsoluteUrl(url), params, new BaseJsonHttpResponseHandler<BaseJson>() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, BaseJson baseJson) {
-                // called when response HTTP status is "200 OK"
-                //获取服务器返回内容,并解析.
-                if (baseJson == null) {
-                    return;
+                PictureAirLog.v(TAG, "onSuccess");
+                if (baseJson != null) {
+                    PictureAirLog.v(TAG, "parseResponse baseJson: " + baseJson.getStatus() + "---" + baseJson.getMsg() + "---" + baseJson.getResult());
+                    if (baseJson.getStatus() == 200) {
+                        //成功,返回内容
+                        httpCallback.onSuccess(baseJson.getResult().toString());
+                        httpCallback.onSuccess((JSONObject)baseJson.getResult());
+                    } else {
+                        //失败返回错误码
+                        httpCallback.onFailure(baseJson.getStatus());
+                    }
                 }
-                if (baseJson.getStatus() == 200) {
-                    //成功,返回内容
-                    httpCallback.onSuccess(baseJson.getResult());
-                } else {
-                    //失败返回错误码
-                    httpCallback.onFailure(baseJson.getStatus());
-                }
+
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, BaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                httpCallback.onFailure(statusCode);
-
+                PictureAirLog.v(TAG, "onFailure statusCode: " + statusCode);
             }
 
             @Override
             protected BaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                return null;
+                PictureAirLog.v(TAG, "parseResponse rawJsonData: " + rawJsonData);
+                //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                return JsonTools.parseObject(rawJsonData);
             }
         });
     }

@@ -1,5 +1,7 @@
 package com.pictureair.photopass.util;
 
+import org.json.JSONObject;
+
 import java.io.File;
 
 /**
@@ -9,6 +11,11 @@ import java.io.File;
  */
 public abstract class HttpCallback implements HttpInterface{
     //实现所有方法，方便后面任意调用其中某一个
+
+    @Override
+    public void onSuccess(JSONObject jsonObject) {
+
+    }
 
     @Override
     public void onSuccess(String result) {
