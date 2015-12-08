@@ -18,8 +18,11 @@ public class Common {
 //	public static final String BASE_URL = "http://pwsh.pictureworks.biz:3001";//外网域名
     //		public static final String BASE_URL = "http://192.168.9.43:3001";//齐超
 //	public static final String BASE_URL = "http://192.168.8.3:3001";
-    public static final String BASE_URL2 = "http://192.168.8.3:3001";
-    public static final String BASE_URL = "http://192.168.8.171:3001";//harry
+
+	public static final String BASE_URL2 = "http://192.168.8.3:3001";
+	public static final String BASE_URL = "http://192.168.8.171:3001";//harry
+
+	public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
 //	public static final String BASE_URL = "http://pictureAir.com.cn:3001";//harry
     //public static final String BASE_URL = "http://140.206.125.194:3001";//外网
     //public static final String BASE_URL = "http://pictureAir.cloudapp.net:3001";//美国服务器

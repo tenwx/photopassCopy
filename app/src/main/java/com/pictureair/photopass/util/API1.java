@@ -4,10 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
+import android.os.Message;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.widget.CustomProgressBarPop;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+
 
 /**
  * 所有与后台的交互都封装到此类
@@ -127,7 +134,7 @@ public class API1 {
 
 
     static {
-        HttpUtil1.setBaseUrl(Common.BASE_URL);
+        HttpUtil1.setBaseUrl(Common.BASE_URL_TEST);
     }
 
     /**
@@ -153,7 +160,7 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 //失败
-                handler.obtainMessage(FAILURE, "验证失败");
+                handler.obtainMessage(FAILURE, getStringByStatus(status));
             }
         });
     }
@@ -171,14 +178,16 @@ public class API1 {
 
         HttpUtil1.asyncGet(Common.GET_TOKENID, params, new HttpCallback() {
             @Override
-            public void onSuccess(String result) {
-                super.onSuccess(result);
-                JSONObject jsonObject = JSON.parseObject(result);
-                SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-                Editor e = sp.edit();
-                e.putString(Common.USERINFO_TOKENID, jsonObject.getString(Common.USERINFO_TOKENID));
-                e.apply();
-
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                try {
+                    SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+                    Editor e = sp.edit();
+                    e.putString(Common.USERINFO_TOKENID, jsonObject.getString(Common.USERINFO_TOKENID));
+                    e.apply();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -197,42 +206,43 @@ public class API1 {
      * @param password
      * @param handler
      */
-//    public static void Login(final Context context, String userName, String password, final Handler handler) {
-//        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-//        RequestParams params = new RequestParams();
-//        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
-//        params.put(Common.USERINFO_USERNAME, userName);
-//        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-//        params.put(Common.USERINFO_TOKENID, tokenId);
-//
-//
-//        HttpUtil1.asyncPost(Common.LOGIN, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(String result) {
-//                super.onSuccess(result);
-//
-//
-////                JsonUtil.getUserInfo(context, JSON.parseObject(result), handler);
-//                handler.sendEmptyMessage(SUCCESS);
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                //根据返回的status 获取对应的字符串
-//                handler.obtainMessage(FAILURE, getStringByStatus(status));
-//            }
-//        });
-//
-//    }
+    public static void Login(final Context context, String userName, String password, final Handler handler) {
+        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        RequestParams params = new RequestParams();
+        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
+        params.put(Common.USERINFO_USERNAME, userName);
+        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        params.put(Common.USERINFO_TOKENID, tokenId);
+
+
+        HttpUtil1.asyncPost(Common.LOGIN, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                try {
+                    JsonUtil.getUserInfo(context, jsonObject, handler);
+                    handler.sendEmptyMessage(SUCCESS);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                //根据返回的status 获取对应的字符串
+                handler.obtainMessage(FAILURE, getStringByStatus(status));
+            }
+        });
+
+    }
 
 
     /**
      * 退出账号
      *
-     * @param context
-     * @param handler
+     * @param context 上下文
+     * @param handler handler
      */
     public static void Logout(final Context context, final Handler handler) {
         final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
@@ -258,5 +268,132 @@ public class API1 {
         });
     }
 
+
+    /**
+     * 注册
+     *
+     * @param context 上下文
+     * @param userName name
+     * @param password pwd
+     * @param handler handler
+     */
+    public static void Sign(final Context context, final String userName, final String password, final Handler handler) {
+        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_USERNAME, userName);
+        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+        params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
+        HttpUtil1.asyncPost(Common.REGISTER, params, new HttpCallback() {
+            @Override
+            public void onSuccess(String result) {
+                super.onSuccess(result);
+                // 注册成功直接跳转到登录页面自动登录
+                StringBuffer sb = new StringBuffer();
+                sb.append(Common.BASE_URL).append(Common.LOGIN);
+                params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
+                params.put(Common.USERINFO_USERNAME, userName);
+                params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+                //注册成功进入登录界面
+                HttpUtil1.asyncPost(Common.LOGIN, params, new HttpCallback() {
+                    @Override
+                    public void onSuccess(JSONObject jsonObject) {
+                        super.onSuccess(jsonObject);
+                        try {
+                            JsonUtil.getUserInfo(context, jsonObject, handler);
+                            handler.sendEmptyMessage(SUCCESS);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+                        super.onFailure(status);
+                        handler.obtainMessage(SIGN_FAILED, getStringByStatus(status));
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(SIGN_FAILED, getStringByStatus(status));
+            }
+        });
+    }
+
+
+    /**
+     * 修改密码或者忘记密码接口
+     * @param context
+     * @param oldPwd 旧密码，修改的时候用到，如果是忘记密码的话，设为null
+     * @param newPwd 新密码
+     * @param type 判断是否是修改密码（null）还是忘记密码（forget）
+     * @param handler
+     */
+    public static void modifyPwd(Context context, String oldPwd, String newPwd, String type, final Handler handler) {
+        SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        RequestParams params = new RequestParams();
+        params.put(Common.NEW_PASSWORD, AppUtil.md5(newPwd));
+        params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
+        if (type.equals("forget")) {//忘记密码，不需要填写oldpassword
+            params.put(Common.MODIFY_OR_FORGET, type);
+        }else {//修改密码操作，type不要填写
+            params.put(Common.OLD_PASSWORD, AppUtil.md5(oldPwd));
+        }
+
+        HttpUtil1.asyncPost(Common.MODIFYPWD, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(MODIFY_PWD_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(MODIFY_PWD_FAILED,getStringByStatus(status));
+
+            }
+        });
+    }
+
+
+    /**
+     *上传个人图片信息，头像或背景图
+     * @param url
+     * @param params
+     * @param handler
+     * @param position 修改图片的时候需要这个参数来定位
+     * @throws FileNotFoundException
+     */
+    public static void SetPhoto(String url , RequestParams params,final Handler handler,final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
+        // 需要更新服务器中用户背景图片信息
+
+        HttpUtil1.asynUploadFile(url, params, MyApplication.getInstance(), new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                Message message = handler.obtainMessage(UPLOAD_PHOTO_SUCCESS);
+                message.arg1 = position;
+                message.obj = jsonObject;
+                handler.sendMessage(message);
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(UPLOAD_PHOTO_FAILED,getStringByStatus(status));
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                diaBarPop.setProgress(bytesWritten, totalSize);
+            }
+        });
+    }
 
 }

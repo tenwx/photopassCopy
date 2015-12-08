@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class BaseJson implements Serializable {
     private int status;//状态码，正常返回状态码为200，异常返回状态码为对应的错误码
     private String msg;//提示信息，正常返回时提示信息为空，异常返回提示信息为对应错误信息
-    private String result;//对象类型，为空或json格式的数据
+    private Object result;//对象类型，为空或json格式的数据
 
     public int getStatus() {
         return status;
@@ -27,11 +27,11 @@ public class BaseJson implements Serializable {
         this.msg = msg;
     }
 
-    public String getResult() {
+    public Object getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(Object result) {
         this.result = result;
     }
 }
