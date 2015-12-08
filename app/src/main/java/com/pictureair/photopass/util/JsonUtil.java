@@ -1,8 +1,8 @@
 package com.pictureair.photopass.util;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+
 
 /** 数据解析 */
 public class JsonUtil {
@@ -69,6 +70,7 @@ public class JsonUtil {
 		}else {
 			info.isPayed = 0;
 		}
+		info.isVideo = 0;
 		//获取图片的location信息
 		if (object.has("locationId"))
 			info.locationId = object.getString("locationId");
@@ -145,7 +147,7 @@ public class JsonUtil {
 	/** 用户信息解析 */
 	public static void getUserInfo(final Context context, JSONObject object , Handler handler) throws JSONException {
 		SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-		Editor e = sp.edit();
+		SharedPreferences.Editor e = sp.edit();
 		System.out.println("jsonObject======="+object.toString());
 		
 		e.putString(Common.USERINFO_TOKENID, object.getString(Common.USERINFO_TOKENID));

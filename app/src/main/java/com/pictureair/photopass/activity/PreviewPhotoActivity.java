@@ -1201,6 +1201,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 selectPhotoItemInfo.onLine = 0;
                 selectPhotoItemInfo.isUploaded = 0;
                 selectPhotoItemInfo.isPayed = 1;
+                selectPhotoItemInfo.isVideo = 0;
 
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);

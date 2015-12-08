@@ -417,6 +417,7 @@ public class PictureAirDbManager {
 						sInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
 						sInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
 						sInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
+						sInfo.isVideo = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isVideo")));
 						sInfo.onLine = 1;
 						sInfo.isChecked = 0;
 						sInfo.isSelected = 0;
@@ -528,10 +529,10 @@ public class PictureAirDbManager {
 				}
 				resultArrayList.add(photo);
 				//将数据插入到数据库
-				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
 						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
 						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
-						photo.locationId, photo.shootOn, 0+"",photo.isPayed+""});
+						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"",photo.isVideo+""});
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
@@ -567,6 +568,7 @@ public class PictureAirDbManager {
 				photoInfo.shootOn = cursor.getString(9);//shootOn
 				photoInfo.isLove = Integer.valueOf(cursor.getString(10));//islove
 				photoInfo.isPayed = Integer.valueOf(cursor.getString(11));//ispay
+				photoInfo.isVideo = Integer.valueOf(cursor.getString(12));//isVideo
 				photoInfo.onLine = 1;
 				photoInfo.isChecked = 0;
 				photoInfo.isSelected = 0;

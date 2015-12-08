@@ -190,6 +190,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					selectPhotoItemInfo.onLine = 0;
 					selectPhotoItemInfo.isUploaded = 0;
 					selectPhotoItemInfo.isPayed = 1;
+					selectPhotoItemInfo.isVideo = 0;
 					//					selectPhotoItemInfo.location = getString(R.string.story_tab_magic);
 					myApplication.magicPicList.add(selectPhotoItemInfo);
 				}

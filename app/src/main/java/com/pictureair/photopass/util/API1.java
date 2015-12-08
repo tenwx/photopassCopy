@@ -132,6 +132,7 @@ public class API1 {
 
     /**
      * 查询手机号是否已经被注册
+     *
      * @param context
      * @param phone
      * @param handler
@@ -160,6 +161,7 @@ public class API1 {
 
     /**
      * 发送设备ID获取tokenId
+     *
      * @param context
      */
     public static void getTokenId(final Context context) {
@@ -189,44 +191,46 @@ public class API1 {
 
     /**
      * 登录
+     *
      * @param context
      * @param userName
      * @param password
      * @param handler
      */
-    public static void Login(final Context context, String userName, String password, final Handler handler) {
-        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        RequestParams params = new RequestParams();
-        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
-        params.put(Common.USERINFO_USERNAME, userName);
-        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-        params.put(Common.USERINFO_TOKENID, tokenId);
-
-
-        HttpUtil1.asyncPost(Common.LOGIN, params, new HttpCallback() {
-            @Override
-            public void onSuccess(String result) {
-                super.onSuccess(result);
-
-
-                JsonUtil1.getUserInfo(context, JSON.parseObject(result), handler);
-                handler.sendEmptyMessage(SUCCESS);
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                //根据返回的status 获取对应的字符串
-                handler.obtainMessage(FAILURE, getStringByStatus(status));
-            }
-        });
-
-    }
+//    public static void Login(final Context context, String userName, String password, final Handler handler) {
+//        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+//        RequestParams params = new RequestParams();
+//        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
+//        params.put(Common.USERINFO_USERNAME, userName);
+//        params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
+//        params.put(Common.USERINFO_TOKENID, tokenId);
+//
+//
+//        HttpUtil1.asyncPost(Common.LOGIN, params, new HttpCallback() {
+//            @Override
+//            public void onSuccess(String result) {
+//                super.onSuccess(result);
+//
+//
+////                JsonUtil.getUserInfo(context, JSON.parseObject(result), handler);
+//                handler.sendEmptyMessage(SUCCESS);
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int status) {
+//                super.onFailure(status);
+//                //根据返回的status 获取对应的字符串
+//                handler.obtainMessage(FAILURE, getStringByStatus(status));
+//            }
+//        });
+//
+//    }
 
 
     /**
      * 退出账号
+     *
      * @param context
      * @param handler
      */
@@ -253,15 +257,6 @@ public class API1 {
             }
         });
     }
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -34,7 +34,7 @@ public class HttpUtil1 extends HttpCallback {
             asyncHttpClient = new AsyncHttpClient();
             asyncHttpClient.setMaxConnections(10);// 设置最大连接数
             asyncHttpClient.setMaxRetriesAndTimeout(2, 2 * 1000);//设置的重试次数、重试间隔
-            asyncHttpClient.setTimeout(20 * 10000);//// 设置获取连接的最大等待时间
+            asyncHttpClient.setTimeout(5 * 1000);//// 设置获取连接的最大等待时间
             asyncHttpClient.setConnectTimeout(10 * 1000);//设置连接超时时间
             asyncHttpClient.setResponseTimeout(20 * 1000);//设置响应超时时间
             asyncHttpClient.setThreadPool(threadPool);//设置线程池，方便线程管理，重用

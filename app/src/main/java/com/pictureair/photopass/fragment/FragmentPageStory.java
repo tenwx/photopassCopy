@@ -698,6 +698,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					selectPhotoItemInfo.locationName = getString(R.string.magic_location);
 					selectPhotoItemInfo.isPayed = 1;
 					selectPhotoItemInfo.onLine = 0;
+					selectPhotoItemInfo.isVideo = 0;
 					app.magicPicList.add(selectPhotoItemInfo);
 					System.out.println("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
 				}

@@ -57,10 +57,11 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * shootOn
 		 * isLove
 		 * isPay
+		 * isVideo
 		 */
 		db.execSQL("create table if not exists "+Common.PHOTOPASS_INFO_TABLE+"(_id integer primary key autoincrement, photoId varchar(30),photoCode varchar(180),shootTime varchar(12), " +
 				"originalUrl varchar(100), previewUrl varchar(100), previewUrl_512 varchar(100), previewUrl_1024 varchar(100)," +
-				"location varchar(10), shootOn varchar(30), isLove varchar(2), isPay varchar(2))");
+				"location varchar(10), shootOn varchar(30), isLove varchar(2), isPay varchar(2), isVideo varchar(2))");
 		
 		/**
 		 * 创建图片favorite表
