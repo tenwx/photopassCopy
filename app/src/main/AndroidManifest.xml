@@ -247,6 +247,27 @@
             android:screenOrientation="behind" >
         </activity>
 
+        <!-- Disney Video================================================================================== -->
+        <!-- Disney Video================================================================================== -->
+        <activity
+            android:name="com.pictureair.photopass.IsOneGoToVideoActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EditVideoNullPhotoActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectPhotoGoToVideoActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VideoPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <!-- Disney Video================================================================================== -->
+        <!-- Disney Video================================================================================== -->
+
+
         <!-- alipay sdk end -->
 
 

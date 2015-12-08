@@ -41,6 +41,7 @@ import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
@@ -1145,7 +1146,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			break;
 
 		case R.id.story_more:
-			storyMenuPop.showAsDropDown(v);
+			//－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+			// 1、第一次使用，则直接进入无视频引导页面，引导用户如何制作；
+			// 2、非第一次使用且没有乐拍通照片，则进入介绍页面；
+			// 3、非第一次使用且有乐拍通照片，，则直接进入选择照片的页面，照片仅可使用乐拍通已购买的照片；
+			// Disney美拍
+			DisneyVideoTool.getIsOneGoToDisneyVideoPage(context);
+			//－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+			// storyMenuPop.showAsDropDown(v);
 			break;
 			
 		case R.id.close_loop_button:
