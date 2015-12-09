@@ -396,7 +396,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cart);
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		//上传进度条
 		dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
@@ -653,27 +652,5 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 		cartAdapter.notifyDataSetChanged();
 	}
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		System.out.println("test pause");
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		System.out.println("test resume");
-	}
-	
-	
 }

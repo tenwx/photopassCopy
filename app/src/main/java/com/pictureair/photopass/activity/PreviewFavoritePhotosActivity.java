@@ -15,7 +15,6 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.PreviewFavoritePhotosPinnedListViewAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -47,7 +46,6 @@ public class PreviewFavoritePhotosActivity extends Activity implements OnClickLi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preview_love_photo);
-		AppManager.getInstance().addActivity(this);
 		pictureAirDbManager = new PictureAirDbManager(this);
 		//find控件
 		backRelativeLayout = (ImageView) findViewById(R.id.rlrt);
@@ -121,12 +119,7 @@ public class PreviewFavoritePhotosActivity extends Activity implements OnClickLi
 		};
 	};
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -139,10 +132,5 @@ public class PreviewFavoritePhotosActivity extends Activity implements OnClickLi
 		}
 	}
 		
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
 
 }

@@ -23,7 +23,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SelectPhotoViewPagerAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
@@ -94,7 +93,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 	//初始化函数
 	private void initview() {
 		//初始化资源
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		myApplication = (MyApplication)getApplication();
 		sdCardExist = Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);//判断sd卡是否存在 
@@ -446,11 +444,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 
 	@Override
 	public void onClick(View v) {

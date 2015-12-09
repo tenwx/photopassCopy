@@ -304,7 +304,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_capture);
 		System.out.println("-----------create");
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		surfaceView = (SurfaceView) findViewById(R.id.preview_view);
@@ -386,7 +385,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 			mediaPlayer.release();
 		}
 		mediaPlayer = null;
-		AppManager.getInstance().killActivity(this);
 	}
 
 	/**

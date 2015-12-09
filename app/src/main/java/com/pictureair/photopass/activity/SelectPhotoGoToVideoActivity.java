@@ -1,7 +1,5 @@
 package com.pictureair.photopass.activity;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +11,16 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SelectPhotoGoToVideoAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
+
+import java.util.ArrayList;
 /**
  * 选择图片 发送到服务器
  *
@@ -30,7 +29,7 @@ import com.pictureair.photopass.R;
 
 public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         OnClickListener, OnItemClickListener {
-    private static final String TAG = "SelectPhotoGoToVideoActivity";
+    private static final String TAG = "SelectPhotoGoToVideoAct";
     private MyApplication myApplication;
     private MyToast myToast;
     private Context context;
@@ -51,7 +50,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo_goto_video);
-        AppManager.getInstance().addActivity(this);
         context = this;
         initview();
         initData();
@@ -128,11 +126,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AppManager.getInstance().killActivity(this);
-    }
 
     @Override
     public void onClick(View v) {

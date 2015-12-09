@@ -1,23 +1,15 @@
 package com.pictureair.photopass.util;
 
-import java.util.Iterator;
-import java.util.Stack;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.util.Log;
+
+import java.util.Iterator;
+import java.util.Stack;
 
 /**
- * @author Tau.Chen 陈涛
- *
- * @email tauchen1990@gmail.com,1076559197@qq.com
- *
- * @date 2013年9月12日
- *
- * @version V_1.0.0
- *
- * @description 应用程序Activity的管理类
- *
+ * Activity 管理类
+ * @author bauer_bao
  */
 public class AppManager {
 	private static Stack<Activity> mActivityStack;
@@ -43,14 +35,11 @@ public class AppManager {
 	 */
 	public void addActivity(Activity activity) {
 		if (mActivityStack == null) {
-			mActivityStack = new Stack<Activity>();
+			mActivityStack = new Stack<>();
 		}
-		
-		mActivityStack.add(activity);
-		Log.d(TAG, "mactivitystack size = "+mActivityStack.size());
-		for (int i = 0; i < mActivityStack.size(); i++) {
-			
-			Log.d(TAG, "mactivitystack name = "+mActivityStack.get(i).toString());
+
+		if (!mActivityStack.contains(activity)){
+			mActivityStack.add(activity);
 		}
 	}
 
@@ -90,8 +79,7 @@ public class AppManager {
 	public void killTopActivity() {
 		Activity activity = mActivityStack.lastElement();
 		killActivity(activity);
-		Log.d(TAG, "mactivitystack size = "+mActivityStack.size());
-//		System.out.println("mactivitystack size = "+mActivityStack.size());
+		PictureAirLog.d(TAG, "mactivitystack size = "+mActivityStack.size());
 	}
 
 	/**
@@ -103,7 +91,7 @@ public class AppManager {
 			if (!activity.isFinishing()) {//如果正在finish的话，就不需要再finish
 				activity.finish();
 			}
-			System.out.println("finished-----"+ activity.toString());
+			PictureAirLog.out("finished-----" + activity.toString());
 			activity = null;
 		}
 	}
@@ -139,21 +127,14 @@ public class AppManager {
 	 * @param specialActivity 指定的activity
 	 */
 	public void killOtherActivity(Class<?> specialActivity){
-//		for (int i = 0; i < mActivityStack.size(); i++) {
-//			System.out.println("activity is "+ mActivityStack.get(i).toString());
-//		}
 		Iterator<Activity> iterator = mActivityStack.iterator();
 		while (iterator.hasNext()) {
 			Activity activity = (Activity) iterator.next();
-//			System.out.println("current activity is "+ specialActivity+"--------"+activity.getClass());
 			if (!activity.getClass().equals(specialActivity)) {
 				activity.finish();
 				iterator.remove();
 			}
 		}
-//		for (int i = 0; i < mActivityStack.size(); i++) {
-//			System.out.println("after delete activity is "+ mActivityStack.get(i).toString());
-//		}
 	}
 
 	/**

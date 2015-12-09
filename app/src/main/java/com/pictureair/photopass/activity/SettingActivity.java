@@ -109,7 +109,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
-		AppManager.getInstance().addActivity(this);
 		initView();
 	}
 
@@ -214,12 +213,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 			break;
 		}
 
-	}
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 	}
 
 	@Override

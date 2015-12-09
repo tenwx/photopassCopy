@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
-		AppManager.getInstance().addActivity(this);
 		pointLLayout = (LinearLayout) findViewById(R.id.llayout);
 		count = pointLLayout.getChildCount();
 		imgs = new ImageView[count];
@@ -67,12 +65,7 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	}
 
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
+
 	//初始化viewpager
 	public void initpage(LayoutInflater flater) {
 		view1 = flater.inflate(R.layout.activity_start, null);

@@ -21,7 +21,6 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.JsonUtil;
@@ -79,7 +78,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_submit_order);
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		initview();
 
@@ -328,10 +326,4 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 		submitorderAdapter.notifyDataSetChanged();
 	}
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 }

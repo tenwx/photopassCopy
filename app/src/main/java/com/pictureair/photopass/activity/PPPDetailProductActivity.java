@@ -63,7 +63,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 	private TextView shopAddressTextView;
 
 	//申明变量
-	private final static String TAG = "PPPDetailProductActivity";
+	private final static String TAG = "PPPDetailProductAct";
 	private int recordCount = 0; //记录数据库中有几条记录
 	private String storeIdString = null;
 	private String PPPProductId = null;
@@ -206,7 +206,6 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 		addToCartButton.setOnClickListener(this);
 		
 		//初始数据
-		AppManager.getInstance().addActivity(this);
 		myToast = new MyToast(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		aCache = ACache.get(this);
@@ -427,7 +426,6 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 
 	}
 	@Override

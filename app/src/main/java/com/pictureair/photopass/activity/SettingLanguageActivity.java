@@ -36,7 +36,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_language);
-        AppManager.getInstance().addActivity(this);
         initView();
     }
 
@@ -116,10 +115,4 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        AppManager.getInstance().killActivity(this);
-    }
 }
