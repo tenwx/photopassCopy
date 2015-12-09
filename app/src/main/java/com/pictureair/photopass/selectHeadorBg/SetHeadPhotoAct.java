@@ -105,6 +105,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 		Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
 		getAlbum.setType(IMAGE_TYPE);
 		initView();
+		//跳转相册选择页面
 		startActivityForResult(getAlbum, IMAGE_CODE);
 	}
 

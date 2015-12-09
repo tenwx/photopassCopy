@@ -175,29 +175,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 			break;
 
 		case R.id.sub_opinions://消息回馈按钮
-//			diaLogFeedBack();
-//			final EditText inputServer = new EditText(this);
-//			inputServer.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-//			inputServer.setGravity(Gravity.TOP);
-//			inputServer.setSingleLine(false);
-//			inputServer.setHorizontallyScrolling(false);
-//			inputServer.setWidth(ScreenUtil.getScreenWidth(this));
-//			inputServer.setHeight(ScreenUtil.getScreenHeight(this)*2/3);
-//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//			builder.setTitle(R.string.submit_opinions).setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setNegativeButton(R.string.button_cancel, null);
-//			builder.setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
-//				public void onClick(DialogInterface dialog, int which) {
-//					//把inputServer中的文字传到服务器
-//					try {
-//						String opinions = new String(inputServer.getText().toString().getBytes(),"utf-8");
-//					} catch (UnsupportedEncodingException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-////					RequestParams params = new RequestParams();
-//				}
-//			});
-//			builder.show();
 			//意见反馈弹出框
 			UmengUtil.startFeedbackActivity(this);
 			
@@ -233,16 +210,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 				pictureAirDbManager.insertSettingStatus(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
 			}
 			break;
-		// Feedback
-//		case R.id.tVCancel:
-//			myFeedbackDialog.dismiss();
-//			break;
-//		case R.id.tVsend:
-//			myFeedbackDialog.dismiss();
-//			String feedbackStr = eTFeedback.getText().toString();
-//			System.out.println("-------:" + feedbackStr);
-//			break;
-
 		default:
 			break;
 		}
@@ -259,7 +226,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		//onCreate(null);
 	}
 	
 	//监听返回键
@@ -276,22 +242,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 	           
 	    } 
 	
-//	 private void diaLogFeedBack() {
-//			View v = LayoutInflater.from(this).inflate(
-//					R.layout.custom_dialog_feedback, null);
-//			AlertDialog.Builder myBuilder = new AlertDialog.Builder(this);
-//			myFeedbackDialog = myBuilder.create();
-//			myFeedbackDialog.setView(new EditText(this));//自定义的dialog，必须在show（）之前加入此行，不然显示不了软键盘
-//			myFeedbackDialog.show();
-//			myFeedbackDialog.getWindow().setContentView(v);
-//			eTFeedback = (EditText) v.findViewById(R.id.eTFeedback);
-//			tVsend = (TextView) v.findViewById(R.id.tVsend);
-//			tVCancel = (TextView) v.findViewById(R.id.tVCancel);
-//			tVsend.setOnClickListener(this);
-//			tVCancel.setOnClickListener(this);
-//			eTFeedback.setOnClickListener(this);
-//
-//		}
 	 @Override
 		protected void onPause() {
 			// TODO Auto-generated method stub

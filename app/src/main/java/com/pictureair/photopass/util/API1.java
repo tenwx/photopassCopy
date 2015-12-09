@@ -6,12 +6,15 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 
 /**
@@ -32,7 +35,6 @@ public class API1 {
     public static final int UPLOADING_PHOTO = 512;
     public static final int SIGN_FAILED = 5220;
     public static final int DELETE_ORDER_SUCCESS = 14;
-    public static final int BIND_PP_FAILURE = 6666;
 
 
     public static final int GET_LOCATION_SUCCESS = 301;
@@ -115,6 +117,17 @@ public class API1 {
 
     public static final int DOWNLOAD_APK_SUCCESS = 561;
     public static final int DOWNLOAD_APK_FAILED = 560;
+
+
+    //我的模块 start
+    public static final int BIND_PP_FAILURE = 5000;
+    public static final int BIND_PP_SUCCESS = 5001;
+
+    public static final int SCAN_PPP_FAILED = 5400;
+    public static final int SCAN_PPP_SUCCESS = 5401;
+
+    //我的模块 end
+
 
     /**
      * 根据状态码返回提示语
@@ -393,10 +406,210 @@ public class API1 {
         });
     }
 
-    /***************************************我的模块start**************************************/
+    /***************************************我的模块 start**************************************/
+
+    /**
+     * 更新用户信息
+     *
+     * @param tokenId tokenId
+     * @param name     名字
+     * @param birthday 生日
+     * @param gender   性别
+     * @param QQ       qq
+     * @param handler  handler
+     */
+    public static void updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.USERINFO_NICKNAME, name);
+        params.put(Common.USERINFO_COUNTRY, country);
+        params.put(Common.USERINFO_QQ, QQ);
+        params.put(Common.USERINFO_BIRTHDAY, birthday);
+        params.put(Common.USERINFO_GENDER, gender);
+
+        HttpUtil1.asyncPost(Common.UPDATE_PROFILE, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(UPDATE_PROFILE_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(UPDATE_PROFILE_FAILED, getStringByStatus(status));
+            }
+        });
+    }
+
+    /**
+     * 获取订单信息 -- 有大改动
+     */
+
+
+    /**
+     * 获取所有的P
+     *
+     * @param tokenId tokenId
+     * @param handler handler
+     */
+    public static void getPPSByUserId(String tokenId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+
+
+        HttpUtil1.asyncPost(Common.GET_PPS_BY_USERID, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_PPS_SUCCESS, jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_PPS_FAILED, getStringByStatus(status));
+
+            }
+        });
+    }
+
+    /**
+     * 获取账号下所有ppp
+     *
+     * @param tokenId tokenId
+     * @param handler handler
+     */
+    public static ArrayList<PPPinfo> PPPlist;
+
+    public static void getPPPSByUserId(String tokenId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        HttpUtil1.asyncPost(Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
+
+                handler.obtainMessage(GET_PPP_SUCCESS, jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_PPP_FAILED, getStringByStatus(status));
+
+            }
+        });
+    }
+
+    /**
+     * 隐藏PP
+     *
+     * @param params 参数
+     * @param handler handler
+     */
+    public static void hidePPs(RequestParams params, final Handler handler) {
+        HttpUtil1.asyncPost(Common.HIDE_PPS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(HIDE_PP_SUCCESS, jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(HIDE_PP_FAILED, getStringByStatus(status));
+
+            }
+        });
+    }
+
+    /**
+     * 将pp绑定到ppp
+     *
+     * @param tokenId  token
+     * @param pps      pps
+     * @param bindDate bind
+     * @param ppp      ppp
+     * @param handler  handler
+     */
+    public static void bindPPsToPPP(String tokenId, JSONArray pps, String bindDate, String ppp, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.PPS, pps);
+        params.put(Common.bindDate, bindDate);
+        params.put(Common.ppp1, ppp);
+
+        HttpUtil1.asyncPost(Common.BIND_PPS_TO_PPP, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(BIND_PP_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(BIND_PP_FAILURE, getStringByStatus(status));
+
+            }
+        });
+
+    }
+
+    /**
+     * 扫描PPP并绑定用户
+     *
+     * @param params params
+     * @param handler handler
+     */
+    public static void bindPPPToUser(RequestParams params, final Handler handler) {
+        HttpUtil1.asyncPost(Common.BIND_PPP_TO_USER, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(SCAN_PPP_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(SCAN_PPP_FAILED);
+            }
+        });
+    }
+
+    /**
+     * 检查扫描的结果是否正确，并且返回是否已经被使用
+     * @param code
+     * @param handler
+     */
+    public static void checkCodeAvailable(String code, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.CODE, code);
+        HttpUtil1.asyncPost(Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(CHECK_CODE_SUCCESS,jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(CHECK_CODE_FAILED,getStringByStatus(status));
+
+            }
+        });
+    }
 
 
 
+
+
+    /***************************************我的模块 end**************************************/
 
 
 }

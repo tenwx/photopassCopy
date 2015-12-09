@@ -4,20 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 public class UpdateUserinfoActivity extends BaseActivity implements OnClickListener {
 	private ImageView back;  // back btn
 	private ImageButton ibSave;   // save btn
 	
 	private TextView tvHeader;
-	private EditText etUserInfo;
+	private EditTextWithClear etUserInfo;
 	private int type;
 	
 	
@@ -32,7 +32,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
 
 	private void init() {
 		tvHeader = (TextView) findViewById(R.id.tvHeader);
-		etUserInfo = (EditText) findViewById(R.id.et_userinfo_text);
+		etUserInfo = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
 		
 		//判断是从哪个页面跳转过来的。
 		Intent intent=getIntent();

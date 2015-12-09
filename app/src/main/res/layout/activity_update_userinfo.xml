@@ -61,7 +61,7 @@
             android:src="@drawable/preview_save" />
     </RelativeLayout>
 
-    <EditText
+    <com.pictureair.photopass.widget.EditTextWithClear
         android:id="@+id/et_userinfo_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -72,6 +72,7 @@
         android:background="@drawable/editview_inputuserinfo_selected"
         android:hint="@string/hint_text_nickname"
         android:textColor="@color/gray"
+        android:imeOptions="actionDone"
         android:textSize="15sp" />
 
 </RelativeLayout>
