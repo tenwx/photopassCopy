@@ -305,8 +305,8 @@ public class Common {
      *************************************************************************************************************************
      * bass 测试用的
      */
-    public static final String DATA_VIDEO = Environment.getExternalStorageDirectory()+"/aaa/DisneyVideo.mp4";
-    //	public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
+//    public static final String DATA_VIDEO = Environment.getExternalStorageDirectory()+"/aaa/DisneyVideo.mp4";
+    public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
     public static boolean isOnline = true; // 是本地播放还是网络播放
     /*************************************************************************************************************************
      ************************************************************************************************************************

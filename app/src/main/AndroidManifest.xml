@@ -250,19 +250,15 @@
         <!-- Disney Video================================================================================== -->
         <!-- Disney Video================================================================================== -->
         <activity
-            android:name="com.pictureair.photopass.IsOneGoToVideoActivity"
+            android:name=".activity.IsOneGoToVideoActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".EditVideoNullPhotoActivity"
+            android:name=".activity.SelectPhotoGoToVideoActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SelectPhotoGoToVideoActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".VideoPlayerActivity"
+            android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- Disney Video================================================================================== -->
         <!-- Disney Video================================================================================== -->

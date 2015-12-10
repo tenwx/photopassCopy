@@ -106,7 +106,7 @@ public class AppUtil {
 	//当前网络类型
 	public static int mNetWorkType;
 
-	public static int getNetWorkType(Context context) {  
+	public static int getNetWorkType(Context context) {
 		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);  
 		NetworkInfo networkInfo = manager.getActiveNetworkInfo();  
 		if (networkInfo != null && networkInfo.isConnected()) {  
