@@ -29,7 +29,7 @@ import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.WheelView;
-import com.pictureair.photopass.widget.wheelview.adapter.SelectDateWeidget;
+import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import org.json.JSONArray;
 import org.json.JSONException;

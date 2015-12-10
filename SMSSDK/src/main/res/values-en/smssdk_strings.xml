@@ -25,7 +25,7 @@
     <string name="smssdk_unreceive_identify_code"><Data>&lt;font color=#a8b8cb>Not receiving the verification code?&lt;/font></Data></string>
     <string name="smssdk_submit">Submit</string>
     <string name="smssdk_identify_code">Verification code</string>
-    <string name="smssdk_receive_msg"><Data>&lt;font color=#209526>%s&lt;/font> s</Data></string>
+    <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
     <string name="smssdk_resend_identify_code">Resend verification code</string>
     <string name="smssdk_choose_country">Choose country</string>
     <string name="smssdk_network_error">Network error, please try later</string>

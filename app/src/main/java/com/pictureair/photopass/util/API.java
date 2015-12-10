@@ -248,9 +248,9 @@ public class API {
 					}else {
 						try {
 							System.out.println("login success"+response);
-							JsonUtil.getUserInfo(context, response , handler);
+							JsonUtil.getUserInfo(context, com.alibaba.fastjson.JSONObject.parseObject(response.toString()) , handler);
 							handler.sendEmptyMessage(SUCCESS);
-						} catch (JSONException e) {
+						} catch (com.alibaba.fastjson.JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -359,8 +359,8 @@ public class API {
 
 								if (statusCode == 200) {
 									try {
-										JsonUtil.getUserInfo(context, response , handler);
-									} catch (JSONException e) {
+										JsonUtil.getUserInfo(context, com.alibaba.fastjson.JSONObject.parseObject(response.toString()) , handler);
+									} catch (com.alibaba.fastjson.JSONException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
@@ -644,7 +644,7 @@ public class API {
 	}
 
 	/** 删除购物车信息 */
-	public static void deletecart(final Context context,String url,String userid, JSONArray cartItemId, final Handler handler) {
+	public static void deletecart(final Context context,String url,String userid, com.alibaba.fastjson.JSONArray cartItemId, final Handler handler) {
 		System.out.println("delete cart info");
 		RequestParams params = new RequestParams();
 		params.put(Common.USER_ID, userid);

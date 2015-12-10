@@ -336,7 +336,7 @@ public class CartInfoAdapter extends BaseAdapter{
 					}
 				}
 				//创建jsonobject对象
-				JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(null, cartItemInfo, count);
+				com.alibaba.fastjson.JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(null, cartItemInfo, count);
 				System.out.println(cartItem.toString());
 				final boolean addOrminus = addcount;
 				final int cart_item_count = count;

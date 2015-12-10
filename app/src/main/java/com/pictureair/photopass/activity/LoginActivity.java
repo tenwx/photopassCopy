@@ -91,166 +91,166 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
-			case GET_TOKENID_FAILED:
-				if (dialog.isShowing()) {
+				case GET_TOKENID_FAILED:
+					if (dialog.isShowing()) {
+						dialog.dismiss();
+					}
+					myToast.setTextAndShow(R.string.http_failed,
+							Common.TOAST_SHORT_TIME);
+					break;
+
+				case API.SUCCESS:// 登录成功，获取购物车的数量
+					API.getcartcount(LoginActivity.this,
+							sp.getString(Common.USERINFO_ID, ""), handler);
+					break;
+
+				case API.FAILURE:
+					String result = msg.obj.toString();
 					dialog.dismiss();
-				}
-				myToast.setTextAndShow(R.string.http_failed,
-						Common.TOAST_SHORT_TIME);
-				break;
-
-			case API.SUCCESS:// 登录成功，获取购物车的数量
-				API.getcartcount(LoginActivity.this,
-						sp.getString(Common.USERINFO_ID, ""), handler);
-				break;
-
-			case API.FAILURE:
-				String result = msg.obj.toString();
-				dialog.dismiss();
-				myToast.setTextAndShow(result, Common.TOAST_SHORT_TIME);
-				if ("tokenExpired".equals(result)) {
-					PictureAirLog.v(TAG,"tokenExpired");
-					editor = sp.edit();
-					editor.putString(Common.USERINFO_TOKENID, null);
-					editor.commit();
-				}
-				break;
-
-			// case API.GET_PPP_FAILED:
-
-			case API.GET_CART_COUNT_SUCCESS:// 成功获取购物车数量
-				Log.d(TAG, "get cart count success---------------");
-				API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null),
-						handler);// 获取pp列表
-				break;
-
-			case API.GET_CART_COUNT_FAILED:// 获取购物车数量失败
-				dialog.dismiss();
-				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				break;
-			case API.GET_STOREID_FAILED:
-				dialog.dismiss();
-				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				break;
-
-			case GET_IP_SUCCESS:
-				API.getStoreIdbyIP(msg.obj.toString(), handler);
-				break;
-
-			// case API.GET_PPP_SUCCESS:
-			// PictureAirLog.v(TAG,"get ppp success ----------------");
-			// JSONObject ppplistJsonObject = (JSONObject) msg.obj;
-			// try {
-			// JSONArray ppplistArray = ppplistJsonObject
-			// .getJSONArray("PPPList");
-			// if (0 != ppplistArray.length()) {// 说明有ppp
-			// PictureAirLog.v(TAG,"length=" + ppplistArray.length());
-			// Editor editor = sp.edit();
-			// editor.putInt(Common.PPP_COUNT, ppplistArray.length());
-			// editor.commit();
-			// }
-			// } catch (JSONException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// PictureAirLog.v(TAG,"netIP-----------> "+ AppUtil.GetNetIp());
-			// API.getStoreIdbyIP("140.206.125.195", handler);
-			// break;
-
-			case API.GET_PPS_SUCCESS:// 获取pp列表成功
-				/**
-				 * 获取pp成功之后，需要放入sharedPrefence中
-				 */
-				JSONObject ppsJsonObject = (JSONObject) msg.obj;
-				Log.d(TAG, "pps===" + ppsJsonObject);
-				if (ppsJsonObject.has("PPList")) {
-					try {
-						JSONArray pplists = ppsJsonObject
-								.getJSONArray("PPList");
+					myToast.setTextAndShow(result, Common.TOAST_SHORT_TIME);
+					if ("tokenExpired".equals(result)) {
+						PictureAirLog.v(TAG,"tokenExpired");
 						editor = sp.edit();
-						editor.putInt(Common.PP_COUNT, pplists.length());
+						editor.putString(Common.USERINFO_TOKENID, null);
+						editor.commit();
+					}
+					break;
+
+				// case API.GET_PPP_FAILED:
+
+				case API.GET_CART_COUNT_SUCCESS:// 成功获取购物车数量
+					Log.d(TAG, "get cart count success---------------");
+					API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null),
+							handler);// 获取pp列表
+					break;
+
+				case API.GET_CART_COUNT_FAILED:// 获取购物车数量失败
+					dialog.dismiss();
+					myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+					break;
+				case API.GET_STOREID_FAILED:
+					dialog.dismiss();
+					myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+					break;
+
+				case GET_IP_SUCCESS:
+					API.getStoreIdbyIP(msg.obj.toString(), handler);
+					break;
+
+				// case API.GET_PPP_SUCCESS:
+				// PictureAirLog.v(TAG,"get ppp success ----------------");
+				// JSONObject ppplistJsonObject = (JSONObject) msg.obj;
+				// try {
+				// JSONArray ppplistArray = ppplistJsonObject
+				// .getJSONArray("PPPList");
+				// if (0 != ppplistArray.length()) {// 说明有ppp
+				// PictureAirLog.v(TAG,"length=" + ppplistArray.length());
+				// Editor editor = sp.edit();
+				// editor.putInt(Common.PPP_COUNT, ppplistArray.length());
+				// editor.commit();
+				// }
+				// } catch (JSONException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+				// PictureAirLog.v(TAG,"netIP-----------> "+ AppUtil.GetNetIp());
+				// API.getStoreIdbyIP("140.206.125.195", handler);
+				// break;
+
+				case API.GET_PPS_SUCCESS:// 获取pp列表成功
+					/**
+					 * 获取pp成功之后，需要放入sharedPrefence中
+					 */
+					JSONObject ppsJsonObject = (JSONObject) msg.obj;
+					Log.d(TAG, "pps===" + ppsJsonObject);
+					if (ppsJsonObject.has("PPList")) {
+						try {
+							JSONArray pplists = ppsJsonObject
+									.getJSONArray("PPList");
+							editor = sp.edit();
+							editor.putInt(Common.PP_COUNT, pplists.length());
+							editor.commit();
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					} else {
+						Log.d(TAG, "pp size == 0");
+					}
+
+					new Thread() {
+						public void run() {
+							String netIP = "211.95.27.34";
+							// String netIP = AppUtil.GetNetIp();
+							PictureAirLog.v(TAG,"netIP-----------> " + netIP);
+							if (netIP.equals("")) {// 获取失败
+								handler.sendEmptyMessage(GET_IP_FAILED);
+							} else {// 获取成功
+								Message message = handler.obtainMessage();
+								message.what = GET_IP_SUCCESS;
+								message.obj = netIP;
+								handler.sendMessage(message);
+							}
+
+						};
+					}.start();
+					break;
+
+				case GET_IP_FAILED:
+				case API.GET_PPS_FAILED:// 获取pp列表失败
+					dialog.dismiss();
+					myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+					break;
+
+				case API.GET_STOREID_SUCCESS:// 获取storeId成功
+					Log.d(TAG, "get storeid success--------------------");
+					JSONObject obj = (JSONObject) msg.obj;
+					try {
+						storeIdString = obj.getString("storeId").toString();
+						currency = obj.getString("currency").toString();// 获取货币
+						Log.d(TAG, "storeid:" + storeIdString + ";currency:"
+								+ currency);
+						Editor editor = sp.edit();
+						editor.putString(Common.CURRENCY, currency);
+						editor.putString(Common.STORE_ID, storeIdString);
 						editor.commit();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
-				} else {
-					Log.d(TAG, "pp size == 0");
-				}
 
-				new Thread() {
-					public void run() {
-						String netIP = "211.95.27.34";
-						// String netIP = AppUtil.GetNetIp();
-						PictureAirLog.v(TAG,"netIP-----------> " + netIP);
-						if (netIP.equals("")) {// 获取失败
-							handler.sendEmptyMessage(GET_IP_FAILED);
-						} else {// 获取成功
-							Message message = handler.obtainMessage();
-							message.what = GET_IP_SUCCESS;
-							message.obj = netIP;
-							handler.sendMessage(message);
-						}
+					loginsuccess();
+					break;
 
-					};
-				}.start();
-				break;
+				case API.MODIFY_PWD_FAILED:
+					PictureAirLog.v(TAG,"signorfotget------modify pwd failed");
+					// 提示错误
+					break;
 
-			case GET_IP_FAILED:
-			case API.GET_PPS_FAILED:// 获取pp列表失败
-				dialog.dismiss();
-				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				break;
+				case API.MODIFY_PWD_SUCCESS:
+					PictureAirLog.v(TAG,"signorforget------modify pwd success");
+					// 跳转至登录界面
+					break;
 
-			case API.GET_STOREID_SUCCESS:// 获取storeId成功
-				Log.d(TAG, "get storeid success--------------------");
-				JSONObject obj = (JSONObject) msg.obj;
-				try {
-					storeIdString = obj.getString("storeId").toString();
-					currency = obj.getString("currency").toString();// 获取货币
-					Log.d(TAG, "storeid:" + storeIdString + ";currency:"
-							+ currency);
-					Editor editor = sp.edit();
-					editor.putString(Common.CURRENCY, currency);
-					editor.putString(Common.STORE_ID, storeIdString);
-					editor.commit();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				case START_OTHER_REGISTER_ACTIVITY:
 
-				loginsuccess();
-				break;
+					// 其他注册的按钮//
+					PictureAirLog.v(TAG,"other way on click----------");
+					startActivity(new Intent(LoginActivity.this,
+							OtherRegisterActivity.class));
 
-			case API.MODIFY_PWD_FAILED:
-				PictureAirLog.v(TAG,"signorfotget------modify pwd failed");
-				// 提示错误
-				break;
+					break;
 
-			case API.MODIFY_PWD_SUCCESS:
-				PictureAirLog.v(TAG,"signorforget------modify pwd success");
-				// 跳转至登录界面
-				break;
+				case START_NATIONAL_LIST_SELECTION_ACTIVITY:
+					// 传递2，说明是从注册页面跳转到国家列表界面，传递3为 此activity跳转到国家列表界面
+					Intent intent2 = new Intent();
+					intent2.setClass(LoginActivity.this,
+							NationalListSelectionActivity.class);
+					intent2.putExtra("key", 2);
 
-			case START_OTHER_REGISTER_ACTIVITY:
+					startActivity(intent2);
 
-				// 其他注册的按钮//
-				PictureAirLog.v(TAG,"other way on click----------");
-				startActivity(new Intent(LoginActivity.this,
-						OtherRegisterActivity.class));
-
-				break;
-
-			case START_NATIONAL_LIST_SELECTION_ACTIVITY:
-				// 传递2，说明是从注册页面跳转到国家列表界面，传递3为 此activity跳转到国家列表界面
-				Intent intent2 = new Intent();
-				intent2.setClass(LoginActivity.this,
-						NationalListSelectionActivity.class);
-				intent2.putExtra("key", 2);
-
-				startActivity(intent2);
-
-				break;
-			default:
-				break;
+					break;
+				default:
+					break;
 			}
 		}
 	};
@@ -352,7 +352,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
+										  KeyEvent event) {
 				// TODO Auto-generated method stub
 				/* 判断是否是“GO”键 */
 				if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -379,74 +379,74 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.rl_country:
-			// NationalListSelectionActivity
-			PictureAirLog.v(TAG,"国家按钮");
-			startActivityForResult(new Intent(LoginActivity.this,
-					NationalListSelectionActivity.class), 0);
-			break;
-
-		case R.id.login:
-			hideInputMethodManager(v);
-			if (userName.getText().toString().trim().isEmpty()) {
-				myToast.setTextAndShow(R.string.username_null,
-						Common.TOAST_SHORT_TIME);
-				break;
-			}
-			String pwd = password.getText().toString();
-			// 比较密码合法性
-			switch (AppUtil.checkPwd(pwd, pwd)) {
-			case AppUtil.PWD_ALL_SAPCE:// 全部为空格
-				myToast.setTextAndShow(R.string.pwd_no_all_space,
-						Common.TOAST_SHORT_TIME);
+			case R.id.rl_country:
+				// NationalListSelectionActivity
+				PictureAirLog.v(TAG,"国家按钮");
+				startActivityForResult(new Intent(LoginActivity.this,
+						NationalListSelectionActivity.class), 0);
 				break;
 
-			case AppUtil.PWD_AVAILABLE:// 密码可用
-				login();// 登录
+			case R.id.login:
+				hideInputMethodManager(v);
+				if (userName.getText().toString().trim().isEmpty()) {
+					myToast.setTextAndShow(R.string.username_null,
+							Common.TOAST_SHORT_TIME);
+					break;
+				}
+				String pwd = password.getText().toString();
+				// 比较密码合法性
+				switch (AppUtil.checkPwd(pwd, pwd)) {
+					case AppUtil.PWD_ALL_SAPCE:// 全部为空格
+						myToast.setTextAndShow(R.string.pwd_no_all_space,
+								Common.TOAST_SHORT_TIME);
+						break;
+
+					case AppUtil.PWD_AVAILABLE:// 密码可用
+						login();// 登录
+						break;
+
+					case AppUtil.PWD_EMPTY:// 空
+						myToast.setTextAndShow(R.string.pwd_is_empty,
+								Common.TOAST_SHORT_TIME);
+						break;
+
+					case AppUtil.PWD_INCONSISTENCY:// 不一致
+						// myToast.setTextAndShow(R.string.pw_is_inconsistency,
+						// Common.TOAST_SHORT_TIME);
+						break;
+
+					case AppUtil.PWD_SHORT:// 小于6位
+						myToast.setTextAndShow(R.string.notify_password_hint,
+								Common.TOAST_SHORT_TIME);
+
+						break;
+
+					case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
+						myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
+								Common.TOAST_SHORT_TIME);
+						break;
+				}
 				break;
 
-			case AppUtil.PWD_EMPTY:// 空
-				myToast.setTextAndShow(R.string.pwd_is_empty,
-						Common.TOAST_SHORT_TIME);
+			case R.id.sign:
+				PictureAirLog.v(TAG,"tap sign");
+				sendSMS(0);
 				break;
 
-			case AppUtil.PWD_INCONSISTENCY:// 不一致
-				// myToast.setTextAndShow(R.string.pw_is_inconsistency,
-				// Common.TOAST_SHORT_TIME);
+			case R.id.forgot:
+				PictureAirLog.v(TAG,"tap forget password");
+				sendSMS(1);
 				break;
 
-			case AppUtil.PWD_SHORT:// 小于6位
-				myToast.setTextAndShow(R.string.notify_password_hint,
-						Common.TOAST_SHORT_TIME);
-
+			case R.id.otherLogin:
+				PictureAirLog.v(TAG,"tap other login 其他方式登录");
+				Intent intent = new Intent(LoginActivity.this,
+						OtherLoginActivity.class);
+				startActivity(intent);
 				break;
 
-			case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
-				myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
-						Common.TOAST_SHORT_TIME);
+			default:
 				break;
-			}
-			break;
-
-		case R.id.sign:
-			PictureAirLog.v(TAG,"tap sign");
-			sendSMS(0);
-			break;
-
-		case R.id.forgot:
-			PictureAirLog.v(TAG,"tap forget password");
-			sendSMS(1);
-			break;
-
-		case R.id.otherLogin:
-			PictureAirLog.v(TAG,"tap other login 其他方式登录");
-			Intent intent = new Intent(LoginActivity.this,
-					OtherLoginActivity.class);
-			startActivity(intent);
-			break;
-
-		default:
-			break;
 		}
 	}
 
@@ -473,7 +473,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				}
 
 				public void onSuccess(int statusCode, Header[] headers,
-						JSONObject response) {
+									  JSONObject response) {
 					super.onSuccess(statusCode, headers, response);
 					try {
 						PictureAirLog.v(TAG,"tokenid==" + response);
@@ -495,7 +495,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 				@Override
 				public void onFailure(int statusCode, Header[] headers,
-						String responseString, Throwable throwable) {
+									  String responseString, Throwable throwable) {
 					// TODO Auto-generated method stub
 					super.onFailure(statusCode, headers, responseString,
 							throwable);
