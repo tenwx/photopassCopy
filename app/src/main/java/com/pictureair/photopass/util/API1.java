@@ -135,21 +135,6 @@ public class API1 {
     //我的模块 end
 
 
-    /**
-     * 根据状态码返回提示语
-     *
-     * @param status 状态码
-     * @return String
-     */
-    public static String getStringByStatus(int status) {
-        String str = "";
-        //.......
-
-        return str;
-
-    }
-
-
     static {
         HttpUtil1.setBaseUrl(Common.BASE_URL_TEST);
     }
@@ -177,7 +162,7 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 //失败
-                handler.obtainMessage(FAILURE, getStringByStatus(status));
+                handler.obtainMessage(FAILURE, status);
             }
         });
     }
@@ -185,43 +170,39 @@ public class API1 {
 
     /**
      * 发送设备ID获取tokenId
-     *
      * @param context
+     * @param handler
      */
-    public static void getTokenId(final Context context) {
+    public static void getTokenId(final Context context, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.TERMINAL, "android");
         params.put(Common.UUID, Installation.id(context));
-        PictureAirLog.out("getTokenId------->"+ params.toString());
-
         HttpUtil1.asyncGet(Common.GET_TOKENID, params, new HttpCallback() {
-
-            @Override
-            public void onStart() {
-                super.onStart();
-                PictureAirLog.out("getTokenId--->start");
-            }
 
             @Override
             public void onSuccess(JSONObject jsonObject) {
 
                 super.onSuccess(jsonObject);
-                PictureAirLog.out("getTokenId--->" + jsonObject.toString());
                 try {
                     SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_TOKENID, jsonObject.getString(Common.USERINFO_TOKENID));
-                    PictureAirLog.out("tokenid---->"+jsonObject.getString(Common.USERINFO_TOKENID));
+                    PictureAirLog.out("tokenid---->" + jsonObject.getString(Common.USERINFO_TOKENID));
                     e.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+                if (handler != null) {
+                    handler.sendEmptyMessage(GET_TOKEN_ID_SUCCESS);
                 }
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.out("get tokenId ----> failed" + status);
+                if (handler != null) {
+                    handler.obtainMessage(GET_TOKEN_ID_FAILED, status);
+                }
             }
         });
     }
@@ -260,7 +241,7 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 //根据返回的status 获取对应的字符串
-                handler.obtainMessage(FAILURE, getStringByStatus(status));
+                handler.obtainMessage(FAILURE, status);
             }
         });
 
@@ -338,7 +319,7 @@ public class API1 {
                     @Override
                     public void onFailure(int status) {
                         super.onFailure(status);
-                        handler.obtainMessage(SIGN_FAILED, getStringByStatus(status));
+                        handler.obtainMessage(SIGN_FAILED, status);
 
                     }
                 });
@@ -347,7 +328,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(SIGN_FAILED, getStringByStatus(status));
+                handler.obtainMessage(SIGN_FAILED, status);
             }
         });
     }
@@ -383,7 +364,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(MODIFY_PWD_FAILED, getStringByStatus(status));
+                handler.obtainMessage(MODIFY_PWD_FAILED, status);
 
             }
         });
@@ -401,7 +382,7 @@ public class API1 {
      */
     public static void SetPhoto(String url, RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-        HttpUtil1.asynUploadFile(url, params, new HttpCallback() {
+        HttpUtil1.asyncPost(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -412,7 +393,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(UPLOAD_PHOTO_FAILED, getStringByStatus(status));
+                handler.obtainMessage(UPLOAD_PHOTO_FAILED, status);
 
             }
 
@@ -429,7 +410,7 @@ public class API1 {
     /**
      * 更新用户信息
      *
-     * @param tokenId tokenId
+     * @param tokenId  tokenId
      * @param name     名字
      * @param birthday 生日
      * @param gender   性别
@@ -455,7 +436,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(UPDATE_PROFILE_FAILED, getStringByStatus(status));
+                handler.obtainMessage(UPDATE_PROFILE_FAILED, status);
             }
         });
     }
@@ -486,7 +467,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(GET_PPS_FAILED, getStringByStatus(status));
+                handler.obtainMessage(GET_PPS_FAILED, status);
 
             }
         });
@@ -515,7 +496,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(GET_PPP_FAILED, getStringByStatus(status));
+                handler.obtainMessage(GET_PPP_FAILED, status);
 
             }
         });
@@ -524,7 +505,7 @@ public class API1 {
     /**
      * 隐藏PP
      *
-     * @param params 参数
+     * @param params  参数
      * @param handler handler
      */
     public static void hidePPs(RequestParams params, final Handler handler) {
@@ -538,7 +519,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(HIDE_PP_FAILED, getStringByStatus(status));
+                handler.obtainMessage(HIDE_PP_FAILED, status);
 
             }
         });
@@ -570,7 +551,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(BIND_PP_FAILURE, getStringByStatus(status));
+                handler.obtainMessage(BIND_PP_FAILURE, status);
 
             }
         });
@@ -580,7 +561,7 @@ public class API1 {
     /**
      * 扫描PPP并绑定用户
      *
-     * @param params params
+     * @param params  params
      * @param handler handler
      */
     public static void bindPPPToUser(RequestParams params, final Handler handler) {
@@ -601,6 +582,7 @@ public class API1 {
 
     /**
      * 检查扫描的结果是否正确，并且返回是否已经被使用
+     *
      * @param code
      * @param handler
      */
@@ -611,20 +593,17 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(CHECK_CODE_SUCCESS,jsonObject);
+                handler.obtainMessage(CHECK_CODE_SUCCESS, jsonObject);
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(CHECK_CODE_FAILED,getStringByStatus(status));
+                handler.obtainMessage(CHECK_CODE_FAILED, status);
 
             }
         });
     }
-
-
-
 
 
     /***************************************我的模块 end**************************************/

@@ -24,6 +24,7 @@ public class HttpUtil1 {
     private static String BASE_URL = "http://192.168.8.3:3006";
     private static final String TAG = "HttpUtil1";
     private static final int HTTP_ERROR = 401;//请求失败的错误代码
+    private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/jpeg;charset=utf-8", "image/jpeg;charset=utf-8"};
 
 
     static {
@@ -110,6 +111,12 @@ public class HttpUtil1 {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
                 return JsonTools.parseObject(rawJsonData);
             }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                httpCallback.onProgress(bytesWritten, totalSize);
+            }
         });
     }
 
@@ -156,6 +163,12 @@ public class HttpUtil1 {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
                 return JsonTools.parseObject(rawJsonData);
             }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                httpCallback.onProgress(bytesWritten, totalSize);
+            }
         });
     }
 
@@ -200,6 +213,12 @@ public class HttpUtil1 {
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
                 return JsonTools.parseObject(rawJsonData);
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                httpCallback.onProgress(bytesWritten, totalSize);
             }
         });
     }
@@ -249,52 +268,6 @@ public class HttpUtil1 {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
                 return JsonTools.parseObject(rawJsonData);
             }
-        });
-    }
-
-
-    /**
-     * 异步上传文件
-     *
-     * @param url           请求url
-     * @param requestParams 文件(InputStream、File、byte array;具体参照官网)
-     * @param httpCallback  请求回调
-     */
-    public static void asynUploadFile(String url, RequestParams requestParams, final HttpCallback httpCallback) {
-        asyncHttpClient.post(getAbsoluteUrl(url), requestParams, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                httpCallback.onStart();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                //上传成功
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        //成功,返回内容
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                //上传失败
-                PictureAirLog.e(TAG, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
-
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                return JsonTools.parseObject(rawJsonData);
-            }
 
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
@@ -311,7 +284,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asynDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        asyncHttpClient.get(url, new BinaryHttpResponseHandler() {
+        asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -346,7 +319,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asynDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.post(url, params, new BinaryHttpResponseHandler() {
+        asyncHttpClient.post(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();

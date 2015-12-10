@@ -86,7 +86,7 @@ public class StartActivity extends BaseActivity{
 					}
 				}, 2000);
 			} else {//进入引导页
-				API1.getTokenId(this);
+				API1.getTokenId(this, null);
 				Editor editor = spApp.edit();
 				editor.putInt(Common.APP_VERSION_CODE, versionCode);
 				editor.commit();
