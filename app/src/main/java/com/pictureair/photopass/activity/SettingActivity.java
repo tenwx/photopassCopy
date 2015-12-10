@@ -48,6 +48,9 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 	
 	private boolean wifiSelected;
 	private boolean autoSelected;
+
+	boolean isSync;//同步
+	boolean isWifiDownload;//仅wifi下载
 	
 	private SharedPreferences sharedPreferences;
 	private PictureAirDbManager pictureAirDbManager;
@@ -113,12 +116,6 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 	}
 
 	private void initView(){
-		pictureAirDbManager = new PictureAirDbManager(this);
-		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-		boolean isSync = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
-		boolean isWifiDownload = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
-		config = getResources().getConfiguration();
-		dm = getResources().getDisplayMetrics();
 		logout = (Button) findViewById(R.id.logout);
 		feedback = (RelativeLayout) findViewById(R.id.sub_opinions);
 		back = (ImageView) findViewById(R.id.back);
@@ -127,6 +124,13 @@ public class SettingActivity  extends BaseActivity implements OnClickListener{
 		
 		wifiDownload = (ImageButton) findViewById(R.id.wifi_download);
 		autoDownload = (ImageButton) findViewById(R.id.auto_download);
+
+		pictureAirDbManager = new PictureAirDbManager(this);
+		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+		isSync = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
+		isWifiDownload = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
+		config = getResources().getConfiguration();
+		dm = getResources().getDisplayMetrics();
 		
 		if (isSync) {
 			autoSelected = true;

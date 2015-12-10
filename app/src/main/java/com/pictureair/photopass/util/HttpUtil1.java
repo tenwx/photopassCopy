@@ -78,26 +78,6 @@ public class HttpUtil1{
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, final HttpCallback httpCallback) {
-
-        asyncHttpClient.get(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-httpCallback.onStart();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-
-            }
-
-            @Override
-            protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-
-                return JsonTools.parseObject(rawJsonData);
-            }
-        });
-
-
         asyncHttpClient.get(getAbsoluteUrl(url), new BaseJsonHttpResponseHandler<HttpBaseJson>() {
 
             @Override
@@ -112,7 +92,6 @@ httpCallback.onStart();
                 // called when response HTTP status is "200 OK"
                 if (httpBaseJson != null) {
                     if (httpBaseJson.getStatus() == 200) {
-                        httpCallback.onSuccess(httpBaseJson.getResult().toString());
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
@@ -150,12 +129,10 @@ httpCallback.onStart();
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
         asyncHttpClient.get(getAbsoluteUrl(url), params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson response) {
-                HttpBaseJson httpBaseJson = JsonTools.parseObject(rawJsonResponse);
+            public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 // called when response HTTP status is "200 OK"
-                if (httpBaseJson == null) {
+                if (httpBaseJson != null) {
                     if (httpBaseJson.getStatus() == 200) {
-                        httpCallback.onSuccess(httpBaseJson.getResult().toString());
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
@@ -192,10 +169,9 @@ httpCallback.onStart();
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 // called when response HTTP status is "200 OK"
                 //获取服务器返回内容,并解析.
-                if (httpBaseJson == null) {
+                if (httpBaseJson != null) {
                     if (httpBaseJson.getStatus() == 200) {
                         //成功,返回内容
-                        httpCallback.onSuccess(httpBaseJson.getResult().toString());
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
@@ -251,6 +227,7 @@ httpCallback.onStart();
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.v(TAG, "onFailure statusCode: " + statusCode);
+                httpCallback.onFailure(401);
             }
 
             @Override
@@ -369,18 +346,6 @@ httpCallback.onStart();
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
                 httpCallback.onProgress(bytesWritten, totalSize);
-
-            }
-        });
-
-        asyncHttpClient.post(url, params, new BinaryHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
 
             }
         });

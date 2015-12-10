@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,9 +58,9 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         //初始化控件
         sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         code_pic = (ImageView) view.findViewById(R.id.code_pic);
-        LayoutParams params = code_pic.getLayoutParams();
-        params.height = ScreenUtil.getScreenWidth(getActivity()) / 3;
-        code_pic.setLayoutParams(params);
+//        LayoutParams params = code_pic.getLayoutParams();
+//        params.height = ScreenUtil.getScreenWidth(getActivity()) / 3;
+//        code_pic.setLayoutParams(params);
         if (!sp.getString(Common.USERINFO_USER_PP, "").isEmpty()) {
             try {
                 code_pic.setImageBitmap(AppUtil.createQRCode(sp.getString(Common.USERINFO_USER_PP, ""), ScreenUtil.getScreenWidth(getActivity()) / 5));

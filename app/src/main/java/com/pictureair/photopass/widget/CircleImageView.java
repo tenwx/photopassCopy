@@ -27,7 +27,7 @@ public class CircleImageView extends ImageView {
     private static final int COLORDRAWABLE_DIMENSION = 1;
 
     private static final int DEFAULT_BORDER_WIDTH = 0;
-    private static final int DEFAULT_BORDER_COLOR = Color.WHITE;
+    private static final int DEFAULT_BORDER_COLOR = Color.TRANSPARENT;//默认边框颜色
 
     private final RectF mDrawableRect = new RectF();
     private final RectF mBorderRect = new RectF();

@@ -2,18 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
-    android:scrollbars="none" >
+    android:scrollbars="none"
+    android:background="@color/pp_light_gray_background">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/gray_light" >
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/me_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -27,38 +26,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:gravity="center"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableTop="@drawable/me_message"
-                    android:gravity="center"
-                    android:text="@string/mypage_message"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:visibility="invisible" />
+                <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:drawableTop="@drawable/me_message"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/mypage_message"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textSize="@dimen/text_size_16"-->
+                    <!--android:visibility="invisible" />-->
 
                 <ImageView
                     android:id="@+id/code_pic"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:background="@color/white"
-                    android:padding="5dp"
                     android:src="@drawable/code_pic" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableTop="@drawable/me_coupons"
-                    android:gravity="center"
-                    android:text="@string/mypage_coupons"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:visibility="invisible" />
+                <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:drawableTop="@drawable/me_coupons"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/mypage_coupons"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textSize="@dimen/text_size_16"-->
+                    <!--android:visibility="invisible" />-->
             </LinearLayout>
 
             <!-- 根据用户头像的大小 得出 marginLeft 90dp -->
@@ -67,22 +65,30 @@
 
         <TextView
             android:id="@+id/user_name"
+            android:layout_below="@+id/me_title"
+            android:layout_toRightOf="@+id/user_photo_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/me_title"
-            android:layout_marginLeft="90dp"
-            android:layout_marginTop="5dp"
-            android:text="用户名"
-            android:textColor="@color/gray"
-            android:textSize="18sp" />
+            android:layout_marginTop="10dp"
+            android:text="@string/username"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <com.pictureair.photopass.widget.CircleImageView
-            android:id="@+id/user_photo"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:id="@+id/user_photo_bg"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_below="@+id/me_title"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="-35dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="-40dp"
+            android:src="@drawable/user_photo_bg"/>
+        <com.pictureair.photopass.widget.CircleImageView
+            android:id="@+id/user_photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/me_title"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="-30dp"
             android:src="@drawable/bg1" />
 
         <!-- 我的列表 -->
@@ -113,8 +119,9 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_myprofile"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16"
+                     />
             </RelativeLayout>
 
             <View
@@ -139,8 +146,8 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_myorder"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
             <View
                 android:layout_width="wrap_content"
@@ -163,8 +170,8 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_pp"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
             <View
@@ -188,8 +195,8 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_ppp"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -210,8 +217,8 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_help"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
             <View
@@ -237,8 +244,8 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_setting"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
             <View
@@ -262,8 +269,8 @@
                     android:gravity="center"
                     android:paddingLeft="7dp"
                     android:text="@string/mypage_about"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

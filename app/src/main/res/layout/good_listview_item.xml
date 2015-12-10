@@ -4,19 +4,22 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="5dp"
+    android:layout_marginTop="20dp"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp" >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/good_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_blue"
+            android:textStyle="bold"
             android:textSize="15sp" />
 
         <TextView
@@ -25,7 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/orange"
+            android:textColor="@color/pp_orange"
+            android:textStyle="bold"
             android:textSize="15sp" />
         
         <TextView
@@ -35,11 +39,23 @@
             android:layout_toLeftOf="@id/good_price"
             android:layout_alignBaseline="@+id/good_price"
             android:layout_marginRight="2dp"
-            android:textColor="@color/orange"
+            android:textColor="@color/pp_orange"
             android:textSize="15sp" />
 
-
     </RelativeLayout>
+
+    <TextView
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/goodDetailIntroduce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textColor="@color/pp_light_gray_press" />
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -52,15 +68,15 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true" />
 
-        <TextView
-            android:id="@+id/goodDetailIntroduce"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/ppp_cover"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:textColor="@color/white" />
+        <!--<TextView-->
+            <!--android:id="@+id/goodDetailIntroduce"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/ppp_cover"-->
+            <!--android:padding="10dp"-->
+            <!--android:singleLine="true"-->
+            <!--android:textColor="@color/white" />-->
     </RelativeLayout>
 
 </LinearLayout>

@@ -14,4 +14,11 @@
     <dimen name="text_middle_size">15sp</dimen>
     <dimen name="text_small_size">12sp</dimen>
 
+    <dimen name="text_size_20">20sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_10">10sp</dimen>
+    <dimen name="text_size_8">8sp</dimen>
+    <dimen name="text_size_6">6sp</dimen>
+
 </resources>

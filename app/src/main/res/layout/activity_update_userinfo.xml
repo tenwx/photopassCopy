@@ -61,7 +61,7 @@
             android:src="@drawable/preview_save" />
     </RelativeLayout>
 
-    <com.pictureair.photopass.widget.EditTextWithClear
+    <cn.smssdk.gui.EditTextWithClear
         android:id="@+id/et_userinfo_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

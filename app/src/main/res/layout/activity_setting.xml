@@ -54,7 +54,6 @@
             android:padding="15dp" >
 
             <TextView
-                android:id="@+id/sub_opinions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -137,7 +136,6 @@
             android:padding="15dp" >
 
             <TextView
-                android:id="@+id/sub_opinions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -165,7 +163,6 @@
             android:padding="15dp" >
 
             <TextView
-                android:id="@+id/sub_opinions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -218,11 +215,10 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
-        android:background="@drawable/button_blue"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:background="@drawable/button_blue_shape_and_selector"
+        android:padding="10dp"
+        android:textColor="@drawable/textview_selector_blue_white"
         android:text="@string/logout"
-        android:textColor="@color/white"
         android:textSize="15sp"
         android:textStyle="bold" />
 
