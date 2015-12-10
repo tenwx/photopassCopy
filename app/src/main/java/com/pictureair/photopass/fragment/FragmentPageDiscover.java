@@ -104,16 +104,16 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 				//获取全部的location
 				Log.d(TAG, "get location success============"+ msg.obj);
 				try {
-					JSONObject response = new JSONObject(msg.obj.toString());
-					JSONArray resultArray = response.getJSONArray("locations");
-					for (int i = 0; i < resultArray.length(); i++) {
+					com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
+					com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+					for (int i = 0; i < resultArray.size(); i++) {
 						DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-						JSONObject object = resultArray.getJSONObject(i);
+						com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
 						locationInfo = JsonUtil.getLocation(object);
 						locationList.add(locationInfo);
 					}
 					locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
-				} catch (JSONException e1) {
+				} catch (com.alibaba.fastjson.JSONException e1) {
 					e1.printStackTrace();
 				}
 				API.getFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);

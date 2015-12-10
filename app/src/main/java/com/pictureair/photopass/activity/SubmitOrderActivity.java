@@ -142,7 +142,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 				updatephotolist.set(0, itemInfo);
 				//创建jsonobject对象
 				final int position = msg.arg1;
-				JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(updatephotolist, list.get(position/10), list.get(position/10).cart_quantity);
+				com.alibaba.fastjson.JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(updatephotolist, list.get(position/10), list.get(position/10).cart_quantity);
 				System.out.println(cartItem.toString());
 				RequestParams params = new RequestParams();
 				params.put(Common.USER_ID, sharedPreferences.getString(Common.USERINFO_ID, ""));

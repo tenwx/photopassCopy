@@ -21,57 +21,67 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
- /*
-  * 播放器
-  * 1.setVideoPath
-  * 2.cancelDelayHide();
-  * 3.hideControllerDelay();
-  */
+
+/*
+ * 播放器
+ * 1.setVideoPath
+ * 2.cancelDelayHide();
+ * 3.hideControllerDelay();
+ */
 public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     private String TAG = "VideoView";
     private Context mContext;
     // settable by the client
-    private Uri         mUri;
-    private int         mDuration;
+    private Uri mUri;
+    private int mDuration;
     private SurfaceHolder mSurfaceHolder = null;
     private MediaPlayer mMediaPlayer = null;
-    private boolean     mIsPrepared;
-    private int         mVideoWidth;
-    private int         mVideoHeight;
-    private int         mSurfaceWidth;
-    private int         mSurfaceHeight;
+    private boolean mIsPrepared;
+    private int mVideoWidth;
+    private int mVideoHeight;
+    private int mSurfaceWidth;
+    private int mSurfaceHeight;
     private MediaController mMediaController;
     private OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
-    private int         mCurrentBufferPercentage;
+    private int mCurrentBufferPercentage;
     private OnErrorListener mOnErrorListener;
-    private boolean     mStartWhenPrepared;
-    private int         mSeekWhenPrepared;
+    private boolean mStartWhenPrepared;
+    private int mSeekWhenPrepared;
     private MySizeChangeLinstener mMyChangeLinstener;
-    
-    public int getVideoWidth(){
-    	return mVideoWidth;
+    private myMediapalerPrepared myMediapalerPrepared;
+
+    public interface myMediapalerPrepared {
+        public void myOnrepared(MediaPlayer mp);
     }
-    
-    public int getVideoHeight(){
-    	return mVideoHeight;
+
+    public void setMyMediapalerPrepared(myMediapalerPrepared myMediapalerPrepared) {
+        this.myMediapalerPrepared = myMediapalerPrepared;
     }
-    
-    public void setVideoScale(int width , int height){
-    	LayoutParams lp = getLayoutParams();
-    	lp.height = height;
-		lp.width = width;
-		setLayoutParams(lp);
+
+    public int getVideoWidth() {
+        return mVideoWidth;
     }
-    
-    public interface MySizeChangeLinstener{
-    	public void doMyThings();
+
+    public int getVideoHeight() {
+        return mVideoHeight;
     }
-    
-    public void setMySizeChangeLinstener(MySizeChangeLinstener l){
-    	mMyChangeLinstener = l;
+
+    public void setVideoScale(int width, int height) {
+        LayoutParams lp = getLayoutParams();
+        lp.height = height;
+        lp.width = width;
+        setLayoutParams(lp);
     }
-    
+
+    public interface MySizeChangeLinstener {
+        public void doMyThings();
+    }
+
+    public void setMySizeChangeLinstener(MySizeChangeLinstener l) {
+        mMyChangeLinstener = l;
+    }
+
     public VideoPlayerView(Context context) {
         super(context);
         mContext = context;
@@ -89,18 +99,18 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         mContext = context;
         initVideoView();
     }
-    
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = getDefaultSize(mVideoWidth, widthMeasureSpec);
         int height = getDefaultSize(mVideoHeight, heightMeasureSpec);
-        setMeasuredDimension(width,height);
+        setMeasuredDimension(width, height);
     }
 
     public int resolveAdjustedSize(int desiredSize, int measureSpec) {
         int result = desiredSize;
         int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize =  MeasureSpec.getSize(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
 
         switch (specMode) {
             case MeasureSpec.UNSPECIFIED:
@@ -116,7 +126,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                 break;
         }
         return result;
-}
+    }
 
     private void initVideoView() {
         mVideoWidth = 0;
@@ -130,6 +140,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
 
     /**
      * 首先设置路径
+     *
      * @param path
      */
     public void setVideoPath(String path) {
@@ -204,36 +215,36 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         if (mMediaPlayer != null && mMediaController != null) {
             mMediaController.setMediaPlayer(this);
             View anchorView = this.getParent() instanceof View ?
-                    (View)this.getParent() : this;
+                    (View) this.getParent() : this;
             mMediaController.setAnchorView(anchorView);
             mMediaController.setEnabled(mIsPrepared);
         }
     }
 
     MediaPlayer.OnVideoSizeChangedListener mSizeChangedListener =
-        new MediaPlayer.OnVideoSizeChangedListener() {
-    	
-            public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-            	
-            	Log.v("==>>", "onVideoSizeChanged()");
-                mVideoWidth = mp.getVideoWidth();
-                mVideoHeight = mp.getVideoHeight();
-                
-                
-                if(mMyChangeLinstener!=null){
-                	mMyChangeLinstener.doMyThings();
+            new MediaPlayer.OnVideoSizeChangedListener() {
+
+                public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+
+                    Log.v("==>>", "onVideoSizeChanged()");
+                    mVideoWidth = mp.getVideoWidth();
+                    mVideoHeight = mp.getVideoHeight();
+
+
+                    if (mMyChangeLinstener != null) {
+                        mMyChangeLinstener.doMyThings();
+                    }
+
+                    if (mVideoWidth != 0 && mVideoHeight != 0) {
+                        getHolder().setFixedSize(mVideoWidth, mVideoHeight);
+                    }
                 }
-                
-                if (mVideoWidth != 0 && mVideoHeight != 0) {
-                    getHolder().setFixedSize(mVideoWidth, mVideoHeight);
-                }
-            }
-    };
-    
-   
+            };
 
     MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         public void onPrepared(MediaPlayer mp) {
+            myMediapalerPrepared.myOnrepared(mp);
+
             // briefly show the mediacontroller
             mIsPrepared = true;
             if (mOnPreparedListener != null) {
@@ -246,7 +257,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
             mVideoHeight = mp.getVideoHeight();
             if (mVideoWidth != 0 && mVideoHeight != 0) {
                 //Log.i("@@@@", "video size: " + mVideoWidth +"/"+ mVideoHeight);
-                getHolder().setFixedSize(mVideoWidth, mVideoHeight);	
+                getHolder().setFixedSize(mVideoWidth, mVideoHeight);
                 if (mSurfaceWidth == mVideoWidth && mSurfaceHeight == mVideoHeight) {
                     // We didn't actually change the size (it was already at the size
                     // we need), so we won't get a "surface changed" callback, so
@@ -263,10 +274,10 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                         }
                     } else if (!isPlaying() &&
                             (mSeekWhenPrepared != 0 || getCurrentPosition() > 0)) {
-                       if (mMediaController != null) {
-                           mMediaController.show(0);
-                       }
-                   }
+                        if (mMediaController != null) {
+                            mMediaController.show(0);
+                        }
+                    }
                 }
             } else {
                 if (mSeekWhenPrepared != 0) {
@@ -282,46 +293,46 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     };
 
     private OnCompletionListener mCompletionListener =
-        new OnCompletionListener() {
-        public void onCompletion(MediaPlayer mp) {
-            if (mMediaController != null) {
-                mMediaController.hide();
-            }
-            if (mOnCompletionListener != null) {
-                mOnCompletionListener.onCompletion(mMediaPlayer);
-            }
-        }
-    };
+            new OnCompletionListener() {
+                public void onCompletion(MediaPlayer mp) {
+                    if (mMediaController != null) {
+                        mMediaController.hide();
+                    }
+                    if (mOnCompletionListener != null) {
+                        mOnCompletionListener.onCompletion(mMediaPlayer);
+                    }
+                }
+            };
 
     private OnErrorListener mErrorListener =
-        new OnErrorListener() {
-        public boolean onError(MediaPlayer mp, int framework_err, int impl_err) {
-            Log.d(TAG, "Error: " + framework_err + "," + impl_err);
-            if (mMediaController != null) {
-                mMediaController.hide();
-            }
+            new OnErrorListener() {
+                public boolean onError(MediaPlayer mp, int framework_err, int impl_err) {
+                    Log.d(TAG, "Error: " + framework_err + "," + impl_err);
+                    if (mMediaController != null) {
+                        mMediaController.hide();
+                    }
 
             /* If an error handler has been supplied, use it and finish. */
-            if (mOnErrorListener != null) {
-                if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
+                    if (mOnErrorListener != null) {
+                        if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
+                            return true;
+                        }
+                    }
+
+                    if (getWindowToken() != null) {
+                        Resources r = mContext.getResources();
+                        int messageId;
+                    }
                     return true;
                 }
-            }
-
-            if (getWindowToken() != null) {
-                Resources r = mContext.getResources();
-                int messageId;
-            }
-            return true;
-        }
-    };
+            };
 
     private MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener =
-        new MediaPlayer.OnBufferingUpdateListener() {
-        public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            mCurrentBufferPercentage = percent;
-        }
-    };
+            new MediaPlayer.OnBufferingUpdateListener() {
+                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                    mCurrentBufferPercentage = percent;
+                }
+            };
 
     /**
      * Register a callback to be invoked when the media file
@@ -329,8 +340,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
      *
      * @param l The callback that will be run
      */
-    public void setOnPreparedListener(MediaPlayer.OnPreparedListener l)
-    {
+    public void setOnPreparedListener(MediaPlayer.OnPreparedListener l) {
         mOnPreparedListener = l;
     }
 
@@ -340,8 +350,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
      *
      * @param l The callback that will be run
      */
-    public void setOnCompletionListener(OnCompletionListener l)
-    {
+    public void setOnCompletionListener(OnCompletionListener l) {
         mOnCompletionListener = l;
     }
 
@@ -353,16 +362,13 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
      *
      * @param l The callback that will be run
      */
-    public void setOnErrorListener(OnErrorListener l)
-    {
+    public void setOnErrorListener(OnErrorListener l) {
         mOnErrorListener = l;
     }
 
-    SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback()
-    {
+    SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback() {
         public void surfaceChanged(SurfaceHolder holder, int format,
-                                    int w, int h)
-        {
+                                   int w, int h) {
             mSurfaceWidth = w;
             mSurfaceHeight = h;
             if (mMediaPlayer != null && mIsPrepared && mVideoWidth == w && mVideoHeight == h) {
@@ -377,14 +383,12 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
             }
         }
 
-        public void surfaceCreated(SurfaceHolder holder)
-        {
+        public void surfaceCreated(SurfaceHolder holder) {
             mSurfaceHolder = holder;
             openVideo();
         }
 
-        public void surfaceDestroyed(SurfaceHolder holder)
-        {
+        public void surfaceDestroyed(SurfaceHolder holder) {
             mSurfaceHolder = null;
             if (mMediaController != null) mMediaController.hide();
             if (mMediaPlayer != null) {
@@ -412,8 +416,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mIsPrepared &&
                 keyCode != KeyEvent.KEYCODE_BACK &&
                 keyCode != KeyEvent.KEYCODE_VOLUME_UP &&
@@ -455,8 +458,8 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
 
     public void start() {
         if (mMediaPlayer != null && mIsPrepared) {
-                mMediaPlayer.start();
-                mStartWhenPrepared = false;
+            mMediaPlayer.start();
+            mStartWhenPrepared = false;
         } else {
             mStartWhenPrepared = true;
         }
@@ -512,29 +515,29 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         return 0;
     }
 
-	@Override
-	public boolean canPause() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean canPause() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean canSeekBackward() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean canSeekBackward() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean canSeekForward() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean canSeekForward() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public int getAudioSessionId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int getAudioSessionId() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	
+
 }

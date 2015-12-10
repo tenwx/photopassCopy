@@ -5,16 +5,13 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
-import com.pictureair.photopass.activity.EditVideoNullPhotoActivity;
 import com.pictureair.photopass.activity.IsOneGoToVideoActivity;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.activity.SelectPhotoGoToVideoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.widget.VideoPlayerView;
 
 /**
  * 关于美拍操作
@@ -25,7 +22,9 @@ public class DisneyVideoTool {
     private static final String TAG = "DisneyVideoTool";
     private static final String IS_ONE_GO_TO_DISNEY_VIDEO = "is_one_go_to_disney_video";
     private static Context context = MyApplication.getInstance().getApplicationContext();
-//    public static final String DISNEY_VIDEO_SELECT = "disney_video_select";
+    public static final String IS_BOUGHT = "is_bought";
+    public static final String FROM_STORY = "from_story";
+
 //    public static final String TEST_MP4_URL = "http://192.168.8.3:3006/test.mp4";//测试链接
 
     /**
@@ -45,27 +44,48 @@ public class DisneyVideoTool {
             context.startActivity(intent);
         } else {// 第二次进入
             getIsEditImageGoToVideo(context);
+            //测试进入播放视频
+//            TestGoToVideo(context);
         }
-        sharedPreferences = null;
-        pictureAirDbManager = null;
+    }
+
+    /**
+     * 测试播放视频
+     * 1.进入videoActivity之前需要判断是不是视频
+     * 2.需要传入对象视频对象
+     * @param context
+     */
+    private static void TestGoToVideo(Context context) {
+        PhotoInfo info = getPhotoInfo();
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        intent.putExtra(FROM_STORY,info);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 测试模拟一个数据
+     */
+    private static PhotoInfo getPhotoInfo(){
+        PhotoInfo photoInfo = new PhotoInfo();
+        photoInfo.photoId = "123";
+        photoInfo.photoPathOrURL = "123.mp4";//图片的原始路径
+        photoInfo.onLine = 1;//1线上图片，0，本地图片
+        photoInfo.isVideo = 1;//1是视频，0是图片
+        return photoInfo;
     }
 
     /**
      * 立即体验按钮： 如果有已购买照片，直接进入选择照片制作故事的页面； 如果无已购买的照片，直接进入没有乐拍通照片的页面；
+     * ture：进入编辑;false:无图介绍
      */
     public static void getIsEditImageGoToVideo(Context context) {
         // 判断是否有照片,到MyApplication查询是否有已经购买的照片
-        boolean b = true;
-        if (b) {// 有：进入编辑
-//			Intent intent = new Intent(context, SelectPhotoGoToVideoActivity.class);
-//			context.startActivity(intent);
-            //测试进入播放视频
-            Intent intent = new Intent(context, VideoPlayerActivity.class);
-            context.startActivity(intent);
-        } else {// 无:进入无照片介绍页面
-            context.startActivity(new Intent(context,
-                    EditVideoNullPhotoActivity.class));
-        }
+        boolean isBought = null != MyApplication.getInstance().boughtPicList && 0 < MyApplication.getInstance().boughtPicList.size()?true:false;
+        //测试
+//        boolean isBought = true;
+        Intent intent = new Intent(context, SelectPhotoGoToVideoActivity.class);
+        intent.putExtra(IS_BOUGHT, isBought);
+        context.startActivity(intent);
     }
 
     /**
@@ -81,17 +101,8 @@ public class DisneyVideoTool {
             String userid = sharedPreferences.getString(Common.USERINFO_ID, "");
             String[] photos = new String[listPhoto.size()];
             //此处上传照片id到服务器
-            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
             return true;
         }
     }
-
-    /**
-     * 下载视频
-     */
-    public static boolean downloadDisneyVideo() {
-
-        return true;
-    }
-
 }

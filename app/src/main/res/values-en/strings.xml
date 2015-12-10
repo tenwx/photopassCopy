@@ -516,5 +516,15 @@
     <string name="pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
     <string name="pay_result_callback_msg">Payment Result : %s</string>
     <string name="login_failed">Login Failed !</string>
+    <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  Start-->
+    <string name="disney_video_about_null_photo_note">您暂时还没有任何已购买的乐拍通照片，所以还不能开启“我的迪士尼故事”，请尽快购买您喜欢的乐拍通照片吧！去记忆屋看看喜欢的东西，把照片买下吧！去挑选</string>
+    <string name="disney_video_go_to_select_photo">Go to shop</string>
+    <string name="disney_video_edit_photo">OK（0/3）</string>
+    <string name="disney_video_select_photo_less_than3">照片不能小于3张</string>
+    <string name="my_disney_story">My Disney Story</string>
+    <string name="magic_in_the_making">Magic in the making...</string>
+    <string name="we_will_send_you_to">We will send you to</string>
+    <string name="my_disney_story_once_it_is_ready">My Disney Story once it is ready</string>
+    <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
 </resources>

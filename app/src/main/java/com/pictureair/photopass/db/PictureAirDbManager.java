@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -13,10 +16,6 @@ import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PinYin;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -518,7 +517,7 @@ public class PictureAirDbManager {
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
 		database = photoInfoDBHelper.getWritableDatabase();
 		database.beginTransaction();
-		for (int i = 0; i < responseArray.length(); i++) {
+		for (int i = 0; i < responseArray.size(); i++) {
 			try {
 				JSONObject object = responseArray.getJSONObject(i);
 				final PhotoInfo photo = JsonUtil.getPhoto(database,object);
@@ -622,10 +621,10 @@ public class PictureAirDbManager {
 	 */
 	private void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException{
 		FrameOrStikerInfo frameInfo = null;
-		if (jsonArray.length() > 0 ) {
-			Log.d(TAG, "frames or sticker length is " + jsonArray.length());
+		if (jsonArray.size() > 0 ) {
+			Log.d(TAG, "frames or sticker length is " + jsonArray.size());
 			//开始解析数据，并且将数据写入数据库
-			for (int i = 0; i < jsonArray.length(); i++) {
+			for (int i = 0; i < jsonArray.size(); i++) {
 				//解析json
 				if (isFrame) {
 					frameInfo = JsonUtil.getFrameInfo(jsonArray.getJSONObject(i));
@@ -657,10 +656,10 @@ public class PictureAirDbManager {
 		database = photoInfoDBHelper.getWritableDatabase();
 		database.beginTransaction();
 		try {
-			if (jsonObject.has("frames")) {
+			if (jsonObject.containsKey("frames")) {
 				insertFrameAndSticker(jsonObject.getJSONArray("frames"), true);
 			}
-			if (jsonObject.has("cliparts")) {
+			if (jsonObject.containsKey("cliparts")) {
 				insertFrameAndSticker(jsonObject.getJSONArray("cliparts"), false);
 				
 				

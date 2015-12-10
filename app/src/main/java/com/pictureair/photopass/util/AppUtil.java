@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.core.CoordinateConvert;
 import com.amap.api.location.core.GeoPoint;
 import com.amap.api.maps.AMapUtils;
@@ -27,8 +29,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.pictureair.photopass.R;
 
 import org.apache.http.conn.util.InetAddressUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -107,7 +107,7 @@ public class AppUtil {
 	//当前网络类型
 	public static int mNetWorkType;
 
-	public static int getNetWorkType(Context context) {  
+	public static int getNetWorkType(Context context) {
 		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);  
 		NetworkInfo networkInfo = manager.getActiveNetworkInfo();  
 		if (networkInfo != null && networkInfo.isConnected()) {  

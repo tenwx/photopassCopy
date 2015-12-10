@@ -30,10 +30,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -372,15 +368,15 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
         } else {
             try {
-                JSONObject response = new JSONObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));
-                JSONArray resultArray = response.getJSONArray("locations");
-                for (int i = 0; i < resultArray.length(); i++) {
+                com.alibaba.fastjson.JSONObject response =  com.alibaba.fastjson.JSONObject.parseObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));
+                com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+                for (int i = 0; i < resultArray.size(); i++) {
                     DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-                    JSONObject object = resultArray.getJSONObject(i);
+                    com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
                     locationInfo = JsonUtil.getLocation(object);
                     resultArrayList.add(locationInfo);
                 }
-            } catch (JSONException e) {
+            } catch (com.alibaba.fastjson.JSONException e) {
                 e.printStackTrace();
             }
         }

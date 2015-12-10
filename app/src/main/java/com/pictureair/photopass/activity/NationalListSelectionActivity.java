@@ -46,11 +46,9 @@ public class NationalListSelectionActivity extends BaseActivity {
 		isLogin = true;
 		if (getIntent().getExtras().getString("isCountrycode").equals("Login")) {
 			isLogin = true;
-			System.out.println("-------国家区号");
 			getDate(isLogin);
 		}else{
 			isLogin = false;
-			System.out.println("-------国家简码");
 			getDate(isLogin);
 		}
 		
@@ -96,10 +94,6 @@ public class NationalListSelectionActivity extends BaseActivity {
 		back.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-//				Intent intent = new Intent();
-//				intent.putExtra("country", "中国");
-//				intent.putExtra("countryCode", "86");
-//				setResult(0, intent);
 				finish();
 			}
 		});
@@ -109,7 +103,6 @@ public class NationalListSelectionActivity extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> v, View view, int position,
 					long arg3) {
-				long i = v.getItemIdAtPosition(position);// 下标
 				country = v.getItemAtPosition(position).toString();// 得到国家名称
 				countryCode = codelist[position];// 区号
 				
@@ -117,17 +110,11 @@ public class NationalListSelectionActivity extends BaseActivity {
 				intent.putExtra("country", country);
 				intent.putExtra("countryCode", countryCode);
 				if (isLogin) {
-					System.out.println("-------国家区号");
 					setResult(111, intent);
 				}else{
 					setResult(222, intent);
 				}
 				finish();
-				// }
-				System.out.println("国家： " + country + "---");
-				System.out.println("下标： " + i + "---");
-				System.out.println("区号： " + codelist[position] + "---");
-				System.out.println("position： " + position + "---");
 			}
 		});
 
@@ -169,6 +156,5 @@ public class NationalListSelectionActivity extends BaseActivity {
 			return arg0;
 		}
 	}
-
 
 }

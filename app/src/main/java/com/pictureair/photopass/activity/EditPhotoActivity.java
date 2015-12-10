@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -82,10 +83,6 @@ import com.pictureair.photopass.widget.FontEditDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -105,16 +102,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private ImageLoader imageLoader;
 	private DisplayImageOptions options;
-    
+
 	private ImageView back,btn_left_back; //结束当前页面的back, 取消操作。
 	private TextView edit_accessory,titleTextView,preview_save,edit_filter,edit_text,edit_frame;//饰品按钮，标题，保存,滤镜按钮, 文字按钮,边框按钮
 	private ImageButton btn_onedit_save,btn_cancel,btn_forward;//保存，返回，前进
 	private LinearLayout edittoolsbar,font_bar; // 工具条 和 底部的 旋转 bar
 	private RelativeLayout titleBarRelativeLayout;
-	 
+
 	private HorizontalListView top_HorizontalListView;  //显示饰品的滑动条
 	private FontEditDialog fontEditdialog; //填写字体的dialog
-	
+
 	private CustomProgressDialog dialog;
 	private MyToast myToast;
 
@@ -123,7 +120,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	//对象
 	private PhotoInfo photoInfo;
 	private String photoURL;
-	
+
 //	private String ssss;
 
 	private Typeface typeface1;
@@ -195,19 +192,19 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private ImageView frameImageView;
 
 	private int curFramePosition = 0;
-	
+
 	private PictureAirDbManager pictureAirDbManager;
 	private LocationUtil locationUtil;
 
 	private static final String TAG = "EditPhotoActivity";
-	
+
 	private static final int INIT_DATA_FINISHED = 104;
 	private static final int LOAD_IMAGE_FINISH = 103;
-	
+
 	private boolean loadingFrame = false;
-	
+
 	private int textWidth;
-	
+
 	//绘制 真是图片显示区域。 控制 饰品 与文字拖动范围
 	public static float leftTopX;
 	public static float leftTopY;
@@ -216,64 +213,65 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	int displayBitmapWidth = 0;
 	int displayBitmapHeight = 0;
 	//end
-	
+
 	private Handler handler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
-			case LOAD_IMAGE_FINISH:
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
-				break;
-			
-			case INIT_DATA_FINISHED:
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
-				//开始从网络获取最新数据
-				API.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), handler);
-				break;
-
-			case 0000:
-				String text = msg.obj.toString();
-				if (text.equals("")) {
-					fontEditdialog.dismiss();
-				}else{
-					showText = text;
-					curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/2/(showText.length());
-					if (showText.length() >= 8) {
-						textWidth = ScreenUtil.getScreenWidth(EditPhotoActivity.this);
-						curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/(showText.length());
-					}else if (showText.length() > 20) {
-						// 后期 ：  如果字数过长，提示不能输入过长字符
+				case LOAD_IMAGE_FINISH:
+					if (dialog.isShowing()) {
+						dialog.dismiss();
 					}
-					fontView.addBitImage(EditPhotoUtil.textAsBitmap(text,showTypeface,showColor,curTextSize, textWidth,EditPhotoActivity.this));
-					fontEditdialog.dismiss();
-				}
-				break;
-				
-			case 3333:
-				fontEditdialog.dismiss();
-				break;
-				
-			case 1111:
-				btn_onedit_save.setVisibility(View.VISIBLE);
-				dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
-				editType = 1;
-				curFramePosition = msg.arg1;
-				loadframe(curFramePosition);
-				break;
+					break;
 
-			case API.GET_LAST_CONTENT_SUCCESS://获取更新包成功
-				Log.d(TAG, "get lastest info success" + msg.obj);
-				try {
-					JSONObject resultJsonObject = (JSONObject) msg.obj;
-					if (resultJsonObject.has("assets")) {
-						pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
-						
+				case INIT_DATA_FINISHED:
+					if (dialog.isShowing()) {
+						dialog.dismiss();
+					}
+					//开始从网络获取最新数据
+					API.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), handler);
+					break;
+
+				case 0000:
+					String text = msg.obj.toString();
+					if (text.equals("")) {
+						fontEditdialog.dismiss();
+					}else{
+						showText = text;
+						curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/2/(showText.length());
+						if (showText.length() >= 8) {
+							textWidth = ScreenUtil.getScreenWidth(EditPhotoActivity.this);
+							curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/(showText.length());
+						}else if (showText.length() > 20) {
+							// 后期 ：  如果字数过长，提示不能输入过长字符
+						}
+						fontView.addBitImage(EditPhotoUtil.textAsBitmap(text,showTypeface,showColor,curTextSize, textWidth,EditPhotoActivity.this));
+						fontEditdialog.dismiss();
+					}
+					break;
+
+				case 3333:
+					fontEditdialog.dismiss();
+					break;
+
+				case 1111:
+					btn_onedit_save.setVisibility(View.VISIBLE);
+					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
+					editType = 1;
+					curFramePosition = msg.arg1;
+					loadframe(curFramePosition);
+					break;
+
+				case API.GET_LAST_CONTENT_SUCCESS://获取更新包成功
+					Log.d(TAG, "get lastest info success" + msg.obj);
+					try {
+						com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()) ;
+						if (resultJsonObject.containsKey("assets")) {
+
+							pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
+
 //						if (assetsObject.has("frames")) {
 //							JSONArray framesArray = assetsObject.getJSONArray("frames");
 //							if (framesArray.length() > 0 ) {
@@ -292,43 +290,43 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //								Log.d(TAG, "has no any stickers");
 //							}
 //						}
-						
+
+						}
+
+						if (resultJsonObject.containsKey("time")) {
+							Log.d(TAG, "lastest time is "+ resultJsonObject.getString("time"));
+							Editor editor = appPreferences.edit();
+							editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
+							editor.commit();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 
-					if (resultJsonObject.has("time")) {
-						Log.d(TAG, "lastest time is "+ resultJsonObject.getString("time"));
-						Editor editor = appPreferences.edit();
-						editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
-						editor.commit();
+					//写入数据库之后，再从数据库拿数据
+					frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
+					for (int i = 0; i < frameFromDBInfos.size(); i++) {
+						if (frameFromDBInfos.get(i).locationId.equals("common")) {//通用边框
+							frameInfos.add(frameFromDBInfos.get(i));
+						}
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				//写入数据库之后，再从数据库拿数据
-				frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
-				for (int i = 0; i < frameFromDBInfos.size(); i++) {
-					if (frameFromDBInfos.get(i).locationId.equals("common")) {//通用边框
-						frameInfos.add(frameFromDBInfos.get(i));
+					//从数据库获取饰品信息
+					stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
+					for (int j = 0; j < stickerFromDBInfos.size(); j++) {
+						if (stickerFromDBInfos.get(j).locationId.equals("common")) {//通用饰品
+							stikerInfos.add(stickerFromDBInfos.get(j));
+						}
 					}
-				}
-				//从数据库获取饰品信息
-				stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
-				for (int j = 0; j < stickerFromDBInfos.size(); j++) {
-					if (stickerFromDBInfos.get(j).locationId.equals("common")) {//通用饰品
-						stikerInfos.add(stickerFromDBInfos.get(j));
-					}
-				}
 //				frameInfos.addAll(frameFromDBInfos);
 
-				break;
+					break;
 
-			case API.GET_LAST_CONTENT_FAILED://获取更新包失败
+				case API.GET_LAST_CONTENT_FAILED://获取更新包失败
 
-				break;
+					break;
 
-			default:
-				break;
+				default:
+					break;
 			}
 			super.handleMessage(msg);
 		}
@@ -339,7 +337,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_photo);
-		
+
 		textWidth = ScreenUtil.getScreenWidth(this)/2;
 		initView();
 		dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
@@ -403,7 +401,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private void initDate(){
 		nameFile = new File(Common.PHOTO_SAVE_PATH);
-		
+
 		if (!nameFile.isDirectory()) {
 			nameFile.mkdirs();// 创建根目录文件夹
 		}
@@ -512,22 +510,24 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		super.onResume();
 		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
 			try {
-				JSONObject response = new JSONObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-				JSONArray resultArray = response.getJSONArray("locations");
-				for (int i = 0; i < resultArray.length(); i++) {
+				com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
+				com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+				for (int i = 0; i < resultArray.size(); i++) {
+
 					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
 					JSONObject object = resultArray.getJSONObject(i);
 					locationInfo = JsonUtil.getLocation(object);
 					locationItemInfos.add(locationInfo);
 				}
 				locationUtil.setLocationItemInfos(locationItemInfos, this);
-			} catch (JSONException e1) {
+			} catch (com.alibaba.fastjson.JSONException e1) {
+
 				e1.printStackTrace();
 			}
 		}
 		locationUtil.startLocation();
 	}
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
@@ -539,69 +539,69 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.edit_return:
-			// 判断 是否 需要保存图片
-			if (tempFile.exists() && tempFile.isDirectory()) {
-				if (tempFile.list().length > 0) {
-					// 提示是否需要保存图片。
-					createIsSaveDialog();
+			case R.id.edit_return:
+				// 判断 是否 需要保存图片
+				if (tempFile.exists() && tempFile.isDirectory()) {
+					if (tempFile.list().length > 0) {
+						// 提示是否需要保存图片。
+						createIsSaveDialog();
+					} else {
+						finish();
+					}
 				} else {
 					finish();
 				}
-			} else {
-				finish();
-			}
-			break;
-		case R.id.btn_left_back:
-			//如果添加了边框。让边框消失。
-			if (editType == 1) {
-				if (frameImageView.isShown()) {
-					frameImageView.setVisibility(View.INVISIBLE);
+				break;
+			case R.id.btn_left_back:
+				//如果添加了边框。让边框消失。
+				if (editType == 1) {
+					if (frameImageView.isShown()) {
+						frameImageView.setVisibility(View.INVISIBLE);
+					}
 				}
-			}
 
-			//如果有饰品，饰品消失。
-			if (editType == 3) {
-				if (mStickerView.isShown()) {
-					mStickerView.setVisibility(View.GONE);
-					mStickerView.clear();
+				//如果有饰品，饰品消失。
+				if (editType == 3) {
+					if (mStickerView.isShown()) {
+						mStickerView.setVisibility(View.GONE);
+						mStickerView.clear();
+					}
 				}
-			}
 
-			//如果添加了滤镜。
-			if(editType == 2){
-				if (newImage!=null) {
-					newImage = null;
+				//如果添加了滤镜。
+				if(editType == 2){
+					if (newImage!=null) {
+						newImage = null;
 //					newImage.recycle();
+					}
+					mainImage.setImageBitmap(mainBitmap);
 				}
-				mainImage.setImageBitmap(mainBitmap);
-			}
 
-			//如果添加了字体
-			if (editType == 4) {
-				showText = getString(R.string.add_text);
-				showColor = R.color.color16;
-				showTypeface = Typeface.SANS_SERIF;
-				if (fontView.isShown()) {
-					fontView.setVisibility(View.GONE);
-					fontView.clear();
+				//如果添加了字体
+				if (editType == 4) {
+					showText = getString(R.string.add_text);
+					showColor = R.color.color16;
+					showTypeface = Typeface.SANS_SERIF;
+					if (fontView.isShown()) {
+						fontView.setVisibility(View.GONE);
+						fontView.clear();
+					}
 				}
-			}
 
-			exitEditStates(); // 推出编辑状态
-			break;
+				exitEditStates(); // 推出编辑状态
+				break;
 
 			//编辑边框。
-		case R.id.edit_frame:
+			case R.id.edit_frame:
 //			
 //			System.out.println(ssss.equals("---"));
 //			
-			
-			titleTextView.setText(R.string.frames);
-			onEditStates();
-			eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, handler);
-			top_HorizontalListView.setAdapter(eidtAdapter);
-			top_HorizontalListView.setOnItemClickListener(null);
+
+				titleTextView.setText(R.string.frames);
+				onEditStates();
+				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, handler);
+				top_HorizontalListView.setAdapter(eidtAdapter);
+				top_HorizontalListView.setOnItemClickListener(null);
 //			top_HorizontalListView
 //			.setOnItemClickListener(new OnItemClickListener() {
 //				//加载边框。
@@ -620,309 +620,309 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //					handler.sendMessage(msg);
 //				}
 //			});
-			break;
-		case R.id.edit_filter:
-			onEditStates();
-			titleTextView.setText(R.string.magicbrush);
-			eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this, mainBitmap, filterPathList, 2, new ArrayList<FrameOrStikerInfo>(), handler);
-			top_HorizontalListView.setAdapter(eidtAdapter);
-			top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
+				break;
+			case R.id.edit_filter:
+				onEditStates();
+				titleTextView.setText(R.string.magicbrush);
+				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this, mainBitmap, filterPathList, 2, new ArrayList<FrameOrStikerInfo>(), handler);
+				top_HorizontalListView.setAdapter(eidtAdapter);
+				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
 
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int position, long arg3) {
-					// TODO Auto-generated method stub
-					btn_onedit_save.setVisibility(View.VISIBLE);
-					editType = 2;
-					switch (position) {
-					case 0:
-						filter = new NormalFilter();
-						break;
-					case 1:
-						filter = new LomoFilter();
-						break;
-					case 2:
-						// 流年效果
-						filter = new Amaro();
-						break;
-					case 3:
-						// 自然美肤效果
-						filter = new BeautifyFilter();
-						break;
-					case 4:
-						// HDR 效果
-						filter = new HDRFilter();
-						break;
-					case 5:
-						// 自然美肤效果
-						filter = new BlurFilter();
-						break;
-					case 6:
-						// 怀旧效果
-						filter = new OldFilter();
-						break;
-					default:
-						break;
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+											int position, long arg3) {
+						// TODO Auto-generated method stub
+						btn_onedit_save.setVisibility(View.VISIBLE);
+						editType = 2;
+						switch (position) {
+							case 0:
+								filter = new NormalFilter();
+								break;
+							case 1:
+								filter = new LomoFilter();
+								break;
+							case 2:
+								// 流年效果
+								filter = new Amaro();
+								break;
+							case 3:
+								// 自然美肤效果
+								filter = new BeautifyFilter();
+								break;
+							case 4:
+								// HDR 效果
+								filter = new HDRFilter();
+								break;
+							case 5:
+								// 自然美肤效果
+								filter = new BlurFilter();
+								break;
+							case 6:
+								// 怀旧效果
+								filter = new OldFilter();
+								break;
+							default:
+								break;
+						}
+						ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
+						excuteFilterTask.execute(mainBitmap);
 					}
-					ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
-					excuteFilterTask.execute(mainBitmap);
+				});
+				break;
+			case R.id.edit_text:
+				// 获取 原始图片的模型。
+				calRec();
+				btn_onedit_save.setVisibility(View.VISIBLE);
+				fontView.setVisibility(View.VISIBLE);   //设置了可见
+				editType = 4;
+				titleTextView.setText(R.string.rotate);
+				onEditStates();
+				top_HorizontalListView.setVisibility(View.GONE);
+				font_bar.setVisibility(View.VISIBLE);
+
+				curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/2/(showText.length());
+				textWidth = ScreenUtil.getScreenWidth(this)/2;
+				fontView.addBitImage(EditPhotoUtil.textAsBitmap(showText,showTypeface ,showColor,curTextSize,textWidth,EditPhotoActivity.this));
+				fontView.setOnTouchListener(new OnTouchListener() {
+
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+
+						if (event.getAction() == MotionEvent.ACTION_DOWN) {
+							time = System.currentTimeMillis();
+						}
+						if (event.getAction() == MotionEvent.ACTION_UP) {
+							if (System.currentTimeMillis() - time < 200) {
+								fontEditdialog = new FontEditDialog(EditPhotoActivity.this,showText,handler);
+								fontEditdialog.getWindow().setGravity(Gravity.BOTTOM);
+								fontEditdialog.setCanceledOnTouchOutside(true);
+								fontEditdialog.setCancelable(true);
+								fontEditdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								Window win = fontEditdialog.getWindow();
+								win.getDecorView().setPadding(0, 0, 0, 0);
+								WindowManager.LayoutParams lp = win.getAttributes();
+								lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+								lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+								win.setAttributes(lp);
+								fontEditdialog.show();
+							}
+						}
+						return false;
+					}
+				});
+
+				break;
+			case R.id.setTextFont:
+				System.out.println("-----------> start init text");
+				if (typeface2 == null) {
+					typeface2 = Typeface.createFromAsset(getAssets(),
+							"fonts/fangzheng.ttf");
 				}
-			});
-			break;
-		case R.id.edit_text:
-			// 获取 原始图片的模型。
-			calRec();
-			btn_onedit_save.setVisibility(View.VISIBLE);
-			fontView.setVisibility(View.VISIBLE);   //设置了可见
-			editType = 4;
-			titleTextView.setText(R.string.rotate);
-			onEditStates();
-			top_HorizontalListView.setVisibility(View.GONE);
-			font_bar.setVisibility(View.VISIBLE);
-			
-			curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/2/(showText.length());
-			textWidth = ScreenUtil.getScreenWidth(this)/2;
-			fontView.addBitImage(EditPhotoUtil.textAsBitmap(showText,showTypeface ,showColor,curTextSize,textWidth,EditPhotoActivity.this));
-			fontView.setOnTouchListener(new OnTouchListener() {
-
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					// TODO Auto-generated method stub
-
-					if (event.getAction() == MotionEvent.ACTION_DOWN) {
-						time = System.currentTimeMillis();
-					}
-					if (event.getAction() == MotionEvent.ACTION_UP) {
-						if (System.currentTimeMillis() - time < 200) {
-							fontEditdialog = new FontEditDialog(EditPhotoActivity.this,showText,handler);
-							fontEditdialog.getWindow().setGravity(Gravity.BOTTOM);
-							fontEditdialog.setCanceledOnTouchOutside(true);
-							fontEditdialog.setCancelable(true);
-							fontEditdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-							Window win = fontEditdialog.getWindow();
-							win.getDecorView().setPadding(0, 0, 0, 0);
-							WindowManager.LayoutParams lp = win.getAttributes();
-							lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-							lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-							win.setAttributes(lp);
-							fontEditdialog.show();
-						}
-					}
-					return false;
+				if (typeface3 == null) {
+					typeface3 = Typeface.createFromAsset(getAssets(),
+							"fonts/gangbi.ttf");
 				}
-			});
-
-			break;
-		case R.id.setTextFont:
-			System.out.println("-----------> start init text");
-			if (typeface2 == null) {
-				typeface2 = Typeface.createFromAsset(getAssets(),
-						"fonts/fangzheng.ttf");
-			}
-			if (typeface3 == null) {
-				typeface3 = Typeface.createFromAsset(getAssets(),
-						"fonts/gangbi.ttf");
-			}
-			if (typeface4 == null) {
-				typeface4 = Typeface.createFromAsset(getAssets(), "fonts/keai.ttf");
-			}
-			if (typeface1 == null) {
-				typeface1 = Typeface.SANS_SERIF;
-			}
-
-			strings.clear();
-			strings.add(typeface1);
-			strings.add(typeface2);
-			strings.add(typeface3);
-			strings.add(typeface4);
-
-			//					new Typeface[] { typeface1, typeface2,
-			//					typeface3, typeface4 };
-
-			if (setColorGridView != null) {
-				setColorGridView.setVisibility(View.GONE);
-			}
-			setFontGridView.setVisibility(View.VISIBLE);
-
-			fontList.clear();
-			for (int i = 0; i < fonts.length; i++) {
-				fontList.add(fonts[i]);
-			}
-			if (fontAdapter == null) {
-				fontAdapter = new FontAdapter(this, fontList, strings);
-			}
-			setFontGridView.setAdapter(fontAdapter);
-			setFontGridView.setNumColumns(fonts.length);
-			setFontGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / fonts.length);
-			setFontGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-			setFontGridView.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					switch (position) {
-					case 0:
-						showTypeface = typeface1;
-						break;
-					case 1:
-						showTypeface = typeface2;
-						break;
-					case 2:
-						showTypeface = typeface3;
-						break;
-					case 3:
-						showTypeface = typeface4;
-						break;
-
-					default:
-						break;
-					}
-					fontView.setBitmap(EditPhotoUtil.textAsBitmap(showText,showTypeface,showColor,curTextSize,textWidth,EditPhotoActivity.this));
+				if (typeface4 == null) {
+					typeface4 = Typeface.createFromAsset(getAssets(), "fonts/keai.ttf");
 				}
-			});
-			System.out.println("------------> finish init text");
-			break;
-
-		case R.id.setColor:
-			if (setFontGridView != null) {
-				setFontGridView.setVisibility(View.GONE);
-			}
-			setColorGridView.setVisibility(View.VISIBLE);
-			ArrayList<HashMap<String, Object>> colorList = new ArrayList<HashMap<String, Object>>();
-			HashMap<String, Object> map;
-			for (int i = 0; i < colors.length; i++) {
-				map = new HashMap<String, Object>();
-				map.put("colors", colors[i]);
-				colorList.add(map);
-			}
-
-			simpleAdapter = new SimpleAdapter(EditPhotoActivity.this,
-					colorList, R.layout.color_list, new String[] { "colors" },
-					new int[] { R.id.color });
-			setColorGridView.setAdapter(simpleAdapter);
-			setColorGridView.setNumColumns(colors.length);
-			setColorGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / colors.length);
-			setColorGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-			setColorGridView.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int position, long arg3) {
-					// TODO Auto-generated method stub
-					showColor = color[position];
-					fontView.setBitmap(EditPhotoUtil.textAsBitmap(showText,showTypeface,showColor,curTextSize,textWidth,EditPhotoActivity.this));
+				if (typeface1 == null) {
+					typeface1 = Typeface.SANS_SERIF;
 				}
-			});
-			break;
 
-		case R.id.edit_accessory:
-			calRec();
-			mStickerView.setVisibility(View.VISIBLE); // 事先让视图可见。
-			//饰品编辑
-			onEditStates();
-			titleTextView.setText(R.string.decoration);
-			eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),3, stikerInfos, handler);
-			top_HorizontalListView.setAdapter(eidtAdapter);
-			top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
+				strings.clear();
+				strings.add(typeface1);
+				strings.add(typeface2);
+				strings.add(typeface3);
+				strings.add(typeface4);
 
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int position, long arg3) {
-					// TODO Auto-generated method stub
-					btn_onedit_save.setVisibility(View.VISIBLE);
-					editType = 3;
-					String stickerUrl = "";
-					if (stikerInfos.get(position).onLine == 1) {//网络图片
-						stickerUrl = Common.PHOTO_URL + stikerInfos.get(position).frameOriginalPathPortrait;
-					}else {
-						stickerUrl = stikerInfos.get(position).frameOriginalPathPortrait;
+				//					new Typeface[] { typeface1, typeface2,
+				//					typeface3, typeface4 };
+
+				if (setColorGridView != null) {
+					setColorGridView.setVisibility(View.GONE);
+				}
+				setFontGridView.setVisibility(View.VISIBLE);
+
+				fontList.clear();
+				for (int i = 0; i < fonts.length; i++) {
+					fontList.add(fonts[i]);
+				}
+				if (fontAdapter == null) {
+					fontAdapter = new FontAdapter(this, fontList, strings);
+				}
+				setFontGridView.setAdapter(fontAdapter);
+				setFontGridView.setNumColumns(fonts.length);
+				setFontGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / fonts.length);
+				setFontGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+				setFontGridView.setOnItemClickListener(new OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+											int position, long id) {
+						switch (position) {
+							case 0:
+								showTypeface = typeface1;
+								break;
+							case 1:
+								showTypeface = typeface2;
+								break;
+							case 2:
+								showTypeface = typeface3;
+								break;
+							case 3:
+								showTypeface = typeface4;
+								break;
+
+							default:
+								break;
+						}
+						fontView.setBitmap(EditPhotoUtil.textAsBitmap(showText,showTypeface,showColor,curTextSize,textWidth,EditPhotoActivity.this));
 					}
-					//ImageLoader 加载
-					imageLoader.loadImage(stickerUrl, new ImageLoadingListener() {
+				});
+				System.out.println("------------> finish init text");
+				break;
 
-						@Override
-						public void onLoadingStarted(String imageUri, View view) {
-							// TODO Auto-generated method stub
+			case R.id.setColor:
+				if (setFontGridView != null) {
+					setFontGridView.setVisibility(View.GONE);
+				}
+				setColorGridView.setVisibility(View.VISIBLE);
+				ArrayList<HashMap<String, Object>> colorList = new ArrayList<HashMap<String, Object>>();
+				HashMap<String, Object> map;
+				for (int i = 0; i < colors.length; i++) {
+					map = new HashMap<String, Object>();
+					map.put("colors", colors[i]);
+					colorList.add(map);
+				}
 
+				simpleAdapter = new SimpleAdapter(EditPhotoActivity.this,
+						colorList, R.layout.color_list, new String[] { "colors" },
+						new int[] { R.id.color });
+				setColorGridView.setAdapter(simpleAdapter);
+				setColorGridView.setNumColumns(colors.length);
+				setColorGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / colors.length);
+				setColorGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+				setColorGridView.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+											int position, long arg3) {
+						// TODO Auto-generated method stub
+						showColor = color[position];
+						fontView.setBitmap(EditPhotoUtil.textAsBitmap(showText,showTypeface,showColor,curTextSize,textWidth,EditPhotoActivity.this));
+					}
+				});
+				break;
+
+			case R.id.edit_accessory:
+				calRec();
+				mStickerView.setVisibility(View.VISIBLE); // 事先让视图可见。
+				//饰品编辑
+				onEditStates();
+				titleTextView.setText(R.string.decoration);
+				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),3, stikerInfos, handler);
+				top_HorizontalListView.setAdapter(eidtAdapter);
+				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+											int position, long arg3) {
+						// TODO Auto-generated method stub
+						btn_onedit_save.setVisibility(View.VISIBLE);
+						editType = 3;
+						String stickerUrl = "";
+						if (stikerInfos.get(position).onLine == 1) {//网络图片
+							stickerUrl = Common.PHOTO_URL + stikerInfos.get(position).frameOriginalPathPortrait;
+						}else {
+							stickerUrl = stikerInfos.get(position).frameOriginalPathPortrait;
 						}
+						//ImageLoader 加载
+						imageLoader.loadImage(stickerUrl, new ImageLoadingListener() {
 
-						@Override
-						public void onLoadingFailed(String imageUri, View view,
-								FailReason failReason) {
-							// TODO Auto-generated method stub
+							@Override
+							public void onLoadingStarted(String imageUri, View view) {
+								// TODO Auto-generated method stub
 
-						}
+							}
 
-						@Override
-						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-							// TODO Auto-generated method stub
-							mStickerView.addBitImage(loadedImage);
-						}
+							@Override
+							public void onLoadingFailed(String imageUri, View view,
+														FailReason failReason) {
+								// TODO Auto-generated method stub
 
-						@Override
-						public void onLoadingCancelled(String imageUri, View view) {
-							// TODO Auto-generated method stub
+							}
 
-						}
-					});
+							@Override
+							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+								// TODO Auto-generated method stub
+								mStickerView.addBitImage(loadedImage);
+							}
+
+							@Override
+							public void onLoadingCancelled(String imageUri, View view) {
+								// TODO Auto-generated method stub
+
+							}
+						});
 //					}else {
 //						Bitmap accessoryBitmap = EditPhotoUtil.getImageFromAssetsFile(EditPhotoActivity.this, stikerInfos.get(position).frameOriginalPathPortrait);
 //						mStickerView.addBitImage(accessoryBitmap);
 //					}
+					}
+				});
+				break;
+			case R.id.btn_onedit_save: //保存到临时目录
+
+				SaveStickersTask task = new SaveStickersTask();
+				if (editType == 2) { //滤镜处理过的
+					task.execute(newImage);
+				}else if(editType == 3 || editType == 4 || editType == 1){
+					task.execute(mainBitmap);
 				}
-			});
-			break;
-		case R.id.btn_onedit_save: //保存到临时目录
-			
-			SaveStickersTask task = new SaveStickersTask();
-			if (editType == 2) { //滤镜处理过的
-				task.execute(newImage);
-			}else if(editType == 3 || editType == 4 || editType == 1){
-				task.execute(mainBitmap);
-			}
 
-			break;
-		case R.id.preview_save:
-			String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
-			EditPhotoUtil.copyFile(pathList.get(index), url);
-			scan(url);
-			EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-			break;
-		case R.id.btn_forward:
-			if (index == -1) {
-				index = pathList.size() - 1;
-			}
+				break;
+			case R.id.preview_save:
+				String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
+				EditPhotoUtil.copyFile(pathList.get(index), url);
+				scan(url);
+				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+				break;
+			case R.id.btn_forward:
+				if (index == -1) {
+					index = pathList.size() - 1;
+				}
 
-			if (pathList.size() > index + 1) {
-				index++;
-				loadImage(pathList.get(index));
-			}
-			check();
-			break;
-		case R.id.btn_cancel:
-			if (index == -1) {
-				index = pathList.size() - 1;
-			}
-			if (index >= 1) {
-				index--;
-			}
+				if (pathList.size() > index + 1) {
+					index++;
+					loadImage(pathList.get(index));
+				}
+				check();
+				break;
+			case R.id.btn_cancel:
+				if (index == -1) {
+					index = pathList.size() - 1;
+				}
+				if (index >= 1) {
+					index--;
+				}
 
-			if (pathList.size() - 2 >= 0) {
+				if (pathList.size() - 2 >= 0) {
 
-				if (index == 0) {
-					if (isOnlinePic) {
-						loadOnlineImg(pathList.get(index));
+					if (index == 0) {
+						if (isOnlinePic) {
+							loadOnlineImg(pathList.get(index));
+						}else{
+							loadImage(pathList.get(index));
+						}
 					}else{
 						loadImage(pathList.get(index));
 					}
-				}else{
-					loadImage(pathList.get(index));
 				}
-			}
-			check();
-			break;
+				check();
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 
@@ -999,7 +999,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	/**
 	 * 异步载入本地编辑图片
-	 * 
+	 *
 	 * @param filepath
 	 */
 	public void loadImage(String filepath) {
@@ -1034,7 +1034,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
-			Log.e("bitmap width and height :", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
+			Log.e("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
 			handler.sendEmptyMessage(INIT_DATA_FINISHED);
 			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
@@ -1042,8 +1042,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	/**
 	 * 加载网络图片
-	 * 
-	 * @param filepath
+	 *
+	 * @param url
 	 */
 	private void loadOnlineImg(String url){
 		/*
@@ -1074,7 +1074,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	/**
 	 * 切换底图Bitmap
-	 * 
+	 *
 	 * @param newBit
 	 */
 	public void changeMainBitmap(Bitmap newBit) {
@@ -1094,33 +1094,33 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		// TODO Auto-generated method stub
 		MediaScannerConnection.scanFile(this, new String[] { file }, null,
 				new MediaScannerConnection.OnScanCompletedListener() {
-			@Override
-			public void onScanCompleted(String arg0, Uri arg1) {
-				// TODO Auto-generated method stub
-				editor = sharedPreferences.edit();
-				editor.putString(Common.LAST_PHOTO_URL, file);
-				editor.commit();
-				// 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
-				Intent intent = new Intent();
-				intent.putExtra("photoUrl", file);
-				setResult(11, intent);
-				System.out.println("set result--------->");
-				finish();
-			}
-		});
+					@Override
+					public void onScanCompleted(String arg0, Uri arg1) {
+						// TODO Auto-generated method stub
+						editor = sharedPreferences.edit();
+						editor.putString(Common.LAST_PHOTO_URL, file);
+						editor.commit();
+						// 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
+						Intent intent = new Intent();
+						intent.putExtra("photoUrl", file);
+						setResult(11, intent);
+						System.out.println("set result--------->");
+						finish();
+					}
+				});
 	}
 
 
 	//保存贴图 滤镜 的异步方法。
 	/**
 	 * 保存贴图任务
-	 * 
+	 *
 	 * @author panyi
-	 * 
+	 *
 	 */
-	
+
 	private final class SaveStickersTask extends
-	AsyncTask<Bitmap, Void, Bitmap> {
+			AsyncTask<Bitmap, Void, Bitmap> {
 		private CustomProgressDialog dialog;
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
@@ -1189,38 +1189,38 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(),
 						Config.ARGB_8888);
 //				if (frameImageView.isShown()) {
-					//不论边框显示与否，都让他合成。   即使是原图。
-					Bitmap frameBitmap;
-					if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
-						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
-					}else{
-						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
-					}
-					
-				
+				//不论边框显示与否，都让他合成。   即使是原图。
+				Bitmap frameBitmap;
+				if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
+					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+				}else{
+					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+				}
+
+
 				Log.e("＝＝＝＝＝＝＝＝＝＝＝＝＝＝", "frameBitmap width:"+frameBitmap.getWidth()+"_height:"+frameBitmap.getHeight());
 
-					Canvas canvas = new Canvas(heBitmap);
-					Paint point = new Paint();
-					point.setXfermode(new PorterDuffXfermode(
-							android.graphics.PorterDuff.Mode.SRC_OVER));
-					Matrix matrix2 = new Matrix();
-					matrix2.postScale(
-							(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
-							(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
-					
+				Canvas canvas = new Canvas(heBitmap);
+				Paint point = new Paint();
+				point.setXfermode(new PorterDuffXfermode(
+						android.graphics.PorterDuff.Mode.SRC_OVER));
+				Matrix matrix2 = new Matrix();
+				matrix2.postScale(
+						(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
+						(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
+
 //										frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
 //												frameBitmap.getWidth(), frameBitmap.getHeight(),
 //												matrix2, true);
-										
-					canvas.drawBitmap(mainBitmap, 0, 0, point);
-					canvas.drawBitmap(frameBitmap, matrix2, point);
-					matrix2.reset();
-					frameBitmap.recycle();
-					EditPhotoUtil.saveBitmap(heBitmap, url);
-					pathList.add(url);
-					index = pathList.size() - 1;
-					return heBitmap;
+
+				canvas.drawBitmap(mainBitmap, 0, 0, point);
+				canvas.drawBitmap(frameBitmap, matrix2, point);
+				matrix2.reset();
+				frameBitmap.recycle();
+				EditPhotoUtil.saveBitmap(heBitmap, url);
+				pathList.add(url);
+				index = pathList.size() - 1;
+				return heBitmap;
 //				}else{
 //					.
 //					Log.e("应用原图", "没有边框");
@@ -1268,12 +1268,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	/**
 	 * 执行滤镜任务
-	 * 
+	 *
 	 * @author panyi
-	 * 
+	 *
 	 */
 	private final class ExcuteFilterTask extends
-	AsyncTask<Bitmap, Void, Bitmap> {
+			AsyncTask<Bitmap, Void, Bitmap> {
 		private CustomProgressDialog dialog;
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
@@ -1336,7 +1336,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 * 合成边框方法
 	 *  position
 	 * @author talon
-	 * 
+	 *
 	 */
 	private void loadframe(int position) {
 		if (position != 0) {// 如果不为0，表示有边框
@@ -1362,9 +1362,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			dialog.dismiss();
 			frameImageView.setVisibility(View.INVISIBLE);
 		}
-		
+
 	}
-	
+
 	/*
 	 * Imageloader 加载监听类，目的是监听加载完毕的事件
 	 */
@@ -1372,31 +1372,31 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		public void onLoadingStarted(String imageUri, View view) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onLoadingFailed(String imageUri, View view,
-				FailReason failReason) {
+									FailReason failReason) {
 			// TODO Auto-generated method stub
 			handler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 		}
 
 		@Override
 		public void onLoadingComplete(String imageUri, View view,
-				Bitmap loadedImage) {
+									  Bitmap loadedImage) {
 			// TODO Auto-generated method stub
 			handler.sendEmptyMessage(LOAD_IMAGE_FINISH);
-			
+
 		}
 
 		@Override
 		public void onLoadingCancelled(String imageUri, View view) {
 			// TODO Auto-generated method stub
-			
+
 			handler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 		}
-		
+
 	}
 
 	// 没有保存的时候的对话框
@@ -1476,9 +1476,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		}.start();
 	}
 
-/**
- * 计算出 图片真正显示的坐标。
- */
+	/**
+	 * 计算出 图片真正显示的坐标。
+	 */
 	private void calRec(){
 		if (mainBitmap.getHeight() / (float)mainBitmap.getWidth() > mainImage.getHeight() / (float)mainImage.getWidth()) {//左右会留白
 			displayBitmapHeight = mainImage.getHeight();//displayBitmapHeight : ? = bitmapReallyHeight : bitmapReallyWidth
@@ -1494,5 +1494,5 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		leftTopY = (mainImage.getHeight() - displayBitmapHeight) / 2;
 		rightBottomY = leftTopY + displayBitmapHeight;
 	}
-	
+
 }

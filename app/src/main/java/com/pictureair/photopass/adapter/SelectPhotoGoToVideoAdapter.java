@@ -233,7 +233,6 @@ public class SelectPhotoGoToVideoAdapter extends BaseAdapter {
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// Log.d(TAG, "getView----------->" +
-		Log.d(TAG, "getView----------->" + position);
 		requestwidth = (ScreenUtil.getScreenWidth(c) - 4 * 5) / 3;// （屏宽-4*3）/3,3为间隔间距
 
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(

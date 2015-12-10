@@ -9,8 +9,8 @@
         android:id="@+id/nationalListSelection_tV01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textColor="@color/gray"
+        android:padding="16dp"
+        android:textColor="@color/pp_gray"
         android:textSize="15sp" />
 
 </LinearLayout>
