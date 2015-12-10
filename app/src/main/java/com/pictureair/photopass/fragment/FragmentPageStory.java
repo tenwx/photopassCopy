@@ -49,10 +49,6 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.StoryMenuPop;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -138,7 +134,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			case API.GET_REFRESH_PHOTOS_SUCCESS://获取刷新的推送图片
 				app.setPushPhotoCount(0);
 				Log.d(TAG, "deal refresh photos-------");
-				saveJsonToSQLite((JSONObject)msg.obj, false);
+				saveJsonToSQLite(com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()), false);
 				break;
 
 			case API.GET_REFRESH_PHOTOS_FAILED://获取刷新失败
@@ -200,7 +196,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
 			case API.GET_PHOTOS_SUCCESS://获取照片成功
 				Log.d(TAG, "--------->get photo success");
-				saveJsonToSQLite((JSONObject)msg.obj, true);
+				saveJsonToSQLite(com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()), true);
 				break;
 
 			case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
@@ -242,15 +238,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			case API.GET_LOCATION_SUCCESS://成功获取地点信息
 				Log.d(TAG, "---------->get location success"+msg.obj.toString());
 				try {
-					JSONObject response = new JSONObject(msg.obj.toString());
-					JSONArray resultArray = response.getJSONArray("locations");
-					for (int i = 0; i < resultArray.length(); i++) {
+					com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
+					com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+					for (int i = 0; i < resultArray.size(); i++) {
 						DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-						JSONObject object = resultArray.getJSONObject(i);
+						com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
 						locationInfo = JsonUtil.getLocation(object);
 						locationList.add(locationInfo);
 					}
-				} catch (JSONException e) {
+				} catch (com.alibaba.fastjson.JSONException e) {
 					e.printStackTrace();
 				}
 				//检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
@@ -391,7 +387,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	 * @param isAll 布尔值，是否是获取全部数据
 	 * 
 	 */
-	private void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll) {
+	private void saveJsonToSQLite(com.alibaba.fastjson.JSONObject jsonObject, final boolean isAll) {
 //		db = dbHelper.getWritableDatabase();
 
 		if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
@@ -403,12 +399,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		}
 
 		try {
-			final JSONArray responseArray = jsonObject.getJSONArray("photos");
+			final com.alibaba.fastjson.JSONArray responseArray = jsonObject.getJSONArray("photos");
 
 			String updatetimeString = jsonObject.getString("time");
-			System.out.println("updatetime:"+updatetimeString+"new data count = "+responseArray.length());
+			System.out.println("updatetime:"+updatetimeString+"new data count = "+responseArray.size());
 
-			if (isAll||responseArray.length()>0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
+			if (isAll||responseArray.size()>0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
 				//需要存储这个时间
 				Editor editor = sharedPreferences.edit();
 				editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
@@ -418,7 +414,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			if (isAll) {//如果全部获取，需要清除原有的数据
 				app.photoPassPicList.clear();
 			}else {//刷新最新照片，获取刷新数据的数量
-				refreshDataCount = responseArray.length();
+				refreshDataCount = responseArray.size();
 				Log.d(TAG, "------refresh count ----->" + refreshDataCount);
 			}
 
@@ -457,7 +453,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
 				};
 			}.start();
-		} catch (JSONException e) {
+		} catch (com.alibaba.fastjson.JSONException e) {
 			e.printStackTrace();
 		}
 	}

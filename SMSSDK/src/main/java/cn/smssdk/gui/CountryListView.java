@@ -7,9 +7,6 @@
  */
 package cn.smssdk.gui;
 
-import static cn.smssdk.framework.utils.R.dipToPx;
-import static cn.smssdk.framework.utils.R.getBitmapRes;
-import static cn.smssdk.framework.utils.R.getColorRes;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -22,7 +19,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import cn.smssdk.gui.GroupListView.OnItemClickListener;
+
+import static cn.smssdk.framework.utils.R.dipToPx;
+import static cn.smssdk.framework.utils.R.getBitmapRes;
+import static cn.smssdk.framework.utils.R.getColorRes;
 
 /** 自定义国家列表控件listview */
 public class CountryListView extends RelativeLayout implements OnTouchListener {
@@ -57,7 +59,7 @@ public class CountryListView extends RelativeLayout implements OnTouchListener {
 		lvContries.setAdapter(adapter);
 		LayoutParams lpContries = new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		int dp_9 = dipToPx(context, 9);
+		int dp_9 = dipToPx(context, 16);
 		lpContries.setMargins(dp_9, 0, dp_9, 0);
 		addView(lvContries, lpContries);
 

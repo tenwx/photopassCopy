@@ -19,21 +19,21 @@
             android:id="@+id/login_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/rl_country"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:paddingTop="5dp">
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingTop="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:text="@string/smssdk_country"
@@ -47,7 +47,6 @@
                     android:layout_marginRight="10dip"
                     android:layout_weight="1"
                     android:gravity="right|bottom"
-                    android:paddingBottom="5dp"
                     android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>
@@ -60,7 +59,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="16dp"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp">
 
@@ -71,7 +71,6 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:paddingBottom="5dp"
                     android:text="+86"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
@@ -88,7 +87,6 @@
                     android:hint="@string/smssdk_write_mobile_phone"
                     android:imeOptions="actionNext"
                     android:inputType="phone"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
@@ -103,7 +101,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="16dp"
                 android:paddingRight="5dp">
 
                 <ImageView
@@ -133,7 +132,6 @@
                     android:hint="@string/smssdk_pwd"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
@@ -148,7 +146,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="16dp"
                 android:paddingRight="5dp">
 
                 <ImageView
@@ -177,7 +176,6 @@
                     android:hint="@string/smssdk_pwd2"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
@@ -191,7 +189,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dip">
 
                 <cn.smssdk.gui.EditTextWithClear
@@ -205,7 +203,8 @@
                     android:hint="@string/smssdk_write_identify_code"
                     android:imeOptions="actionGo"
                     android:inputType="number"
-                    android:padding="5dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
                     android:singleLine="true"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
@@ -243,6 +242,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:gravity="center"
                 android:text="@string/smssdk_explain_briefly"
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_12" />
@@ -256,7 +256,7 @@
                 android:padding="5dp"
                 android:text="@string/smssdk_other_sign_up"
                 android:textColor="@color/pp_blue"
-                android:textSize="15sp" />
+                android:textSize="@dimen/text_size_12" />
         </LinearLayout>
     </ScrollView>
 

@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
-import org.json.JSONObject;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
 

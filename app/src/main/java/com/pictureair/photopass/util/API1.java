@@ -5,13 +5,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -119,6 +118,13 @@ public class API1 {
     public static final int DOWNLOAD_APK_FAILED = 560;
 
 
+    /**
+     * 启动
+     */
+    public static final int GET_TOKEN_ID_SUCCESS = 1001;
+    public static final int GET_TOKEN_ID_FAILED = 1000;
+
+
     //我的模块 start
     public static final int BIND_PP_FAILURE = 5000;
     public static final int BIND_PP_SUCCESS = 5001;
@@ -186,16 +192,27 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.TERMINAL, "android");
         params.put(Common.UUID, Installation.id(context));
+        PictureAirLog.out("getTokenId------->"+ params.toString());
 
         HttpUtil1.asyncGet(Common.GET_TOKENID, params, new HttpCallback() {
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                PictureAirLog.out("getTokenId--->start");
+            }
+
             @Override
             public void onSuccess(JSONObject jsonObject) {
+
                 super.onSuccess(jsonObject);
+                PictureAirLog.out("getTokenId--->" + jsonObject.toString());
                 try {
                     SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_TOKENID, jsonObject.getString(Common.USERINFO_TOKENID));
-                    e.apply();
+                    PictureAirLog.out("tokenid---->"+jsonObject.getString(Common.USERINFO_TOKENID));
+                    e.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -204,6 +221,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                PictureAirLog.out("get tokenId ----> failed" + status);
             }
         });
     }

@@ -74,8 +74,7 @@ public class PictureAirLog {
      */
     public static void out(String log) {
         if (DEBUG) {
-//			System.out.println(log);
-            Log.v(BASE_TAG + log, log);
+			System.out.println(BASE_TAG + ":" + log);
         }
     }
 

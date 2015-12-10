@@ -15,6 +15,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
@@ -32,10 +35,6 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.XListViewHeader;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -106,13 +105,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					shopcart = object.getJSONObject("shopCart");
 
 					favorablepriceString = shopcart.getString("preferentialPrice");//优惠价格
-					totalcount = shopcart.getInt("totalCount");//总数
+					totalcount = shopcart.getIntValue("totalCount");//总数
 					totalprice = shopcart.getDouble("totalPrice");//总价
 					shopitemArray = shopcart.getJSONArray("items");
 					System.out.println(favorablepriceString+"_"+totalcount+"_"+totalprice);
 					JSONObject itemObject;//cart中的每个item
 					int cartcount = 0;
-					for (int i = 0; i < shopitemArray.length(); i++) {
+					for (int i = 0; i < shopitemArray.size(); i++) {
 						itemObject = (JSONObject) shopitemArray.get(i);
 						cartItemInfo = new CartItemInfo();
 						cartItemInfo = JsonUtil.getCartItemInfo(itemObject);
@@ -233,7 +232,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 						System.out.println("start chang count------->");
 					};
 					@Override
-					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+					public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
 						// TODO Auto-generated method stub
 						super.onSuccess(statusCode, headers, response);
 						System.out.println("modify cart with change photot =="+response);
@@ -249,7 +248,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 					}
 
 					@Override
-					public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+					public void onFailure(int statusCode, Header[] headers, Throwable throwable, org.json.JSONObject errorResponse) {
 						// TODO Auto-generated method stub
 						super.onFailure(statusCode, headers, throwable, errorResponse);
 						newToast.setTextAndShow(R.string.uploadphotofailed, Common.TOAST_SHORT_TIME);
@@ -453,10 +452,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 				JSONArray cartitemidsArray = new JSONArray();
 				for (int i = 0; i < cartInfoList.size(); i++) {
 					if (cartInfoList.get(i).isSelect) {
-						cartitemidsArray.put(cartInfoList.get(i).cart_id);
+						cartitemidsArray.add(cartInfoList.get(i).cart_id);
 					}
 				}
-				if (cartitemidsArray.length() == 0) {
+				if (cartitemidsArray.size() == 0) {
 					newToast.setTextAndShow(R.string.select_cart, Common.TOAST_SHORT_TIME);
 					isDelete = false;
 					return;

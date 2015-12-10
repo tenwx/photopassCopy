@@ -137,26 +137,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				API.getStoreIdbyIP(msg.obj.toString(), handler);
 				break;
 
-			// case API.GET_PPP_SUCCESS:
-			// PictureAirLog.v(TAG,"get ppp success ----------------");
-			// JSONObject ppplistJsonObject = (JSONObject) msg.obj;
-			// try {
-			// JSONArray ppplistArray = ppplistJsonObject
-			// .getJSONArray("PPPList");
-			// if (0 != ppplistArray.length()) {// 说明有ppp
-			// PictureAirLog.v(TAG,"length=" + ppplistArray.length());
-			// Editor editor = sp.edit();
-			// editor.putInt(Common.PPP_COUNT, ppplistArray.length());
-			// editor.commit();
-			// }
-			// } catch (JSONException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// PictureAirLog.v(TAG,"netIP-----------> "+ AppUtil.GetNetIp());
-			// API.getStoreIdbyIP("140.206.125.195", handler);
-			// break;
-
 			case API.GET_PPS_SUCCESS:// 获取pp列表成功
 				/**
 				 * 获取pp成功之后，需要放入sharedPrefence中
@@ -382,8 +362,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		case R.id.rl_country:
 			// NationalListSelectionActivity
 			PictureAirLog.v(TAG,"国家按钮");
-			startActivityForResult(new Intent(LoginActivity.this,
-					NationalListSelectionActivity.class), 0);
+			Intent i = new Intent(LoginActivity.this,
+					NationalListSelectionActivity.class);
+			i.putExtra("isCountrycode", "Login");
+			startActivityForResult(i, 0);
 			break;
 
 		case R.id.login:

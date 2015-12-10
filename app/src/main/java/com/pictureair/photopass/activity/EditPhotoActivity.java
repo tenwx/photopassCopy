@@ -82,10 +82,6 @@ import com.pictureair.photopass.widget.FontEditDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -270,8 +266,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			case API.GET_LAST_CONTENT_SUCCESS://获取更新包成功
 				Log.d(TAG, "get lastest info success" + msg.obj);
 				try {
-					JSONObject resultJsonObject = (JSONObject) msg.obj;
-					if (resultJsonObject.has("assets")) {
+					com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()) ;
+					if (resultJsonObject.containsKey("assets")) {
 						pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
 						
 //						if (assetsObject.has("frames")) {
@@ -295,7 +291,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						
 					}
 
-					if (resultJsonObject.has("time")) {
+					if (resultJsonObject.containsKey("time")) {
 						Log.d(TAG, "lastest time is "+ resultJsonObject.getString("time"));
 						Editor editor = appPreferences.edit();
 						editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
@@ -512,16 +508,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		super.onResume();
 		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
 			try {
-				JSONObject response = new JSONObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-				JSONArray resultArray = response.getJSONArray("locations");
-				for (int i = 0; i < resultArray.length(); i++) {
+				com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
+				com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+				for (int i = 0; i < resultArray.size(); i++) {
 					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-					JSONObject object = resultArray.getJSONObject(i);
+					com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
 					locationInfo = JsonUtil.getLocation(object);
 					locationItemInfos.add(locationInfo);
 				}
 				locationUtil.setLocationItemInfos(locationItemInfos, this);
-			} catch (JSONException e1) {
+			} catch (com.alibaba.fastjson.JSONException e1) {
 				e1.printStackTrace();
 			}
 		}
@@ -1034,7 +1030,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
-			Log.e("bitmap width and height :", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
+			Log.e("bitmap w and h", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
 			handler.sendEmptyMessage(INIT_DATA_FINISHED);
 			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
@@ -1043,7 +1039,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	/**
 	 * 加载网络图片
 	 * 
-	 * @param filepath
+	 * @param url
 	 */
 	private void loadOnlineImg(String url){
 		/*

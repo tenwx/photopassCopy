@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -86,7 +86,7 @@ public class StartActivity extends BaseActivity{
 					}
 				}, 2000);
 			} else {//进入引导页
-				API.getTokenId(this);
+				API1.getTokenId(this);
 				Editor editor = spApp.edit();
 				editor.putInt(Common.APP_VERSION_CODE, versionCode);
 				editor.commit();

@@ -29,10 +29,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**
@@ -148,12 +144,12 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 				allOrderChildArrayList.clear();
 				downOrderArrayList.clear();
 				downOrderChildArrayList.clear();
-				JSONObject resultJsonObject = (JSONObject) msg.obj;
+				com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()) ;
 				try {
-					JSONObject allTypeOrders = resultJsonObject.getJSONObject("data");//得到所有类型的订单信息
-					JSONArray allOrdersArray = allTypeOrders.getJSONArray("allOrder");//得到所有的订单信息
-					for (int i = 0; i < allOrdersArray.length(); i++) {
-						JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
+					com.alibaba.fastjson.JSONObject allTypeOrders = resultJsonObject.getJSONObject("data");//得到所有类型的订单信息
+					com.alibaba.fastjson.JSONArray allOrdersArray = allTypeOrders.getJSONArray("allOrder");//得到所有的订单信息
+					for (int i = 0; i < allOrdersArray.size(); i++) {
+						com.alibaba.fastjson.JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
 						orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
 						cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
 						System.out.println("child size = "+ cartItemInfo.size());
@@ -170,7 +166,7 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 						allOrderArrayList.add(orderInfo);
 						allOrderChildArrayList.add(cartItemInfo);
 					}
-				} catch (JSONException e) {
+				} catch (com.alibaba.fastjson.JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

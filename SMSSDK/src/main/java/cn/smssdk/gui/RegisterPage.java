@@ -37,7 +37,6 @@ import cn.smssdk.SMSSDK;
 import cn.smssdk.UserInterruptException;
 import cn.smssdk.framework.FakeActivity;
 
-import static cn.smssdk.framework.utils.R.getBitmapRes;
 import static cn.smssdk.framework.utils.R.getIdRes;
 import static cn.smssdk.framework.utils.R.getLayoutRes;
 import static cn.smssdk.framework.utils.R.getStringRes;
@@ -736,10 +735,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 						btnNext.setText(resId);
 					}
 
-					resId = getBitmapRes(activity, "button_green");
-					if (resId > 0) {
-						btnNext.setBackgroundResource(resId);
-					}
+//					resId = getBitmapRes(activity, "button_green");
+//					if (resId > 0) {
+//						btnNext.setBackgroundResource(resId);
+//					}
 
 					btnNext.setEnabled(true);
 
@@ -751,10 +750,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 					if (resId > 0) {
 						String unReceive = getContext().getString(resId, time);
 
-						resId = getBitmapRes(activity, "button_gray");
-						if (resId > 0) {
-							btnNext.setBackgroundResource(resId);
-						}
+//						resId = getBitmapRes(activity, "button_gray");
+//						if (resId > 0) {
+//							btnNext.setBackgroundResource(resId);
+//						}
 
 						btnNext.setText(Html.fromHtml(unReceive));
 					}
