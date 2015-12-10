@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light" >
+    android:background="@color/pp_light_gray_background" >
 
     <RelativeLayout
         android:id="@+id/llt"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/lrt"
@@ -399,11 +399,11 @@
                 android:layout_marginLeft="26dp"
                 android:layout_marginRight="26dp"
                 android:layout_marginTop="26dp"
-                android:background="@drawable/button_blue"
-                android:gravity="center"
+                android:background="@drawable/button_blue_shape_and_selector"
                 android:padding="10dp"
+                android:textColor="@drawable/textview_selector_blue_white"
+                android:gravity="center"
                 android:text="@string/submitpayment"
-                android:textColor="@color/white"
                 android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>

@@ -52,8 +52,6 @@ public class HttpUtil1 {
      */
     public static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
-
-
     }
 
     /**
@@ -274,6 +272,13 @@ public class HttpUtil1 {
             }
         });
     }
+
+    /**
+     * 异步下载文件
+     *
+     * @param url          请求url
+     * @param httpCallback 请求回调
+     */
     public static void asynDownloadBinaryData(String url, final HttpCallback httpCallback) {
         asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
@@ -281,6 +286,7 @@ public class HttpUtil1 {
                 super.onStart();
                 httpCallback.onStart();
             }
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
                 httpCallback.onSuccess(binaryData);

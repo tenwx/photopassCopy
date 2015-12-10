@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light" >
+    android:background="@color/pp_light_gray_background" >
 
     <RelativeLayout
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/back"
@@ -57,12 +57,13 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/search" />
 
-            <com.pictureair.photopass.widget.EditTextWithClear
+            <cn.smssdk.gui.EditTextWithClear
                 android:id="@+id/input_edit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:ems="10"
+                android:imeOptions="actionDone"
                 android:focusableInTouchMode="true"
                 android:hint="@string/search_hint"
                 android:lines="1"
