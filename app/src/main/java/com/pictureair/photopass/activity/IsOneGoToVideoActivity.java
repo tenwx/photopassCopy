@@ -1,13 +1,5 @@
 package com.pictureair.photopass.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.DisneyVideoTool;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.R;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -15,9 +7,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.DisneyVideoTool;
+import com.pictureair.photopass.util.PictureAirLog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 1、第一次使用，则直接进入无视频引导页面，引导用户如何制作；
@@ -40,7 +39,6 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.acticity_is_one_goto_video);
-		AppManager.getInstance().addActivity(this);
 		context = this;
 		initView();
 		initData();
@@ -124,10 +122,5 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
 	public void onPageSelected(int arg0) {
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 
 }

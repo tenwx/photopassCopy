@@ -52,16 +52,4 @@ public class AnswerActivity extends BaseActivity {
 		answerContent.setText(question.answer);
 	}
 	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
-	
 }

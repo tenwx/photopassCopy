@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
-    android:orientation="vertical" >
+    android:background="@color/pp_light_gray_background"
+    android:orientation="vertical">
 
     <include
+        layout="@layout/smssdk_title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/smssdk_title_layout" />
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none" >
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/login_ll"
@@ -21,63 +21,61 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/rl_country"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp" >
+                android:layout_height="46dp"
+                android:paddingTop="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:text="@string/smssdk_country"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_16" />
 
                 <TextView
                     android:id="@+id/tv_country"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_height="match_parent"
                     android:layout_marginRight="10dip"
                     android:layout_weight="1"
-                    android:gravity="right"
-                    android:textColor="@color/green"
-                    android:textSize="15sp" />
+                    android:gravity="right|bottom"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/gray_light3" />
+                android:background="@color/pp_gray" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_white_with_line"
-                android:paddingRight="5dp" >
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp">
 
                 <TextView
                     android:id="@+id/tv_country_num"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="5dp"
                     android:text="+86"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_16" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/gray_light3" />
 
                 <cn.smssdk.gui.EditTextWithClear
                     android:id="@+id/et_write_phone"
@@ -86,20 +84,27 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="5"
                     android:background="@null"
+                    android:gravity="center_vertical"
                     android:hint="@string/smssdk_write_mobile_phone"
                     android:imeOptions="actionNext"
                     android:inputType="phone"
+                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textColorHint="@color/pp_gray"
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/pp_blue"></View>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_white_with_line"
-                android:paddingRight="5dp" >
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingRight="5dp">
 
                 <ImageView
                     android:layout_width="0dp"
@@ -107,13 +112,15 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/locking_pwd" />
+                    android:src="@drawable/locking_pwd"
+                    android:visibility="gone" />
 
                 <View
                     android:layout_width="1px"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/gray_light3" />
+                    android:background="@color/gray_light3"
+                    android:visibility="gone" />
 
                 <cn.smssdk.gui.EditTextWithClear
                     android:id="@+id/pwd"
@@ -122,20 +129,27 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="5"
                     android:background="@null"
+                    android:gravity="center_vertical"
                     android:hint="@string/smssdk_pwd"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
+                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textColorHint="@color/pp_gray"
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/pp_blue"></View>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_white_with_line"
-                android:paddingRight="5dp" >
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingRight="5dp">
 
                 <ImageView
                     android:layout_width="0dp"
@@ -143,13 +157,15 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/locking_pwd" />
+                    android:src="@drawable/locking_pwd"
+                    android:visibility="gone" />
 
                 <View
                     android:layout_width="1px"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/gray_light3" />
+                    android:background="@color/gray_light3"
+                    android:visibility="gone" />
 
                 <cn.smssdk.gui.EditTextWithClear
                     android:id="@+id/pwd_again"
@@ -161,44 +177,54 @@
                     android:hint="@string/smssdk_pwd2"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
+                    android:paddingBottom="5dp"
                     android:paddingLeft="10dp"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textColorHint="@color/pp_gray"
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/pp_blue" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
-                android:layout_marginTop="10dip" >
+                android:layout_marginTop="10dip">
 
                 <cn.smssdk.gui.EditTextWithClear
                     android:id="@+id/et_put_identify"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
                     android:background="@drawable/textedit"
                     android:gravity="center"
                     android:hint="@string/smssdk_write_identify_code"
                     android:imeOptions="actionGo"
                     android:inputType="number"
                     android:padding="5dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
                     android:singleLine="true"
-                    android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textColorHint="@color/pp_gray"
+                    android:textSize="@dimen/text_size_16" />
 
                 <Button
                     android:id="@+id/btn_next"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/button_gray"
+                    android:enabled="false"
+                    android:background="@drawable/button_blue_shape_and_selector"
+                    android:paddingLeft="15dp"
+
+                    android:paddingRight="15dp"
                     android:text="@string/smssdk_send_verification_code"
-                    android:textColor="@color/gray3"
-                    android:textSize="15sp" />
+                    android:textColor="@drawable/textview_selector_blue_white"
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
 
             <Button
@@ -206,20 +232,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/button_gray"
+                android:background="@drawable/button_blue_shape_and_selector"
+                android:enabled="false"
                 android:padding="10dp"
                 android:text="@string/smssdk_sign_up"
-                android:textColor="@color/gray3"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="@drawable/textview_selector_blue_white"
+                android:textSize="@dimen/text_size_16" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="@string/smssdk_explain_briefly"
-                android:textColor="@color/gray"
-                android:textSize="12sp" />
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/tv_otherRegistered"
@@ -229,7 +255,7 @@
                 android:layout_marginTop="20dp"
                 android:padding="5dp"
                 android:text="@string/smssdk_other_sign_up"
-                android:textColor="@color/gray"
+                android:textColor="@color/pp_blue"
                 android:textSize="15sp" />
         </LinearLayout>
     </ScrollView>

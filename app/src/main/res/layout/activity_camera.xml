@@ -79,6 +79,7 @@
             android:layout_marginLeft="20dp"
             android:background="@color/transparent"
             android:padding="5dp"
+            android:visibility="gone"
             android:src="@drawable/magic_btn" />
     </RelativeLayout>
     <!-- bottombar  end -->

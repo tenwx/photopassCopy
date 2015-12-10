@@ -3,7 +3,7 @@
     android:id="@+id/login_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light" >
+    android:background="@color/pp_light_gray_background">
 
     <RelativeLayout
         android:id="@+id/top"
@@ -11,7 +11,7 @@
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue">
 
         <ImageView
             android:id="@+id/login_back"
@@ -33,11 +33,9 @@
             android:layout_centerInParent="true"
             android:text="@string/user_login"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_large_size" />
     </RelativeLayout>
 
-    <!-- 内容 -->
 
     <LinearLayout
         android:id="@+id/login_ll"
@@ -47,82 +45,55 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="10dp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
-        <LinearLayout
+
+        <cn.smssdk.gui.EditTextWithClear
+            android:id="@+id/otherLogin_email"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/Email"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
             android:paddingRight="5dp"
-            android:background="@drawable/button_white_with_line" >
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_middle_size" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:scaleType="centerInside"
-                android:src="@drawable/email_icon" />
-
-            <View
-                android:layout_width="1px"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@color/gray_light3" />
-
-            <com.pictureair.photopass.widget.EditTextWithClear
-                android:id="@+id/otherLogin_email"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="5"
-                android:background="@null"
-                android:hint="@string/Email"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:paddingLeft="10dp"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="1px"
+            android:background="@color/pp_blue" />
+
+
+        <cn.smssdk.gui.EditTextWithClear
+            android:id="@+id/otherLogin_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/pwd"
+            android:imeOptions="actionGo"
+            android:inputType="textPassword"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
             android:paddingRight="5dp"
-            android:background="@drawable/button_white_with_line" >
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_middle_size" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:scaleType="centerInside"
-                android:src="@drawable/locking_pwd" />
-
-            <View
-                android:layout_width="1px"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@color/gray_light3" />
-
-            <com.pictureair.photopass.widget.EditTextWithClear
-                android:id="@+id/otherLogin_password"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="5"
-                android:background="@null"
-                android:hint="@string/pwd"
-                android:inputType="textPassword"
-                android:paddingLeft="10dp"
-                android:imeOptions="actionGo"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/pp_blue" />
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/forgot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -130,32 +101,31 @@
             android:layout_marginRight="2dp"
             android:layout_marginTop="10dp"
             android:text="@string/forgot"
-            android:textColor="@color/gray"
-            android:textSize="15sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_middle_size"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnOtherLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/button_blue"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/button_blue_shape_and_selector"
             android:padding="10dp"
             android:text="@string/login"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_middle_size" />
 
         <Button
             android:id="@+id/sign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/button_gray"
+            android:background="@drawable/button_sign_shape_and_selector"
             android:padding="10dp"
             android:text="@string/sign"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_middle_size" />
 
     </LinearLayout>
 

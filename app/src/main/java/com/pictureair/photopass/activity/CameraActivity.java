@@ -48,7 +48,6 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.CameraUtil;
 import com.pictureair.photopass.util.Common;
@@ -75,6 +74,7 @@ import java.util.List;
  */
 public class CameraActivity extends BaseActivity implements OnClickListener,
 		SurfaceHolder.Callback, OnTouchListener {
+	private static final String TAG = "CameraActivity";
 	private SurfaceView mySurfaceView = null;
 	private SurfaceHolder mySurfaceHolder = null;
 	private LinearLayout titlebar; // 顶部栏。
@@ -193,7 +193,6 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 	protected void onDestroy() {// 因为推出的时候，还是会执行surfaceviewdestroy，所以不需要在这里释放
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 		soundPool.stop(currentStreamId);
 		soundPool.release();
 	}
@@ -583,6 +582,7 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 				// System.out.println("无法打开相机");
 				newToast.setTextAndShow(R.string.camera_closed,
 						Common.TOAST_SHORT_TIME);
+				PictureAirLog.v(TAG,"Exception e : " + e.toString());
 				return false;
 			}
 		}
@@ -635,15 +635,13 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 						if (focuseMode.get(i).equals("continuous-picture")) {
 							myParameters
 									.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-							PictureAirLog.e("FOCUS_MODE_CONTINUOUS_PICTURE",
-									"FOCUS_MODE_CONTINUOUS_PICTURE");
+							PictureAirLog.v("FOCUS_MODE_CONTINUOUS_PICTURE", "FOCUS_MODE_CONTINUOUS_PICTURE");
 							isSupportContinuous = true;
 							break;
 						} else {
 							myParameters
 									.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-							PictureAirLog.e("FOCUS_MODE_AUTO",
-									"FOCUS_MODE_AUTO");
+							PictureAirLog.v("FOCUS_MODE_AUTO", "FOCUS_MODE_AUTO");
 							isSupportContinuous = false;
 						}
 					}

@@ -497,7 +497,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
-        AppManager.getInstance().addActivity(this);
         init();//初始化UI
         judge();//判断 照片是否购买，并弹出相应的tips
     }
@@ -1252,7 +1251,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 //			myApplication.setIsBuyingPhotoInfo(null);
         }
 
-        AppManager.getInstance().killActivity(this);
     }
 
     //判断网络类型  并做操作。

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         OnClickListener, OnItemClickListener {
-    private static final String TAG = "SelectPhotoGoToVideoActivity";
+    private static final String TAG = "SelectPhotoGoToVideoAct";
     private MyApplication myApplication;
     private MyToast myToast;
     private Context context;
@@ -67,7 +67,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo_goto_video);
-        AppManager.getInstance().addActivity(this);
         context = this;
         initview();
         initData();
@@ -155,12 +154,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         if (myApplication.needScanPhoto()) {// 需要刷新
             myApplication.setneedScanPhoto(false);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AppManager.getInstance().killActivity(this);
     }
 
     @Override

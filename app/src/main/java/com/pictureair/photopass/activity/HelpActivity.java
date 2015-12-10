@@ -22,11 +22,11 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.QuestionAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.QuestionInfo;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.PinYin;
-import com.pictureair.photopass.widget.EditTextWithClear;
 
 import java.util.ArrayList;
+
+import cn.smssdk.gui.EditTextWithClear;
 
 
 /**
@@ -100,7 +100,6 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 	 * 初始化视图
 	 */
 	private void initView() {
-		AppManager.getInstance().addActivity(this);
 		editText = (EditTextWithClear) findViewById(R.id.input_edit);
 		mListView = (ListView) findViewById(R.id.auto_list);
 		back = (ImageView) findViewById(R.id.back);
@@ -169,54 +168,11 @@ public class HelpActivity extends BaseActivity implements OnClickListener{
 		case R.id.relativeLayout1:
 //			diaLogFeedBack();
 			break;
-		// Feedback
-//		case R.id.tVCancel:
-//			myFeedbackDialog.dismiss();
-//			break;
-//		case R.id.tVsend:
-//			myFeedbackDialog.dismiss();
-//			String feedbackStr = eTFeedback.getText().toString();
-//			System.out.println("-------:" + feedbackStr);
-//			break;
 
 		default:
 			break;
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
-//	 private void diaLogFeedBack() {
-//			View v = LayoutInflater.from(this).inflate(
-//					R.layout.custom_dialog_feedback, null);
-//			AlertDialog.Builder myBuilder = new AlertDialog.Builder(this);
-//			myFeedbackDialog = myBuilder.create();
-//			myFeedbackDialog.setView(new EditText(this));//自定义的dialog，必须在show（）之前加入此行，不然显示不了软键盘
-//			myFeedbackDialog.show();
-//			myFeedbackDialog.getWindow().setContentView(v);
-//			eTFeedback = (EditText) v.findViewById(R.id.eTFeedback);
-//			tVsend = (TextView) v.findViewById(R.id.tVsend);
-//			tVCancel = (TextView) v.findViewById(R.id.tVCancel);
-//			tVsend.setOnClickListener(this);
-//			tVCancel.setOnClickListener(this);
-//			eTFeedback.setOnClickListener(this);
-//
-//		}
-	 
-	   @Override
-		protected void onPause() {
-			// TODO Auto-generated method stub
-			super.onPause();
-		}
 
-		@Override
-		protected void onResume() {
-			// TODO Auto-generated method stub
-			super.onResume();
-		}
 }

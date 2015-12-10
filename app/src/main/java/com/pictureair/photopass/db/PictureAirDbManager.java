@@ -1,12 +1,5 @@
 package com.pictureair.photopass.db;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +13,13 @@ import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PinYin;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * 数据库操作管理封装类，以后所有的数据库操作，都在这里进行
@@ -41,7 +41,6 @@ public class PictureAirDbManager {
 	 * 收藏或者取消收藏图片
 	 * @param photoId 网络图片的id
 	 * @param userId
-	 * @param isOnLine 是否是网络图片
 	 * @param photoPath 本地的图片路径
 	 * @param setLove 是收藏还是取消收藏操作
 	 */
@@ -369,8 +368,8 @@ public class PictureAirDbManager {
 	
 	/**
 	 * 根据pp列表获取对应的PPCodeInfo1列表
-	 * @param pPCodeList
-	 * @param 1 代表直接进入的 PP 页面， 2 代表是从selectPP进入的
+	 * @param ppCodeList ppCodeList
+	 * @param type 1 代表直接进入的 PP 页面， 2 代表是从selectPP进入的
 	 * @return
 	 */
 	public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList,int type) {  
@@ -514,7 +513,6 @@ public class PictureAirDbManager {
 	/**
 	 * 将照片插入到photoPassInfo表中
 	 * @param responseArray
-	 * @param arrayList
 	 */
 	public ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();

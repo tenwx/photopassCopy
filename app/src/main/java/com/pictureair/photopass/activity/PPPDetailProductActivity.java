@@ -6,7 +6,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +29,7 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
@@ -63,7 +63,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 	private TextView shopAddressTextView;
 
 	//申明变量
-	private final static String TAG = "PPPDetailProductActivity";
+	private final static String TAG = "PPPDetailProductAct";
 	private int recordCount = 0; //记录数据库中有几条记录
 	private String storeIdString = null;
 	private String PPPProductId = null;
@@ -206,15 +206,14 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 		addToCartButton.setOnClickListener(this);
 		
 		//初始数据
-		AppManager.getInstance().addActivity(this);
 		myToast = new MyToast(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		aCache = ACache.get(this);
 		if (aCache.getAsString(Common.PPP_GOOD) == null) {//如果缓存为空，从服务器获取
-			Log.d(TAG, "ppp is null");
+			PictureAirLog.v(TAG, "ppp is null");
 			API.getPPP(PPPDetailProductActivity.this, "140.206.125.195", mhandler, ((MyApplication)getApplication()).getLanguageType());
 		}else {//如果在缓存中
-			Log.d(TAG, "ppp not null");
+			PictureAirLog.v(TAG, "ppp not null");
 			Message message = mhandler.obtainMessage();
 			message.what = API.GET_PHOTOPASSPLUS_SUCCESS;
 			message.obj = aCache.getAsString(Common.PPP_GOOD);
@@ -287,7 +286,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 
 	private void addtocart() {
 		//调用getShop() API
-		Log.d(TAG, "add to cart");
+		PictureAirLog.v(TAG, "add to cart");
 		//编辑传入照片的信息
 		JSONArray embedphotos = new JSONArray();//放入图片的json数组
 		JSONObject embedphoto = new JSONObject();
@@ -306,7 +305,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d(TAG, embedphotos.toString());
+		PictureAirLog.v(TAG, embedphotos.toString());
 		String[] photoImage = PPPUrl.split(",");
 		API.addtocart(sharedPreferences.getString(Common.USERINFO_ID, ""), storeIdString, PPPProductId, 1,
 				PPPNameString, "", PPPPrice, photoImage[0], PPPDetail, "", PPPPrice, mhandler, embedphotos, isBuyNow);
@@ -427,7 +426,6 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 
 	}
 	@Override

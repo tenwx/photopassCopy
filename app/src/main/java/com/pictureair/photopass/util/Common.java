@@ -19,10 +19,10 @@ public class Common {
     //		public static final String BASE_URL = "http://192.168.9.43:3001";//齐超
 //	public static final String BASE_URL = "http://192.168.8.3:3001";
 
-	public static final String BASE_URL2 = "http://192.168.8.3:3001";
-	public static final String BASE_URL = "http://192.168.8.171:3001";//harry
+    public static final String BASE_URL2 = "http://192.168.8.3:3001";
+    public static final String BASE_URL = "http://192.168.8.171:3001";//harry
 
-	public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
 //	public static final String BASE_URL = "http://pictureAir.com.cn:3001";//harry
     //public static final String BASE_URL = "http://140.206.125.194:3001";//外网
     //public static final String BASE_URL = "http://pictureAir.cloudapp.net:3001";//美国服务器
@@ -300,16 +300,7 @@ public class Common {
     // 纪录 MainTab 中 tab 的高度。
     public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
 
-    /*************************************************************************************************************************
-     ************************************************************************************************************************
-     *************************************************************************************************************************
-     * bass 测试用的
-     */
-//    public static final String DATA_VIDEO = Environment.getExternalStorageDirectory()+"/aaa/DisneyVideo.mp4";
+    //    public static final String DATA_VIDEO = Environment.getExternalStorageDirectory()+"getExternalStorageDirectory/aaa/DisneyVideo.mp4";
     public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
-    public static boolean isOnline = true; // 是本地播放还是网络播放
-    /*************************************************************************************************************************
-     ************************************************************************************************************************
-     *************************************************************************************************************************
-     */
+    public static boolean isOnline = false; // 是本地播放还是网络播放
 }

@@ -144,7 +144,6 @@ public class CalendarActivity extends BaseActivity implements View.OnClickListen
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendar);
-		AppManager.getInstance().addActivity(this);// 添加到activity管理器
 		myToast = new MyToast(this);
 		ppp = getIntent().getParcelableExtra("ppp");
 		Log.e("ppp", "ppp:"+ppp);
@@ -399,17 +398,5 @@ public class CalendarActivity extends BaseActivity implements View.OnClickListen
 		currentFlag = -11; 
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
 
 }

@@ -376,7 +376,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_makegift);
-		AppManager.getInstance().addActivity(this);
 		init();
 	}
 	
@@ -786,19 +785,5 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 		return view;
 	}
 	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
 
-	
-	
 }

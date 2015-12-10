@@ -245,7 +245,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preview);
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		//获取从selectphotoactivity传递过来的信息
 		nameString = getIntent().getStringExtra("name");//获取name
@@ -535,12 +534,5 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 			}
 		});
 
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 	}
 }

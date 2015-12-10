@@ -25,7 +25,6 @@ import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
@@ -34,7 +33,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import org.json.JSONArray;
@@ -45,6 +43,7 @@ import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import cn.smssdk.gui.EditTextWithClear;
 import cn.smssdk.gui.RegisterPage;
 import cz.msebera.android.httpclient.Header;
 
@@ -281,7 +280,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		AppManager.getInstance().addActivity(this);// 添加到activity管理器
 		initview();// 初始化
 
 	}
@@ -586,7 +584,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 		if (registerPage != null) {
 			PictureAirLog.v(TAG,"logout onDestroy, need finish registerPage");
 			registerPage.finish();

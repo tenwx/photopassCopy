@@ -23,14 +23,12 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import org.json.JSONArray;
@@ -41,6 +39,7 @@ import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import cn.smssdk.gui.EditTextWithClear;
 import cn.smssdk.gui.RegisterPage;
 import cz.msebera.android.httpclient.Header;
 
@@ -73,7 +72,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_other_login);
-		AppManager.getInstance().addActivity(this);// 添加activity
 		initView();
 	}
 
@@ -335,7 +333,9 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 			break;
 		case R.id.sign:
 			System.out.println("tap sign");
-			sendSMS(0);
+//			sendSMS(0);
+			Intent intent = new Intent(this, OtherRegisterActivity.class);
+			startActivity(intent);
 			break;
 
 		case R.id.forgot:
@@ -486,21 +486,4 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener 
 		registerPage.show(this);
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
 }

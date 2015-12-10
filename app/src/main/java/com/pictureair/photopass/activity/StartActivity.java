@@ -9,14 +9,13 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.Locale;
 
@@ -35,12 +34,10 @@ public class StartActivity extends BaseActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start);
 		
 		spApp = getSharedPreferences(Common.APP, MODE_PRIVATE);
-		AppManager.getInstance().addActivity(this);
 		config = getResources().getConfiguration();
 		displayMetrics = getResources().getDisplayMetrics();
 		
@@ -67,7 +64,7 @@ public class StartActivity extends BaseActivity{
 			PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
 			final int versionCode = info.versionCode;
 			code = spApp.getInt(Common.APP_VERSION_CODE, 0);
-			System.out.println("code="+code+";versioncode="+versionCode);
+			PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
 
 			if (code == versionCode) {// 启动app,如果不是第一次进入，则直接跳过引导页
 				// 需要从服务器获取最新的照片信息，地点信息，个人用户信息，商品信息，购物车信息等等，然后存入到数据库中
@@ -79,10 +76,7 @@ public class StartActivity extends BaseActivity{
 						Intent intent = null;
 						if(_id != null){//判断是否已经登录
 							//发送广播
-							Log.d(TAG, "start push service");
-//							Intent intent2 = new Intent();
-//							intent2.setAction("com.receiver.AlertManagerRecriver");
-//							StartActivity.this.sendBroadcast(intent2);
+							PictureAirLog.d(TAG, "start push service");
 							intent = new Intent(StartActivity.this, MainTabActivity.class);
 						}else{
 							intent = new Intent(StartActivity.this, LoginActivity.class);
@@ -90,7 +84,7 @@ public class StartActivity extends BaseActivity{
 						finish();
 						startActivity(intent);
 					}
-				}, 1000);
+				}, 2000);
 			} else {//进入引导页
 				API.getTokenId(this);
 				Editor editor = spApp.edit();
@@ -106,15 +100,14 @@ public class StartActivity extends BaseActivity{
 				}, 2000);
 			}
 		} catch (NameNotFoundException e) {
-			e.printStackTrace(System.err);
+			e.printStackTrace();
 		}
 	
 	}
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
+
 	}
 }

@@ -1,5 +1,6 @@
 package com.pictureair.photopass.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +16,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
 
 /**
- * 国家列表
+ * 国家列表选择类
  * @author bass
  *
  */
@@ -33,6 +33,8 @@ public class NationalListSelectionActivity extends BaseActivity {
 	// 只有国家名称，的列表
 	private String[] counryList;
 	private String codelist[] = { "" };// 区号集合
+	//	private static final int START_OTHER_REGISTER_ACTIVITY = 1;// 启动 其他注册的侧面
+	private boolean isLogin;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,47 +42,27 @@ public class NationalListSelectionActivity extends BaseActivity {
 		setContentView(R.layout.activity_national_list_selection);
 
 		initView();
-		getDate();
+		
+		isLogin = true;
+		if (getIntent().getExtras().getString("isCountrycode").equals("Login")) {
+			isLogin = true;
+			System.out.println("-------国家区号");
+			getDate(isLogin);
+		}else{
+			isLogin = false;
+			System.out.println("-------国家简码");
+			getDate(isLogin);
+		}
+		
+		// 读取是哪一个页面传递来的
 
-		adapter = new myAdapter(NationalListSelectionActivity.this,
-				R.layout.national_list_selection_item, counryList);
+		adapter = new myAdapter(NationalListSelectionActivity.this,R.layout.national_list_selection_item, counryList);
 		lv.setAdapter(adapter);
-
-	}
-
-	private void initView() {
-		AppManager.getInstance().addActivity(this);// 添加到activity管理器
-
-		back = (ImageView) findViewById(R.id.login_back);
-		lv = (ListView) findViewById(R.id.listView_nationalList_Selection);
-		back.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				finish();
-			}
-		});
-
-		lv.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> v, View view, int position,
-					long arg3) {
-				country = v.getItemAtPosition(position).toString();// 得到国家名称
-				countryCode = codelist[position];// 区号
-
-				Intent intent = new Intent();
-				intent.putExtra("country", country);
-				intent.putExtra("countryCode", countryCode);
-				setResult(111, intent);
-				finish();
-			}
-		});
-
 	}
 
 	/** 读取数据，之后传给适配器 */
-	private void getDate() {
-		String nationalList[] = getResources().getStringArray(R.array.smssdk_country);
+	private void getDate(boolean isLogins) {
+		String nationalList[] = getLangruege(isLogins);// 读取系统语言
 		counryList = new String[nationalList.length];
 		codelist = new String[nationalList.length];
 
@@ -93,7 +75,63 @@ public class NationalListSelectionActivity extends BaseActivity {
 		}
 		System.out.println("＝" + counryList + codelist);
 	}
+	
+	/** 读取简码／区号 */
+	private  String[] getLangruege(boolean islogin) {
+		String[] aa;
+		if (islogin) {
+			/** 读取国家区号 */
+			aa = this.getResources().getStringArray(R.array.smssdk_country);
+		} else {
+			/** 读取国家简码 */
+			aa = this.getResources().getStringArray(R.array.country_code);
+		}
+		return aa;
+	}
+	
+	private void initView() {
 
+		back = (ImageView) findViewById(R.id.login_back);
+		lv = (ListView) findViewById(R.id.listView_nationalList_Selection);
+		back.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+//				Intent intent = new Intent();
+//				intent.putExtra("country", "中国");
+//				intent.putExtra("countryCode", "86");
+//				setResult(0, intent);
+				finish();
+			}
+		});
+
+		lv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> v, View view, int position,
+					long arg3) {
+				long i = v.getItemIdAtPosition(position);// 下标
+				country = v.getItemAtPosition(position).toString();// 得到国家名称
+				countryCode = codelist[position];// 区号
+				
+				Intent intent = new Intent();
+				intent.putExtra("country", country);
+				intent.putExtra("countryCode", countryCode);
+				if (isLogin) {
+					System.out.println("-------国家区号");
+					setResult(111, intent);
+				}else{
+					setResult(222, intent);
+				}
+				finish();
+				// }
+				System.out.println("国家： " + country + "---");
+				System.out.println("下标： " + i + "---");
+				System.out.println("区号： " + codelist[position] + "---");
+				System.out.println("position： " + position + "---");
+			}
+		});
+
+	}
 
 	private class myAdapter extends BaseAdapter {
 		private int layout;
@@ -106,10 +144,11 @@ public class NationalListSelectionActivity extends BaseActivity {
 			cc = list;
 		}
 
-		@Override
+		@SuppressLint("ViewHolder") @Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			convertView = LayoutInflater.from(contextT).inflate(layout, null);
-			TextView tv = (TextView) convertView.findViewById(R.id.nationalListSelection_tV01);
+			TextView tv = (TextView) convertView
+					.findViewById(R.id.nationalListSelection_tV01);
 			tv.setText(cc[position] + "");
 
 			return convertView;
@@ -131,22 +170,5 @@ public class NationalListSelectionActivity extends BaseActivity {
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
 }

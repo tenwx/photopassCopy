@@ -88,7 +88,6 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 	//初始化函数
 	private void initview() {
 		//初始化资源
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		myApplication = (MyApplication)getApplication();
 		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
@@ -200,11 +199,6 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		arrayList.addAll(myApplication.magicPicList);
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 
 	@Override
 	protected void onResume() {
