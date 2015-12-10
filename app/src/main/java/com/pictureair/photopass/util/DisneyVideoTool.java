@@ -23,6 +23,8 @@ public class DisneyVideoTool {
     private static final String IS_ONE_GO_TO_DISNEY_VIDEO = "is_one_go_to_disney_video";
     private static Context context = MyApplication.getInstance().getApplicationContext();
     public static final String IS_BOUGHT = "is_bought";
+    public static final String FROM_STORY = "from_story";
+
 //    public static final String TEST_MP4_URL = "http://192.168.8.3:3006/test.mp4";//测试链接
 
     /**
@@ -42,11 +44,34 @@ public class DisneyVideoTool {
             context.startActivity(intent);
         } else {// 第二次进入
             getIsEditImageGoToVideo(context);
-
             //测试进入播放视频
-//            Intent intent = new Intent(context, VideoPlayerActivity.class);
-//            context.startActivity(intent);
+//            TestGoToVideo(context);
         }
+    }
+
+    /**
+     * 测试播放视频
+     * 1.进入videoActivity之前需要判断是不是视频
+     * 2.需要传入对象视频对象
+     * @param context
+     */
+    private static void TestGoToVideo(Context context) {
+        PhotoInfo info = getPhotoInfo();
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        intent.putExtra(FROM_STORY,info);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 测试模拟一个数据
+     */
+    private static PhotoInfo getPhotoInfo(){
+        PhotoInfo photoInfo = new PhotoInfo();
+        photoInfo.photoId = "123";
+        photoInfo.photoPathOrURL = "123.mp4";//图片的原始路径
+        photoInfo.onLine = 1;//1线上图片，0，本地图片
+        photoInfo.isVideo = 1;//1是视频，0是图片
+        return photoInfo;
     }
 
     /**

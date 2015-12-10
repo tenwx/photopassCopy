@@ -34,6 +34,7 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.VideoPlayerView;
 import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
@@ -129,6 +130,7 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
 
     private void initView() {
+        videoInfo = (PhotoInfo)getIntent().getExtras().get(DisneyVideoTool.FROM_STORY);
 
         myToast = new MyToast(context);
         tvLoding = (TextView)findViewById(R.id.tv_loding);
@@ -463,12 +465,6 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
      * 4.开始下载
      */
     private void downloadVideo() {
-        //模拟数据
-        videoInfo = getPhotoInfo();
-
-        //
-        Toast.makeText(context,"is download",Toast.LENGTH_SHORT).show();
-        //
         if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
             myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
             return;
@@ -518,20 +514,6 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         intent.putExtras(bundle);
         startService(intent);
     }
-
-
-    /**
-     * 测试模拟一个数据
-     */
-    private PhotoInfo getPhotoInfo(){
-        PhotoInfo photoInfo = new PhotoInfo();
-        photoInfo.photoId = "123";
-        photoInfo.photoPathOrURL = Common.DATA_VIDEO;//图片的原始路径
-        photoInfo.onLine = 1;//1线上图片，0，本地图片
-        photoInfo.isVideo = 1;//1是视频，0是图片
-        return photoInfo;
-    }
-
 
     /*****************************************************************************************************************
      * 全屏点触事件****
