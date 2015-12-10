@@ -94,7 +94,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 	}
 
 	private void initView() {
-		AppManager.getInstance().addActivity(this);
 		//find控件
 		returnLayout = (ImageView)findViewById(R.id.rt);
 		cartImageView = (ImageView)findViewById(R.id.button_bag);
@@ -376,19 +375,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		return view;
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
 
-	
-	
 	
 }

@@ -210,7 +210,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private void initView() {
         pppPop = new PPPPop(this, mHandler);
         //初始化
-        AppManager.getInstance().addActivity(this);
         newToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //找控件
@@ -479,7 +478,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        AppManager.getInstance().killActivity(this);
     }
 
     //对话框监听类

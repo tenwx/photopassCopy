@@ -144,7 +144,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_payment_order);
-		AppManager.getInstance().addActivity(this);
 		findViewById();
 		init();
 	}
@@ -703,8 +702,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		stopService(new Intent(this, PayPalService.class));
-		AppManager.getInstance().killActivity(this);
 	}
 
 	// 生成签名参数

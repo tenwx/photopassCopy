@@ -77,7 +77,6 @@ public class MainTabActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		System.out.println("maintab ======= create");
 		setContentView(R.layout.activity_main);
-		AppManager.getInstance().addActivity(this);
 		application = (MyApplication)getApplication();
 		instances = this;
 		initView();
@@ -98,7 +97,6 @@ public class MainTabActivity extends BaseActivity {
 		super.onDestroy();
 		System.out.println("clear asimplecache=====");
 		clearCache();
-		AppManager.getInstance().killActivity(this);
 	}
 
 	@Override

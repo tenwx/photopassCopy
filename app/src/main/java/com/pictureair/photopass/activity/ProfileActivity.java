@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.MyToast;
@@ -115,7 +114,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_profile);
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-        AppManager.getInstance().addActivity(this);
         newToast = new MyToast(this);
         initView();
         initData();
@@ -372,12 +370,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         dayWheelView.setViewAdapter(numericWheelAdapter);
     }
 
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        AppManager.getInstance().killActivity(this);
-    }
 
     /**
      * 弹出对话框

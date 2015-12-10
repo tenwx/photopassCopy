@@ -15,7 +15,7 @@
     <string name="pwd">Password</string>
     <string name="pwd_again">Repeat password</string>
     <string name="user_login">Account</string>
-    <string name="login">Login</string>
+    <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
     <string name="forgot">Forgot password?</string>
     <string name="exit">"Double tap to exit PhotoPass"</string>

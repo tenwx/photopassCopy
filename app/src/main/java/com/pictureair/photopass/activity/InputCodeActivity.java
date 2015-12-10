@@ -24,7 +24,6 @@ import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.widget.MyToast;
@@ -45,7 +44,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	private EditText input;
 	private ImageView back;
 	private SharedPreferences sp;
-	private TextView showTextView;
 	private MyToast newToast;
 	private String type;
 	private MyApplication application;
@@ -56,7 +54,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inputcode);
-		AppManager.getInstance().addActivity(this);
 		newToast = new MyToast(this);
 		initview();
 	}
@@ -66,8 +63,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		back = (ImageView) findViewById(R.id.back);
 		ok = (Button) findViewById(R.id.sure);
 		input = (EditText) findViewById(R.id.input);
-		showTextView = (TextView)findViewById(R.id.scancodetextview);
-		showTextView.setVisibility(View.INVISIBLE);
 		back.setOnClickListener(this);
 		ok.setOnClickListener(this);
 
@@ -95,19 +90,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub
 				System.out.println("up");
-				if (0==input.getText().toString().length()) {
-					if (showTextView.isShown()) {
-						showTextView.setVisibility(View.INVISIBLE);
-						showTextView.setText(input.getText().toString());
-					}
-				}else {
-
-					if (!showTextView.isShown()) {
-						System.out.println("show");
-						showTextView.setVisibility(View.VISIBLE);
-					}
-					showTextView.setText(input.getText().toString());
-				}
 
 			}
 
@@ -419,23 +401,5 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		default:
 			break;
 		}
-	}
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
 	}
 }

@@ -84,7 +84,6 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 
 	//初始化
 	private void initView() {
-		AppManager.getInstance().addActivity(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		//获取订单接口
 		// 显示进度条。
@@ -245,12 +244,6 @@ public class OrderActivity extends BaseActivity implements OnClickListener{
 		};
 	};
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 
 	//选项卡点击事件监听
 	public class viewPagerOnClickListener implements OnClickListener{

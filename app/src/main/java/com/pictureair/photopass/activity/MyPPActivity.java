@@ -353,7 +353,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private void initView_common() {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 MODE_PRIVATE);
-        AppManager.getInstance().addActivity(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
         back = (ImageView) findViewById(R.id.back);
@@ -597,12 +596,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         return false;
     }
 
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        AppManager.getInstance().killActivity(this);
-    }
 
 
     private String formaStringPPP(int count1, int count2) {

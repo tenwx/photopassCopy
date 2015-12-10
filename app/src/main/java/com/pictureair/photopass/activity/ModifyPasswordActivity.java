@@ -15,7 +15,6 @@ import android.widget.ImageView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressDialog;
@@ -74,7 +73,6 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_modify_password);
-		AppManager.getInstance().addActivity(this);
 		initView();
 	}
 	

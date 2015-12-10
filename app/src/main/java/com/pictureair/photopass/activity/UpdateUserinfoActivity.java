@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.EditTextWithClear;
+
+import cn.smssdk.gui.EditTextWithClear;
 
 public class UpdateUserinfoActivity extends BaseActivity implements OnClickListener {
 	private ImageView back;  // back btn

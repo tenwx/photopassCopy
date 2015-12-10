@@ -115,8 +115,7 @@
                 android:paddingLeft="13dp"
                 android:paddingRight="13dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/direction_icon"
-                android:visibility="gone" />
+                android:src="@drawable/direction_icon" />
 
             <TextView
                 android:id="@+id/discover_distance"

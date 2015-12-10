@@ -196,8 +196,7 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 	}
 	
 	private void initView() {
-		AppManager.getInstance().addActivity(this);
-		
+
 		phone = getIntent().getStringExtra("phone");//获取手机号
 		type = getIntent().getIntExtra("type", 0);//注册
 		System.out.println("phone------->"+phone+",type---->"+type);
@@ -338,12 +337,5 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 		default:
 			break;
 		}
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 	}
 }

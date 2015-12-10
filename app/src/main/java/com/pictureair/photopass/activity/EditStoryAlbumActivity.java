@@ -24,7 +24,6 @@ import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.MyToast;
@@ -142,8 +141,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_story_photo);
-		AppManager.getInstance().addActivity(this);
-		
+
 		//find控件
 		backRelativeLayout = (ImageView) findViewById(R.id.rlrt);
 		selectAllTextView = (TextView) findViewById(R.id.select_all);
@@ -232,12 +230,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
-	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {

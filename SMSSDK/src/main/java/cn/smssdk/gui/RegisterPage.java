@@ -7,25 +7,10 @@
  */
 package cn.smssdk.gui;
 
-import static cn.smssdk.framework.utils.R.getBitmapRes;
-import static cn.smssdk.framework.utils.R.getIdRes;
-import static cn.smssdk.framework.utils.R.getLayoutRes;
-import static cn.smssdk.framework.utils.R.getStringRes;
-import static cn.smssdk.framework.utils.R.getStyleRes;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -33,18 +18,30 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import cn.smssdk.EventHandler;
 import cn.smssdk.OnSendMessageHandler;
-import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.UserInterruptException;
 import cn.smssdk.framework.FakeActivity;
+
+import static cn.smssdk.framework.utils.R.getBitmapRes;
+import static cn.smssdk.framework.utils.R.getIdRes;
+import static cn.smssdk.framework.utils.R.getLayoutRes;
+import static cn.smssdk.framework.utils.R.getStringRes;
+import static cn.smssdk.framework.utils.R.getStyleRes;
 
 /** 短信注册页面 */
 public class RegisterPage extends FakeActivity implements OnClickListener,
@@ -349,22 +346,22 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	 * @param isAvailable
 	 */
 	public void setNextBtnAvailable(boolean isAvailable) {
-		int bgId;
-		int colorId;
+//		int bgId;
+//		int colorId;
 		if (isAvailable) {
-			bgId = getBitmapRes(activity, "button_green");
-			colorId = Color.WHITE;
+//			bgId = getBitmapRes(activity, "button_green");
+//			colorId = Color.WHITE;
 			btnSubmit.setEnabled(true);
 
 		} else {
-			bgId = getBitmapRes(activity, "button_gray");
-			colorId = activity.getResources().getColor(R.color.gray3);
+//			bgId = getBitmapRes(activity, "button_gray");
+//			colorId = activity.getResources().getColor(R.color.gray3);
 			btnSubmit.setEnabled(false);
 		}
-		if (bgId > 0) {
-			btnNext.setBackgroundResource(bgId);
-		}
-		btnNext.setTextColor(colorId);
+//		if (bgId > 0) {
+//			btnNext.setBackgroundResource(bgId);
+//		}
+//		btnNext.setTextColor(colorId);
 
 	}
 
@@ -374,21 +371,21 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	 * @param isAvailable
 	 */
 	public void setSubmitAvailable(boolean isAvailable) {
-		int bgId;
-		int colorId;
+//		int bgId;
+//		int colorId;
 		if (isAvailable) {
-			bgId = getBitmapRes(activity, "button_blue");
-			colorId = Color.WHITE;
+//			bgId = getBitmapRes(activity, "button_blue");
+//			colorId = Color.WHITE;
 			btnSubmit.setEnabled(true);
 		} else {
-			bgId = getBitmapRes(activity, "button_gray");
-			colorId = activity.getResources().getColor(R.color.gray3);
+//			bgId = getBitmapRes(activity, "button_gray");
+//			colorId = activity.getResources().getColor(R.color.gray3);
 			btnSubmit.setEnabled(false);
 		}
-		if (bgId > 0) {
-			btnSubmit.setBackgroundResource(bgId);
-		}
-		btnSubmit.setTextColor(colorId);
+//		if (bgId > 0) {
+//			btnSubmit.setBackgroundResource(bgId);
+//		}
+//		btnSubmit.setTextColor(colorId);
 
 	}
 

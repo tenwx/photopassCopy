@@ -48,7 +48,6 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.CameraUtil;
 import com.pictureair.photopass.util.Common;
@@ -194,7 +193,6 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 	protected void onDestroy() {// 因为推出的时候，还是会执行surfaceviewdestroy，所以不需要在这里释放
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
 		soundPool.stop(currentStreamId);
 		soundPool.release();
 	}

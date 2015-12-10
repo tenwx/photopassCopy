@@ -25,7 +25,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.widget.EditTextWithClear;
 
 import org.apache.http.conn.util.InetAddressUtils;
 import org.json.JSONException;
@@ -59,6 +58,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.smssdk.gui.EditTextWithClear;
 
 /**
  * 公共类的方法
@@ -489,7 +490,7 @@ public class AppUtil {
 	 * @return
 	 */
 	public static boolean isShouldHideInput(View v, MotionEvent event) {  
-		if (v != null && (v instanceof EditTextWithClear)) {  
+		if (v != null && (v instanceof EditTextWithClear)) {
 			int[] leftTop = { 0, 0 };  
 			//获取输入框当前的location位置  
 			v.getLocationInWindow(leftTop);  

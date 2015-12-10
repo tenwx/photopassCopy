@@ -1,13 +1,13 @@
 package com.pictureair.photopass.activity;
 
-import com.pictureair.photopass.util.AppManager;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AppManager;
 
 /**
  * 1、非第一次使用迪士尼视频 且没有乐拍通照片：介绍页面；
@@ -25,7 +25,6 @@ public class EditVideoNullPhotoActivity extends BaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_video_null_photo);
-		AppManager.getInstance().addActivity(this);
 		initView();
 		initEvent();
 	}
@@ -57,10 +56,5 @@ public class EditVideoNullPhotoActivity extends BaseActivity implements
 		}
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		AppManager.getInstance().killActivity(this);
-	}
 
 }

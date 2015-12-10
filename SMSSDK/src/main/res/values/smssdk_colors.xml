@@ -20,4 +20,23 @@
    	<color name="gray3">#828282</color><!-- 中间颜色字体 -->
     <color name="gray_light">#EEEEEE</color>
     <color name="gray_light2">#ECEBEB</color>
+	<color name="transparent">#00000000</color>
+	<color name="white">#FFFFFF</color>
+
+	<!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
+	<color name="pp_blue">#1994d7</color>
+	<!-- 深蓝，比如深色的字体颜色-->
+	<color name="pp_dark_blue">#253b56</color>
+	<!-- 浅灰，比如输入框的文字，较深的分割线-->
+	<color name="pp_gray">#8294aa</color>
+	<!-- 淡浅灰，比如背景颜色-->
+	<color name="pp_light_gray_background">#f6f6f6</color>
+	<!-- 淡浅灰，比如注册按钮-->
+	<color name="pp_light_gray_normal">#e9eef1</color>
+	<!-- 淡浅灰，比如注册按钮点击颜色-->
+	<color name="pp_light_gray_press">#a1afc0</color>
+	<!-- 橙色，比如价格-->
+	<color name="pp_orange">#ff4605</color>
+	<!-- 紫色，比如编辑页面的字体颜色-->
+	<color name="pp_purple">#5f23c4</color>
 </resources>
