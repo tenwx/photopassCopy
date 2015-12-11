@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,13 +31,16 @@ import android.widget.Toast;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.SharePop;
 import com.pictureair.photopass.widget.VideoPlayerView;
 import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
 
@@ -49,15 +54,19 @@ import java.util.ArrayList;
  */
 public class VideoPlayerActivity extends Activity implements OnClickListener {
     private final static String TAG = "VideoPlayerActivity";
+    private static final int UPDATE_UI = 2866;
     private SeekBar seekBar = null;
     private TextView durationTextView = null;
     private TextView playedTextView = null;
     private ImageButton btnPlayOrStop = null;
-    private RelativeLayout rlHead;
+    private RelativeLayout rlHead,rlBackground;
     private LinearLayout llEnd;
     private ImageView ivBack, ivIsLove;
     private TextView tvLoding;
     private MyToast myToast;
+    private SharePop sharePop;
+    private SharedPreferences sharedPreferences;
+
 
     private Context context;
     private LinearLayout llControler, llShow, llShare, llDownload;
@@ -75,6 +84,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
     private PhotoInfo videoInfo;
     private int mNetWorkType;  //当前网络的状态
     private CustomDialog customdialog; //  对话框
+    private PictureAirDbManager pictureAirDbManager;
+
 
     public boolean isOnline = Common.isOnline;//测试
 
@@ -106,6 +117,26 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
                 case HIDE_CONTROLER:
                     hideController();
                     break;
+
+                case UPDATE_UI:
+                    Configuration cf = context.getResources().getConfiguration();
+                    int ori = cf.orientation;
+                    if (ori == cf.ORIENTATION_LANDSCAPE){
+                        crossScreen();
+                    }
+                    else if (ori == cf.ORIENTATION_PORTRAIT){
+                        verticalScreen();
+                    }
+
+                    //更新收藏图标
+                    if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), videoInfo.photoPathOrURL)) {
+                        videoInfo.isLove = 1;
+                        ivIsLove.setImageResource(R.drawable.preview_photo_love_sele);
+                    } else {
+                        videoInfo.isLove = 0;
+                        ivIsLove.setImageResource(R.drawable.preview_photo_love_nor);
+                    }
+                    break;
             }
             super.handleMessage(msg);
         }
@@ -131,8 +162,12 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
     private void initView() {
         videoInfo = (PhotoInfo)getIntent().getExtras().get(DisneyVideoTool.FROM_STORY);
-
+        sharePop = new SharePop(context);
+        pictureAirDbManager = new PictureAirDbManager(context);
+        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         myToast = new MyToast(context);
+
+        rlBackground = (RelativeLayout)findViewById(R.id.rl_background);
         tvLoding = (TextView)findViewById(R.id.tv_loding);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivIsLove = (ImageView) findViewById(R.id.iv_isLove);
@@ -142,6 +177,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         rlHead = (RelativeLayout) findViewById(R.id.ll_head);
         llEnd = (LinearLayout) findViewById(R.id.ll_end);
         llShow = (LinearLayout) findViewById(R.id.ll_show);
+//        verticalScreen();
+
         // 控制栏的
         llControler = (LinearLayout) findViewById(R.id.ll_controler);
         durationTextView = (TextView) findViewById(R.id.duration);
@@ -154,8 +191,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         btnPlayOrStop.setImageResource(R.drawable.play);
         btnPlayOrStop.setAlpha(0xBB);
         btnPlayOrStop.setVisibility(View.GONE);
+        myHandler.sendEmptyMessage(UPDATE_UI);
     }
-
 
     /**
      * 所有按钮的事件
@@ -394,29 +431,47 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 //		}
         getDisplayMetrics();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            rlHead.setVisibility(View.GONE);
-            llEnd.setVisibility(View.GONE);
-
-            setVideoScale(SCREEN_FULL);
-            vv.start();
-            btnPlayOrStop.setImageResource(R.drawable.pause);
-//			cancelDelayHide();
-            hideControllerDelay();
+            crossScreen();//横屏计算大小
 //			Toast.makeText(context, " 横屏", 100).show();
         } else {
-            rlHead.setVisibility(View.VISIBLE);
-            llEnd.setVisibility(View.VISIBLE);
-            setVideoScale(SCREEN_DEFAULT);
-            vv.start();
-            btnPlayOrStop.setImageResource(R.drawable.pause);
-//			cancelDelayHide();
-            hideControllerDelay();
-
+            verticalScreen();//竖屏计算大小
 //			Toast.makeText(context, " 竖屏", 100).show();
         }
         isPaused = false;
 
         super.onConfigurationChanged(newConfig);
+    }
+
+    private void crossScreen() {
+        rlHead.setVisibility(View.GONE);
+        llEnd.setVisibility(View.GONE);
+        rlBackground.setBackgroundColor(getResources().getColor(R.color.black));
+        ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
+        layoutParams.height = ScreenUtil.getScreenHeight(this);
+        layoutParams.width = layoutParams.height * 4 / 3;
+        llShow.setLayoutParams(layoutParams);
+
+        setVideoScale(SCREEN_FULL);
+        vv.start();
+        btnPlayOrStop.setImageResource(R.drawable.pause);
+//			cancelDelayHide();
+        hideControllerDelay();
+    }
+
+    private void verticalScreen() {
+        rlHead.setVisibility(View.VISIBLE);
+        llEnd.setVisibility(View.VISIBLE);
+        rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
+        ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
+        layoutParams.width = ScreenUtil.getScreenWidth(this);
+        layoutParams.height = layoutParams.width * 3 / 4;
+        llShow.setLayoutParams(layoutParams);
+
+        setVideoScale(SCREEN_DEFAULT);
+        vv.start();
+        btnPlayOrStop.setImageResource(R.drawable.pause);
+//			cancelDelayHide();
+        hideControllerDelay();
     }
 
     @Override
@@ -425,13 +480,13 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.ll_share:
                 Toast.makeText(context,"is share",Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.ll_download:
                 downloadVideo();
                 break;
-
             case R.id.iv_isLove:
-                Toast.makeText(context,"is love",Toast.LENGTH_SHORT).show();
+                isLoveEvent();
                 break;
             case R.id.iv_back:
                 finish();
@@ -513,6 +568,25 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         bundle.putParcelableArrayList("photos", list);
         intent.putExtras(bundle);
         startService(intent);
+    }
+
+    /**
+     * 收藏事件
+     * @return
+     */
+    public boolean isLoveEvent() {
+        if (videoInfo.isLove == 1) {
+            Log.d(TAG, "cancel love");
+            pictureAirDbManager.setPictureLove(videoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), videoInfo.photoPathOrURL, false);
+            videoInfo.isLove = 0;
+            ivIsLove.setImageResource(R.drawable.preview_photo_love_nor);
+        } else {
+            Log.d(TAG, "add love");
+            pictureAirDbManager.setPictureLove(videoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), videoInfo.photoPathOrURL, true);
+            videoInfo.isLove = 1;
+            ivIsLove.setImageResource(R.drawable.preview_photo_love_sele);
+        }
+        return true;
     }
 
     /*****************************************************************************************************************
