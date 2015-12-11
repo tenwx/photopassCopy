@@ -6,6 +6,7 @@ import android.content.Context;
  * Created by bauer_bao on 15/12/10.
  */
 public class ReflectionUtil {
+    private static final String BASE_CODE_STRING = "http_error_code";
     /**
      * 获取layout Id
      * @param paramContext
@@ -23,8 +24,8 @@ public class ReflectionUtil {
      * @param paramString
      * @return
      */
-    public static int getStringId(Context paramContext, String paramString) {
-        return paramContext.getResources().getIdentifier(paramString, "string",
+    public static int getStringId(Context paramContext, int paramString) {
+        return paramContext.getResources().getIdentifier(BASE_CODE_STRING + paramString, "string",
                 paramContext.getPackageName());
     }
 

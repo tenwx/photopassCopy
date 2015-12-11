@@ -11,7 +11,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
-import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
@@ -21,14 +20,8 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
 
 
 /**
@@ -158,130 +151,109 @@ public class JsonUtil {
     public static void getUserInfo(final Context context, JSONObject object, Handler handler) throws JSONException {
         SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
-        System.out.println("jsonObject=======" + object.toString());
-
-        e.putString(Common.USERINFO_TOKENID, object.getString(Common.USERINFO_TOKENID));
-        System.out.println("jsonutil=======" + object.getString(Common.USERINFO_TOKENID));
+        e.putString(Common.USERINFO_TOKENID, object.getString("tokenId"));
         JSONObject obj = object.getJSONObject("user");
-        System.out.println(obj.toString());
-        if (obj.containsKey(Common.USERINFO_ID)) {
+        if (obj.containsKey("_id")) {
 
-            e.putString(Common.USERINFO_ID, obj.getString(Common.USERINFO_ID));
+            e.putString(Common.USERINFO_ID, obj.getString("_id"));
         }
-        if (obj.containsKey(Common.USERINFO_NICKNAME)) {
+        if (obj.containsKey("name")) {
 
-            e.putString(Common.USERINFO_NICKNAME, obj.getString(Common.USERINFO_NICKNAME));
-        }
-
-        if (obj.containsKey(Common.USERINFO_QQ)) {
-            e.putString(Common.USERINFO_QQ, obj.getString(Common.USERINFO_QQ));
+            e.putString(Common.USERINFO_NICKNAME, obj.getString("name"));
         }
 
-        if (obj.containsKey(Common.USERINFO_COUNTRY)) {
+
+        if (obj.containsKey("country")) {
             e.putString(Common.USERINFO_COUNTRY,
-                    obj.getString(Common.USERINFO_COUNTRY));
+                    obj.getString("country"));
         }
 
         //如果 用户存在ppCode，存入 USERINFO_USER_PP 字段。
-        if (obj.containsKey(Common.USERINFO_USER_PP)) {
+        if (obj.containsKey("userPP")) {
             // 存入 USERINFO_USER_PP 字段。
-            e.putString(Common.USERINFO_USER_PP, obj.getString(Common.USERINFO_USER_PP));
+            e.putString(Common.USERINFO_USER_PP, obj.getString("userPP"));
         }
 
-        if (obj.containsKey(Common.USERINFO_GENDER)) {
+        if (obj.containsKey("gender")) {
 
-            if ("1".equals(obj.getString(Common.USERINFO_GENDER)) || "male".equals(obj.getString(Common.USERINFO_GENDER))) {
+            if ("1".equals(obj.getString("gender")) || "male".equals(obj.getString("gender"))) {
                 e.putString(Common.USERINFO_GENDER, "male");
-            } else if ("0".equals(obj.getString(Common.USERINFO_GENDER)) || "female".equals(obj.getString(Common.USERINFO_GENDER))) {
+            } else if ("0".equals(obj.getString("gender")) || "female".equals(obj.getString("gender"))) {
                 e.putString(Common.USERINFO_GENDER, "female");
             } else {
                 e.putString(Common.USERINFO_GENDER, "male");
             }
         }
-        if (obj.containsKey(Common.USERINFO_BIRTHDAY)) {
+        if (obj.containsKey("birthday")) {
 
-            e.putString(Common.USERINFO_BIRTHDAY, obj.getString(Common.USERINFO_BIRTHDAY).split("T")[0]);
+            e.putString(Common.USERINFO_BIRTHDAY, obj.getString("birthday").split("T")[0]);
         }
 
         String headUrl = null;
-        if (obj.containsKey(Common.USERINFO_HEADPHOTO)) {
+        if (obj.containsKey("avatarUrl")) {
             System.out.println("");
-            headUrl = obj.getString(Common.USERINFO_HEADPHOTO);
+            headUrl = obj.getString("avatarUrl");
             e.putString(Common.USERINFO_HEADPHOTO, headUrl);
         }
-        if (headUrl != null) {
+//        if (headUrl != null) {
             // 更新头像图片
-            headUrl = Common.PHOTO_URL + headUrl;
-            System.out.println("get head image");
-            HttpUtil.get(headUrl, new BinaryHttpResponseHandler() {
-
-                @Override
-                public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-                    // TODO Auto-generated method stub
-                    try {
-                        System.out.println("get head image success--------");
-                        File userFile = new File(Common.USER_PATH);
-                        if (!userFile.exists()) {
-                            userFile.mkdirs();
-                        }
-                        File headPhoto = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
-                        headPhoto.createNewFile();
-                        FileOutputStream fos = new FileOutputStream(headPhoto);
-                        fos.write(arg2);
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-        }
+//            headUrl = Common.PHOTO_URL + headUrl;
+//            System.out.println("get head image");
+//            HttpUtil1.asynDownloadBinaryData(headUrl, new HttpCallback() {
+//                @Override
+//                public void onSuccess(byte[] binaryData) {
+//                    super.onSuccess(binaryData);
+//                    try {
+//                        System.out.println("get head image success--------");
+//                        File userFile = new File(Common.USER_PATH);
+//                        if (!userFile.exists()) {
+//                            userFile.mkdirs();
+//                        }
+//                        File headPhoto = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
+//                        headPhoto.createNewFile();
+//                        FileOutputStream fos = new FileOutputStream(headPhoto);
+//                        fos.write(binaryData);
+//                        fos.close();
+//                    } catch (FileNotFoundException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            });
+//        }
         String bgUrl = null;
-        if (obj.containsKey(Common.USERINFO_BGPHOTO)) {
-            bgUrl = obj.getString(Common.USERINFO_BGPHOTO);
+        if (obj.containsKey("coverHeaderImage")) {
+            bgUrl = obj.getString("coverHeaderImage");
             e.putString(Common.USERINFO_BGPHOTO, bgUrl);
         }
-        if (bgUrl != null) {
-            // 更新背景图片
-            bgUrl = Common.PHOTO_URL + bgUrl;
-            HttpUtil.get(bgUrl, new BinaryHttpResponseHandler() {
-
-                @Override
-                public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-                    // TODO Auto-generated method stub
-                    try {
-                        File bgPhoto = new File(Common.USER_PATH + Common.BGPHOTO_PAHT);
-                        bgPhoto.createNewFile();
-                        FileOutputStream fos = new FileOutputStream(bgPhoto);
-                        fos.write(arg2);
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-        }
+//        if (bgUrl != null) {
+//            // 更新背景图片
+//            bgUrl = Common.PHOTO_URL + bgUrl;
+//
+//            HttpUtil1.asynDownloadBinaryData(bgUrl, new HttpCallback() {
+//                @Override
+//                public void onSuccess(byte[] binaryData) {
+//                    super.onSuccess(binaryData);
+//                    try {
+//                        File bgPhoto = new File(Common.USER_PATH + Common.BGPHOTO_PAHT);
+//                        bgPhoto.createNewFile();
+//                        FileOutputStream fos = new FileOutputStream(bgPhoto);
+//                        fos.write(binaryData);
+//                        fos.close();
+//                    } catch (FileNotFoundException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        }
         e.commit();
     }
 

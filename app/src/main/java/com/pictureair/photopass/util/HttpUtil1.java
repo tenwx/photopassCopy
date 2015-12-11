@@ -241,7 +241,7 @@ public class HttpUtil1 {
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 PictureAirLog.v(TAG, "onSuccess");
                 if (httpBaseJson != null) {
-                    PictureAirLog.v(TAG, "parseResponse baseJson: " + httpBaseJson.getStatus() + "---" + httpBaseJson.getMsg() + "---" + httpBaseJson.getResult());
+//                    PictureAirLog.v(TAG, "parseResponse baseJson: " + httpBaseJson.getStatus() + "---" + httpBaseJson.getMsg() + "---" + httpBaseJson.getResult());
                     if (httpBaseJson.getStatus() == 200) {
                         //成功,返回内容
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
