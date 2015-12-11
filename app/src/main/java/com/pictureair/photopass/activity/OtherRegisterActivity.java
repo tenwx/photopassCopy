@@ -27,6 +27,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.WheelView;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
@@ -46,7 +47,7 @@ import cz.msebera.android.httpclient.Header;
  * @author bass
  */
 public class OtherRegisterActivity extends BaseActivity implements
-        OnClickListener {
+        OnClickListener, LoginCallBack{
     // 声明控件
     private ImageView back;
     private EditTextWithClear etEmail, etPwd, etPwd2, etName;
@@ -385,7 +386,9 @@ public class OtherRegisterActivity extends BaseActivity implements
                             break;
 
                         case AppUtil.PWD_AVAILABLE:// 密码可用
-                            sign(email, pwd);// 注册 用户名和 密码。成功后将保存个人信息
+//                            sign(email, pwd);// 注册 用户名和 密码。成功后将保存个人信息
+                            new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
+                                    name, birthday, sex, country, OtherRegisterActivity.this);
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
@@ -527,5 +530,10 @@ public class OtherRegisterActivity extends BaseActivity implements
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+    }
+
+    @Override
+    public void loginSuccess() {
+
     }
 }
