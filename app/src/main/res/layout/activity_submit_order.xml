@@ -3,7 +3,7 @@
     android:id="@+id/submitOrderRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light2"
+    android:background="@color/pp_light_gray_background"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/llrt"
@@ -85,7 +85,7 @@
             android:layout_marginRight="15dp"
             android:layout_toLeftOf="@id/button2_submit"
             android:text="30.00"
-            android:textColor="@color/orange"
+            android:textColor="@color/pp_orange"
             android:textSize="15sp" />
 
         <TextView
@@ -97,7 +97,7 @@
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@id/submitorder_textView3"
             android:text="$"
-            android:textColor="@color/orange"
+            android:textColor="@color/pp_orange"
             android:textSize="15sp" />
 
         <TextView

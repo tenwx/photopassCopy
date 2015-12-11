@@ -238,23 +238,4 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener{
 	    super.onPause();
 	}
 
-//	//下拉刷新
-//	@Override
-//	public void onRefresh() {
-//		Log.d(TAG, "start refresh------->");
-//		API.getAllGoods(mHandler, storeIdString, ((MyApplication)getActivity().getApplication()).getLanguageType());
-//	}
-//
-//	@Override
-//	public void onLoadMore() {
-//		
-//	}
-//	
-//	//结束刷新
-//	private void onLoad() {
-//		xListView.stopRefresh();
-//	}
-	
-	
-	
 }
