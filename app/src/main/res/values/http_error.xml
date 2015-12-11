@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="http_error_code_401">连接服务器失败，请检查网络</string>
+
     <string name="http_error_code_6000">参数输入不完整</string>
     <string name="http_error_code_6001">用户名未输入</string>
     <string name="http_error_code_6002">email未输入</string>

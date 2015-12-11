@@ -66,7 +66,6 @@ public class HttpUtil1 {
         return baseUrl;
     }
 
-
     /**
      * 异步get请求
      *
@@ -281,7 +280,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asynDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
+        asyncHttpClient.get(getAbsoluteUrl(url), new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -316,7 +315,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asynDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.post(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
+        asyncHttpClient.post(getAbsoluteUrl(url), params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();

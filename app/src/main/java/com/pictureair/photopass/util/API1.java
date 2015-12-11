@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 public class API1 {
     private static final String TAG = "API";
+
     public static final int SUCCESS = 111;
     public static final int FAILURE = 222;//失败需分情况判断，是网络未打开还是IP地址无法连接亦或是没有授予网络权限
 
@@ -238,7 +239,9 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(UPLOAD_PHOTO_FAILED, status);
+                PictureAirLog.v("SetPhoto onFailure", "status: " + status);
+                handler.obtainMessage(UPLOAD_PHOTO_FAILED, status,0);
+
 
             }
 
@@ -249,8 +252,6 @@ public class API1 {
             }
         });
     }
-
-    /***************************************我的模块 start**************************************/
 
     /**
      * 更新用户信息
@@ -275,13 +276,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(UPDATE_PROFILE_SUCCESS);
+                handler.sendEmptyMessage(UPDATE_PROFILE_SUCCESS);
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(UPDATE_PROFILE_FAILED, status);
+                handler.obtainMessage(UPDATE_PROFILE_FAILED, status,0).sendToTarget();
             }
         });
     }
@@ -390,13 +391,14 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(BIND_PP_SUCCESS);
+                handler.sendEmptyMessage(BIND_PP_SUCCESS);
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(BIND_PP_FAILURE, status);
+                handler.obtainMessage(BIND_PP_FAILURE, status, 0);
+
 
             }
         });
@@ -414,13 +416,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(SCAN_PPP_SUCCESS);
+                handler.sendEmptyMessage(SCAN_PPP_SUCCESS);
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(SCAN_PPP_FAILED);
+                handler.sendEmptyMessage(SCAN_PPP_FAILED);
             }
         });
     }
@@ -444,7 +446,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(CHECK_CODE_FAILED, status);
+                handler.obtainMessage(CHECK_CODE_FAILED, status, 0);
 
             }
         });

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="http_error_code_401">Connect server failed, please check network</string>
     <string name="http_error_code_6000">information is not complete</string>
     <string name="http_error_code_6001">please enter the email or mobile</string>
     <string name="http_error_code_6002">please enter the email</string>
