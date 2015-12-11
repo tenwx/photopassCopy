@@ -87,7 +87,7 @@
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_12" />
 
-            <TextView
+            <View
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_width="match_parent"
@@ -132,11 +132,11 @@
                     android:textSize="@dimen/text_size_12" />
             </RelativeLayout>
 
-            <ImageView
+            <View
                 android:layout_width="fill_parent"
                 android:layout_height="1px"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:background="@color/gray_light5" />
 
 

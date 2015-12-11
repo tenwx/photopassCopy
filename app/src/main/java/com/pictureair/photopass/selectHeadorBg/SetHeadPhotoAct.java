@@ -13,11 +13,13 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseActivity;
 import com.pictureair.photopass.blur.UtilOfDraw;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -45,10 +47,10 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 		public void handleMessage(Message msg) {
 //			Intent intent = null;
 			switch (msg.what) {
-			case API.UPLOAD_PHOTO_SUCCESS:
+			case API1.UPLOAD_PHOTO_SUCCESS:
 				Editor e = sp.edit();
 				e.putString(Common.USERINFO_HEADPHOTO, Common.HEADPHOTO_PATH);
-				e.commit();
+				e.apply();
 				
 				//上传成功之后，需要将临时的头像文件的名字改为正常的名字
 				File oldFile = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
@@ -63,32 +65,20 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 				
 				dialog.dismiss();
 				myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
-				
-				
 				finish();
-//				startActivity(intent);
 				break;
 				
-			case API.UPLOAD_PHOTO_FAILED:
+			case API1.UPLOAD_PHOTO_FAILED:
 				//删除头像的临时文件
+				dialog.dismiss();
 				if (headPhoto.exists()) {
 					headPhoto.delete();
 				}
-				
-				dialog.dismiss();
-				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-				finish();
-				break;
-				
-			case API.FAILURE:
-				dialog.dismiss();
-				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-//				Toast.makeText(SetHeadPhotoAct.this, "修改失败请重试", 0).show();
-//				intent = new Intent(SetHeadPhotoAct.this, MainTabActivity.class);
-				finish();
-//				startActivity(intent);
-				break;
+				myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), (int)msg.obj), Common.TOAST_SHORT_TIME);
 
+//				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				finish();
+				break;
 			default:
 				break;
 			}
@@ -121,6 +111,10 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.clip:
+			if (!isNetWorkConnect(this)){
+				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				return;
+			}
 //			MainTabActivity.instances.finish(); //上传成功之后结束 主要的Activity。
 			dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
 //			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
@@ -154,14 +148,13 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 				}
 				try {
 					// 需要更新服务器中用户头像图片信息
-					StringBuffer sb = new StringBuffer();
-					sb.append(Common.BASE_URL).append(Common.SET_USER_PHOTO);
 					String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
 					RequestParams params = new RequestParams();
 					params.put(Common.USERINFO_TOKENID, tokenId);
 					params.put("updateType", "avatar");
 					params.put("file", headPhoto);
-					API.SetPhoto(sb.toString(), params, handler, 0, dialog);
+					API1.SetPhoto(Common.SET_USER_PHOTO,params,handler,0,dialog);
+//					API.SetPhoto(sb.toString(), params, handler, 0, dialog);
 				} catch (FileNotFoundException ee) {
 					// TODO Auto-generated catch block
 					ee.printStackTrace();

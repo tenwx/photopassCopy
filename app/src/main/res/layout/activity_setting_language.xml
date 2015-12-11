@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
+    android:background="@color/pp_light_gray_background"
     tools:context="com.pictureair.photopass.activity.SettingLanguageActivity" >
 
     <RelativeLayout
@@ -72,8 +72,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Chinese"
                 android:padding="15dp"
-                android:textSize="15sp"
-                android:textColor="@color/gray"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/pp_blue"
                 />
             
             <ImageView 
@@ -108,8 +108,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/English"
                 android:padding="15dp"
-                android:textSize="15sp"
-                android:textColor="@color/gray"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/pp_blue"
                 />
             
             <ImageView 

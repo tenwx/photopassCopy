@@ -19,10 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.OnWheelScrollListener;
 import com.pictureair.photopass.widget.wheelview.WheelView;
@@ -49,6 +51,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout isSelectMale, isSelectFemale;
     private ImageView iVisSelectMale, iVisSelectFemale;
     private AlertDialog mySexDialog;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -68,25 +71,20 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     }
 
                     tvGender.invalidate();
-                    API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), sp.getString(Common.USERINFO_BIRTHDAY, ""), sex.toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
+                    API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), sp.getString(Common.USERINFO_BIRTHDAY, ""), sex.toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
                     break;
                 case R.id.time_picker:
                     String birthString = (String) msg.obj;
                     tvBirthday.setText(birthString);
                     tvBirthday.invalidate();
-                    API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), birthString, sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
+                    API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), birthString, sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
                     break;
 
-                case API.UPDATE_PROFILE_FAILED:
-                    System.out.println("-------failed");
-                    if (msg.obj == null) {//网络连接错误
-                        newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    } else {//修改失败
-                        newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    }
+                case API1.UPDATE_PROFILE_FAILED:
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(),msg.arg1),Common.TOAST_SHORT_TIME);
                     break;
 
-                case API.UPDATE_PROFILE_SUCCESS:
+                case API1.UPDATE_PROFILE_SUCCESS:
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_NICKNAME, tvNickName.getText().toString());
                     e.putString(Common.USERINFO_BIRTHDAY, tvBirthday.getText().toString());
@@ -99,7 +97,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
                     e.putString(Common.USERINFO_GENDER, gender);
                     e.putString(Common.USERINFO_QQ, tvQq.getText().toString());
-                    e.commit();
+                    e.apply();
                     break;
 
                 default:
@@ -175,6 +173,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         Message msg = handler.obtainMessage();
         switch (v.getId()) {
             case R.id.item_nickname:
+                if (!isNetWorkConnect(this)){
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 if (timePickerLinearLayout.isShown()) {
                     timePickerLinearLayout.startAnimation(timePickerOutAnimation);
                     timePickerLinearLayout.setVisibility(View.GONE);
@@ -185,6 +187,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.item_gender:
+                if (!isNetWorkConnect(this)){
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 if (timePickerLinearLayout.isShown()) {
                     timePickerLinearLayout.startAnimation(timePickerOutAnimation);
                     timePickerLinearLayout.setVisibility(View.GONE);
@@ -205,6 +211,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.item_qq:
+                if (!isNetWorkConnect(this)){
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 if (timePickerLinearLayout.isShown()) {
                     timePickerLinearLayout.startAnimation(timePickerOutAnimation);
                     timePickerLinearLayout.setVisibility(View.GONE);
@@ -223,6 +233,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.item_modify:
+                if (!isNetWorkConnect(this)){
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 //跳转新页面。
                 if (timePickerLinearLayout.isShown()) {
                     timePickerLinearLayout.startAnimation(timePickerOutAnimation);
@@ -238,6 +252,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.btn_s_date://提交时间
+                if (!isNetWorkConnect(this)){
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 msg.what = R.id.time_picker;
                 msg.obj = birthdayString;
                 handler.sendMessage(msg);
@@ -278,13 +296,13 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 String name = data.getStringExtra("nickName");
                 tvNickName.setText(name);
                 tvNickName.invalidate();
-                API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), name, sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
+                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), name, sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
                 break;
             case 2://更改QQ的标识
                 String qq = data.getStringExtra("qq");
                 tvQq.setText(qq);
                 tvQq.invalidate();
-                API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), qq, handler);
+                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), qq, handler);
                 break;
             default:
                 break;
