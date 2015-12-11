@@ -2,279 +2,262 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background" >
+    android:background="@color/pp_light_gray_background">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/head"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/pp_blue" >
-
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/action_settings"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/ll1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/head"
-        android:layout_marginTop="22dp"
-        android:orientation="vertical" >
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/line_color" />
-
         <RelativeLayout
-            android:id="@+id/sub_opinions"
+            android:id="@+id/head"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/submit_opinions"
-                android:textColor="@color/pp_blue"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_16" />
+            android:layout_height="50dp"
+            android:background="@color/pp_blue">
 
             <ImageView
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/arrow" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:background="@color/white"
-            android:padding="15dp"
-            android:textStyle="bold"
-            android:text="@string/download_tpye"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
-
-        
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
-
-        
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:background="@color/white"
-            android:padding="15dp"
-            android:textStyle="bold"
-            android:text="@string/updata_pictures"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
-
-        <RelativeLayout
-            android:id="@+id/rl_auto_download"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp" >
+                android:paddingBottom="13dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="13dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="15dp"
-                android:text="@string/auto_update"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_12" />
-
-            <ImageButton
-                android:id="@+id/auto_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="#00000000"
-                android:paddingRight="15dp"
-                android:src="@drawable/nosele" />
+                android:layout_centerInParent="true"
+                android:text="@string/action_settings"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
-
-        
-        <RelativeLayout
-            android:id="@+id/rl_wifi_download"
+        <LinearLayout
+            android:id="@+id/ll1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/head"
             android:background="@drawable/user_item_select"
-            android:padding="15dp" >
+            android:orientation="vertical">
+
+            <View
+                android:layout_marginTop="@dimen/pp_margin_16"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+
+            <RelativeLayout
+                android:id="@+id/sub_opinions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pp_margin_16"
+                android:layout_marginRight="@dimen/pp_margin_16"
+                android:padding="@dimen/pp_padding_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/submit_opinions"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/arrow" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="15dp"
-                android:text="@string/wifi_download"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_12" />
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/pp_padding_16"
+                android:background="@color/white"
+                android:padding="@dimen/pp_padding_16"
+                android:text="@string/download_tpye"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold" />
 
-            <ImageButton
-                android:id="@+id/wifi_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="#00000000"
-                android:paddingRight="15dp"
-                android:src="@drawable/nosele" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:background="@color/white"
-            android:padding="15dp"
-            android:textStyle="bold"
-            android:text="@string/updata_pictures"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp" >
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="15dp"
-                android:text="@string/wifi_download"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_12" />
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/pp_margin_16"
+                android:background="@color/white"
+                android:padding="@dimen/pp_padding_16"
+                android:text="@string/updata_pictures"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+
+            <RelativeLayout
+                android:id="@+id/rl_auto_download"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="#00000000"
-                android:paddingRight="15dp"
-                android:src="@drawable/nosele" />
-        </RelativeLayout>
+                android:layout_marginLeft="@dimen/pp_margin_32"
+                android:layout_marginRight="@dimen/pp_margin_16"
+                android:background="@drawable/user_item_select"
+                android:padding="@dimen/pp_padding_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/auto_update"
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12" />
+
+                <ImageButton
+                    android:id="@+id/auto_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:src="@drawable/nosele" />
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="@dimen/pp_margin_32"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+            <RelativeLayout
+                android:id="@+id/rl_wifi_download"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pp_margin_32"
+                android:layout_marginRight="@dimen/pp_margin_16"
+                android:background="@drawable/user_item_select"
+                android:padding="@dimen/pp_padding_16">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/wifi_download"
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12" />
 
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@color/gray_light" />
+                <ImageButton
+                    android:id="@+id/wifi_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:src="@drawable/nosele" />
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/setting_language"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/pp_margin_16"
+                android:background="@color/white"
+                android:padding="@dimen/pp_padding_16"
+                android:text="@string/updata_pictures"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+
+            <RelativeLayout
+                android:layout_marginLeft="@dimen/pp_margin_32"
+                android:layout_marginRight="@dimen/pp_margin_16"
+                android:padding="@dimen/pp_padding_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/user_item_select">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:text="@string/wifi_download"
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:src="@drawable/nosele" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+
+            <TextView
+                android:id="@+id/setting_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/pp_margin_16"
+                android:background="@drawable/user_item_select"
+                android:padding="@dimen/pp_padding_16"
+                android:text="@string/setting_language"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/line_color" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/user_item_select"
-            android:padding="15dp"
-            android:textStyle="bold"
-            android:text="@string/setting_language"
-            android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/line_color" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/button_blue_shape_and_selector"
-        android:padding="10dp"
-        android:textColor="@drawable/textview_selector_blue_white"
-        android:text="@string/logout"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+            android:layout_below="@id/ll1"
+            android:layout_margin="@dimen/pp_margin_16"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/logout"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
 
     </RelativeLayout>
-
 </ScrollView>

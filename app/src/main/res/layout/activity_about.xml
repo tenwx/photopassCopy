@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
+    android:background="@color/pp_light_gray_background"
     tools:context="com.pictureair.photopass.activity.AboutActivity" >
 
     <RelativeLayout
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/back1"
