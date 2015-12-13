@@ -2,8 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:background="@color/pp_light_gray_background">
+    android:background="@color/pp_light_gray_background"
+    android:scrollbars="none">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,18 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:orientation="horizontal" >
-
-                <!--<TextView-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:drawableTop="@drawable/me_message"-->
-                    <!--android:gravity="center"-->
-                    <!--android:text="@string/mypage_message"-->
-                    <!--android:textColor="@color/white"-->
-                    <!--android:textSize="@dimen/text_size_16"-->
-                    <!--android:visibility="invisible" />-->
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/code_pic"
@@ -46,30 +35,16 @@
                     android:layout_height="80dp"
                     android:background="@color/white"
                     android:src="@drawable/code_pic" />
-
-                <!--<TextView-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:drawableTop="@drawable/me_coupons"-->
-                    <!--android:gravity="center"-->
-                    <!--android:text="@string/mypage_coupons"-->
-                    <!--android:textColor="@color/white"-->
-                    <!--android:textSize="@dimen/text_size_16"-->
-                    <!--android:visibility="invisible" />-->
             </LinearLayout>
-
-            <!-- 根据用户头像的大小 得出 marginLeft 90dp -->
-
         </RelativeLayout>
 
         <TextView
             android:id="@+id/user_name"
-            android:layout_below="@+id/me_title"
-            android:layout_toRightOf="@+id/user_photo_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_below="@+id/me_title"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_toRightOf="@+id/user_photo_bg"
             android:text="@string/username"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
@@ -81,7 +56,8 @@
             android:layout_below="@+id/me_title"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="-40dp"
-            android:src="@drawable/user_photo_bg"/>
+            android:src="@drawable/user_photo_bg" />
+
         <com.pictureair.photopass.widget.CircleImageView
             android:id="@+id/user_photo"
             android:layout_width="60dp"
@@ -98,29 +74,28 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/user_photo"
-            android:layout_marginTop="20dp"
-            android:background="@color/gray_light"
-            android:orientation="vertical" >
+            android:layout_marginBottom="@dimen/pp_margin_16"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:background="@drawable/user_item_select"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/rl_myprofile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp" >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_profile"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_myprofile"
                     android:textColor="@color/blue"
-                    android:textSize="@dimen/text_size_16"
-                     />
+                    android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
             <View
@@ -132,21 +107,21 @@
                 android:id="@+id/rl_myorder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp" >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_order"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_myorder"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
+
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1px"
@@ -156,17 +131,16 @@
                 android:id="@+id/rl_pp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp" >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_pp"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_pp"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -181,21 +155,21 @@
                 android:id="@+id/rl_ppp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp" >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_ppp1"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_ppp"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
+
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1px"
@@ -205,17 +179,16 @@
                 android:id="@+id/rl_help"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp">
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/help"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_help"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -230,17 +203,16 @@
                 android:id="@+id/rl_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp" >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/setting"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_setting"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -255,17 +227,16 @@
                 android:id="@+id/rl_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select"
-                android:gravity="center_vertical"
-                android:padding="10dp" >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/about"
-                    android:drawablePadding="15dp"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:paddingLeft="7dp"
+                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_about"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />

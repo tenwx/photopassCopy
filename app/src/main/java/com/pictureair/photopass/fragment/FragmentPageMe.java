@@ -42,7 +42,7 @@ import java.io.File;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private RelativeLayout rl_myprofile, rl_myorder, rl_pp, rl_ppp, rl_help, rl_setting, rl_about, rl7;
+    private RelativeLayout rl_myprofile, rl_myorder, rl_pp, rl_ppp, rl_help, rl_setting, rl_about;
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private SharedPreferences sp;
@@ -65,9 +65,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         rl_setting = (RelativeLayout) view.findViewById(R.id.rl_setting);
         rl_about = (RelativeLayout) view.findViewById(R.id.rl_about);
 
-//        LayoutParams params = code_pic.getLayoutParams();
-//        params.height = ScreenUtil.getScreenWidth(getActivity()) / 3;
-//        code_pic.setLayoutParams(params);
         headPhoto.setOnClickListener(this);
         rl_myprofile.setOnClickListener(this);
         rl_myorder.setOnClickListener(this);

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background" >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/llt"
@@ -30,7 +29,7 @@
             android:layout_centerInParent="true"
             android:text="@string/pay"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -38,7 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/llt"
-        android:background="@color/gray_light2"
+        android:background="@color/pp_light_gray_background"
+        android:paddingTop="@dimen/pp_margin_16"
         android:scrollbars="none" >
 
         <LinearLayout
@@ -119,17 +119,6 @@
                         android:text="@string/pickupbycustomer"
                         android:textColor="@color/gray"
                         android:textSize="12sp" />
-
-                    <!--
-                         <TextView
-                        android:id="@+id/addressTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="@string/disney_address"
-                        android:textColor="@color/gray"
-                        android:textSize="15sp" />
-                    -->
                 </RelativeLayout>
 
                 <ImageView
@@ -147,37 +136,40 @@
                 android:orientation="vertical" >
 
                 <LinearLayout
+                    android:layout_marginLeft="@dimen/pp_margin_16"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/pp_padding_16"
+                    android:paddingBottom="@dimen/pp_padding_16"
                     android:gravity="center_vertical"
                     android:orientation="horizontal" >
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
                         android:src="@drawable/paymentmethods" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginLeft="@dimen/pp_margin_16"
                         android:text="@string/payment_ways"
                         android:textColor="@color/gray"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/text_size_16" />
                 </LinearLayout>
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
                     android:background="@color/line_color" />
 
                 <RelativeLayout
                     android:id="@+id/zfb"
-                    android:layout_width="fill_parent"
-                    android:layout_height="70dp"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8"
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@color/white" >
 
                     <ImageView
@@ -186,7 +178,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="17dp"
                         android:src="@drawable/zfb" />
 
                     <ImageView
@@ -195,19 +186,18 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:src="@drawable/sele" />
 
                     <TextView
                         android:id="@+id/textView1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="17dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="@dimen/pp_margin_16"
                         android:layout_toRightOf="@+id/imageView1"
                         android:text="@string/zfbzf"
                         android:textColor="@color/gray"
-                        android:textSize="15sp"
+                        android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
                     <TextView
@@ -215,26 +205,28 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignLeft="@+id/textView1"
+                        android:layout_marginTop="@dimen/pp_padding_8"
                         android:layout_below="@id/textView1"
-                        android:layout_marginTop="5dp"
                         android:layout_toLeftOf="@+id/imageButton1_zfb"
-                        android:paddingBottom="10dp"
                         android:singleLine="true"
                         android:text="@string/zfbsm"
                         android:textColor="@color/gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="@color/line_color" />
 
                 <RelativeLayout
                     android:id="@+id/yl"
-                    android:layout_width="fill_parent"
-                    android:layout_height="70dp"
-                    android:background="#ffffff" >
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8"
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white" >
 
                     <ImageView
                         android:id="@+id/imageView2"
@@ -242,7 +234,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="17dp"
                         android:src="@drawable/yl" />
 
                     <ImageView
@@ -251,19 +242,18 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:src="@drawable/sele" />
 
                     <TextView
                         android:id="@+id/textView_yl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="17dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="@dimen/pp_margin_16"
                         android:layout_toRightOf="@id/imageView2"
                         android:text="@string/yhkzf"
                         android:textColor="@color/gray"
-                        android:textSize="15sp"
+                        android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
                     <TextView
@@ -277,19 +267,22 @@
                         android:singleLine="true"
                         android:text="@string/yhksm"
                         android:textColor="@color/gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="@color/line_color" />
 
                 <RelativeLayout
                     android:id="@+id/paypal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="70dp"
-                    android:background="#ffffff" >
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8"
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:background="@color/white" >
 
                     <ImageView
                         android:id="@+id/imageView3"
@@ -297,7 +290,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="17dp"
                         android:src="@drawable/visa" />
 
                     <ImageView
@@ -306,19 +298,18 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:src="@drawable/sele" />
 
                     <TextView
                         android:id="@+id/textView_paypal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="17dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="@dimen/pp_margin_16"
                         android:layout_toRightOf="@id/imageView3"
                         android:text="@string/paypalzf"
                         android:textColor="@color/gray"
-                        android:textSize="15sp"
+                        android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
                     <TextView
@@ -332,10 +323,10 @@
                         android:singleLine="true"
                         android:text="@string/paypalsm"
                         android:textColor="@color/gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="@color/line_color" />
@@ -343,16 +334,18 @@
                 <RelativeLayout
                     android:id="@+id/weixin"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8"
+                    android:paddingBottom="@dimen/pp_padding_8"
                     android:background="@color/white" >
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/imageView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="17dp"
                         android:src="@drawable/wechat" />
 
                     <ImageView
@@ -361,19 +354,18 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:src="@drawable/sele" />
 
                     <TextView
                         android:id="@+id/textView_weixin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="17dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_toRightOf="@id/imageView2"
+                        android:layout_marginLeft="@dimen/pp_margin_16"
+                        android:layout_toRightOf="@id/imageView4"
                         android:text="@string/wxzf"
                         android:textColor="@color/gray"
-                        android:textSize="15sp"
+                        android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
                     <TextView
@@ -387,25 +379,32 @@
                         android:singleLine="true"
                         android:text="@string/weixinsm"
                         android:textColor="@color/gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/button_smpm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="13dp"
-                android:layout_marginLeft="26dp"
-                android:layout_marginRight="26dp"
-                android:layout_marginTop="26dp"
-                android:background="@drawable/button_blue_shape_and_selector"
-                android:padding="10dp"
-                android:textColor="@drawable/textview_selector_blue_white"
-                android:gravity="center"
-                android:text="@string/submitpayment"
-                android:textSize="18sp" />
+
+
+
         </LinearLayout>
     </ScrollView>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
+    <TextView
+        android:id="@+id/button_smpm"
+        android:layout_margin="@dimen/pp_margin_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_blue_shape_and_selector"
+        android:padding="@dimen/pp_padding_10"
+        android:textColor="@drawable/textview_selector_blue_white"
+        android:gravity="center"
+        android:text="@string/submitpayment"
+        android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
 </RelativeLayout>
