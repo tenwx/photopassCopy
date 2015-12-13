@@ -335,6 +335,7 @@
     <string name="story_tab_photopass">乐拍通</string>
     <string name="story_tab_magic">魔法相册</string>
     <string name="story_tab_bought">已购买</string>
+    <string name="story_tab_favorite">已收藏</string>
     <string name="story_no_pp">亲！扫一扫您的乐拍通和乐拍通+卡，采集您的迪斯尼故事</string>
     <string name="story_scan">扫一扫</string>
     <string name="suprise_price">惊喜价</string>
@@ -529,5 +530,9 @@
     <string name="we_will_send_you_to">我们会送你去</string>
     <string name="my_disney_story_once_it_is_ready">我的迪士尼故事一旦准备好了</string>
     <!-- Disney video End-->
+
+    <string name="no_photo_in_airpass">没有照片, 赶快来使用AirPass吧!</string>
+    <string name="no_photo_in_magiccam">没有照片, 赶快来使用相机吧!</string>
+    <string name="no_photo_in_bought">没有照片,赶快来购买吧!</string>
 
 </resources>

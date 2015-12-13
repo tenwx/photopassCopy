@@ -21,4 +21,6 @@
     <dimen name="text_size_8">8sp</dimen>
     <dimen name="text_size_6">6sp</dimen>
 
+    <dimen name="common_margin_16">16dp</dimen>
+
 </resources>

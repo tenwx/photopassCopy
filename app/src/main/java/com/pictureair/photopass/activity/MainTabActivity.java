@@ -25,6 +25,7 @@ import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.BadgeView;
@@ -95,7 +96,7 @@ public class MainTabActivity extends BaseActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		System.out.println("clear asimplecache=====");
+		PictureAirLog.out("clear asimplecache=====");
 		clearCache();
 	}
 
@@ -103,21 +104,21 @@ public class MainTabActivity extends BaseActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
-		System.out.println("maintab ==== resume");
+
+		PictureAirLog.out("maintab ==== resume");
 		Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
 		this.startService(intent1);
 		
 		if (changeToShopTab) {
-			System.out.println("skip to shop tab");
+			PictureAirLog.out("skip to shop tab");
 			mTabHost.setCurrentTab(3);
 			changeToShopTab = false;
 		}else {
-			System.out.println("skip to last tab");
+			PictureAirLog.out("skip to last tab");
 			//设置成为上次的tab页面
 			mTabHost.setCurrentTab(last_tab);
 		}
-		System.out.println("pushcount-->" + application.getPushPhotoCount());
+		PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
 		if (application.getPushPhotoCount() > 0) {//显示红点
 			MainTabActivity.maintabbadgeView.show();
 			application.setPushPhotoCount(0);
@@ -130,7 +131,7 @@ public class MainTabActivity extends BaseActivity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		System.out.println("maintab ===== pause");
+		PictureAirLog.out("maintab ===== pause");
 	}
 	/**
 	 * 初始化组件
@@ -220,8 +221,6 @@ public class MainTabActivity extends BaseActivity {
 		imageView.setLayoutParams(layoutParams);
 		TextView textView = (TextView) view.findViewById(R.id.textview);
 		textView.setText(mTextviewArray[index]);
-//		textView.setTextColor(getResources().getColor(R.drawable.tab_selector_onclick));
-//		textView.setTextSize(15);
 		if (index == 2) {
 			textView.setVisibility(View.GONE);
 		}

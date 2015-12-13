@@ -14,13 +14,13 @@
     <ImageView 
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/gray_light5"/>
+        android:background="@color/pp_gray"/>
     
     <android.support.v4.app.FragmentTabHost
         android:id="@android:id/tabhost"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
-        android:background="@color/gray_light4">
+        android:background="@color/pp_light_gray_background">
 
         <FrameLayout
             android:id="@android:id/tabcontent"

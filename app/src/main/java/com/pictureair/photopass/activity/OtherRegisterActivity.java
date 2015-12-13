@@ -1,12 +1,9 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,34 +15,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
-import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.widget.wheelview.WheelView;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import cn.smssdk.gui.EditTextWithClear;
-import cz.msebera.android.httpclient.Header;
 
-/**
- * 其他注册实现规则 先调用注册的接口（ 返回成功后再调用修改个人信息的接口 ） 修改个人信息，API.updateProfile这个接口
- * <p/>
- * 如果修改日期颜色。在com.byl.datepicker.wheelview.WheelView中
- *
- * @author bass
- */
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, LoginCallBack{
     // 声明控件
@@ -60,27 +39,13 @@ public class OtherRegisterActivity extends BaseActivity implements
     private String sex = "";// 性别
     private String country = "";
     private String birthday = "";
-    private String name = "";
 
-    private SharedPreferences sp;// SharedPreferences
     // 日期探矿选择器
     private LinearLayout ll_brith;
-    private LayoutInflater inflater = null;
-    private WheelView year;
-    private WheelView month;
-    private WheelView day;
-    private int mYear = 1996;// 初始化
-    private int mMonth = 0;
-    private int mDay = 1;
     private String mYear_Str = "1996";// 初始化
     private String mMonth_Str = "01";
     private String mDay_Str = "01";
-    LinearLayout ll;
-    TextView tv1, tv2;
     View view = null;
-    boolean isMonthSetted = false, isDaySetted = false;
-    private static final int GET_IP_SUCCESS = 2;
-    private static final int GET_IP_FAILED = 3;
 
     private SelectDateWeidget selectDateWeidget;
 
@@ -117,151 +82,6 @@ public class OtherRegisterActivity extends BaseActivity implements
                     System.out.println("birthday " + birthday);
                     break;
 
-                case API.SUCCESS:// sign成功
-                    System.out.println("login success-------------注册成功，现在进行保存个人信息");
-                    System.out.println("swx:" + sex);
-                    // &&&&&&&&&&&&&& 调用个人信息里的进行添加个人资料
-                    API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""),
-                            name, birthday, sex, country, "", handler);
-                    // finish();
-                    break;
-                case API.UPDATE_PROFILE_SUCCESS:
-                    // 获取购物车数量
-                    API.getcartcount(OtherRegisterActivity.this,
-                            sp.getString(Common.USERINFO_ID, ""), handler);
-
-                    break;
-                case API.UPDATE_PROFILE_FAILED:
-                    /**
-                     * 注册成功，但是保存个人信息失败的话，提示注册成功，保存个人信息失败。应该跳转到登录页面，
-                     * 并且将信息保存在sharedpreference中
-                     */
-                    myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    Intent intent = new Intent(OtherRegisterActivity.this,
-                            OtherLoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                    break;
-                case API.FAILURE:
-                case API.GET_CART_COUNT_FAILED:
-                case API.GET_PPP_FAILED:
-                case API.GET_STOREID_FAILED:
-
-                    myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API.SIGN_FAILED:
-                    try {
-                        JSONObject infoJsonObject = (JSONObject) msg.obj;
-                        if (infoJsonObject.has("type")) {
-                            if (infoJsonObject.getString("type").equals(
-                                    "shortPassword")) {
-                                myToast.setTextAndShow(R.string.pwd_is_short,
-                                        Common.TOAST_SHORT_TIME);
-
-                            } else if (infoJsonObject.getString("type").equals(
-                                    "existedEmail")) {
-                                myToast.setTextAndShow(R.string.email_exist,
-                                        Common.TOAST_SHORT_TIME);
-
-                            }
-                        } else {
-                            myToast.setTextAndShow(R.string.http_failed,
-                                    Common.TOAST_SHORT_TIME);
-                        }
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    break;
-
-                case API.GET_CART_COUNT_SUCCESS:
-                    System.out.println("get cart count success------------");
-                    API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null),
-                            handler);// 获取pp列表
-                    break;
-
-                case GET_IP_SUCCESS:
-                    API.getStoreIdbyIP(msg.obj.toString(), handler);
-                    break;
-
-                case API.GET_PPS_SUCCESS:// 获取pp列表成功
-                    /**
-                     * 获取pp成功之后，需要放入sharedPrefence中
-                     */
-                    JSONObject ppsJsonObject = (JSONObject) msg.obj;
-                    // Log.d(TAG, "pps===" + ppsJsonObject);
-                    if (ppsJsonObject.has("PPList")) {
-                        try {
-                            JSONArray pplists = ppsJsonObject
-                                    .getJSONArray("PPList");
-                            Editor editor = sp.edit();
-                            editor.putInt(Common.PP_COUNT, pplists.length());
-                            editor.commit();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        // Log.d(TAG, "pp size == 0");
-                    }
-                    new Thread() {
-                        public void run() {
-                            // String netIP = AppUtil.GetNetIp();
-                            String netIP = "211.95.27.34";
-                            System.out.println("netIP-----------> " + netIP);
-                            if (netIP.equals("")) {// 获取失败
-                                handler.sendEmptyMessage(GET_IP_FAILED);
-                            } else {// 获取成功
-                                Message message = handler.obtainMessage();
-                                message.what = GET_IP_SUCCESS;
-                                message.obj = netIP;
-                                handler.sendMessage(message);
-                            }
-
-                        }
-
-                        ;
-                    }.start();
-                    // API.getStoreIdbyIP("140.206.125.195", handler);
-                    break;
-
-                case GET_IP_FAILED:
-                case API.GET_PPS_FAILED:// 获取pp列表失败
-                    // dialog.dismiss();
-                    myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API.GET_STOREID_SUCCESS:
-                    System.out.println("get storeid success----------------");
-                    JSONObject obj = (JSONObject) msg.obj;
-                    try {
-                        Editor editor = sp.edit();
-                        editor.putString(Common.CURRENCY, obj.getString("currency")
-                                .toString());
-                        editor.putString(Common.STORE_ID, obj.getString("storeId")
-                                .toString());
-                        editor.commit();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//				Intent intent2 = new Intent();
-//				intent2.setAction("com.receiver.AlertManagerRecriver");
-//				sendBroadcast(intent2);
-                    Intent i = new Intent();
-                    i.setClass(OtherRegisterActivity.this, MainTabActivity.class);
-                    startActivity(i);
-                    finish();
-                    break;
-
-                case API.MODIFY_PWD_FAILED:
-                    System.out.println("signorfotget------modify pwd failed");
-                    // 提示错误
-                    break;
-
-                case API.MODIFY_PWD_SUCCESS:
-                    System.out.println("signorforget------modify pwd success");
-                    // 跳转至登录界面
-                    break;
 
                 default:
                     break;
@@ -346,8 +166,6 @@ public class OtherRegisterActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 
         switch (v.getId()) {
             case R.id.login_back:
@@ -446,57 +264,6 @@ public class OtherRegisterActivity extends BaseActivity implements
         }
     }
 
-    /**
-     * 注册
-     */
-    private void sign(final String email, final String pwd) {
-        // 注册请求
-        if (null == sp.getString(Common.USERINFO_TOKENID, null)) {// 需要重新获取一次tokenid
-            System.out.println("no tokenid, need to obtain one");
-            final StringBuffer sb = new StringBuffer();
-            sb.append(Common.BASE_URL).append(Common.GET_TOKENID);// 获取地址
-
-            RequestParams params = new RequestParams();
-            params.put(Common.TERMINAL, "android");
-            params.put(Common.UUID, Installation.id(this));
-
-            HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-
-                // 成功
-                public void onSuccess(int statusCode, Header[] headers,
-                                      JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    try {
-                        System.out.println("tokenid==" + response);
-                        Editor e = sp.edit();
-                        if (response.has(Common.USERINFO_TOKENID)) {
-                            System.out.println("add tokenid=============");
-                            e.putString(Common.USERINFO_TOKENID,
-                                    response.getString(Common.USERINFO_TOKENID));
-                        }
-                        e.commit();
-                        API.Sign(OtherRegisterActivity.this, email, pwd,
-                                handler);
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-
-                // 失败
-                @Override
-                public void onFailure(int statusCode, Header[] headers,
-                                      Throwable throwable, JSONObject errorResponse) {
-                    // TODO Auto-generated method stub
-                    super.onFailure(statusCode, headers, throwable,
-                            errorResponse);
-                    myToast.setTextAndShow(R.string.http_failed,
-                            Common.TOAST_SHORT_TIME);
-                }
-            });
-        } else {
-            API.Sign(this, email, pwd, handler);
-        }
-    }
 
 
     @Override
@@ -519,21 +286,11 @@ public class OtherRegisterActivity extends BaseActivity implements
         }
     }
 
-
-    @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-    }
-
     @Override
     public void loginSuccess() {
-
+        Intent i = new Intent();
+        i.setClass(OtherRegisterActivity.this, MainTabActivity.class);
+        startActivity(i);
+        finish();
     }
 }

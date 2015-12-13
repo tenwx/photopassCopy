@@ -277,7 +277,7 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
-        ColorDrawable dw = new ColorDrawable(getResources().getColor(R.color.background_material_light));
+        ColorDrawable dw = new ColorDrawable(getResources().getColor(R.color.pp_light_gray_background));
         popupWindow.setBackgroundDrawable(dw);
         //设置popwindow出现和消失动画
         popupWindow.setAnimationStyle(R.style.from_bottom_anim);
