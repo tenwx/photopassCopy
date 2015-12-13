@@ -58,6 +58,22 @@ public class API1 {
     public static final int SIGN_SUCCESS = 1021;
     public static final int SIGN_FAILED = 1020;
 
+    //Shop模块 start
+    public static final int GET_STOREID_FAILED = 4000;
+    public static final int GET_STOREID_SUCCESS = 4001;
+
+    public static final int GET_GOODS_FAILED = 4100;
+    public static final int GET_GOODS_SUCCESS = 4101;
+
+    public static final int GET_SINGLE_GOOD_FAILED = 4200;
+    public static final int GET_SINGLE_GOOD_SUCCESS = 4201;
+
+    public static final int GET_CART_FAILED = 4300;
+    public static final int GET_CART_SUCCESS = 4301;
+
+
+    //Shop模块 end
+
 
     //我的模块 start
     public static final int BIND_PP_FAILURE = 5000;
@@ -204,7 +220,7 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 PictureAirLog.out("sign success ---- > " + jsonObject);
-                handler.obtainMessage(SIGN_SUCCESS).sendToTarget();
+                handler.sendEmptyMessage(SIGN_SUCCESS);
             }
 
             @Override
@@ -215,6 +231,8 @@ public class API1 {
             }
         });
     }
+
+    /***************************************我的模块 start**************************************/
 
 
     /**
@@ -232,7 +250,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(UPLOAD_PHOTO_SUCCESS, position, 0, jsonObject);
+                handler.obtainMessage(UPLOAD_PHOTO_SUCCESS, position, 0, jsonObject).sendToTarget();
 
             }
 
@@ -240,7 +258,7 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 PictureAirLog.v("SetPhoto onFailure", "status: " + status);
-                handler.obtainMessage(UPLOAD_PHOTO_FAILED, status,0);
+                handler.obtainMessage(UPLOAD_PHOTO_FAILED, status, 0).sendToTarget();
 
 
             }
@@ -282,7 +300,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(UPDATE_PROFILE_FAILED, status,0).sendToTarget();
+                handler.obtainMessage(UPDATE_PROFILE_FAILED, status, 0).sendToTarget();
             }
         });
     }
@@ -307,13 +325,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_PPS_SUCCESS, jsonObject);
+                handler.obtainMessage(GET_PPS_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(GET_PPS_FAILED, status);
+                handler.obtainMessage(GET_PPS_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -335,14 +353,13 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
-
-                handler.obtainMessage(GET_PPP_SUCCESS, jsonObject);
+                handler.obtainMessage(GET_PPP_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(GET_PPP_FAILED, status);
+                handler.obtainMessage(GET_PPP_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -359,13 +376,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(HIDE_PP_SUCCESS, jsonObject);
+                handler.obtainMessage(HIDE_PP_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(HIDE_PP_FAILED, status);
+                handler.obtainMessage(HIDE_PP_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -397,7 +414,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(BIND_PP_FAILURE, status, 0);
+                handler.obtainMessage(BIND_PP_FAILURE, status, 0).sendToTarget();
 
 
             }
@@ -422,7 +439,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.sendEmptyMessage(SCAN_PPP_FAILED);
+                handler.obtainMessage(SCAN_PPP_FAILED, status, 0).sendToTarget();
             }
         });
     }
@@ -440,13 +457,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(CHECK_CODE_SUCCESS, jsonObject);
+                handler.obtainMessage(CHECK_CODE_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(CHECK_CODE_FAILED, status, 0);
+                handler.obtainMessage(CHECK_CODE_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -454,6 +471,125 @@ public class API1 {
 
 
     /***************************************我的模块 end**************************************/
+
+
+    /***************************************Shop模块 start**************************************/
+
+
+    /**
+     * 获取store编号,以此获取商品数据
+     *
+     * @param ipString ip地址
+     * @param handler  handler
+     */
+    public static void getStoreIdbyIP(String tokenId, String ipString, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.IP, ipString);
+        HttpUtil1.asyncPost(Common.GET_STORE_BY_IP, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_STOREID_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_STOREID_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /**
+     * 获取全部商品
+     *
+     * @param handler
+     * @param storeId
+     * @param language
+     */
+    public static void getGoods(String tokenId, final Handler handler, String storeId, String language) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.STORE_ID, storeId);
+        params.put(Common.LANGUAGE_NAME, language);
+        HttpUtil1.asyncPost(Common.GET_GOODS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_GOODS_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_GOODS_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /**
+     * 获取指定商品数据
+     *
+     * @param storeId 商城id编号参数（必须
+     * @param goodId  商品编号参数（必须）
+     */
+    public static void getSingleGoods(String tokenId, String storeId, String goodId, final Handler handler) {
+        String url = Common.GET_SINGLE_GOOD + storeId + "/goods/" + goodId;
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+
+        HttpUtil1.asyncGet(url, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_SINGLE_GOOD_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_SINGLE_GOOD_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+
+    }
+
+    /**
+     * 获取用户购物车信息
+     *
+     * @param tokenId 登陆用户标识
+     * @param handler handler
+     */
+    public static void getCarts(String tokenId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+
+        HttpUtil1.asyncGet(Common.GET_CART, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_CART_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_CART_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /***************************************Shop模块 end**************************************/
 
 
 }

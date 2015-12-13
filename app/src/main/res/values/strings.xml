@@ -528,6 +528,7 @@
     <string name="magic_in_the_making">视频制作中...</string>
     <string name="we_will_send_you_to">我们会送你去</string>
     <string name="my_disney_story_once_it_is_ready">我的迪士尼故事一旦准备好了</string>
+    <string name="auto_sync">自动更新</string>
     <!-- Disney video End-->
 
 </resources>

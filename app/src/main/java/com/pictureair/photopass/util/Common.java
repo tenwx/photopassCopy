@@ -62,7 +62,7 @@ public class Common {
     public static final String GET_PHOTO = "/p/getPhoto";// 根据照片Id获取相片信息
     public static final String ADD_COMMENT = "/p/addCpmment";// 评论照片
     public static final String SHARE_TO_SOCIAL = "/p/shareToSocial";// 分享照片
-    public static final String GET_CART = "/shopping/getCart";//获取购物车信息
+
     public static final String ADD_LIKE = "/p/addLike";// 照片点赞
     public static final String SAVE_PHOTO = "/p/savePhto";// 保存编辑后的照片
     public static final String GET_PPPS_BY_USERID = "/ppp/getPPPsByUserId";// 获取用户的ppp列表
@@ -70,14 +70,20 @@ public class Common {
     public static final String GET_PPPS_BY_PP_AND_DATE = "/ppp/getPPPsByPPAndDate";// 获取当前PP及日期可用的PP+
     public static final String GET_PPS_BY_PPP_AND_DATE = "/user/getPPsByPPPAndDate";// 获取当前PPP及日期可绑定的PP
     public static final String GET_USER_BY_MOBILE = "/user/getUserByMobile";// 通过手机号查询用户
-    public static final String GET_ALL_GOODS = "/ms/getAllGoods";//获取全部商品
+
+    public static final String GET_STORE_BY_IP = "/api/getStoreId";//通过ip查找storeId
+    public static final String GET_GOODS = "/api/goods";//获取全部商品
+    public static final String GET_SINGLE_GOOD = "/api/stores/";//获取指定商品数据
+    public static final String GET_CART = "/api/carts";//获取购物车信息
+
+
     public static final String GET_TOP_GOODS = "/ms/getTop4Goods";//获取热门商品
     public static final String GET_PHOTO_PASS_PLUS = "/shopping/getDefaultPhotoPassPluss";//获取PPP商品
     public static final String REMOVE_CART = "/shopping/removeCart";//删除购物车信息
     public static final String MODIFY_CART = "/shopping/modifyCart";//修改购物车信息
     public static final String UPLOAD_PHOTOS = "/p/userUploadPhoto";//上传图片
     public static final String ADD_ON_ORDER = "/ms/AddOnOrder";//生成订单，并且获取订单信息
-    public static final String GET_STORE_BY_IP = "/shopping/getStoreIdByIp";//通过ip查找storeId
+
     public static final String GET_BANNER_GOODS = "/shopping/getBanners";//得到banner商品
     public static final String ADD_TO_CART = "/shopping/addCart";//加入购物车
     public static final String GET_CART_COUNT = "/shopping/getCartCount";//获取购物车的数量

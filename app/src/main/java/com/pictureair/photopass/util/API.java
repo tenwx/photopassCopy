@@ -822,7 +822,7 @@ public class API {
 		params.put(Common.STORE_ID, storeId);
 		params.put(Common.LANGUAGE_NAME, language);
 		StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL).append(Common.GET_ALL_GOODS);
+//		sb.append(Common.BASE_URL).append(Common.GET_ALL_GOODS);
 		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
 
 			@Override

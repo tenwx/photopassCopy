@@ -527,4 +527,6 @@
     <string name="my_disney_story_once_it_is_ready">My Disney Story once it is ready</string>
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
+    <string name="auto_sync">Auto Sync</string>
+
 </resources>

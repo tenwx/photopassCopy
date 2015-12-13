@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/head"
-            android:background="@drawable/user_item_select"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <View
@@ -86,29 +86,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/pp_padding_16"
-                android:background="@color/white"
+                android:layout_marginRight="@dimen/pp_margin_16"
                 android:padding="@dimen/pp_padding_16"
                 android:text="@string/download_tpye"
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_16"
-                android:background="@color/white"
-                android:padding="@dimen/pp_padding_16"
-                android:text="@string/updata_pictures"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16"
-                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -121,14 +105,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_32"
                 android:layout_marginRight="@dimen/pp_margin_16"
-                android:background="@drawable/user_item_select"
                 android:padding="@dimen/pp_padding_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/auto_update"
+                    android:text="@string/auto_download"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_12" />
 
@@ -152,7 +135,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_32"
                 android:layout_marginRight="@dimen/pp_margin_16"
-                android:background="@drawable/user_item_select"
                 android:padding="@dimen/pp_padding_16">
 
                 <TextView
@@ -184,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/pp_margin_16"
-                android:background="@color/white"
+                android:layout_marginRight="@dimen/pp_margin_16"
                 android:padding="@dimen/pp_padding_16"
                 android:text="@string/updata_pictures"
                 android:textColor="@color/pp_blue"
@@ -197,23 +179,24 @@
                 android:background="@color/line_color" />
 
             <RelativeLayout
+                android:id="@+id/rl_auto_sync_photo"
                 android:layout_marginLeft="@dimen/pp_margin_32"
                 android:layout_marginRight="@dimen/pp_margin_16"
                 android:padding="@dimen/pp_padding_16"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/user_item_select">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:text="@string/wifi_download"
+                    android:text="@string/auto_sync"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_12" />
 
                 <ImageButton
+                    android:id="@+id/ib_auto_sync_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -233,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/pp_margin_16"
-                android:background="@drawable/user_item_select"
+                android:layout_marginRight="@dimen/pp_margin_16"
                 android:padding="@dimen/pp_padding_16"
                 android:text="@string/setting_language"
                 android:textColor="@color/pp_blue"
