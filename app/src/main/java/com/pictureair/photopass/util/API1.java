@@ -27,7 +27,6 @@ public class API1 {
 
     public static final int SUCCESS = 111;
     public static final int FAILURE = 222;//失败需分情况判断，是网络未打开还是IP地址无法连接亦或是没有授予网络权限
-    public static final int SIGN_FAILED = 5220;
 
     public static final int CHECK_CODE_SUCCESS = 341;
     public static final int CHECK_CODE_FAILED = 340;
@@ -56,6 +55,9 @@ public class API1 {
     public static final int LOGIN_SUCCESS = 1011;
     public static final int LOGIN_FAILED = 1010;
 
+    public static final int SIGN_SUCCESS = 1021;
+    public static final int SIGN_FAILED = 1020;
+
 
     //我的模块 start
     public static final int BIND_PP_FAILURE = 5000;
@@ -74,6 +76,7 @@ public class API1 {
 
     /**
      * 发送设备ID获取tokenId
+     *
      * @param context
      * @param handler
      */
@@ -146,18 +149,18 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(LOGIN_FAILED, status, 0).sendToTarget();
-
             }
         });
     }
 
     /**
      * 下载头像或者背景文件
+     *
      * @param downloadUrl
      * @param folderPath
      * @param fileName
      */
-    public static void downloadHeadFile (String downloadUrl, final String folderPath, final String fileName){
+    public static void downloadHeadFile(String downloadUrl, final String folderPath, final String fileName) {
         HttpUtil1.asynDownloadBinaryData(downloadUrl, new HttpCallback() {
             @Override
             public void onSuccess(byte[] binaryData) {
@@ -193,52 +196,26 @@ public class API1 {
      * @param handler  handler
      */
     public static void Sign(final Context context, final String userName, final String password, final Handler handler) {
-        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-        params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
         HttpUtil1.asyncPost(Common.REGISTER, params, new HttpCallback() {
             @Override
-            public void onSuccess(String result) {
-                super.onSuccess(result);
-                // 注册成功直接跳转到登录页面自动登录
-                StringBuffer sb = new StringBuffer();
-                sb.append(Common.BASE_URL).append(Common.LOGIN);
-                params.put(Common.USERINFO_TOKENID, sp.getString(Common.USERINFO_TOKENID, null));
-                params.put(Common.USERINFO_USERNAME, userName);
-                params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-                //注册成功进入登录界面
-                HttpUtil1.asyncPost(Common.LOGIN, params, new HttpCallback() {
-                    @Override
-                    public void onSuccess(JSONObject jsonObject) {
-                        super.onSuccess(jsonObject);
-                        try {
-                            JsonUtil.getUserInfo(context, jsonObject, handler);
-                            handler.sendEmptyMessage(SUCCESS);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int status) {
-                        super.onFailure(status);
-                        handler.obtainMessage(SIGN_FAILED, status, 0).sendToTarget();
-
-                    }
-                });
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("sign success ---- > " + jsonObject);
+                handler.obtainMessage(SIGN_SUCCESS).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-               handler.obtainMessage(SIGN_FAILED, status, 0);
+                PictureAirLog.out("status----->" + status);
+                handler.obtainMessage(SIGN_FAILED, status, 0).sendToTarget();
             }
         });
     }
 
-    /***************************************我的模块 start**************************************/
 
     /**
      * 上传个人图片信息，头像或背景图
@@ -256,7 +233,6 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 handler.obtainMessage(UPLOAD_PHOTO_SUCCESS, position, 0, jsonObject);
-
 
             }
 

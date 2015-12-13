@@ -24,7 +24,8 @@ public class HttpUtil1 {
     private static String BASE_URL = "http://192.168.8.3:3006";
     private static final String TAG = "HttpUtil1";
     private static final int HTTP_ERROR = 401;//请求失败的错误代码
-    private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/jpeg;charset=utf-8", "image/jpeg;charset=utf-8"};
+    private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json; charset=utf-8", "text/html",
+            "video/mp4", "audio/x-mpegurl", "image/jpeg;charset=utf-8", "image/jpeg;charset=utf-8"};
 
 
     static {
@@ -238,7 +239,7 @@ public class HttpUtil1 {
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 PictureAirLog.v(TAG, "onSuccess");
                 if (httpBaseJson != null) {
-//                    PictureAirLog.v(TAG, "parseResponse baseJson: " + httpBaseJson.getStatus() + "---" + httpBaseJson.getMsg() + "---" + httpBaseJson.getResult());
+                    PictureAirLog.v(TAG, "parseResponse baseJson: " + httpBaseJson.getStatus() + "---" + httpBaseJson.getMsg() + "---" + httpBaseJson.getResult());
                     if (httpBaseJson.getStatus() == 200) {
                         //成功,返回内容
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());

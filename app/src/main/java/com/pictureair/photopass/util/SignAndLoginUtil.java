@@ -1,24 +1,19 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.MainTabActivity;
+import com.pictureair.photopass.activity.LoginCallBack;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import cz.msebera.android.httpclient.Header;
 
 /**
  * 接受loginActicity中传来的手机号和密码
@@ -28,64 +23,153 @@ import cz.msebera.android.httpclient.Header;
  * */
 public class SignAndLoginUtil {
 	private String pwd;
-	private String phone;
+	private String account;
+	private String name, birthday, gender, country;
 	private SharedPreferences sp;
-	private MyToast newToast;
+	private Editor editor;
+	private MyToast myToast;
 	private Context context;
 	private CustomProgressDialog customProgressDialog;
+	private LoginCallBack loginCallBack;
+	/**
+	 * 注册
+	 */
+	private boolean isSign;
+
+	/**
+	 * 修改信息
+	 */
+	private boolean needModifyInfo;
+
 	private static final int GET_IP_SUCCESS = 1;
 	private static final int GET_IP_FAILED = 2;
+	private static final String TAG = "SignAndLoginUtil";
+	private int id = 0;
 
-	public SignAndLoginUtil(Context c,String phoneStr,String pwdStr) {
+	public SignAndLoginUtil(Context c, String account, String pwdStr, boolean isSign, boolean needModifyInfo,
+							String name, String birthday, String gender, String country, LoginCallBack loginCallBack) {
 		this.context = c;
-		this.phone = phoneStr;
+		this.account = account;
 		this.pwd = pwdStr;
-		init();
+		this.isSign = isSign;
+		this.name = name;
+		this.birthday = birthday;
+		this.gender = gender;
+		this.country = country;
+		this.needModifyInfo = needModifyInfo;
+		this.loginCallBack = loginCallBack;
+		start();
 	}
 
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
+
 			switch (msg.what) {
-			case API.SUCCESS://sign成功
-				System.out.println("login success-------------");
-				API.getcartcount(context,sp.getString(Common.USERINFO_ID, ""),handler);
-				break;
-
-			case API.FAILURE:
-				customProgressDialog.dismiss();
-				newToast.setTextAndShow("账号已经被注册", Common.TOAST_SHORT_TIME);
-				break;
-
-			case API.SIGN_FAILED:
-				customProgressDialog.dismiss();
-				try {
-					JSONObject infoJsonObject = (JSONObject) msg.obj;
-					if (infoJsonObject.has("type")) {
-						if (infoJsonObject.getString("type").equals("shortPassword")) {
-							newToast.setTextAndShow(R.string.pwd_is_short, Common.TOAST_SHORT_TIME);
-							//						}else {
-							//							myToast.setTextAndShow(R.string.pwd_is_short, Common.TOAST_SHORT_TIME);
-						}else if (infoJsonObject.getString("type").equals("existedEmail")) {
-							newToast.setTextAndShow(R.string.email_exist, Common.TOAST_SHORT_TIME);
-						}else if (infoJsonObject.getString("type").equals("existedMobile")) {
-							newToast.setTextAndShow(R.string.mobile_exist, Common.TOAST_SHORT_TIME);
-						}
-					}else {
-						newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				case API1.GET_TOKEN_ID_FAILED://获取tokenId失败
+					if (customProgressDialog.isShowing()) {
+						customProgressDialog.dismiss();
 					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
+					myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+					break;
 
+				case API1.GET_TOKEN_ID_SUCCESS://获取tokenId成功
+					PictureAirLog.out("start sign or login");
+					if (isSign) {
+						API1.Sign(context, account, pwd , handler);
+					} else {
+						API1.Login(context, account, pwd, handler);
+					}
+					break;
+
+				case API1.LOGIN_FAILED://登录失败
+					switch (msg.arg1) {
+						case 6035://token过期
+							id = R.string.http_failed;
+							PictureAirLog.v(TAG, "tokenExpired");
+							editor = sp.edit();
+							editor.putString(Common.USERINFO_TOKENID, null);
+							editor.commit();
+							break;
+
+						case 6031://用户名不存在
+						case 6033://密码错误
+							id = ReflectionUtil.getStringId(context, msg.arg1);
+							break;
+
+						default:
+							id = ReflectionUtil.getStringId(context, msg.arg1);
+							break;
+					}
+					if (customProgressDialog.isShowing()) {
+						customProgressDialog.dismiss();
+					}
+					myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+					break;
+
+				case API1.LOGIN_SUCCESS://登录成功
+					String headUrl = sp.getString(Common.USERINFO_HEADPHOTO, null);
+					if (headUrl != null) {//头像不为空，下载头像文件
+						API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH);
+					}
+					String bgUrl = sp.getString(Common.USERINFO_BGPHOTO, null);
+					if (bgUrl != null) {//背景不为空，下载背景文件
+						API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT);
+					}
+
+					if (needModifyInfo) {//需要修改个人信息
+						API.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""),
+								name, birthday, gender, country, "", handler);
+					} else {
+						handler.sendEmptyMessage(API.UPDATE_PROFILE_SUCCESS);
+					}
+					break;
+
+				case API1.SIGN_FAILED://注册失败
+					PictureAirLog.out("msg --->" + msg.arg1);
+					switch (msg.arg1) {
+						case 6029://邮箱已经存在
+						case 6030://手机号已经存在
+							id = ReflectionUtil.getStringId(context, msg.arg1);
+							break;
+
+						default:
+							id = ReflectionUtil.getStringId(context, msg.arg1);
+							break;
+					}
+					if (customProgressDialog.isShowing()) {
+						customProgressDialog.dismiss();
+					}
+					myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+					break;
+
+				case API1.SIGN_SUCCESS://注册成功
+					API1.Login(context, account, pwd, handler);
+					break;
+
+
+
+
+
+
+
+
+
+				case API.UPDATE_PROFILE_SUCCESS:
+
+					PictureAirLog.out("start get cart count");
+					// 获取购物车数量
+					API.getcartcount(context,
+							sp.getString(Common.USERINFO_ID, ""), handler);
+
+					break;
+				case API.UPDATE_PROFILE_FAILED:
 			case API.GET_CART_COUNT_FAILED:
 			case API.GET_PPP_FAILED:
 			case API.GET_STOREID_FAILED:
 				customProgressDialog.dismiss();
-				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
 
 			case API.GET_CART_COUNT_SUCCESS:
@@ -139,25 +223,8 @@ public class SignAndLoginUtil {
 			case GET_IP_FAILED:
 			case API.GET_PPS_FAILED:// 获取pp列表失败
 				customProgressDialog.dismiss();
-				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 				break;
-
-				//			case API.GET_PPP_SUCCESS:
-				//				System.out.println("get ppp success ----------------");
-				//				JSONObject ppplistJsonObject = (JSONObject) msg.obj;
-				//				try {
-				//					JSONArray ppplistArray = ppplistJsonObject.getJSONArray("PPPList");
-				//					if (0!=ppplistArray.length()) {//说明有ppp
-				//						System.out.println("length="+ppplistArray.length());
-				//						Editor editor = sp.edit();
-				//						editor.putInt(Common.PPP_COUNT, ppplistArray.length());
-				//						editor.commit();
-				//					}
-				//				} catch (JSONException e) {
-				//					e.printStackTrace();
-				//				}
-				//				API.getStoreIdbyIP("140.206.125.195", handler);
-				//				break;
 
 			case API.GET_STOREID_SUCCESS:
 				customProgressDialog.dismiss();
@@ -171,14 +238,8 @@ public class SignAndLoginUtil {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				Intent i = new Intent();
-				i.setAction("com.receiver.AlertManagerRecriver");
-				context.sendBroadcast(i);
 
-				i = new Intent();
-				i.setClass(context, MainTabActivity.class);
-				context.startActivity(i);
-
+				loginsuccess();
 				break;
 
 			case API.MODIFY_PWD_FAILED:
@@ -199,63 +260,29 @@ public class SignAndLoginUtil {
 		}
 	};
 
-	private void init() {
-		newToast = new MyToast(context);
+	/**
+	 * 登录成功之后的跳转
+	 */
+	private void loginsuccess() {
+		PictureAirLog.v(TAG, "loginsuccess----------------");
+		if (customProgressDialog.isShowing()) {
+			customProgressDialog.dismiss();
+		}
+		loginCallBack.loginSuccess();
+	}
+
+	private void start() {
+		PictureAirLog.out("start login or sign------->");
+		myToast = new MyToast(context);
 		customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-		sp = context.getSharedPreferences(Common.USERINFO_NAME, 0);
+		sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 
-		//获取手机号
-		//注册
-		// 向服务器发送请求
 		if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
-			//需要重新获取一次tokenid
-			System.out.println("no tokenid, need to obtain one");
-			final StringBuffer sb = new StringBuffer();
-			sb.append(Common.BASE_URL).append(Common.GET_TOKENID);//获取地址
-
-			RequestParams params = new RequestParams();
-			params.put(Common.TERMINAL, "android");
-			params.put(Common.UUID, Installation.id(context));
-
-			HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-				@Override
-				public void onStart() {
-					super.onStart();
-					System.out.println("get tokenid start");
-				}
-				public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-					super.onSuccess(statusCode, headers, response);
-					try {
-						System.out.println("tokenid=="+response);
-						Editor e = sp.edit();
-						if (response.has(Common.USERINFO_TOKENID)) {
-							System.out.println("add tokenid=============");
-							e.putString(Common.USERINFO_TOKENID, response.getString(Common.USERINFO_TOKENID));
-						}
-						e.commit();
-						System.out.println("sign account:"+phone+",pwd:"+pwd);
-						API.Sign(context, phone, pwd , handler);
-					} catch (JSONException e1) {
-						e1.printStackTrace();
-					}
-				}
-
-				//					@Override
-				//					public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				//						super.onFailure(statusCode, headers, responseString, throwable);
-				//						throwable.printStackTrace();
-				//						newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				//					}
-				@Override
-				public void onFailure(int statusCode, Header[] headers,
-						Throwable throwable, JSONObject errorResponse) {
-					// TODO Auto-generated method stub
-					super.onFailure(statusCode, headers, throwable, errorResponse);
-					newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-				}
-			});
-		}else {
-			API.Sign(context, phone, pwd , handler);
+			PictureAirLog.v(TAG, "no tokenid");
+			API1.getTokenId(context, handler);
+		} else {
+			PictureAirLog.v(TAG, "has tokenid");
+			handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
 		}
 	}
 
