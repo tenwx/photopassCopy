@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AppUtil;
@@ -98,6 +99,10 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
 			this.finish();
 			break;
 		case R.id.submit:
+			if (!isNetWorkConnect(MyApplication.getInstance())){
+				newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				return;
+			}
 			if (oldPassword.getText().toString().trim().equals("")
 					|| newPassword.getText().toString().trim().equals("")) {
 				newToast.setTextAndShow(R.string.modify_password_empty_hint,

@@ -47,15 +47,11 @@ public class API {
 	private static final String TAG = "API";
 	public static final int SUCCESS = 111;
 	public static final int FAILURE = 222;//失败需分情况判断，是网络未打开还是IP地址无法连接亦或是没有授予网络权限
-	public static final int GET_TOP_GOODS_SUCCESS = 666;
-	public static final int GET_BANNER_GOODS_SUCCESS = 777;
 	public static final int GET_ORDER_NO_SUCCESS = 999;
 	public static final int DELETE_ADDRESS_SUCCESS = 11;
 	public static final int ADD_ADDRESS_SUCCESS = 12;
 	public static final int MODIFY_ADDRESS_SUCCESS = 13;
-	public static final int GET_TOKENID_SUCCESS = 16;
 	public static final int GET_ORDER_NO_FAILED = 17;
-	public static final int UPLOADING_PHOTO = 512;
 	public static final int SIGN_FAILED = 5220;
 	public static final int DELETE_ORDER_SUCCESS = 14;
 	public static final int BIND_PP_FAILURE = 6666;
@@ -143,140 +139,6 @@ public class API {
 	public static final int DOWNLOAD_APK_FAILED = 560;
 
 
-
-	/** 查询手机号是否已经被注册 */
-	public static void findPhone(Context context, String phone,final Handler handler) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL).append(Common.IS_EXIST_PHONE);
-		RequestParams params = new RequestParams();
-		params.put("phone", phone);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				if (statusCode == 200) {
-					handler.sendEmptyMessage(SUCCESS);
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				Message msg = handler.obtainMessage();
-				//把需要传递的信息放到msg中
-				msg.what = FAILURE;
-				msg.obj = "验证失败";
-				handler.sendMessage(msg);
-			}
-		});
-	}
-
-	/** 发送设备ID获取tokenId */
-	public static void getTokenId(final Context context) {
-		final StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
-		RequestParams params = new RequestParams();
-		params.put(Common.TERMINAL, "android");
-		params.put(Common.UUID, Installation.id(context));
-		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-			@Override
-			public void onStart() {
-				// TODO Auto-generated method stub
-				super.onStart();
-				System.out.println("get tokenid start");
-			}
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				try {
-					System.out.println("tokenid=="+response);
-					SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-					Editor e = sp.edit();
-					if (response.has(Common.USERINFO_TOKENID)) {
-						System.out.println("add tokenid=============");
-						e.putString(Common.USERINFO_TOKENID, response.getString(Common.USERINFO_TOKENID));
-					}
-					e.commit();
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, responseString, throwable);
-				throwable.printStackTrace();
-			}
-		});
-	}
-
-	/** 登录 */
-	public static void Login(final Context context, String userName, String password ,final Handler handler) {
-		final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-		RequestParams params = new RequestParams();
-		StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL);
-		sb.append(Common.LOGIN);
-		String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
-//		System.out.println("login _ tokenid = "+tokenId);
-		params.put(Common.USERINFO_USERNAME, userName);
-		params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-		params.put(Common.USERINFO_TOKENID, tokenId);
-//		System.out.println("login--->"+params.toString());
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				if (statusCode == 200) {
-					System.out.println("result="+response);
-					if (response.has("error")) {
-						Message msg = handler.obtainMessage();
-						//把需要传递的信息放到msg中
-						msg.what = FAILURE;
-						try {
-							msg.obj = response.getJSONObject("error").getString("type");
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						handler.sendMessage(msg);
-					}else {
-						try {
-							System.out.println("login success"+response);
-							JsonUtil.getUserInfo(context, com.alibaba.fastjson.JSONObject.parseObject(response.toString()) , handler);
-							handler.sendEmptyMessage(SUCCESS);
-						} catch (com.alibaba.fastjson.JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-
-			@Override
-			public void onStart() {
-				// TODO Auto-generated method stub
-				super.onStart();
-				System.out.println("start login------");
-			}
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				Message msg = handler.obtainMessage();
-				//把需要传递的信息放到msg中
-				msg.what = FAILURE;
-				msg.obj = "登录失败";
-				handler.sendMessage(msg);
-			}
-
-		});
-	}
 	/** 退出 */
 	public static void Logout(final Context context, final Handler handler) {
 		final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
@@ -716,75 +578,6 @@ public class API {
 	}
 
 
-	//	public static final ArrayList<PhotoInfo> photoArrayList = new ArrayList<PhotoInfo>();
-	//	public static boolean photosUpdate = false;
-	/**
-	 * 获取用户照片
-	 * @param tokenId
-	 * @param handler
-	 * @param timeString 根据时间获取图片信息 
-	 */
-	public static void getPhotosByConditions(final String tokenId,final Handler handler,final String timeString) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL).append(Common.GET_PHOTOS_BY_CONDITIONS);
-		RequestParams params = new RequestParams();
-		params.put(Common.USERINFO_TOKENID, tokenId);
-		params.put(Common.LAST_UPDATE_TIME, timeString);
-		System.out.println("the time of start get photos = "+timeString);
-		HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				super.onSuccess(statusCode, headers, response);
-				if(statusCode == 200){
-					if(response.has("error")){
-						try {
-							JSONObject obj = response.getJSONObject("error");
-							Message msg = handler.obtainMessage();
-							if (null==timeString) {//获取全部照片
-								msg.obj = obj.getString("message");
-								msg.what = GET_PHOTOS_FAILED;
-							}else {//获取当前照片
-								msg.what = GET_REFRESH_PHOTOS_FAILED;
-							}
-							System.out.println("error"+msg.obj);
-							handler.sendMessage(msg);
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}else if (response.has("photos")) {
-						//成功获取照片信息
-						System.out.println("getphotos--------"+response);
-						Message message = handler.obtainMessage();
-						if (null==timeString) {//获取全部照片
-							message.what = GET_PHOTOS_SUCCESS;
-						}else {//获取当前照片
-							message.what = GET_REFRESH_PHOTOS_SUCCESS;
-						}
-						message.obj = response;
-						//						db.close();
-						handler.sendMessage(message);
-					}
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				//				photosUpdate = true;
-				Message msg = handler.obtainMessage();
-				if (null==timeString) {//获取全部照片
-					msg.what = GET_PHOTOS_FAILED;
-				}else {//获取当前照片
-					msg.what = GET_REFRESH_PHOTOS_FAILED;
-				}
-				handler.sendMessage(msg);
-			}
-		});
-	}
-
 	/** 获取地点信息 */
 	public static void getLocationInfo(final Context context, final Handler handler) {
 		StringBuffer sb2 = new StringBuffer();
@@ -846,73 +639,6 @@ public class API {
 			}
 		});
 	}
-
-	/** 获取热门商品*/
-	public static void getTopGoods(final Handler handler,String storeId, String language) {
-		RequestParams params = new RequestParams();
-		params.put(Common.STORE_ID, storeId);
-		params.put(Common.LANGUAGE_NAME, language);
-		StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL).append(Common.GET_TOP_GOODS);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
-
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				System.out.println("duixiang"+response);
-				Message msgMessage = handler.obtainMessage();
-				msgMessage.what = GET_TOP_GOODS_SUCCESS;
-				msgMessage.obj = response;
-				handler.sendMessage(msgMessage);
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				System.out.println(errorResponse+"3");
-				Message msgMessage = handler.obtainMessage();
-				msgMessage.what = 0;
-				handler.sendMessage(msgMessage);
-			}
-		});
-	}
-
-
-	/** 获取轮播商品*/
-	public static void getBannerGoods(final Handler handler,String storeId) {
-		RequestParams params = new RequestParams();
-		params.put(Common.STORE_ID, storeId);
-		StringBuffer sb = new StringBuffer();
-		sb.append(Common.BASE_URL).append(Common.GET_BANNER_GOODS);
-		HttpUtil.post(sb.toString(), params, new JsonHttpResponseHandler() {
-
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				System.out.println("duixiang"+response);
-				Message msgMessage = handler.obtainMessage();
-				msgMessage.what = GET_BANNER_GOODS_SUCCESS;
-				msgMessage.obj = response;
-				handler.sendMessage(msgMessage);
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				System.out.println(errorResponse+"3");
-				Message msgMessage = handler.obtainMessage();
-				msgMessage.what = 0;
-				handler.sendMessage(msgMessage);
-			}
-		});
-	}
-
 
 	/**
 	 * 获取PPP商品

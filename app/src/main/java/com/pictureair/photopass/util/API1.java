@@ -25,9 +25,6 @@ import java.util.ArrayList;
 public class API1 {
     private static final String TAG = "API";
 
-    public static final int SUCCESS = 111;
-    public static final int FAILURE = 222;//失败需分情况判断，是网络未打开还是IP地址无法连接亦或是没有授予网络权限
-
     public static final int CHECK_CODE_SUCCESS = 341;
     public static final int CHECK_CODE_FAILED = 340;
 
@@ -37,8 +34,7 @@ public class API1 {
     public static final int GET_PPP_SUCCESS = 371;
     public static final int GET_PPP_FAILED = 370;
 
-    public static final int UPDATE_PROFILE_SUCCESS = 431;
-    public static final int UPDATE_PROFILE_FAILED = 430;
+
 
     public static final int UPLOAD_PHOTO_SUCCESS = 511;
     public static final int UPLOAD_PHOTO_FAILED = 510;
@@ -58,13 +54,29 @@ public class API1 {
     public static final int SIGN_SUCCESS = 1021;
     public static final int SIGN_FAILED = 1020;
 
+    /**
+     * Story
+     */
+    public static final int GET_ALL_LOCATION_FAILED = 2000;
+    public static final int GET_ALL_LOCATION_SUCCESS = 2001;
+
+    public static final int GET_ALL_PHOTOS_BY_CONDITIONS_FAILED = 2010;
+    public static final int GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS = 2011;
+
+    public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED = 2020;
+    public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS = 2021;
+
 
     //我的模块 start
     public static final int BIND_PP_FAILURE = 5000;
     public static final int BIND_PP_SUCCESS = 5001;
 
+    public static final int UPDATE_PROFILE_SUCCESS = 5011;
+    public static final int UPDATE_PROFILE_FAILED = 5010;
+
     public static final int SCAN_PPP_FAILED = 5400;
     public static final int SCAN_PPP_SUCCESS = 5401;
+
 
     //我的模块 end
 
@@ -190,12 +202,11 @@ public class API1 {
     /**
      * 注册
      *
-     * @param context  上下文
      * @param userName name
      * @param password pwd
      * @param handler  handler
      */
-    public static void Sign(final Context context, final String userName, final String password, final Handler handler) {
+    public static void Register(final String userName, final String password, final Handler handler) {
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
@@ -212,6 +223,65 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.out("status----->" + status);
                 handler.obtainMessage(SIGN_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
+     * 获取所有的地址信息
+     * @param context
+     * @param handler
+     */
+    public static void getLocationInfo(final Context context, final Handler handler) {
+        HttpUtil1.asyncPost(Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString());
+                handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_ALL_LOCATION_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+
+    /**
+     * 获取用户照片
+     * @param tokenId
+     * @param handler
+     * @param timeString 根据时间获取图片信息
+     */
+    public static void getPhotosByConditions(final String tokenId,final Handler handler,final String timeString) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.LAST_UPDATE_TIME, timeString);
+        PictureAirLog.out("the time of start get photos = " + timeString);
+        HttpUtil1.asyncGet(Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                //成功获取照片信息
+                PictureAirLog.out("getphotos--------" + jsonObject);
+                if (null == timeString) {//获取全部照片
+                    handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
+                } else {//获取当前照片
+                    handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                if (null == timeString) {//获取全部照片
+                    handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
+                } else {//获取当前照片
+                    handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
+                }
             }
         });
     }

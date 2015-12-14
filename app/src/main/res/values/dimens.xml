@@ -20,5 +20,11 @@
     <dimen name="text_size_10">10sp</dimen>
     <dimen name="text_size_8">8sp</dimen>
     <dimen name="text_size_6">6sp</dimen>
+    <dimen name="drawable_padding">8dp</dimen>
+    <dimen name="pp_margin_16">16dp</dimen>
+    <dimen name="pp_padding_8">8dp</dimen>
+    <dimen name="pp_padding_16">16dp</dimen>
+    <dimen name="pp_padding_10">10dp</dimen>
+    <dimen name="pp_margin_32">32dp</dimen>
 
 </resources>

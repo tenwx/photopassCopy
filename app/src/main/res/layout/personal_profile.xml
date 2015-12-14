@@ -246,12 +246,4 @@
             android:background="@color/line_color" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/time_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical" >
-    </LinearLayout>
-
 </RelativeLayout>
