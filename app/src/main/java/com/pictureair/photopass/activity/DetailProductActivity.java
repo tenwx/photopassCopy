@@ -23,10 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.GoodsInfo;
+import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
@@ -41,6 +42,7 @@ import org.json.JSONObject;
  *
  */
 public class DetailProductActivity extends BaseActivity implements OnClickListener{
+	private final static String TAG = "DetailProductActivity";
 	//申明控件
 	private ViewGroup animMaskLayout;//动画层
 	private ImageView buyImg;// 这是在界面上跑的小图片
@@ -54,13 +56,12 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 	private TextView  receiveAdress;
 	
 	//申明实例类
-	private GoodsInfo goodsInfo;
+	private GoodsInfo1 goodsInfo;
 	private SharedPreferences sharedPreferences;
 	private Editor editor;
 	private MyToast myToast;
 	
 	//申明变量
-	private final static String TAG = "DetailProductActivity";
 	private int recordcount = 0; //记录数据库中有几条记录
 
 	private Handler mhandler = new Handler(){
@@ -105,8 +106,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		detail = (TextView)findViewById(R.id.product_detail);
 		promotionPrice = (TextView)findViewById(R.id.detail_promotion_price);
 		currencyTextView = (TextView)findViewById(R.id.detail_currency);
-//		privilegeTextView = (TextView)findViewById(R.id.detail_privilege);
-//		originalPrice = (TextView)findViewById(R.id.detail_price);
 		receiveAdress = (TextView)findViewById(R.id.detail_receive_address);
 		
 		//绑定监听
@@ -119,36 +118,17 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		//初始化数据
 		myToast = new MyToast(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+
 		currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-		goodsInfo = (GoodsInfo) getIntent().getParcelableExtra("goods");
-//		goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
-		name.setText(goodsInfo.good_nameAlias);
-		detail.setText(goodsInfo.good_detail);
-		if (goodsInfo.good_promotionPrice == null) {//没有促销价
-//			originalPrice.setVisibility(View.GONE);
-//			privilegeTextView.setVisibility(View.GONE);
-			promotionPrice.setText(goodsInfo.good_price);
-		}else {//有促销价
-			promotionPrice.setText(goodsInfo.good_promotionPrice);
-//			String originalString = getString(R.string.original_price) + goodsInfo.good_price;
-//			originalPrice.setText(originalString);
-//			originalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+		goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
+		name.setText(goodsInfo.getNameAlias());
+		detail.setText(goodsInfo.getDescription());
+		promotionPrice.setText(goodsInfo.getPrice()+"");
+		receiveAdress.setText(getString(R.string.address_digital_goods));
+		if (goodsInfo.getPrictures()!= null && goodsInfo.getPrictures().size()>0){
+			PictureAirLog.v(TAG,"goodsInfo size" + goodsInfo.getPrictures().size());
+			bannerView_Detail.findimagepath(goodsInfo.getPrictures());
 		}
-		if (goodsInfo.good_type == 1) {//需要自提的商品
-			if (goodsInfo.good_name.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-				receiveAdress.setVisibility(View.VISIBLE);
-				receiveAdress.setText(getString(R.string.address_digital_goods));
-				
-			}else {
-				
-//				receiveAdress.setText(getString(R.string.address_goods));
-				receiveAdress.setVisibility(View.GONE);
-			}
-			
-//		}else {
-//			receiveAdress.setText(getString(R.string.address_digital_goods));
-		}
-		bannerView_Detail.findimagepath(goodsInfo.good_previewUrls);
 	}
 	
 	@Override
@@ -168,14 +148,13 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 				DetailProductActivity.this.startActivity(intent);
 			}else {
 				intent = new Intent(DetailProductActivity.this, SelectPhotoActivity.class);
-				intent.putExtra("name", goodsInfo.good_nameAlias);
+				intent.putExtra("name", goodsInfo.getNameAlias());
 				intent.putExtra("price", promotionPrice.getText().toString());
 				intent.putExtra("introduce", detail.getText().toString());
-				String[] urlsStrings = goodsInfo.good_previewUrls.split(",");
-				intent.putExtra("productImage", urlsStrings[0]);
+				intent.putExtra("productImage", goodsInfo.getPrictures().get(0).getUrl());
 				intent.putExtra("activity", "detailproductactivity");
 				intent.putExtra("storeid", getIntent().getStringExtra("storeid"));
-				intent.putExtra("productid", goodsInfo.good_productId);
+				intent.putExtra("productid", goodsInfo.getProductId());
 				startActivity(intent);
 			}
 			break;
@@ -240,7 +219,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 	}
 
 	private void addtocart() {
-		String[] urlsStrings = goodsInfo.good_previewUrls.split(",");
 		//编辑传入照片的信息
 		JSONArray embedphotos = new JSONArray();//放入图片的json数组
 		JSONObject embedphoto = new JSONObject();
@@ -259,8 +237,8 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 			e.printStackTrace();
 		}
 		Log.d(TAG, embedphotos.toString());
-		API.addtocart(sharedPreferences.getString(Common.USERINFO_ID, ""), getIntent().getStringExtra("storeid"), goodsInfo.good_productId, 1, 
-				name.getText().toString(), "", Double.valueOf(promotionPrice.getText().toString()), urlsStrings[0], detail.getText().toString(), 
+		API.addtocart(sharedPreferences.getString(Common.USERINFO_ID, ""), getIntent().getStringExtra("storeid"), goodsInfo.getProductId(), 1,
+				name.getText().toString(), "", Double.valueOf(promotionPrice.getText().toString()), goodsInfo.getPrictures().get(0).getUrl(), detail.getText().toString(),
 				"", Double.valueOf(promotionPrice.getText().toString()), mhandler, null, false);
 	}
 
@@ -374,7 +352,5 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		view.setLayoutParams(lp);
 		return view;
 	}
-	
 
-	
 }

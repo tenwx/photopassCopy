@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginCallBack;
 import com.pictureair.photopass.widget.CustomProgressDialog;
@@ -159,37 +160,17 @@ public class SignAndLoginUtil {
 
                 //修改个人信息成功
                 case API1.UPDATE_PROFILE_SUCCESS:
-                    PictureAirLog.out("start get cart count");
-                    // 获取购物车数量
-                    API.getcartcount(context, sp.getString(Common.USERINFO_ID, ""), handler);
+                    PictureAirLog.out("start get pp");
+                    API.getPPSByUserId(MyApplication.getTokenId(), handler);// 获取pp列表
+
                     break;
 
 
-
-
-
-
-
-
-
-
-                case API.GET_CART_COUNT_FAILED:
                 case API.GET_PPP_FAILED:
                 case API.GET_STOREID_FAILED:
                     customProgressDialog.dismiss();
-                    myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
-
-                case API.GET_CART_COUNT_SUCCESS:
-                    System.out.println("get cart count success------------");
-                    API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null),
-                            handler);// 获取pp列表
-                    break;
-
-                case GET_IP_SUCCESS:
-                    API.getStoreIdbyIP(msg.obj.toString(), handler);
-                    break;
-
                 case API.GET_PPS_SUCCESS:// 获取pp列表成功
                     /**
                      * 获取pp成功之后，需要放入sharedPrefence中
@@ -202,65 +183,41 @@ public class SignAndLoginUtil {
                                     .getJSONArray("PPList");
                             Editor editor = sp.edit();
                             editor.putInt(Common.PP_COUNT, pplists.length());
-                            editor.commit();
+                            editor.apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    } else {
-                        //					Log.d(TAG, "pp size == 0");
                     }
-                    new Thread() {
-                        public void run() {
-//						String netIP = AppUtil.GetNetIp();
-                            String netIP = "211.95.27.34";
-                            System.out.println("netIP-----------> " + netIP);
-                            if (netIP.equals("")) {//获取失败
-                                handler.sendEmptyMessage(GET_IP_FAILED);
-                            } else {//获取成功
-                                Message message = handler.obtainMessage();
-                                message.what = GET_IP_SUCCESS;
-                                message.obj = netIP;
-                                handler.sendMessage(message);
-                            }
-
-                        }
-
-                        ;
-                    }.start();
-                    //				API.getStoreIdbyIP("140.206.125.195", handler);
+                    //获取StoreId
+                    API1.getStoreId(handler);
                     break;
 
-                case GET_IP_FAILED:
                 case API.GET_PPS_FAILED:// 获取pp列表失败
                     customProgressDialog.dismiss();
                     myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
                     break;
 
-                case API.GET_STOREID_SUCCESS:
+                case API1.GET_STOREID_SUCCESS:
                     customProgressDialog.dismiss();
-                    System.out.println("get storeid success----------------");
-                    JSONObject obj = (JSONObject) msg.obj;
-                    try {
-                        Editor editor = sp.edit();
-                        editor.putString(Common.CURRENCY, obj.getString("currency").toString());
-                        editor.putString(Common.STORE_ID, obj.getString("storeId").toString());
-                        editor.commit();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    PictureAirLog.v(TAG, "get storeid success----------------");
+                    com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) msg.obj;
+                    Editor editor = sp.edit();
+                    editor.putString(Common.CURRENCY, jsonObject.getString("currency"));
+                    editor.putString(Common.STORE_ID, jsonObject.getString("storeId"));
+                    editor.apply();
 
                     loginsuccess();
                     break;
 
                 case API.MODIFY_PWD_FAILED:
                     customProgressDialog.dismiss();
-                    System.out.println("signorfotget------modify pwd failed");
+                    PictureAirLog.v(TAG, "signorfotget------modify pwd failed");
                     //提示错误
                     break;
 
                 case API.MODIFY_PWD_SUCCESS:
                     customProgressDialog.dismiss();
-                    System.out.println("signorforget------modify pwd success");
+                    PictureAirLog.v(TAG, "signorforget------modify pwd success");
                     //跳转至登录界面
                     break;
 
@@ -286,7 +243,6 @@ public class SignAndLoginUtil {
         myToast = new MyToast(context);
         customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
         sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-
         if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
             PictureAirLog.v(TAG, "no tokenid");
             API1.getTokenId(context, handler);

@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
@@ -12,6 +13,13 @@ import java.io.File;
  */
 public abstract class HttpCallback implements HttpInterface{
     //实现所有方法，方便后面任意调用其中某一个
+
+
+    @Override
+    public void onSuccess(JSONArray jsonArray) {
+
+    }
+
     @Override
     public void onStart() {
 

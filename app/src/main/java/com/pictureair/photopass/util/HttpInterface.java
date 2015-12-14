@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
@@ -10,6 +11,14 @@ import java.io.File;
  * 定义Http 操作回调接口
  */
 public interface HttpInterface {
+
+    /**
+     * 请求成功，jsonArray
+     *
+     * @param jsonArray JSONArray
+     */
+    void onSuccess(JSONArray jsonArray);
+
     /**
      * 请求成功，返回jsonObject
      *

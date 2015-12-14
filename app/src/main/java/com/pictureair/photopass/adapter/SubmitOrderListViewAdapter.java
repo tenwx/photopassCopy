@@ -18,7 +18,8 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.DashedLineView;
@@ -27,17 +28,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubmitOrderListViewAdapter extends BaseAdapter{
-	private ArrayList<CartItemInfo> arrayList;
+	private ArrayList<CartItemInfo1> arrayList;
 	private Context context;
 	private LayoutInflater layoutInflater;
 	private ImageLoader imageLoader;
 	private ArrayList<ImageView> imageViews;
-	private List<CartPhotosInfo> gridviewlist;
+	private List<CartPhotosInfo1> gridviewlist;
 	private ArrayList<ArrayList<ImageView>> gridLayoutLists;
 	private Handler handler;
 	private String currency;
 	private static final String TAG = "SubmitOrderListViewAdapter";
-	public SubmitOrderListViewAdapter(Context context, ArrayList<CartItemInfo> list, String currency, Handler handler) {
+	public SubmitOrderListViewAdapter(Context context, ArrayList<CartItemInfo1> list, String currency, Handler handler) {
 		this.context = context;
 		this.handler = handler;
 		this.currency = currency;
@@ -81,29 +82,29 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 		}else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		gridviewlist = arrayList.get(position).cart_photoUrls;
+		gridviewlist = arrayList.get(position).getEmbedPhotos();
 		imageViews = new ArrayList<ImageView>();
 		
 		//初始化数据
-		if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(arrayList.get(position).cart_productName)) {//照片产品
+		if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(arrayList.get(position).getProductName())) {//照片产品
 			Log.d(TAG, "pp product");
-			if (arrayList.get(position).cart_productImageUrl.contains("http")) {
-				imageLoader.displayImage(arrayList.get(position).cart_productImageUrl, viewHolder.goodImageView);
+			if (arrayList.get(position).getPictures()[0].contains("http")) {
+				imageLoader.displayImage(arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
 			}else {
-				imageLoader.displayImage(Common.PHOTO_URL + arrayList.get(position).cart_productImageUrl, viewHolder.goodImageView);
+				imageLoader.displayImage(Common.PHOTO_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
 			}
 			viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
 			viewHolder.goodDashedLineView.setVisibility(View.GONE);
 			viewHolder.showOrHidePhotoImageView.setVisibility(View.GONE);
-		}else if (Common.ppp.equals(arrayList.get(position).cart_productName)) {//ppp产品
+		}else if (Common.ppp.equals(arrayList.get(position).getProductName())) {//ppp产品
 			Log.d(TAG, "ppp product");
-			imageLoader.displayImage(Common.BASE_URL+arrayList.get(position).cart_productImageUrl, viewHolder.goodImageView);
+			imageLoader.displayImage(Common.BASE_URL+arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
 			viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
 			viewHolder.goodDashedLineView.setVisibility(View.GONE);
 			viewHolder.showOrHidePhotoImageView.setVisibility(View.GONE);
 		}else {//为其他产品
 			Log.d(TAG, "other procut");
-			imageLoader.displayImage(Common.BASE_URL + arrayList.get(position).cart_productImageUrl, viewHolder.goodImageView);
+			imageLoader.displayImage(Common.BASE_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
 			
 			//设置gridlayout,先清除所有的view，再重新添加view
 			viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
@@ -115,10 +116,10 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 				params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
 				params.height = params.width;
 				imageView.setLayoutParams(params);
-				if (gridviewlist.size()==0||gridviewlist.get(i).cart_photoUrl.equals("")){
+				if (gridviewlist.size()==0||gridviewlist.get(i).getCartPhotoUrl().equals("")){
 					imageView.setImageResource(R.drawable.empty);
 				}else {
-					imageLoader.displayImage(Common.PHOTO_URL+gridviewlist.get(i).cart_photoUrl, imageView);
+					imageLoader.displayImage(Common.PHOTO_URL+gridviewlist.get(i).getCartPhotoUrl(), imageView);
 				}
 				imageView.setScaleType(ScaleType.CENTER_CROP);
 				imageView.setId(position*10+i);//给添加的imageview添加id
@@ -127,7 +128,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 				imageView.setOnClickListener(new SubmitOrderOnClickListener(viewHolder,arrayList.get(position)));
 				viewHolder.goodPhotosGridLayout.addView(imageView,params);
 			}
-			if (arrayList.get(position).showPhotos == 1) {
+			if (arrayList.get(position).getShowPhotos() == 1) {
 				viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
 				viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
 				viewHolder.showOrHidePhotoImageView.setVisibility(View.VISIBLE);
@@ -141,10 +142,10 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 		}
 		gridLayoutLists.add(imageViews);
 		
-		viewHolder.goodQuentityTextView.setText("x"+arrayList.get(position).cart_quantity);
+		viewHolder.goodQuentityTextView.setText("x"+arrayList.get(position).getQty());
 		viewHolder.currencyTextView.setText(currency);
-		viewHolder.goodPriceTextView.setText((int)arrayList.get(position).cart_originalPrice+"");
-		viewHolder.goodNameTextView.setText(arrayList.get(position).cart_productName);
+		viewHolder.goodPriceTextView.setText((int)arrayList.get(position).getPrice()+"");
+		viewHolder.goodNameTextView.setText(arrayList.get(position).getProductName());
 		viewHolder.goodRelativeLayout.setOnClickListener(new SubmitOrderOnClickListener(viewHolder, arrayList.get(position)));
 		return convertView;
 	}
@@ -163,8 +164,8 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 	
 	private class SubmitOrderOnClickListener implements OnClickListener{
 		private ViewHolder viewHolder;
-		private CartItemInfo cartItemInfo;
-		public SubmitOrderOnClickListener(ViewHolder viewHolder, CartItemInfo cartItemInfo) {
+		private CartItemInfo1 cartItemInfo;
+		public SubmitOrderOnClickListener(ViewHolder viewHolder, CartItemInfo1 cartItemInfo) {
 			this.cartItemInfo = cartItemInfo;
 			this.viewHolder = viewHolder;
 		}
@@ -172,20 +173,18 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 		public void onClick(View v) {
 			if (v.getId() == R.id.submitOrderRelativeLayout) {
 				Log.d(TAG, "expand photos");
-				if (cartItemInfo.cart_productType == 1) {
-					if (cartItemInfo.showPhotos == 1) {
+					if (cartItemInfo.getShowPhotos() == 1) {
 						viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
 						viewHolder.goodDashedLineView.setVisibility(View.GONE);
 						viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_show_photo);
-						cartItemInfo.showPhotos = 0;
+						cartItemInfo.setShowPhotos(0);
 					} else {
 						viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
 						viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
 						viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_hide_photo);
-						cartItemInfo.showPhotos = 1;
+						cartItemInfo.setShowPhotos(1);
 					}
 					
-				}
 			}else {
 				Log.d(TAG, "photo click "+v.getId()/10+"_"+v.getId()%10);
 				Message message = handler.obtainMessage();

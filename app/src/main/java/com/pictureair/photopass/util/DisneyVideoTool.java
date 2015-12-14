@@ -71,6 +71,7 @@ public class DisneyVideoTool {
         photoInfo.photoPathOrURL = "123.mp4";//图片的原始路径
         photoInfo.onLine = 1;//1线上图片，0，本地图片
         photoInfo.isVideo = 1;//1是视频，0是图片
+        photoInfo.isLove = 1;
         return photoInfo;
     }
 
