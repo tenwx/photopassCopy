@@ -17,8 +17,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.Installation;
@@ -44,9 +42,7 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 	private SharedPreferences sp;
 	private MyToast newToast;
 	private int type;// 判断跳转来自注册还是密码修改 0：注册；1：修改密码；
-	private static final int GET_IP_SUCCESS = 3;
-	private static final int GET_IP_FAILED = 4;
-	
+
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -54,7 +50,7 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 			switch (msg.what) {
 			case API.SUCCESS://sign成功
 				System.out.println("login success-------------");
-				API.getcartcount(SignOrForgetActivity.this,sp.getString(Common.USERINFO_ID, ""),handler);
+//				API.getcartcount(SignOrForgetActivity.this,sp.getString(Common.USERINFO_ID, ""),handler);
 				break;
 				
 			case API.FAILURE:
@@ -90,10 +86,6 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 				API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null), handler);
 				break;
 				
-			case GET_IP_SUCCESS:
-				API.getStoreIdbyIP(msg.obj.toString(), handler);
-				break;
-				
 			case API.GET_PPS_SUCCESS:// 获取pp列表成功
 				/**
 				 * 获取pp成功之后，需要放入sharedPrefence中
@@ -110,28 +102,9 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
-				} else {
-//					Log.d(TAG, "pp size == 0");
 				}
-				new Thread(){
-					public void run() {
-						String netIP = AppUtil.GetNetIp();
-						System.out.println("netIP-----------> "+ netIP);
-						if (netIP.equals("")) {//获取失败
-							handler.sendEmptyMessage(GET_IP_FAILED);
-						}else {//获取成功
-							Message message = handler.obtainMessage();
-							message.what = GET_IP_SUCCESS;
-							message.obj = netIP;
-							handler.sendMessage(message);
-						}
-						
-					};
-				}.start();
-//				API.getStoreIdbyIP("140.206.125.195", handler);
 				break;
 				
-			case GET_IP_FAILED:
 			case API.GET_PPS_FAILED:// 获取pp列表失败
 //				dialog.dismiss();
 				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);

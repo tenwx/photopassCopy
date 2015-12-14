@@ -27,6 +27,7 @@ import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
@@ -117,13 +118,17 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		//初始化数据
 		myToast = new MyToast(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+
 		currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
 		goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
 		name.setText(goodsInfo.getNameAlias());
 		detail.setText(goodsInfo.getDescription());
-		promotionPrice.setText(goodsInfo.getPrice());
+		promotionPrice.setText(goodsInfo.getPrice()+"");
 		receiveAdress.setText(getString(R.string.address_digital_goods));
-		bannerView_Detail.findimagepath(goodsInfo.getPrictures());
+		if (goodsInfo.getPrictures()!= null && goodsInfo.getPrictures().size()>0){
+			PictureAirLog.v(TAG,"goodsInfo size" + goodsInfo.getPrictures().size());
+			bannerView_Detail.findimagepath(goodsInfo.getPrictures());
+		}
 	}
 	
 	@Override
@@ -347,7 +352,5 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 		view.setLayoutParams(lp);
 		return view;
 	}
-	
 
-	
 }

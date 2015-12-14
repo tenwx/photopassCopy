@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 
@@ -38,6 +39,15 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         width = ScreenUtil.getScreenWidth(c) - ScreenUtil.dip2px(c, 10);
         options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_discover_loading).
                 showImageOnFail(R.drawable.ic_discover_failed).cacheInMemory(true).cacheOnDisk(true).build();
+    }
+
+    /**
+     * 更新数据
+     * @param list data
+     */
+    public void refresh(List<GoodsInfo1> list){
+        this.goodList = list;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -75,16 +85,18 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         layoutParams.height = width / 2;
         GoodsInfo1 goodsInfo1 = goodList.get(position);
         if (goodsInfo1 == null) {
+            PictureAirLog.v(TAG,"getView goodInfo == null");
             return convertView;
         }
+        PictureAirLog.v(TAG,"getView goodInfo name: " + goodsInfo1.getName());
         //初始化数据
         viewHolder.goodNameAlias.setText(goodsInfo1.getNameAlias());
-        viewHolder.goodPrice.setText(goodsInfo1.getPrice());
+        viewHolder.goodPrice.setText(goodsInfo1.getPrice()+"");
         viewHolder.goodCurrency.setText(currency);
         viewHolder.goodDetailIntroduce.setText(goodsInfo1.getDescription());
 
         if (goodsInfo1.getPrictures() != null && goodsInfo1.getPrictures().size() > 0) {
-            UniversalImageLoadTool.loadDiscoverImage(Common.BASE_URL + goodsInfo1.getPrictures().get(0).getUrl(), viewHolder.goodImageView, options);
+            UniversalImageLoadTool.loadDiscoverImage(Common.BASE_URL_TEST + goodsInfo1.getPrictures().get(0).getUrl(), viewHolder.goodImageView, options);
 
         } else {
             UniversalImageLoadTool.loadDiscoverImage(null, viewHolder.goodImageView, options);

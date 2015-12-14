@@ -12,32 +12,15 @@ public class Common {
     public static String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
     public static final String APPKEY = "7c07eba9fe66"; // SMSS，公司的账号
     public static final String APPSECRET = "c3e30ac3daba694656287afef2686edf"; // SMSS
-    //		public static final String APPKEY = "50394dcd763f"; // SMSS，bauer的账号
-    //		public static final String APPSECRET = "d84d81d7e39a1e99427878c3f871f642"; // SMSS
-    //服务器地址
-//	public static final String BASE_URL = "http://pwsh.pictureworks.biz:3001";//外网域名
-    //		public static final String BASE_URL = "http://192.168.9.43:3001";//齐超
-//	public static final String BASE_URL = "http://192.168.8.3:3001";
 
     public static final String BASE_URL2 = "http://192.168.8.3:3001";
-    public static final String BASE_URL = "http://192.168.8.171:3001";//harry
+    public static final String BASE_URL = "http://192.168.8.3:3001";//harry
+
+
+//    public static final String BASE_URL_TEST = "http://172.16.20.135:3001";//测试Shop
 
     public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-//	public static final String BASE_URL = "http://pictureAir.com.cn:3001";//harry
-    //public static final String BASE_URL = "http://140.206.125.194:3001";//外网
-    //public static final String BASE_URL = "http://pictureAir.cloudapp.net:3001";//美国服务器
-    //public static final String BASE_URL = "http://191.236.87.204:3001";//美国服务器
-    //public static final String BASE_URL = "http://54.148.133.105:3001";
-
-    //		public static final String PHOTO_URL = "http://pwsh.pictureworks.biz:4000/";//外网域名
-    //	public static final String PHOTO_URL = "http://192.168.9.43:4000/";//齐超
-    public static final String PHOTO_URL = "http://192.168.8.171:4000/";//harry
-    //	public static final String PHOTO_URL = "http://pictureAir.com.cn:80/";//harry
-    //	public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-    //public static final String PHOTO_URL = "http://54.148.133.105:4000/";
-    //public static final String PHOTO_URL = "http://191.236.87.204:4000/";//美国服务器
-    //public static final String PHOTO_URL = "http://pictureAir.cloudapp.net:4000/";//美国服务器
-    //public static final String PHOTO_URL = "http://140.206.125.194:4000/";//外网
+    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
     public static final String GET_ALL_LOCATIONS_OF_ALBUM_GROUP = "/park/getLocationsOfAlbumGroup";//获得location信息
@@ -75,6 +58,11 @@ public class Common {
     public static final String GET_GOODS = "/api/goods";//获取全部商品
     public static final String GET_SINGLE_GOOD = "/api/stores/";//获取指定商品数据
     public static final String GET_CART = "/api/carts";//获取购物车信息
+    public static final String ADD_TO_CART = "/api/carts";//加入购物车
+    public static final String MODIFY_TO_CART = "/api/carts";//修改购物车
+    public static final String DELETE_TO_CART = "/api/carts";//删除购物车
+
+
 
 
     public static final String GET_TOP_GOODS = "/ms/getTop4Goods";//获取热门商品
@@ -85,7 +73,7 @@ public class Common {
     public static final String ADD_ON_ORDER = "/ms/AddOnOrder";//生成订单，并且获取订单信息
 
     public static final String GET_BANNER_GOODS = "/shopping/getBanners";//得到banner商品
-    public static final String ADD_TO_CART = "/shopping/addCart";//加入购物车
+
     public static final String GET_CART_COUNT = "/shopping/getCartCount";//获取购物车的数量
     public static final String GET_ADDRESS = "/shopping/getAddresses";//获取收货地址
     public static final String DELETE_ADDRESS = "/shopping/deleteAddress";//删除收货地址
@@ -257,7 +245,20 @@ public class Common {
 
     // 友盟参数
     public static final String UMENG_CHANNEL = "360";// 打包渠道
+    //		public static final String CHANNEL = "tencent";// 渠道
+//		public static final String CHANNEL = "baidu";// 渠道
+//		public static final String CHANNEL = "PICTUREAIRCOM_HOME";// 渠道
+//		public static final String CHANNEL = "PICTUREAIRCOM_PHOTO";// 渠道
+
     // 友盟自定义事件
+
+    // 纪录点击的是  单张下载 还是 全部下载。
+    public static String DOWNLOAD_TYPE = Common.ONE_PHOTO_DOWNLOAD;
+    public static final String ONE_PHOTO_DOWNLOAD = "OnePhotoDownload";
+    public static final String ONE_PHOTO_DOWNLOAD_SUCCESS = "OnePhotoDownloadSuccess";
+
+    public static final String ALL_PHOTOS_DOWNLOAD = "allPhotosDownload";
+    public static final String ALL_PHOTOS_DOWNLOAD_SUCCESS = "allPhotosDownloadSuccess";
     public static final String EVENT_CONTAIN_PICTURE_PEOPLES = "event_contain_picture_peoples";// 有图片的总人数
     public static final String EVENT_TOTAL_PICTURES = "event_total_pictures";// 图片总数
     public static final String EVENT_ONCLICK_DOWNLOAD = "event_onclick_dwonload";// 点击下载
@@ -286,6 +287,10 @@ public class Common {
     public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
     public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
 
+    public static final String ALL_PHOTO_COUNT = "AllPhotoCount";
+
+    public static final String HAVE_PHOTO_USERS_COUNT = "HavePhotoUsersCount";
+
     // 友盟sharedPreferences
 
     public static final String IS_HAVE_PIC = "IS_HAVE_PIC";// 是否包含图片
@@ -305,6 +310,7 @@ public class Common {
 
     // 纪录 MainTab 中 tab 的高度。
     public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
+
 
     //    public static final String DATA_VIDEO = Environment.getExternalStorageDirectory()+"getExternalStorageDirectory/aaa/DisneyVideo.mp4";
     public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址

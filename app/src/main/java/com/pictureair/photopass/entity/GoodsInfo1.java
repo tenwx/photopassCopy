@@ -1,12 +1,13 @@
 package com.pictureair.photopass.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by milo on 15/12/13.
  * 商品信息
  */
-public class GoodsInfo1 {
+public class GoodsInfo1 implements Serializable{
     private String goodsKey;//string, 商品key
     private String productId;//string,商品主键
     private String storeId;//string,商城主键

@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,30 +24,33 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
-import com.pictureair.photopass.activity.PreviewFavoritePhotosActivity;
-import com.pictureair.photopass.adapter.StoryViewPagerAdapter;
+import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.entity.StoryFragmentEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.JsonUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.StoryMenuPop;
 
 import java.io.File;
 import java.text.ParseException;
@@ -55,6 +58,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * PhotoPass照片的图片墙，用来显示从服务器返回的照片信息，以及通过magic相机拍摄的图片
@@ -70,6 +76,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	private static final int LOAD_COMPLETED = 111;
 	private static final int REFRESH = 666;
 	private static final int REFRESH_LOCAL_PHOTOS = 777;
+	private static final int SORT_COMPLETED = 223;
 
 	private static String TAG = "FragmentPageStory";
 
@@ -87,27 +94,23 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	private ImageView scanLayout;
 	private LinearLayout noPhotoView;
 	private RelativeLayout scanRelativeLayout;
-	private ImageView redIconImageView;
 	private static CustomProgressDialog dialog;// 加载等待
 	private ImageView cursorImageView;
-	private TextView storyTabAllTextView, storyTabPhotopassTextView, storyTabMagicTextView, storyTabBoughtTextView;
+	private TextView storyTabAllTextView, storyTabPhotopassTextView, storyTabMagicTextView, storyTabBoughtTextView, storyTabFavoriteTextView;
 	private static ViewPager storyViewPager;
 	private LinearLayout storyNoPpToScanLinearLayout, storyLeadBarLinearLayout, storyCursorLinearLayout;
 	private ImageView storyNoPpScanImageView;
-	private StoryMenuPop storyMenuPop;
 	private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
 	private CustomDialog customdialog; //  对话框
-	private TextView loopTextView;
-	private ImageView closeLoopButton;
-	private RelativeLayout loopRelativeLayout;
 
 	//申明类
 	private MyApplication app;
 	private ArrayList<PhotoItemInfo> photoPassPictureList;
 	private ArrayList<PhotoItemInfo> magicPicList;
+	private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList;
 	private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
-	private ArrayList<View> listViews;
-	private static StoryViewPagerAdapter storyViewPagerAdapter;
+	private List<Fragment> fragments;
+	private FragmentAdapter fragmentAdapter;
 	public static Context context;
 	private SimpleDateFormat sdf;
 	private static SharedPreferences sharedPreferences;
@@ -120,83 +123,111 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	private Handler handler = new Handler(){
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
+				case API1.GET_ALL_PHOTOS_BY_CONDITIONS_FAILED://获取全部照片失败
+				case API1.GET_ALL_LOCATION_FAILED://获取地址信息失败
+					if(dialog.isShowing()){
+						dialog.dismiss();
+					}
+					PictureAirLog.out("get location failed");
+					storyNoPpToScanLinearLayout.setVisibility(View.GONE);
+					noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+					noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
+					break;
+
+				case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
+					PictureAirLog.d(TAG, "---------->get location success"+msg.obj.toString());
+					try {
+						JSONObject response = JSONObject.parseObject(msg.obj.toString());
+						JSONArray resultArray = response.getJSONArray("locations");
+						for (int i = 0; i < resultArray.size(); i++) {
+							JSONObject object = resultArray.getJSONObject(i);
+							DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
+							locationList.add(locationInfo);
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					//检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
+					if (app.photoPassPicList == null){
+						app.photoPassPicList = new ArrayList<>();
+					}
+					app.photoPassPicList.clear();
+
+					if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
+						PictureAirLog.d(TAG, "---------> load data from databases");
+						loadDataFromDataBase();
+
+						//  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
+						boolean NOT_FIRST_PP10 = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_PP10, sharedPreferences.getString(Common.USERINFO_ID, ""));
+						PictureAirLog.e("NOT_FIRST_PP10", "NOT_FIRST_PP10:"+NOT_FIRST_PP10);
+						PictureAirLog.e("photoCount", "ppphotoCount :"+ppPhotoCount);
+
+						PictureAirLog.e("API.PPPlist.size()", "API.PPPlist.size():"+API.PPPlist.size());
+						if (!NOT_FIRST_PP10) {
+							//第一次 PP数量到 10 。
+							API.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
+						}
+
+					}
+					if (app.photoPassPicList.size() == 0 || needfresh) {
+						//数据为0，需要从网上下载
+						System.out.println("photolist size = 0");
+						//判断是否之前有成功获取过
+						API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null),handler,null);//获取全部图片
+					}else {
+						PictureAirLog.out("photolist size = "+ app.photoPassPicList.size());
+						//有数据，直接显示
+						photoPassPictureList.clear();
+						app.allPicList.clear();
+						app.boughtPicList.clear();
+						try {
+							getData();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					break;
+
+				case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED://获取刷新失败
+					if (dialog.isShowing()) {
+						dialog.dismiss();
+					}
+//					storyViewPagerAdapter.stopRefresh(refreshTap);
+					myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+					break;
+
+				case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
+					PictureAirLog.d(TAG, "--------->get photo success");
+					saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true);
+					break;
+
+				case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS://获取刷新的推送图片
+					app.setPushPhotoCount(0);
+					PictureAirLog.d(TAG, "deal refresh photos-------");
+					saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false);
+					break;
+
+
+
+
+
+
+
+
+
+
+
+
 			case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
-				Log.d(TAG, "scan local photos success");
+				PictureAirLog.d(TAG, "scan local photos success");
 				dealLocalRefreshedData();
 				break;
 
 			case REFRESH://开始刷新
-				Log.d(TAG, "the index of refreshing is "+ msg.arg1);
-				API.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null),handler,sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
+				PictureAirLog.d(TAG, "the index of refreshing is "+ msg.arg1);
+				API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
 				refreshTap = msg.arg1;
-				break;
-
-			case API.GET_REFRESH_PHOTOS_SUCCESS://获取刷新的推送图片
-				app.setPushPhotoCount(0);
-				Log.d(TAG, "deal refresh photos-------");
-				saveJsonToSQLite(com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()), false);
-				break;
-
-			case API.GET_REFRESH_PHOTOS_FAILED://获取刷新失败
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
-				storyViewPagerAdapter.stopRefresh(refreshTap);
-				myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				break;
-
-			case StoryMenuPop.COLLECT://收藏按钮
-				Log.d(TAG, "favorite menu on click-------->");
-//				if (pictureAirDbManager.getLovePhotoCount() == 0) {//没有数量
-//					myToast.setTextAndShow(R.string.no_favorite_photo, Common.TOAST_SHORT_TIME);
-//					return;
-//				}
-				Intent intent2 = new Intent(getActivity(), PreviewFavoritePhotosActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelableArrayList("photos", app.allPicList);
-				intent2.putExtra("photos", bundle);
-				getActivity().startActivity(intent2);
-				break;
-
-			case StoryMenuPop.SELECTION://筛选功能
-				Log.d(TAG, "selection menu on click----->");
-				break;
-
-			case StoryMenuPop.EDIT:
-				if (app.allPicList.size() == 0) {//没有照片，提示先添加pp
-					myToast.setTextAndShow(R.string.add_pp_first, Common.TOAST_SHORT_TIME);
-					return;
-				}
-				Intent intent = new Intent(getActivity(), EditStoryAlbumActivity.class);
-				Bundle b = new Bundle();
-				switch (storyViewPager.getCurrentItem()) {
-				case 0:
-					b.putParcelableArrayList("photos", app.allPicList);
-					break;
-
-				case 1:
-					b.putParcelableArrayList("photos", photoPassPictureList);
-					break;
-
-				case 2:
-					b.putParcelableArrayList("photos", magicPicList);
-					break;
-
-				case 3:
-					b.putParcelableArrayList("photos", app.boughtPicList);
-					break;
-
-				default:
-					break;
-				}
-				intent.putExtra("photos", b);
-				intent.putExtra("mode", "edit");
-				getActivity().startActivity(intent);
-				break;
-
-			case API.GET_PHOTOS_SUCCESS://获取照片成功
-				Log.d(TAG, "--------->get photo success");
-				saveJsonToSQLite(com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()), true);
 				break;
 
 			case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
@@ -210,11 +241,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 				break;
 
 			case DEAL_REFRESH_PHOTO_DATA_DONE://处理刷新照片成功
-				Log.d(TAG, "deal refresh photos done");
+				PictureAirLog.d(TAG, "deal refresh photos done");
 				Editor editor = sharedPreferences.edit();// 获取编辑器
 				editor.putInt("photoCount",0);
 				editor.commit();// 提交修改
@@ -232,94 +262,38 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				if (MainTabActivity.maintabbadgeView.isShown()) {
 					MainTabActivity.maintabbadgeView.hide();
 				}
-				storyViewPagerAdapter.stopRefresh(refreshTap);
-				break;
-
-			case API.GET_LOCATION_SUCCESS://成功获取地点信息
-				Log.d(TAG, "---------->get location success"+msg.obj.toString());
-				try {
-					com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
-					com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
-					for (int i = 0; i < resultArray.size(); i++) {
-						DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-						com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
-						locationInfo = JsonUtil.getLocation(object);
-						locationList.add(locationInfo);
-					}
-				} catch (com.alibaba.fastjson.JSONException e) {
-					e.printStackTrace();
-				}
-				//检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
-				if (app.photoPassPicList == null){
-					app.photoPassPicList = new ArrayList<PhotoInfo>();
-				}
-				app.photoPassPicList.clear();
-
-				if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
-					Log.d(TAG, "---------> load data from databases");
-					loadDataFromDataBase();
-					
-					//  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
-					boolean NOT_FIRST_PP10 = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_PP10, sharedPreferences.getString(Common.USERINFO_ID, ""));
-					Log.e("NOT_FIRST_PP10", "NOT_FIRST_PP10:"+NOT_FIRST_PP10);
-					Log.e("photoCount", "ppphotoCount :"+ppPhotoCount);
-					
-					Log.e("API.PPPlist.size()", "API.PPPlist.size():"+API.PPPlist.size());
-					if (!NOT_FIRST_PP10) {
-						//第一次 PP数量到 10 。
-						API.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
-					}
-					
-				}
-				if (app.photoPassPicList.size() == 0 || needfresh) {
-					//数据为0，需要从网上下载
-					System.out.println("photolist size = 0");
-					//判断是否之前有成功获取过
-					API.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null),handler,null);//获取全部图片
-				}else {
-					System.out.println("photolist size = "+ app.photoPassPicList.size());
-					//有数据，直接显示
-					photoPassPictureList.clear();
-					app.allPicList.clear();
-					app.boughtPicList.clear();
-					try {
-						getData();
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				break;
-
-			case API.GET_PHOTOS_FAILED:
-			case API.GET_LOCATION_FAILED:
-				if(dialog.isShowing()){
-					dialog.dismiss();
-				}
-				System.out.println("set loopRelativeLayout");
-				loopRelativeLayout.setVisibility(View.VISIBLE);
-				loopTextView.setText(R.string.no_network);
-				storyNoPpToScanLinearLayout.setVisibility(View.GONE);
-				noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-				noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
+//				storyViewPagerAdapter.stopRefresh(refreshTap);
+				EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
+				EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
+				EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
+				EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
+				EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
 				break;
 
 
-			case LOAD_COMPLETED:
+
+
+				case LOAD_COMPLETED:
+					sortData();
+					break;
+
+			case SORT_COMPLETED:
 				scanMagicPhotoNeedCallBack = true;
-				storyViewPagerAdapter = new StoryViewPagerAdapter(context, listViews, app.allPicList, 
-						photoPassPictureList, magicPicList, app.boughtPicList, app.magicPicList, handler);
-				storyViewPager.setAdapter(storyViewPagerAdapter);
-				storyViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
-//				System.out.println("------------> adapter is null ");
-				storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
+				fragments = new ArrayList<>();
+				fragments.clear();
+
+//				storyViewPagerAdapter = new StoryViewPagerAdapter(context, listViews, app.allPicList,
+//						photoPassPictureList, magicPicList, app.boughtPicList, app.magicPicList, handler);
+//				storyViewPager.setAdapter(storyViewPagerAdapter);
+//				storyViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+////				System.out.println("------------> adapter is null ");
+//				storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
+//				setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
 //				if (sharedPreferences.getInt(Common.PP_COUNT, 0) > 1) {
 					showViewPager();
 //				}
 				noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
-				loopRelativeLayout.setVisibility(View.GONE);
-				Animation animation = new TranslateAnimation(0, screenWidth / 4 * app.fragmentStoryLastSelectedTab, 0, 0);
+				Animation animation = new TranslateAnimation(0, screenWidth / 5 * app.fragmentStoryLastSelectedTab, 0, 0);
 				animation.setFillAfter(true);
 				animation.setDuration(300);
 				cursorImageView.startAnimation(animation);
@@ -343,7 +317,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				break;
 				
 			case API.GET_PPP_SUCCESS:
-				Log.e("＝＝＝＝＝＝＝", " ppphotoCount: "+ppPhotoCount+"_API.PPPlist.size():"+API.PPPlist.size());
+				PictureAirLog.e("＝＝＝＝＝＝＝", " ppphotoCount: "+ppPhotoCount+"_API.PPPlist.size():"+API.PPPlist.size());
 				if (ppPhotoCount >=10 && API.PPPlist.size() == 0) {
 					customdialog = new CustomDialog.Builder(getActivity())
 					.setMessage(getResources().getString(R.string.dialog_intent_buy_ppp)) 
@@ -387,19 +361,19 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	 * @param isAll 布尔值，是否是获取全部数据
 	 * 
 	 */
-	private void saveJsonToSQLite(com.alibaba.fastjson.JSONObject jsonObject, final boolean isAll) {
+	private void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll) {
 //		db = dbHelper.getWritableDatabase();
 
 		if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
-			Log.d(TAG, "delete all data from table");
+			PictureAirLog.d(TAG, "delete all data from table");
 			pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
 //			db.execSQL("delete from "+Common.PHOTOPASS_INFO_TABLE);
 		}else {
-			Log.d(TAG, "need not delete all data");
+			PictureAirLog.d(TAG, "need not delete all data");
 		}
 
 		try {
-			final com.alibaba.fastjson.JSONArray responseArray = jsonObject.getJSONArray("photos");
+			final JSONArray responseArray = jsonObject.getJSONArray("photos");
 
 			String updatetimeString = jsonObject.getString("time");
 			System.out.println("updatetime:"+updatetimeString+"new data count = "+responseArray.size());
@@ -415,7 +389,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				app.photoPassPicList.clear();
 			}else {//刷新最新照片，获取刷新数据的数量
 				refreshDataCount = responseArray.size();
-				Log.d(TAG, "------refresh count ----->" + refreshDataCount);
+				PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
 			}
 
 			new Thread(){
@@ -453,7 +427,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
 				};
 			}.start();
-		} catch (com.alibaba.fastjson.JSONException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
@@ -466,7 +440,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		more = (ImageView) view.findViewById(R.id.story_more);
 		scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
 		scanLayout = (ImageView) view.findViewById(R.id.story_scan);
-		redIconImageView = (ImageView) view.findViewById(R.id.scan_red_point);
 		storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
 		storyLeadBarLinearLayout = (LinearLayout) view.findViewById(R.id.story_lead_bar);
 		storyCursorLinearLayout = (LinearLayout) view.findViewById(R.id.story_cursor_layout);
@@ -475,31 +448,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		storyTabPhotopassTextView = (TextView)view.findViewById(R.id.story_tab_photopass);
 		storyTabMagicTextView = (TextView)view.findViewById(R.id.story_tab_magic);
 		storyTabBoughtTextView = (TextView)view.findViewById(R.id.story_tab_bought);
+		storyTabFavoriteTextView = (TextView) view.findViewById(R.id.story_tab_favourite);
 		cursorImageView = (ImageView)view.findViewById(R.id.story_cursor);
 		storyViewPager = (ViewPager)view.findViewById(R.id.story_viewPager);
 		noNetWorkOrNoCountView = (NoNetWorkOrNoCountView)view.findViewById(R.id.storyNoNetWorkView);
 		noPhotoView = (LinearLayout)view.findViewById(R.id.no_photo_view_relativelayout);
-		loopTextView = (TextView)view.findViewById(R.id.loop_text);
-		closeLoopButton = (ImageView)view.findViewById(R.id.close_loop_button);
-		loopRelativeLayout = (RelativeLayout)view.findViewById(R.id.loop_relativeLayout);
 
 		//初始化控件
 		context = getActivity();
 		app = (MyApplication) getActivity().getApplication();
 		pictureAirDbManager = new PictureAirDbManager(getActivity());
 		sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE);
-		photoPassPictureList = new ArrayList<PhotoItemInfo>();
-		magicPicList = new ArrayList<PhotoItemInfo>();
-		storyMenuPop = new StoryMenuPop(getActivity(), handler);
-		if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫过pp
-			redIconImageView.setVisibility(View.VISIBLE);
-		}else {
-			redIconImageView.setVisibility(View.INVISIBLE);
-		}
+		photoPassPictureList = new ArrayList<>();
+		magicPicList = new ArrayList<>();
 		ShowHasPPCondition(view);
 		
 		
-		closeLoopButton.setOnClickListener(this);
 		scanLayout.setOnClickListener(this);
 		scanRelativeLayout.setOnClickListener(this);
 		more.setOnClickListener(this);
@@ -511,7 +475,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		locationList.clear();
 		screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
-		Log.d(TAG, "screen width = " + screenWidth);
+		PictureAirLog.d(TAG, "screen width = " + screenWidth);
 		needfresh = sharedPreferences.getBoolean(Common.NEED_FRESH, false);
 		if (needfresh) {//如果一开始就需要全部刷新，
 			Editor editor = sharedPreferences.edit();
@@ -522,11 +486,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
 		isLoading = true;
 		//获取地点信息
-		if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO)==null) {
-			API.getLocationInfo(getActivity(),handler);//获取所有的location
+		if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
+			API1.getLocationInfo(getActivity(), handler);//获取所有的location
 		}else {
 			Message message = handler.obtainMessage();
-			message.what = API.GET_LOCATION_SUCCESS;
+			message.what = API1.GET_ALL_LOCATION_SUCCESS;
 			message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
 			handler.sendMessage(message);
 		}
@@ -544,15 +508,82 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		storyTabPhotopassTextView.setOnClickListener(new viewPagerOnClickListener(1));
 		storyTabMagicTextView.setOnClickListener(new viewPagerOnClickListener(2));
 		storyTabBoughtTextView.setOnClickListener(new viewPagerOnClickListener(3));
+		storyTabFavoriteTextView.setOnClickListener(new viewPagerOnClickListener(4));
 		//初始化storyViewPage的信息
-		LayoutInflater mInflater = getActivity().getLayoutInflater();
-		listViews = new ArrayList<View>();
-		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
-		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
-		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
-		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
+//		LayoutInflater mInflater = getActivity().getLayoutInflater();
+//		listViews = new ArrayList<View>();
+//		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
+//		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
+//		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
+//		listViews.add(mInflater.inflate(R.layout.story_pinned_list, null));
 		storyNoPpScanImageView.setOnClickListener(this);
 //		showViewPager();
+	}
+
+	/**
+	 * 排序
+	 */
+	private void sortData() {
+		new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				allPhotoList = new ArrayList<PhotoInfo>();
+				pictureAirPhotoList = new ArrayList<PhotoInfo>();
+				magicPhotoList = new ArrayList<PhotoInfo>();
+				boughtPhotoList = new ArrayList<PhotoInfo>();
+				favouritePhotoList = new ArrayList<PhotoInfo>();
+
+
+//				System.out.println("all size---->"+app.allPicList.size());
+//				System.out.println("photopass size---->"+photoPassPictureList.size());
+//				System.out.println("magic size---->"+magicPicList.size());
+				allPhotoList = startSort(app.allPicList);
+				pictureAirPhotoList = startSort(photoPassPictureList);
+				magicPhotoList = startSort(magicPicList);
+				boughtPhotoList = startSort(app.boughtPicList);
+				favouritePhotoList = new ArrayList<PhotoInfo>();
+
+				handler.sendEmptyMessage(SORT_COMPLETED);
+			}
+		}.start();
+
+	}
+
+
+	private ArrayList<PhotoInfo> startSort(ArrayList<PhotoItemInfo> list) {
+		ArrayList<PhotoInfo> tempInfos = new ArrayList<PhotoInfo>();
+		PhotoInfo temp, temp2;
+		for (int i = 0; i < list.size(); i++) {
+			for (int j = 0; j < list.get(i).list.size(); j++) {
+				temp2 = list.get(i).list.get(j);
+				temp = new PhotoInfo();
+				temp.sectionId = i;
+				temp.photoId = temp2.photoId;
+				temp.photoPathOrURL = temp2.photoPathOrURL;
+				temp.photoThumbnail = temp2.photoThumbnail;
+				temp.photoThumbnail_512 = temp2.photoThumbnail_512;
+				temp.photoThumbnail_1024 = temp2.photoThumbnail_1024;
+				temp.photoPassCode = temp2.photoPassCode;
+				temp.isPayed = temp2.isPayed;
+				temp.isChecked = temp2.isChecked;
+				temp.isSelected = temp2.isSelected;
+				temp.showMask = temp2.showMask;
+				temp.lastModify = temp2.lastModify;
+				temp.shootOn = temp2.shootOn;
+				temp.shootTime = temp2.shootTime;
+				temp.locationName = temp2.locationName;
+				temp.onLine = temp2.onLine;
+				temp.locationCountry = temp2.locationCountry;
+				temp.isUploaded = temp2.isUploaded;
+				temp.locationId = temp2.locationId;
+				temp.isLove = temp2.isLove;
+				temp.shareURL = temp2.shareURL;
+				temp.isVideo = temp2.isVideo;
+				tempInfos.add(temp);
+			}
+		}
+		return tempInfos;
 	}
 
 	/**
@@ -563,6 +594,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		//判断是否应该显示左上角红点
 		
 		if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
+			PictureAirLog.out("viewpager---->has not scan pp");
 			//显示没有pp的情况
 			storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
 			
@@ -573,7 +605,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			storyCursorLinearLayout.setVisibility(View.INVISIBLE);
 			storyViewPager.setVisibility(View.INVISIBLE);
 		}else {//有扫描过
+
 			if (app.allPicList != null && app.allPicList.size() > 0) {//有图片
+				PictureAirLog.out("viewpager---->has photos");
 				//隐藏没有pp的情况
 				storyNoPpToScanLinearLayout.setVisibility(View.GONE);
 				//隐藏空图的情况
@@ -582,7 +616,28 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
 				storyCursorLinearLayout.setVisibility(View.VISIBLE);
 				storyViewPager.setVisibility(View.VISIBLE);
+
+
+				fragments.add(StoryFragment.getInstance(allPhotoList, app.magicPicList, 0, handler));
+				fragments.add(StoryFragment.getInstance(pictureAirPhotoList, app.magicPicList, 1, handler));
+				fragments.add(StoryFragment.getInstance(magicPhotoList, app.magicPicList, 2, handler));
+				fragments.add(StoryFragment.getInstance(boughtPhotoList, app.magicPicList, 3, handler));
+				fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, handler));
+				fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
+				storyViewPager.setAdapter(fragmentAdapter);
+				storyViewPager.setOffscreenPageLimit(2);
+				storyViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+				storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
+				EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
+				EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
+				EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
+				EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
+				EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 4));
+
+
+
 			}else {//没有图片
+				PictureAirLog.out("viewpager---->no photos");
 				storyNoPpToScanLinearLayout.setVisibility(View.GONE);
 				
 				//显示空图的情况
@@ -618,11 +673,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		@Override
 		public void onPageSelected(int arg0) {
 			System.out.println(arg0+ " selected-----------");
-			Animation animation = new TranslateAnimation(screenWidth / 4 * app.fragmentStoryLastSelectedTab, screenWidth / 4 * arg0, 0, 0);
+			Animation animation = new TranslateAnimation(screenWidth / 5 * app.fragmentStoryLastSelectedTab, screenWidth / 5 * arg0, 0, 0);
 			app.fragmentStoryLastSelectedTab = arg0;
+			setTitleBarTextColor(arg0);
 			animation.setFillAfter(true);
 			animation.setDuration(300);
 			cursorImageView.startAnimation(animation);
+
 		}
 
 		@Override
@@ -631,6 +688,50 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
+		}
+	}
+
+	private void setTitleBarTextColor(int index){
+		switch (index) {
+			case 0:
+				storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+				storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				break;
+
+			case 1:
+				storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+				storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				break;
+
+			case 2:
+				storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+				storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				break;
+
+			case 3:
+				storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+				storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				break;
+
+			case 4:
+				storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+				storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+				break;
 		}
 	}
 
@@ -670,7 +771,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		File[] files  = file.listFiles();
 		Date date;
 		if (needCallBck) {
-			Log.d(TAG, "need remove local data first");
+			PictureAirLog.d(TAG, "need remove local data first");
 			app.allPicList.removeAll(magicPicList);
 			magicPicList.clear();
 		}
@@ -710,47 +811,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		ArrayList<PhotoInfo> resultArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo();
 		ppPhotoCount = resultArrayList.size();
 		app.photoPassPicList.addAll(resultArrayList);
-//		boolean hasPhoto = false;
-//		db = dbHelper.getReadableDatabase();
-//		//查询photo表的信息
-//		System.out.println("start query");
-//		Cursor cursor = db.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" order by shootOn desc", null);
-//		ppPhotoCount = cursor.getCount();
-//		PhotoInfo photoInfo;
-//		if (!cursor.moveToFirst()) {//判断是否photo数据
-//			System.out.println("move to first failed---");
-//			hasPhoto = false;
-//		}else {
-//			hasPhoto = true;
-//		}
-//		if (hasPhoto) {
-//			do {
-//				photoInfo = new PhotoInfo();
-//				System.out.println("load data from database = "+ cursor.getInt(0));
-//				photoInfo.photoId = cursor.getString(1);//photoId
-//				photoInfo.photoPassCode = cursor.getString(2);//photopassCode
-//				photoInfo.shootTime = cursor.getString(3);//shootTime
-//				photoInfo.photoPathOrURL = cursor.getString(4);//originalUrl
-//				photoInfo.photoThumbnail = cursor.getString(5);//previewUrl
-//				photoInfo.photoThumbnail_512 = cursor.getString(6);//previewUrl_512
-//				photoInfo.photoThumbnail_1024 = cursor.getString(7);//previewUrl_1024
-//				photoInfo.locationId = cursor.getString(8);//locationId
-//				photoInfo.shootOn = cursor.getString(9);//shootOn
-//				photoInfo.isLove = Integer.valueOf(cursor.getString(10));//islove
-//				photoInfo.isPayed = Integer.valueOf(cursor.getString(11));//ispay
-//				photoInfo.onLine = 1;
-//				photoInfo.isChecked = 0;
-//				photoInfo.isSelected = 0;
-//				photoInfo.isUploaded = 0;
-//				photoInfo.showMask = 0;
-//				photoInfo.lastModify = 0l;
-//				photoInfo.index = "";
-//				app.photoPassPicList.add(photoInfo);
-//			} while (cursor.moveToNext());
-//		}
-//		System.out.println("get data from database");
-//		cursor.close();
-//		db.close();
 	}
 
 	@Override
@@ -762,14 +822,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			editor.putBoolean(Common.NEED_FRESH, false);
 			editor.commit();
 			dialog.show();
-			API.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, null);//获取全部图片
+			API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, null);//获取全部图片
 			if (MainTabActivity.maintabbadgeView.isShown()) {
 				MainTabActivity.maintabbadgeView.hide();
-			}
-			if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫过pp
-				redIconImageView.setVisibility(View.VISIBLE);
-			}else {
-				redIconImageView.setVisibility(View.INVISIBLE);
 			}
 //			if (redIconImageView.isShown()) {
 //				System.out.println("need hide red icon");
@@ -807,21 +862,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		Date date2;
 		for (int l = 0; l < app.photoPassPicList.size(); l++) {
 			PhotoInfo info = app.photoPassPicList.get(l);
-			//			Log.d(TAG, "scan photo list:"+l);
+			//			PictureAirLog.d(TAG, "scan photo list:"+l);
 			//先挑选出相同的locationid信息
 			for (int i = 0; i < locationList.size(); i++) {
-				//				Log.d(TAG, "scan location:"+i);
+				//				PictureAirLog.d(TAG, "scan location:"+i);
 				if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-					//					Log.d(TAG, "find the location");
+					//					PictureAirLog.d(TAG, "find the location");
 					//如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
 					for (int j = 0; j < photoPassPictureList.size(); j++) {
-						//						Log.d(TAG, "weather already exists:"+j);
+						//						PictureAirLog.d(TAG, "weather already exists:"+j);
 						if (info.shootTime.equals(photoPassPictureList.get(j).shootTime)
 								&&(info.locationId.equals(photoPassPictureList.get(j).locationId) || photoPassPictureList.get(j).locationIds.contains(info.locationId))) {
-							//							Log.d(TAG, "photo location id "+ info.locationId + "____"+ info.shootTime);
-							//							Log.d(TAG, "location id:"+locationList.get(i).locationId +"___"+ locationList.get(i).locationIds);
-							//							Log.d(TAG, "location id:"+photoPassPictureList.get(j).locationId +"___"+ photoPassPictureList.get(j).locationIds);
-							//							Log.d(TAG, "already exist");
+							//							PictureAirLog.d(TAG, "photo location id "+ info.locationId + "____"+ info.shootTime);
+							//							PictureAirLog.d(TAG, "location id:"+locationList.get(i).locationId +"___"+ locationList.get(i).locationIds);
+							//							PictureAirLog.d(TAG, "location id:"+photoPassPictureList.get(j).locationId +"___"+ photoPassPictureList.get(j).locationIds);
+							//							PictureAirLog.d(TAG, "already exist");
 							info.locationName = photoPassPictureList.get(j).place;
 							photoPassPictureList.get(j).list.add(info);
 							date1 = sdf.parse(info.shootOn);
@@ -836,7 +891,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					}
 					if (!clone_contains) {
 						//初始化item的信息
-						//						Log.d(TAG, "not exist");
+						//						PictureAirLog.d(TAG, "not exist");
 						photoItemInfo = new PhotoItemInfo();
 						photoItemInfo.locationId = locationList.get(i).locationId;
 						photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
@@ -867,7 +922,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				// TODO Auto-generated method stub
 				while (isLoading) {
 					//如果magic相册已经处理完毕
-					Log.d(TAG, "waiting for scanning local photo completed");
+					PictureAirLog.d(TAG, "waiting for scanning local photo completed");
 					if (app.scanMagicFinish) {
 						isLoading = false;
 					}
@@ -884,7 +939,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				Log.d(TAG, "------>completed");
+				PictureAirLog.d(TAG, "------>completed");
 			}
 		}).start();
 
@@ -893,7 +948,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	//处理本地照片的刷新数据
 	private void dealLocalRefreshedData() {
 		// TODO Auto-generated method stub
-		Log.d(TAG, "dealLocalRefreshedData");
+		PictureAirLog.d(TAG, "dealLocalRefreshedData");
 		try {
 			getMagicData();
 			//将magic和photopass列表放入all中
@@ -909,7 +964,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d(TAG, "------>completed");
+		PictureAirLog.d(TAG, "------>completed");
 	}
 
 
@@ -922,11 +977,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		boolean isContains = false;
 		//判断是否已经购买
 		if (info.isPayed == 1) {//已购买状态，需要将图片放到bought列表中
-			//			Log.d(TAG, "add to bought list");
+			//			PictureAirLog.d(TAG, "add to bought list");
 			for (int j = 0; j < app.boughtPicList.size(); j++) {
-				//				Log.d(TAG, "检查之前的是否存在");
+				//				PictureAirLog.d(TAG, "检查之前的是否存在");
 				if (info.shootTime.equals(app.boughtPicList.get(j).shootTime)&&info.locationId.equals(app.boughtPicList.get(j).locationId)) {
-					//					Log.d(TAG, "已经存在于bought列表");
+					//					PictureAirLog.d(TAG, "已经存在于bought列表");
 					info.locationName = app.boughtPicList.get(j).place;
 					app.boughtPicList.get(j).list.add(info);
 					isContains = true;
@@ -934,7 +989,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				}
 			}
 			if (!isContains) {//没有
-				//				Log.d(TAG, "不存在于之前的已购买的列表");
+				//				PictureAirLog.d(TAG, "不存在于之前的已购买的列表");
 				//初始化item的信息
 				photoItemInfo = new PhotoItemInfo();
 				photoItemInfo.locationId = info.locationId;
@@ -952,7 +1007,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 				isContains = false;
 			}
 		}else {
-			//			Log.d(TAG, "not add to bought list");
+			//			PictureAirLog.d(TAG, "not add to bought list");
 
 		}
 	}
@@ -965,7 +1020,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	 * @throws ParseException 
 	 */
 	private void getMagicData() throws ParseException {
-		Log.d(TAG, "----------->get magic photos" + app.magicPicList.size() + "____" + magicPicList.size());
+		PictureAirLog.d(TAG, "----------->get magic photos" + app.magicPicList.size() + "____" + magicPicList.size());
 		PhotoItemInfo photoItemInfo;
 		boolean clone_contains = false;
 		Date date1;
@@ -1007,7 +1062,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	 * 3.并且更新adapter
 	 * */
 	private void getrefreshdata() {
-		Log.e("getdata", "refreshdata");
+		PictureAirLog.e("getdata", "refreshdata");
 		//根据数量，加入新的item
 		System.err.println("all update data=" + app.photoPassPicList.size());
 		PhotoItemInfo itemInfo;
@@ -1142,10 +1197,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 			// storyMenuPop.showAsDropDown(v);
 			break;
 			
-		case R.id.close_loop_button:
-			loopRelativeLayout.setVisibility(View.GONE);
-			break;
-
 		default:
 			break;
 		}
@@ -1155,9 +1206,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	//执行下拉刷新
 	public static void doRefresh(){
 		System.out.println("do refresh----->");
-		if (sharedPreferences.getInt(Common.PP_COUNT, 0) > 1) {
-			storyViewPagerAdapter.startRefresh();
-		}
+//		if (sharedPreferences.getInt(Common.PP_COUNT, 0) > 1) {
+//			storyViewPagerAdapter.startRefresh();
+//		}
 	}
 
 	public static int getCurrentViewPager(){

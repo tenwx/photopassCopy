@@ -27,6 +27,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public long lastModify;//文件最后修改的时间
 	public int isLove;//是否收藏 0：未收藏；1：已收藏
 	public int onLine;//1线上图片，0，本地图片
+	public int sectionId;//悬浮的id
+	public String shareURL;//网络图片分享的URL
+	public String locationCountry;//景点的国家城市
 	public String locationName;//每张图片的地点名称
 	public int isVideo;//1是视频，0是图片
 	
@@ -68,6 +71,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		lastModify = source.readLong();
 		isLove = source.readInt();
 		onLine = source.readInt();
+		sectionId = source.readInt();
+		shareURL = source.readString();
+		locationCountry = source.readString();
 		locationName = source.readString();
 		isVideo = source.readInt();
 	}
@@ -98,6 +104,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeLong(lastModify);
 		dest.writeInt(isLove);
 		dest.writeInt(onLine);
+		dest.writeInt(sectionId);
+		dest.writeString(shareURL);
+		dest.writeString(locationCountry);
 		dest.writeString(locationName);
 		dest.writeInt(isVideo);
 	}

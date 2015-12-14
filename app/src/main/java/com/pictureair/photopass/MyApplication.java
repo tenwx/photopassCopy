@@ -3,6 +3,7 @@ package com.pictureair.photopass;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -31,6 +32,8 @@ public class MyApplication extends Application {
     // public LocationClient mLocationClient;
     // public BDLocation mLocation;
     private static MyApplication instance;
+    private static SharedPreferences userInfosharedPreferences;
+    private static String tokenId;
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
@@ -68,6 +71,7 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
+        userInfosharedPreferences = this.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         // 初始化友盟
         UmengUtil.initUmeng();
         if (getCurProcessName(getApplicationContext()).equals(
@@ -83,6 +87,22 @@ public class MyApplication extends Application {
         } else {
             System.err.println("application not on create------>");
         }
+    }
+
+    /**
+     * 获取用户标识
+     *
+     * @return tokenId
+     */
+    public static String getTokenId() {
+        if (tokenId == null) {
+            tokenId = userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null);
+        }
+        return tokenId;
+    }
+
+    public static void setTokenId(String tokenId) {
+        MyApplication.tokenId = tokenId;
     }
 
     /**

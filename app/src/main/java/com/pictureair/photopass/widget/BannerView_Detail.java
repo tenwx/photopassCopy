@@ -51,19 +51,6 @@ public class BannerView_Detail extends LinearLayout {
         imageLoader = ImageLoader.getInstance();
     }
 
-    /**
-     * 改变显示的图片
-     *
-     * @param list
-     */
-    public void changeimagepath(String list) {
-        System.out.println("changeimage");
-        bannerViewList.clear();
-        group.removeAllViews();
-        findimagepath(list);
-
-    }
-
     public void findimagepath(List<GoodInfoPrictures> list) {
         // TODO Auto-generated method stub
         adapter = new BannerViewAdapter(getContext(), bannerViewList);
@@ -75,15 +62,15 @@ public class BannerView_Detail extends LinearLayout {
             android.view.ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ScaleType.CENTER_CROP);
-            imageLoader.displayImage(list.get(i).getUrl(), imageView);
+            imageLoader.displayImage(Common.BASE_URL_TEST + list.get(i).getUrl(), imageView);
             bannerViewList.add(imageView);
             adapter.notifyDataSetChanged();//图片改了之后，要通知适配器改变数据
 
         }
 
-        final ImageView[] imageViews = new ImageView[list.size() - 1];
-        if (list.size() > 2) {//如果数量为1的话，点点就不要了
-            for (int i = 1; i < list.size(); i++) {//加载对应的小点
+        final ImageView[] imageViews = new ImageView[list.size()];
+        if (list.size() > 1) {//如果数量为1的话，点点就不要了
+            for (int i = 0; i < list.size(); i++) {//加载对应的小点
                 LinearLayout.LayoutParams margin = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -136,88 +123,4 @@ public class BannerView_Detail extends LinearLayout {
 
         });
     }
-
-
-    //添加图片
-    public void findimagepath(String list) {
-        // TODO Auto-generated method stub
-        System.out.println("findimage");
-        String[] urlsStrings = list.split(",");
-//		String[] urlsStrings = new String[2];
-//		for (int i = 1; i < urls.length; i++) {
-//			urlsStrings[i - 1] = urls[i];
-//		}
-        int count = urlsStrings.length;
-        String pathString = null;
-        adapter = new BannerViewAdapter(getContext(), bannerViewList);
-
-        for (int i = 1; i < count; i++) {//加载图片
-            System.out.println(urlsStrings[i]);
-            pathString = Common.BASE_URL + urlsStrings[i];
-            imageView = new ImageView(getContext());//新建一个新的imageview
-            android.view.ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ScaleType.CENTER_CROP);
-            System.out.println("photo url is " + pathString);
-            imageLoader.displayImage(pathString, imageView);
-            bannerViewList.add(imageView);
-            adapter.notifyDataSetChanged();//图片改了之后，要通知适配器改变数据
-        }
-        final ImageView[] imageViews = new ImageView[count - 1];
-        if (count > 2) {//如果数量为1的话，点点就不要了
-            for (int i = 1; i < count; i++) {//加载对应的小点
-                LinearLayout.LayoutParams margin = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-                // 设置每个小圆点距离左边的间距
-                margin.setMargins(10, 0, 0, 0);
-                imageView = new ImageView(getContext());
-                // 设置每个小圆点的宽高
-                imageView.setLayoutParams(new LayoutParams(15, 15));
-                imageViews[i] = imageView;
-                if (i == 0) {
-                    // 默认选中第一张图片
-                    imageViews[i]
-                            .setBackgroundResource(R.drawable.page_select);
-                } else {
-                    // 其他图片都设置未选中状态
-                    imageViews[i]
-                            .setBackgroundResource(R.drawable.page_not_select);
-                }
-                group.addView(imageViews[i], margin);
-            }
-        }
-        //添加适配器
-        adViewPager.setAdapter(adapter);
-        adViewPager.setOnPageChangeListener(new OnPageChangeListener() {
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onPageSelected(int arg0) {
-                //当viewpager换页时 改掉下面对应的小点
-                for (int i = 0; i < imageViews.length; i++) {
-                    //设置当前的对应的小点为选中状态
-                    imageViews[arg0]
-                            .setBackgroundResource(R.drawable.page_select);
-                    if (arg0 != i) {
-                        //设置为非选中状态
-                        imageViews[i]
-                                .setBackgroundResource(R.drawable.page_not_select);
-                    }
-                }
-            }
-
-        });
-    }
-
-
 }

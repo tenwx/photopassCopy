@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
@@ -25,9 +26,6 @@ import java.util.ArrayList;
 public class API1 {
     private static final String TAG = "API";
 
-    public static final int SUCCESS = 111;
-    public static final int FAILURE = 222;//失败需分情况判断，是网络未打开还是IP地址无法连接亦或是没有授予网络权限
-
     public static final int CHECK_CODE_SUCCESS = 341;
     public static final int CHECK_CODE_FAILED = 340;
 
@@ -37,8 +35,6 @@ public class API1 {
     public static final int GET_PPP_SUCCESS = 371;
     public static final int GET_PPP_FAILED = 370;
 
-    public static final int UPDATE_PROFILE_SUCCESS = 431;
-    public static final int UPDATE_PROFILE_FAILED = 430;
 
     public static final int UPLOAD_PHOTO_SUCCESS = 511;
     public static final int UPLOAD_PHOTO_FAILED = 510;
@@ -58,6 +54,18 @@ public class API1 {
     public static final int SIGN_SUCCESS = 1021;
     public static final int SIGN_FAILED = 1020;
 
+    /**
+     * Story
+     */
+    public static final int GET_ALL_LOCATION_FAILED = 2000;
+    public static final int GET_ALL_LOCATION_SUCCESS = 2001;
+
+    public static final int GET_ALL_PHOTOS_BY_CONDITIONS_FAILED = 2010;
+    public static final int GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS = 2011;
+
+    public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED = 2020;
+    public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS = 2021;
+
     //Shop模块 start
     public static final int GET_STOREID_FAILED = 4000;
     public static final int GET_STOREID_SUCCESS = 4001;
@@ -71,16 +79,26 @@ public class API1 {
     public static final int GET_CART_FAILED = 4300;
     public static final int GET_CART_SUCCESS = 4301;
 
+    public static final int ADD_TO_CART_FAILED = 4310;
+    public static final int ADD_TO_CART_SUCCESS = 4311;
+    public static final int MODIFY_CART_FAILED = 4320;
+    public static final int MODIFY_CART_SUCCESS = 4321;
+    public static final int DELETE_CART_FAILED = 4330;
+    public static final int DELETE_CART_SUCCESS = 4331;
+
 
     //Shop模块 end
-
 
     //我的模块 start
     public static final int BIND_PP_FAILURE = 5000;
     public static final int BIND_PP_SUCCESS = 5001;
 
+    public static final int UPDATE_PROFILE_SUCCESS = 5011;
+    public static final int UPDATE_PROFILE_FAILED = 5010;
+
     public static final int SCAN_PPP_FAILED = 5400;
     public static final int SCAN_PPP_SUCCESS = 5401;
+
 
     //我的模块 end
 
@@ -206,12 +224,11 @@ public class API1 {
     /**
      * 注册
      *
-     * @param context  上下文
      * @param userName name
      * @param password pwd
      * @param handler  handler
      */
-    public static void Sign(final Context context, final String userName, final String password, final Handler handler) {
+    public static void Register(final String userName, final String password, final Handler handler) {
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
@@ -232,21 +249,80 @@ public class API1 {
         });
     }
 
-    /***************************************我的模块 start**************************************/
+    /**
+     * 获取所有的地址信息
+     *
+     * @param context
+     * @param handler
+     */
+    public static void getLocationInfo(final Context context, final Handler handler) {
+        HttpUtil1.asyncGet(Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString());
+                handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
+            }
 
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_ALL_LOCATION_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+
+    /**
+     * 获取用户照片
+     *
+     * @param tokenId
+     * @param handler
+     * @param timeString 根据时间获取图片信息
+     */
+    public static void getPhotosByConditions(final String tokenId, final Handler handler, final String timeString) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.LAST_UPDATE_TIME, timeString);
+        PictureAirLog.out("the time of start get photos = " + timeString);
+        HttpUtil1.asyncGet(Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                //成功获取照片信息
+                PictureAirLog.out("getphotos--------" + jsonObject);
+                if (null == timeString) {//获取全部照片
+                    handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
+                } else {//获取当前照片
+                    handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                if (null == timeString) {//获取全部照片
+                    handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
+                } else {//获取当前照片
+                    handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
+                }
+            }
+        });
+    }
+
+    /***************************************我的模块 start**************************************/
 
     /**
      * 上传个人图片信息，头像或背景图
      *
-     * @param url
      * @param params
      * @param handler
      * @param position 修改图片的时候需要这个参数来定位
      * @throws FileNotFoundException
      */
-    public static void SetPhoto(String url, RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
+    public static void SetPhoto(RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
-        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.UPLOAD_PHOTOS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -257,7 +333,6 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.v("SetPhoto onFailure", "status: " + status);
                 handler.obtainMessage(UPLOAD_PHOTO_FAILED, status, 0).sendToTarget();
 
 
@@ -479,13 +554,11 @@ public class API1 {
     /**
      * 获取store编号,以此获取商品数据
      *
-     * @param ipString ip地址
-     * @param handler  handler
+     * @param handler handler
      */
-    public static void getStoreIdbyIP(String tokenId, String ipString, final Handler handler) {
+    public static void getStoreId(final Handler handler) {
         RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.IP, ipString);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         HttpUtil1.asyncPost(Common.GET_STORE_BY_IP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -506,22 +579,18 @@ public class API1 {
     /**
      * 获取全部商品
      *
-     * @param handler
-     * @param storeId
-     * @param language
+     * @param handler handler
      */
-    public static void getGoods(String tokenId, final Handler handler, String storeId, String language) {
+    public static void getGoods(final Handler handler) {
         RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.STORE_ID, storeId);
-        params.put(Common.LANGUAGE_NAME, language);
-        HttpUtil1.asyncPost(Common.GET_GOODS, params, new HttpCallback() {
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncGet(Common.GET_GOODS, params, new HttpCallback() {
             @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_GOODS_SUCCESS, jsonObject).sendToTarget();
-            }
+            public void onSuccess(String result) {
+                super.onSuccess(result);
+                handler.obtainMessage(GET_GOODS_SUCCESS, result).sendToTarget();
 
+            }
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
@@ -564,13 +633,11 @@ public class API1 {
     /**
      * 获取用户购物车信息
      *
-     * @param tokenId 登陆用户标识
      * @param handler handler
      */
-    public static void getCarts(String tokenId, final Handler handler) {
+    public static void getCarts(final Handler handler) {
         RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         HttpUtil1.asyncGet(Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -586,6 +653,102 @@ public class API1 {
 
             }
         });
+    }
+
+
+    /**
+     * 添加购物车
+     *
+     * @param goodsKey    商品项key（必须）
+     * @param qty         商品数量(可选)
+     * @param isJustBuy   是否立即购买(可选)
+     * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
+     * @param handler     handler
+     */
+    public static void addToCart(String goodsKey, String qty, Boolean isJustBuy, JSONArray embedPhotos, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("goodsKey", goodsKey);
+        params.put(Common.IS_JUST_BUY, isJustBuy);
+        params.put(Common.QTY, qty);
+        params.put(Common.EMBEDPHOTOS, embedPhotos);
+
+        HttpUtil1.asyncPost(Common.ADD_TO_CART, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(ADD_TO_CART_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADD_TO_CART_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+
+    }
+
+    /**
+     * 修改购物车
+     *
+     * @param cartId      购物车项id参数(可选,不填时为移除全部)
+     * @param goodsKey    商品项key（可选）
+     * @param qty         商品数量(可选)
+     * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
+     * @param handler     handler
+     */
+    public static void modifyCart(String cartId, String goodsKey, String qty, JSONArray embedPhotos, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("goodsKey", goodsKey);
+        params.put(Common.QTY, qty);
+        params.put(Common.EMBEDPHOTOS, embedPhotos);
+        String url = Common.ADD_TO_CART + "/" + cartId;
+        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(MODIFY_CART_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(MODIFY_CART_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /**
+     * 移除用户购物车信息
+     *
+     * @param cartId  购物车项id参数(可选,不填时为移除全部)
+     * @param handler handler
+     */
+    public static void removeCartItems(String cartId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        String url = Common.ADD_TO_CART + "/" + cartId;
+        HttpUtil1.asyncDelete(url, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(DELETE_CART_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(DELETE_CART_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+
     }
 
 
