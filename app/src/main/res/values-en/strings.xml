@@ -531,5 +531,8 @@
     <string name="no_photo_in_airpass">Start collecting your photos into AirPass now!</string>
     <string name="no_photo_in_magiccam">Start collecting your photos into Camera now!</string>
     <string name="no_photo_in_bought">Start buying your photos now!</string>
+    <string name="no_photo_in_favourite">Start collecting your photos now!</string>
+
+    <string name="storypage_no_photo">There is no photo\nin your gallery!</string>
 
 </resources>

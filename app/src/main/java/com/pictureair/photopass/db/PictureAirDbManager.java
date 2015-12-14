@@ -526,10 +526,11 @@ public class PictureAirDbManager {
 				}
 				resultArrayList.add(photo);
 				//将数据插入到数据库
-				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
 						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
 						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
-						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"",photo.isVideo+""});
+						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"", photo.locationName,
+						photo.locationCountry, photo.shareURL, photo.isVideo+""});
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
@@ -563,9 +564,12 @@ public class PictureAirDbManager {
 				photoInfo.photoThumbnail_1024 = cursor.getString(7);//previewUrl_1024
 				photoInfo.locationId = cursor.getString(8);//locationId
 				photoInfo.shootOn = cursor.getString(9);//shootOn
-				photoInfo.isLove = Integer.valueOf(cursor.getString(10));//islove
-				photoInfo.isPayed = Integer.valueOf(cursor.getString(11));//ispay
-				photoInfo.isVideo = Integer.valueOf(cursor.getString(12));//isVideo
+				photoInfo.isLove = cursor.getInt(10);//islove
+				photoInfo.isPayed = cursor.getInt(11);//ispay
+				photoInfo.locationName = cursor.getString(12);//locationName
+				photoInfo.locationCountry = cursor.getString(13);//locationCountry
+				photoInfo.shareURL = cursor.getString(14);//shareURL
+				photoInfo.isVideo = cursor.getInt(15);//isVideo
 				photoInfo.onLine = 1;
 				photoInfo.isChecked = 0;
 				photoInfo.isSelected = 0;

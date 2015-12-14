@@ -30,7 +30,6 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;

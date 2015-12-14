@@ -1,12 +1,12 @@
 package com.pictureair.photopass.db;
 
-import com.pictureair.photopass.util.Common;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.pictureair.photopass.util.Common;
 /**
  * Photo页的图片信息数据库的databasehelper
  * photopass图片表，记录所有的photopass的照片数据
@@ -53,15 +53,32 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * previewUrl
 		 * previewUrl_512
 		 * previewUrl_1024
-		 * location
+		 * locationId
 		 * shootOn
 		 * isLove
 		 * isPay
+		 * locationName
+		 * locationCountry
+		 * shareURL
 		 * isVideo
 		 */
-		db.execSQL("create table if not exists "+Common.PHOTOPASS_INFO_TABLE+"(_id integer primary key autoincrement, photoId varchar(30),photoCode varchar(180),shootTime varchar(12), " +
-				"originalUrl varchar(100), previewUrl varchar(100), previewUrl_512 varchar(100), previewUrl_1024 varchar(100)," +
-				"location varchar(10), shootOn varchar(30), isLove varchar(2), isPay varchar(2), isVideo varchar(2))");
+		db.execSQL("create table if not exists " + Common.PHOTOPASS_INFO_TABLE +
+				"(_id integer primary key autoincrement, " +
+				"photoId varchar(30)," +
+				"photoCode varchar(180)," +
+				"shootTime varchar(12), " +
+				"originalUrl varchar(100), " +
+				"previewUrl varchar(100), " +
+				"previewUrl_512 varchar(100), " +
+				"previewUrl_1024 varchar(100)," +
+				"locationId varchar(10), " +
+				"shootOn varchar(30), " +
+				"isLove integer, " +
+				"isPay integer, " +
+				"locationName varchar(100), " +
+				"locationCountry varchar(100), " +
+				"shareURL varchar(100), " +
+				"isVideo integer)");
 		
 		/**
 		 * 创建图片favorite表
@@ -70,7 +87,11 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * userId 用户ID
 		 * photoPath 本地照片路径
 		 */
-		db.execSQL("create table if not exists "+Common.FAVORITE_INFO_TABLE+"(_id integer primary key autoincrement, photoId varchar(30), userId varchar(30), photoPath varchar(100))");
+		db.execSQL("create table if not exists "+Common.FAVORITE_INFO_TABLE+
+				"(_id integer primary key autoincrement, " +
+				"photoId varchar(30), " +
+				"userId varchar(30), " +
+				"photoPath varchar(100))");
 		
 //		/**
 //		 * 创建photopass表，有记录所有的photopass信息
@@ -90,7 +111,10 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * activity
 		 * userId
 		 */
-		db.execSQL("create table if not exists "+Common.FIRST_START_ACTIVITY_INFO_TABLE+"(_id integer primary key autoincrement, activity varchar(40), userId varchar(30))");
+		db.execSQL("create table if not exists "+Common.FIRST_START_ACTIVITY_INFO_TABLE+
+				"(_id integer primary key autoincrement, " +
+				"activity varchar(40), " +
+				"userId varchar(30))");
 		
 		/**
 		 * 创建help页面的问题表
@@ -101,7 +125,11 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * 
 		 */
 		db.execSQL("create table if not exists " + Common.HELP_QUESTION_TABLE
-				+ "(id INTEGER PRIMARY KEY AUTOINCREMENT, questionId INTEGER, question varchar(255), answer varchar(255), pinyin varchar(255))");
+				+ "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				"questionId INTEGER, " +
+				"question varchar(255), " +
+				"answer varchar(255), " +
+				"pinyin varchar(255))");
 		
 		/**
 		 * 创建边框以及饰品的表
@@ -120,9 +148,19 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * fileType 文件类型  1：边框，0：饰品
 		 */
 		db.execSQL("create table if not exists " + Common.FRAME_STICKER_TABLES
-				+ "(_id INTEGER PRIMARY KEY AUTOINCREMENT, frameName varchar(40), originalPathLandscape varchar(100), originalPathPortrait varchar(100)" +
-				", thumbnailPathLandscape400 varchar(100), thumbnailPathPortrait400 varchar(100), thumbnailPath160 varchar(100), locationId varchar(20), isActive integer" +
-				", onLine integer, isDownload integer, fileSize integer, fileType integer)");
+				+ "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				"frameName varchar(40), " +
+				"originalPathLandscape varchar(100), " +
+				"originalPathPortrait varchar(100)" +
+				", thumbnailPathLandscape400 varchar(100), " +
+				"thumbnailPathPortrait400 varchar(100), " +
+				"thumbnailPath160 varchar(100), " +
+				"locationId varchar(20), " +
+				"isActive integer" +
+				", onLine integer, " +
+				"isDownload integer, " +
+				"fileSize integer, " +
+				"fileType integer)");
 		
 	}
 

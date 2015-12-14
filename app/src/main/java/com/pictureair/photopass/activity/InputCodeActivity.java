@@ -106,27 +106,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 
 			}
 		});
-		//		input.setOnKeyListener(new OnKeyListener() {
-		//			
-		//			@Override
-		//			public boolean onKey(View v, int keyCode, KeyEvent event) {
-		//				// TODO Auto-generated method stub
-		//				switch (event.getAction()) {
-		//				case KeyEvent.ACTION_UP:
-		//					System.out.println("up");
-		//					if (!showTextView.isShown()) {
-		//						System.out.println("show");
-		//						showTextView.setVisibility(View.VISIBLE);
-		//					}
-		//					showTextView.setText(input.getText().toString());
-		//					break;
-		//
-		//				default:
-		//					break;
-		//				}
-		//				return false;
-		//			}
-		//		});
 	}
 
 	private void hideInputMethodManager(View v) {

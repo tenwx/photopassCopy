@@ -17,7 +17,7 @@
             android:clipToPadding="true"
             android:horizontalSpacing="5dip"
             android:listSelector="@color/transparent"
-            android:numColumns="2"
+            android:numColumns="3"
             android:scrollbars="none"
             android:verticalSpacing="0dip" />
     </android.support.v4.widget.SwipeRefreshLayout>

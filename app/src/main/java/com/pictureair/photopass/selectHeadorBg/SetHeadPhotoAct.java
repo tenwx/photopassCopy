@@ -153,7 +153,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 					params.put(Common.USERINFO_TOKENID, tokenId);
 					params.put("updateType", "avatar");
 					params.put("file", headPhoto);
-					API1.SetPhoto(Common.SET_USER_PHOTO,params,handler,0,dialog);
+					API1.SetPhoto(Common.BASE_URL_TEST + Common.SET_USER_PHOTO,params,handler,0,dialog);
 //					API.SetPhoto(sb.toString(), params, handler, 0, dialog);
 				} catch (FileNotFoundException ee) {
 					// TODO Auto-generated catch block

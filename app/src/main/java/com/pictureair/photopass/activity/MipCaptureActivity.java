@@ -27,8 +27,9 @@ import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -79,12 +80,66 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 
 	private MyApplication myApplication;
 	private CustomProgressDialog dialog;
+	private DealCodeUtil dealCodeUtil;
 
 	private Handler handler2 = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 
 			JSONObject response = null;
 			switch (msg.what) {
+				case DealCodeUtil.DEAL_CODE_FAILED:
+					if (dialog.isShowing()) {
+						dialog.dismiss();
+					}
+					if (msg.obj != null) {//从ppp页面过来，需要返回
+						Intent intent2 = new Intent();
+						intent2.putExtra("result", "failed");
+						intent2.putExtra("errorType", Integer.valueOf(msg.obj.toString()));
+						setResult(RESULT_OK, intent2);
+					}
+					finish();
+					break;
+
+				case DealCodeUtil.DEAL_CODE_SUCCESS:
+					if (dialog.isShowing()) {
+						dialog.dismiss();
+					}
+
+					if (msg.obj != null) {//从ppp过来
+						Intent intent2 = new Intent();
+						Bundle bundle = (Bundle) msg.obj;
+						if (bundle.getInt("status") == 1) {
+							intent2.putExtra("result", bundle.getString("result"));
+							setResult(RESULT_OK, intent2);
+						} else if (bundle.getInt("status") == 2) {//将pp码返回
+							intent2.putExtra("result", bundle.getString("result"));
+							intent2.putExtra("hasBind", bundle.getBoolean("hasBind"));
+							setResult(RESULT_OK, intent2);
+						} else if (bundle.getInt("status") == 3) {
+							intent2.setClass(MipCaptureActivity.this, MyPPPActivity.class);
+							API1.PPPlist.clear();
+							startActivity(intent2);
+						} else if (bundle.getInt("status") == 4){
+							Editor editor = sp.edit();
+							editor.putBoolean(Common.NEED_FRESH, true);
+							editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
+							editor.commit();
+						} else if (bundle.getInt("status") == 5){
+							intent2.putExtra("result", bundle.getString("result"));
+							setResult(RESULT_OK, intent2);
+						}
+					}
+
+					finish();
+					break;
+
+
+
+
+
+
+
+
 			case SCAN_SUCCESS://pp
 				try {
 					response = (JSONObject) msg.obj;
@@ -333,6 +388,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 		});
 		hasSurface = false;
 		inactivityTimer = new InactivityTimer(this);
+		dealCodeUtil = new DealCodeUtil(this, getIntent(), handler2);
 	}
 
 	@Override
@@ -404,12 +460,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 				//			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
 				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
 			}else {
-				
 				code = resultString.substring(resultString.lastIndexOf("?")+1, resultString.length());  //截取字符串。
 				Log.e("=====", "code：：："+code);
 //				dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.is_loading), true, false);
 				dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-				API.checkCodeAvailable(code, handler2);
+//				API.checkCodeAvailable(code, handler2);
+				dealCodeUtil.startDealCode(code);
 			}
 			
 		}

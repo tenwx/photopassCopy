@@ -1,1 +1,1 @@
-include ':app', ':PullToRefreshLibrary', ':SMSSDK'
+include ':app', ':SMSSDK'

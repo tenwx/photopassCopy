@@ -21,12 +21,10 @@ import cz.msebera.android.httpclient.Header;
 public class HttpUtil1 {
     private static AsyncHttpClient asyncHttpClient;//异步处理网络请求
     private static ExecutorService threadPool;//线程重用，减少线程开销
-    private static String BASE_URL = "http://192.168.8.3:3006";
     private static final String TAG = "HttpUtil1";
     private static final int HTTP_ERROR = 401;//请求失败的错误代码
     private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json; charset=utf-8", "text/html",
             "video/mp4", "audio/x-mpegurl", "image/jpeg;charset=utf-8", "image/jpeg;charset=utf-8"};
-
 
     static {
         if (threadPool == null) {
@@ -44,28 +42,6 @@ public class HttpUtil1 {
 
     }
 
-
-    /**
-     * 获取绝对路径
-     *
-     * @param relativeUrl 相对路径
-     * @return 绝对路径
-     */
-    public static String getAbsoluteUrl(String relativeUrl) {
-        return BASE_URL + relativeUrl;
-    }
-
-    /**
-     * 设置BASE URL
-     *
-     * @param baseUrl 请求base url
-     * @return 返回baseURL
-     */
-    public static String setBaseUrl(String baseUrl) {
-        BASE_URL = baseUrl;
-        return baseUrl;
-    }
-
     /**
      * 异步get请求
      *
@@ -73,7 +49,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, final HttpCallback httpCallback) {
-        asyncHttpClient.get(getAbsoluteUrl(url), new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+        asyncHttpClient.get(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
 
             @Override
             public void onStart() {
@@ -125,7 +101,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.get(getAbsoluteUrl(url), params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+        asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
                 super.onStart();
@@ -175,7 +151,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, final HttpCallback httpCallback) {
-        asyncHttpClient.post(getAbsoluteUrl(url), new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+        asyncHttpClient.post(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
                 super.onStart();
@@ -208,6 +184,7 @@ public class HttpUtil1 {
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                PictureAirLog.out("result---->" + rawJsonData);
                 return JsonTools.parseObject(rawJsonData);
             }
 
@@ -228,7 +205,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.post(getAbsoluteUrl(url), params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+        asyncHttpClient.post(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
                 super.onStart();
@@ -280,7 +257,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asynDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        asyncHttpClient.get(getAbsoluteUrl(url), new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
+        asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -315,7 +292,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asynDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        asyncHttpClient.post(getAbsoluteUrl(url), params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
+        asyncHttpClient.post(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();

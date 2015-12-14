@@ -36,6 +36,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 	private LayoutInflater layoutInflater;
 	private MyToast myToast;
 	private CustomDialog customDialog;
+	private static final int COLUMN_COUNT = 3;
 
 	public StickyGridAdapter(Context context, ArrayList<PhotoInfo> list) {
 		this.context = context;
@@ -74,7 +75,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 			mViewHolder = (ViewHolder) convertView.getTag();
 		}
 		LayoutParams params = mViewHolder.mImageView.getLayoutParams();
-		params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (3))) / 2;
+		params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / COLUMN_COUNT;
 		params.height = params.width;
 		mViewHolder.mImageView.setLayoutParams(params);
 		if (list.get(position).onLine == 1) {

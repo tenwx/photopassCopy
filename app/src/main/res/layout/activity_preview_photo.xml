@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/button1_shop_rt"
@@ -17,10 +17,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="@dimen/pp_margin_16"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -30,8 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16" />
 
         <ImageButton
             android:id="@+id/preview_love"
@@ -40,10 +39,10 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="@dimen/pp_margin_16"
+            android:paddingTop="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/preview_photo_love_nor" />
     </RelativeLayout>
@@ -53,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/index_bar"
-        android:background="@color/gray_light"
+        android:background="@color/pp_light_gray_background"
         android:layout_below="@id/preview_titlebar" >
 
         <com.pictureair.photopass.GalleryWidget.GalleryViewPager
@@ -128,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/photo_index"
-                android:textColor="@color/gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="15sp" />
 
             <ImageView
@@ -147,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="111"
-            android:textColor="@color/gray3"
+            android:textColor="@color/pp_gray"
             android:textSize="12sp" />
     </LinearLayout>
 

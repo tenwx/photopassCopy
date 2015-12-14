@@ -3,14 +3,14 @@
     android:id="@+id/editStoryPhotoRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light" >
+    android:background="@color/pp_light_gray_background" >
 
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/rlrt"
@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="@dimen/pp_margin_16"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -33,8 +33,7 @@
             android:background="@color/transparent"
             android:text="@string/edit"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/pp_margin_16"/>
 
         <ImageView
             android:id="@+id/imageButton_edit"
@@ -42,24 +41,27 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="@dimen/pp_margin_16"
+            android:paddingTop="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/sel2" />
     </RelativeLayout>
     <!-- android:layout_above="@id/select_tools_linearlayout" -->
 
-    <com.handmark.pulltorefresh.library.PullToRefreshPinnedSectionListView
+    <com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView
         android:id="@+id/pullToRefreshPinnedSectionListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout1"
-        android:divider="@null"
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
-        android:scrollbars="none" />
+        android:background="@color/white"
+        android:clipToPadding="true"
+        android:horizontalSpacing="5dip"
+        android:listSelector="@color/transparent"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:verticalSpacing="0dip" />
         
     <!-- <com.hb.views.PinnedHeaderExpandableListView
         android:id="@+id/pullToRefreshPinnedSectionListView"
