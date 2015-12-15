@@ -530,8 +530,12 @@
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
+    <string name="auto_sync">Auto Sync</string>
     <string name="no_photo_in_airpass">Start collecting your photos into AirPass now!</string>
     <string name="no_photo_in_magiccam">Start collecting your photos into Camera now!</string>
     <string name="no_photo_in_bought">Start buying your photos now!</string>
+    <string name="no_photo_in_favourite">Start collecting your photos now!</string>
+
+    <string name="storypage_no_photo">There is no photo\nin your gallery!</string>
 
 </resources>

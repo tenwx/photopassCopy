@@ -27,6 +27,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.entity.PhotoItemInfo;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
@@ -737,6 +739,45 @@ public class AppUtil {
 		} else {// 密码可用
 			return PWD_AVAILABLE;
 		}
+	}
+
+	/**
+	 * 将photoItemInfo转成悬浮所需要的photoInfo的列表
+	 * @param list
+	 * @return
+	 */
+	public static ArrayList<PhotoInfo> startSortForPinnedListView(ArrayList<PhotoItemInfo> list) {
+		ArrayList<PhotoInfo> tempInfos = new ArrayList<PhotoInfo>();
+		PhotoInfo temp, temp2;
+		for (int i = 0; i < list.size(); i++) {
+			for (int j = 0; j < list.get(i).list.size(); j++) {
+				temp2 = list.get(i).list.get(j);
+				temp = new PhotoInfo();
+				temp.sectionId = i;
+				temp.photoId = temp2.photoId;
+				temp.photoPathOrURL = temp2.photoPathOrURL;
+				temp.photoThumbnail = temp2.photoThumbnail;
+				temp.photoThumbnail_512 = temp2.photoThumbnail_512;
+				temp.photoThumbnail_1024 = temp2.photoThumbnail_1024;
+				temp.photoPassCode = temp2.photoPassCode;
+				temp.isPayed = temp2.isPayed;
+				temp.isChecked = temp2.isChecked;
+				temp.isSelected = temp2.isSelected;
+				temp.showMask = temp2.showMask;
+				temp.lastModify = temp2.lastModify;
+				temp.shootOn = temp2.shootOn;
+				temp.shootTime = temp2.shootTime;
+				temp.locationName = temp2.locationName;
+				temp.onLine = temp2.onLine;
+				temp.locationCountry = temp2.locationCountry;
+				temp.isUploaded = temp2.isUploaded;
+				temp.locationId = temp2.locationId;
+				temp.isLove = temp2.isLove;
+				temp.shareURL = temp2.shareURL;
+				tempInfos.add(temp);
+			}
+		}
+		return tempInfos;
 	}
 
 }

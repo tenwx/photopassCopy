@@ -13,7 +13,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.OrderInfo;
@@ -196,7 +198,7 @@ public class JsonUtil {
             e.putString(Common.USERINFO_HEADPHOTO, headUrl);
         }
 //        if (headUrl != null) {
-            // 更新头像图片
+        // 更新头像图片
 //            headUrl = Common.PHOTO_URL + headUrl;
 //            System.out.println("get head image");
 //            HttpUtil1.asynDownloadBinaryData(headUrl, new HttpCallback() {
@@ -262,55 +264,23 @@ public class JsonUtil {
      *
      * @param photoArrayList 传入需要修改的图片参数，一个是photoId，一个是photoUrl
      * @param cartitem       每一项的item对象，里面会包含price参数
-     * @param count
      * @return
      */
-    public static JSONObject CreateModifyCartItemJsonObject(ArrayList<PhotoInfo> photoArrayList, CartItemInfo cartitem, int count) {
+    public static JSONObject CreateModifyCartItemJsonObject(ArrayList<PhotoInfo> photoArrayList, CartItemInfo1 cartitem, int count) {
         // TODO Auto-generated method stub
-        //		JSONObject modifyObject = new JSONObject();
+
         JSONObject itemJsonObject = new JSONObject();
         try {
             JSONArray productsJsonArray = new JSONArray();//修改图片的jsonarray
-            //			if (null == photoArrayList || 0 == photoArrayList.size()) {//没有修改图片
-            //				JSONObject productObject = new JSONObject();
-            //				productObject.put("storeId", cartitem.get("storeId"));
-            //				productObject.put("productId", cartitem.get("productId"));
-            //				productObject.put("embedPhotos", null);
-            //				productsJsonArray.put(productObject);
-            //			}else {//有图片的时候
             JSONArray embedphotos = new JSONArray();//放入图片的json数组
-            List<CartPhotosInfo> photoslist;
-            if (cartitem.cart_photoUrls != null && !"".equals(cartitem.cart_photoUrls)) {
-                System.out.println("has photopath product");
-                photoslist = cartitem.cart_photoUrls;//获取每一个item中的图片数组
+            List<CartPhotosInfo1> photoslist;
+            if (cartitem.getEmbedPhotos() != null && cartitem.getEmbedPhotos().size() > 0) {
+                photoslist = cartitem.getEmbedPhotos();//获取每一个item中的图片数组
             } else {
-                photoslist = new ArrayList<CartPhotosInfo>();
-                System.out.println("have not photo path product");
+                photoslist = new ArrayList<>();
             }
-            if (null == photoArrayList || 0 == photoArrayList.size()) {//判断有没有照片，如果为null，说明不需要修改照片，这个时候应该使用原有的照片
-//				JSONObject embedphoto = new JSONObject();
-//				JSONArray photoids = new JSONArray();//放入图片的图片id数组
-//				JSONObject photoid = new JSONObject();
-//				photoid.put("photoId", "");
-//				photoid.put("photoUrl", "");
-//				photoids.put(photoid);
-//				embedphoto.put("photosIds", photoids);
-//				embedphoto.put("svg", "");
-//				embedphotos.put(embedphoto);
-                System.out.println("------------------->null or 0");
-//				JSONObject embedphoto = new JSONObject();
-//				JSONArray photoids = new JSONArray();//放入图片的图片id数组
-//				for (int i = 0; i < photoslist.size(); i++) {
-//					JSONObject photoid = new JSONObject();
-//					photoid.put("photoId", photoslist.get(i).cart_photoId);
-//					photoid.put("photoUrl", photoslist.get(i).cart_photoUrl);
-//					photoids.put(photoid);
-//				}
-//				embedphoto.put("photosIds", photoids);
-//				embedphoto.put("svg", "");
-//				embedphotos.put(embedphoto);
-            } else {
-                System.out.println("----------------> has count");
+
+            if (photoArrayList != null && photoArrayList.size() > 0) {//判断有没有照片，如果为null，说明不需要修改照片，这个时候应该使用原有的照片
                 for (int i = 0; i < photoslist.size(); i++) {
                     JSONObject embedphoto = new JSONObject();
                     JSONArray photoids = new JSONArray();//放入图片的图片id数组
@@ -326,18 +296,13 @@ public class JsonUtil {
                 }
             }
             JSONObject productJsonObject = new JSONObject();
-            productJsonObject.put("storeId", cartitem.cart_storeId);
-            productJsonObject.put("productId", cartitem.cart_productId);
+            productJsonObject.put("storeId", cartitem.getCartId());
             productJsonObject.put("embedPhotos", embedphotos);
             productsJsonArray.add(productJsonObject);
             //			}
-            itemJsonObject.put("_id", cartitem.cart_id);
+            itemJsonObject.put("_id", cartitem.getCartId());
             itemJsonObject.put("qty", count);
-            itemJsonObject.put("price", cartitem.cart_originalPrice * count);
             itemJsonObject.put("products", productsJsonArray);
-
-            //			modifyObject.put("userId", userId);
-            //			modifyObject.put("item", itemJsonObject);
         } catch (JSONException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

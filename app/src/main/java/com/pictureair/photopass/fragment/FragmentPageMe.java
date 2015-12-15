@@ -119,7 +119,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
             originalHeadLastModifyTime = file.lastModified();
             if (bm1 != null) {
-                PictureAirLog.v(TAG, "tupian meiyou");
                 headPhoto.setImageBitmap(bm1);
             } else {
                 headPhoto.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));

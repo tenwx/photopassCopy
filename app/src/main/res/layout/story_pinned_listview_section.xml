@@ -2,20 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray_light"
-    android:orientation="vertical" >
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="@dimen/pp_margin_16"
+    android:paddingRight="@dimen/pp_margin_16">
 
-    <View
-        android:id="@+id/lineView"
-        android:layout_width="match_parent"
-        android:layout_height="5dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="10dp" >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -31,8 +25,8 @@
                 android:gravity="left|center_vertical"
                 android:singleLine="true"
                 android:text="place"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/text_middle_size" />
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
 
             <TextView
                 android:id="@+id/section_location_country"
@@ -41,8 +35,8 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="left|center_vertical"
                 android:text="country"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/text_small_size" />
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
         </LinearLayout>
 
         <TextView
@@ -53,9 +47,7 @@
             android:layout_weight="1"
             android:gravity="right|center_vertical"
             android:text="time"
-            android:textColor="@color/gray4_location_time"
-            android:textSize="@dimen/text_small_size" />
-
-    </LinearLayout>
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
 
 </LinearLayout>

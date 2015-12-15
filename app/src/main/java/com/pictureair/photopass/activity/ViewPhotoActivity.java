@@ -23,7 +23,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
@@ -407,10 +406,9 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					 * 要判断照片的购买属性，如果已经购买，则直接显示，如果没有购买，提示购买
 					 * ***************************/
 					System.out.println(position+"_"+magicArrayList.get(position).photoPathOrURL);
-					Intent intent = null;
-					intent = new Intent(ViewPhotoActivity.this,PreviewPhotoActivity.class);
+					Intent intent = new Intent(ViewPhotoActivity.this,PreviewPhotoActivity.class);
 					intent.putExtra("flag", magicArrayList.get(position).onLine);//哪个相册的标记
-					intent.putExtra("position", String.valueOf(position));//在那个相册中的位置
+					intent.putExtra("position", position);//在那个相册中的位置
 					intent.putExtra("photos", magicArrayList);//那个相册的全部图片路径
 					intent.putExtra("targetphotos", magicArrayList);
 					//					intent.putExtra("locationName", getString(R.string.story_tab_magic));

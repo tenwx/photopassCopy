@@ -40,7 +40,6 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.API;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
@@ -562,7 +561,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //获取intent传递过来的信息
         photolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photos");//获取图片路径list
         targetphotolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("targetphotos");
-        currentPosition = Integer.valueOf(getIntent().getStringExtra("position"));
+        currentPosition = getIntent().getIntExtra("position", 0);
         PictureAirLog.v(TAG,"photo size is " + photolist.size());
         PictureAirLog.v(TAG,"thumbnail is " + photolist.get(currentPosition).photoThumbnail);
         PictureAirLog.v(TAG,"thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);

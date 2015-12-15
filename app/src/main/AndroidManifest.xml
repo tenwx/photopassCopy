@@ -105,6 +105,10 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.InputCodeActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.PreviewProductActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
@@ -226,10 +230,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
-        <activity
-            android:name=".activity.PreviewFavoritePhotosActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
 
         <!-- alipay sdk begin -->
         <activity

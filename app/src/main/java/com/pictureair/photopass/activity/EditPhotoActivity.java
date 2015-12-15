@@ -14,22 +14,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Typeface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -37,7 +30,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -52,7 +44,6 @@ import com.pictureair.photopass.adapter.FontAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.BitmapUtils;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
-import com.pictureair.photopass.editPhoto.FontItem;
 import com.pictureair.photopass.editPhoto.FontView;
 import com.pictureair.photopass.editPhoto.Matrix3;
 import com.pictureair.photopass.editPhoto.StickerItem;
@@ -88,7 +79,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -123,15 +113,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 //	private String ssss;
 
-	private Typeface typeface1;
-	private Typeface typeface2;
-	private Typeface typeface3;
-	private Typeface typeface4;
 	private FontAdapter fontAdapter;
 
-	private List<Typeface> strings;
-	private List<String> fontList;
-	//
 	private LoadImageTask mLoadImageTask;
 
 	private int imageWidth, imageHeight;// 展示图片控件 宽 高
@@ -169,22 +152,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	//有关 文字
 	private TextView setTextFont,setColor;  //设置字体，设置颜色
-	private String fonts[] = null;
-	private SimpleAdapter simpleAdapter;
-	private String showText;
-	private Typeface showTypeface = Typeface.SANS_SERIF;
-	private float curTextSize;
-	private int showColor = R.color.color16;
-	private int colors[] = new int[] { R.drawable.color1, R.drawable.color2,
-			R.drawable.color3, R.drawable.color4, R.drawable.color5,
-			R.drawable.color6, R.drawable.color7, R.drawable.color8,
-			R.drawable.color9, R.drawable.color10, R.drawable.color11,
-			R.drawable.color12, R.drawable.color13, R.drawable.color14,
-			R.drawable.color15, R.drawable.color16 }; // 显示的颜色图片
-	private int color[] = new int[] {
-			R.color.color1,R.color.color2,R.color.color3,R.color.color4,R.color.color5,R.color.color6,R.color.color7,R.color.color8,R.color.color9,R.color.color10,R.color.color11,R.color.color12,
-			R.color.color13,R.color.color14,R.color.color15,R.color.color16
-	}; //实际上的 color 值。
 	private GridView setFontGridView; //字体
 	private GridView setColorGridView; //文本颜色
 
@@ -235,21 +202,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					break;
 
 				case 0000:
-					String text = msg.obj.toString();
-					if (text.equals("")) {
-						fontEditdialog.dismiss();
-					}else{
-						showText = text;
-						curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/2/(showText.length());
-						if (showText.length() >= 8) {
-							textWidth = ScreenUtil.getScreenWidth(EditPhotoActivity.this);
-							curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/(showText.length());
-						}else if (showText.length() > 20) {
-							// 后期 ：  如果字数过长，提示不能输入过长字符
-						}
-						fontView.addBitImage(EditPhotoUtil.textAsBitmap(text,showTypeface,showColor,curTextSize, textWidth,EditPhotoActivity.this));
-						fontEditdialog.dismiss();
-					}
 					break;
 
 				case 3333:
@@ -354,7 +306,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private void initView(){
 		myToast = new MyToast(this);
-		showText = this.getResources().getString(R.string.add_text);
 		locationUtil = new LocationUtil(this);
 		locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
 		mainImage = (ImageView) findViewById(R.id.main_image);
@@ -449,24 +400,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 		addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
 
-		if (typeface2 == null) {
-			System.out.println("-----------> load typeface2");
-			typeface2 = Typeface.createFromAsset(getAssets(),
-					"fonts/fangzheng.ttf");
-		} else {
-			System.out.println("---------> need not load typeface2");
-		}
-		if (typeface3 == null) {
-			typeface3 = Typeface.createFromAsset(getAssets(),
-					"fonts/gangbi.ttf");
-		}
-		if (typeface4 == null) {
-			typeface4 = Typeface.createFromAsset(getAssets(),
-					"fonts/keai.ttf");
-		}
-		if (typeface1 == null) {
-			typeface1 = Typeface.SANS_SERIF;
-		}
 
 		dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
 
@@ -474,18 +407,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
 
 		pathList = new ArrayList<String>();
-		strings = new ArrayList<Typeface>();
-		fontList = new ArrayList<String>();
 
-		fonts =  new String[] { getString(R.string.font_default),
-				getString(R.string.font_fangzheng),
-				getString(R.string.font_pen),
-				getString(R.string.font_lovely) };
-
-		DisplayMetrics metrics = getResources().getDisplayMetrics();
-		//此处的宽高，决定以后保存图片的速度与图片的效率。
-//		imageWidth = (int) ((float) metrics.widthPixels / 1.5);
-//		imageHeight = (int) ((float) metrics.heightPixels / 1.5);
 		imageWidth = 900;
 		imageHeight = 1200;
 
@@ -579,13 +501,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				//如果添加了字体
 				if (editType == 4) {
-					showText = getString(R.string.add_text);
-					showColor = R.color.color16;
-					showTypeface = Typeface.SANS_SERIF;
-					if (fontView.isShown()) {
-						fontView.setVisibility(View.GONE);
-						fontView.clear();
-					}
 				}
 
 				exitEditStates(); // 推出编辑状态
@@ -670,149 +585,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				});
 				break;
 			case R.id.edit_text:
-				// 获取 原始图片的模型。
-				calRec();
-				btn_onedit_save.setVisibility(View.VISIBLE);
-				fontView.setVisibility(View.VISIBLE);   //设置了可见
-				editType = 4;
-				titleTextView.setText(R.string.rotate);
-				onEditStates();
-				top_HorizontalListView.setVisibility(View.GONE);
-				font_bar.setVisibility(View.VISIBLE);
-
-				curTextSize = ScreenUtil.getScreenWidth(EditPhotoActivity.this)/2/(showText.length());
-				textWidth = ScreenUtil.getScreenWidth(this)/2;
-				fontView.addBitImage(EditPhotoUtil.textAsBitmap(showText,showTypeface ,showColor,curTextSize,textWidth,EditPhotoActivity.this));
-				fontView.setOnTouchListener(new OnTouchListener() {
-
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {
-						// TODO Auto-generated method stub
-
-						if (event.getAction() == MotionEvent.ACTION_DOWN) {
-							time = System.currentTimeMillis();
-						}
-						if (event.getAction() == MotionEvent.ACTION_UP) {
-							if (System.currentTimeMillis() - time < 200) {
-								fontEditdialog = new FontEditDialog(EditPhotoActivity.this,showText,handler);
-								fontEditdialog.getWindow().setGravity(Gravity.BOTTOM);
-								fontEditdialog.setCanceledOnTouchOutside(true);
-								fontEditdialog.setCancelable(true);
-								fontEditdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-								Window win = fontEditdialog.getWindow();
-								win.getDecorView().setPadding(0, 0, 0, 0);
-								WindowManager.LayoutParams lp = win.getAttributes();
-								lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-								lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-								win.setAttributes(lp);
-								fontEditdialog.show();
-							}
-						}
-						return false;
-					}
-				});
 
 				break;
-			case R.id.setTextFont:
-				System.out.println("-----------> start init text");
-				if (typeface2 == null) {
-					typeface2 = Typeface.createFromAsset(getAssets(),
-							"fonts/fangzheng.ttf");
-				}
-				if (typeface3 == null) {
-					typeface3 = Typeface.createFromAsset(getAssets(),
-							"fonts/gangbi.ttf");
-				}
-				if (typeface4 == null) {
-					typeface4 = Typeface.createFromAsset(getAssets(), "fonts/keai.ttf");
-				}
-				if (typeface1 == null) {
-					typeface1 = Typeface.SANS_SERIF;
-				}
 
-				strings.clear();
-				strings.add(typeface1);
-				strings.add(typeface2);
-				strings.add(typeface3);
-				strings.add(typeface4);
-
-				//					new Typeface[] { typeface1, typeface2,
-				//					typeface3, typeface4 };
-
-				if (setColorGridView != null) {
-					setColorGridView.setVisibility(View.GONE);
-				}
-				setFontGridView.setVisibility(View.VISIBLE);
-
-				fontList.clear();
-				for (int i = 0; i < fonts.length; i++) {
-					fontList.add(fonts[i]);
-				}
-				if (fontAdapter == null) {
-					fontAdapter = new FontAdapter(this, fontList, strings);
-				}
-				setFontGridView.setAdapter(fontAdapter);
-				setFontGridView.setNumColumns(fonts.length);
-				setFontGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / fonts.length);
-				setFontGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-				setFontGridView.setOnItemClickListener(new OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-											int position, long id) {
-						switch (position) {
-							case 0:
-								showTypeface = typeface1;
-								break;
-							case 1:
-								showTypeface = typeface2;
-								break;
-							case 2:
-								showTypeface = typeface3;
-								break;
-							case 3:
-								showTypeface = typeface4;
-								break;
-
-							default:
-								break;
-						}
-						fontView.setBitmap(EditPhotoUtil.textAsBitmap(showText,showTypeface,showColor,curTextSize,textWidth,EditPhotoActivity.this));
-					}
-				});
-				System.out.println("------------> finish init text");
-				break;
-
-			case R.id.setColor:
-				if (setFontGridView != null) {
-					setFontGridView.setVisibility(View.GONE);
-				}
-				setColorGridView.setVisibility(View.VISIBLE);
-				ArrayList<HashMap<String, Object>> colorList = new ArrayList<HashMap<String, Object>>();
-				HashMap<String, Object> map;
-				for (int i = 0; i < colors.length; i++) {
-					map = new HashMap<String, Object>();
-					map.put("colors", colors[i]);
-					colorList.add(map);
-				}
-
-				simpleAdapter = new SimpleAdapter(EditPhotoActivity.this,
-						colorList, R.layout.color_list, new String[] { "colors" },
-						new int[] { R.id.color });
-				setColorGridView.setAdapter(simpleAdapter);
-				setColorGridView.setNumColumns(colors.length);
-				setColorGridView.setColumnWidth(ScreenUtil.getScreenWidth(this) / colors.length);
-				setColorGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-				setColorGridView.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-											int position, long arg3) {
-						// TODO Auto-generated method stub
-						showColor = color[position];
-						fontView.setBitmap(EditPhotoUtil.textAsBitmap(showText,showTypeface,showColor,curTextSize,textWidth,EditPhotoActivity.this));
-					}
-				});
-				break;
 
 			case R.id.edit_accessory:
 				calRec();
@@ -1156,34 +931,34 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				index = pathList.size() - 1;
 				return resultBit;
 			}else if(editType == 4){
-				showText = getString(R.string.add_text); //保存之后，初始化原始数据。
-				showColor = R.color.color16;
-				showTypeface = Typeface.SANS_SERIF;
-				//Matrix touchMatrix = mainImage.getImageViewMatrix();
-				Matrix touchMatrix = mainImage.getImageMatrix();
-				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
-						Bitmap.Config.ARGB_8888, true);
-//				Bitmap resultBit = params[0];
-				Canvas canvas = new Canvas(resultBit);
-				canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));  //抗锯齿
-				float[] data = new float[9];
-				touchMatrix.getValues(data);// 底部图片变化记录矩阵原始数据
-				Matrix3 cal = new Matrix3(data);// 辅助矩阵计算类
-				Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
-				Matrix m = new Matrix();
-				m.setValues(inverseMatrix.getValues());
-				LinkedHashMap<Integer, FontItem> addItems = fontView.getBank();
-				for (Integer id : addItems.keySet()) {
-					FontItem item = addItems.get(id);
-					item.matrix.postConcat(m);// 乘以底部图片变化矩阵
-					canvas.drawBitmap(item.bitmap, item.matrix, null);
-				}// end for
-				//				fontView.currentItem.matrix.postConcat(m);
-				//				canvas.drawBitmap(fontView.currentItem.bitmap, fontView.currentItem.matrix, null);
-				EditPhotoUtil.saveBitmap(resultBit, url);
-				pathList.add(url);
-				index = pathList.size() - 1;
-				return resultBit;
+//				showText = getString(R.string.add_text); //保存之后，初始化原始数据。
+//				showColor = R.color.color16;
+//				showTypeface = Typeface.SANS_SERIF;
+//				//Matrix touchMatrix = mainImage.getImageViewMatrix();
+//				Matrix touchMatrix = mainImage.getImageMatrix();
+//				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
+//						Bitmap.Config.ARGB_8888, true);
+////				Bitmap resultBit = params[0];
+//				Canvas canvas = new Canvas(resultBit);
+//				canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));  //抗锯齿
+//				float[] data = new float[9];
+//				touchMatrix.getValues(data);// 底部图片变化记录矩阵原始数据
+//				Matrix3 cal = new Matrix3(data);// 辅助矩阵计算类
+//				Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
+//				Matrix m = new Matrix();
+//				m.setValues(inverseMatrix.getValues());
+//				LinkedHashMap<Integer, FontItem> addItems = fontView.getBank();
+//				for (Integer id : addItems.keySet()) {
+//					FontItem item = addItems.get(id);
+//					item.matrix.postConcat(m);// 乘以底部图片变化矩阵
+//					canvas.drawBitmap(item.bitmap, item.matrix, null);
+//				}// end for
+//				//				fontView.currentItem.matrix.postConcat(m);
+//				//				canvas.drawBitmap(fontView.currentItem.bitmap, fontView.currentItem.matrix, null);
+//				EditPhotoUtil.saveBitmap(resultBit, url);
+//				pathList.add(url);
+//				index = pathList.size() - 1;
+//				return resultBit;
 			}else if(editType == 1){
 				Bitmap mainBitmap = params[0];
 				Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(),

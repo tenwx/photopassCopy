@@ -24,6 +24,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.util.ACache;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -519,7 +520,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                         ArrayList<PhotoItemInfo> allPhotoItemInfos = createPhotoItemInfoList(position);
                         Intent i = new Intent(mContext, EditStoryAlbumActivity.class);
                         Bundle b = new Bundle();
-                        b.putParcelableArrayList("photos", allPhotoItemInfos);
+                        b.putParcelableArrayList("photos", AppUtil.startSortForPinnedListView(allPhotoItemInfos));
                         i.putExtra("photos", b);
                         i.putExtra("mode", "noedit");
                         mContext.startActivity(i);

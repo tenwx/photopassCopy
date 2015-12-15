@@ -180,6 +180,8 @@ public class StoryFragment extends Fragment {
 		} else if (tab == 3) {//bought
 			noPhotoTextView.setText(R.string.no_photo_in_bought);
 			
+		} else if (tab == 4) {//favourite
+			noPhotoTextView.setText(R.string.no_photo_in_favourite);
 		}
 		
 		if (photoInfoArrayList.size() > 0) {
@@ -273,7 +275,8 @@ public class StoryFragment extends Fragment {
 						noPhotoTextView.setText(R.string.no_photo_in_magiccam);
 					} else if (tab == 3) {//bought
 						noPhotoTextView.setText(R.string.no_photo_in_bought);
-						
+					} else if (tab == 4) {//favourite
+						noPhotoTextView.setText(R.string.no_photo_in_favourite);
 					}
 				} else {
 					gridView.setVisibility(View.VISIBLE);
