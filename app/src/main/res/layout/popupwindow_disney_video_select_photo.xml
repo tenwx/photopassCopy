@@ -48,10 +48,10 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/addressbutton"
+        android:background="@drawable/button_blue_shape_and_selector"
         android:textStyle="bold"
         android:padding="10dp"
         android:text="@string/ok"
-        android:textColor="@color/blue"
+        android:textColor="@drawable/textview_selector_blue_white"
         android:textSize="@dimen/text_middle_size" />
 </LinearLayout>

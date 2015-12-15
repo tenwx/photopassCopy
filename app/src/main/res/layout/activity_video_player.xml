@@ -52,14 +52,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
-
         <include layout="@layout/surfaceview_mediaplaer" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_end"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
@@ -69,23 +68,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/white"
+            android:padding="16dp"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:clickable="false"
-                android:scaleType="centerInside"
-                android:src="@drawable/share" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
+                android:drawableTop="@drawable/button_share_selector"
+                android:gravity="center"
                 android:text="@string/share"
                 android:textColor="@color/gray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_12" />
         </LinearLayout>
 
         <LinearLayout
@@ -94,23 +89,20 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/white"
+            android:padding="16dp"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:clickable="false"
-                android:scaleType="centerInside"
-                android:src="@drawable/download" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
+                android:drawableTop="@drawable/button_download_selector"
+                android:gravity="center"
                 android:text="@string/down"
                 android:textColor="@color/gray"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_12" />
+
         </LinearLayout>
     </LinearLayout>
 

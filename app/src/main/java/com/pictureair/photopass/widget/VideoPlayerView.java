@@ -539,5 +539,4 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
         return 0;
     }
 
-
 }
