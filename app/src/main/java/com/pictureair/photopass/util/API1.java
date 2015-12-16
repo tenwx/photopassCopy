@@ -135,7 +135,6 @@ public class API1 {
      */
     public static void getTokenId(final Context context, final Handler handler) {
         RequestParams params = new RequestParams();
-        params.put(Common.APP_ID,MyApplication.getAppId());
         params.put(Common.TERMINAL, "android");
         params.put(Common.UUID, Installation.id(context));
         params.put(Common.APP_ID, AppUtil.md5(APP_KEY + APP_SECRET));

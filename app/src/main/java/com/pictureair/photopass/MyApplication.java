@@ -18,7 +18,6 @@ import com.pictureair.photopass.activity.CrashHandler;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.UmengUtil;
 
@@ -89,18 +88,6 @@ public class MyApplication extends Application {
         } else {
             System.err.println("application not on create------>");
         }
-    }
-
-    /**
-     * 获取APP表识
-     *
-     * @return appId
-     */
-    public static String getAppId() {
-        if (appId == null) {
-            appId = AppUtil.md5(Common.APP_KEY + Common.APP_SECRET);
-        }
-        return appId;
     }
 
     /**

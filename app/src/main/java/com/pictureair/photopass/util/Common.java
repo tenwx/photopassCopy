@@ -95,7 +95,6 @@ public class Common {
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
 
     //user的SharedPreferences    以及   接口参数
-    public static final String APP_ID = "appID";
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
     public static final String APP_ID = "appID";
