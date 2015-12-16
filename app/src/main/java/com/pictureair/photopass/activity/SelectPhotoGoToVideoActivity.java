@@ -3,6 +3,7 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,16 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.SelectPhotoGoToVideoAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
+import android.os.Handler;
 
 import java.util.ArrayList;
 
@@ -49,6 +54,7 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
     private ImageView rtLayout;
     private TextView okButton;
     private PopupWindow popupWindow;
+    private CustomProgressDialog customProgressDialog;
 
     private ArrayList<PhotoInfo> photoURLlist = new ArrayList<PhotoInfo>();// 选择的图片的list
     private ArrayList<PhotoInfo> allArrayList;//测试用
@@ -61,6 +67,29 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
     private LinearLayout llNullPhoto;
 
     private final int photocountMax = 3;// 需要添加的图片数量，以后要改这个数值
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if ( null != customProgressDialog && customProgressDialog.isShowing()){
+                customProgressDialog.dismiss();
+            }
+            switch (msg.what) {
+                case API1.UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS:
+                    // 发送成功
+                    initPopWindow();
+                    break;
+
+                case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED:
+                    // 处理失败，数据错误
+                    PictureAirLog.e(TAG, "处理失败，数据错误");
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -185,7 +214,7 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         if (size == 0) {
             myToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
         } else {
-            if (size < 3) {
+            if (size < photocountMax) {
                 myToast.setTextAndShow(R.string.disney_video_select_photo_less_than3, Common.TOAST_SHORT_TIME);
                 return;
             } else {
@@ -193,18 +222,27 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
                     myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                     return;
                 } else {
-                    boolean isSendSuccess = DisneyVideoTool.photoSendServer(photoURLlist);
-                    if (isSendSuccess) {
-                        // 发送成功，等待服务器推送回来
-                        initPopWindow();
-                    } else {
-                        // 处理失败，数据错误
-                        PictureAirLog.e(TAG, "处理失败，数据错误");
-                        return;
+                        StringBuffer photos = new StringBuffer();
+                        if (null == photoURLlist) {
+                            PictureAirLog.e(TAG, "listPhoto空的");
+                            handler.sendEmptyMessage(API.UPLOAD_PHOTO_FAILED);
+                        } else {
+                            customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                            for(int i = 0; i < photoURLlist.size();i++){
+                                String photoId = photoURLlist.get(i).photoId;
+                                if (i == 0){
+                                    photos.append(photoId);
+                                }else{
+                                    photos.append(","+photoId);
+                                }
+                            }
+                            PictureAirLog.i(TAG,"photos===>" + photos.toString());
+                            API1.uploadPhotoMakeVideo(context, photos.toString(), handler);
+//            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
-        }
     }
 
     @Override

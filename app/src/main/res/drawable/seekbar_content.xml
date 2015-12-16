@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<item android:id="@android:id/secondaryProgress">-->
-    <!--<shape>-->
-    <!--<corners android:radius="5dip" />-->
-    <!--<solid android:color="@color/gray" />-->
-    <!--</shape>-->
-    <!--</item>-->
 
     <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="5dip" />
+
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
             <shape>
                 <corners android:radius="5dip" />
-
-                <solid android:color="@color/white" />
+                <solid android:color="@color/secondary_progress" />
             </shape>
+        </clip>
     </item>
 
     <item android:id="@android:id/progress">
@@ -21,7 +24,7 @@
             <shape>
                 <corners android:radius="5dip" />
 
-                <solid android:color="@color/red" />
+                <solid android:color="@color/seekbar_progress" />
             </shape>
         </clip>
     </item>

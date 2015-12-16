@@ -92,6 +92,10 @@ public class Common {
     public static final String APNS_DISCONNECT = "/socket/APNSDisconnect"; // 退出登陆时
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
 
+    public static final String ME_HELP = "/help/getHelpList";
+    public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
+
+
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
@@ -130,6 +134,7 @@ public class Common {
     public static final String EMBEDPHOTOS = "embedPhotos";
     public static final String PHOTO_IMAGE = "productImage";
     public static final String CART_COUNT = "cartcount";
+    public static final String PHOTOIDS = "photoIds";
     //	public static final String CART = "cart";
     public static final String CART_ITEM_ID = "cartItemId";
     public static final String CART_ITEM_IDS = "cartItemIds";
@@ -314,5 +319,6 @@ public class Common {
 //    public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.avi";// 测试的网络地址
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
-        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
+//        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
+    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
 }

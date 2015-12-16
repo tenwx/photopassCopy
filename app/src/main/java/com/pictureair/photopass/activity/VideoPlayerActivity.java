@@ -84,8 +84,9 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
     private int mNetWorkType;  //当前网络的状态
     private CustomDialog customdialog; //  对话框
     private PictureAirDbManager pictureAirDbManager;
+//    private boolean isLoading = true;
 
-    public boolean isOnline = false;//测试
+    public boolean isOnline = true;//测试
 
     private Handler myHandler = new Handler() {
         @Override
@@ -184,15 +185,13 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
         btnPlayOrStop = (ImageButton) findViewById(R.id.btn_play_or_stop);
         seekBar = (SeekBar) findViewById(R.id.seekbar);
-        seekBar.setAlpha(1);
-
         vv = (VideoPlayerView) findViewById(R.id.vv);
 
         btnPlayOrStop.setImageResource(R.drawable.play);
         btnPlayOrStop.setAlpha(0xBB);
         btnPlayOrStop.setVisibility(View.GONE);
         myHandler.sendEmptyMessage(UPDATE_UI);
-        seekBar.setEnabled(false);
+        hideController();
     }
 
     /**
@@ -218,6 +217,7 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
             public void myOnrepared(MediaPlayer mp) {
                 tvLoding.setVisibility(View.GONE);
                 llShow.setEnabled(true);
+//                isLoading = false;
             }
         });
         vv.setOnPreparedListener(new OnPreparedListener() {
@@ -271,9 +271,9 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
             public void onProgressChanged(SeekBar seekbar, int progress,
                                           boolean fromUser) {
                 if (fromUser) {
-                    if (!isOnline) {
+//                    if (!isLoading) {
                         vv.seekTo(progress);
-                    }
+//                    }
                 }
 
             }
@@ -450,10 +450,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         rlHead.setVisibility(View.GONE);
         llEnd.setVisibility(View.GONE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.black));
-        ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
-        layoutParams.height = ScreenUtil.getScreenHeight(this);
-        layoutParams.width = layoutParams.height * 4 / 3;
-        llShow.setLayoutParams(layoutParams);
+
+        setVideoResolution(false,1280,720);
 
         setVideoScale(SCREEN_FULL);
         isPausedOrPlay();
@@ -463,13 +461,29 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         rlHead.setVisibility(View.VISIBLE);
         llEnd.setVisibility(View.VISIBLE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
-        ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
-        layoutParams.width = ScreenUtil.getScreenWidth(this);
-        layoutParams.height = layoutParams.width * 3 / 4;
-        llShow.setLayoutParams(layoutParams);
+
+        setVideoResolution(true,1280,720);
 
         setVideoScale(SCREEN_DEFAULT);
         isPausedOrPlay();
+    }
+
+    /**
+     * 设置视频显示尺寸
+     * @param isVertical 竖屏？横屏
+     * @param videoWidth  视频宽
+     * @param videoHeight   视频高
+     */
+    private void setVideoResolution(boolean isVertical,int videoWidth,int videoHeight){
+        ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
+        if (isVertical){//竖屏
+            layoutParams.width = ScreenUtil.getScreenWidth(this);
+            layoutParams.height = layoutParams.width * videoHeight / videoWidth;
+        }else{//横屏
+            layoutParams.height = ScreenUtil.getScreenHeight(this);
+            layoutParams.width = layoutParams.height * videoWidth / videoHeight;
+        }
+        llShow.setLayoutParams(layoutParams);
     }
 
     private void isPausedOrPlay() {
@@ -478,7 +492,7 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         btnPlayOrStop.setImageResource(0);
         cancelDelayHide();
         hideControllerDelay();
-        isPaused =false;
+        isPaused = false;
     }
 
     @Override

@@ -51,15 +51,13 @@
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="0dp"
-            android:layout_height="10dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
+            android:padding="10dip"
             android:progressDrawable="@drawable/seekbar_content"
             android:thumb="@color/transparent" />
+
 
         <TextView
             android:id="@+id/duration"

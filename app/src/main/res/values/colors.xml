@@ -97,5 +97,9 @@
     <color name="pp_purple">#5f23c4</color>
     <!-- 半透明黑色，视频播放底部进度条 -->
     <color name="black2">#7f000000</color>
+    <!-- 进度条播放的进度 -->
+    <color name="seekbar_progress">#E25B3C</color>
+    <!-- 进度条预加载的进度-->
+    <color name="secondary_progress">#9fE25B3C</color>
 
 </resources>

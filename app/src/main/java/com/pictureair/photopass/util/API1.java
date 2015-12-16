@@ -63,6 +63,8 @@ public class API1 {
     public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED = 2020;
     public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS = 2021;
 
+    public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2030;
+    public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2031;
     /**
      * 扫描
      */
@@ -106,7 +108,8 @@ public class API1 {
     public static final int SCAN_PPP_FAILED = 5400;
     public static final int SCAN_PPP_SUCCESS = 5401;
 
-
+    public static final int GET_HELP_SUCCESS = 5021;
+    public static final int GET_HELP_FAILED = 5020;
     //我的模块 end
 
 
@@ -579,6 +582,33 @@ public class API1 {
     }
 
 
+    /**
+     * 帮助
+     * @param handler
+     */
+    public  static void getHelp(final Handler handler,Context context){
+        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        RequestParams params = new RequestParams();
+        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
+        params.put(Common.USERINFO_TOKENID, tokenId);
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ME_HELP,params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.i(TAG, "===>JSON info"+jsonObject.toString());
+                handler.obtainMessage(GET_HELP_SUCCESS,jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG,"错误码："+status);
+                handler.obtainMessage(GET_HELP_FAILED,status,0).sendToTarget();
+            }
+        });
+    }
+
     /***************************************我的模块 end**************************************/
 
 
@@ -625,6 +655,7 @@ public class API1 {
                 handler.obtainMessage(GET_GOODS_SUCCESS, result).sendToTarget();
 
             }
+
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
@@ -787,6 +818,34 @@ public class API1 {
 
 
     /***************************************Shop模块 end**************************************/
+
+    /**
+     * 上传照片到服务器合成视频
+     * @param context
+     * @param photos
+     * @param handler
+     */
+    public static void uploadPhotoMakeVideo(final Context context, String photos, final Handler handler) {
+        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        RequestParams params = new RequestParams();
+        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.PHOTOIDS, photos);
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("uploadPhotoMakeVideo--->" + jsonObject.toString());
+                handler.sendEmptyMessage(UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(UPLOAD_PHOTO_MAKE_VIDEO_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
 
 
 }

@@ -21,11 +21,8 @@ import com.pictureair.photopass.entity.PhotoInfo;
 public class DisneyVideoTool {
     private static final String TAG = "DisneyVideoTool";
     private static final String IS_ONE_GO_TO_DISNEY_VIDEO = "is_one_go_to_disney_video";
-    private static Context context = MyApplication.getInstance().getApplicationContext();
     public static final String IS_BOUGHT = "is_bought";
     public static final String FROM_STORY = "from_story";
-
-//    public static final String TEST_MP4_URL = "http://192.168.8.3:3006/test.mp4";//测试链接
 
     /**
      * 1、第一次使用，则直接进入无视频引导页面，引导用户如何制作； 2、非第一次使用且没有乐拍通照片，则进入介绍页面；
@@ -89,21 +86,4 @@ public class DisneyVideoTool {
         context.startActivity(intent);
     }
 
-    /**
-     * 将选择的照片上传到服务器 合成视频
-     */
-    public static boolean photoSendServer(List<PhotoInfo> listPhoto) {
-        SharedPreferences sharedPreferences = null;
-        sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        if (null == listPhoto) {
-            PictureAirLog.e(TAG, "listPhoto空的");
-            return false;
-        } else {
-            String userid = sharedPreferences.getString(Common.USERINFO_ID, "");
-            String[] photos = new String[listPhoto.size()];
-            //此处上传照片id到服务器
-//            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    }
 }

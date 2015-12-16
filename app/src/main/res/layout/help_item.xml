@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/pp_light_gray_normal" />
+
+    <TextView
+        android:id="@+id/tv_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="What is the PhotoPass?"
+        android:layout_below="@+id/view_top"
+        android:textColor="@color/pp_blue"
+        android:textSize="@dimen/text_size_12" />
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/tv_question"
+        android:layout_marginLeft="20dp"
+        android:background="@color/pp_light_gray_normal" />
+
+    <TextView
+        android:id="@+id/tv_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/v_line"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="1.balabalbalabala"
+        android:textColor="@color/pp_light_gray_press"
+        android:textSize="@dimen/text_size_10" />
+
+
+</RelativeLayout>
