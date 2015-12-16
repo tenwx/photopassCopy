@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="5dp" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,35 +14,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:paddingLeft="5dp"
+            android:layout_marginLeft="@dimen/pp_margin_16"
+            android:paddingTop="@dimen/pp_padding_20"
+            android:paddingBottom="@dimen/pp_padding_20"
             android:text="treasureclll"
-            android:textColor="@color/gray2"
-            android:textSize="15sp" />
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:id="@+id/discover_makegift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
             android:adjustViewBounds="true"
-            android:padding="5dp"
             android:visibility="gone"
             android:src="@drawable/discover_magic_shoot" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="5dp" >
+        android:layout_height="150dp" >
 
         <ImageView
             android:id="@+id/discover_location_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/place_name"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop" />
 
@@ -54,7 +49,7 @@
 
             <RelativeLayout 
                 android:id="@+id/empty_view"
-                android:layout_width="50dp"
+                android:layout_width="82dp"
                 android:layout_alignParentRight="true"
                 android:layout_height="match_parent">
                 
@@ -86,10 +81,12 @@
 
         <LinearLayout
             android:id="@+id/discover_right_tool_bar"
-            android:layout_width="50dp"
+            android:layout_width="82dp"
             android:layout_height="match_parent"
             android:layout_alignBottom="@id/discover_location_photo"
             android:layout_alignParentRight="true"
+            android:paddingLeft="@dimen/pp_margin_16"
+            android:paddingRight="@dimen/pp_margin_16"
             android:background="@color/ppp_cover"
             android:gravity="center_horizontal"
             android:orientation="vertical" >
@@ -100,8 +97,6 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
-                android:paddingLeft="13dp"
-                android:paddingRight="13dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/discover_no_like" />
@@ -112,8 +107,6 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
-                android:paddingLeft="13dp"
-                android:paddingRight="13dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/direction_icon" />
 
@@ -134,8 +127,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:paddingLeft="13dp"
-                android:paddingRight="13dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/discover_show_detail" />
         </LinearLayout>

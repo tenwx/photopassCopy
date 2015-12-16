@@ -282,10 +282,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					System.out.println("onclick with reload");
 					dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
 					if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
-						API.getLocationInfo(getActivity(), handler);//获取所有的location
+						API1.getLocationInfo(getActivity(), app.getTokenId(), handler);//获取所有的location
 					} else {//地址获取成功，但是照片获取失败
 						Message message = handler.obtainMessage();
-						message.what = API.GET_LOCATION_SUCCESS;
+						message.what = API1.GET_ALL_LOCATION_SUCCESS;
 						message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
 						handler.sendMessage(message);
 					}
@@ -445,7 +445,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		isLoading = true;
 		//获取地点信息
 		if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
-			API1.getLocationInfo(getActivity(), handler);//获取所有的location
+			API1.getLocationInfo(getActivity(), app.getTokenId(), handler);//获取所有的location
 		}else {
 			Message message = handler.obtainMessage();
 			message.what = API1.GET_ALL_LOCATION_SUCCESS;

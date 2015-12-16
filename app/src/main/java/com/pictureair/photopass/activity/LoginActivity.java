@@ -57,7 +57,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
     private SharedPreferences appPreferences;
     private MyToast myToast;
     // 区号,国家
-    private String countryCode = "+86";
+    private String countryCode = "86";
     private String country = "";
     private RegisterPage registerPage;
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
@@ -212,7 +212,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
                         break;
 
                     case AppUtil.PWD_AVAILABLE:// 密码可用
-                        new SignAndLoginUtil(LoginActivity.this, userName.getText().toString().trim(),
+                        new SignAndLoginUtil(LoginActivity.this, countryCode + userName.getText().toString().trim(),
                                 password.getText().toString(), false, false, null, null, null, null, this);// 登录
                         break;
 

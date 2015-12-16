@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="http_error_code_401">连接服务器失败，请检查网络</string>
-
     <string name="http_error_code_6000">参数输入不完整</string>
     <string name="http_error_code_6001">用户名未输入</string>
     <string name="http_error_code_6002">email未输入</string>
@@ -176,4 +175,16 @@
     <string name="http_error_code_5027">手机号格式错误</string>
     <string name="http_error_code_5028">移除购物车项失败</string>
     <string name="http_error_code_5029">更新购物车项失败</string>
+    <string name="http_error_code_6145">查询帮助信息出错</string>
+    <string name="http_error_code_6146">添加帮助信息出错</string>
+    <string name="http_error_code_6147">删除帮助信息出错</string>
+    <string name="http_error_code_6148">修改帮助信息出错</string>
+    <string name="http_error_code_6149">查询视频出错</string>
+    <string name="http_error_code_6150">添加视频出错</string>
+    <string name="http_error_code_6151">查询授权信息出错</string>
+    <string name="http_error_code_6152">授权信息无效</string>
+    <string name="http_error_code_6153">未授权</string>
+    <string name="http_error_code_5030">用户未登录</string>
+    <string name="http_error_code_5031">购物车内放入照片查找错误！</string>
+    <string name="http_error_code_5032">提交订单，购物车项为空！</string>
 </resources>

@@ -31,7 +31,7 @@ import com.pictureair.photopass.activity.UpdateCallback;
 import com.pictureair.photopass.blur.UtilOfDraw;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -237,8 +237,8 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 		//获得经纬度坐标
 		double lat_a = info.latitude;// 纬度
 		double lng_a = info.longitude;// 经度
-		double lat_b = mLocation.getLatitude();
-		double lng_b = mLocation.getLongitude();
+		double lat_b = (mLocation!= null) ? mLocation.getLatitude() : 0;
+		double lng_b = (mLocation!= null) ? mLocation.getLongitude() : 0;
 //		double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
 		double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
 		System.out.println("distance--in adapter--------->"+distance);
@@ -332,10 +332,10 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 				mHandler.sendEmptyMessage(STOPLOCATION);
 				if (list.get(position).islove == 1) {
 					Log.d(TAG, "is love need remove");
-					API.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "remove", position, mHandler);
+					API1.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "remove", position, mHandler);
 				}else {
 					Log.d(TAG, "not love need add");
-					API.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "add", position, mHandler);
+					API1.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "add", position, mHandler);
 				}
 			}else {
 				final Message msg = new Message();

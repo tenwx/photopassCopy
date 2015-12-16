@@ -25,9 +25,10 @@ import java.util.ArrayList;
  */
 public class API1 {
     private static final String TAG = "API";
+    private static final String APP_KEY = "photoPass";
+    private static final String APP_SECRET = "pictureworks";
 
-    public static final int GET_PPS_SUCCESS = 351;
-    public static final int GET_PPS_FAILED = 350;
+
 
     public static final int GET_PPP_SUCCESS = 371;
     public static final int GET_PPP_FAILED = 370;
@@ -51,6 +52,9 @@ public class API1 {
     public static final int SIGN_SUCCESS = 1021;
     public static final int SIGN_FAILED = 1020;
 
+    public static final int GET_PPS_SUCCESS = 1031;
+    public static final int GET_PPS_FAILED = 1030;
+
     /**
      * Story
      */
@@ -72,6 +76,17 @@ public class API1 {
     public static final int ADD_SCANE_CODE_FAIED = 2040;
     public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
     public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
+
+
+    /**
+     * 发现
+     */
+    public static final int GET_FAVORITE_LOCATION_FAILED = 3000;
+    public static final int GET_FAVORITE_LOCATION_SUCCESS = 3001;
+
+    public static final int EDIT_FAVORITE_LOCATION_SUCCESS = 3020;
+    public static final int EDIT_FAVORITE_LOCATION_FAILED = 3021;
+
 
     //Shop模块 start
     public static final int GET_STOREID_FAILED = 4000;
@@ -122,6 +137,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.TERMINAL, "android");
         params.put(Common.UUID, Installation.id(context));
+        params.put(Common.APP_ID, AppUtil.md5(APP_KEY + APP_SECRET));
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
 
             @Override
@@ -165,9 +181,9 @@ public class API1 {
         final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         RequestParams params = new RequestParams();
         String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
+        params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-        params.put(Common.USERINFO_TOKENID, tokenId);
 
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
@@ -232,8 +248,9 @@ public class API1 {
      * @param password pwd
      * @param handler  handler
      */
-    public static void Register(final String userName, final String password, final Handler handler) {
+    public static void Register(final String userName, final String password, String tokenId, final Handler handler) {
         final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REGISTER, params, new HttpCallback() {
@@ -258,8 +275,10 @@ public class API1 {
      * @param context
      * @param handler
      */
-    public static void getLocationInfo(final Context context, final Handler handler) {
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, new HttpCallback() {
+    public static void getLocationInfo(final Context context, String tokenId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ALL_LOCATIONS_OF_ALBUM_GROUP, params, new HttpCallback() {
             @Override
             public void onStart() {
                 super.onStart();
@@ -325,9 +344,10 @@ public class API1 {
      * @param code
      * @param handler
      */
-    public static void checkCodeAvailable(String code, final Handler handler) {
+    public static void checkCodeAvailable(String code, String tokenId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.CODE, code);
+        params.put(Common.USERINFO_TOKENID, tokenId);
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -352,7 +372,7 @@ public class API1 {
      * @param handler
      */
     public static void addScanCodeToUser(String url, RequestParams params, final String type, final Handler handler){
-        HttpUtil1.asyncGet(url, params, new HttpCallback() {
+        HttpUtil1.asyncPost(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -370,6 +390,79 @@ public class API1 {
             }
         });
     }
+
+
+    /**
+     * 获取已收藏的地点信息
+     * @param tokenId
+     * @param handler
+     */
+    public static void getFavoriteLocations(String tokenId, final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.d(TAG, "get favorite locations success" + jsonObject.toString());
+                handler.obtainMessage(GET_FAVORITE_LOCATION_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_FAVORITE_LOCATION_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
+     * 收藏或者取消收藏地址获取已收藏的地点信息
+     * @param tokenId  必填，token
+     * @param locationId  locationId:string，必填，location的locationId
+     * @param action  必填，操作（可选值：add，remove），收藏或取消收藏
+     * @param handler
+     *
+     */
+    public static void editFavoriteLocations(String tokenId, String locationId,
+                                             String action, final int position, final Handler handler) {
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.LOCATION_ID, locationId);
+        params.put(Common.ACTION, action);
+        HttpUtil1.asyncPost(
+                Common.BASE_URL_TEST + Common.EDIT_FAVORITE_LOCATION, params,
+                new HttpCallback() {
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        PictureAirLog.out("edit favorite location start-->");
+                    }
+
+                    @Override
+                    public void onSuccess(JSONObject jsonObject) {
+                        super.onSuccess(jsonObject);
+                        PictureAirLog
+                                .out("edit favorite location info success ----->"
+                                        + jsonObject.toString());
+                        handler.obtainMessage(EDIT_FAVORITE_LOCATION_SUCCESS,
+                                position, 0, jsonObject).sendToTarget();
+
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+                        super.onFailure(status);
+                        PictureAirLog
+                                .out("get favorite location info failed----->"
+                                        + status);
+                        handler.obtainMessage(EDIT_FAVORITE_LOCATION_FAILED,
+                                status, 0).sendToTarget();
+                    }
+                });
+    }
+
+
 
     /***************************************我的模块 start**************************************/
 
@@ -455,9 +548,7 @@ public class API1 {
     public static void getPPSByUserId(String tokenId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-
-
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);

@@ -95,6 +95,7 @@ public class Common {
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
+    public static final String APP_ID = "appID";
     public static final String USERINFO_NAME = "userInfo";
     public static final String USERINFO_ID = "_id";//api需要的userId
     public static final String USERINFO_TOKENID = "tokenId";//api需要的tokenId
@@ -190,6 +191,9 @@ public class Common {
     public static final String HELP_QUESTION_TABLE = "help_question";
     public static final String FRAME_STICKER_TABLES = "frame_sticker";
     public static final int PHOTOPASS_INFO_VERSION = 1;
+    public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
+    public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
+
 
     //相册名称字段
     public static final String ALBUM_ALL = "All";
