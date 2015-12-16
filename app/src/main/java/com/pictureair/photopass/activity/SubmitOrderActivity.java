@@ -23,7 +23,6 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -143,11 +142,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     updatephotolist.set(0, itemInfo);
                     //创建jsonobject对象
                     final int position = msg.arg1;
-                    com.alibaba.fastjson.JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(updatephotolist, list.get(position / 10), list.get(position / 10).getQty());
-                    System.out.println(cartItem.toString());
+//                    com.alibaba.fastjson.JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(updatephotolist, list.get(position / 10), list.get(position / 10).getQty());
+//                    System.out.println(cartItem.toString());
                     RequestParams params = new RequestParams();
                     params.put(Common.USER_ID, sharedPreferences.getString(Common.USERINFO_ID, ""));
-                    params.put(Common.ITEM, cartItem);
+//                    params.put(Common.ITEM, cartItem);
                     HttpUtil.post(Common.BASE_URL + Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
 
                         @Override

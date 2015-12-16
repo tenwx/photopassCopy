@@ -15,9 +15,10 @@ public class GoodsInfo1 implements Serializable{
     private String nameAlias;//string,商品别名
     private String description;//string,商品描述
     private int embedPhotosCount;//int,商品合成所需图片数量
-    private List<GoodInfoPrictures> prictures;//商品图片信息
+    private List<GoodInfoPictures> pictures;//商品图片信息
     private int price;//int, 商品价格
     private int sequence;//int,商品序号
+    public String good_SVG_Info;//SVG信息
 
     public String getGoodsKey() {
         return goodsKey;
@@ -75,12 +76,12 @@ public class GoodsInfo1 implements Serializable{
         this.embedPhotosCount = embedPhotosCount;
     }
 
-    public List<GoodInfoPrictures> getPrictures() {
-        return prictures;
+    public List<GoodInfoPictures> getPictures() {
+        return pictures;
     }
 
-    public void setPrictures(List<GoodInfoPrictures> prictures) {
-        this.prictures = prictures;
+    public void setPictures(List<GoodInfoPictures> pictures) {
+        this.pictures = pictures;
     }
 
     public int getPrice() {
@@ -97,5 +98,13 @@ public class GoodsInfo1 implements Serializable{
 
     public void setSequence(int sequence) {
         this.sequence = sequence;
+    }
+
+    public String getGood_SVG_Info() {
+        return good_SVG_Info;
+    }
+
+    public void setGood_SVG_Info(String good_SVG_Info) {
+        this.good_SVG_Info = good_SVG_Info;
     }
 }

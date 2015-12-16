@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.BannerViewAdapter;
-import com.pictureair.photopass.entity.GoodInfoPrictures;
+import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
 
@@ -51,7 +51,7 @@ public class BannerView_Detail extends LinearLayout {
         imageLoader = ImageLoader.getInstance();
     }
 
-    public void findimagepath(List<GoodInfoPrictures> list) {
+    public void findimagepath(List<GoodInfoPictures> list) {
         // TODO Auto-generated method stub
         adapter = new BannerViewAdapter(getContext(), bannerViewList);
         if (list == null || list.size() <= 0) {

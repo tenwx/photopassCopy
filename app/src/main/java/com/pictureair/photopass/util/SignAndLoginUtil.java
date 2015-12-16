@@ -9,6 +9,7 @@ import android.os.Message;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginCallBack;
+import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -165,7 +166,7 @@ public class SignAndLoginUtil {
 
                     break;
 
-
+                case API1.GET_CART_FAILED:
                 case API.GET_PPP_FAILED:
                 case API.GET_STOREID_FAILED:
                     customProgressDialog.dismiss();
@@ -176,7 +177,6 @@ public class SignAndLoginUtil {
                      * 获取pp成功之后，需要放入sharedPrefence中
                      */
                     JSONObject ppsJsonObject = (JSONObject) msg.obj;
-                    //				Log.d(TAG, "pps===" + ppsJsonObject);
                     if (ppsJsonObject.has("PPList")) {
                         try {
                             JSONArray pplists = ppsJsonObject
@@ -205,8 +205,24 @@ public class SignAndLoginUtil {
                     editor.putString(Common.CURRENCY, jsonObject.getString("currency"));
                     editor.putString(Common.STORE_ID, jsonObject.getString("storeId"));
                     editor.apply();
+                    API1.getCarts(handler);
 
+
+                    break;
+                case API1.GET_CART_SUCCESS:
+                    PictureAirLog.v(TAG, "GET_CART_SUCCESS" + msg.obj.toString());
+                    CartItemInfoJson cartItemInfoJson = JsonTools.parseObject((com.alibaba.fastjson.JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                    if (cartItemInfoJson == null) {
+                        return;
+                    }
+                    //保存购物车数量
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+                    Editor ed = sharedPreferences.edit();
+                    ed.putInt(Common.CART_COUNT, cartItemInfoJson.getTotalCount());
+                    ed.commit();
+                    //登陆成功
                     loginsuccess();
+
                     break;
 
                 case API.MODIFY_PWD_FAILED:

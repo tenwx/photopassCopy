@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * 所有与后台的交互都封装到此类
  */
 public class API1 {
-    private static final String TAG = "API";
+    private static final String TAG = "API==>>";
 
     public static final int GET_PPS_SUCCESS = 351;
     public static final int GET_PPS_FAILED = 350;
@@ -50,6 +50,9 @@ public class API1 {
 
     public static final int SIGN_SUCCESS = 1021;
     public static final int SIGN_FAILED = 1020;
+
+    public static final int LOGOUT_SUCCESS = 1031;
+    public static final int LOGOUT_FAILED = 1030;
 
     /**
      * Story
@@ -111,7 +114,6 @@ public class API1 {
 
 
 
-
     /**
      * 发送设备ID获取tokenId
      *
@@ -120,6 +122,7 @@ public class API1 {
      */
     public static void getTokenId(final Context context, final Handler handler) {
         RequestParams params = new RequestParams();
+        params.put(Common.APP_ID,MyApplication.getAppId());
         params.put(Common.TERMINAL, "android");
         params.put(Common.UUID, Installation.id(context));
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
@@ -164,10 +167,9 @@ public class API1 {
     public static void Login(final Context context, String userName, String password, final Handler handler) {
         final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         RequestParams params = new RequestParams();
-        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-        params.put(Common.USERINFO_TOKENID, tokenId);
 
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
@@ -189,6 +191,32 @@ public class API1 {
                 handler.obtainMessage(LOGIN_FAILED, status, 0).sendToTarget();
             }
         });
+    }
+
+    /**
+     * 登出账号
+     *
+     * @param handler handler
+     */
+    public static void Logout(final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(LOGOUT_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.sendEmptyMessage(LOGOUT_FAILED);
+
+            }
+        });
+
+
     }
 
     /**
@@ -234,6 +262,7 @@ public class API1 {
      */
     public static void Register(final String userName, final String password, final Handler handler) {
         final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REGISTER, params, new HttpCallback() {
@@ -255,6 +284,7 @@ public class API1 {
 
     /**
      * 获取所有的地址信息
+     *
      * @param context
      * @param handler
      */
@@ -286,6 +316,7 @@ public class API1 {
 
     /**
      * 获取用户照片
+     *
      * @param tokenId
      * @param handler
      * @param timeString 根据时间获取图片信息
@@ -322,11 +353,13 @@ public class API1 {
 
     /**
      * 检查扫描的结果是否正确，并且返回是否已经被使用
+     *
      * @param code
      * @param handler
      */
     public static void checkCodeAvailable(String code, final Handler handler) {
         RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CODE, code);
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
             @Override
@@ -346,12 +379,13 @@ public class API1 {
 
     /**
      * 绑定扫描码到用户
+     *
      * @param url
      * @param params
      * @param type
      * @param handler
      */
-    public static void addScanCodeToUser(String url, RequestParams params, final String type, final Handler handler){
+    public static void addScanCodeToUser(String url, RequestParams params, final String type, final Handler handler) {
         HttpUtil1.asyncGet(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -455,8 +489,6 @@ public class API1 {
     public static void getPPSByUserId(String tokenId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-
-
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -616,15 +648,18 @@ public class API1 {
      * @param handler handler
      */
     public static void getGoods(final Handler handler) {
+        PictureAirLog.v(TAG, "getGoods");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncGet(Common.GET_GOODS, params, new HttpCallback() {
-            @Override
-            public void onSuccess(String result) {
-                super.onSuccess(result);
-                handler.obtainMessage(GET_GOODS_SUCCESS, result).sendToTarget();
+        params.put(Common.LANGUAGE,MyApplication.getInstance().getLanguageType());
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_GOODS, params, new HttpCallback() {
 
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_GOODS_SUCCESS, jsonObject).sendToTarget();
             }
+
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
@@ -642,10 +677,10 @@ public class API1 {
      * @param goodId  商品编号参数（必须）
      */
     public static void getSingleGoods(String tokenId, String storeId, String goodId, final Handler handler) {
-        String url = Common.GET_SINGLE_GOOD + storeId + "/goods/" + goodId;
+        String url = Common.BASE_URL_TEST + Common.GET_SINGLE_GOOD + storeId + "/goods/" + goodId;
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-
+        params.put(Common.LANGUAGE,MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncGet(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -670,8 +705,10 @@ public class API1 {
      * @param handler handler
      */
     public static void getCarts(final Handler handler) {
+        PictureAirLog.v(TAG, "getCarts");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LANGUAGE,MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -699,14 +736,16 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void addToCart(String goodsKey, String qty, Boolean isJustBuy, JSONArray embedPhotos, final Handler handler) {
+    public static void addToCart(String goodsKey, int qty, Boolean isJustBuy, JSONArray embedPhotos, final Handler handler) {
+        PictureAirLog.v(TAG, "addToCart");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("goodsKey", goodsKey);
+        params.put(Common.GOODS_KEY, goodsKey);
         params.put(Common.IS_JUST_BUY, isJustBuy);
         params.put(Common.QTY, qty);
-        params.put(Common.EMBEDPHOTOS, embedPhotos);
-
+        if (embedPhotos != null) {
+            params.put(Common.EMBEDPHOTOS, embedPhotos.toString());
+        }
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_TO_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -733,13 +772,16 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void modifyCart(String cartId, String goodsKey, String qty, JSONArray embedPhotos, final Handler handler) {
+    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler) {
+        PictureAirLog.v(TAG, "modifyCart");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("goodsKey", goodsKey);
+        params.put(Common.GOODS_KEY, goodsKey);
+        if (embedPhotos != null) {
+            params.put(Common.EMBEDPHOTOS, embedPhotos.toString());
+        }
         params.put(Common.QTY, qty);
-        params.put(Common.EMBEDPHOTOS, embedPhotos);
-        String url = Common.BASE_URL_TEST + Common.ADD_TO_CART + "/" + cartId;
+        String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
         HttpUtil1.asyncPost(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -766,7 +808,7 @@ public class API1 {
     public static void removeCartItems(String cartId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        String url = Common.BASE_URL_TEST + Common.ADD_TO_CART + "/" + cartId;
+        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART + "/" + cartId;
         HttpUtil1.asyncDelete(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -784,6 +826,8 @@ public class API1 {
         });
 
     }
+
+
 
 
     /***************************************Shop模块 end**************************************/

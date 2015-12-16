@@ -30,7 +30,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private ImageView chineseSeleted;
     private ImageView englishSeleted;
 
-    String languageType = Common.SIMPLE_CHINESE;   // 0表示英语，1表示简体中文。
+    String languageType = Common.SIMPLE_CHINESE;   // en表示英语，ch表示简体中文。
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
