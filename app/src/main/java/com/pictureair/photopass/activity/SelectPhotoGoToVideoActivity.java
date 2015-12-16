@@ -57,7 +57,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
     private SelectPhotoGoToVideoAdapter selectPhotoGoToVideoAdapter;
     private GridView gridView;
     //null photo
-    private ImageView rl_back;
     private Button btnGoToSelectPhoto;
     private LinearLayout llNullPhoto;
 
@@ -90,7 +89,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         rtLayout = (ImageView) findViewById(R.id.rlrt);
         gridView = (GridView) findViewById(R.id.gridView_select_photo);
         btnGoToSelectPhoto = (Button) findViewById(R.id.btn_goto_select);
-        rl_back = (ImageView) findViewById(R.id.back1);
 
         // 初始化数据
         if (myApplication.needScanPhoto()) {// 如果刚进入这个页面，则onresume不需要重新扫描文件，所以直接将变量设为false，以免造成oncreate和onresume同时进行，造成collection数组越界
@@ -123,7 +121,7 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
         okButton.setEnabled(false);
 
         btnGoToSelectPhoto.setOnClickListener(this);
-        rl_back.setOnClickListener(this);
+//        rl_back.setOnClickListener(this);
     }
 
     /**
@@ -176,9 +174,6 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
                 //将mainTab切换到shop Tab
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                 MainTabActivity.changeToShopTab = true;
-            case R.id.back1:
-                finish();
-                break;
 
             default:
                 break;

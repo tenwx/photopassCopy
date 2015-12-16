@@ -15,27 +15,27 @@
         android:id="@+id/tv_loding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/is_loading"
-        android:textSize="@dimen/text_small_size"
         android:layout_centerInParent="true"
-        />
+        android:text="@string/is_loading"
+        android:textSize="@dimen/text_small_size" />
 
     <ImageButton
         android:id="@+id/btn_play_or_stop"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_centerInParent="true"
-        android:background="#0000003D"
+        android:background="@color/transparent"
         android:clickable="false"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/play" />
 
     <LinearLayout
         android:id="@+id/ll_controler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#7f000000"
-        android:gravity="center"
+        android:background="@color/black2"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
@@ -45,17 +45,21 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:text="00:00"
+            android:textColor="@color/white"
             android:textSize="12sp" />
 
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
+            android:layout_height="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:paddingLeft="5dip"
-            android:paddingRight="5dip" />
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:progressDrawable="@drawable/seekbar_content"
+            android:thumb="@color/transparent" />
 
         <TextView
             android:id="@+id/duration"
@@ -64,6 +68,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="20dp"
             android:text="00:00"
+            android:textColor="@color/white"
             android:textSize="12sp" />
     </LinearLayout>
 

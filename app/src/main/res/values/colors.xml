@@ -95,5 +95,7 @@
     <color name="pp_orange">#ff4605</color>
     <!-- 紫色，比如编辑页面的字体颜色-->
     <color name="pp_purple">#5f23c4</color>
+    <!-- 半透明黑色，视频播放底部进度条 -->
+    <color name="black2">#7f000000</color>
 
 </resources>
