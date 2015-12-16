@@ -17,10 +17,6 @@
  */
 package com.pictureair.photopass.GalleryWidget;
 
-import java.lang.ref.WeakReference;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -36,6 +32,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressLint("NewApi")
 public class TouchImageView extends ImageView {
@@ -393,10 +393,16 @@ public class TouchImageView extends ImageView {
         float scaleX =  width / bmWidth;
         float scaleY = height / bmHeight;
         scale = Math.min(scaleX, scaleY);
-        matrix.setScale(scale, scale);
-        //minScale = scale;
-        setImageMatrix(matrix);
-        saveScale = 1f;
+
+        if (saveScale == 1) {
+        	/*因为图片显示完之后，此控件位置还没定，所以onMeasure还在进行中。如果这个时候saveScale不为1的话，会被onMeasure重置为1，导致
+        	 * 双击放大了，又被瞬间重置为初始状态的现象。因此需要判断，如果为1，则进行matrix，如果不为1，不对图像进行matrix处理*/
+
+            matrix.setScale(scale, scale);
+            //minScale = scale;
+            setImageMatrix(matrix);
+            saveScale = 1f;
+        }
 
         // Center the image
         redundantYSpace = height - (scale * bmHeight) ;
@@ -404,12 +410,14 @@ public class TouchImageView extends ImageView {
         redundantYSpace /= (float)2;
         redundantXSpace /= (float)2;
 
-        matrix.postTranslate(redundantXSpace, redundantYSpace);
-
         origWidth = width - 2 * redundantXSpace;
         origHeight = height - 2 * redundantYSpace;
         calcPadding();
-        setImageMatrix(matrix);
+        if (saveScale == 1) {
+            matrix.postTranslate(redundantXSpace, redundantYSpace);
+            setImageMatrix(matrix);
+        }
+
     }
 
     private double distanceBetween(PointF left, PointF right)

@@ -7,6 +7,8 @@ import android.os.Environment;
  */
 public class Common {
     public static final String APP_NAME = "appName";
+    public static final String APP_KEY = "photoPass";
+    public static final String APP_SECRET = "pictureworks";
     public static String APPLICATION_NAME = "pictureAir";// app英文名字
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
@@ -99,6 +101,7 @@ public class Common {
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
+    public static final String APP_ID = "appID";
     public static final String USERINFO_NAME = "userInfo";
     public static final String USERINFO_ID = "_id";//api需要的userId
     public static final String USERINFO_TOKENID = "tokenId";//api需要的tokenId
@@ -137,7 +140,9 @@ public class Common {
     public static final String PHOTOIDS = "photoIds";
     //	public static final String CART = "cart";
     public static final String CART_ITEM_ID = "cartItemId";
+    public static final String GOODS_KEY = "goodsKey";
     public static final String CART_ITEM_IDS = "cartItemIds";
+    public static final String EMBED_PHOTOS = "embedPhotos";
     public static final String ITEM = "item";
     public static final String CODE = "code";
     public static final String CODE_TYPE = "codeType";
@@ -195,6 +200,9 @@ public class Common {
     public static final String HELP_QUESTION_TABLE = "help_question";
     public static final String FRAME_STICKER_TABLES = "frame_sticker";
     public static final int PHOTOPASS_INFO_VERSION = 1;
+    public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
+    public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
+
 
     //相册名称字段
     public static final String ALBUM_ALL = "All";
@@ -220,6 +228,7 @@ public class Common {
     public static final String LANGUAGE_TYPE = "languageType";
     public static final String LAST_PHOTO_URL = "LastPhotoUrl";
     public static final String GET_LAST_CONTENT_TIME = "lastContentTime";
+    public static final String LANGUAGE = "language";
 
     //app的语言
     public static final String ENGLISH = "en";//英语

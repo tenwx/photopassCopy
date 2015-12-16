@@ -33,6 +33,7 @@ public class MyApplication extends Application {
     // public BDLocation mLocation;
     private static MyApplication instance;
     private static SharedPreferences userInfosharedPreferences;
+    private static String appId;
     private static String tokenId;
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存

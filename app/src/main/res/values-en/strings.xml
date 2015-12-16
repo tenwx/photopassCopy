@@ -178,7 +178,7 @@
     <string name="frames">Overlay</string>
     <string name="magicbrush">Filter</string>
     <string name="decoration">Sticker</string>
-    <string name="rotate">Text</string>
+    <string name="rotate">Rotate</string>
     <string name="selectionpp">Select PhotoPass</string>
     <string name="addpp">Add PhotoPass</string>
     <string name="scanpp">Scan Your Disney PhotoPass</string>
@@ -433,8 +433,8 @@
     <!--<string name="title_update_qq">Update QQ</string>-->
     <string name="hint_text_email">Email</string>
     <string name="hint_text_qq">QQ</string>
-    <string name="font">Font</string>
-    <string name="color">Color</string>
+    <string name="rotate_left">Left 90</string>
+    <string name="rotate_right">Right 90</string>
     <string name="copyright">迪彩公司 版权所有</string>
     <string name="select_day">Select Date</string>
     <string name="calendar_year">-</string>
@@ -537,5 +537,6 @@
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
 
     <string name="storypage_no_photo">There is no photo\nin your gallery!</string>
-
+<string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
+ Proin sodales pulvinar tempor.</string>
 </resources>

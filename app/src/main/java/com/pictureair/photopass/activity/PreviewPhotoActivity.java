@@ -39,6 +39,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
+import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -53,16 +54,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.crypto.NoSuchPaddingException;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -459,25 +459,35 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     break;
                 case 1:
-                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[1024];
-                    int len = 0;
-                    FileInputStream inStream;
+//                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+//                    byte[] buffer = new byte[1024];
+//                    int len = 0;
+//                    FileInputStream inStream;
+//                    try {
+//                        inStream = new FileInputStream(dirFile);
+//                        while ((len = inStream.read(buffer)) != -1) {
+//                            outStream.write(buffer, 0, len);
+//                        }
+//                        outStream.close();
+//                        inStream.close();
+//                    } catch (FileNotFoundException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+                    byte[] arg2 = null;
                     try {
-                        inStream = new FileInputStream(dirFile);
-                        while ((len = inStream.read(buffer)) != -1) {
-                            outStream.write(buffer, 0, len);
-                        }
-                        outStream.close();
-                        inStream.close();
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                        arg2 = AESKeyHelper.decrypt(dirFile.toString(), Common.AES_ENCRYPTION_KEY);
+                    } catch (InvalidKeyException | NoSuchAlgorithmException
+                            | NoSuchPaddingException | IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    byte[] arg2 = outStream.toByteArray();
+
+
+//                        byte[] arg2 = outStream.toByteArray();
                     bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
                     if (null != bitmap2) {
                         progressDialog.dismiss();
@@ -618,27 +628,35 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-                    // TODO Auto-generated method stub
-                    BufferedOutputStream stream = null;
+//                    // TODO Auto-generated method stub
+//                    BufferedOutputStream stream = null;
+//                    try {
+//                        PictureAirLog.v(TAG,dirFile.toString());
+//                        FileOutputStream fsStream = new FileOutputStream(dirFile);
+//                        stream = new BufferedOutputStream(fsStream);
+//                        stream.write(arg2);
+//                    } catch (Exception e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    } finally {
+//                        try {
+//                            if (stream != null) {
+//                                stream.flush();
+//                                stream.close();
+//                            }
+//                        } catch (IOException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
+//                        PictureAirLog.v(TAG,"done");
+//                    }
                     try {
-                        PictureAirLog.v(TAG,dirFile.toString());
-                        FileOutputStream fsStream = new FileOutputStream(dirFile);
-                        stream = new BufferedOutputStream(fsStream);
-                        stream.write(arg2);
-                    } catch (Exception e) {
+                        AESKeyHelper.encrypt(arg2, dirFile.toString(), Common.AES_ENCRYPTION_KEY);
+                    } catch (InvalidKeyException
+                            | NoSuchAlgorithmException
+                            | NoSuchPaddingException | IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                    } finally {
-                        try {
-                            if (stream != null) {
-                                stream.flush();
-                                stream.close();
-                            }
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        PictureAirLog.v(TAG,"done");
                     }
                     bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
                     mHandler.sendEmptyMessage(0);
@@ -957,12 +975,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     Log.d(TAG, "cancel love");
                     pictureAirDbManager.setPictureLove(photoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), photoInfo.photoPathOrURL, false);
                     photoInfo.isLove = 0;
-                    loveImageButton.setImageResource(R.drawable.preview_photo_love_nor);
+                    loveImageButton.setImageResource(R.drawable.discover_no_like);
                 } else {
                     Log.d(TAG, "add love");
                     pictureAirDbManager.setPictureLove(photoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), photoInfo.photoPathOrURL, true);
                     photoInfo.isLove = 1;
-                    loveImageButton.setImageResource(R.drawable.preview_photo_love_sele);
+                    loveImageButton.setImageResource(R.drawable.discover_like);
                 }
                 break;
 

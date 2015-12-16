@@ -2,7 +2,6 @@ package com.pictureair.photopass.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.RelativeLayout;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 
@@ -37,7 +37,6 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 	 * 
 	 * @param context
 	 * @param arraylist 相册路径数组
-	 * @param flag 每个相册的标记
 	 */
 	public ViewPhotoGridViewAdapter(Context context, ArrayList<PhotoInfo> arraylist)
 	{
@@ -70,8 +69,8 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 
 	/**
 	 * 开始选择照片
-	 * @param flag1 false：取消选择状态，true：显示选择状态
-	 * @param flag2 false：默认选择的图片，true：选中的时候的图片
+	 * @param isChecked false：取消选择状态，true：显示选择状态
+	 * @param isSelected false：默认选择的图片，true：选中的时候的图片
 	 */
 	public void startSelectPhoto(int isChecked, int isSelected) {
 		PhotoInfo selectPhotoItemInfo;
@@ -115,8 +114,8 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 
 	public View getView(int position,View convertView,ViewGroup parent)
 	{
-//				Log.d(TAG, "getView----------->" + arrayList.get(position).photoPathOrURL);
-				Log.d(TAG, "getView----------->" + position);
+//				PictureAirLog.v(TAG, "getView----------->" + arrayList.get(position).photoPathOrURL);
+				PictureAirLog.v(TAG, "getView----------->" + position);
 		requestwidth = (ScreenUtil.getScreenWidth(c)-4*5)/3;//（屏宽-4*3）/3,3为间隔间距
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(requestwidth, requestwidth);
 
@@ -134,15 +133,15 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 			convertView.setTag(holderView);
 		}
 		PhotoInfo selectPhotoItemInfo = arrayList.get(position);
-		if (position==0) {
-			holderView.imageview_select.setLayoutParams(params);
-			holderView.imageview_select.setScaleType(ScaleType.CENTER);
-			holderView.imageview_maskImageView.setVisibility(View.INVISIBLE);
-			holderView.imageView_photo.setVisibility(View.INVISIBLE);
-			holderView.imageview_select.setVisibility(View.VISIBLE);
-			holderView.imageview_select.setImageResource(R.drawable.camera_in_album);
-			holderView.imageview_select.setBackgroundColor(Color.WHITE);
-		}else {
+//		if (position==0) {
+//			holderView.imageview_select.setLayoutParams(params);
+//			holderView.imageview_select.setScaleType(ScaleType.CENTER);
+//			holderView.imageview_maskImageView.setVisibility(View.INVISIBLE);
+//			holderView.imageView_photo.setVisibility(View.INVISIBLE);
+//			holderView.imageview_select.setVisibility(View.VISIBLE);
+//			holderView.imageview_select.setImageResource(R.drawable.camera_in_album);
+//			holderView.imageview_select.setBackgroundColor(Color.WHITE);
+//		}else {
 			holderView.imageView_photo.setLayoutParams(params);//设置图片显示的大小，使得每张图片显示为正方形
 			holderView.imageview_maskImageView.setLayoutParams(params);//设置蒙版的大小
 			holderView.imageView_photo.setScaleType(ScaleType.CENTER_CROP);
@@ -177,7 +176,6 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 					UniversalImageLoadTool.loadImage(selectPhotoItemInfo.photoThumbnail, holderView.imageView_photo);
 				}
 			}
-		}
 		return convertView;
 	}
 	class HolderView{

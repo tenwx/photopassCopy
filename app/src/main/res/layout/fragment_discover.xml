@@ -23,6 +23,7 @@
             android:paddingTop="18dp"
             android:paddingBottom="18dp"
             android:scaleType="centerInside"
+            android:visibility="gone"
             android:src="@drawable/discover_selection" />
 
         <TextView

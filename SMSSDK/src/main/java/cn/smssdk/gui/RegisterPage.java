@@ -658,16 +658,19 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 						if (result == SMSSDK.RESULT_COMPLETE) {
 							// 当验证码成功的时候
 							String pwd = etPwd.getText().toString();
+							HashMap<String, Object> resultHashMap = (HashMap<String, Object>)data;
+							String phone = resultHashMap.get("country").toString() + resultHashMap.get("phone").toString();
+
 							// 结果_完整
 							HashMap<String, Object> res = new HashMap<String, Object>();
 							res.put("res", true);
-							res.put("phone", data);
+							res.put("phone", phone);
 							res.put("pwd", pwd);
 							// 再需要获取密码
 							// 验证码校验返回
-							HashMap<String, Object> phoneMap = (HashMap<String, Object>) res
-									.get("phone");
-							phoneMap.put("pwd", pwd);
+//							HashMap<String, Object> phoneMap = (HashMap<String, Object>) res
+//									.get("phone");
+//							phoneMap.put("pwd", pwd);
 							// 32；
 							// int resId = getStringRes(activity,
 							// "smssdk_your_ccount_is_verified");
@@ -680,7 +683,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 							if (callback != null) {
 								callback.afterEvent(
 										SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE,
-										SMSSDK.RESULT_COMPLETE, phoneMap);
+										SMSSDK.RESULT_COMPLETE, res);
 							}
 							System.out.println("验证成功");
 							// -------------------------------------------------------------------完成回调－－－－－－－－－－－－－－-----

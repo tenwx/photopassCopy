@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.SignAndLoginUtil;
@@ -190,6 +191,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 		Intent intent = new Intent();
 		intent.setClass(OtherLoginActivity.this, MainTabActivity.class);
 		startActivity(intent);
+		AppManager.getInstance().killActivity(LoginActivity.class);
 		finish();
 	}
 }

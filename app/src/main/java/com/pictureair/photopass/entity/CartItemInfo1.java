@@ -23,6 +23,8 @@ public class CartItemInfo1 implements Serializable{
     private boolean hasPhoto;//商品有没有添加图片
     private int showEdit;//1，开始编辑数量，0，不需要编辑数量
     private int showPhotos;//1,展示照片，0，不展示照片
+    private boolean isFullPhotos;//商品是否加满照片
+    private int cartProductType;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品
 
     public String getCartId() {
         return cartId;
@@ -142,5 +144,21 @@ public class CartItemInfo1 implements Serializable{
 
     public void setShowPhotos(int showPhotos) {
         this.showPhotos = showPhotos;
+    }
+
+    public boolean isFullPhotos() {
+        return isFullPhotos;
+    }
+
+    public void setIsFullPhotos(boolean isFullPhotos) {
+        this.isFullPhotos = isFullPhotos;
+    }
+
+    public int getCartProductType() {
+        return cartProductType;
+    }
+
+    public void setCartProductType(int cartProductType) {
+        this.cartProductType = cartProductType;
     }
 }

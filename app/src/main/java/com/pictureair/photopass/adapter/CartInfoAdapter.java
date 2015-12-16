@@ -17,25 +17,24 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
+import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.HttpUtil1;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.DashedLineView;
 import com.pictureair.photopass.widget.ListViewImageView;
 import com.pictureair.photopass.widget.MyToast;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
 
 /**
  * 购物车页面的ExpandableListView的适配器
@@ -73,6 +72,17 @@ public class CartInfoAdapter extends BaseAdapter {
         imageLoader = ImageLoader.getInstance();
         gridLayoutLists = new ArrayList<>();
         myToast = new MyToast(context);
+    }
+
+    /**
+     * 更新list
+     *
+     * @param cartInfoList
+     */
+    public void refresh(ArrayList<CartItemInfo1> cartInfoList) {
+        this.goodArrayList = cartInfoList;
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -129,7 +139,7 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.selectedImageView.setImageResource(R.drawable.cart_not_select);
         }
         gridviewlist = goodArrayList.get(position).getEmbedPhotos();
-        gridlayoutList = new ArrayList<ImageView>();
+        gridlayoutList = new ArrayList<>();
         //设置商品图片
         if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(goodArrayList.get(position).getProductName())) {//照片商品
             String url = null;
@@ -138,13 +148,10 @@ public class CartInfoAdapter extends BaseAdapter {
             } else {
                 url = Common.PHOTO_URL + goodArrayList.get(position).getPictures()[0];
             }
-            /*****temp code*****/
             if (url.contains("productImage/gift-singleDigital.jpg")) {
-                System.out.println(url);
+                PictureAirLog.v(TAG, url);
                 url = url.replace("4000", "3001");
-                System.out.println(url);
             }
-            /*****temp code*****/
             imageLoader.displayImage(url, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
             viewHolder.cartLineImageView.setVisibility(View.GONE);
@@ -164,7 +171,6 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.hideImageView.setVisibility(View.INVISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
             if (0 == gridviewlist.size()) {//如果照片数量为0
-                Log.d(TAG, "gridview list is 0");
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
@@ -186,7 +192,6 @@ public class CartInfoAdapter extends BaseAdapter {
                 viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
 
             } else {//有照片数量
-                Log.d(TAG, "gridView is not null");
                 for (int i = 0; i < gridviewlist.size(); i++) {
                     ImageView imageView = new ImageView(context);
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -220,7 +225,7 @@ public class CartInfoAdapter extends BaseAdapter {
         viewHolder.cartGoodCountTextView.setText(goodArrayList.get(position).getQty() + "");
         viewHolder.cartCurrencyTextView.setText(currency);
         viewHolder.cartGoodProductQuentityTextView.setText("x" + goodArrayList.get(position).getQty() + "");
-        viewHolder.cartGoodPriceTextView.setText((int) goodArrayList.get(position).getPrice() + "");
+        viewHolder.cartGoodPriceTextView.setText(goodArrayList.get(position).getUnitPrice() + "");
         viewHolder.cartGoodNameTextView.setText(goodArrayList.get(position).getProductName());
         viewHolder.cartAddImageView.setOnClickListener(new ChangeCountOnclick(viewHolder, gridviewlist, goodArrayList.get(position), position));
         viewHolder.cartReduceImageView.setOnClickListener(new ChangeCountOnclick(viewHolder, gridviewlist, goodArrayList.get(position), position));
@@ -285,12 +290,14 @@ public class CartInfoAdapter extends BaseAdapter {
                 cartItemInfo.setIsSelect(true);
                 message.what = SELECTED;
             }
-            message.obj = cartItemInfo.getPrice() * cartItemInfo.getQty();
+            message.obj = cartItemInfo.getUnitPrice() * cartItemInfo.getQty();
             handler.sendMessage(message);
         }
     }
 
-    //修改购物车数量的监听
+    /**
+     * 修改购物车数量的监听
+     */
     private class ChangeCountOnclick implements OnClickListener {
         private ViewHolder holderView;
         private List<CartPhotosInfo1> arraylist;
@@ -309,85 +316,92 @@ public class CartInfoAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             if (!ishandle) {//如果已经在处理中，则忽略响应，反之，进行处理
-                System.out.println("start change count");
-//				if (cartItemInfo.cart_productType == 2) {//如果是pp不允许添加或者减少数量
-//					myToast.setTextAndShow(R.string.cannot_change_count, Common.TOAST_SHORT_TIME);
-//					return;
-//				}
+                if (cartItemInfo.getCartProductType() == 2) {//如果是pp不允许添加或者减少数量
+                    myToast.setTextAndShow(R.string.cannot_change_count, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 ishandle = true;
                 int count = Integer.parseInt(holderView.cartGoodCountTextView.getText().toString());
                 boolean addcount = false;//true 代表添加操作，false代表减少操作
                 if (v.getId() == holderView.cartAddImageView.getId()) {//添加按钮
-                    System.out.println("add item count");
+                    PictureAirLog.v(TAG, "add item count");
                     count++;
                     addcount = true;
                 } else if (v.getId() == holderView.cartReduceImageView.getId()) {//减少按钮
-                    System.out.println("remove");
+                    PictureAirLog.v(TAG, "remove");
                     if (count > 1) {// 判断数量是否小于1件，如果小于1，则不让更改
                         count--;
                         addcount = false;
                     } else {
-                        System.out.println("not ok");
+                        PictureAirLog.v(TAG, "not ok");
                         myToast.setTextAndShow(R.string.cannot_reduce, Common.TOAST_SHORT_TIME);
                         ishandle = false;
                         return;
                     }
                 }
-                //创建jsonobject对象
-//				com.alibaba.fastjson.JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(null, cartItemInfo, count);
-                final boolean addOrminus = addcount;
-                final int cart_item_count = count;
-                RequestParams params = new RequestParams();
-                params.put(Common.USER_ID, userId);
-//				params.put(Common.ITEM, cartItem);
-                HttpUtil.post(Common.BASE_URL + Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        // TODO Auto-generated method stub
-                        super.onSuccess(statusCode, headers, response);
-                        System.out.println("modify cart==" + response);
-                        ishandle = false;
-                        if (response.has("message")) {//添加失败
+//                //创建jsonobject对象
+//                JSONArray embedPhotos = JsonUtil.addAndModifyCartItemJsonArray(null, cartItemInfo);
+                //请求网络更新购物车
+                modifyCart(addcount, count, cartItemInfo, handler);
 
-                        } else {//添加成功
-
-                            holderView.cartGoodCountTextView.setText(String.valueOf(cart_item_count));
-                            holderView.cartGoodProductQuentityTextView.setText("x" + String.valueOf(cart_item_count));
-                            for (int i = 0; i < arraylist.size(); i++) {
-                                CartPhotosInfo1 map = arraylist.get(i);
-                                map.setCartPhotoCount(String.valueOf(cart_item_count));
-                                arraylist.set(i, map);
-                            }
-                            cartItemInfo.setEmbedPhotos(arraylist);
-                            cartItemInfo.setQty(cart_item_count);
-                            Message message = handler.obtainMessage();
-                            if (addOrminus) {
-                                message.what = ADDCOUNT;
-                            } else {
-                                message.what = MINUSCOUNT;
-                            }
-                            if (cartItemInfo.getIsSelect()) {
-                                message.arg1 = 1;
-                            } else {
-                                message.arg1 = 0;
-                            }
-                            message.arg2 = position;
-                            message.obj = cartItemInfo.getPrice();
-                            handler.sendMessage(message);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        // TODO Auto-generated method stub
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        ishandle = false;
-                    }
-                });
             } else {
-                System.out.println("is still change count");
+                PictureAirLog.v(TAG, "is still change count");
             }
         }
+
+        /**
+         * 修改购物车
+         *
+         * @param addOrminus   addOrminus
+         * @param cartItemInfo 购物车项id参数(可选,不填时为移除全部)
+         * @param handler      handler
+         */
+        public void modifyCart(final boolean addOrminus, final int count, final CartItemInfo1 cartItemInfo, final Handler handler) {
+            PictureAirLog.v(TAG, "modifyCart");
+            RequestParams params = new RequestParams();
+            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+            params.put(Common.GOODS_KEY, cartItemInfo.getGoodsKey());
+            params.put(Common.QTY, count);
+            String url = Common.BASE_URL_TEST + Common.ADD_TO_CART + "/" + cartItemInfo.getCartId();
+            HttpUtil1.asyncPut(url, params, new HttpCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    super.onSuccess(jsonObject);
+                    PictureAirLog.v(TAG, "modifyCart onSuccess");
+                    ishandle = false;
+                    holderView.cartGoodCountTextView.setText(String.valueOf(count));
+                    holderView.cartGoodProductQuentityTextView.setText("x" + String.valueOf(count));
+                    for (int i = 0; i < arraylist.size(); i++) {
+                        CartPhotosInfo1 map = arraylist.get(i);
+                        map.setCartPhotoCount(String.valueOf(count));
+                        arraylist.set(i, map);
+                    }
+                    cartItemInfo.setEmbedPhotos(arraylist);
+                    cartItemInfo.setQty(count);
+                    Message message = handler.obtainMessage();
+                    if (addOrminus) {
+                        message.what = ADDCOUNT;
+                    } else {
+                        message.what = MINUSCOUNT;
+                    }
+                    if (cartItemInfo.getIsSelect()) {
+                        message.arg1 = 1;
+                    } else {
+                        message.arg1 = 0;
+                    }
+                    message.arg2 = position;
+                    message.obj = cartItemInfo.getUnitPrice();
+                    handler.sendMessage(message);
+                }
+
+                @Override
+                public void onFailure(int status) {
+                    super.onFailure(status);
+                    ishandle = false;
+                }
+            });
+        }
+
     }
 
 }

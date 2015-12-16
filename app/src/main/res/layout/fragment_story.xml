@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background" >
+    android:background="@color/white" >
 
     <RelativeLayout
         android:id="@+id/story_title"
@@ -201,7 +201,7 @@
         android:layout_below="@id/story_title"
         android:orientation="vertical"
         android:paddingBottom="60dp"
-        android:visibility="visible" >
+        android:visibility="gone" >
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

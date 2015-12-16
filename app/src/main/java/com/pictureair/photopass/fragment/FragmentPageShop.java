@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CartActivity;
@@ -27,7 +26,6 @@ import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
@@ -73,10 +71,11 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             switch (msg.what) {
                 case API1.GET_GOODS_SUCCESS://成功获取商品
                     allGoodsList.clear();
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(GoodsInfoJson.getString(), GoodsInfoJson.class);
+                    PictureAirLog.v(TAG,"GET_GOODS_SUCCESS");
+                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
                     if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
                         allGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG,"goods size: " + allGoodsList.size());
+                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                     }
                     customProgressDialog.dismiss();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);
@@ -94,7 +93,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     //重新加载购物车数据
                     System.out.println("onclick with reload");
                     customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                    API.getAllGoods(mHandler, storeIdString, ((MyApplication) getActivity().getApplication()).getLanguageType());
+                    API1.getGoods(mHandler);
                     break;
 
                 default:
@@ -131,8 +130,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         allGoodsList = new ArrayList<>();//初始化商品列表
         customProgressDialog = CustomProgressDialog.show(getActivity(), getActivity().getString(R.string.is_loading), false, null);
         //获取商品
-//        API1.getGoods(mHandler);
-        mHandler.sendEmptyMessage(API1.GET_GOODS_SUCCESS);
+        API1.getGoods(mHandler);
         shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
         xListView.setAdapter(shopGoodListViewAdapter);
         //绑定监听
@@ -146,12 +144,14 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 Intent intent = null;
                 if (Common.ppp.equals(allGoodsList.get(position).getName())) {
                     intent = new Intent(getActivity(), PPPDetailProductActivity.class);
+                    ;
                     intent.putExtra("goods", allGoodsList.get(position));
                     intent.putExtra("showComment", "Y");
 
                 } else {
                     intent = new Intent(getActivity(), DetailProductActivity.class);
                     intent.putExtra("storeid", storeIdString);
+                    //从第二张开始显示
                     intent.putExtra("goods", allGoodsList.get(position));
                 }
                 FragmentPageShop.this.startActivity(intent);

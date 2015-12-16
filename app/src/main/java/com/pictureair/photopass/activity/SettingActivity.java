@@ -19,6 +19,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.UmengUtil;
@@ -50,8 +51,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
-                case API.LOGOUT_FAILED:
-                case API.LOGOUT_SUCCESS:
+                case API1.LOGOUT_FAILED:
+                case API1.LOGOUT_SUCCESS:
                     //断开推送
                     API.noticeSocketDisConnect(sharedPreferences.getString(Common.USERINFO_TOKENID, null));
 
@@ -180,7 +181,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             case R.id.logout:
                 // logout 之后，清空上个用户的数据。
                 application.setLast_tab(0);   // 设置 进入 app为主页
-                API.Logout(this, handler);
+                API1.Logout(handler);
                 break;
 
             case R.id.sub_opinions://消息回馈按钮

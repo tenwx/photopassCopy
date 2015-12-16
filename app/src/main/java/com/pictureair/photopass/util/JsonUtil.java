@@ -11,6 +11,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
+import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfo1;
@@ -264,52 +266,89 @@ public class JsonUtil {
      * 创建修改购物车参数的jsonobject对象
      *
      * @param photoArrayList 传入需要修改的图片参数，一个是photoId，一个是photoUrl
-     * @param cartitem       每一项的item对象，里面会包含price参数
+     * @param cartItem       每一项的item对象，里面会包含price参数
      * @return
      */
-    public static JSONObject CreateModifyCartItemJsonObject(ArrayList<PhotoInfo> photoArrayList, CartItemInfo1 cartitem, int count) {
-        // TODO Auto-generated method stub
-
-        JSONObject itemJsonObject = new JSONObject();
+    public static JSONArray addAndModifyCartItemJsonArray(ArrayList<PhotoInfo> photoArrayList, CartItemInfo1 cartItem) {
+        if (photoArrayList == null) {
+            return null;
+        }
+        JSONArray photoIdArray = new JSONArray();//放入图片的json数组
         try {
-            JSONArray productsJsonArray = new JSONArray();//修改图片的jsonarray
-            JSONArray embedphotos = new JSONArray();//放入图片的json数组
             List<CartPhotosInfo1> photoslist;
-            if (cartitem.getEmbedPhotos() != null && cartitem.getEmbedPhotos().size() > 0) {
-                photoslist = cartitem.getEmbedPhotos();//获取每一个item中的图片数组
+            if (cartItem.getEmbedPhotos() != null && cartItem.getEmbedPhotos().size() > 0) {
+                photoslist = cartItem.getEmbedPhotos();//获取每一个item中的图片数组
             } else {
                 photoslist = new ArrayList<>();
             }
 
             if (photoArrayList != null && photoArrayList.size() > 0) {//判断有没有照片，如果为null，说明不需要修改照片，这个时候应该使用原有的照片
                 for (int i = 0; i < photoslist.size(); i++) {
-                    JSONObject embedphoto = new JSONObject();
-                    JSONArray photoids = new JSONArray();//放入图片的图片id数组
-                    for (int j = 0; j < photoArrayList.size(); j++) {
-                        JSONObject photoid = new JSONObject();
-                        photoid.put("photoId", photoArrayList.get(j).photoId);
-                        photoid.put("photoUrl", photoArrayList.get(j).photoPathOrURL);
-                        photoids.add(photoid);
-                    }
-                    embedphoto.put("photosIds", photoids);
-                    embedphoto.put("svg", "svg info");
-                    embedphotos.add(embedphoto);
+                    JSONArray photoIds = new JSONArray();//放入图片的图片id数组
+                    JSONObject photoId = new JSONObject();
+                    photoId.put("photoId", photoArrayList.get(i).photoId);
+                    photoIds.add(photoId);
+                    photoIdArray.add(photoIds);
                 }
             }
-            JSONObject productJsonObject = new JSONObject();
-            productJsonObject.put("storeId", cartitem.getCartId());
-            productJsonObject.put("embedPhotos", embedphotos);
-            productsJsonArray.add(productJsonObject);
-            //			}
-            itemJsonObject.put("_id", cartitem.getCartId());
-            itemJsonObject.put("qty", count);
-            itemJsonObject.put("products", productsJsonArray);
-        } catch (JSONException e1) {
+        } catch (JSONException e) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            e.printStackTrace();
         }
-        return itemJsonObject;
+        return photoIdArray;
     }
+
+
+//    /**
+//     * 创建修改购物车参数的jsonobject对象
+//     *
+//     * @param photoArrayList 传入需要修改的图片参数，一个是photoId，一个是photoUrl
+//     * @param cartitem       每一项的item对象，里面会包含price参数
+//     * @return
+//     */
+//    public static JSONObject CreateModifyCartItemJsonObject(ArrayList<PhotoInfo> photoArrayList, CartItemInfo1 cartitem, int count) {
+//        // TODO Auto-generated method stub
+//
+//        JSONObject itemJsonObject = new JSONObject();
+//        try {
+//            JSONArray productsJsonArray = new JSONArray();//修改图片的jsonarray
+//            JSONArray embedphotos = new JSONArray();//放入图片的json数组
+//            List<CartPhotosInfo1> photoslist;
+//            if (cartitem.getEmbedPhotos() != null && cartitem.getEmbedPhotos().size() > 0) {
+//                photoslist = cartitem.getEmbedPhotos();//获取每一个item中的图片数组
+//            } else {
+//                photoslist = new ArrayList<>();
+//            }
+//
+//            if (photoArrayList != null && photoArrayList.size() > 0) {//判断有没有照片，如果为null，说明不需要修改照片，这个时候应该使用原有的照片
+//                for (int i = 0; i < photoslist.size(); i++) {
+//                    JSONObject embedphoto = new JSONObject();
+//                    JSONArray photoids = new JSONArray();//放入图片的图片id数组
+//                    for (int j = 0; j < photoArrayList.size(); j++) {
+//                        JSONObject photoid = new JSONObject();
+//                        photoid.put("photoId", photoArrayList.get(j).photoId);
+//                        photoid.put("photoUrl", photoArrayList.get(j).photoPathOrURL);
+//                        photoids.add(photoid);
+//                    }
+//                    embedphoto.put("photosIds", photoids);
+//                    embedphoto.put("svg", "svg info");
+//                    embedphotos.add(embedphoto);
+//                }
+//            }
+//            JSONObject productJsonObject = new JSONObject();
+//            productJsonObject.put("storeId", cartitem.getCartId());
+//            productJsonObject.put("embedPhotos", embedphotos);
+//            productsJsonArray.add(productJsonObject);
+//            //			}
+//            itemJsonObject.put("_id", cartitem.getCartId());
+//            itemJsonObject.put("qty", count);
+//            itemJsonObject.put("products", productsJsonArray);
+//        } catch (JSONException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
+//        return itemJsonObject;
+//    }
 
 
     /**

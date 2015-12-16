@@ -25,13 +25,14 @@
         <item name="android:windowNoTitle">true</item><!-- 无标题 -->
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@android:color/transparent</item><!-- 背景 -->
     </style>
     
 
     <style name="dialogTans" parent="dialogLogin">
         <item name="android:windowIsTranslucent">true</item> 
-        <item name="android:windowBackground">@drawable/dialog_corners_bg</item> 
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -24,10 +23,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * PP+商品明细类
@@ -86,14 +86,16 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                 case API.GET_PHOTOPASSPLUS_FAILED:
                 case API1.ADD_TO_CART_FAILED:
                     myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+
                     break;
 
                 case API1.ADD_TO_CART_SUCCESS:
-                    JSONObject addcart = (JSONObject) msg.obj;
+                    JSONObject jsonObject = (JSONObject) msg.obj;
                     editor = sharedPreferences.edit();
                     editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
                     editor.commit();
-                    String cartId = addcart.getString("cartItemId");
+
+                    String cartId = jsonObject.getString("cartId");
                     if (isBuyNow) {
                         //生成订单
                         Intent intent = new Intent(PPPDetailProductActivity.this, SubmitOrderActivity.class);
@@ -112,7 +114,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                         cartItemInfo.cart_productType = 3;
                         orderinfoArrayList.add(cartItemInfo);
                         intent.putParcelableArrayListExtra("orderinfo", orderinfoArrayList);
-                        PPPDetailProductActivity.this.startActivity(intent);
+
+                        startActivity(intent);
                     } else {
                         buyImg = new ImageView(PPPDetailProductActivity.this);// buyImg是动画的图片
                         buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
@@ -162,9 +165,12 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         detailTextView.setText(goodsInfo.getDescription());
         promotionPriceTextView.setText(goodsInfo.getPrice() + "");
         shopAddressTextView.setText(getString(R.string.address_digital_goods));
-        if (goodsInfo.getPrictures() != null && goodsInfo.getPrictures().size() > 0) {
-            PictureAirLog.v(TAG, "goodsInfo size" + goodsInfo.getPrictures().size());
-            bannerViewDetail.findimagepath(goodsInfo.getPrictures());
+        if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
+            PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
+
+            List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();
+            goodInfoPicturesList.remove(0);
+            bannerViewDetail.findimagepath(goodInfoPicturesList);
         }
         buyButton.setText(R.string.buy_good);
     }
@@ -205,30 +211,11 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                 break;
 
             case R.id.rt:
-                goBack();
+                finish();
                 break;
 
             default:
                 break;
-        }
-    }
-
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            goBack();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    //返回操作
-    private void goBack() {
-        if (AppManager.getInstance().checkActivity(MainTabActivity.class)) {//说明有这个界面
-            finish();
-        } else {//没有这个页面
-            Intent intent = new Intent(this, MainTabActivity.class);
-            startActivity(intent);
-            finish();
         }
     }
 
@@ -237,9 +224,13 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
      */
     private void addtocart() {
         //调用addToCart API
-        API1.addToCart(goodsInfo.getGoodsKey(), null, true, null, mhandler);
+        API1.addToCart(goodsInfo.getGoodsKey(), 1, true, null, mhandler);
     }
 
+    /**
+     * 设置添加购物车动画
+     * @param v
+     */
     private void setAnim(final View v) {
         animMaskLayout = null;
         animMaskLayout = createAnimLayout();

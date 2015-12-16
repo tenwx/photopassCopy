@@ -1,7 +1,5 @@
 package com.pictureair.photopass.util;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,6 +10,8 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
+
+import java.util.ArrayList;
 
 /**
  * 定位封装类
@@ -29,6 +29,10 @@ public class LocationUtil implements AMapLocationListener{
 	private int currentNotificationPosition = -1;//记录已经进入的地点索引值
 	private static final String TAG = "LocationUtil";
 	private static final int radius = 40;//指定范围的半径
+	/**
+	 * 判断是否成功获取定位信息
+	 */
+	public boolean locationChanged = false;
 	private LocationNotification locationNotification;
 
 	public LocationUtil(Context context){
@@ -48,6 +52,7 @@ public class LocationUtil implements AMapLocationListener{
 			Log.d(TAG, "------->has started");
 			return;
 		}
+		locationChanged = false;
 		mLocationManagerProxy = LocationManagerProxy.getInstance(context);// 定位实例
 		// LocationManagerProxy.GPS_PROVIDER，代表使用手机GPS定位；LocationManagerProxy.NETWORK_PROVIDER，代表使用手机网络定位；LocationProviderProxy.AMapNetwork，代表高德网络定位服务。
 		// minTime - 位置变化的通知时间，单位为毫秒.
@@ -100,6 +105,7 @@ public class LocationUtil implements AMapLocationListener{
 	public void onLocationChanged(AMapLocation arg0) {
 		// TODO Auto-generated method stub
 		System.out.println("map"+arg0);
+		locationChanged = true;
 		if (arg0 != null && arg0.getAMapException().getErrorCode() == 0) {
 			latitude = arg0.getLatitude();
 			longitude = arg0.getLongitude();
@@ -110,6 +116,7 @@ public class LocationUtil implements AMapLocationListener{
 				scanFence();
 			}
 		}
+
 	}
 
 	public interface LocationNotification{
