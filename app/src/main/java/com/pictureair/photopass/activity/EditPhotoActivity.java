@@ -151,7 +151,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private long time = 0;
 
 	//有关 文字
-	private TextView setTextFont,setColor;  //设置字体，设置颜色
+	private TextView tvLeft90,tvRight90;  //设置字体，设置颜色
 	private GridView setFontGridView; //字体
 	private GridView setColorGridView; //文本颜色
 
@@ -180,6 +180,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	int displayBitmapWidth = 0;
 	int displayBitmapHeight = 0;
 	//end
+
+	// 旋转图片组件
 
 	private Handler handler = new Handler(){
 
@@ -331,14 +333,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		edit_frame = (TextView) findViewById(R.id.edit_frame);
 		font_bar = (LinearLayout) findViewById(R.id.font_bar);
 		setFontGridView = (GridView) findViewById(R.id.fontList);
-		setTextFont = (TextView) findViewById(R.id.setTextFont);
-		setColor = (TextView) findViewById(R.id.setColor);
+		tvLeft90 = (TextView) findViewById(R.id.tv_left90);
+		tvRight90 = (TextView) findViewById(R.id.tv_right90);
 		setColorGridView = (GridView) findViewById(R.id.colorList);
 
 
 		edit_frame.setOnClickListener(this);
-		setColor.setOnClickListener(this);
-		setTextFont.setOnClickListener(this);
+		tvLeft90.setOnClickListener(this);
+		tvRight90.setOnClickListener(this);
 		edit_text.setOnClickListener(this);
 		edit_filter.setOnClickListener(this);
 		btn_forward.setOnClickListener(this);
@@ -499,8 +501,18 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					mainImage.setImageBitmap(mainBitmap);
 				}
 
-				//如果添加了字体
-				if (editType == 4) {
+				//如果添加了字体  // 如果旋转了
+				if (editType == 4) { //暂时方法。
+					if (photoInfo.onLine == 1) {
+						//网络图片。
+						isOnlinePic = true;
+						loadOnlineImg(photoURL);
+					}else{
+						//本地图片
+						isOnlinePic = false;
+						loadImage(photoURL);
+					}
+					pathList.add(photoURL);
 				}
 
 				exitEditStates(); // 推出编辑状态
@@ -585,7 +597,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				});
 				break;
 			case R.id.edit_text:
-
+				editType = 4;
+				titleTextView.setText(R.string.rotate);
+				onEditStates();
 				break;
 
 
@@ -695,6 +709,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				check();
 				break;
+			case R.id.tv_left90:
+				btn_onedit_save.setVisibility(View.VISIBLE);
+				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,90);
+				mainImage.setImageBitmap(mainBitmap);
+				break;
+			case R.id.tv_right90:
+				btn_onedit_save.setVisibility(View.VISIBLE);
+				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,-90);
+				mainImage.setImageBitmap(mainBitmap);
+				break;
 
 			default:
 				break;
@@ -725,13 +749,18 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	// 进入编辑某个效果的状态
 	private void onEditStates() {
+		if(editType == 4){
+			font_bar.setVisibility(View.VISIBLE);
+			top_HorizontalListView.setVisibility(View.GONE);
+		}else{
+			top_HorizontalListView.setVisibility(View.VISIBLE);
+		}
 		titleTextView.setVisibility(View.VISIBLE);
 		preview_save.setVisibility(View.GONE);
 		btn_forward.setVisibility(View.GONE);
 		btn_cancel.setVisibility(View.GONE);
 		back.setVisibility(View.GONE);
 		btn_left_back.setVisibility(View.VISIBLE);
-		top_HorizontalListView.setVisibility(View.VISIBLE);
 		edittoolsbar.setVisibility(View.INVISIBLE);
 	}
 
@@ -936,8 +965,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //				showTypeface = Typeface.SANS_SERIF;
 //				//Matrix touchMatrix = mainImage.getImageViewMatrix();
 //				Matrix touchMatrix = mainImage.getImageMatrix();
-//				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
-//						Bitmap.Config.ARGB_8888, true);
+				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
+						Bitmap.Config.ARGB_8888, true);
 ////				Bitmap resultBit = params[0];
 //				Canvas canvas = new Canvas(resultBit);
 //				canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));  //抗锯齿
@@ -955,10 +984,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //				}// end for
 //				//				fontView.currentItem.matrix.postConcat(m);
 //				//				canvas.drawBitmap(fontView.currentItem.bitmap, fontView.currentItem.matrix, null);
-//				EditPhotoUtil.saveBitmap(resultBit, url);
-//				pathList.add(url);
-//				index = pathList.size() - 1;
-//				return resultBit;
+				EditPhotoUtil.saveBitmap(resultBit, url);
+				pathList.add(url);
+				index = pathList.size() - 1;
+				return resultBit;
 			}else if(editType == 1){
 				Bitmap mainBitmap = params[0];
 				Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(),
