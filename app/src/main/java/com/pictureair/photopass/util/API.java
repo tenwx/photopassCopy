@@ -12,7 +12,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
-import com.loopj.android.http.HttpGet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.entity.BindPPInfo;
@@ -30,17 +29,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpEntity;
-import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.client.ClientProtocolException;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
-import cz.msebera.android.httpclient.protocol.HTTP;
-import cz.msebera.android.httpclient.util.EntityUtils;
 
 /** 所有与后台的交互都封装到此类 */
 public class API {
@@ -1357,48 +1349,6 @@ public class API {
 		});
 
 	}
-	//获取有没有更新数据。
-	public static String isUpdate(String userId,String time) throws JSONException{
-
-		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append(Common.BASE_URL);
-		sBuffer.append(Common.GET_NEW_PHOTO_COUNT);
-		String url = sBuffer.toString() + "?lastUpdateTime="+time+"&userId="+userId;
-		HttpGet httpPost = new HttpGet(url);
-		httpPost.setHeader("Accept", "application/json");
-		httpPost.setHeader("charset", HTTP.UTF_8);
-		HttpResponse response;
-		int count = 0;
-		String newtime = "";
-		try {
-			response = new DefaultHttpClient().execute(httpPost);
-			HttpEntity entity = response.getEntity();
-			String result = EntityUtils.toString(entity);
-			Log.e("result","res::"+result);
-			int responseCode = response.getStatusLine().getStatusCode();
-			if(responseCode == 200){
-				if(result.contains("error")){
-					//如果出现error的情况。
-					Log.e("出现错误", "调用api成功");
-				}else{
-					JSONObject jsonObject = new JSONObject(result);
-					count = jsonObject.getInt("c");
-					newtime = jsonObject.getString("time");
-				}
-			}else{
-				// 
-				Log.e("====", "发送失败的情况");
-			}
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return count+";"+newtime;
-
-	}
 
 	/**
 	 * 检查扫描的结果是否正确，并且返回是否已经被使用
@@ -1485,139 +1435,6 @@ public class API {
 			}
 		});
 	}
-
-	/**
-	 * 更新用户信息
-	 * @param tokenId
-	 * @param name 名字
-	 * @param birthday 生日
-	 * @param gender 性别
-	 * @param QQ 
-	 * @param handler
-	 */
-	public static void updateProfile(String tokenId, String name, String birthday, String gender,String country, String QQ, final Handler handler) {
-		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append(Common.BASE_URL);
-		sBuffer.append(Common.UPDATE_PROFILE);
-
-		RequestParams params = new RequestParams();
-		params.put(Common.USERINFO_TOKENID, tokenId);
-		params.put(Common.USERINFO_NICKNAME, name);
-		params.put(Common.USERINFO_COUNTRY, country);
-		params.put(Common.USERINFO_QQ, QQ);
-		params.put(Common.USERINFO_BIRTHDAY, birthday);
-		params.put(Common.USERINFO_GENDER, gender);
-		HttpUtil.post(sBuffer.toString(), params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				System.out.println("result============"+response);
-				Message message = handler.obtainMessage();
-				try {
-					if (response.has("error")) {
-						message.what = UPDATE_PROFILE_FAILED;
-						message.obj = response.getJSONObject("error").getString("type");
-
-					}else {
-						message.what = UPDATE_PROFILE_SUCCESS;
-
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				handler.sendMessage(message);
-			}
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				System.out.println("update profile fialed==========="+errorResponse);
-				Message message = handler.obtainMessage();
-				message.what = UPDATE_PROFILE_FAILED;
-				handler.sendMessage(message);
-			}
-		});
-	}
-
-	/**
-	 * 获取已收藏的地点信息
-	 * @param tokenId
-	 * @param handler
-	 */
-	public static void getFavoriteLocations(String tokenId, final Handler handler){
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(Common.BASE_URL);
-		stringBuffer.append(Common.GET_FAVORITE_LOCATIONS);
-
-		RequestParams params = new RequestParams();
-		params.put(Common.USERINFO_TOKENID, tokenId);
-		HttpUtil.get(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
-			@Override
-			public void onSuccess(int statusCode, Header[] headers,
-					JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				Log.d(TAG, "get favorite locations success"+response);
-				Message message = handler.obtainMessage();
-				message.what = GET_FAVORITE_LOCATION_SUCCESS;
-				message.obj = response;
-				handler.sendMessage(message);
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				handler.sendEmptyMessage(GET_FAVORITE_LOCATION_FAILED);
-			}
-		});
-	}
-
-	/**
-	 * 收藏或者取消收藏地址
-	 * @param tokenId
-	 * @param locationId
-	 * @param action :add或者remove
-	 * @param position :编辑的索引值
-	 * @param handler
-	 */
-	public static void editFavoriteLocations(String tokenId, String locationId, String action, final int position, final Handler handler){
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(Common.BASE_URL);
-		stringBuffer.append(Common.EDIT_FAVORITE_LOCATION);
-
-		RequestParams params = new RequestParams();
-		params.put(Common.USERINFO_TOKENID, tokenId);
-		params.put(Common.LOCATION_ID, locationId);
-		params.put(Common.ACTION, action);
-		HttpUtil.post(stringBuffer.toString(), params, new JsonHttpResponseHandler(){
-			@Override
-			public void onSuccess(int statusCode, Header[] headers,
-					JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				Log.d(TAG, "edit success-------->"+response);
-				Message message = handler.obtainMessage();
-				message.what = EDIT_FAVORITE_LOCATION_SUCCESS;
-				message.arg1 = position;
-				message.obj = response;
-				handler.sendMessage(message);
-			}
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				Log.d(TAG, "edit failed------>"+errorResponse);
-				handler.sendEmptyMessage(EDIT_FAVORITE_LOCATION_FAILED);
-			}
-		});
-	}
-
-
 
 	/**
 	 * 删除订单信息

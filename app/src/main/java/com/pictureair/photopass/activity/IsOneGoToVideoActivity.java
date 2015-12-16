@@ -47,21 +47,20 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
 
 	private void initView() {
 		mViewPager = (ViewPager) findViewById(R.id.vP_is_one_video);
-		btnStart = (Button) findViewById(R.id.btn_start);
 	}
 
 	private void initData() {
 		inflater = LayoutInflater.from(context);
 		mList = new ArrayList<View>();
-		view1 = inflater.inflate(R.layout.viewpager_disney_video1, null);
-		view1.setBackgroundResource(R.drawable.loding_1);
+//		view1 = inflater.inflate(R.layout.viewpager_disney_video1, null);
+//		view1.setBackgroundResource(R.drawable.loding_1);
 		
 		view2 = inflater.inflate(R.layout.viewpager_disney_video1, null);
-		view2.setBackgroundResource(R.drawable.loding_2);
+		view2.setBackgroundResource(R.drawable.photopass_lead1);//需要更换背景图
 		btnStart = (Button) view2.findViewById(R.id.btn_start);
 		btnStart.setVisibility(View.VISIBLE);
 		
-		mList.add(view1);
+//		mList.add(view1);
 		mList.add(view2);
 	}
 

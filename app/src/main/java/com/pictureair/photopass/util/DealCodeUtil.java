@@ -164,7 +164,7 @@ public class DealCodeUtil {
 	 */
 	public void startDealCode(final String code){
 		this.code = code;
-		API1.checkCodeAvailable(code, handler2);
+		API1.checkCodeAvailable(code, sharedPreferences.getString(Common.USERINFO_TOKENID, ""), handler2);
 	}
 
 	private void getInfo(String code, final String type){

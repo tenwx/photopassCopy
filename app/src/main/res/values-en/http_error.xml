@@ -175,5 +175,16 @@
     <string name="http_error_code_5027">the mobile str is error code!</string>
     <string name="http_error_code_5028">remove address error!</string>
     <string name="http_error_code_5029">update address error!</string>
-    <string name="http_error_code_5031">query Item Photo Error</string>
+    <string name="http_error_code_6145">query help info error</string>
+    <string name="http_error_code_6146">add help info error</string>
+    <string name="http_error_code_6147">delete help info error</string>
+    <string name="http_error_code_6148">update help Info error</string>
+    <string name="http_error_code_6149">query video error</string>
+    <string name="http_error_code_6150">add video error</string>
+    <string name="http_error_code_6151">errQueryAuthToken</string>
+    <string name="http_error_code_6152">invalidAppID</string>
+    <string name="http_error_code_6153">Unauthorized</string>
+    <string name="http_error_code_5030">Please login!</string>
+    <string name="http_error_code_5031">query Item Photo Error!</string>
+    <string name="http_error_code_5032">Your carts has no goods!</string>
 </resources>

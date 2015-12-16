@@ -98,6 +98,7 @@ public class Common {
     public static final String APP_ID = "appID";
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
+    public static final String APP_ID = "appID";
     public static final String USERINFO_NAME = "userInfo";
     public static final String USERINFO_ID = "_id";//api需要的userId
     public static final String USERINFO_TOKENID = "tokenId";//api需要的tokenId
@@ -195,6 +196,9 @@ public class Common {
     public static final String HELP_QUESTION_TABLE = "help_question";
     public static final String FRAME_STICKER_TABLES = "frame_sticker";
     public static final int PHOTOPASS_INFO_VERSION = 1;
+    public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
+    public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
+
 
     //相册名称字段
     public static final String ALBUM_ALL = "All";
@@ -317,12 +321,8 @@ public class Common {
     // 纪录 MainTab 中 tab 的高度。
     public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
 
-
-    //    public static final String DATA_VIDEO = Environment.getExternalStorageDirectory()+"getExternalStorageDirectory/aaa/DisneyVideo.mp4";
 //    public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.avi";// 测试的网络地址
-    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
-
-    //    public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
-    public static boolean isOnline = true; // 是本地播放还是网络播放
+//    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
+        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
 }

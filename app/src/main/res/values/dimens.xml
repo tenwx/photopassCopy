@@ -24,6 +24,7 @@
     <dimen name="pp_margin_16">16dp</dimen>
     <dimen name="pp_padding_8">8dp</dimen>
     <dimen name="pp_padding_16">16dp</dimen>
+    <dimen name="pp_padding_20">20dp</dimen>
     <dimen name="pp_padding_10">10dp</dimen>
     <dimen name="pp_margin_32">32dp</dimen>
 

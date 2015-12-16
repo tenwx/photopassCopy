@@ -43,9 +43,9 @@ public class DisneyVideoTool {
             intent.setClass(context, IsOneGoToVideoActivity.class);
             context.startActivity(intent);
         } else {// 第二次进入
-            getIsEditImageGoToVideo(context);
+//            getIsEditImageGoToVideo(context);
             //测试进入播放视频
-//            TestGoToVideo(context);
+            TestGoToVideo(context);
         }
     }
 

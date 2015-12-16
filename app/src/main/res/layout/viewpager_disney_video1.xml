@@ -1,24 +1,37 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_sky1" >
+    android:background="@color/gray"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/disney_video_introduces"
+        android:textColor="@color/pp_blue"
+        android:textSize="@dimen/text_size_16" />
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:padding="40dp" />
+        android:background="@color/white">
 
-    <Button
-        android:id="@+id/btn_start"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="54dp" />
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="10dp"
+            android:text="@string/start"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_middle_size"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
