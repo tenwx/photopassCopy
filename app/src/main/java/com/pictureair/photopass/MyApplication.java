@@ -33,8 +33,6 @@ public class MyApplication extends Application {
     // public BDLocation mLocation;
     private static MyApplication instance;
     private static SharedPreferences userInfosharedPreferences;
-    private static String appId;
-    private static String tokenId;
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
@@ -96,14 +94,8 @@ public class MyApplication extends Application {
      * @return tokenId
      */
     public static String getTokenId() {
-        if (tokenId == null) {
-            tokenId = userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null);
-        }
+        String tokenId = userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null);
         return tokenId;
-    }
-
-    public static void setTokenId(String tokenId) {
-        MyApplication.tokenId = tokenId;
     }
 
     /**

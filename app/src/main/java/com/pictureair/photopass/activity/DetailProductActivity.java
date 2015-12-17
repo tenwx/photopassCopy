@@ -21,8 +21,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodInfoPictures;
@@ -224,13 +222,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
      */
     private void addtocart() {
         //编辑传入照片的信息
-        JSONArray embedPhotos = new JSONArray();//放入图片的json数组
-        JSONObject photoId = new JSONObject();
-        photoId.put("photoId", "");
-        embedPhotos.add(photoId);
-
-        //添加购物
-        API1.addToCart(goodsInfo.getGoodsKey(), 1, false, embedPhotos, mhandler);
+        API1.addToCart(goodsInfo.getGoodsKey(), 1, false, null, mhandler);
     }
 
     private void setAnim(final View v) {

@@ -154,7 +154,7 @@ public class MainTabActivity extends FragmentActivity {
             mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
             loadFragment(fragmentArray.length);
             mTabHost.setCurrentTab(4);
-
+            currentLanguage = MyApplication.getInstance().getLanguageType();
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
         if (application.getPushPhotoCount() > 0) {//显示红点

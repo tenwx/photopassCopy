@@ -158,7 +158,6 @@ public class API1 {
                     SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_TOKENID, jsonObject.getString(Common.USERINFO_TOKENID));
-                    PictureAirLog.out("tokenid---->" + jsonObject.getString(Common.USERINFO_TOKENID));
                     e.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -188,18 +187,15 @@ public class API1 {
      * @param handler
      */
     public static void Login(final Context context, String userName, String password, final Handler handler) {
-        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         RequestParams params = new RequestParams();
+        PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.USERINFO_USERNAME, userName);
         params.put(Common.USERINFO_PASSWORD, AppUtil.md5(password));
-
-
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGIN, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.out("Login--->" + jsonObject.toString());
                 try {
                     JsonUtil.getUserInfo(context, jsonObject, handler);
                     handler.sendEmptyMessage(LOGIN_SUCCESS);
@@ -223,6 +219,7 @@ public class API1 {
      */
     public static void Logout(final Handler handler) {
         RequestParams params = new RequestParams();
+        PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, new HttpCallback() {
             @Override
