@@ -50,6 +50,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private File file;
     private String userPP = "";//用户PP号
     private String avatarUrl = "";//用户头像url
+    private boolean isCodePic = false;//是否已经生成二维码
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,28 +78,40 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         //初始化控件
         sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         userPP = sp.getString(Common.USERINFO_USER_PP, "");
-        avatarUrl = sp.getString(Common.USERINFO_HEADPHOTO, "");
-        // 初始化数据
-        initData();
+        file = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
+
         return view;
     }
 
     /**
      * 更新数据
-     * 图像、用户名
+     * 用户名、图像、
      */
     private void initData() {
-        if (!userPP.isEmpty()) {
-            try {
-                //生成二维码
-                code_pic.setImageBitmap(AppUtil.createQRCode(userPP, ScreenUtil.getScreenWidth(getActivity()) / 5));
-            } catch (WriterException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        name.setText(sp.getString(Common.USERINFO_NICKNAME, "photoPass"));
+        avatarUrl = sp.getString(Common.USERINFO_HEADPHOTO, "");
+        setCodePic();
+        setHeadImage();
+    }
+
+
+    /**
+     * 生成二维码
+     */
+    public void setCodePic() {
+        if (isCodePic) {
+            if (!userPP.isEmpty()) {
+                try {
+                    //生成二维码
+                    code_pic.setImageBitmap(AppUtil.createQRCode(userPP, ScreenUtil.getScreenWidth(getActivity()) / 5));
+                    isCodePic = true;
+                } catch (WriterException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
-        file = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
-        setHeadImage();
+
     }
 
     /**
@@ -131,17 +144,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (!avatarUrl.isEmpty()) {
-            //获取图像上次更新时间
-            long nowLastModify = file.lastModified();
-            //如果有更新，则重新设置头像
-            if (nowLastModify > originalHeadLastModifyTime) {
-                originalHeadLastModifyTime = nowLastModify;
-                setHeadImage();
-            }
-        }
-        String un = sp.getString(Common.USERINFO_NICKNAME, "pictureAir");
-        name.setText(un);
+        // 初始化数据
+        initData();
     }
 
     @Override

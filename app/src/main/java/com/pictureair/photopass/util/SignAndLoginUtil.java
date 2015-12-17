@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginCallBack;
+import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -176,10 +177,10 @@ public class SignAndLoginUtil {
 
                 case API1.GET_CART_SUCCESS://获取购物车成功
                     PictureAirLog.out("get cart count success");
-                    JSONObject result = JSONObject.parseObject(msg.obj.toString());
                     int cartCount = 0;
-                    if (result.containsKey("totalCount")) {
-                        cartCount = result.getIntValue("totalCount");
+                    CartItemInfoJson cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                    if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
+                        cartCount = cartItemInfoJson.getItems().size();
                     }
                     Editor ed = sp.edit();
                     ed.putInt(Common.CART_COUNT, cartCount);

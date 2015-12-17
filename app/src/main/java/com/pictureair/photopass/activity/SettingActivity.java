@@ -59,7 +59,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                     SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
                     Editor editor = sp.edit();
                     editor.clear();
-                    editor.apply();
+                    editor.commit();
 
                     ACache.get(SettingActivity.this).remove(Common.TOP_GOODS);
                     ACache.get(SettingActivity.this).remove(Common.ALL_GOODS);

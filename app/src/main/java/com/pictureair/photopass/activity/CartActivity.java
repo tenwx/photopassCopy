@@ -94,35 +94,31 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 case API1.GET_CART_SUCCESS:
                     PictureAirLog.v(TAG, "GET_CART_SUCCESS");
                     cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
-                    if (cartItemInfoJson == null) {
-                        return;
-                    }
-                    PictureAirLog.v(TAG, "GET_CART_SUCCESS cart size: " + cartItemInfoJson.getItems().size());
-                    cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新底部计算条
-                    cartInfoList.addAll(cartItemInfoJson.getItems());
-                    //更新购物车数量
-                    Editor editor = sPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, cartItemInfoJson.getTotalCount());
-                    editor.commit();
-
-                    totalTextView.setText((float) cartItemInfoJson.getTotalPrice() + "");
-                    paymentButton.setVisibility(View.VISIBLE);
-                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size()));
-
-                    editTextView.setEnabled(true);
                     customProgressDialog.dismiss();
-                    if (cartInfoList.size() == 0) {//没有数量
+                    if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
+                        PictureAirLog.v(TAG, "GET_CART_SUCCESS cart size: " + cartItemInfoJson.getItems().size());
+                        cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新底部计算条
+                        cartInfoList.addAll(cartItemInfoJson.getItems());
+                        //更新购物车数量
+                        Editor editor = sPreferences.edit();
+                        editor.putInt(Common.CART_COUNT, cartInfoList.size());
+                        editor.commit();
+
+                        totalTextView.setText((float) cartItemInfoJson.getTotalPrice() + "");
+                        paymentButton.setVisibility(View.VISIBLE);
+                        paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size()));
+                        editTextView.setEnabled(true);
+                        netWorkOrNoCountView.setVisibility(View.GONE);
+                        bottomRelativeLayout.setVisibility(View.VISIBLE);
+                        listView.setVisibility(View.VISIBLE);
+                        line.setVisibility(View.VISIBLE);
+                    } else {
                         netWorkOrNoCountView.setVisibility(View.VISIBLE);
                         netWorkOrNoCountView.setResult(R.string.no_cart, R.string.want_to_buy, R.string.to_add_good, R.drawable.no_cart, handler, false);
                         bottomRelativeLayout.setVisibility(View.INVISIBLE);
                         listView.setVisibility(View.INVISIBLE);
                         line.setVisibility(View.INVISIBLE);
                         editTextView.setVisibility(View.INVISIBLE);
-                    } else {//有数量
-                        netWorkOrNoCountView.setVisibility(View.GONE);
-                        bottomRelativeLayout.setVisibility(View.VISIBLE);
-                        listView.setVisibility(View.VISIBLE);
-                        line.setVisibility(View.VISIBLE);
                     }
                     break;
 
@@ -149,7 +145,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     //更新界面
                     cartAdapter.refresh(cartInfoList);
                     //保存购物车数量
-                    editor = sPreferences.edit();
+                    Editor editor = sPreferences.edit();
                     editor.putInt(Common.CART_COUNT, cartInfoList.size());
                     editor.commit();
 
@@ -169,7 +165,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     try {
                         photoUrlString = result.getString("photoUrl");
                         photoIdString = result.getString("photoId");
-                        PictureAirLog.v(TAG,photoUrlString + "_" + photoIdString);
+                        PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
 
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
@@ -192,7 +188,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
                             // TODO Auto-generated method stub
                             super.onSuccess(statusCode, headers, response);
-                            PictureAirLog.v(TAG,"modify cart with change photot ==" + response);
+                            PictureAirLog.v(TAG, "modify cart with change photot ==" + response);
 
                             if (response.has("message")) {//添加失败
                                 newToast.setTextAndShow(R.string.uploadphotofailed, Common.TOAST_SHORT_TIME);
@@ -226,7 +222,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                     //重新加载购物车数据
-                    PictureAirLog.v(TAG,"onclick with reload");
+                    PictureAirLog.v(TAG, "onclick with reload");
                     customProgressDialog = CustomProgressDialog.show(CartActivity.this, getString(R.string.is_loading), false, null);
                     API.getcart(CartActivity.this, Common.BASE_URL + Common.GET_CART, userId, handler);
                     cartInfoList.clear();
@@ -234,7 +230,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
                     //去跳转到购物车
-                    PictureAirLog.v(TAG,"onclick with no reload");
+                    PictureAirLog.v(TAG, "onclick with no reload");
                     //需要删除页面，保证只剩下mainTab页面，
                     AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                     //同时将mainTab切换到shop Tab
@@ -480,18 +476,18 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                             orderinfo.add(cartInfoList.get(i));
                         }
                     }
-                    PictureAirLog.v(TAG,"order info count = " + orderinfo.size());
+                    PictureAirLog.v(TAG, "order info count = " + orderinfo.size());
                     if (0 == cartInfoList.size()) {
-                        PictureAirLog.v(TAG,"cartinfolist = 0");
+                        PictureAirLog.v(TAG, "cartinfolist = 0");
                         newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
                     } else if (0 == orderinfo.size()) {
-                        PictureAirLog.v(TAG,"orderinfo = 0");
+                        PictureAirLog.v(TAG, "orderinfo = 0");
                         newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
                     } else {
                         /**********判断是否有图片没有添加*********/
                         for (int i = 0; i < orderinfo.size(); i++) {
                             if (!orderinfo.get(i).getHasPhoto()) {
-                                PictureAirLog.v(TAG,"have no photo");
+                                PictureAirLog.v(TAG, "have no photo");
                                 newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
                                 return;
                             }
@@ -592,7 +588,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     //选择照片
     private void selectPhoto(int requestCode) {
-        Intent intent = new Intent(CartActivity.this, SelectPhotoActivity.class);
+        Intent intent = new Intent(CartActivity.this, SelectPhotoActivity1.class);
         intent.putExtra("activity", "cartactivity");
         startActivityForResult(intent, requestCode);
     }
@@ -648,7 +644,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
         cartPhotosInfo.setCartPhotoUrl(photoList.get(0).photoPathOrURL);
         oriphoto.set(position % 10, cartPhotosInfo);//替换图片
-        PictureAirLog.v(TAG,"重新选择的图片");
+        PictureAirLog.v(TAG, "重新选择的图片");
         CartItemInfo1 map = cartInfoList.get(position / 10);
         map.setEmbedPhotos(oriphoto);
         map.setHasPhoto(true);

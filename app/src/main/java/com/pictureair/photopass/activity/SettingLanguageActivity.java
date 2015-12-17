@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -24,11 +24,14 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private RelativeLayout languageChinese;
     private RelativeLayout languageEnglish;
     private RelativeLayout save;
+    private TextView saveTv;
 
     private ImageView chineseSeleted;
     private ImageView englishSeleted;
 
-    String languageType = Common.SIMPLE_CHINESE;   // en表示英语，ch表示简体中文。
+    private static String oldLanguage = "";
+    private static String currentLanguage = "";   // en表示英语，ch表示简体中文。
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,24 +49,61 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         languageChinese = (RelativeLayout) findViewById(R.id.language_chinese);
         languageEnglish = (RelativeLayout) findViewById(R.id.language_english);
         save = (RelativeLayout) findViewById(R.id.save);
+        saveTv = (TextView) findViewById(R.id.save_tv);
 
         chineseSeleted = (ImageView) findViewById(R.id.chinese_imageView);
         englishSeleted = (ImageView) findViewById(R.id.english_imageView);
-
-        if (config.locale.equals(Locale.SIMPLIFIED_CHINESE)) {
-            chineseSeleted.setVisibility(View.VISIBLE);
-            englishSeleted.setVisibility(View.INVISIBLE);
-        } else if (config.locale.equals(Locale.US)) {
-            englishSeleted.setVisibility(View.VISIBLE);
-            chineseSeleted.setVisibility(View.INVISIBLE);
-        }
 
         save.setOnClickListener(this);
         back.setOnClickListener(this);
         languageChinese.setOnClickListener(this);
         languageEnglish.setOnClickListener(this);
+
+        sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        oldLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, "");
+        currentLanguage = oldLanguage;
+        if (currentLanguage.equals("")) {
+            //获取本地数据
+            if (config.locale.equals(Locale.SIMPLIFIED_CHINESE)) {
+                currentLanguage = Common.SIMPLE_CHINESE;
+            } else if (config.locale.equals(Locale.US)) {
+                currentLanguage = Common.ENGLISH;
+            }
+
+            oldLanguage = currentLanguage;//使用系统默认语言
+        }
+        updateUI(currentLanguage);
+
     }
 
+    /**
+     * 更新选中
+     *
+     * @param cur 新语言
+     */
+    public void updateUI(String cur) {
+        if (cur.equals(Common.SIMPLE_CHINESE)) {
+            chineseSeleted.setVisibility(View.VISIBLE);
+            englishSeleted.setVisibility(View.INVISIBLE);
+        } else if (cur.equals(Common.ENGLISH)) {
+            englishSeleted.setVisibility(View.VISIBLE);
+            chineseSeleted.setVisibility(View.INVISIBLE);
+        }
+        if (oldLanguage.equals(cur)) {
+            //确认按钮不可点击
+            save.setClickable(false);
+            saveTv.setTextColor(getResources().getColor(R.color.pp_gray));
+        } else {
+            save.setClickable(true);
+            saveTv.setTextColor(getResources().getColor(R.color.white));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initView();
+    }
 
     @Override
     public void onClick(View v) {
@@ -73,34 +113,37 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                 finish();
                 break;
             case R.id.save:
-                //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
-                if (languageType.equals(Common.SIMPLE_CHINESE)) {
+                //保存 设置语言类型。
+                if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
+                    config.locale = Locale.SIMPLIFIED_CHINESE;
                     MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
-                } else if (languageType.equals(Common.ENGLISH)) {
+                } else if (currentLanguage.equals(Common.ENGLISH)) {
+                    config.locale = Locale.US;
                     MyApplication.getInstance().setLanguageType(Common.ENGLISH);
                 }
-                //保存 设置好的语言类型。
                 getResources().updateConfiguration(config, dm);
-
                 //把语言写入数据库
-                SharedPreferences settingLanguage = this.getSharedPreferences(
-                        Common.APP, MODE_PRIVATE);
-                Editor localEditor = settingLanguage.edit();
-                localEditor.putString(Common.LANGUAGE_TYPE, languageType);
+                SharedPreferences.Editor localEditor = sharedPreferences.edit();
+                localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
                 localEditor.commit();
+                //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
+
+
                 finish();
                 break;
             case R.id.language_chinese:
-                languageType = Common.SIMPLE_CHINESE;
-                config.locale = Locale.SIMPLIFIED_CHINESE;
-                chineseSeleted.setVisibility(View.VISIBLE);
-                englishSeleted.setVisibility(View.INVISIBLE);
+                if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
+                    currentLanguage = Common.SIMPLE_CHINESE;
+                    updateUI(currentLanguage);
+                }
+
                 break;
             case R.id.language_english:
-                languageType = Common.ENGLISH;
-                config.locale = Locale.US;
-                englishSeleted.setVisibility(View.VISIBLE);
-                chineseSeleted.setVisibility(View.INVISIBLE);
+                if (!currentLanguage.equals(Common.ENGLISH)) {
+                    currentLanguage = Common.ENGLISH;
+                    updateUI(currentLanguage);
+
+                }
                 break;
 
 
