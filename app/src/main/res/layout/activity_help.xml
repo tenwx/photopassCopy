@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/pp_light_gray_normal"
-        android:layout_below="@id/head_line" />
+        android:layout_below="@+id/head_line" />
 
     <View
         android:layout_width="match_parent"

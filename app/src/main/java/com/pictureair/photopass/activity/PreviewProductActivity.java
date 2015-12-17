@@ -296,7 +296,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 viewHeight = bannerView_Preview.getHeight();
                 viewWidth = bannerView_Preview.getWidth();
                 PictureAirLog.v(TAG, "-------------->" + Common.GOOD_NAME_6R);
-                if (getIntent().getStringExtra("name").equals("canvas")) {
+                if (goodsInfo.getNameAlias().equals("canvas")) {
                     //1.画布，商品宽 355
                     //		 商品高 258
                     //       左边留白 20
@@ -314,7 +314,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 //					//		 预览图片高 946
 //					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
 //							480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
-                } else if (getIntent().getStringExtra("name").equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                } else if (goodsInfo.getNameAlias().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
                     //3.数码商品，商品宽 300
                     //		 商品高 217
                     //       左边留白 22
@@ -323,7 +323,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //		 预览图片高 217-26-25 = 166
                     bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
                             300, 217, 22, 26, 257, 166, 0, 0, 0, Common.GOOD_NAME_SINGLE_DIGITAL);//设置bannerview的图片
-                } else if (getIntent().getStringExtra("name").equals("4R Print")) {
+                } else if (goodsInfo.getNameAlias().equals("4R Print")) {
                     //4.4r相框，商品宽 180
                     //		 商品高 120
                     //       左边留白 7
@@ -332,9 +332,9 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //		 预览图片高 120-7-7 = 106
                     bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
                             180, 120, 7, 7, 166, 106, 0, 0, 0, "4R Print");//设置bannerview的图片
-                } else if (getIntent().getStringExtra("name").equals(Common.GOOD_NAME_6R) ||
-                        getIntent().getStringExtra("name").equals(Common.GOOD_NAME_COOK) ||
-                        getIntent().getStringExtra("name").equals(Common.GOOD_NAME_TSHIRT)) {
+                } else if (goodsInfo.getNameAlias().equals(Common.GOOD_NAME_6R) ||
+                        goodsInfo.getNameAlias().equals(Common.GOOD_NAME_COOK) ||
+                        goodsInfo.getNameAlias().equals(Common.GOOD_NAME_TSHIRT)) {
                     //5.6r相框，商品宽 240
                     //		 商品高 180
                     //       左边留白 10
@@ -343,7 +343,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //		 预览图片高 180-14-14 = 152
                     bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
                             240, 180, 10, 14, 220, 152, 0, 0, 0, getIntent().getStringExtra("name"));//设置bannerview的图片
-                } else if (getIntent().getStringExtra("name").equals("keyChain")) {
+                } else if (goodsInfo.getNameAlias().equals("keyChain")) {
                     //6.钥匙圈，商品宽 205
                     //		 商品高 89
                     //       左边留白 88
@@ -352,7 +352,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //		 预览图片高 89-18-16 = 55
                     bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
                             205, 89, 88, 18, 96, 55, 0.15f, 0, 0, "keyChain");//设置bannerview的图片
-//				}else if (getIntent().getStringExtra("name").equals("mug")) {
+//				}else if (goodsInfo.getNameAlias().equals("mug")) {
 //					//7.杯子，商品宽 185
 //					//		 商品高 160
 //					//       左边留白 10

@@ -191,8 +191,8 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
                     LocationItem item = (LocationItem) msg.obj;
                     final double lat_a = info.latitude;// 纬度,目标地点不会变化
                     final double lng_a = info.longitude;// 经度
-                    double lat_b = locationUtil.mapLocation.getLatitude();//获取当前app经纬度
-                    double lng_b = locationUtil.mapLocation.getLongitude();
+                    double lat_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLatitude() : 0;//获取当前app经纬度
+                    double lng_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLongitude() : 0;
                     double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
 //				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
                     // 距离
@@ -222,7 +222,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
                     locationList.clear();
                     favoriteList.clear();
 //				dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                    API1.getLocationInfo(getActivity(), app.getTokenId(), handler);//获取所有的location
+                    API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), handler);//获取所有的location
 //				if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
 //					API1.getLocationInfo(getActivity(),handler);//获取所有的location
 //				}else {//地址获取成功，但是照片获取失败

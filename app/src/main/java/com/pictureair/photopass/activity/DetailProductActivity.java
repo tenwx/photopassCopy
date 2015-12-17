@@ -154,6 +154,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                     intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
                     intent.putExtra("activity", "detailproductactivity");
                     intent.putExtra("goodsInfo",goodsInfo);
+                    intent.putExtra("activity", "detailproductactivity");
                     startActivity(intent);
                 }
                 break;
