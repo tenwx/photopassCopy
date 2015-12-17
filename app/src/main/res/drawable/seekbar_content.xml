@@ -10,11 +10,12 @@
         </shape>
     </item>
 
+
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
                 <corners android:radius="5dip" />
-                <solid android:color="@color/secondary_progress" />
+                <solid android:color="@color/white"/>
             </shape>
         </clip>
     </item>

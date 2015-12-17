@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.activity.IsOneGoToVideoActivity;
+import com.pictureair.photopass.activity.SelectPhotoActivity1;
 import com.pictureair.photopass.activity.SelectPhotoGoToVideoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -21,6 +22,7 @@ public class DisneyVideoTool {
     private static final String IS_ONE_GO_TO_DISNEY_VIDEO = "is_one_go_to_disney_video";
     public static final String IS_BOUGHT = "is_bought";
     public static final String FROM_STORY = "from_story";
+    public static final String DISNEY_VIDEO = "disney_video";
 
     /**
      * 1、第一次使用，则直接进入无视频引导页面，引导用户如何制作； 2、非第一次使用且没有乐拍通照片，则进入介绍页面；
@@ -48,19 +50,20 @@ public class DisneyVideoTool {
      * 测试播放视频
      * 1.进入videoActivity之前需要判断是不是视频
      * 2.需要传入对象视频对象
+     *
      * @param context
      */
     private static void TestGoToVideo(Context context) {
         PhotoInfo info = getPhotoInfo();
         Intent intent = new Intent(context, VideoPlayerActivity.class);
-        intent.putExtra(FROM_STORY,info);
+        intent.putExtra(FROM_STORY, info);
         context.startActivity(intent);
     }
 
     /**
      * 测试模拟一个数据
      */
-    private static PhotoInfo getPhotoInfo(){
+    private static PhotoInfo getPhotoInfo() {
         PhotoInfo photoInfo = new PhotoInfo();
         photoInfo.photoId = "123";
         photoInfo.photoPathOrURL = "123.mp4";//图片的原始路径
@@ -76,11 +79,10 @@ public class DisneyVideoTool {
      */
     public static void getIsEditImageGoToVideo(Context context) {
         // 判断是否有照片,到MyApplication查询是否有已经购买的照片
-        boolean isBought = null != MyApplication.getInstance().boughtPicList && 0 < MyApplication.getInstance().boughtPicList.size()?true:false;
         //测试
-//        boolean isBought = true;
-        Intent intent = new Intent(context, SelectPhotoGoToVideoActivity.class);
-        intent.putExtra(IS_BOUGHT, isBought);
+        Intent intent = new Intent(context, SelectPhotoActivity1.class);
+        intent.putExtra("activity", DISNEY_VIDEO);
+        intent.putExtra("photoCount", 3);
         context.startActivity(intent);
     }
 
