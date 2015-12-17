@@ -75,7 +75,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	private static final int LOAD_COMPLETED = 111;
 	private static final int REFRESH = 666;
 	private static final int REFRESH_LOCAL_PHOTOS = 777;
-	private static final int SORT_COMPLETED = 223;
+	private static final int SORT_COMPLETED_ALL = 223;
+	private static final int SORT_COMPLETED_REFRESH = 224;
 
 	private static String TAG = "FragmentPageStory";
 
@@ -250,6 +251,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					if (MainTabActivity.maintabbadgeView.isShown()) {
 						MainTabActivity.maintabbadgeView.hide();
 					}
+					sortData(false);
+					break;
+
+				case SORT_COMPLETED_REFRESH:
 					EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
 					EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
 					EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
@@ -258,10 +263,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					break;
 
 				case LOAD_COMPLETED:
-					sortData();
+					sortData(true);
 					break;
 
-				case SORT_COMPLETED:
+				case SORT_COMPLETED_ALL:
 					scanMagicPhotoNeedCallBack = true;
 					fragments = new ArrayList<>();
 					fragments.clear();
@@ -282,7 +287,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					System.out.println("onclick with reload");
 					dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
 					if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
-						API1.getLocationInfo(getActivity(), app.getTokenId(), handler);//获取所有的location
+						API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), handler);//获取所有的location
 					} else {//地址获取成功，但是照片获取失败
 						Message message = handler.obtainMessage();
 						message.what = API1.GET_ALL_LOCATION_SUCCESS;
@@ -414,6 +419,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 		photoPassPictureList = new ArrayList<>();
 		favouritePictureList = new ArrayList<>();
 		magicPicList = new ArrayList<>();
+
+		allPhotoList = new ArrayList<>();
+		pictureAirPhotoList = new ArrayList<>();
+		magicPhotoList = new ArrayList<>();
+		boughtPhotoList = new ArrayList<>();
+		favouritePhotoList = new ArrayList<>();
 		//绑定监听
 		storyTabAllTextView.setOnClickListener(new viewPagerOnClickListener(0));
 		storyTabPhotopassTextView.setOnClickListener(new viewPagerOnClickListener(1));
@@ -460,25 +471,30 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	/**
 	 * 排序
 	 */
-	private void sortData() {
+	private void sortData(final boolean isAll) {
 		new Thread(){
 			@Override
 			public void run() {
 				super.run();
-				allPhotoList = new ArrayList<>();
-				pictureAirPhotoList = new ArrayList<>();
-				magicPhotoList = new ArrayList<>();
-				boughtPhotoList = new ArrayList<>();
-				favouritePhotoList = new ArrayList<>();
+
+				allPhotoList.clear();
+				pictureAirPhotoList.clear();
+				magicPhotoList.clear();
+				boughtPhotoList.clear();
+				favouritePhotoList.clear();
 
 
-				allPhotoList = AppUtil.startSortForPinnedListView(app.allPicList);
-				pictureAirPhotoList = AppUtil.startSortForPinnedListView(photoPassPictureList);
-				magicPhotoList = AppUtil.startSortForPinnedListView(magicPicList);
-				boughtPhotoList = AppUtil.startSortForPinnedListView(app.boughtPicList);
-				favouritePhotoList = AppUtil.startSortForPinnedListView(favouritePictureList);
+				allPhotoList.addAll(AppUtil.startSortForPinnedListView(app.allPicList));
+				pictureAirPhotoList.addAll(AppUtil.startSortForPinnedListView(photoPassPictureList));
+				magicPhotoList.addAll(AppUtil.startSortForPinnedListView(magicPicList));
+				boughtPhotoList.addAll(AppUtil.startSortForPinnedListView(app.boughtPicList));
+				favouritePhotoList.addAll(AppUtil.startSortForPinnedListView(favouritePictureList));
 
-				handler.sendEmptyMessage(SORT_COMPLETED);
+				if (isAll) {
+					handler.sendEmptyMessage(SORT_COMPLETED_ALL);
+				} else {
+					handler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
+				}
 			}
 		}.start();
 

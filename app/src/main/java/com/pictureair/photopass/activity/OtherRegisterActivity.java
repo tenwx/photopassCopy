@@ -177,8 +177,8 @@ public class OtherRegisterActivity extends BaseActivity implements
 			 * 1.先提交用户名和密码 2.根据修改用户来提交 个人信息。
 			 */
                 String email = etEmail.getText().toString().trim();
-                String pwd = etPwd.getText().toString().trim();
-                String pwd2 = etPwd2.getText().toString().trim();
+                String pwd = etPwd.getText().toString();
+                String pwd2 = etPwd2.getText().toString();
                 String name = etName.getText().toString().trim();
                 // String year = etYear.getText().toString();
                 // String month = etMonth.getText().toString();
@@ -196,15 +196,13 @@ public class OtherRegisterActivity extends BaseActivity implements
                             Common.TOAST_SHORT_TIME);
                 } else {
                     // 比较密码合法性
-                    switch (AppUtil.checkPwd(etPwd.getText().toString(), etPwd2
-                            .getText().toString())) {
+                    switch (AppUtil.checkPwd(pwd, pwd2)) {
                         case AppUtil.PWD_ALL_SAPCE:// 全部为空格
                             myToast.setTextAndShow(R.string.pwd_no_all_space,
                                     Common.TOAST_SHORT_TIME);
                             break;
 
                         case AppUtil.PWD_AVAILABLE:// 密码可用
-//                            sign(email, pwd);// 注册 用户名和 密码。成功后将保存个人信息
                             new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
                                     name, birthday, sex, country, OtherRegisterActivity.this);
                             break;

@@ -827,7 +827,7 @@ public class API1 {
      * @param handler handler
      */
     public static void getCarts(final Handler handler) {
-        PictureAirLog.v(TAG, "getCarts");
+        PictureAirLog.out("getCarts---》" + MyApplication.getTokenId());
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());

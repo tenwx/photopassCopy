@@ -78,6 +78,7 @@ public class MainTabActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppManager.getInstance().addActivity(this);
         application = (MyApplication) getApplication();
         instances = this;
         initView();
@@ -176,6 +177,7 @@ public class MainTabActivity extends FragmentActivity {
         // TODO Auto-generated method stub
         super.onDestroy();
         clearCache();
+        AppManager.getInstance().killActivity(this);
     }
 
     //tab按钮的点击监听
