@@ -261,7 +261,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
      * 初始化发短信 *
      */
     private void initSSMSSDK() {
-        SMSSDK.initSDK(this, Common.APPKEY, Common.APPSECRET);
+        SMSSDK.initSDK(this, Common.SMS_APPKEY, Common.SMS_APPSECRET);
     }
 
     /**
