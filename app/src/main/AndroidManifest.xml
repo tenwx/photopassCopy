@@ -253,10 +253,6 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SelectPhotoGoToVideoActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- Disney Video end -->

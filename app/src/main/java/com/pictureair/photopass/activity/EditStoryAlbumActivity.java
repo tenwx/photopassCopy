@@ -22,7 +22,6 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.widget.SharePop;
 
 import java.util.ArrayList;
 
@@ -53,7 +52,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //	private final static int PROGRESSDIALOG = 0x112;
 	private int photoCount = 0;
 	private int currentProgress = 0;
-	private SharePop sharePop;//分享
+//	private SharePop sharePop;//分享
 	private int shareType = 0;
 	private MyToast myToast;
 	private CustomDialog customdialog;
@@ -179,7 +178,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //		setListCheckedStatus(editMode);
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
-		sharePop = new SharePop(this);
+//		sharePop = new SharePop(this);
 		myToast = new MyToast(this);
 		
 		footerView = new ImageView(EditStoryAlbumActivity.this);

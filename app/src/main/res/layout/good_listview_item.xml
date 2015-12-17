@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_blue"
-            android:textStyle="bold"
             android:textSize="15sp" />
 
         <TextView
@@ -29,7 +28,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_orange"
-            android:textStyle="bold"
             android:textSize="15sp" />
         
         <TextView

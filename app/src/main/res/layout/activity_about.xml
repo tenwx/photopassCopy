@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background"
-    tools:context="com.pictureair.photopass.activity.AboutActivity" >
+    tools:context="com.pictureair.photopass.activity.AboutActivity">
 
     <RelativeLayout
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/pp_blue" >
+        android:background="@color/pp_blue">
 
         <ImageView
             android:id="@+id/back1"
@@ -30,21 +30,20 @@
             android:layout_centerInParent="true"
             android:text="@string/mypage_about"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/head"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:gravity="bottom" >
+            android:gravity="bottom">
 
             <ImageView
                 android:id="@+id/logo"
@@ -68,7 +67,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/logo_text"
@@ -83,13 +82,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.activity.IsOneGoToVideoActivity;
 import com.pictureair.photopass.activity.SelectPhotoActivity1;
-import com.pictureair.photopass.activity.SelectPhotoGoToVideoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -80,6 +79,12 @@ public class DisneyVideoTool {
     public static void getIsEditImageGoToVideo(Context context) {
         // 判断是否有照片,到MyApplication查询是否有已经购买的照片
         //测试
+
+        PictureAirLog.e(TAG,"tokenId:"+ MyApplication.getTokenId());
+        SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME,context.MODE_PRIVATE);
+        PictureAirLog.e(TAG,"userId:"+ sp.getString(Common.USERINFO_ID,"0") );
+
+
         Intent intent = new Intent(context, SelectPhotoActivity1.class);
         intent.putExtra("activity", DISNEY_VIDEO);
         intent.putExtra("photoCount", 3);
