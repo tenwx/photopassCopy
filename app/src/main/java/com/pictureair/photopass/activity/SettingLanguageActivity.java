@@ -1,6 +1,5 @@
 package com.pictureair.photopass.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
@@ -13,7 +12,6 @@ import android.widget.RelativeLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 
 import java.util.Locale;
@@ -66,6 +64,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         languageEnglish.setOnClickListener(this);
     }
 
+
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
@@ -74,8 +73,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                 finish();
                 break;
             case R.id.save:
-                MainTabActivity.instances.finish();
-
                 //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
                 if (languageType.equals(Common.SIMPLE_CHINESE)) {
                     MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
@@ -90,11 +87,8 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                         Common.APP, MODE_PRIVATE);
                 Editor localEditor = settingLanguage.edit();
                 localEditor.putString(Common.LANGUAGE_TYPE, languageType);
-                localEditor.apply();
-
-                AppManager.getInstance().killAllActivity();
-                startActivity(new Intent(this, SettingActivity.class));
-
+                localEditor.commit();
+                finish();
                 break;
             case R.id.language_chinese:
                 languageType = Common.SIMPLE_CHINESE;

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background">
 
+
     <RelativeLayout
         android:id="@+id/head"
         android:layout_width="match_parent"
@@ -32,13 +33,20 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
+    <View
+        android:id="@+id/head_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/pp_margin_16"
+        android:layout_below="@+id/head"
+        android:background="@color/pp_light_gray_press" />
+
     <ListView
         android:id="@+id/lv_helps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/pp_light_gray_normal"
-        android:layout_below="@id/head"
-        android:layout_marginTop="16dp" />
+        android:layout_below="@id/head_line" />
 
     <View
         android:layout_width="match_parent"

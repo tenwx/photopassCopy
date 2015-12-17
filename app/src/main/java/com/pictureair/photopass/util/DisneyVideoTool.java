@@ -1,13 +1,11 @@
 package com.pictureair.photopass.util;
 
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.pictureair.photopass.activity.IsOneGoToVideoActivity;
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.activity.IsOneGoToVideoActivity;
 import com.pictureair.photopass.activity.SelectPhotoGoToVideoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -40,9 +38,9 @@ public class DisneyVideoTool {
             intent.setClass(context, IsOneGoToVideoActivity.class);
             context.startActivity(intent);
         } else {// 第二次进入
-//            getIsEditImageGoToVideo(context);
+            getIsEditImageGoToVideo(context);
             //测试进入播放视频
-            TestGoToVideo(context);
+//            TestGoToVideo(context);
         }
     }
 

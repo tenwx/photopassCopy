@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CartActivity;
@@ -71,16 +72,17 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             switch (msg.what) {
                 case API1.GET_GOODS_SUCCESS://成功获取商品
                     allGoodsList.clear();
-                    PictureAirLog.v(TAG,"GET_GOODS_SUCCESS");
+                    PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
                     GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
                     if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
                         allGoodsList = goodsInfoJson.getGoods();
                         PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                     }
+                    //将数据保存到缓存中
+                    ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, goodsInfoJson.toString());
                     customProgressDialog.dismiss();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);
                     shopGoodListViewAdapter.refresh(allGoodsList);
-//                    shopGoodListViewAdapter.notifyDataSetChanged();
                     break;
 
                 case API1.GET_GOODS_FAILED://获取商品失败
@@ -93,7 +95,12 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     //重新加载购物车数据
                     System.out.println("onclick with reload");
                     customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                    API1.getGoods(mHandler);
+                    //从缓层中获取数据
+                    if (ACache.get(getActivity()).getAsString(Common.ALL_GOODS) == null) {
+                        API1.getGoods(mHandler);
+                    } else {
+                        mHandler.obtainMessage(API1.GET_GOODS_SUCCESS, ACache.get(getActivity()).getAsString(Common.ALL_GOODS));
+                    }
                     break;
 
                 default:
@@ -130,7 +137,14 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         allGoodsList = new ArrayList<>();//初始化商品列表
         customProgressDialog = CustomProgressDialog.show(getActivity(), getActivity().getString(R.string.is_loading), false, null);
         //获取商品
-        API1.getGoods(mHandler);
+        //从缓层中获取数据
+        if (ACache.get(getActivity()).getAsString(Common.ALL_GOODS) == null) {
+            API1.getGoods(mHandler);
+        } else {
+            mHandler.obtainMessage(API1.GET_GOODS_SUCCESS, ACache.get(getActivity()).getAsString(Common.ALL_GOODS));
+        }
+
+
         shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
         xListView.setAdapter(shopGoodListViewAdapter);
         //绑定监听

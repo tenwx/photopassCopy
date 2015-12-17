@@ -1,47 +1,28 @@
 package com.pictureair.photopass.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.HelpInfosAdapter;
-import com.pictureair.photopass.adapter.QuestionAdapter;
-import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.HelpInfo;
-import com.pictureair.photopass.entity.QuestionInfo;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.PinYin;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.util.ArrayList;
-
-import cn.smssdk.gui.EditTextWithClear;
 
 /**
  * 帮助
@@ -114,7 +95,7 @@ public class HelpActivity extends BaseActivity implements OnClickListener {
 //        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
             mListView.setVisibility(View.VISIBLE);
             noNetWorkOrNoCountView.setVisibility(View.GONE);
-            API1.getHelp(handler,context);
+            API1.getHelp(handler);
         }
     }
 

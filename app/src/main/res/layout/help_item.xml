@@ -14,10 +14,11 @@
         android:id="@+id/tv_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/pp_margin_16"
         android:text="What is the PhotoPass?"
         android:layout_below="@+id/view_top"
         android:textColor="@color/pp_blue"
+        android:textStyle="bold"
         android:textSize="@dimen/text_size_12" />
 
     <View
@@ -25,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_below="@+id/tv_question"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="@dimen/pp_margin_20"
         android:background="@color/pp_light_gray_normal" />
 
     <TextView
@@ -33,10 +34,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_line"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="1.balabalbalabala"
+        android:layout_marginLeft="@dimen/pp_margin_20"
+        android:layout_marginTop="@dimen/pp_margin_10"
+        android:layout_marginBottom="@dimen/pp_margin_10"
         android:textColor="@color/pp_light_gray_press"
         android:textSize="@dimen/text_size_10" />
 

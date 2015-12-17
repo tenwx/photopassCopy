@@ -154,13 +154,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                     DetailProductActivity.this.startActivity(intent);
                 } else {
                     intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
-                    intent.putExtra("name", goodsInfo.getNameAlias());
-                    intent.putExtra("price", promotionPrice.getText().toString());
-                    intent.putExtra("introduce", detail.getText().toString());
-                    intent.putExtra("productImage", goodsInfo.getPictures().get(0).getUrl());
-                    intent.putExtra("activity", "detailproductactivity");
-                    intent.putExtra("storeid", getIntent().getStringExtra("storeid"));
-                    intent.putExtra("productid", goodsInfo.getProductId());
+                    intent.putExtra("goodsInfo",goodsInfo);
                     startActivity(intent);
                 }
                 break;

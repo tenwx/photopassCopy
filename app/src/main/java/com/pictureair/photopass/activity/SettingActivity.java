@@ -99,6 +99,12 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onCreate(null);
+    }
+
     private void initView() {
         logout = (Button) findViewById(R.id.logout);
         feedback = (RelativeLayout) findViewById(R.id.sub_opinions);

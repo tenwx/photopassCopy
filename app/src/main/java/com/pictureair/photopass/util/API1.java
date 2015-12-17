@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.PPPinfo;
+import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import java.io.File;
@@ -128,6 +129,12 @@ public class API1 {
     public static final int GET_HELP_FAILED = 5020;
     //我的模块 end
 
+
+    public static final int APK_NEED_UPDATE = 6001;
+    public static final int APK_NEED_NOT_UPDATE = 6000;
+
+    public static final int DOWNLOAD_APK_SUCCESS = 6011;
+    public static final int DOWNLOAD_APK_FAILED = 6010;
 
 
     /**
@@ -404,7 +411,7 @@ public class API1 {
      * @param type
      * @param handler
      */
-    public static void addScanCodeToUser(String url, RequestParams params, final String type, final Handler handler){
+    public static void addScanCodeToUser(String url, RequestParams params, final String type, final Handler handler) {
         HttpUtil1.asyncPost(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -427,10 +434,11 @@ public class API1 {
 
     /**
      * 获取已收藏的地点信息
+     *
      * @param tokenId
      * @param handler
      */
-    public static void getFavoriteLocations(String tokenId, final Handler handler){
+    public static void getFavoriteLocations(String tokenId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_FAVORITE_LOCATIONS, params, new HttpCallback() {
@@ -451,11 +459,11 @@ public class API1 {
 
     /**
      * 收藏或者取消收藏地址获取已收藏的地点信息
-     * @param tokenId  必填，token
-     * @param locationId  locationId:string，必填，location的locationId
-     * @param action  必填，操作（可选值：add，remove），收藏或取消收藏
-     * @param handler
      *
+     * @param tokenId    必填，token
+     * @param locationId locationId:string，必填，location的locationId
+     * @param action     必填，操作（可选值：add，remove），收藏或取消收藏
+     * @param handler
      */
     public static void editFavoriteLocations(String tokenId, String locationId,
                                              String action, final int position, final Handler handler) {
@@ -494,7 +502,6 @@ public class API1 {
                     }
                 });
     }
-
 
 
     /***************************************我的模块 start**************************************/
@@ -705,27 +712,23 @@ public class API1 {
 
     /**
      * 帮助
+     *
      * @param handler
      */
-    public  static void getHelp(final Handler handler,Context context){
-        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+    public static void getHelp(final Handler handler) {
         RequestParams params = new RequestParams();
-        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
-        params.put(Common.USERINFO_TOKENID, tokenId);
-
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ME_HELP,params, new HttpCallback() {
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ME_HELP, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.i(TAG, "===>JSON info"+jsonObject.toString());
-                handler.obtainMessage(GET_HELP_SUCCESS,jsonObject).sendToTarget();
+                handler.obtainMessage(GET_HELP_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG,"错误码："+status);
-                handler.obtainMessage(GET_HELP_FAILED,status,0).sendToTarget();
+                handler.obtainMessage(GET_HELP_FAILED, status, 0).sendToTarget();
             }
         });
     }
@@ -770,7 +773,7 @@ public class API1 {
         PictureAirLog.v(TAG, "getGoods");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LANGUAGE,MyApplication.getInstance().getLanguageType());
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_GOODS, params, new HttpCallback() {
 
             @Override
@@ -799,7 +802,7 @@ public class API1 {
         String url = Common.BASE_URL_TEST + Common.GET_SINGLE_GOOD + storeId + "/goods/" + goodId;
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.LANGUAGE,MyApplication.getInstance().getLanguageType());
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncGet(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -827,7 +830,7 @@ public class API1 {
         PictureAirLog.v(TAG, "getCarts");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LANGUAGE,MyApplication.getInstance().getLanguageType());
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -947,12 +950,11 @@ public class API1 {
     }
 
 
-
-
     /***************************************Shop模块 end**************************************/
 
     /**
      * 上传照片到服务器合成视频
+     *
      * @param context
      * @param photos
      * @param handler
@@ -979,5 +981,96 @@ public class API1 {
         });
     }
 
+    /**
+     * 获取最新的版本信息
+     *
+     * @param handler
+     * @param thisVerName
+     * @param language
+     */
+    public static void checkUpdate(final Handler handler, final String thisVerName, final String language) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                jsonObject = jsonObject.getJSONObject("version");
+                String versionName = jsonObject.getString("version");
+                String mandatory = jsonObject.getString("mandatory");
+                String content_EN = jsonObject.getString("content_EN");
+                String content = jsonObject.getString("content");
+                JSONArray array = jsonObject.getJSONArray("downloadChannel");
+                String downloadUrl = null;
+                for (int i = 0; i < array.size(); i++) {
+                    String channel = array.getJSONObject(i).getString("channel");
+                    if (Common.UMENG_CHANNEL.equals(channel)) {
+                        downloadUrl = array.getJSONObject(i).getString("downloadUrl");
+                        break;
+                    }
+                }
+                boolean flag = false;// 为false则不更新
+                int[] number = CheckUpdateManager.verNameChangeInt(thisVerName);
+                int[] newNumber = CheckUpdateManager.verNameChangeInt(versionName);
+                for (int i = 0; i < number.length; i++) {
+                    if (number[i] < newNumber[i]) {
+                        // 需要更新
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) {
+                    // 更新
+                    String[] resultArray = new String[4];
+                    resultArray[0] = versionName;
+                    resultArray[1] = mandatory;
+                    resultArray[3] = downloadUrl;
 
+                    if (null != language && language.equals("en")) {
+                        resultArray[2] = content_EN;
+                    } else {
+                        resultArray[2] = content;
+                    }
+                    handler.obtainMessage(APK_NEED_UPDATE, resultArray).sendToTarget();
+                } else {
+                    handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+            }
+        });
+    }
+
+    /**
+     * 下载apk文件
+     *
+     * @param downloadURL 下載路徑
+     * @param handler
+     */
+    public static void downloadAPK(String downloadURL, final CustomProgressBarPop customProgressBarPop, final String version, final Handler handler) {
+        HttpUtil1.asynDownloadBinaryData(downloadURL, new HttpCallback() {
+            @Override
+            public void onSuccess(byte[] binaryData) {
+                super.onSuccess(binaryData);
+                handler.obtainMessage(DOWNLOAD_APK_SUCCESS, binaryData).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                customProgressBarPop.setProgress(bytesWritten, totalSize);
+            }
+        });
+    }
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.pictureair.photopass.entity.BaseCheckUpdate;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 
 /**
  * 自动更新检查类
@@ -24,13 +24,12 @@ public class CheckUpdate implements BaseCheckUpdate{
 	@Override
 	public void checkUpdate(Context context, Handler handler, String versionName, String currentLanguage) {
 		// TODO Auto-generated method stub
-		API.checkUpdate(context, handler, versionName, currentLanguage);
+		API1.checkUpdate(handler, versionName, currentLanguage);
 	}
 
 	@Override
 	public void downloadAPK(String downloadURL, CustomProgressBarPop customProgressBarPop, String version, Handler handler) {
 		// TODO Auto-generated method stub
-
-		API.downloadAPK(downloadURL, customProgressBarPop, version, handler);
+		API1.downloadAPK(downloadURL, customProgressBarPop, version, handler);
 	}
 }

@@ -63,11 +63,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private View line;
 
     private ArrayList<CartItemInfo1> cartInfoList;// 订单list
-    private CartItemInfo1 cartItemInfo;
 
     private ArrayList<PhotoInfo> updatephotolist;
 
-    private float totalCount = 0;//总数量
     private float totalPrice = 0;//总价格
     private boolean isEdit = false;
     private boolean isDelete = false;
@@ -81,7 +79,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private CustomProgressDialog customProgressDialog;
 
     private String userId = "";
-
     private MyToast newToast;
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
@@ -172,7 +169,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     try {
                         photoUrlString = result.getString("photoUrl");
                         photoIdString = result.getString("photoId");
-                        System.out.println(photoUrlString + "_" + photoIdString);
+                        PictureAirLog.v(TAG,photoUrlString + "_" + photoIdString);
 
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
@@ -195,7 +192,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
                             // TODO Auto-generated method stub
                             super.onSuccess(statusCode, headers, response);
-                            System.out.println("modify cart with change photot ==" + response);
+                            PictureAirLog.v(TAG,"modify cart with change photot ==" + response);
 
                             if (response.has("message")) {//添加失败
                                 newToast.setTextAndShow(R.string.uploadphotofailed, Common.TOAST_SHORT_TIME);
@@ -229,7 +226,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                     //重新加载购物车数据
-                    System.out.println("onclick with reload");
+                    PictureAirLog.v(TAG,"onclick with reload");
                     customProgressDialog = CustomProgressDialog.show(CartActivity.this, getString(R.string.is_loading), false, null);
                     API.getcart(CartActivity.this, Common.BASE_URL + Common.GET_CART, userId, handler);
                     cartInfoList.clear();
@@ -237,7 +234,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
                     //去跳转到购物车
-                    System.out.println("onclick with no reload");
+                    PictureAirLog.v(TAG,"onclick with no reload");
                     //需要删除页面，保证只剩下mainTab页面，
                     AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                     //同时将mainTab切换到shop Tab
@@ -483,18 +480,18 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                             orderinfo.add(cartInfoList.get(i));
                         }
                     }
-                    System.out.println("order info count = " + orderinfo.size());
+                    PictureAirLog.v(TAG,"order info count = " + orderinfo.size());
                     if (0 == cartInfoList.size()) {
-                        System.out.println("cartinfolist = 0");
+                        PictureAirLog.v(TAG,"cartinfolist = 0");
                         newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
                     } else if (0 == orderinfo.size()) {
-                        System.out.println("orderinfo = 0");
+                        PictureAirLog.v(TAG,"orderinfo = 0");
                         newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
                     } else {
                         /**********判断是否有图片没有添加*********/
                         for (int i = 0; i < orderinfo.size(); i++) {
                             if (!orderinfo.get(i).getHasPhoto()) {
-                                System.out.println("have no photo");
+                                PictureAirLog.v(TAG,"have no photo");
                                 newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
                                 return;
                             }
@@ -651,7 +648,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
         cartPhotosInfo.setCartPhotoUrl(photoList.get(0).photoPathOrURL);
         oriphoto.set(position % 10, cartPhotosInfo);//替换图片
-        System.out.println("重新选择的图片");
+        PictureAirLog.v(TAG,"重新选择的图片");
         CartItemInfo1 map = cartInfoList.get(position / 10);
         map.setEmbedPhotos(oriphoto);
         map.setHasPhoto(true);

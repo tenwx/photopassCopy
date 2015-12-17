@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
+import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -46,10 +47,13 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private int photocount = 1;//需要添加的图片数量，以后要改这个数值
     private int selectedCount = 0;//已经选择了的图片数量
 
+    private GoodsInfo1 goodsInfo;//存放商品信息
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo_1);
+        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
         initview();
     }
 
@@ -195,22 +199,20 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 } else if (photoURLlist.size() < photocount) {
                     newToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
                 } else {
-                    if (activity.equals("detailproductactivity") || activity.equals("previewproductactivity")) {//从详细商品界面进入
+                    if (activity.equals("detailproductactivity") || activity.equals("previewproductactivity")) {
+                        //从详细商品界面进入
                         intent = new Intent(this, PreviewProductActivity.class);
-                        intent.putExtra("name", getIntent().getStringExtra("name"));
-                        intent.putExtra("price", getIntent().getStringExtra("price"));
-                        intent.putExtra("introduce", getIntent().getStringExtra("introduce"));
-                        intent.putExtra("productImage", getIntent().getStringExtra("productImage"));
+                        intent.putExtra("goodsInfo",goodsInfo);
                         intent.putExtra("photopath", photoURLlist);
-                        intent.putExtra("storeid", getIntent().getStringExtra("storeid"));
-                        intent.putExtra("productid", getIntent().getStringExtra("productid"));
                         startActivity(intent);
-                    } else if (activity.equals("makegiftactivity")) {//从其他界面进来，返回新选择的照片
+                    } else if (activity.equals("makegiftactivity")) {
+                        //从其他界面进来，返回新选择的照片
                         intent = new Intent();
                         intent.putExtra("photopath", photoURLlist);
                         setResult(20, intent);
                         finish();
-                    } else if (activity.equals("submitorderactivity")) {//从其他界面进来，返回新选择的照片
+                    } else if (activity.equals("submitorderactivity")) {
+                        //从其他界面进来，返回新选择的照片
                         intent = new Intent();
                         intent.putExtra("photopath", photoURLlist);
                         setResult(20, intent);

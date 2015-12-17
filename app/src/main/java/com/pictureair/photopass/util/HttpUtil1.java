@@ -24,7 +24,7 @@ public class HttpUtil1 {
     private static final String TAG = "HttpUtil1";
     private static final int HTTP_ERROR = 401;//请求失败的错误代码
     private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json;charset=utf-8", "text/html;charset=utf-8",
-            "video/mp4", "audio/x-mpegurl", "image/jpeg", "image/png"};
+            "video/mp4", "audio/x-mpegurl", "image/jpeg", "image/png","application/vnd.android.package-archive"};
 
     static {
         if (threadPool == null) {

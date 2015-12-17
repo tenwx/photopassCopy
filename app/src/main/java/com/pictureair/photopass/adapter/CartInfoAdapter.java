@@ -100,14 +100,6 @@ public class CartInfoAdapter extends BaseAdapter {
         return position;
     }
 
-//	public ArrayList<CartItemInfo> getGoodArrayList() {
-//		return goodArrayList;
-//	}
-
-//	public void setGoodArrayList(ArrayList<CartItemInfo> goodArrayList) {
-//		this.goodArrayList = goodArrayList;
-//	}
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
@@ -140,13 +132,20 @@ public class CartInfoAdapter extends BaseAdapter {
         }
         gridviewlist = goodArrayList.get(position).getEmbedPhotos();
         gridlayoutList = new ArrayList<>();
+        String pictureUrl;
+        String[] pictureUrlArray = goodArrayList.get(position).getPictures();
+        if (pictureUrlArray != null && pictureUrlArray.length > 0) {
+            pictureUrl = pictureUrlArray[0];
+        } else {
+            pictureUrl = null;
+        }
         //设置商品图片
         if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(goodArrayList.get(position).getProductName())) {//照片商品
-            String url = null;
-            if (goodArrayList.get(position).getPictures()[0].contains("http")) {
-                url = goodArrayList.get(position).getPictures()[0];
+            String url;
+            if (pictureUrl.contains("http")) {
+                url = pictureUrl;
             } else {
-                url = Common.PHOTO_URL + goodArrayList.get(position).getPictures()[0];
+                url = Common.PHOTO_URL + pictureUrl;
             }
             if (url.contains("productImage/gift-singleDigital.jpg")) {
                 PictureAirLog.v(TAG, url);
@@ -159,13 +158,13 @@ public class CartInfoAdapter extends BaseAdapter {
 
         } else if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
             Log.d(TAG, "photopassplus product");
-            imageLoader.displayImage(Common.BASE_URL + goodArrayList.get(position).getPictures()[0], viewHolder.cartGoodImageView);
+            imageLoader.displayImage(Common.BASE_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
             viewHolder.cartLineImageView.setVisibility(View.GONE);
             viewHolder.hideImageView.setVisibility(View.GONE);
         } else {//其他商品
             Log.d(TAG, "other product");
-            imageLoader.displayImage(Common.BASE_URL + goodArrayList.get(position).getPictures()[0], viewHolder.cartGoodImageView);
+            imageLoader.displayImage(Common.BASE_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.hideImageView.setVisibility(View.INVISIBLE);
@@ -259,7 +258,6 @@ public class CartInfoAdapter extends BaseAdapter {
     private class PhotoOnClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "photo click " + v.getId() / 10 + "_" + v.getId() % 10);
             Message message = handler.obtainMessage();
             message.what = CHANGE_PHOTO;
             message.arg1 = v.getId();
@@ -279,7 +277,6 @@ public class CartInfoAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "set isSelected");
             Message message = handler.obtainMessage();
             if (cartItemInfo.getIsSelect()) {//取消选中
                 viewHolder.selectedImageView.setImageResource(R.drawable.cart_not_select);
