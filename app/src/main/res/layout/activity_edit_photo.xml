@@ -286,7 +286,7 @@
         android:layout_alignTop="@+id/edittoolsbar"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -294,7 +294,7 @@
             android:layout_weight="1" >
 
             <TextView
-                android:id="@+id/setTextFont"
+                android:id="@+id/tv_left90"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -312,7 +312,7 @@
             android:layout_weight="1" >
 
             <TextView
-                android:id="@+id/setColor"
+                android:id="@+id/tv_right90"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"

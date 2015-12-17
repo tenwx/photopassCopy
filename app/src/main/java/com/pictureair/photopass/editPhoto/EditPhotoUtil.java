@@ -267,5 +267,27 @@ public class EditPhotoUtil {
 			canvas.restore();
 			return msrc;
 		}
+
+	/**
+	 * 图片旋转
+	 * @param bit
+	 * 旋转原图像
+	 *
+	 * @param degrees
+	 * 旋转度数
+	 *
+	 * @return
+	 * 旋转之后的图像
+	 *
+	 */
+	public static Bitmap rotateImage(Bitmap bit, int degrees)
+	{
+		Matrix matrix = new Matrix();
+		matrix.postRotate(degrees);
+		Bitmap tempBitmap = Bitmap.createBitmap(bit, 0, 0, bit.getWidth(),
+				bit.getHeight(), matrix, true);
+		return tempBitmap;
+	}
+
 	
 }
