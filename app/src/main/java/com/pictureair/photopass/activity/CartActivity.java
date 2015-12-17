@@ -465,9 +465,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         isDelete = false;
                         return;
                     }
+                    //构建数组
+                    String[] deletes = new String[deleteCartItemInfoList.size()];
+                    for (int i = 0; i < deletes.length; i++) {
+                        deletes[i] = deleteCartItemInfoList.get(i).getCartId();
+                    }
                     //不支持中间项删除
                     //请求删除操作
-                    API1.removeCartItems(deleteCartItemInfoList.get(0).getCartId(), handler);
+                    API1.removeCartItems(deletes, handler);
 
                 } else {//支付操作
                     ArrayList<CartItemInfo1> orderinfo = new ArrayList<CartItemInfo1>();

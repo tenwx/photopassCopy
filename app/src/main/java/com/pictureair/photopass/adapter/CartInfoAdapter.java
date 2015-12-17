@@ -320,18 +320,21 @@ public class CartInfoAdapter extends BaseAdapter {
                 ishandle = true;
                 int count = Integer.parseInt(holderView.cartGoodCountTextView.getText().toString());
                 boolean addcount = false;//true 代表添加操作，false代表减少操作
-                if (v.getId() == holderView.cartAddImageView.getId()) {//添加按钮
+                if (v.getId() == holderView.cartAddImageView.getId()) {
+                    //添加按钮
                     PictureAirLog.v(TAG, "add item count");
                     count++;
                     addcount = true;
-                } else if (v.getId() == holderView.cartReduceImageView.getId()) {//减少按钮
+                    holderView.cartReduceImageView.setEnabled(true);//激活减少按钮
+                } else if (v.getId() == holderView.cartReduceImageView.getId()) {
+                    //减少按钮
                     PictureAirLog.v(TAG, "remove");
                     if (count > 1) {// 判断数量是否小于1件，如果小于1，则不让更改
                         count--;
                         addcount = false;
                     } else {
-                        PictureAirLog.v(TAG, "not ok");
-                        myToast.setTextAndShow(R.string.cannot_reduce, Common.TOAST_SHORT_TIME);
+                        holderView.cartReduceImageView.setEnabled(false);//当数量为1时  不可点击
+//                        myToast.setTextAndShow(R.string.cannot_reduce, Common.TOAST_SHORT_TIME);
                         ishandle = false;
                         return;
                     }

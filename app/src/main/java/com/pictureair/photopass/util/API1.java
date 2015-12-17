@@ -921,13 +921,16 @@ public class API1 {
     /**
      * 移除用户购物车信息
      *
-     * @param cartId  购物车项id参数(可选,不填时为移除全部)
-     * @param handler handler
+     * @param cartIdsArray 购物车项id参数(可选,不填时为移除全部)
+     * @param handler      handler
      */
-    public static void removeCartItems(String cartId, final Handler handler) {
+    public static void removeCartItems(String[] cartIdsArray, final Handler handler) {
+        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART;
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART + "/" + cartId;
+        if (cartIdsArray != null && cartIdsArray.length > 0) {
+            params.put("cartIdsArray", cartIdsArray);
+        }
         HttpUtil1.asyncDelete(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
