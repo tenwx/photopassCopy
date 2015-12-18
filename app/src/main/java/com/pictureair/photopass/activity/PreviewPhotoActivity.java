@@ -582,18 +582,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG,"thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);
         PictureAirLog.v(TAG,"thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
         PictureAirLog.v(TAG,"original is " + photolist.get(currentPosition).photoPathOrURL);
-        //如果是从viewphotoactivity界面进来，因为第一项为拍照按钮，所以这里的数据都要删除第一项
-        if ("viewphotoactivity".equals(getIntent().getStringExtra("activity"))) {
-            photolist.remove(0);
-            targetphotolist.remove(0);
-            currentPosition--;
-        } else {//如果是其他界面进来，则只删除目标list中的第一项
-//			if (targetphotolist != null && targetphotolist.size() > 0) {
-//				targetphotolist.remove(0);
-//			}
-            PictureAirLog.v(TAG,"need not to reduce or delete");
-        }
-
         PictureAirLog.v(TAG, "----------------------->initing...2");
         handler.sendEmptyMessage(7);
 

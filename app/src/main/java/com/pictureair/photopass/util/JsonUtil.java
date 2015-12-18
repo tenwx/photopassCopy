@@ -160,28 +160,20 @@ public class JsonUtil {
 
         //获取图片的购买状态
         info.isPayed = 1;
-        info.isVideo = 0;
+        info.isVideo = 1;
         //获取图片的原始路径信息
         if (object.containsKey("url")) {
-                StringBuffer sb = new StringBuffer();
-                sb.append(Common.PHOTO_URL).append(object.getString("url"));
-                info.photoPathOrURL = sb.toString().trim();
+                info.photoPathOrURL = object.getString("url");
         }
         //获取图片对应的pp码
         info.photoPassCode = "";
         //获取视频的拍摄日期
         if (object.containsKey("createdOn")) {
             String time = object.getString("createdOn");
-            PictureAirLog.out("get transfer time----> "+ AppUtil.GTMToLocal(time));
-
-        }
-
-        if (object.containsKey("shootDate")) {
-            String time = object.getString("shootDate");
-            info.shootTime = time;
-        }
-        if (object.containsKey("strShootOn")) {
-            info.shootOn = object.getString("strShootOn");
+            info.shootOn = AppUtil.GTMToLocal(time);
+            info.shootTime = info.shootOn.substring(0, 10);
+            PictureAirLog.out("get transfer time----> "+ info.shootOn);
+            PictureAirLog.out("shootTime----> "+ info.shootTime);
         }
 
         if (object.containsKey("fileSize")) {

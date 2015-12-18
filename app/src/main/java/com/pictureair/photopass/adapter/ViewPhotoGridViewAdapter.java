@@ -74,7 +74,7 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 	 */
 	public void startSelectPhoto(int isChecked, int isSelected) {
 		PhotoInfo selectPhotoItemInfo;
-		for (int i = 1; i < arrayList.size(); i++) {
+		for (int i = 0; i < arrayList.size(); i++) {
 			selectPhotoItemInfo = arrayList.get(i);
 			selectPhotoItemInfo.isChecked = isChecked;
 			selectPhotoItemInfo.isSelected = isSelected;

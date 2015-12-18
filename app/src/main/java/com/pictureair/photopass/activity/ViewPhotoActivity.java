@@ -24,6 +24,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -42,7 +43,7 @@ import java.util.Date;
  */
 
 public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
-
+	private static final String TAG = "ViewPhotoActivity";
 	private ImageView rtLayout;
 	private TextView viewTextView;
 	private GridView myGridView;
@@ -154,28 +155,28 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 	//获取Magic的照片
 	private void ScanPhotos(ArrayList<PhotoInfo> arrayList, String filePath, String albumName){
-		System.out.println("---------->scan1"+albumName);
+		PictureAirLog.v(TAG, "---------->scan1" + albumName);
 		myApplication.magicPicList.clear();
-		selectPhotoItemInfo = new PhotoInfo();
-		arrayList.add(selectPhotoItemInfo);
+//		selectPhotoItemInfo = new PhotoInfo();
+//		arrayList.add(selectPhotoItemInfo);
 		if (!sdCardExist) {//如果SD卡不存在
 			return;
 		}
-		System.out.println("---------->scan2"+albumName);
+		PictureAirLog.v(TAG, "---------->scan2" + albumName);
 		File file = new File(filePath);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
 		Date date;
 		File[] files  = file.listFiles();
-		System.out.println("---------->scan3"+albumName);
+		PictureAirLog.v(TAG, "---------->scan3" + albumName);
 		//		arrayList.add(selectPhotoItemInfo);
 		for (int i = 0; i < files.length; i++) {
 			if(files[i].getName().endsWith(".JPG")||files[i].getName().endsWith(".jpg")){
 				if (files[i].length() > 0) {//扫描到文件
 					selectPhotoItemInfo = new PhotoInfo();
 					selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
-					System.out.println("magic url is =====>" + selectPhotoItemInfo.photoPathOrURL);
+					PictureAirLog.v(TAG, "magic url is =====>" + selectPhotoItemInfo.photoPathOrURL);
 					selectPhotoItemInfo.lastModify = files[i].lastModified();
 					date = new Date(selectPhotoItemInfo.lastModify);
 					selectPhotoItemInfo.shootOn = sdf.format(date);
@@ -222,7 +223,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.imageButton_edit://点击编辑按钮
-			System.out.println("edit photo");
+			PictureAirLog.v(TAG, "edit photo");
 			if (!select_photo_flag) {
 				selectllLayout.setVisibility(View.VISIBLE);
 				select_photo_flag = true;
@@ -247,16 +248,16 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 		case R.id.select_disall:
 			//全取消操作
-			System.out.println("disselect all");
+			PictureAirLog.v(TAG, "disselect all");
 			selectAll.setVisibility(View.VISIBLE);
 			selectDisAll.setVisibility(View.GONE);
 			selectShare.setEnabled(false);
 			selectDelete.setEnabled(false);
 			selectMakeGift.setEnabled(false);
 			viewPhotoGridViewAdapter.startSelectPhoto(1, 0);
-			System.out.println("size======"+photoURLlist.size());
+			PictureAirLog.v(TAG, "size======" + photoURLlist.size());
 			photoURLlist.clear();//每次全选，清空全部数据
-			System.out.println("size======"+photoURLlist.size());
+			PictureAirLog.v(TAG, "size======" + photoURLlist.size());
 
 			break;
 
@@ -268,18 +269,18 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			selectDelete.setEnabled(true);
 			selectMakeGift.setEnabled(true);
 
-			System.out.println("select all");
+			PictureAirLog.v(TAG, "select all");
 			viewPhotoGridViewAdapter.startSelectPhoto(1, 1);
 			selectall(magicArrayList, Common.ALBUM_MAGIC);
 			//			}else {}
 			break;
 
 		case R.id.select_makegift://制作礼物操作
-			System.out.println("select make gift");
+			PictureAirLog.v(TAG, "select make gift");
 			if (photoURLlist.size() == 0) {//没有图片
 				newToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
 			}else if (photoURLlist.size() == 1) {//普通商品
-				System.out.println("makegift");
+				PictureAirLog.v(TAG, "makegift");
 				intent = new Intent(this,MakegiftActivity.class);
 				//				intent.putExtra("photopath", photoURLlist.get(0).photoPathOrURL);
 				intent.putExtra("selectPhoto", photoURLlist.get(0));
@@ -291,14 +292,14 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 		case R.id.select_share://分享操作
 			//调用share的接口
-			System.out.println("select share");
+			PictureAirLog.v(TAG, "select share");
 			if (photoURLlist.size() == 0) {//没选择图片
 				newToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
 			}else if (photoURLlist.size() == 1) {//分享图片
-				System.out.println("start share=" + photoURLlist.get(0).photoPathOrURL);
+				PictureAirLog.v(TAG, "start share=" + photoURLlist.get(0).photoPathOrURL);
 				//判断图片是本地还是网路图片
 				if (photoURLlist.get(0).onLine == 1) {//网络图片
-					System.out.println("网络图片");
+					PictureAirLog.v(TAG, "网络图片");
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						newToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
@@ -307,7 +308,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					}
 
 				}else {
-					System.out.println("本地图片");
+					PictureAirLog.v(TAG, "本地图片");
 					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null,null, "local",mHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
@@ -362,7 +363,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 		@Override
 		public void run() {
-			System.out.println("------->run");
+			PictureAirLog.v(TAG, "------->run");
 			//预览模式，需要预先加载本地的magic的图片
 			ScanPhotos(magicArrayList, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC);
 			Collections.sort(magicArrayList);
@@ -376,12 +377,12 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 
-			if (position==0) {
-				Intent intent = new Intent(ViewPhotoActivity.this,CameraActivity.class);
-				ViewPhotoActivity.this.startActivity(intent);
-			}else {
+//			if (position==0) {
+//				Intent intent = new Intent(ViewPhotoActivity.this,CameraActivity.class);
+//				ViewPhotoActivity.this.startActivity(intent);
+//			}else {
 				if (magicArrayList.get(position).isChecked == 1) {//通过判断check的标记来确定是否响应选择事件还是预览事件
-					System.out.println("select"+position);
+					PictureAirLog.v(TAG, "select" + position);
 					Message msg = mHandler.obtainMessage();
 					int visiblePos = myGridView.getFirstVisiblePosition();
 					//选择事件
@@ -405,7 +406,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					/*************************************
 					 * 要判断照片的购买属性，如果已经购买，则直接显示，如果没有购买，提示购买
 					 * ***************************/
-					System.out.println(position+"_"+magicArrayList.get(position).photoPathOrURL);
+					PictureAirLog.v(TAG, position + "_" + magicArrayList.get(position).photoPathOrURL);
 					Intent intent = new Intent(ViewPhotoActivity.this,PreviewPhotoActivity.class);
 					intent.putExtra("flag", magicArrayList.get(position).onLine);//哪个相册的标记
 					intent.putExtra("position", position);//在那个相册中的位置
@@ -417,8 +418,6 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 				}
 			}
 		}
-	}
-
 
 	Handler mhHandler = new Handler(){
 		@Override
@@ -467,7 +466,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 	 * @param bundle
 	 */
 	private void deletefromlist(Bundle bundle) {
-		System.out.println("position="+bundle.getInt("position"));
+		PictureAirLog.v(TAG, "position=" + bundle.getInt("position"));
 		for (int i = 0; i < photoURLlist.size(); i++) {
 			if (bundle.getString("pathOrUrl").equals(photoURLlist.get(i).photoPathOrURL)) {//如果找到之后立刻删除，会对list的长度有影响，for循环会报错
 				result = i;
@@ -505,12 +504,12 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 		if (resultString) {
-			System.out.println("之前点过了");
+			PictureAirLog.v(TAG, "之前点过了");
 			result = 0;//清零
 			resultString = false;
 		}else {//同样，如果直接在循环中加入的话，会对for循环产生影响
-			System.out.println("position"+b.getInt("position"));
-			System.out.println("path"+b.getString("pathOrUrl"));
+			PictureAirLog.v(TAG, "position" + b.getInt("position"));
+			PictureAirLog.v(TAG, "path" + b.getString("pathOrUrl"));
 			PhotoInfo itemInfo = new PhotoInfo();
 			//			itemInfo.albumName = Common.ALBUM_MAGIC;//所在的图册
 			itemInfo.photoPathOrURL = b.getString("pathOrUrl");//图片对应的原始路径
@@ -518,7 +517,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			photoURLlist.add(itemInfo);//加入到list中
 			result = 0;//清零
 			//判断是否已经全部选中，如果是，则将标记改为true
-			System.out.println("photoURLList"+ photoURLlist.size() + "magicarraylist is "+ magicArrayList.size());
+			PictureAirLog.v(TAG, "photoURLList" + photoURLlist.size() + "magicarraylist is " + magicArrayList.size());
 			if (photoURLlist.size()==magicArrayList.size()-1) {
 				selectAll.setVisibility(View.GONE);
 				selectDisAll.setVisibility(View.VISIBLE);
@@ -538,7 +537,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 //	protected Dialog onCreateDialog(int id, Bundle args) {
 //		switch (id) {
 //		case PROGRESSDIALOG:
-//			System.out.println("onCreateDialog------->"+photoURLlist.size());
+//			PictureAirLog.v(TAG,"onCreateDialog------->"+photoURLlist.size());
 //			deleteFileDialog = new ProgressDialog(ViewPhotoActivity.this);
 //			deleteFileDialog.setTitle("Deleting");
 //			deleteFileDialog.setCancelable(false);
@@ -556,7 +555,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 //	protected void onPrepareDialog(final int id, Dialog dialog) {
 //		// TODO Auto-generated method stub
 //		super.onPrepareDialog(id, dialog);
-//		System.out.println("onPrepareDialog------->"+photoURLlist.size());
+//		PictureAirLog.v(TAG,"onPrepareDialog------->"+photoURLlist.size());
 //		deleteFileDialog.setMax(photoURLlist.size());
 //		deleteFileDialog.setProgress(0);
 //		switch (id) {
@@ -581,17 +580,17 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		Message message; 
 		for (int i = 0; i < photoURLlist.size(); i++) {
 			//删除contentpridiver表中的数据
-			System.out.println("需要删除的文件为"+photoURLlist.get(i).photoPathOrURL + ",需要删除的索引值为"+photoURLlist.get(i).index);
+			PictureAirLog.v(TAG, "需要删除的文件为" + photoURLlist.get(i).photoPathOrURL + ",需要删除的索引值为" + photoURLlist.get(i).index);
 			String params[] = new String[]{photoURLlist.get(i).photoPathOrURL};
 			//删除Media数据库中的对应图片信息
-			System.out.println("删除Media表中的对应数据");
+			PictureAirLog.v(TAG, "删除Media表中的对应数据");
 			getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, Media.DATA+" like ?", params);
 
 			//删除图片在arraylist中对应的项
-			System.out.println("删除前的列表长度为"+magicArrayList.size()+",需要删除的索引值----->"+photoURLlist.get(i).index.toString());
-			System.out.println("arraylist需要移除的文件是"+magicArrayList.get(Integer.parseInt(photoURLlist.get(i).index.toString())).photoPathOrURL);
+			PictureAirLog.v(TAG, "删除前的列表长度为" + magicArrayList.size() + ",需要删除的索引值----->" + photoURLlist.get(i).index.toString());
+			PictureAirLog.v(TAG, "arraylist需要移除的文件是" + magicArrayList.get(Integer.parseInt(photoURLlist.get(i).index.toString())).photoPathOrURL);
 			magicArrayList.remove(Integer.parseInt(photoURLlist.get(i).index.toString()));//删除列表中的对应的信息
-			System.out.println("删除后的列表长度为"+magicArrayList.size());
+			PictureAirLog.v(TAG, "删除后的列表长度为" + magicArrayList.size());
 			//修改列表其他项的索引值
 			for (int j = i+1; j < photoURLlist.size(); j++) {
 				//遍历后几项，如果当前的索引值小于后面的，则将后面的序号减1
@@ -605,10 +604,10 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			file = new File(photoURLlist.get(i).photoPathOrURL);
 			//删除文件
 			if (file.exists()) {
-				System.out.println("开始删除文件"+photoURLlist.get(i).photoPathOrURL);
+				PictureAirLog.v(TAG, "开始删除文件" + photoURLlist.get(i).photoPathOrURL);
 				//删除文件
 				file.delete();
-				System.out.println("the file has been deleted");
+				PictureAirLog.v(TAG, "the file has been deleted");
 			}
 			currentProgress++;
 			message = mhHandler.obtainMessage();
@@ -618,8 +617,8 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			message.obj = photoURLlist.get(i).photoPathOrURL;
 			mhHandler.sendMessage(message);
 		}
-		System.out.println("notify");
-		System.out.println("cleared");
+		PictureAirLog.v(TAG, "notify");
+		PictureAirLog.v(TAG, "cleared");
 	}
 
 	/**
@@ -628,9 +627,8 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 	 */
 	private void selectall(ArrayList<PhotoInfo> arraylist,String album) {
 		PhotoInfo selectedInfo;
-		System.out.println(photoURLlist.size());
+		PictureAirLog.v(TAG, "photoURLlist.size: " + photoURLlist.size());
 		photoURLlist.clear();//每次全选，清空全部数据
-		System.out.println(photoURLlist.size());
 		for (int i = 1; i < arraylist.size(); i++) {//因为每个arraylist中的第一项为空，所以直接从1开始
 			selectedInfo = new PhotoInfo();
 			//			selectedInfo.albumName = album;

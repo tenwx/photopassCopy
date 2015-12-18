@@ -25,6 +25,7 @@ public class CartItemInfo1 implements Serializable{
     private int showPhotos;//1,展示照片，0，不展示照片
     private boolean isFullPhotos;//商品是否加满照片
     private int cartProductType;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品
+    private String cartProductImageUrl;//自己添加，购物车商品预览图
 
     public String getCartId() {
         return cartId;
@@ -160,5 +161,13 @@ public class CartItemInfo1 implements Serializable{
 
     public void setCartProductType(int cartProductType) {
         this.cartProductType = cartProductType;
+    }
+
+    public String getCartProductImageUrl() {
+        return cartProductImageUrl;
+    }
+
+    public void setCartProductImageUrl(String cartProductImageUrl) {
+        this.cartProductImageUrl = cartProductImageUrl;
     }
 }

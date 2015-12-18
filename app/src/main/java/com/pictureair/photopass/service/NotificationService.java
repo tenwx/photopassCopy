@@ -255,14 +255,14 @@ public class NotificationService extends android.app.Service {
 									Log.e(" 接受的订单信息 ", " === "+info);
 									
 									NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-									Notification notification = new Notification(R.drawable.pp_icon, "New Message",System.currentTimeMillis());
+									Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),System.currentTimeMillis());
 									notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
 									notification.defaults = Notification.DEFAULT_ALL;
 									Intent intent = new Intent(getApplicationContext(),
 											MainTabActivity.class);
 									
 									PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
-									notification.setLatestEventInfo(NotificationService.this, "New Order", info, pendingIntent);
+									notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_order), info, pendingIntent);
 									manager.notify(0, notification);
 									
 									Log.e("=====", "执行");
@@ -297,14 +297,14 @@ public class NotificationService extends android.app.Service {
 //											Log.e("photoCountLocal ", "photoCountLocal:"+photoCountLocal);
 											photoCount = photoCount + photoCountLocal;
 											NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-											Notification notification = new Notification(R.drawable.pp_icon, "New Message",System.currentTimeMillis());
+											Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),System.currentTimeMillis());
 											notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
 											notification.defaults = Notification.DEFAULT_ALL;
 											Intent intent = new Intent(getApplicationContext(),
 													MainTabActivity.class);
 											
 											PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
-											notification.setLatestEventInfo(NotificationService.this, "New Message", "You have new photos", pendingIntent);
+											notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_photo), pendingIntent);
 											manager.notify(0, notification);
 											Editor editor = preferences.edit();// 获取编辑器
 											editor.putInt("photoCount",photoCount);
@@ -330,7 +330,27 @@ public class NotificationService extends android.app.Service {
 							}
 
 							if (event.toString().equals("videoGenerate")) {
-								PictureAirLog.e(TAG,"收到视频推送。");
+
+								JSONObject message = (JSONObject) arg2[0];
+								try {
+									int videoCount = message.getInt("c");
+
+									PictureAirLog.e(TAG,"收到视频推送。消息数量："+videoCount);
+									NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+									Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),System.currentTimeMillis());
+									notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
+									notification.defaults = Notification.DEFAULT_ALL;
+									Intent intent = new Intent(getApplicationContext(),
+											MainTabActivity.class);
+
+									PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
+									notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_video), pendingIntent);
+									manager.notify(0, notification);
+
+									application.setPushViedoCount(videoCount);//设置VideoCount
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
 							}
 
 						}

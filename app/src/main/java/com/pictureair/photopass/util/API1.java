@@ -251,7 +251,6 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.e(TAG, "Logout onFailure: status" + status);
                 handler.sendEmptyMessage(LOGOUT_FAILED);
-
             }
         });
 
@@ -913,7 +912,7 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler) {
+    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final CustomProgressBarPop diaBarPop) {
         PictureAirLog.v(TAG, "modifyCart");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -923,7 +922,7 @@ public class API1 {
         }
         params.put(Common.QTY, qty);
         String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
-        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+        HttpUtil1.asyncPut(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -936,6 +935,12 @@ public class API1 {
                 handler.obtainMessage(MODIFY_CART_FAILED, status, 0).sendToTarget();
 
             }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                diaBarPop.setProgress(bytesWritten, totalSize);
+            }
         });
     }
 
@@ -943,13 +948,17 @@ public class API1 {
     /**
      * 移除用户购物车信息
      *
-     * @param cartId  购物车项id参数(可选,不填时为移除全部)
-     * @param handler handler
+     * @param cartIdsArray 购物车项id参数(可选,不填时为移除全部)
+     * @param handler      handler
      */
-    public static void removeCartItems(String cartId, final Handler handler) {
+    public static void removeCartItems(JSONArray cartIdsArray, final Handler handler) {
+        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART;
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART + "/" + cartId;
+        if (cartIdsArray != null && cartIdsArray.size() > 0) {
+            params.put("cartIdsArray", cartIdsArray.toString());
+        }
+        PictureAirLog.v(TAG, "params" + params.toString());
         HttpUtil1.asyncDelete(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -974,11 +983,10 @@ public class API1 {
     /**
      * 上传照片到服务器合成视频
      *
-     * @param context
      * @param photos
      * @param handler
      */
-    public static void uploadPhotoMakeVideo(final Context context, String photos, final Handler handler) {
+    public static void uploadPhotoMakeVideo(String photos, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, photos);

@@ -591,11 +591,11 @@ public class PictureAirDbManager {
 	 * 查询数据库中的图片信息
 	 * @return
 	 */
-	public ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(){
+	public ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
 		database = photoInfoDBHelper.getReadableDatabase();
 		//查询photo表的信息
-		Cursor cursor = database.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" order by shootOn desc", null);
+		Cursor cursor = database.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" where isVideo = ? order by shootOn desc", new String[]{isVideo ? "1" : "0"});
 		PhotoInfo photoInfo;
 		if (cursor.moveToFirst()) {//判断是否photo数据
 			do {

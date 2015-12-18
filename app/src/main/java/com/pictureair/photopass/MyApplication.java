@@ -36,6 +36,7 @@ public class MyApplication extends Application {
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
+    private int pushViedoCount = 0; // 推送视频的数量。
     private ArrayList<HashMap<String, String>> codeList;// 记录登录之前扫描的pp或者ppp
     public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
     public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
@@ -459,4 +460,20 @@ public class MyApplication extends Application {
         this.photoIsPaid = photoIsPaid;
     }
 
+
+    /**
+     * 获取视频推送的数量
+     * @return
+     */
+    public int getPushViedoCount() {
+        return pushViedoCount;
+    }
+
+    /**
+     * 设置视频推送的数量
+     * @return
+     */
+    public void setPushViedoCount(int pushViedoCount) {
+        this.pushViedoCount = pushViedoCount;
+    }
 }
