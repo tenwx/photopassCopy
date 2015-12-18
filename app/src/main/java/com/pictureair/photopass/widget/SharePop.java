@@ -113,9 +113,9 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	 * API中分享的类型必须为：photo、userInfo、product
 	 */
 	private void getShareUrl(){
-//		if ("online".equals(type)) {
+		if ("online".equals(type)) {
 			API1.getShareUrl(photoID, shareImgOrVideo, mHandler);
-//		}
+		}
 	}
 
 	public void initPopupWindow() {

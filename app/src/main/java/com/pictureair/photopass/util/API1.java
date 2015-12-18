@@ -1193,42 +1193,18 @@ public class API1 {
      * 获取分享的URL
      */
     public static void getShareUrl(String photoID, String shareType, final Handler handler) {
-        /**
-         * 测试参数
-         */
-        photoID = "";
-        shareType = "";
         RequestParams params = new RequestParams();
-
-//        org.json.JSONObject orgJSONObject = new org.json.JSONObject();
-//        try {
-//            orgJSONObject.put(Common.SHARE_MODE, "photo");
-//            orgJSONObject.put(Common.SHARE_PHOTO_ID, "566eb508648d9e5016db1eb8");
-//        } catch (org.json.JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        params.put(Common.USERINFO_TOKENID, "f3382a19c94cfdd95bda2aa4bd3e2211");
-//        params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
-//        params.put(Common.IS_USE_SHORT_URL, false);
-//        PictureAirLog.v(TAG, "getShareUrl params:" + params);
         JSONObject orgJSONObject = new JSONObject();
         try {
-            orgJSONObject.put(Common.SHARE_MODE, "photo");
-            orgJSONObject.put(Common.SHARE_PHOTO_ID, "566eb508648d9e5016db1eb8");
+            orgJSONObject.put(Common.SHARE_MODE, shareType);
+            orgJSONObject.put(Common.SHARE_PHOTO_ID, photoID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        params.put(Common.USERINFO_TOKENID, "f3382a19c94cfdd95bda2aa4bd3e2211");
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
         params.put(Common.IS_USE_SHORT_URL, false);
-        PictureAirLog.v(TAG, "getShareUrl params:" + params);
-
-        
-
-
-
+        //BASE_URL_TEST2 测试成功
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {

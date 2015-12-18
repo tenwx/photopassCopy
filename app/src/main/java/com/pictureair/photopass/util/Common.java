@@ -339,5 +339,5 @@ public class Common {
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.avi";// 测试的网络地址
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
 //        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
-    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
+//    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
 }

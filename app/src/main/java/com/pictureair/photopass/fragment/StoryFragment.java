@@ -23,11 +23,13 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
+import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.adapter.StickyGridAdapter;
 import com.pictureair.photopass.entity.BaseBusEvent;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.StoryFragmentEvent;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
 
@@ -38,6 +40,7 @@ import de.greenrobot.event.Subscribe;
 
 
 public class StoryFragment extends Fragment {
+	private final String TAG = "StoryFragment";
 	private GridView gridView;
 	private RelativeLayout noPhotoRelativeLayout;
 	private TextView noPhotoTextView;
@@ -218,7 +221,11 @@ public class StoryFragment extends Fragment {
 //			getContext().startActivity(i);
 
 			if (photoInfoArrayList.get(position).isVideo == 1) {
-
+				PictureAirLog.v(TAG,"点击了视频");
+				PhotoInfo info = photoInfoArrayList.get(position);
+				Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
+				intent.putExtra(DisneyVideoTool.FROM_STORY, info);
+				startActivity(intent);
 			} else {
 				Intent i = new Intent();
 				i.setClass(getContext(), PreviewPhotoActivity.class);

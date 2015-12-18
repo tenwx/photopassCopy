@@ -46,20 +46,6 @@ public class DisneyVideoTool {
     }
 
     /**
-     * 测试播放视频
-     * 1.进入videoActivity之前需要判断是不是视频
-     * 2.需要传入对象视频对象
-     *
-     * @param context
-     */
-    private static void TestGoToVideo(Context context) {
-        PhotoInfo info = getPhotoInfo();
-        Intent intent = new Intent(context, VideoPlayerActivity.class);
-        intent.putExtra(FROM_STORY, info);
-        context.startActivity(intent);
-    }
-
-    /**
      * 测试模拟一个数据
      */
     private static PhotoInfo getPhotoInfo() {
