@@ -110,12 +110,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         listView.setVisibility(View.VISIBLE);
                         line.setVisibility(View.VISIBLE);
                     } else {
-                        netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                        netWorkOrNoCountView.setResult(R.string.no_cart, R.string.want_to_buy, R.string.to_add_good, R.drawable.no_cart, handler, false);
-                        bottomRelativeLayout.setVisibility(View.INVISIBLE);
-                        listView.setVisibility(View.INVISIBLE);
-                        line.setVisibility(View.INVISIBLE);
-                        editTextView.setVisibility(View.INVISIBLE);
+                        ShowNoNetOrNoCountView();
+//                        netWorkOrNoCountView.setVisibility(View.VISIBLE);
+//                        netWorkOrNoCountView.setResult(R.string.no_cart, R.string.want_to_buy, R.string.to_add_good, R.drawable.no_cart, handler, false);
+//                        bottomRelativeLayout.setVisibility(View.INVISIBLE);
+//                        listView.setVisibility(View.INVISIBLE);
+//                        line.setVisibility(View.INVISIBLE);
+//                        editTextView.setVisibility(View.INVISIBLE);
                     }
                     break;
 
@@ -138,15 +139,16 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 case API1.DELETE_CART_SUCCESS://删除购物车item
                     isDelete = false;
-                    cartInfoList.remove(deleteCartItemInfoList.get(0));
+                    //删除删除项
+                    cartInfoList.removeAll(deleteCartItemInfoList);
+                    //清空数据
+                    deleteCartItemInfoList.clear();
                     //更新界面
                     cartAdapter.refresh(cartInfoList);
                     //保存购物车数量
                     Editor editor = sPreferences.edit();
                     editor.putInt(Common.CART_COUNT, cartInfoList.size());
                     editor.commit();
-
-                    //保存购物车数量
                     if (cartInfoList.size() == 0) {
                         paymentButton.setBackgroundResource(R.color.gray_light3);
                         cancelEdit();
@@ -562,7 +564,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 20) {//先要上传图片，上传完之后调用修改cart的api，如果返回ok，则刷新界面
             updatephotolist = data.getParcelableArrayListExtra("photopath");
-            PictureAirLog.v(TAG, "onActivityResult: " + updatephotolist.get(0).photoPathOrURL);
+            PictureAirLog.v(TAG, "onActivityResult photoPathOrURL: " + updatephotolist.get(0).photoPathOrURL);
+            PictureAirLog.v(TAG, "onActivityResult requestCode: " + requestCode);
             PhotoInfo info = updatephotolist.get(0);
             if (info.onLine == 1) {//如果是选择的PP的照片
                 JSONArray jsonArray = new JSONArray();
@@ -606,12 +609,17 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         PictureAirLog.v(TAG, "并替换对应的图片");
         PictureAirLog.v(TAG, "update url: " + photoList.get(0).photoPathOrURL);
         List<CartPhotosInfo1> oriphoto = cartInfoList.get(position / 10).getEmbedPhotos();//获取指定购物车的图片集合
+        PictureAirLog.v(TAG, "update oriphoto size: " + oriphoto.size());
         //构建购物车图片对象
         CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
         cartPhotosInfo.setPhotoUrl(photoList.get(0).photoPathOrURL);
         cartPhotosInfo.setPhotoId(photoList.get(0).photoId);
-        //替换图片
-        oriphoto.set(position % 10, cartPhotosInfo);
+        //判断是否为空 空添加、否则替换
+        if (oriphoto == null || oriphoto.size() == 0) {
+            oriphoto.add(position % 10, cartPhotosInfo);
+        } else {
+            oriphoto.set(position % 10, cartPhotosInfo);
+        }
         //获取指定购物车项
         CartItemInfo1 map = cartInfoList.get(position / 10);
         PictureAirLog.v(TAG, "cur url: " + map.getEmbedPhotos().get(position % 10).getPhotoUrl());

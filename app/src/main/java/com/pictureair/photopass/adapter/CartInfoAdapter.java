@@ -210,8 +210,14 @@ public class CartInfoAdapter extends BaseAdapter {
                         textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
                         viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
                     } else {
-                        PictureAirLog.v(TAG, "getPhotoUrl() != null" + Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl());
-                        imageLoader.displayImage(Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl(), imageView);
+                        String photoUrl;
+                        if (gridviewlist.get(i).getPhotoUrl().contains("http")) {
+                            photoUrl = gridviewlist.get(i).getPhotoUrl();
+                        } else {
+                            photoUrl = Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl();
+                        }
+                        PictureAirLog.v(TAG, "getPhotoUrl() != null" + photoUrl);
+                        imageLoader.displayImage(photoUrl, imageView);
                     }
                 }
             }
@@ -254,6 +260,7 @@ public class CartInfoAdapter extends BaseAdapter {
     private class PhotoOnClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
+            PictureAirLog.v(TAG, "photo click " + v.getId() / 10 + "_" + v.getId() % 10);
             Message message = handler.obtainMessage();
             message.what = CHANGE_PHOTO;
             message.arg1 = v.getId();
