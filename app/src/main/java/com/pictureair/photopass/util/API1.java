@@ -137,6 +137,12 @@ public class API1 {
     public static final int DOWNLOAD_APK_FAILED = 6010;
 
 
+    // 推送
+    public static final int SOCKET_DISCONNECT_FAILED = 5800;
+    public static final int SOCKET_DISCONNECT_SUCCESS = 5801;
+
+
+
     /**
      * 发送设备ID获取tokenId
      *
@@ -221,16 +227,18 @@ public class API1 {
         RequestParams params = new RequestParams();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT,params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "Logout onSuccess:"+jsonObject);
                 handler.sendEmptyMessage(LOGOUT_SUCCESS);
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                PictureAirLog.e(TAG, "Logout onFailure: status" + status);
                 handler.sendEmptyMessage(LOGOUT_FAILED);
             }
         });
@@ -1076,4 +1084,80 @@ public class API1 {
             }
         });
     }
+
+    /***************************************推送 Start**************************************/
+    /**
+     * socket链接后处理方法
+     */
+    public static void noticeSocketConnect(){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_CONNECT, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "socket 链接成功");
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "socket 链接失败,状态码："+ status);
+            }
+        });
+    }
+
+
+    /**
+     * 手机端退出登录前调用
+     */
+    public static void noticeSocketDisConnect(final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.APNS_DISCONNECT, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "退出应用 socket 断开成功");
+                handler.sendEmptyMessage(SOCKET_DISCONNECT_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
+                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码："+status);
+            }
+        });
+    }
+
+
+
+    /**
+     * 手机端接收到推送后，调用清空推送数据
+     * @param clearType
+     */
+    public static void clearSocketCachePhotoCount(String clearType){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.CLEAR_TYPE, clearType);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CLEAR_PHOTO_COUNT, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "收到推送 清空服务器消息成功");
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码："+status);
+            }
+        });
+    }
+
+    /***************************************推送 End**************************************/
+
 }

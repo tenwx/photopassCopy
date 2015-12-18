@@ -33,7 +33,7 @@
             android:text="@string/mypage_pp"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold" />
+             />
 
         <ImageView
             android:id="@+id/cancel"

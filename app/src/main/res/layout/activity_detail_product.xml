@@ -45,7 +45,7 @@
             android:layout_centerInParent="true"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold" />
+             />
 
         <ImageView
             android:id="@+id/rt"
@@ -159,7 +159,7 @@
                     android:textColor="@drawable/textview_selector_blue_white"
                     android:text="@string/choosephoto"
                     android:textSize="@dimen/text_size_16"
-                    android:textStyle="bold" />
+                     />
 
                 <Button
                     android:layout_marginTop="16dp"
@@ -172,7 +172,7 @@
                     android:padding="10dp"
                     android:text="@string/add_to_cart"
                     android:textSize="@dimen/text_size_16"
-                    android:textStyle="bold" />
+                     />
 
 
             </LinearLayout>

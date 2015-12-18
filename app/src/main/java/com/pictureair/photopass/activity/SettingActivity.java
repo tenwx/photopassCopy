@@ -52,9 +52,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
-                    //断开推送
-//                    API.noticeSocketDisConnect(sharedPreferences.getString(Common.USERINFO_TOKENID, null));
-
                     SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
                     Editor editor = sp.edit();
                     editor.clear();
@@ -80,6 +77,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                     startActivity(i);
 
                     AppManager.getInstance().AppExit(SettingActivity.this);
+                    break;
+                case API1.SOCKET_DISCONNECT_FAILED:
+                case API1.SOCKET_DISCONNECT_SUCCESS:
+                    API1.Logout(handler);
                     break;
 
                 default:
@@ -186,7 +187,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             case R.id.logout:
                 // logout 之后，清空上个用户的数据。
                 application.setLast_tab(0);   // 设置 进入 app为主页
-                API1.Logout(handler);
+                //断开推送
+                API1.noticeSocketDisConnect(handler);
                 break;
 
             case R.id.sub_opinions://消息回馈按钮
