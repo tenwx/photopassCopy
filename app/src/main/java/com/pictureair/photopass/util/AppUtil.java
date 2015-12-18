@@ -517,10 +517,10 @@ public class AppUtil {
 	 * @return
 	 */
 	public static String GTMToLocal(String GTMDate) {
-		Log.d(TAG, "before translate = "+ GTMDate);
+		PictureAirLog.d(TAG, "before translate = "+ GTMDate);
 		int tIndex = GTMDate.indexOf("T");
 		String dateTemp = GTMDate.substring(0, tIndex);
-		String timeTemp = GTMDate.substring(tIndex + 1, GTMDate.length() - 6);
+		String timeTemp = GTMDate.substring(tIndex + 1, GTMDate.length() - 5);
 		String convertString = dateTemp + " " + timeTemp;
 
 		SimpleDateFormat format;
@@ -774,6 +774,10 @@ public class AppUtil {
 				temp.locationId = temp2.locationId;
 				temp.isLove = temp2.isLove;
 				temp.shareURL = temp2.shareURL;
+				temp.isVideo = temp2.isVideo;
+				temp.fileSize = temp2.fileSize;
+				temp.videoWidth = temp2.videoWidth;
+				temp.videoHeight = temp2.videoHeight;
 				tempInfos.add(temp);
 			}
 		}

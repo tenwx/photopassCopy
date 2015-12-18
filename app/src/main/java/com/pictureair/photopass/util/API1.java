@@ -71,6 +71,7 @@ public class API1 {
 
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2030;
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2031;
+
     /**
      * 扫描
      */
@@ -80,6 +81,16 @@ public class API1 {
     public static final int ADD_SCANE_CODE_FAIED = 2040;
     public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
     public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
+
+    /**
+     * 获取视频信息
+     */
+    public static final int GET_ALL_VIDEO_LIST_FAILED = 2050;
+    public static final int GET_ALL_VIDEO_LIST_SUCCESS = 2051;
+
+    public static final int GET_REFRESH_VIDEO_LIST_FAILED = 2060;
+    public static final int GET_REFRESH_VIDEO_LIST_SUCCESS = 2061;
+
 
 
     /**
@@ -243,7 +254,6 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.e(TAG, "Logout onFailure: status" + status);
                 handler.sendEmptyMessage(LOGOUT_FAILED);
-
             }
         });
 
@@ -385,6 +395,38 @@ public class API1 {
     }
 
     /**
+     * 获取视频信息
+     * @param time 如果是null，则全部获取，如果不为null，则获取最新数据
+     */
+    public static void getVideoList(final String time, final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LAST_UPDATE_TIME, time);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_VIDEO_LIST, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                if (time == null) {//全部数据
+                    handler.obtainMessage(GET_ALL_VIDEO_LIST_SUCCESS, jsonObject).sendToTarget();
+                } else {//刷新数据
+                    handler.obtainMessage(GET_REFRESH_VIDEO_LIST_SUCCESS, jsonObject).sendToTarget();
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                if (time == null) {//全部数据
+                    handler.obtainMessage(GET_ALL_VIDEO_LIST_FAILED, status, 0).sendToTarget();
+                } else {//刷新数据
+                    handler.obtainMessage(GET_REFRESH_VIDEO_LIST_FAILED, status, 0).sendToTarget();
+                }
+            }
+        });
+
+    }
+
+    /**
      * 检查扫描的结果是否正确，并且返回是否已经被使用
      *
      * @param code
@@ -394,7 +436,6 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CODE, code);
-        params.put(Common.USERINFO_TOKENID, tokenId);
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -623,7 +664,7 @@ public class API1 {
     public static void getPPPSByUserId(String tokenId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -800,34 +841,6 @@ public class API1 {
     }
 
 
-    /**
-     * 获取指定商品数据
-     *
-     * @param storeId 商城id编号参数（必须
-     * @param goodId  商品编号参数（必须）
-     */
-    public static void getSingleGoods(String tokenId, String storeId, String goodId, final Handler handler) {
-        String url = Common.BASE_URL_TEST + Common.GET_SINGLE_GOOD + storeId + "/goods/" + goodId;
-        RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncGet(url, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_SINGLE_GOOD_SUCCESS, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_SINGLE_GOOD_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-
-    }
 
     /**
      * 获取用户购物车信息
@@ -902,7 +915,7 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler) {
+    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final CustomProgressBarPop diaBarPop) {
         PictureAirLog.v(TAG, "modifyCart");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -912,7 +925,7 @@ public class API1 {
         }
         params.put(Common.QTY, qty);
         String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
-        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+        HttpUtil1.asyncPut(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -925,6 +938,12 @@ public class API1 {
                 handler.obtainMessage(MODIFY_CART_FAILED, status, 0).sendToTarget();
 
             }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                diaBarPop.setProgress(bytesWritten, totalSize);
+            }
         });
     }
 
@@ -932,13 +951,17 @@ public class API1 {
     /**
      * 移除用户购物车信息
      *
-     * @param cartId  购物车项id参数(可选,不填时为移除全部)
-     * @param handler handler
+     * @param cartIdsArray 购物车项id参数(可选,不填时为移除全部)
+     * @param handler      handler
      */
-    public static void removeCartItems(String cartId, final Handler handler) {
+    public static void removeCartItems(JSONArray cartIdsArray, final Handler handler) {
+        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART;
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART + "/" + cartId;
+        if (cartIdsArray != null && cartIdsArray.size() > 0) {
+            params.put("cartIdsArray", cartIdsArray.toString());
+        }
+        PictureAirLog.v(TAG, "params" + params.toString());
         HttpUtil1.asyncDelete(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -963,15 +986,12 @@ public class API1 {
     /**
      * 上传照片到服务器合成视频
      *
-     * @param context
      * @param photos
      * @param handler
      */
-    public static void uploadPhotoMakeVideo(final Context context, String photos, final Handler handler) {
-        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+    public static void uploadPhotoMakeVideo(String photos, final Handler handler) {
         RequestParams params = new RequestParams();
-        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
-        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, photos);
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new HttpCallback() {
             @Override
@@ -989,6 +1009,18 @@ public class API1 {
         });
     }
 
+
+    public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
+            + "'version': '2.1.2', 'createdOn': '2015-09-23T06:06:17.371Z', "
+            + " 'mandatory': 'false',  '__v': 0, "
+            + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
+            + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
+            + "'downloadChannel':[ {'channel':'360',"
+            + "'downloadUrl':'http://gdown.baidu.com/data/wisegame/1f10e30a23693de1/baidushoujizhushou_16786079.apk'},"
+            + " { 'channel':'tencent',"
+            + "'downloadUrl':'http://mmgr.myapp.com/myapp/gjbig/packmanage/24/2/3/102027/tencentmobilemanager5.7.0_android_build3146_102027.apk'}]}}";
+
+
     /**
      * 获取最新的版本信息
      *
@@ -1000,7 +1032,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);

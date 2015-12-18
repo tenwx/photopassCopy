@@ -30,8 +30,7 @@
             android:layout_centerInParent="true"
             android:text="@string/cart"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16"/>
 
         <TextView
             android:id="@+id/cart_edit"
@@ -42,7 +41,7 @@
             android:gravity="center"
             android:text="@string/edit"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <RelativeLayout

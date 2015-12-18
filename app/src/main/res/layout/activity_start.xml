@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
-        android:src="@drawable/scan_bottom" />
+        android:src="@drawable/launch_page_logo" />
 
     <TextView
         android:id="@+id/start_version_code_tv"
@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_12"
         android:textColor="@color/white"
-        android:text="ddd"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/img"
         android:layout_marginBottom="-5dp"

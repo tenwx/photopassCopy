@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo1;
@@ -37,10 +39,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.MyToast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,6 +77,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private int viewHeight;
 
     private GoodsInfo1 goodsInfo;//存放商品信息
+    private String picUrl = "";
 
     private MyToast newToast;
     private Handler handler = new Handler() {
@@ -91,14 +90,9 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         JSONObject result = (JSONObject) msg.obj;
                         String photoUrlString = null;
                         String photoIdString = null;
-                        try {
-                            photoUrlString = result.getString("photoUrl");
-                            photoIdString = result.getString("photoId");
-                            PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                        photoUrlString = result.getString("photoUrl");
+                        photoIdString = result.getString("photoId");
+                        PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
                         PhotoInfo info = list.get(upload_index - 1);
                         info.isUploaded = 1;
                         info.photoId = photoIdString;
@@ -148,28 +142,17 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     } else {//开始加入购物车
                         upload_index = 0;
                         //编辑传入照片的信息
-                        com.alibaba.fastjson.JSONArray embedphotos = new com.alibaba.fastjson.JSONArray();//放入图片的json数组
-                        try {
-                            JSONObject embedphoto = new JSONObject();
-                            JSONArray photoids = new JSONArray();//放入图片的图片id数组
-                            for (int i = 0; i < list.size(); i++) {
-                                JSONObject photoid = new JSONObject();
-                                photoid.put("photoId", list.get(i).photoId);
-                                photoids.put(photoid);
-                            }
-                            embedphotos.add(embedphoto);
-
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
+                        for (int i = 0; i < list.size(); i++) {
+                            JSONObject photoid = new JSONObject();
+                            photoid.put("photoId", list.get(i).photoId);
+                            embedPhotos.add(photoid);
                         }
-
-                        PictureAirLog.v(TAG, embedphotos.toString());
+                        PictureAirLog.v(TAG, embedPhotos.toString());
                         //请求网络,加入购物车
-                        API1.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedphotos, handler);
+                        API1.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedPhotos, handler);
 
                     }
-
                     break;
 
                 case API1.ADD_TO_CART_SUCCESS:
@@ -181,14 +164,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     editor = sharedPreferences.edit();
                     editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
                     editor.commit();
-                    String itemidString = "";
-                    try {
-                        itemidString = addcart.getString("cartItemId");
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
+                    String itemidString = addcart.getString("cartItemId");
 
                     if (isbuynow) {//获取订单信息，传送到下一界面
                         Intent intent = new Intent(PreviewProductActivity.this, SubmitOrderActivity.class);
@@ -201,8 +177,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         listAfterUploaded.clear();
                         for (int i = 0; i < list.size(); i++) {
                             cartPhotosInfo = new CartPhotosInfo1();
-                            cartPhotosInfo.setCartPhotoUrl(list.get(i).photoPathOrURL);
-                            cartPhotosInfo.setCartPhotoId(list.get(i).photoId);
+                            cartPhotosInfo.setPhotoUrl(list.get(i).photoPathOrURL);
+                            cartPhotosInfo.setPhotoId(list.get(i).photoId);
                             listAfterUploaded.add(cartPhotosInfo);
                         }
 
@@ -254,11 +230,16 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         setContentView(R.layout.activity_preview);
         newToast = new MyToast(this);
         //获取从selectphotoactivity传递过来的信息
-        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
-        list = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photopath");//获取照片路径
+        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goodsInfo");
+        list = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photopath");
+        PictureAirLog.v(TAG, "list size " + list.size());
         listAfterUploaded = new ArrayList<>();
-
         init();
+    }
+
+    @Override
+    public void recreate() {
+        super.recreate();
     }
 
     private void init() {
@@ -284,8 +265,11 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
             counTextView.setVisibility(View.VISIBLE);
             counTextView.setText(recordcount + "");
         }
-
         bannerView_Preview = (BannerView_PreviewCompositeProduct) findViewById(R.id.bannerview_preview_detail);
+
+        if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
+            picUrl = goodsInfo.getPictures().get(0).getUrl();
+        }
 
         ViewTreeObserver viewTreeObserver = bannerView_Preview.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
@@ -295,72 +279,72 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 bannerView_Preview.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 viewHeight = bannerView_Preview.getHeight();
                 viewWidth = bannerView_Preview.getWidth();
-                PictureAirLog.v(TAG, "-------------->" + Common.GOOD_NAME_6R);
-                if (goodsInfo.getNameAlias().equals("canvas")) {
+                PictureAirLog.v(TAG, "-------------->" + goodsInfo.getNameAlias());
+                if (goodsInfo.getName().equals("canvas")) {
                     //1.画布，商品宽 355
                     //		 商品高 258
                     //       左边留白 20
                     //		 上边留白 12
                     //		 预览图片宽 355-20-19 = 316
                     //		 预览图片高 258-12-19 = 227
-                    bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
                             355, 258, 20, 12, 316, 227, 0, 0, 0, "canvas");//设置bannerview的图片
-//				}else if (getIntent().getStringExtra("name").equals("iphone5Case")) {
+//				}else if (getName().equals("iphone5Case")) {
 //					//2.手机后盖，商品宽 480
 //					//		 商品高 946
 //					//       左边留白 0
 //					//		 上边留白 0
 //					//		 预览图片宽 480
 //					//		 预览图片高 946
-//					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
-//							480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
-                } else if (goodsInfo.getNameAlias().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
+                            480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
+                } else if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
                     //3.数码商品，商品宽 300
                     //		 商品高 217
                     //       左边留白 22
                     //		 上边留白 26
                     //		 预览图片宽 300-22-21 = 257
                     //		 预览图片高 217-26-25 = 166
-                    bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
                             300, 217, 22, 26, 257, 166, 0, 0, 0, Common.GOOD_NAME_SINGLE_DIGITAL);//设置bannerview的图片
-                } else if (goodsInfo.getNameAlias().equals("4R Print")) {
+                } else if (goodsInfo.getName().equals("4R Print")) {
                     //4.4r相框，商品宽 180
                     //		 商品高 120
                     //       左边留白 7
                     //		 上边留白 7
                     //		 预览图片宽 180-7-7 = 166
                     //		 预览图片高 120-7-7 = 106
-                    bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
                             180, 120, 7, 7, 166, 106, 0, 0, 0, "4R Print");//设置bannerview的图片
-                } else if (goodsInfo.getNameAlias().equals(Common.GOOD_NAME_6R) ||
-                        goodsInfo.getNameAlias().equals(Common.GOOD_NAME_COOK) ||
-                        goodsInfo.getNameAlias().equals(Common.GOOD_NAME_TSHIRT)) {
+                } else if (goodsInfo.getName().equals(Common.GOOD_NAME_6R) ||
+                        goodsInfo.getName().equals(Common.GOOD_NAME_COOK) ||
+                        goodsInfo.getName().equals(Common.GOOD_NAME_TSHIRT)) {
                     //5.6r相框，商品宽 240
                     //		 商品高 180
                     //       左边留白 10
                     //		 上边留白 14
                     //		 预览图片宽 240-10-10 = 220
                     //		 预览图片高 180-14-14 = 152
-                    bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
-                            240, 180, 10, 14, 220, 152, 0, 0, 0, getIntent().getStringExtra("name"));//设置bannerview的图片
-                } else if (goodsInfo.getNameAlias().equals("keyChain")) {
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
+                            240, 180, 10, 14, 220, 152, 0, 0, 0, goodsInfo.getNameAlias());//设置bannerview的图片
+                } else if (goodsInfo.getName().equals("keyChain")) {
                     //6.钥匙圈，商品宽 205
                     //		 商品高 89
                     //       左边留白 88
                     //		 上边留白 18
                     //		 预览图片宽 205-88-21 = 205 - 109 = 96
                     //		 预览图片高 89-18-16 = 55
-                    bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
                             205, 89, 88, 18, 96, 55, 0.15f, 0, 0, "keyChain");//设置bannerview的图片
-//				}else if (goodsInfo.getNameAlias().equals("mug")) {
+//				}else if (goodsInfo.getName().equals("mug")) {
 //					//7.杯子，商品宽 185
 //					//		 商品高 160
 //					//       左边留白 10
 //					//		 上边留白 12
 //					//		 预览图片宽 185-10-61 = 114
 //					//		 预览图片高 160-12-34 = 114
-//					bannerView_Preview.initImageList(list, getIntent().getStringExtra("productImage"), viewWidth, viewHeight,
-//							185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
+//                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
+//                            185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
                 }
 
             }

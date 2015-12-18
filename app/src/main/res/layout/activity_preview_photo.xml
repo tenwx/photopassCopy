@@ -230,6 +230,7 @@
             android:paddingRight="20dp"
             android:paddingTop="10dp"
             android:text="@string/know"
+            android:visibility="invisible"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -240,7 +241,8 @@
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical"
             android:paddingBottom="@dimen/pp_margin_16"
-            android:paddingTop="@dimen/pp_margin_16" >
+            android:paddingTop="@dimen/pp_margin_16"
+            android:visibility="invisible">
 
             <TextView
                 android:layout_width="0dp"
@@ -272,7 +274,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/blur_mask_bg1"
-            android:src="@drawable/blur_bg_line" />
+            android:src="@drawable/blur_bg_line"
+            android:visibility="invisible"/>
 
         <ImageView
             android:id="@+id/blur_mask_bg3"
@@ -282,6 +285,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/blur_mask_text"
             android:adjustViewBounds="true"
+            android:visibility="invisible"
             android:src="@drawable/blur_bg_arrow" />
 
         <ImageView
@@ -311,6 +315,7 @@
             android:layout_alignTop="@+id/blur_mask_bg4"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:visibility="invisible"
             android:layout_marginTop="20dp"
             android:layout_toRightOf="@+id/blur_mask_bg4"
             android:text="@string/like_and_buy"

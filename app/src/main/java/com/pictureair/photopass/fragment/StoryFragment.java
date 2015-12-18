@@ -217,14 +217,18 @@ public class StoryFragment extends Fragment {
 //			i.putExtra("bundle", bundle);
 //			getContext().startActivity(i);
 
-			Intent i = new Intent();
-			i.setClass(getContext(), PreviewPhotoActivity.class);
-			i.putExtra("activity", "storyFragment");
-			i.putExtra("position", position);//在那个相册中的位置
-			i.putExtra("photoId", photoInfoArrayList.get(position).photoId);
-			i.putExtra("targetphotos", targetArrayList);
-			i.putExtra("photos", photoInfoArrayList);//那个相册的全部图片路径
-			getContext().startActivity(i);
+			if (photoInfoArrayList.get(position).isVideo == 1) {
+
+			} else {
+				Intent i = new Intent();
+				i.setClass(getContext(), PreviewPhotoActivity.class);
+				i.putExtra("activity", "storyFragment");
+				i.putExtra("position", position);//在那个相册中的位置
+				i.putExtra("photoId", photoInfoArrayList.get(position).photoId);
+				i.putExtra("targetphotos", targetArrayList);
+				i.putExtra("photos", photoInfoArrayList);//那个相册的全部图片路径
+				getContext().startActivity(i);
+			}
 		}
 	}
 	

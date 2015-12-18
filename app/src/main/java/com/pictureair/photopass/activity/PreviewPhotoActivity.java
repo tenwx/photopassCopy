@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -545,8 +546,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //		window.setWindowAnimations(R.style.from_bottom_anim);
         dia.setCanceledOnTouchOutside(true);
         View view = View.inflate(this, R.layout.tans_dialog, null);
-        view.setMinimumWidth(ScreenUtil.getScreenWidth(this));
         dia.setContentView(view);
+        WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
+        layoutParams.width = ScreenUtil.getScreenWidth(this);
+        dia.getWindow().setAttributes(layoutParams);
+
+//        view.setMinimumWidth(ScreenUtil.getScreenWidth(this));
         buy_ppp = (TextView) dia.findViewById(R.id.buy_ppp);
         cancel = (TextView) dia.findViewById(R.id.cancel);
         buynow = (TextView) dia.findViewById(R.id.buynow);
@@ -577,18 +582,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG,"thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);
         PictureAirLog.v(TAG,"thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
         PictureAirLog.v(TAG,"original is " + photolist.get(currentPosition).photoPathOrURL);
-        //如果是从viewphotoactivity界面进来，因为第一项为拍照按钮，所以这里的数据都要删除第一项
-        if ("viewphotoactivity".equals(getIntent().getStringExtra("activity"))) {
-            photolist.remove(0);
-            targetphotolist.remove(0);
-            currentPosition--;
-        } else {//如果是其他界面进来，则只删除目标list中的第一项
-//			if (targetphotolist != null && targetphotolist.size() > 0) {
-//				targetphotolist.remove(0);
-//			}
-            PictureAirLog.v(TAG,"need not to reduce or delete");
-        }
-
         PictureAirLog.v(TAG, "----------------------->initing...2");
         handler.sendEmptyMessage(7);
 
@@ -686,9 +679,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //更新收藏图标
         if (photoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(photoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), photoInfo.photoPathOrURL)) {
             photoInfo.isLove = 1;
-            loveImageButton.setImageResource(R.drawable.preview_photo_love_sele);
+            loveImageButton.setImageResource(R.drawable.discover_like);
         } else {
-            loveImageButton.setImageResource(R.drawable.preview_photo_love_nor);
+            loveImageButton.setImageResource(R.drawable.discover_no_like);
         }
         //更新序列号
         currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
@@ -696,18 +689,30 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //更新上一张下一张按钮
         if (currentPosition == 0) {
             lastPhotoImageView.setVisibility(View.INVISIBLE);
-            nextPhotoImageView.setVisibility(View.VISIBLE);
-        } else if (currentPosition == (isEdited ? targetphotolist.size() - 1 : photolist.size() - 1)) {
-            nextPhotoImageView.setVisibility(View.INVISIBLE);
-            lastPhotoImageView.setVisibility(View.VISIBLE);
         } else {
             lastPhotoImageView.setVisibility(View.VISIBLE);
+        }
+        if (currentPosition == (isEdited ? targetphotolist.size() - 1
+                : photolist.size() - 1)) {
+            nextPhotoImageView.setVisibility(View.INVISIBLE);
+        } else {
             nextPhotoImageView.setVisibility(View.VISIBLE);
         }
-        if (targetphotolist.size() == 1 || photolist.size() == 1) {
-            nextPhotoImageView.setVisibility(View.INVISIBLE);
-            lastPhotoImageView.setVisibility(View.INVISIBLE);
-        }
+
+//        if (currentPosition == 0) {
+//            lastPhotoImageView.setVisibility(View.INVISIBLE);
+//            nextPhotoImageView.setVisibility(View.VISIBLE);
+//        } else if (currentPosition == (isEdited ? targetphotolist.size() - 1 : photolist.size() - 1)) {
+//            nextPhotoImageView.setVisibility(View.INVISIBLE);
+//            lastPhotoImageView.setVisibility(View.VISIBLE);
+//        } else {
+//            lastPhotoImageView.setVisibility(View.VISIBLE);
+//            nextPhotoImageView.setVisibility(View.VISIBLE);
+//        }
+//        if (targetphotolist.size() == 1 || photolist.size() == 1) {
+//            nextPhotoImageView.setVisibility(View.INVISIBLE);
+//            lastPhotoImageView.setVisibility(View.INVISIBLE);
+//        }
         //更新title地点名称
         //		locationTextView.setText(getString(R.string.story_tab_magic));
         locationTextView.setText(photoInfo.locationName);
@@ -722,9 +727,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             loadPhotoPassPhoto(photoInfo, isOnCreate);
             if (!isFirst) {
                 if (pictureAirDbManager.checkFirstTimeStartActivity("blurActivity", sharedPreferences.getString(Common.USERINFO_ID, ""))) {//第一次进入
-                    PictureAirLog.v(TAG,"new user");
+                    PictureAirLog.v(TAG, "new user");
                     leadView.setVisibility(View.VISIBLE);
-                    knowImageView.setOnClickListener(this);
+//                    knowImageView.setOnClickListener(this);
+                    leadView.setOnClickListener(this);
                     isFirst = true;
                 }
             }
@@ -1149,6 +1155,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 dia.dismiss();
                 break;
             case R.id.leadknow:
+            case R.id.blur_lead_view:
                 PictureAirLog.v(TAG,"know");
                 leadView.setVisibility(View.GONE);
                 break;

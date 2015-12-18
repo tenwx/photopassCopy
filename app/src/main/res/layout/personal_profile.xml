@@ -45,8 +45,7 @@
             android:layout_centerVertical="true"
             android:text="@string/profile"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            />
+            android:textSize="@dimen/text_size_16"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -78,7 +77,7 @@
                 android:layout_marginLeft="2dp"
                 android:text="@string/nn"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/nick_name"
@@ -111,7 +110,7 @@
                 android:layout_marginLeft="2dp"
                 android:text="@string/grender"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/sex"
@@ -157,7 +156,7 @@
                 android:layout_marginLeft="2dp"
                 android:text="@string/birthday"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/birthday"
@@ -190,7 +189,7 @@
                 android:layout_marginLeft="2dp"
                 android:text="@string/qq"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/qq"
@@ -237,7 +236,7 @@
                 android:layout_marginLeft="2dp"
                 android:text="@string/modify"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
 
         <View

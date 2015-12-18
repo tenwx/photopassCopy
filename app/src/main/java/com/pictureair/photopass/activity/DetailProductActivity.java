@@ -127,7 +127,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         promotionPrice.setText(goodsInfo.getPrice() + "");
         receiveAdress.setText(getString(R.string.address_digital_goods));
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
-            PictureAirLog.v(TAG, "goodsInfo size" + goodsInfo.getPictures().size());
+            PictureAirLog.v(TAG, "goodsInfo picture size" + goodsInfo.getPictures().size());
             List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();
             goodInfoPicturesList.remove(0);
             bannerView_Detail.findimagepath(goodInfoPicturesList);
@@ -152,8 +152,8 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                     DetailProductActivity.this.startActivity(intent);
                 } else {
                     intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
-                    intent.putExtra("goodsInfo",goodsInfo);
                     intent.putExtra("activity", "detailproductactivity");
+                    intent.putExtra("goodsInfo",goodsInfo);
                     startActivity(intent);
                 }
                 break;

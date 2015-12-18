@@ -182,7 +182,6 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	}
 
 
-
 	/**
 	 * 微信分享，不支持图文分享，只能分享图片，或者图片以链接的形式分享出去，但是都不能添加文字
 	 * 

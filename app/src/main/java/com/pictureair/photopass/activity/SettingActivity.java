@@ -18,7 +18,6 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -53,7 +52,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
-
                     SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
                     Editor editor = sp.edit();
                     editor.clear();
@@ -191,7 +189,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 application.setLast_tab(0);   // 设置 进入 app为主页
                 //断开推送
                 API1.noticeSocketDisConnect(handler);
-//                API1.Logout(handler);
                 break;
 
             case R.id.sub_opinions://消息回馈按钮
