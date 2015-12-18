@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.os.Environment;
+import android.text.StaticLayout;
 
 /**
  * 常量类
@@ -19,9 +20,10 @@ public class Common {
     public static final String BASE_URL = "http://192.168.8.3:3001";//harry
 
 
-//    public static final String BASE_URL_TEST = "http://172.16.20.135:3001";//测试Shop
+    public static final String BASE_URL_TEST2 = "http://172.16.20.135:3001";//(齐超)测试分享
 
     public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+
     public static final String PHOTO_URL = "http://192.168.8.3:4000/";
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
@@ -96,6 +98,8 @@ public class Common {
 
     public static final String ME_HELP = "/help/getHelpList";
     public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
+    public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
+
 
 
     //user的SharedPreferences    以及   接口参数
@@ -182,6 +186,10 @@ public class Common {
     public static final String LOCATION_ID = "locationId";
     public static final String ACTION = "action";
     public static final String CLEAR_TYPE = "clearType";//判断订单还是照片推送
+    public static final String SHARE_MODE = "mode";//分享的类型
+    public static final String SHARE_PHOTO_ID = "ids";//分享的类型
+    public static final String IS_USE_SHORT_URL = "isUseShortUrl";//分享的短链接或者长链接
+    public static final String SHARE_CONTENT = "shareContent";//分享的短链接或者长链接
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";

@@ -141,6 +141,9 @@ public class API1 {
     public static final int SOCKET_DISCONNECT_FAILED = 5800;
     public static final int SOCKET_DISCONNECT_SUCCESS = 5801;
 
+    //分享
+    public static final int GET_SHARE_URL_SUCCESS = 6021;
+    public static final int GET_SHARE_URL_FAILED = 6020;
 
 
     /**
@@ -227,11 +230,11 @@ public class API1 {
         RequestParams params = new RequestParams();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT,params, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "Logout onSuccess:"+jsonObject);
+                PictureAirLog.e(TAG, "Logout onSuccess:" + jsonObject);
                 handler.sendEmptyMessage(LOGOUT_SUCCESS);
             }
 
@@ -1083,7 +1086,7 @@ public class API1 {
     /**
      * socket链接后处理方法
      */
-    public static void noticeSocketConnect(){
+    public static void noticeSocketConnect() {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1097,7 +1100,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "socket 链接失败,状态码："+ status);
+                PictureAirLog.e(TAG, "socket 链接失败,状态码：" + status);
             }
         });
     }
@@ -1106,7 +1109,7 @@ public class API1 {
     /**
      * 手机端退出登录前调用
      */
-    public static void noticeSocketDisConnect(final Handler handler){
+    public static void noticeSocketDisConnect(final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1122,18 +1125,18 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
-                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码："+status);
+                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码：" + status);
             }
         });
     }
 
 
-
     /**
      * 手机端接收到推送后，调用清空推送数据
+     *
      * @param clearType
      */
-    public static void clearSocketCachePhotoCount(String clearType){
+    public static void clearSocketCachePhotoCount(String clearType) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CLEAR_TYPE, clearType);
@@ -1147,11 +1150,68 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码："+status);
+                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码：" + status);
             }
         });
     }
 
     /***************************************推送 End**************************************/
+
+    /**
+     * 获取分享的URL
+     */
+    public static void getShareUrl(String photoID, String shareType, final Handler handler) {
+        /**
+         * 测试参数
+         */
+        photoID = "";
+        shareType = "";
+        RequestParams params = new RequestParams();
+
+//        org.json.JSONObject orgJSONObject = new org.json.JSONObject();
+//        try {
+//            orgJSONObject.put(Common.SHARE_MODE, "photo");
+//            orgJSONObject.put(Common.SHARE_PHOTO_ID, "566eb508648d9e5016db1eb8");
+//        } catch (org.json.JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        params.put(Common.USERINFO_TOKENID, "f3382a19c94cfdd95bda2aa4bd3e2211");
+//        params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
+//        params.put(Common.IS_USE_SHORT_URL, false);
+//        PictureAirLog.v(TAG, "getShareUrl params:" + params);
+        JSONObject orgJSONObject = new JSONObject();
+        try {
+            orgJSONObject.put(Common.SHARE_MODE, "photo");
+            orgJSONObject.put(Common.SHARE_PHOTO_ID, "566eb508648d9e5016db1eb8");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        params.put(Common.USERINFO_TOKENID, "f3382a19c94cfdd95bda2aa4bd3e2211");
+        params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
+        params.put(Common.IS_USE_SHORT_URL, false);
+        PictureAirLog.v(TAG, "getShareUrl params:" + params);
+
+        
+
+
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "获取分享成功");
+                handler.obtainMessage(GET_SHARE_URL_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "获取分享失败" + status);
+                handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
 
 }

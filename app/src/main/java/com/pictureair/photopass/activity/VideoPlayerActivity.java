@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -87,6 +88,13 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 //    private boolean isLoading = true;
 
     public boolean isOnline = true;//测试
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            //分享回调
+        }
+    };
 
     private Handler myHandler = new Handler() {
         @Override
@@ -502,6 +510,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
             case R.id.ll_share:
                 Toast.makeText(context, "is share", Toast.LENGTH_SHORT).show();
 
+                sharePop.setshareinfo(null,"这里放网络的URL", null, "online", handler);
+                sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.ll_download:
                 downloadVideo();

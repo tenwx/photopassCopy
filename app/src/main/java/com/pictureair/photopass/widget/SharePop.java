@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
@@ -23,8 +24,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
@@ -53,6 +56,7 @@ import static com.mob.tools.utils.R.getStringRes;
  */
 public class SharePop extends PopupWindow implements OnClickListener,
 		PlatformActionListener, Callback {
+	private final String TAG ="SharePop";
 	// private static final int MSG_TOAST = 1;
 	private static final int MSG_ACTION_CCALLBACK = 2;
 	private static final int MSG_CANCEL_NOTIFY = 3;
@@ -77,12 +81,41 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	 */
 	private boolean isOpenning = false;
 	private String shareType; // 分享类型，判断是 什么分享平台。 微信：1，qqzone：2，sina：3，twitter
-								// ：4
+	private MyToast myToast;
+
+	private String photoID ;
+	private String shareImgOrVideo;//必须为：photo、userInfo、product
 
 	public SharePop(Context context) {
 		super(context);
 		this.context = context;
+		myToast = new MyToast(context);
 		initPopupWindow();
+	}
+
+	private Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+				case API1.GET_SHARE_URL_SUCCESS:
+					//拿到shareUrl
+					shareUrl = msg.obj.toString();
+					PictureAirLog.e(TAG,"拿到了分享链接："+shareUrl);
+					break;
+				case API1.GET_SHARE_URL_FAILED:
+					myToast.setTextAndShow(ReflectionUtil.getStringId(context,msg.arg1),Common.TOAST_SHORT_TIME);
+					break;
+			}
+		}
+	};
+	/**
+	 * 如果是网络链接分享
+	 * API中分享的类型必须为：photo、userInfo、product
+	 */
+	private void getShareUrl(){
+//		if ("online".equals(type)) {
+			API1.getShareUrl(photoID, shareImgOrVideo, mHandler);
+//		}
 	}
 
 	public void initPopupWindow() {
@@ -422,6 +455,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		isOpenning = true;
 		switch (v.getId()) {
 		case R.id.wechat_moments:
+			getShareUrl();
+
 			System.out.println("wechat share");
 			shareType = Common.EVENT_ONCLICK_SHARE_WECHAT_MOMENTS;
 			UmengUtil.onEvent(context, shareType);
@@ -430,6 +465,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.wechat:
+			getShareUrl();
+
 			// System.out.println("wechat share");
 			shareType = Common.EVENT_ONCLICK_SHARE_WECHAT;
 			UmengUtil.onEvent(context, shareType);
@@ -443,6 +480,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.qq:
+			getShareUrl();
+
 			shareType = Common.EVENT_ONCLICK_SHARE_QQ;
 			UmengUtil.onEvent(context, shareType);
 			if (type.equals("local")) {// 本地
@@ -454,6 +493,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.qqzone:
+			getShareUrl();
+
 			shareType = Common.EVENT_ONCLICK_SHARE_QQZONE;
 			UmengUtil.onEvent(context, shareType);
 			qzoneShare(context, imagePath, imageUrl, shareUrl, type);
@@ -461,6 +502,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.sina:
+			getShareUrl();
+
 			shareType = Common.EVENT_ONCLICK_SHARE_SINA_WEIBO;
 			UmengUtil.onEvent(context, shareType);
 			if (type.equals("local")) {// 本地
@@ -474,6 +517,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.facebook:
+			getShareUrl();
+
 			PictureAirLog.out("fb on click");
 			shareType = Common.EVENT_ONCLICK_SHARE_FACEBOOK;
 			UmengUtil.onEvent(context, shareType);
@@ -482,6 +527,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			break;
 
 		case R.id.twitter:
+			getShareUrl();
+
 			shareType = Common.EVENT_ONCLICK_SHARE_TWITTER;
 			UmengUtil.onEvent(context, shareType);
 			sharePlatform = "twitter";
