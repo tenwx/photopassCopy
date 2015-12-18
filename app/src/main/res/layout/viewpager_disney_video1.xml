@@ -30,8 +30,7 @@
             android:padding="10dp"
             android:text="@string/start"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_middle_size"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_middle_size" />
     </RelativeLayout>
 
 </LinearLayout>

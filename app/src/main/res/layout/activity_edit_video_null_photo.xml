@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="@color/pp_light_gray_background"
     android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="64dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/disney_video_about_null_photo_note"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/text_size_16" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/disney_video_introduces"
-        android:textColor="@color/pp_blue"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_1"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="64dp"
+        android:layout_marginTop="@dimen/pp_margin_32"
+        android:text="@string/disney_video_about_null_photo_note2"
+
+        android:textColor="@color/gray"
         android:textSize="@dimen/text_size_16" />
 
 
@@ -21,6 +34,7 @@
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@color/white">
 
         <Button
@@ -32,8 +46,7 @@
             android:padding="10dp"
             android:text="@string/disney_video_go_to_select_photo"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_middle_size"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_middle_size" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

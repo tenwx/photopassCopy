@@ -153,9 +153,9 @@
     <string name="hint_telephone">输入你的座机号码</string>
     <string name="hint_address">输入详细地址</string>
     <string name="delete">删除</string>
-     <string name="photopass">乐拍通</string>
+    <string name="photopass">乐拍通</string>
     <string name="photopassplus">VIP</string>
-     <string name="getitnow">现在就去购买乐拍通+</string>
+    <string name="getitnow">现在就去购买乐拍通+</string>
     <string name="mylocation">我的地址</string>
     <string name="myfavourite">我的最爱</string>
     <string name="cancel1">取消</string>
@@ -369,7 +369,7 @@
     <string name="paying">支付中</string>
     <string name="get_prepayid_succ">获取prepayid成功</string>
     <string name="get_prepayid_fail" formatted="false">获取prepayid失败，原因%s</string>
-    	<string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+    <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
     <!-- 微信支付string字段 -->
     <string name="add_photo"> 添加照片 </string>
     <string name="all_goods">共%1$d件商品</string>
@@ -503,14 +503,14 @@
     <string name="app_crash">程序停止运行</string>
     <string name="camera_closed">请先在设置中打开相机权限</string>
     <string name="camera_closed_jump_to_manual">因为没有打开相机权限，所以请手动输入</string>
-    
-     <string name="share_text">我愿和你分享每一刻在乐拍通的美妙体验!</string>
-    
+
+    <string name="share_text">我愿和你分享每一刻在乐拍通的美妙体验!</string>
+
     <string name="generate_apk_failed">下载失败</string>
     <string name="downloading_percent">正在下载%1$d</string>
     <string name="update_version">新版本: %1$s</string>
     <string name="generate_apk">正在处理...</string>
-    
+
     <string name="connecting">请稍后...</string>
     <string name="notify_password_hint">密码不能小于6位!</string>
     <string name="pw_is_inconsistency">密码输入不一致!</string>
@@ -521,7 +521,8 @@
     <string name="login_failed">登录失败</string>
 
     <!-- Disney video start-->
-    <string name="disney_video_about_null_photo_note">您暂时还没有任何已购买的乐拍通照片，所以还不能开启“我的迪士尼故事”，请尽快购买您喜欢的乐拍通照片吧！去记忆屋看看喜欢的东西，把照片买下吧！去挑选</string>
+    <string name="disney_video_about_null_photo_note">您暂时还没有任何已购买的乐拍通照片，所以还不能开启“我的迪士尼故事”，请尽快购买您喜欢的乐拍通照片吧！</string>
+    <string name="disney_video_about_null_photo_note2">    去记忆屋看看喜欢的东西，把照片买下吧！去挑选</string>
     <string name="disney_video_go_to_select_photo">去挑选</string>
     <string name="disney_video_edit_photo">制作（0/3）</string>
     <string name="disney_video_select_photo_less_than3">照片不能小于3张</string>

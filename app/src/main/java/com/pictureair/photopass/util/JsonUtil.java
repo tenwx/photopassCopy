@@ -169,7 +169,13 @@ public class JsonUtil {
         }
         //获取图片对应的pp码
         info.photoPassCode = "";
-        //获取图片的拍摄日期
+        //获取视频的拍摄日期
+        if (object.containsKey("createdOn")) {
+            String time = object.getString("createdOn");
+            PictureAirLog.out("get transfer time----> "+ AppUtil.GTMToLocal(time));
+
+        }
+
         if (object.containsKey("shootDate")) {
             String time = object.getString("shootDate");
             info.shootTime = time;

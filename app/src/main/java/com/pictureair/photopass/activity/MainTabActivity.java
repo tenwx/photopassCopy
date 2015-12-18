@@ -47,7 +47,7 @@ import com.pictureair.photopass.widget.MyToast;
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  */
-public class MainTabActivity extends FragmentActivity {
+public class MainTabActivity extends BaseFragmentActivity {
     public static MainTabActivity instances;
     private LinearLayout linearLayout;
     // 定义FragmentTabHost对象
@@ -78,7 +78,6 @@ public class MainTabActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppManager.getInstance().addActivity(this);
         application = (MyApplication) getApplication();
         instances = this;
         initView();
@@ -177,7 +176,6 @@ public class MainTabActivity extends FragmentActivity {
         // TODO Auto-generated method stub
         super.onDestroy();
         clearCache();
-        AppManager.getInstance().killActivity(this);
     }
 
     //tab按钮的点击监听

@@ -18,7 +18,6 @@
         android:text="What is the PhotoPass?"
         android:layout_below="@+id/view_top"
         android:textColor="@color/pp_blue"
-        android:textStyle="bold"
         android:textSize="@dimen/text_size_12" />
 
     <View

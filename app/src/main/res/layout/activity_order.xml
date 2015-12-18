@@ -30,7 +30,7 @@
             android:text="@string/my_order"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold" />
+             />
     </RelativeLayout>
 
     <LinearLayout
@@ -50,7 +50,7 @@
             android:text="@string/payment_order"
             android:textColor="@color/gray"
             android:textSize="15sp"
-            android:textStyle="bold" />
+             />
 
         <ImageView
             android:layout_width="1dp"
@@ -67,7 +67,7 @@
             android:text="@string/delivery_order"
             android:textColor="@color/gray"
             android:textSize="15sp"
-            android:textStyle="bold" />
+             />
 
         <ImageView
             android:layout_width="1dp"
@@ -84,7 +84,7 @@
             android:text="@string/all_order"
             android:textColor="@color/gray"
             android:textSize="15sp"
-            android:textStyle="bold" />
+             />
     </LinearLayout>
 
     <LinearLayout

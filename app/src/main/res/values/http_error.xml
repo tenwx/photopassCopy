@@ -187,4 +187,5 @@
     <string name="http_error_code_5030">用户未登录</string>
     <string name="http_error_code_5031">购物车内放入照片查找错误！</string>
     <string name="http_error_code_5032">提交订单，购物车项为空！</string>
+
 </resources>

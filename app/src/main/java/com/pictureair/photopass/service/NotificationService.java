@@ -14,11 +14,12 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
 public class NotificationService extends android.app.Service {
+	private final String TAG = "NotificationService";
 	private int photoCount;
 	private SocketIO socket;
 	private SharedPreferences preferences;
@@ -53,7 +55,7 @@ public class NotificationService extends android.app.Service {
 			switch (msg.what) {
 
 			case 1111: // 链接成功
-				API.noticeSocketConnect(preferences.getString(Common.USERINFO_TOKENID, null));
+				API1.noticeSocketConnect();
 				break;
 
 //			case 2222: // 退出账号。
@@ -61,7 +63,7 @@ public class NotificationService extends android.app.Service {
 //				break;
 
 			case 3333: // 接受到信息之后。
-				API.clearSocketCachePhotoCount(preferences.getString(Common.USERINFO_TOKENID, null),sendType);
+				API1.clearSocketCachePhotoCount(sendType);
 				break;
 
 			default:
@@ -83,7 +85,6 @@ public class NotificationService extends android.app.Service {
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub\
-		Log.e("notification服务里面", "========onCreate=========");
 		super.onCreate();
 	}
 	
@@ -174,7 +175,7 @@ public class NotificationService extends android.app.Service {
 				Log.e("i ", "======i =====:+"+i);
 				++i;
 				try {
-					socket = new SocketIO(Common.BASE_URL);
+					socket = new SocketIO(Common.BASE_URL_TEST);
 
 					socket.connect(new IOCallback() {
 
@@ -327,6 +328,11 @@ public class NotificationService extends android.app.Service {
 									e.printStackTrace();
 								}
 							}
+
+							if (event.toString().equals("videoGenerate")) {
+								PictureAirLog.e(TAG,"收到视频推送。");
+							}
+
 						}
 					});
 
