@@ -43,8 +43,7 @@
             android:layout_centerInParent="true"
             android:text="@string/title_update_nickname"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16"/>
 
         <ImageButton
             android:id="@+id/ib_save"
@@ -73,6 +72,6 @@
         android:hint="@string/hint_text_nickname"
         android:textColor="@color/gray"
         android:imeOptions="actionDone"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_size_12" />
 
 </RelativeLayout>
