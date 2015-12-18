@@ -539,4 +539,9 @@
     <string name="storypage_no_photo">There is no photo\nin your gallery!</string>
 <string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
  Proin sodales pulvinar tempor.</string>
+
+    <string name="notifacation_new_message">New Message</string>
+    <string name="notifacation_new_order">New Order</string>
+    <string name="notifacation_new_photo">You have new photos</string>
+    <string name="notifacation_new_video">You have new videos</string>
 </resources>

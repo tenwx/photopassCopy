@@ -544,4 +544,9 @@
     <string name="storypage_no_photo">没有图片在你的相册中</string>
     <string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
  Proin sodales pulvinar tempor.</string>
+
+    <string name="notifacation_new_order">新的订单</string>
+    <string name="notifacation_new_message">新的消息</string>
+    <string name="notifacation_new_photo">您有新的照片</string>
+    <string name="notifacation_new_video">您有新的视频</string>
 </resources>
