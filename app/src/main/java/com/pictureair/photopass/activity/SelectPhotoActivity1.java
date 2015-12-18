@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -35,7 +34,6 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 预览照片，总共有4大类，1，全部的照片，2，pictureair网络获取的图片，3，本软件拍的照片，4，已经购买的照片
@@ -100,11 +98,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         activity = getIntent().getStringExtra("activity");
         photocount = getIntent().getIntExtra("photoCount", 1);
         context = this;
-        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
-
+        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goodsInfo");
         initview();
-
-
     }
 
     //初始化函数
@@ -294,8 +289,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 } else {
                     if (activity.equals("detailproductactivity") || activity.equals("previewproductactivity")) {
                         //从详细商品界面进入
+                        PictureAirLog.v(TAG, "选择图片数量" + photoURLlist.size());
                         intent = new Intent(this, PreviewProductActivity.class);
-                        intent.putExtra("productImage", getIntent().getStringExtra("productImage"));
                         intent.putExtra("goodsInfo", goodsInfo);
                         intent.putExtra("photopath", photoURLlist);
                         startActivity(intent);
@@ -312,6 +307,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         setResult(20, intent);
                         finish();
                     } else if (activity.equals("cartactivity")) {
+                        PictureAirLog.v(TAG, "提交按钮: " + photoURLlist.get(0).photoPathOrURL);
                         intent = new Intent();
                         intent.putExtra("photopath", photoURLlist);
                         setResult(20, intent);
@@ -328,7 +324,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                             }
                         }
                         PictureAirLog.i(TAG, "photos===>" + photos.toString());
-                        API1.uploadPhotoMakeVideo(context, photos.toString(), handler);
+                        API1.uploadPhotoMakeVideo(photos.toString(), handler);
 //            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
                     }
                 }

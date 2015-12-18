@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -82,7 +81,6 @@ public class CartInfoAdapter extends BaseAdapter {
     public void refresh(ArrayList<CartItemInfo1> cartInfoList) {
         this.goodArrayList = cartInfoList;
         notifyDataSetChanged();
-
     }
 
     @Override
@@ -134,42 +132,40 @@ public class CartInfoAdapter extends BaseAdapter {
         gridlayoutList = new ArrayList<>();
         String pictureUrl;
         String[] pictureUrlArray = goodArrayList.get(position).getPictures();
-        if (pictureUrlArray != null && pictureUrlArray.length > 0) {
+        if (pictureUrlArray != null || pictureUrlArray.length > 0) {
             pictureUrl = pictureUrlArray[0];
         } else {
-            pictureUrl = null;
+            pictureUrl = "";
         }
+        PictureAirLog.v(TAG, "pictureUrl" + pictureUrl);
         //设置商品图片
-        if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(goodArrayList.get(position).getProductName())) {//照片商品
-            String url;
-            if (pictureUrl.contains("http")) {
-                url = pictureUrl;
-            } else {
-                url = Common.PHOTO_URL + pictureUrl;
-            }
-            if (url.contains("productImage/gift-singleDigital.jpg")) {
-                PictureAirLog.v(TAG, url);
-                url = url.replace("4000", "3001");
-            }
-            imageLoader.displayImage(url, viewHolder.cartGoodImageView);
-            viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
-            viewHolder.cartLineImageView.setVisibility(View.GONE);
-            viewHolder.hideImageView.setVisibility(View.GONE);
-
-        } else if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
-            Log.d(TAG, "photopassplus product");
+//        if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(goodArrayList.get(position).getProductName())) {//照片商品
+//            if (!pictureUrl.contains("http")) {
+//                pictureUrl = Common.PHOTO_URL + pictureUrl;
+//            }
+//            if (pictureUrl.contains("productImage/gift-singleDigital.jpg")) {
+//                pictureUrl = pictureUrl.replace("4000", "3001");
+//            }
+//            imageLoader.displayImage(pictureUrl, viewHolder.cartGoodImageView);
+//            viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
+//            viewHolder.cartLineImageView.setVisibility(View.GONE);
+//            viewHolder.hideImageView.setVisibility(View.GONE);
+//
+//        } else
+        if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
             imageLoader.displayImage(Common.BASE_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
             viewHolder.cartLineImageView.setVisibility(View.GONE);
             viewHolder.hideImageView.setVisibility(View.GONE);
         } else {//其他商品
-            Log.d(TAG, "other product");
+            PictureAirLog.v(TAG, "other product");
             imageLoader.displayImage(Common.BASE_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.hideImageView.setVisibility(View.INVISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
             if (0 == gridviewlist.size()) {//如果照片数量为0
+                PictureAirLog.v(TAG, "0 == gridviewlist.size()");
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
@@ -203,9 +199,9 @@ public class CartInfoAdapter extends BaseAdapter {
                     //imageview设置监听
                     imageView.setOnClickListener(new PhotoOnClickListener());
                     viewHolder.cartGoodPhotosGridLayout.addView(imageView, params);
-                    if (gridviewlist.get(i).getCartPhotoUrl().equals("") || gridviewlist.get(i).getCartPhotoUrl().equals("null")) {
+                    if (gridviewlist.get(i).getPhotoUrl() == null || gridviewlist.get(i).getPhotoUrl().equals("")) {
+                        PictureAirLog.v(TAG, "getPhotoUrl() == null");
                         imageView.setImageResource(R.drawable.empty);
-
                         TextView textView = new TextView(context);
                         GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
                         textView.setLayoutParams(params2);
@@ -214,11 +210,11 @@ public class CartInfoAdapter extends BaseAdapter {
                         textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
                         viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
                     } else {
-                        imageLoader.displayImage(Common.PHOTO_URL + gridviewlist.get(i).getCartPhotoUrl().trim(), imageView);
+                        PictureAirLog.v(TAG, "getPhotoUrl() != null" + Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl());
+                        imageLoader.displayImage(Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl(), imageView);
                     }
                 }
             }
-
         }
         gridLayoutLists.add(gridlayoutList);
         viewHolder.cartGoodCountTextView.setText(goodArrayList.get(position).getQty() + "");
@@ -334,14 +330,10 @@ public class CartInfoAdapter extends BaseAdapter {
                         addcount = false;
                     } else {
                         holderView.cartReduceImageView.setEnabled(false);//当数量为1时  不可点击
-//                        myToast.setTextAndShow(R.string.cannot_reduce, Common.TOAST_SHORT_TIME);
                         ishandle = false;
                         return;
                     }
                 }
-//                //创建jsonobject对象
-//                JSONArray embedPhotos = JsonUtil.addAndModifyCartItemJsonArray(null, cartItemInfo);
-                //请求网络更新购物车
                 modifyCart(addcount, count, cartItemInfo, handler);
 
             } else {

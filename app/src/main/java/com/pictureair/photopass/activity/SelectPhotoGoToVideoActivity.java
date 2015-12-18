@@ -3,6 +3,7 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,7 +32,6 @@ import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
-import android.os.Handler;
 
 import java.util.ArrayList;
 
@@ -237,7 +237,7 @@ public class SelectPhotoGoToVideoActivity extends BaseActivity implements
                                 }
                             }
                             PictureAirLog.i(TAG,"photos===>" + photos.toString());
-                            API1.uploadPhotoMakeVideo(context, photos.toString(), handler);
+                            API1.uploadPhotoMakeVideo(photos.toString(), handler);
 //            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
                         }
                     }

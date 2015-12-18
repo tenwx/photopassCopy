@@ -319,7 +319,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private void changephoto(int position, ArrayList<PhotoInfo> photoList) {
         List<CartPhotosInfo1> oriphoto = list.get(position / 10).getEmbedPhotos();
         CartPhotosInfo1 hashMap = new CartPhotosInfo1();
-        hashMap.setCartPhotoUrl(photoList.get(0).photoPathOrURL);
+        hashMap.setPhotoUrl(photoList.get(0).photoPathOrURL);
         oriphoto.set(position % 10, hashMap);//替换图片
         System.out.println("重新选择的图片");
         list.get(position / 10).setEmbedPhotos(oriphoto);

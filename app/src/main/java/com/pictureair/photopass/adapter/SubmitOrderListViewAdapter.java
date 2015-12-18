@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.util.Common;
@@ -116,10 +115,10 @@ public class SubmitOrderListViewAdapter extends BaseAdapter{
 				params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
 				params.height = params.width;
 				imageView.setLayoutParams(params);
-				if (gridviewlist.size()==0||gridviewlist.get(i).getCartPhotoUrl().equals("")){
+				if (gridviewlist.size()==0||gridviewlist.get(i).getPhotoUrl().equals("")){
 					imageView.setImageResource(R.drawable.empty);
 				}else {
-					imageLoader.displayImage(Common.PHOTO_URL+gridviewlist.get(i).getCartPhotoUrl(), imageView);
+					imageLoader.displayImage(Common.PHOTO_URL+gridviewlist.get(i).getPhotoUrl(), imageView);
 				}
 				imageView.setScaleType(ScaleType.CENTER_CROP);
 				imageView.setId(position*10+i);//给添加的imageview添加id

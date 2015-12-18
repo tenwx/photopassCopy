@@ -221,7 +221,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -232,7 +232,6 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.sendEmptyMessage(LOGOUT_FAILED);
-
             }
         });
 
@@ -891,7 +890,7 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler) {
+    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final CustomProgressBarPop diaBarPop) {
         PictureAirLog.v(TAG, "modifyCart");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -901,7 +900,7 @@ public class API1 {
         }
         params.put(Common.QTY, qty);
         String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartId;
-        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+        HttpUtil1.asyncPut(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -914,6 +913,12 @@ public class API1 {
                 handler.obtainMessage(MODIFY_CART_FAILED, status, 0).sendToTarget();
 
             }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                diaBarPop.setProgress(bytesWritten, totalSize);
+            }
         });
     }
 
@@ -924,13 +929,14 @@ public class API1 {
      * @param cartIdsArray 购物车项id参数(可选,不填时为移除全部)
      * @param handler      handler
      */
-    public static void removeCartItems(String[] cartIdsArray, final Handler handler) {
+    public static void removeCartItems(JSONArray cartIdsArray, final Handler handler) {
         String url = Common.BASE_URL_TEST + Common.DELETE_TO_CART;
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        if (cartIdsArray != null && cartIdsArray.length > 0) {
-            params.put("cartIdsArray", cartIdsArray);
+        if (cartIdsArray != null && cartIdsArray.size() > 0) {
+            params.put("cartIdsArray", cartIdsArray.toString());
         }
+        PictureAirLog.v(TAG, "params" + params.toString());
         HttpUtil1.asyncDelete(url, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -955,15 +961,12 @@ public class API1 {
     /**
      * 上传照片到服务器合成视频
      *
-     * @param context
      * @param photos
      * @param handler
      */
-    public static void uploadPhotoMakeVideo(final Context context, String photos, final Handler handler) {
-        final SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+    public static void uploadPhotoMakeVideo(String photos, final Handler handler) {
         RequestParams params = new RequestParams();
-        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
-        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, photos);
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VIDEO_GENERATEVIDEO, params, new HttpCallback() {
             @Override
@@ -992,7 +995,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
