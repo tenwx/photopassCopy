@@ -38,6 +38,7 @@ public class MyApplication extends Application {
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
     private ArrayList<HashMap<String, String>> codeList;// 记录登录之前扫描的pp或者ppp
     public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
+    public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
     public ArrayList<PhotoInfo> magicPicList;// 所有的使用magic相机拍出来的图片的信息
     public ArrayList<PhotoItemInfo> boughtPicList;// 所有已经购买的图片的信息
     public ArrayList<PhotoItemInfo> allPicList;// 所有的图片信息
@@ -79,6 +80,7 @@ public class MyApplication extends Application {
             initImageLoader(getApplicationContext());
             codeList = new ArrayList<HashMap<String, String>>();
             photoPassPicList = new ArrayList<PhotoInfo>();
+            photoPassVideoList = new ArrayList<>();
             allPicList = new ArrayList<PhotoItemInfo>();
             magicPicList = new ArrayList<PhotoInfo>();
             boughtPicList = new ArrayList<PhotoItemInfo>();

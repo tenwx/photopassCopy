@@ -41,6 +41,7 @@ public class Common {
     public static final String BIND_PPP_TO_USER = "/ppp/bindPPPToUser";// 将PPP绑定到当前用户
     public static final String GET_LATEST_PHOTOS = "/p/getLatestPhotos";// 获取用户最新的照片
     public static final String GET_PHOTOS_BY_CONDITIONS = "/p/getPhotosByConditions";// 获取用户的照片
+    public static final String GET_VIDEO_LIST = "/video/getVideoList";//获取视频信息
     public static final String GET_LATEST_PHOTO_BY_PP = "/p/getLatestPhotosByPP";// 获取pp最新的照片
     public static final String GET_FAVORITE_LOCATIONS = "/user/getFavoriteLocations";// 获取用户收藏的location
     public static final String EDIT_FAVORITE_LOCATION = "/user/editFavoriteLocation";// 编辑收藏的location信息
@@ -176,6 +177,7 @@ public class Common {
     public static final String ppp1 = "ppp";
     //	public static final String AUTO_BIND_PP = "autobindpp";//购买ppp之后，是否需要自动绑定标记，photoid：表示需要自动绑定；其他：不需要自动绑定
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
+    public static final String LAST_UPDATE_VIDEO_TIME = "lastUpdateVideoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference

@@ -172,6 +172,8 @@ public class SignAndLoginUtil {
 
                 //修改个人信息成功
                 case API1.UPDATE_PROFILE_SUCCESS:
+                    PictureAirLog.v(TAG, "start get cart");
+                    PictureAirLog.out("start get cart");
                     API1.getCarts(handler);
                     break;
 

@@ -274,7 +274,7 @@ public class PictureAirDbManager {
 	public void insertSettingStatus(String settingType, String userInfoId){
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			database.execSQL("insert into "+Common.FIRST_START_ACTIVITY_INFO_TABLE+" values(null,?,?)", new String[]{settingType, userInfoId});
+			database.execSQL("insert into " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " values(null,?,?)", new String[]{settingType, userInfoId});
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -315,7 +315,7 @@ public class PictureAirDbManager {
 		boolean result = false;
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			cursor = database.rawQuery("select * from "+ Common.FIRST_START_ACTIVITY_INFO_TABLE +" where activity = ? and userId = ?", new String[]{settingType, userInfoId});
+			cursor = database.rawQuery("select * from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
 			result = (cursor.getCount() > 0) ? true : false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -508,7 +508,23 @@ public class PictureAirDbManager {
 			database.close();
 		}
 	}
-	
+
+	/**
+	 * 删除photopassInfo中的内容
+	 * @param tableName 需要清空的表的名字
+	 * @param isVideo 是不是视频数据
+	 */
+	public void deleteAllInfoFromTable(String tableName, boolean isVideo){
+		database = photoInfoDBHelper.getWritableDatabase();
+		try {
+			database.execSQL("delete from " + tableName + " where isVideo = ?", new String[]{isVideo ? "1" : "0"});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			database.close();
+		}
+	}
+
 	/**
 	 * 将照片插入到photoPassInfo表中
 	 * @param responseArray
@@ -526,11 +542,12 @@ public class PictureAirDbManager {
 				}
 				resultArrayList.add(photo);
 				//将数据插入到数据库
-				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
 						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
 						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
 						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"", photo.locationName,
-						photo.locationCountry, photo.shareURL, photo.isVideo+""});
+						photo.locationCountry, photo.shareURL, photo.isVideo+"", photo.fileSize + "",
+						photo.videoWidth + "", photo.videoHeight + ""});
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
@@ -540,7 +557,36 @@ public class PictureAirDbManager {
 		database.close();
 		return resultArrayList;
 	}
-	
+	/**
+	 * 将照片插入到photoPassInfo表中
+	 * @param responseArray
+	 */
+	public ArrayList<PhotoInfo> insertVideoInfoIntoPhotoPassInfo(JSONArray responseArray){
+		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
+		database = photoInfoDBHelper.getWritableDatabase();
+		database.beginTransaction();
+		for (int i = 0; i < responseArray.size(); i++) {
+			try {
+				JSONObject object = responseArray.getJSONObject(i);
+				PhotoInfo photo = JsonUtil.getVideoInfo(object);
+				resultArrayList.add(photo);
+				//将数据插入到数据库
+				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
+						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
+						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"", photo.locationName,
+						photo.locationCountry, photo.shareURL, photo.isVideo+"", photo.fileSize + "",
+						photo.videoWidth + "", photo.videoHeight + ""});
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+		}
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		database.close();
+		return resultArrayList;
+	}
+
 	/**
 	 * 查询数据库中的图片信息
 	 * @return
@@ -570,6 +616,9 @@ public class PictureAirDbManager {
 				photoInfo.locationCountry = cursor.getString(13);//locationCountry
 				photoInfo.shareURL = cursor.getString(14);//shareURL
 				photoInfo.isVideo = cursor.getInt(15);//isVideo
+				photoInfo.fileSize = cursor.getInt(16);//fileSize
+				photoInfo.videoWidth = cursor.getInt(17);//videoWidth
+				photoInfo.videoHeight = cursor.getInt(18);//videoHeight
 				photoInfo.onLine = 1;
 				photoInfo.isChecked = 0;
 				photoInfo.isSelected = 0;

@@ -47,20 +47,23 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 		 * 创建photo表
 		 * _id
 		 * photoId
-		 * photoCode ppCode
-		 * shootTime
-		 * originalUrl
-		 * previewUrl
-		 * previewUrl_512
-		 * previewUrl_1024
-		 * locationId
-		 * shootOn
-		 * isLove
-		 * isPay
-		 * locationName
-		 * locationCountry
-		 * shareURL
-		 * isVideo
+		 * photoCode ppCode 图片所属pp码
+		 * shootTime 拍摄时间
+		 * originalUrl 原图
+		 * previewUrl 128缩略图
+		 * previewUrl_512 512缩略图
+		 * previewUrl_1024 1024缩略图
+		 * locationId 地点id
+		 * shootOn 拍摄时间
+		 * isLove 是否收藏，目前没有用到
+		 * isPay 是否已经付费
+		 * locationName 地点名称
+		 * locationCountry 国家地点
+		 * shareURL  分享URL
+		 * isVideo   是否是视频
+		 * fileSize  文件的大小
+		 * videoWidth 视频宽
+		 * videoHeight 视频高
 		 */
 		db.execSQL("create table if not exists " + Common.PHOTOPASS_INFO_TABLE +
 				"(_id integer primary key autoincrement, " +
@@ -78,7 +81,10 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 				"locationName varchar(100), " +
 				"locationCountry varchar(100), " +
 				"shareURL varchar(100), " +
-				"isVideo integer)");
+				"isVideo integer, " +
+				"fileSize integer, " +
+				"videoWidth integer, " +
+				"videoHeight integer)");
 		
 		/**
 		 * 创建图片favorite表
