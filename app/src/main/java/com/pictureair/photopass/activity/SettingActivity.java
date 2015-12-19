@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
@@ -148,10 +149,23 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.logout:
-                // logout 之后，清空上个用户的数据。
-                application.setLast_tab(0);   // 设置 进入 app为主页
-                //断开推送
-                API1.noticeSocketDisConnect(handler);
+                new CustomDialog(SettingActivity.this, R.string.comfirm_logout, R.string.button_cancel, R.string.button_ok, new CustomDialog.MyDialogInterface() {
+                    @Override
+                    public void yes() {
+                        // TODO Auto-generated method stub // 确定退出：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
+                        // logout 之后，清空上个用户的数据。
+                        application.setLast_tab(0);   // 设置 进入 app为主页
+                        //断开推送
+                        API1.noticeSocketDisConnect(handler);
+                    }
+
+                    @Override
+                    public void no() {
+                        // TODO Auto-generated method stub // 取消退出：不做操作
+
+                    }
+                });
+
                 break;
 
             case R.id.sub_opinions://消息回馈按钮
