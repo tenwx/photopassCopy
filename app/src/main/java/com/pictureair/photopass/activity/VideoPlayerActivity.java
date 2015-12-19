@@ -55,7 +55,7 @@ import java.util.ArrayList;
  *
  * @author bass
  */
-public class VideoPlayerActivity extends Activity implements OnClickListener {
+public class VideoPlayerActivity extends BaseActivity implements OnClickListener {
     private final static String TAG = "VideoPlayerActivity";
     private static final int UPDATE_UI = 2866;
     private SeekBar seekBar = null;
@@ -157,7 +157,6 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppManager.getInstance().addActivity(this);
         setContentView(R.layout.activity_video_player);
         context = this;
         initView();
@@ -194,7 +193,6 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         llEnd = (LinearLayout) findViewById(R.id.ll_end);
         llShow = (LinearLayout) findViewById(R.id.ll_show);
         llShow.setEnabled(false);
-//        verticalScreen();
 
         // 控制栏的
         llControler = (LinearLayout) findViewById(R.id.ll_controler);
@@ -245,6 +243,7 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         videoPlayerView.setMyMediapalerPrepared(new VideoPlayerView.myMediapalerPrepared() {
             @Override
             public void myOnrepared(MediaPlayer mp) {
+                PictureAirLog.e(TAG,"===> myOnrepared");
                 tvLoding.setVisibility(View.GONE);
                 llShow.setEnabled(true);
 //                isLoading = false;
@@ -253,6 +252,7 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         videoPlayerView.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer arg0) {
+                PictureAirLog.e(TAG,"===> onPrepared");
                 setVideoScale(SCREEN_DEFAULT);// 按比例（全屏）
                 // setVideoScale(SCREEN_FULL);//全屏（会改变视频尺寸）
                 if (isControllerShow) {
@@ -283,6 +283,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
             @Override
             public void onCompletion(MediaPlayer arg0) {
+                PictureAirLog.e(TAG,"===> onCompletion");
+
 //				VideoPlayerView.stopPlayback();
 //				startVideo();
                 videoPlayerView.pause();
@@ -300,6 +302,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
             @Override
             public void onProgressChanged(SeekBar seekbar, int progress,
                                           boolean fromUser) {
+                PictureAirLog.e(TAG,"===> onProgressChanged");
+
                 if (fromUser) {
 //                    if (!isLoading) {
                     videoPlayerView.seekTo(progress);
@@ -310,11 +314,15 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
             @Override
             public void onStartTrackingTouch(SeekBar arg0) {
+                PictureAirLog.e(TAG,"===> onStartTrackingTouch");
+
                 myHandler.removeMessages(HIDE_CONTROLER);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                PictureAirLog.e(TAG,"===> onStopTrackingTouch");
+
                 myHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
             }
         });
@@ -324,6 +332,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         videoPlayerView.setMySizeChangeLinstener(new MySizeChangeLinstener() {
             @Override
             public void doMyThings() {
+                PictureAirLog.e(TAG,"===> doMyThings");
+
                 setVideoScale(SCREEN_DEFAULT);
             }
         });
@@ -334,6 +344,8 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
+                PictureAirLog.e(TAG,"===> onError");
+
                 videoPlayerView.stopPlayback();
                 return false;
             }
@@ -343,14 +355,18 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onPause() {
+        PictureAirLog.e(TAG,"=======>onPause");
         playedTime = videoPlayerView.getCurrentPosition();
         videoPlayerView.pause();
         btnPlayOrStop.setImageResource(R.drawable.play);
+        isPaused = true;
+
         super.onPause();
     }
 
     @Override
     protected void onResume() {
+        PictureAirLog.e(TAG, "=======>onResume");
         videoPlayerView.seekTo(playedTime);
         videoPlayerView.start();
         if (videoPlayerView.isPlaying()) {
@@ -358,6 +374,7 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
             btnPlayOrStop.setImageResource(0);
             hideControllerDelay();
         }
+        isPaused = false;
         super.onResume();
     }
 
@@ -369,7 +386,6 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         if (videoPlayerView.isPlaying()) {
             videoPlayerView.stopPlayback();
         }
-        AppManager.getInstance().killActivity(this);
         super.onDestroy();
     }
 
@@ -411,8 +427,6 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
     private void setVideoScale(int flag) {
         switch (flag) {
             case SCREEN_FULL:
-                Log.d(TAG, "screenWidth: " + screenWidth + " screenHeight: "
-                        + screenHeight);
                 videoPlayerView.setVideoScale(screenWidth, screenHeight);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 break;
@@ -457,22 +471,16 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         getScreenSize();
-//		if (isControllerShow) {
-//			cancelDelayHide();
-//			hideController();
-//			showController();
-//			hideControllerDelay();
-//		}
         getDisplayMetrics();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            sharePop.dismiss();
             crossScreen();//横屏计算大小
 //			Toast.makeText(context, " 横屏", 100).show();
         } else {
             verticalScreen();//竖屏计算大小
 //			Toast.makeText(context, " 竖屏", 100).show();
         }
-//        isPaused = false;
-
+        isPausedOrPlay();
         super.onConfigurationChanged(newConfig);
     }
 
@@ -481,10 +489,9 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         llEnd.setVisibility(View.GONE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.black));
 
-        setVideoResolution(false,videoWidth,videoHeight);
+        setVideoResolution(false, videoWidth, videoHeight);
 
         setVideoScale(SCREEN_FULL);
-        isPausedOrPlay();
     }
 
     private void verticalScreen() {
@@ -492,10 +499,9 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
         llEnd.setVisibility(View.VISIBLE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
 
-        setVideoResolution(true,videoWidth,videoHeight);
+        setVideoResolution(true, videoWidth,videoHeight);
 
         setVideoScale(SCREEN_DEFAULT);
-        isPausedOrPlay();
     }
 
     /**
@@ -517,12 +523,16 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
     }
 
     private void isPausedOrPlay() {
-        videoPlayerView.start();
-//        btnPlayOrStop.setImageResource(R.drawable.pause);
-        btnPlayOrStop.setImageResource(0);
-        cancelDelayHide();
-        hideControllerDelay();
-        isPaused = false;
+        if (isPaused){
+            videoPlayerView.pause();
+            btnPlayOrStop.setImageResource(R.drawable.play);
+        }else{
+            videoPlayerView.start();
+//        btnPlayOrStop.setImageResource(R.drawable.play);
+            btnPlayOrStop.setImageResource(0);
+            cancelDelayHide();
+            hideControllerDelay();
+        }
     }
 
     @Override
