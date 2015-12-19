@@ -195,8 +195,13 @@ public class JsonUtil {
         info.showMask = 0;
         info.lastModify = 0l;
         info.index = "";
-//		info.albumName = "";
-//		info.isPayed = 0;
+        info.photoThumbnail = "";
+        info.photoThumbnail_512 = "";
+        info.photoThumbnail_1024 = "";
+        info.locationId = "";
+        info.shareURL = "";
+        info.locationCountry = "";
+        info.locationName = "";
         return info;
     }
 

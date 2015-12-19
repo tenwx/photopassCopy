@@ -127,8 +127,6 @@ public class API {
 	public static final int DOWNLOAD_APK_SUCCESS = 561;
 	public static final int DOWNLOAD_APK_FAILED = 560;
 
-
-
 	/**
 	 * 修改密码或者忘记密码接口
 	 * @param context
@@ -420,46 +418,6 @@ public class API {
 		});
 	}
 
-	/**
-	 * 修改购物车信息
-	 * @param url
-	 * @param userid
-	 * @param cartItem jsonobject对象
-	 * @param handler
-	 * @param postion 选中的position
-	 * @param type 添加还是减少
-	 */
-	public static void modifycart(String url,String userid, JSONObject cartItem, final Handler handler, final int postion, String type) {
-		System.out.println("modify cart info");
-		RequestParams params = new RequestParams();
-		params.put(Common.USER_ID, userid);
-		params.put(Common.ITEM, cartItem);
-		System.out.println("传递的参数的jsonobject对象="+cartItem.toString());
-		HttpUtil.post(url, params, new JsonHttpResponseHandler() {
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-				// TODO Auto-generated method stub
-				super.onSuccess(statusCode, headers, response);
-				System.out.println("modify cart=="+response);
-				//				Message msg = handler.obtainMessage();
-				//				msg.what = DELETE_CART_SUCCESS;
-				//				msg.arg1 = postion;
-				//				msg.obj = response;
-				//				handler.sendMessage(msg);
-
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-				// TODO Auto-generated method stub
-				super.onFailure(statusCode, headers, throwable, errorResponse);
-				Message msg = handler.obtainMessage();
-				msg.what = FAILURE;
-				msg.obj = errorResponse;
-				handler.sendMessage(msg);
-			}
-		});
-	}
 
 
 
@@ -1064,8 +1022,6 @@ public class API {
 
 	}
 
-
-
 	/**
 	 * 获取订单信息
 	 * @param userId
@@ -1206,13 +1162,8 @@ public class API {
 				handler.sendEmptyMessage(GET_PP_FAILED);
 			}
 
-
-
 		});
 	}
-
-
-
 
 	/**
 	 * 将pp绑定到ppp
@@ -1340,103 +1291,5 @@ public class API {
 			}
 		});
 	}
-	
-	
-	/**
-	 * socket链接后处理方法
-	 * @param tokenId
-	 */
-
-//	public static void noticeSocketConnect(String tokenId){
-//		StringBuffer sBuffer = new StringBuffer();
-//		sBuffer.append(Common.BASE_URL);
-//		sBuffer.append(Common.APNS_CONNECT);
-//		RequestParams params = new RequestParams();
-//		params.put(Common.USERINFO_TOKENID, tokenId);
-//
-//
-//		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers,
-//					JSONObject response) {
-//				// TODO Auto-generated method stub
-//				super.onSuccess(statusCode, headers, response);
-//				Log.e("＝链接上 访问成功＝＝＝", "＝＝＝");
-//				Log.e("response ", "response :"+response);
-//			}
-//
-//			@Override
-//			public void onFailure(int statusCode, Header[] headers,
-//					Throwable throwable, JSONObject errorResponse) {
-//				// TODO Auto-generated method stub
-//				super.onFailure(statusCode, headers, throwable, errorResponse);
-//				Log.e("＝  链接上 访问失败＝＝＝＝＝＝", "＝＝＝");
-//			}
-//		});
-//
-//	}
-	
-	/**
-	 * 手机端退出登录前调用
-	 * @param tokenId
-	 */
-//	public static void noticeSocketDisConnect(String tokenId){
-//		StringBuffer sBuffer = new StringBuffer();
-//		sBuffer.append(Common.BASE_URL);
-//		sBuffer.append(Common.APNS_DISCONNECT);
-//		RequestParams params = new RequestParams();
-//		params.put(Common.USERINFO_TOKENID, tokenId);
-//
-//		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers,
-//					JSONObject response) {
-//				// TODO Auto-generated method stub
-//				super.onSuccess(statusCode, headers, response);
-//				Log.e("＝退出应用访问成功＝＝＝", "＝＝＝");
-//			}
-//
-//			@Override
-//			public void onFailure(int statusCode, Header[] headers,
-//					Throwable throwable, JSONObject errorResponse) {
-//				// TODO Auto-generated method stub
-//				super.onFailure(statusCode, headers, throwable, errorResponse);
-//				Log.e("＝退出应用访问失败＝＝＝＝＝＝", "＝＝＝");
-//			}
-//		});
-//	}
-	
-	
-	/**
-	 * 手机端接收到推送后，调用清空推送数据
-	 * @param tokenId
-	 */
-//	public static void clearSocketCachePhotoCount(String tokenId,String clearType){
-//		StringBuffer sBuffer = new StringBuffer();
-//		sBuffer.append(Common.BASE_URL);
-//		sBuffer.append(Common.CLEAR_PHOTO_COUNT);
-//		RequestParams params = new RequestParams();
-//		params.put(Common.USERINFO_TOKENID, tokenId);
-//		params.put(Common.CLEAR_TYPE, clearType);
-//
-//		HttpUtil.get(sBuffer.toString(), params, new JsonHttpResponseHandler() {
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers,
-//					JSONObject response) {
-//				// TODO Auto-generated method stub
-//				super.onSuccess(statusCode, headers, response);
-//				Log.e("＝收到推送 访问成功＝＝＝", "＝＝＝");
-//			}
-//
-//			@Override
-//			public void onFailure(int statusCode, Header[] headers,
-//					Throwable throwable, JSONObject errorResponse) {
-//				// TODO Auto-generated method stub
-//				super.onFailure(statusCode, headers, throwable, errorResponse);
-//				Log.e("＝收到推送 访问失败＝＝＝＝＝＝", "＝＝＝");
-//			}
-//		});
-//	}
-	
 
 }

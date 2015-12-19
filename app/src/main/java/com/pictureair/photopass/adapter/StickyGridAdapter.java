@@ -69,8 +69,10 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             mViewHolder = new ViewHolder();
             // 图片的 布局
             convertView = layoutInflater.inflate(R.layout.sticky_grid_view, parent, false);
+
             // 布局的 图片
             mViewHolder.mImageView = (ImageView) convertView.findViewById(R.id.sticky_imageView);
+            mViewHolder.videoImageView = (ImageView) convertView.findViewById(R.id.play_video_iv);
             convertView.setTag(mViewHolder);
         } else {
             mViewHolder = (ViewHolder) convertView.getTag();
@@ -79,16 +81,24 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / COLUMN_COUNT;
         params.height = params.width;
         mViewHolder.mImageView.setLayoutParams(params);
+
         if (list.get(position).onLine == 1) {
             if (list.get(position).isVideo == 1) {
                 PictureAirLog.out("load video--->" + list.get(position).photoPathOrURL);
                 UniversalImageLoadTool.loadImage(list.get(position).photoPathOrURL, mViewHolder.mImageView);
+                mViewHolder.videoImageView.setVisibility(View.VISIBLE);
+                LayoutParams params2 = mViewHolder.videoImageView.getLayoutParams();
+                params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);
+                params2.height = params2.width;
+                mViewHolder.videoImageView.setLayoutParams(params2);
             } else {
                 PictureAirLog.out("load online photo--->" + list.get(position).photoPathOrURL);
                 UniversalImageLoadTool.loadImage(list.get(position).photoThumbnail, mViewHolder.mImageView);
+                mViewHolder.videoImageView.setVisibility(View.GONE);
             }
         } else {
             UniversalImageLoadTool.loadImage("file://" + list.get(position).photoPathOrURL, mViewHolder.mImageView);
+            mViewHolder.videoImageView.setVisibility(View.GONE);
         }
         return convertView;
     }
@@ -148,6 +158,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 
     public class ViewHolder {
         public ImageView mImageView;
+        public ImageView videoImageView;
     }
 
     public class HeaderViewHolder {

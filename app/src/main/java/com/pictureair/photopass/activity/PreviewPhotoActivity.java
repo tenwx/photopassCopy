@@ -1084,6 +1084,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (leadView.isShown()) {
                     return;
                 }
+
+                if (photoInfo.onLine == 0) {
+                    newToast.setTextAndShow(R.string.local_photo_not_support_makegift, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+
                 if (photoInfo.isPayed == 0 && loadFailed) {
                     newToast.setTextAndShow(R.string.reloadphoto, Common.TOAST_SHORT_TIME);
                     return;

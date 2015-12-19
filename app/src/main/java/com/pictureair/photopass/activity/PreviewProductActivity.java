@@ -206,6 +206,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     }
                     break;
 
+                case API1.ADD_TO_CART_FAILED:
                 case API1.UPLOAD_PHOTO_FAILED:
                     if (dialog.isShowing()) {
                         dialog.dismiss();

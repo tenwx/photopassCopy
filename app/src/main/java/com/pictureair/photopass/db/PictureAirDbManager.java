@@ -591,9 +591,16 @@ public class PictureAirDbManager {
 	 * 查询数据库中的图片信息
 	 * @return
 	 */
-	public ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo){
+	public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
 		database = photoInfoDBHelper.getReadableDatabase();
+		//根据当前时间，删除超过30天并且未支付的数据信息
+
+
+
+
+
+
 		//查询photo表的信息
 		Cursor cursor = database.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" where isVideo = ? order by shootOn desc", new String[]{isVideo ? "1" : "0"});
 		PhotoInfo photoInfo;

@@ -550,4 +550,5 @@
     <string name="notifacation_new_message">新的消息</string>
     <string name="notifacation_new_photo">您有新的照片</string>
     <string name="notifacation_new_video">您有新的视频</string>
+    <string name="local_photo_not_support_makegift">本地照片不允许制作礼物</string>
 </resources>

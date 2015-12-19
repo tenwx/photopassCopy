@@ -2,31 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#b3ffffff" >
+    android:background="@drawable/makegift_select_goods" >
 
-    <!--
-    <com.pictureAir.widget.MyHorizontalScrollView
-        android:id="@+id/id_horizontalScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none" >
-
-        <LinearLayout
-            android:id="@+id/id_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal" >
-        </LinearLayout>
-    </com.pictureAir.widget.MyHorizontalScrollView>
-    -->
-
-    <GridView
+    <ListView
         android:id="@+id/id_horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:listSelector="@color/transparent"
+        android:divider="@color/pp_gray"
+        android:dividerHeight="1px"
         android:scrollbars="none" >
-    </GridView>
+    </ListView>
 
 </RelativeLayout>

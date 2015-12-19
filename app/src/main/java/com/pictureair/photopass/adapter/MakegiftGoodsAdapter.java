@@ -5,27 +5,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.GoodsInfo;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.entity.GoodsInfo1;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MakegiftGoodsAdapter extends BaseAdapter
 {
 
 	private Context mContext;
 	private LayoutInflater mInflater;
-	private ArrayList<GoodsInfo> mDatas;
+	private List<GoodsInfo1> mDatas;
 	private ImageLoader imageLoader;
 	private int width = 0;
 
-	public MakegiftGoodsAdapter(Context context, ArrayList<GoodsInfo> mDatas)
+	public MakegiftGoodsAdapter(Context context, List<GoodsInfo1> mDatas)
 	{
 		this.mContext = context;
 		mInflater = LayoutInflater.from(context);
@@ -34,11 +31,11 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		imageLoader = ImageLoader.getInstance();
 	}
 
-	public ArrayList<GoodsInfo> getmDatas() {
+	public List<GoodsInfo1> getmDatas() {
 		return mDatas;
 	}
 
-	public void setmDatas(ArrayList<GoodsInfo> mDatas) {
+	public void setmDatas(List<GoodsInfo1> mDatas) {
 		this.mDatas = mDatas;
 	}
 	
@@ -49,30 +46,29 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		{
 			viewHolder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.myhorizontalscrollview_item, parent, false);
-			viewHolder.mImg = (ImageView) convertView.findViewById(R.id.id_index_gallery_item_image);
+			viewHolder.mImg = (TextView) convertView.findViewById(R.id.id_index_gallery_item_name);
 			convertView.setTag(viewHolder);
 		} else
 		{
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		width = ScreenUtil.getScreenWidth(mContext)/3-10;
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width*3/4);
-		viewHolder.mImg.setLayoutParams(params);
-		if (mDatas.size() != 0) {
-			String[] urlStrings = mDatas.get(position).good_previewUrls.split(",");
-			System.err.println("-=-=-=-=-"+urlStrings[0]);
-			if (null == urlStrings[0]&&"".equals(urlStrings[0])) {
-
-			}else {
-				imageLoader.displayImage(Common.BASE_URL+urlStrings[0], viewHolder.mImg);
-			}
-		}
+//		width = ScreenUtil.getScreenWidth(mContext)/3-10;
+//		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width*3/4);
+//		viewHolder.mImg.setLayoutParams(params);
+//		if (mDatas.size() != 0) {
+//			if (null == mDatas.get(position).getPictures().get(0).getUrl()&&"".equals(mDatas.get(position).getPictures().get(0).getUrl())) {
+//
+//			}else {
+//				imageLoader.displayImage(Common.BASE_URL + mDatas.get(position).getPictures().get(0).getUrl(), viewHolder.mImg);
+//			}
+//		}
+		viewHolder.mImg.setText(mDatas.get(position).getNameAlias());
 		return convertView;
 	}
 
 	private class ViewHolder
 	{
-		ImageView mImg;
+		TextView mImg;
 	}
 
 	@Override

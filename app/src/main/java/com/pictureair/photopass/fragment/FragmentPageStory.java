@@ -224,24 +224,24 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
 
                     PictureAirLog.d(TAG, "--------->get photo success");
-                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true);
+                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, false);
                     break;
 
                 case API1.GET_ALL_VIDEO_LIST_SUCCESS://获取视频成功
 
                     PictureAirLog.d(TAG, "--->get video success");
-                    saveVideoJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true);
+                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, true);
                     break;
 
                 case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS://获取刷新的推送图片
 //                    app.setPushPhotoCount(0);
                     PictureAirLog.d(TAG, "deal refresh photos-------");
-                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false);
+                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, false);
                     break;
 
                 case API1.GET_REFRESH_VIDEO_LIST_SUCCESS://获取刷新的视频成功
                     PictureAirLog.d(TAG, "--->get refresh video success");
-                    saveVideoJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false);
+                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, true);
                     break;
 
                 case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
@@ -436,103 +436,71 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
      *
      * @param jsonObject json对象
      * @param isAll      布尔值，是否是获取全部数据
+     * @param isVideo    是否是视频数据
      */
-    private void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll) {
-
+    private synchronized void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll, final boolean isVideo) {
         if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
-            PictureAirLog.d(TAG, "delete all data from table");
-            pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, false);
+            if (isVideo) {
+                PictureAirLog.d(TAG, "delete all video data from table");
+                pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, true);
+            } else {
+                PictureAirLog.d(TAG, "delete all data from table");
+                pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, false);
+            }
         } else {
             PictureAirLog.d(TAG, "need not delete all data");
         }
 
         try {
-            final JSONArray responseArray = jsonObject.getJSONArray("photos");
+            final JSONArray responseArray = jsonObject.getJSONArray(isVideo ? "videoList" : "photos");
 
-            String updatetimeString = jsonObject.getString("time");
+            String updatetimeString = jsonObject.getString(isVideo ? "t" : "time");
             System.out.println("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
 
             if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
                 //需要存储这个时间
                 Editor editor = sharedPreferences.edit();
-                editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
+                if (isVideo) {
+                    editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
+                } else {
+                    editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
+                }
                 editor.commit();
             }
 
             if (isAll) {//如果全部获取，需要清除原有的数据
-                app.photoPassPicList.clear();
+                if (isVideo) {
+                    app.photoPassVideoList.clear();
+                } else {
+                    app.photoPassPicList.clear();
+                }
             } else {//刷新最新照片，获取刷新数据的数量
-                refreshDataCount = responseArray.size();
-                PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
-            }
 
-            new Thread() {
-                public void run() {
-                    System.out.println("-----------------> start insert data into database");
-                    app.photoPassPicList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray));
-                    //通知已经处理完毕
-                    if (isAll) {
-                        handler.sendEmptyMessage(DEAL_ALL_PHOTO_DATA_DONE);
-
-                    } else {
-                        handler.sendEmptyMessage(DEAL_REFRESH_PHOTO_DATA_DONE);
-                    }
+                if (isVideo) {
+                    refreshVideoDataCount = responseArray.size();
+                    PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
+                } else {
+                    refreshDataCount = responseArray.size();
+                    PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
 
                 }
 
-                ;
-            }.start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * 解析服务器返回的数据
-     *
-     * @param jsonObject json对象
-     * @param isAll      布尔值，是否是获取全部数据
-     */
-    private void saveVideoJsonToSQLite(JSONObject jsonObject, final boolean isAll) {
-
-        if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
-            PictureAirLog.d(TAG, "delete all video data from table");
-            pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, true);
-        } else {
-            PictureAirLog.d(TAG, "need not delete all video data");
-        }
-
-        try {
-            final JSONArray responseArray = jsonObject.getJSONArray("videoList");
-
-            String updatetimeString = jsonObject.getString("t");
-            System.out.println("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
-
-            if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
-                //需要存储这个时间
-                Editor editor = sharedPreferences.edit();
-                editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
-                editor.commit();
             }
-
-            if (isAll) {//如果全部获取，需要清除原有的数据
-                app.photoPassVideoList.clear();
-            } else {//刷新最新照片，获取刷新数据的数量
-                refreshVideoDataCount = responseArray.size();
-                PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
-            }
-
             new Thread() {
                 public void run() {
                     System.out.println("-----------------> start insert data into database");
-                    app.photoPassVideoList.addAll(pictureAirDbManager.insertVideoInfoIntoPhotoPassInfo(responseArray));
+                    if (isVideo) {
+                        app.photoPassVideoList.addAll(pictureAirDbManager.insertVideoInfoIntoPhotoPassInfo(responseArray));
+                    } else {
+                        app.photoPassPicList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray));
+                    }
+
                     //通知已经处理完毕
                     if (isAll) {
-                        handler.sendEmptyMessage(DEAL_ALL_VIDEO_DATA_DONE);
+                        handler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
 
                     } else {
-                        handler.sendEmptyMessage(DEAL_REFRESH_VIDEO_DATA_DONE);
+                        handler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
                     }
 
                 }
@@ -881,6 +849,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         System.out.println("load data from database");
         ArrayList<PhotoInfo> resultPhotoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false);
         ArrayList<PhotoInfo> resultVideoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true);
+        PictureAirLog.out("photo from db ---->" + resultPhotoArrayList.size());
+        PictureAirLog.out("video from db ---->" + resultVideoArrayList.size());
         ppPhotoCount = resultPhotoArrayList.size();
         app.photoPassPicList.addAll(resultPhotoArrayList);
         app.photoPassVideoList.addAll(resultVideoArrayList);

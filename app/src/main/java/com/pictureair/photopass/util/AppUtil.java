@@ -6,10 +6,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,6 +59,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -782,6 +787,42 @@ public class AppUtil {
 			}
 		}
 		return tempInfos;
+	}
+
+	/**
+	 * 获取视频的缩略图
+	 * @param url
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static Bitmap createVideoThumbnail(String url, int width, int height) {
+		Bitmap bitmap = null;
+		MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+		int kind = MediaStore.Video.Thumbnails.MINI_KIND;
+		try {
+			if (Build.VERSION.SDK_INT >= 14) {
+				retriever.setDataSource(url, new HashMap<String, String>());
+			} else {
+				retriever.setDataSource(url);
+			}
+			bitmap = retriever.getFrameAtTime();
+		} catch (IllegalArgumentException ex) {
+			// Assume this is a corrupt video file
+		} catch (RuntimeException ex) {
+			// Assume this is a corrupt video file.
+		} finally {
+			try {
+				retriever.release();
+			} catch (RuntimeException ex) {
+				// Ignore failures while cleaning up.
+			}
+		}
+		if (kind == MediaStore.Images.Thumbnails.MICRO_KIND && bitmap != null) {
+			bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+					ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+		}
+		return bitmap;
 	}
 
 }

@@ -545,4 +545,5 @@
     <string name="notifacation_new_order">New Order</string>
     <string name="notifacation_new_photo">You have new photos</string>
     <string name="notifacation_new_video">You have new videos</string>
+    <string name="local_photo_not_support_makegift">Local photo does not support make gift</string>
 </resources>

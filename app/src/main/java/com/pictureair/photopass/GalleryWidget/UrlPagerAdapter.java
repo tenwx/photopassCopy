@@ -46,7 +46,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
         	System.out.println("---------online and ispayed"+position);
-        	iv.setUrl(mResources.get(position).photoPathOrURL, mResources.get(position).photoId);
+        	iv.setUrl(mResources.get(position).photoThumbnail_1024, mResources.get(position).photoId);
 		}else if (mResources.get(position).onLine == 0) {
 			System.out.println("--------local photo"+position);
 			iv.setImagePath(mResources.get(position).photoPathOrURL);
