@@ -78,6 +78,11 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 			selectPhotoItemInfo = arrayList.get(i);
 			selectPhotoItemInfo.isChecked = isChecked;
 			selectPhotoItemInfo.isSelected = isSelected;
+			if (isSelected == 0) {
+				selectPhotoItemInfo.showMask = 0;//遮罩层；0:不显示；1:显示
+			} else {
+				selectPhotoItemInfo.showMask = 1;//遮罩层；0:不显示；1:显示
+			}
 		}
 		notifyDataSetChanged();
 	}
@@ -95,10 +100,9 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 				holder.imageview_select.setImageResource(R.drawable.sel2);
 				holder.imageview_select.setVisibility(View.VISIBLE);
 				holder.imageview_select.setBackgroundColor(Color.TRANSPARENT);
-				holder.imageview_maskImageView.setVisibility(View.VISIBLE);
 			}else{
 				holder.imageview_select.setVisibility(View.INVISIBLE);
-				holder.imageview_maskImageView.setVisibility(View.INVISIBLE);
+//				holder.imageview_maskImageView.setVisibility(View.INVISIBLE);
 			}
 		}else if (mode == 1) {
 			if (arrayList.get(index).isChecked == 1) {
@@ -110,7 +114,14 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 				}
 			}
 		}
+
+		if (arrayList.get(index).showMask == 0) {//隐藏遮罩
+			holder.imageview_maskImageView.setVisibility(View.GONE);
+		} else {//显示遮罩
+			holder.imageview_maskImageView.setVisibility(View.VISIBLE);
+		}
 	}
+
 
 	public View getView(int position,View convertView,ViewGroup parent)
 	{
@@ -159,13 +170,13 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 				}
 				holderView.imageview_select.setBackgroundColor(Color.TRANSPARENT);
 			} else {
-				holderView.imageview_maskImageView.setVisibility(View.INVISIBLE);
+				holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
 				holderView.imageview_select.setVisibility(View.INVISIBLE);
 			}
 			if (selectPhotoItemInfo.onLine == 0) {
 				System.out.println("开始加载图片");
-				System.out.println("加载原图---------->"+selectPhotoItemInfo.photoPathOrURL);
-				UniversalImageLoadTool.loadImage("file://"+selectPhotoItemInfo.photoPathOrURL, holderView.imageView_photo);
+				System.out.println("加载原图---------->" + selectPhotoItemInfo.photoPathOrURL);
+				UniversalImageLoadTool.loadImage("file://" + selectPhotoItemInfo.photoPathOrURL, holderView.imageView_photo);
 				System.out.println("-------->原图加载完毕");
 			}else if (selectPhotoItemInfo.onLine == 1) {
 				if (selectPhotoItemInfo.isPayed == 1) {//如果已经购买，显示512的缩略图
@@ -176,6 +187,13 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 					UniversalImageLoadTool.loadImage(selectPhotoItemInfo.photoThumbnail, holderView.imageView_photo);
 				}
 			}
+
+		if (selectPhotoItemInfo.showMask == 0) {//隐藏遮罩
+			holderView.imageview_maskImageView.setVisibility(View.GONE);
+		} else {//显示遮罩
+			holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
+		}
+
 		return convertView;
 	}
 	class HolderView{

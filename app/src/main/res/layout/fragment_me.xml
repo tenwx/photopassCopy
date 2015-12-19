@@ -82,17 +82,17 @@
             <RelativeLayout
                 android:id="@+id/rl_myprofile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
+                android:padding="8dp"
+                android:layout_marginLeft="@dimen/pp_padding_16"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_profile"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_myprofile"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -106,7 +106,7 @@
             <RelativeLayout
                 android:id="@+id/rl_myorder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -130,7 +130,7 @@
             <RelativeLayout
                 android:id="@+id/rl_pp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -154,7 +154,7 @@
             <RelativeLayout
                 android:id="@+id/rl_ppp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -178,7 +178,7 @@
             <RelativeLayout
                 android:id="@+id/rl_help"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -202,7 +202,7 @@
             <RelativeLayout
                 android:id="@+id/rl_setting"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -226,7 +226,7 @@
             <RelativeLayout
                 android:id="@+id/rl_about"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:gravity="center_vertical">
 
                 <TextView

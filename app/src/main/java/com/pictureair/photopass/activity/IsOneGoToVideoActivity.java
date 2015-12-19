@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.DisneyVideoTool;
@@ -20,106 +21,110 @@ import java.util.List;
 
 /**
  * 1、第一次使用，则直接进入无视频引导页面，引导用户如何制作；
- * 
- * @author bass
  *
+ * @author bass
  */
 public class IsOneGoToVideoActivity extends BaseActivity implements
-		OnClickListener, OnPageChangeListener{
-	private static final String TAG = "IsOneGoToVideoActivity";
+        OnClickListener, OnPageChangeListener {
+    private static final String TAG = "IsOneGoToVideoActivity";
 
-	private Context context;
-	private LayoutInflater inflater;
-	private ViewPager mViewPager;
-	private List<View> mList;
-	private Button btnStart;
-	private View view1,view2;
+    private Context context;
+    private LayoutInflater inflater;
+    private ViewPager mViewPager;
+    private List<View> mList;
+    private Button btnStart;
+    private View view1, view2;
+    private ImageView ivBack;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.acticity_is_one_goto_video);
-		context = this;
-		initView();
-		initData();
-		initEvent();
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.acticity_is_one_goto_video);
+        context = this;
+        initView();
+        initData();
+        initEvent();
+    }
 
-	private void initView() {
-		mViewPager = (ViewPager) findViewById(R.id.vP_is_one_video);
-	}
+    private void initView() {
+        mViewPager = (ViewPager) findViewById(R.id.vP_is_one_video);
+    }
 
-	private void initData() {
-		inflater = LayoutInflater.from(context);
-		mList = new ArrayList<View>();
+    private void initData() {
+        inflater = LayoutInflater.from(context);
+        mList = new ArrayList<View>();
 //		view1 = inflater.inflate(R.layout.viewpager_disney_video1, null);
 //		view1.setBackgroundResource(R.drawable.loding_1);
-		
-		view2 = inflater.inflate(R.layout.viewpager_disney_video1, null);
-		view2.setBackgroundResource(R.drawable.photopass_lead1);//需要更换背景图
-		btnStart = (Button) view2.findViewById(R.id.btn_start);
-		btnStart.setVisibility(View.VISIBLE);
-		
+
+        view2 = inflater.inflate(R.layout.viewpager_disney_video1, null);
+        view2.setBackgroundResource(R.drawable.img_disneyvideo1);
+        ivBack = (ImageView) findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(this);
+        btnStart = (Button) view2.findViewById(R.id.btn_start);
+        btnStart.setVisibility(View.VISIBLE);
+
 //		mList.add(view1);
-		mList.add(view2);
-	}
+        mList.add(view2);
+    }
 
-	private void initEvent() {
-		btnStart.setOnClickListener(this);
-		mViewPager.setAdapter(pagerAdapter);
-	}
+    private void initEvent() {
+        btnStart.setOnClickListener(this);
+        mViewPager.setAdapter(pagerAdapter);
+    }
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btn_start:
-			// 如果有已购买照片，直接进入选择照片制作故事的页面；
-			// 如果无已购买的照片，直接进入没有乐拍通照片的页面；
-			DisneyVideoTool.getIsEditImageGoToVideo(context);
-			finish();
-			break;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
 
-		default:
-			break;
-		}
-	}
-	
-	private PagerAdapter pagerAdapter = new PagerAdapter() {
+            case R.id.btn_start:
+                // 如果有已购买照片，直接进入选择照片制作故事的页面；
+                // 如果无已购买的照片，直接进入没有乐拍通照片的页面；
+                DisneyVideoTool.getIsEditImageGoToVideo(context);
+            case R.id.iv_back:
+                finish();
+                break;
 
-		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			return arg0 == arg1;
-		}
+            default:
+                break;
+        }
+    }
 
-		@Override
-		public int getCount() {
-			return mList.size();
-		}
+    private PagerAdapter pagerAdapter = new PagerAdapter() {
 
-		@Override
-		public void destroyItem(ViewGroup container, int position, Object object) {
-			container.removeView(mList.get(position));
-		}
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
 
-		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			container.addView(mList.get(position));
-			return mList.get(position);
-		}
-	};
+        @Override
+        public int getCount() {
+            return mList.size();
+        }
 
-	@Override
-	public void onPageScrollStateChanged(int arg0) {
-		PictureAirLog.e(TAG, "onPageScrollStateChanged:"+arg0);
-	}
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView(mList.get(position));
+        }
 
-	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
-	}
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            container.addView(mList.get(position));
+            return mList.get(position);
+        }
+    };
 
-	@Override
-	public void onPageSelected(int arg0) {
-	}
-	
+    @Override
+    public void onPageScrollStateChanged(int arg0) {
+        PictureAirLog.e(TAG, "onPageScrollStateChanged:" + arg0);
+    }
+
+    @Override
+    public void onPageScrolled(int arg0, float arg1, int arg2) {
+    }
+
+    @Override
+    public void onPageSelected(int arg0) {
+    }
+
 
 }

@@ -143,10 +143,10 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
                     //更新收藏图标
                     if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), videoInfo.photoPathOrURL)) {
                         videoInfo.isLove = 1;
-                        ivIsLove.setImageResource(R.drawable.preview_photo_love_sele);
+                        ivIsLove.setImageResource(R.drawable.discover_like);
                     } else {
                         videoInfo.isLove = 0;
-                        ivIsLove.setImageResource(R.drawable.preview_photo_love_nor);
+                        ivIsLove.setImageResource(R.drawable.discover_no_like);
                     }
                     break;
             }
@@ -634,12 +634,12 @@ public class VideoPlayerActivity extends Activity implements OnClickListener {
             Log.d(TAG, "cancel love");
             pictureAirDbManager.setPictureLove(videoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), videoInfo.photoPathOrURL, false);
             videoInfo.isLove = 0;
-            ivIsLove.setImageResource(R.drawable.preview_photo_love_nor);
+            ivIsLove.setImageResource(R.drawable.discover_no_like);
         } else {
             Log.d(TAG, "add love");
             pictureAirDbManager.setPictureLove(videoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), videoInfo.photoPathOrURL, true);
             videoInfo.isLove = 1;
-            ivIsLove.setImageResource(R.drawable.preview_photo_love_sele);
+            ivIsLove.setImageResource(R.drawable.discover_like);
         }
         return true;
     }
