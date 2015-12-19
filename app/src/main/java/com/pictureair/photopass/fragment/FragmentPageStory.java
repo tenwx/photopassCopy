@@ -32,6 +32,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
+import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
@@ -49,6 +50,7 @@ import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -119,6 +121,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 	private PhotoInfo selectPhotoItemInfo;
 	private ScanPhotosThread scanPhotosThread;
 	private PictureAirDbManager pictureAirDbManager;
+	private SettingUtil settingUtil;
 
 	//申明handler消息回调机制
 	private Handler handler = new Handler(){
@@ -159,14 +162,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 						loadDataFromDataBase();
 
 						//  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
-						boolean NOT_FIRST_PP10 = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_PP10, sharedPreferences.getString(Common.USERINFO_ID, ""));
-						PictureAirLog.e("NOT_FIRST_PP10", "NOT_FIRST_PP10:"+NOT_FIRST_PP10);
-						PictureAirLog.e("photoCount", "ppphotoCount :"+ppPhotoCount);
-
-						PictureAirLog.e("API.PPPlist.size()", "API.PPPlist.size():"+API.PPPlist.size());
-						if (!NOT_FIRST_PP10) {
+//						boolean NOT_FIRST_PP10 = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_PP10, sharedPreferences.getString(Common.USERINFO_ID, ""));
+//						PictureAirLog.e("NOT_FIRST_PP10", "NOT_FIRST_PP10:"+NOT_FIRST_PP10);
+//						PictureAirLog.e("photoCount", "ppphotoCount :"+ppPhotoCount);
+//
+//						PictureAirLog.e("API.PPPlist.size()", "API.PPPlist.size():"+API.PPPlist.size());
+//						if (!NOT_FIRST_PP10) {
+//							//第一次 PP数量到 10 。
+//							API.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
+//						}
+						if (settingUtil.isFirstPP10(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
 							//第一次 PP数量到 10 。
-							API.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
+							API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
 						}
 
 					}
@@ -296,37 +303,29 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 					}
 					break;
 
-				case API.GET_PPP_SUCCESS:
-					PictureAirLog.e("＝＝＝＝＝＝＝", " ppphotoCount: " + ppPhotoCount + "_API.PPPlist.size():" + API.PPPlist.size());
-					if (ppPhotoCount >= 10 && API.PPPlist.size() == 0) {
-						customdialog = new CustomDialog.Builder(getActivity())
-								.setMessage(getResources().getString(R.string.dialog_intent_buy_ppp))
-								.setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface arg0, int arg1) {
-										// TODO Auto-generated method stub
-										customdialog.dismiss();
-									}
-								})
-								.setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface arg0, int arg1) {
-										// TODO Auto-generated method stub
-										//跳转到购买PP+页面
-										Intent intent = new Intent();
-										intent.setClass(getActivity(), PPPDetailProductActivity.class);
-										startActivity(intent);
-										customdialog.dismiss();
-									}
-								})
-								.setCancelable(false)
-								.create();
-						customdialog.show();
-						pictureAirDbManager.insertSettingStatus(Common.SETTING_NOT_FIRST_PP10, sharedPreferences.getString(Common.USERINFO_ID, ""));
-					} else if (API.PPPlist.size() > 0) {
-						pictureAirDbManager.insertSettingStatus(Common.SETTING_NOT_FIRST_PP10, sharedPreferences.getString(Common.USERINFO_ID, ""));
-					}
+				case API1.GET_PPP_SUCCESS:
+					if (ppPhotoCount >=10 && API.PPPlist.size() == 0) {
+						new CustomDialog(context, R.string.pp_first_up10_msg, R.string.pp_first_up10_no_msg, R.string.pp_first_up10_yes_msg, new CustomDialog.MyDialogInterface() {
 
+							@Override
+							public void yes() {
+								// TODO Auto-generated method stub // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
+								Intent intent = new Intent();
+								intent.setClass(getActivity(),
+										MyPPPActivity.class);
+								startActivity(intent);
+							}
+
+							@Override
+							public void no() {
+								// TODO Auto-generated method stub // 考虑下：不做操作
+
+							}
+						});
+						settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+					}else if( API.PPPlist.size() >0){
+						settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+					}
 					break;
 
 				default:
@@ -413,6 +412,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
 		//初始化控件
 		context = getActivity();
+		settingUtil = new SettingUtil(context);
 		app = (MyApplication) getActivity().getApplication();
 		pictureAirDbManager = new PictureAirDbManager(getActivity());
 		sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE);

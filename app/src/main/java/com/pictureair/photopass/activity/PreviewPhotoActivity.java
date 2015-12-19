@@ -46,6 +46,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
@@ -73,6 +74,7 @@ import cz.msebera.android.httpclient.Header;
  */
 @SuppressLint({"FloatMath", "NewApi"})
 public class PreviewPhotoActivity extends BaseActivity implements OnClickListener {
+    private SettingUtil settingUtil;
     private String s;
     //工具条
     private TextView editButton;
@@ -391,7 +393,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     //初始化底部索引按钮
                     updateIndexTools(true);
 
-                    PictureAirLog.v(TAG,"----------------------->initing...3");
+                    PictureAirLog.v(TAG, "----------------------->initing...3");
                     r = (int) (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
 
                     mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -426,8 +428,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                     });
 
-                    PictureAirLog.v(TAG,"----------------------->initing...6");
-
+                    PictureAirLog.v(TAG, "----------------------->initing...6");
+                    judgeBuyOnePhoto();
                     break;
                 default:
                     break;
@@ -512,6 +514,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private void init() {
         // TODO Auto-generated method stub
+        settingUtil = new SettingUtil(this);
         newToast = new MyToast(this);
         sharePop = new SharePop(this);
         pictureAirDbManager = new PictureAirDbManager(this);
@@ -1036,7 +1039,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
                     } else {//编辑前
                         if (photoInfo.onLine == 1) {//是pp的照片
-                            downLoadPhotos();
+                            judgeOnePhotoDownloadFlow();
+//                            downLoadPhotos();
                             //						ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
                             //						list.add(photolist.get(mViewPager.getCurrentItem()));
                             //						intent = new Intent(this, DownloadService.class);
@@ -1413,6 +1417,118 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         // TODO Auto-generated method stub
         super.onResume();
         sharePop.dismissDialog();//防止分享未成功  一直显示加载状态
+    }
+
+    // 判断 是否第一次提示 同步更新。，并弹出相应的tips
+    private void judgeBuyOnePhoto() {
+        if (myApplication.isPhotoIsPaid()) {// 如果是 购买之后跳转过来的。
+            if (settingUtil.isFirstTipsSyns(sharedPreferences.getString(
+                    Common.USERINFO_ID, ""))) {
+                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
+                        Common.USERINFO_ID, ""))) {
+                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+                        downloadPic();
+                    }
+                } else {
+                    new CustomDialog(PreviewPhotoActivity.this,
+                            R.string.first_tips_syns_msg1,
+                            R.string.first_tips_syns_no_msg1,
+                            R.string.first_tips_syns_yes_msg1,
+                            new CustomDialog.MyDialogInterface() {
+                                @Override
+                                public void yes() {
+                                    // TODO Auto-generated method stub
+                                    // //同步更新：下载单张照片，并且修改设置。
+                                    settingUtil
+                                            .insertSettingAutoUpdateStatus(sharedPreferences
+                                                    .getString(
+                                                            Common.USERINFO_ID,
+                                                            ""));
+                                    if (AppUtil
+                                            .getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+                                        downloadPic();
+                                    }
+                                }
+
+                                @Override
+                                public void no() {
+                                    // TODO Auto-generated method stub // 取消；不操作
+                                    settingUtil
+                                            .deleteSettingAutoUpdateStatus(sharedPreferences
+                                                    .getString(
+                                                            Common.USERINFO_ID,
+                                                            ""));
+                                }
+                            });
+                }
+                settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences
+                        .getString(Common.USERINFO_ID, ""));
+            } else {
+                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
+                        Common.USERINFO_ID, ""))) {
+                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+                        downloadPic();
+                    }
+                }
+            }
+
+        } else {
+
+        }
+        myApplication.setPhotoIsPaid(false); // 保持 不是购买的状态。
+    }
+
+    /**
+     * tips 1，网络下载流程。
+     */
+    private void judgeOnePhotoDownloadFlow() { // 如果当前是wifi，无弹窗提示。如果不是wifi，则提示。
+        if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+            downloadPic();
+        } else {
+            // 判断用户是否设置过 “仅wifi” 的选项。
+            if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(
+                    Common.USERINFO_ID, ""))) {
+                customdialog = new CustomDialog(PreviewPhotoActivity.this,
+                        R.string.one_photo_download_msg1,
+                        R.string.one_photo_download_no_msg1,
+                        R.string.one_photo_download_yes_msg1,
+                        new CustomDialog.MyDialogInterface() {
+
+                            @Override
+                            public void yes() {
+                                // TODO Auto-generated method stub
+                                // //去更改：跳转到设置界面。
+                                Intent intent = new Intent(
+                                        PreviewPhotoActivity.this,
+                                        SettingActivity.class);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void no() {
+                                // TODO Auto-generated method stub // 考虑下：弹窗消失
+                            }
+                        });
+            } else {
+                customdialog = new CustomDialog(PreviewPhotoActivity.this,
+                        R.string.one_photo_download_msg2,
+                        R.string.one_photo_download_no_msg2,
+                        R.string.one_photo_download_yes_msg2,
+                        new CustomDialog.MyDialogInterface() {
+
+                            @Override
+                            public void yes() {
+                                // TODO Auto-generated method stub //继续下载：继续下载
+                                downloadPic();
+                            }
+
+                            @Override
+                            public void no() {
+                                // TODO Auto-generated method stub // 停止下载：弹窗消失
+                            }
+                        });
+            }
+        }
     }
 
 }

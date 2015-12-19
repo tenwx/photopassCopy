@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.PPPinfo;
+import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
@@ -141,7 +142,12 @@ public class API1 {
     public static final int SOCKET_DISCONNECT_FAILED = 5800;
     public static final int SOCKET_DISCONNECT_SUCCESS = 5801;
 
+    //PP & PP＋模块
+    public static final int GET_PPS_BY_PPP_AND_DATE_FAILED = 5500;
+    public static final int GET_PPS_BY_PPP_AND_DATE_SUCCESS = 5501;
 
+    public static final int BIND_PPS_DATE_TO_PP_FAILED = 5600;
+    public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5601;
 
     /**
      * 发送设备ID获取tokenId
@@ -584,7 +590,7 @@ public class API1 {
 
 
     /**
-     * 获取所有的P
+     * 获取所有的PP
      *
      * @param tokenId tokenId
      * @param handler handler
@@ -619,7 +625,7 @@ public class API1 {
     public static void getPPPSByUserId(String tokenId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -1159,5 +1165,65 @@ public class API1 {
     }
 
     /***************************************推送 End**************************************/
+
+
+    public static ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>();
+    /**
+     * 根据PP+选择PP界面。  曾经根据日期选择，现在不需要日期。
+     * @param pppCode
+     * @param handler
+     */
+    public static void getPPsByPPPAndDate(String pppCode, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.PPPCode, pppCode);
+        String url = Common.BASE_URL_TEST + Common.GET_PPS_BY_PPP_AND_DATE;
+        HttpUtil1.asyncGet(url, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PPlist = JsonUtil.getPPSByPPP(jsonObject);
+                handler.obtainMessage(GET_PPS_BY_PPP_AND_DATE_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_PPS_BY_PPP_AND_DATE_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /**
+     * 选择PP+ 绑定PP。现在的逻辑： 一张PP+卡只能绑定一张PP卡的某一天。
+     * @param pps
+     * @param pppCode
+     * @param handler
+     */
+    public static void bindPPsDateToPPP(JSONArray pps, String pppCode, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.PPS, pps.toString());
+        params.put(Common.ppp1, pppCode);
+        String url = Common.BASE_URL_TEST + Common.BIND_PPS_DATE_TO_PPP;
+        HttpUtil1.asyncPost(url, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(BIND_PPS_DATE_TO_PP_SUCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(BIND_PPS_DATE_TO_PP_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
 
 }

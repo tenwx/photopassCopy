@@ -23,6 +23,7 @@ import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.HelpInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
+import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 
 import java.util.ArrayList;
@@ -783,5 +784,27 @@ public class JsonUtil {
             info = null;
         }
         return helpInfos;
+    }
+
+
+    /**
+     * 解析选择PP数据。
+     * @param jsonObject
+     * @return
+     */
+    public static ArrayList<PPinfo> getPPSByPPP(JSONObject jsonObject){
+        ArrayList<PPinfo> ppInfoArrayList = new ArrayList<>();
+        if (jsonObject.containsKey("PPList")) {
+            JSONArray pplists = jsonObject.getJSONArray("PPList");
+            for (int i = 0; i < pplists.size(); i++) {
+                JSONObject pplist = pplists.getJSONObject(i);
+                PPinfo pPinfo = new PPinfo();
+                pPinfo.setPpCode(pplist.getString("customerId"));
+                pPinfo.setPhotoCount(pplist.getIntValue("photoCount"));
+                pPinfo.setShootDate(pplist.getString("shootDate"));
+                ppInfoArrayList.add(pPinfo);
+            }
+        }
+        return ppInfoArrayList;
     }
 }

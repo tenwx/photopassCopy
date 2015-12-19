@@ -544,4 +544,7 @@
     <string name="notifacation_new_order">New Order</string>
     <string name="notifacation_new_photo">You have new photos</string>
     <string name="notifacation_new_video">You have new videos</string>
+
+    <string name="gprs_wifi_download">4G/3G/WIfI Download</string>
+    <string name="wifi_only_download">WIFI Only</string>
 </resources>
