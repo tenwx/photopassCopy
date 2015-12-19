@@ -121,7 +121,7 @@ public class EditStoryPhotoGridViewAdapter extends BaseAdapter
 			convertView = mInflater.inflate(R.layout.grid_row, null);
 			holderView.imageView_photo = (ImageView) convertView.findViewById(R.id.imageItem);
 			holderView.imageview_select = (ImageView)convertView.findViewById(R.id.imageView_Select);
-			holderView.imageview_maskImageView = (ImageView)convertView.findViewById(R.id.imageView_mask);
+//			holderView.imageview_maskImageView = (ImageView)convertView.findViewById(R.id.imageView_mask);
 			convertView.setTag(holderView);
 		}
 		PhotoInfo selectPhotoItemInfo = arrayList.get(position);

@@ -199,6 +199,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         intent.putExtra("orderinfo", orderinfoArrayList);
                         intent.putExtra("activity", "previewproduct");
                         PreviewProductActivity.this.startActivity(intent);
+
+
                     } else {
                         buyImg = new ImageView(PreviewProductActivity.this);// buyImg是动画的图片
                         buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
@@ -377,7 +379,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 
             case R.id.button_buy_now:
                 Message msg = handler.obtainMessage();
-                msg.what = API.UPLOAD_PHOTO_SUCCESS;
+                msg.what = API1.UPLOAD_PHOTO_SUCCESS;
                 isbuynow = true;//buy now
                 msg.obj = "start";
                 handler.sendMessage(msg);
@@ -387,7 +389,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 
             case R.id.button_add_to_cart://先要上传选择的图片，然后再加入购物车
                 Message message = handler.obtainMessage();
-                message.what = API.UPLOAD_PHOTO_SUCCESS;
+                message.what = API1.UPLOAD_PHOTO_SUCCESS;
                 isbuynow = false;//add to cart
                 message.obj = "start";
                 handler.sendMessage(message);

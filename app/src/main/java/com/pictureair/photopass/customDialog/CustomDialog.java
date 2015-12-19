@@ -20,6 +20,43 @@ import com.pictureair.photopass.util.ScreenUtil;
  *
  */
 public class CustomDialog extends Dialog {
+
+	/**
+	 * tips 弹窗布局。回调接口。
+	 * @param context
+	 * @param msg
+	 * @param noMsg
+	 * @param yesMsg
+	 * @param myDialogInterface
+	 */
+	public CustomDialog(Context context, int msg, int noMsg,
+						int yesMsg, final MyDialogInterface myDialogInterface) {
+		super(context);
+		new CustomDialog.Builder(context)
+				.setMessage(context.getResources().getString(msg))
+				.setNegativeButton(context.getResources().getString(noMsg),
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+												int which) {
+								// TODO Auto-generated method stub
+								dialog.dismiss();
+								myDialogInterface.no();
+							}
+						})
+				.setPositiveButton(context.getResources().getString(yesMsg),
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+												int which) {
+								// TODO Auto-generated method stub
+								dialog.dismiss();
+								myDialogInterface.yes();
+							}
+						}).setCancelable(false).create().show();
+	}
 	
 	public CustomDialog(Context context) {
 		super(context);
@@ -172,6 +209,12 @@ public class CustomDialog extends Dialog {
 			dialogWindow.setAttributes(params);
 			return dialog;
 		}
+	}
+
+	// 接口
+	public interface MyDialogInterface{
+		public void no();
+		public void yes();
 	}
 	
 }

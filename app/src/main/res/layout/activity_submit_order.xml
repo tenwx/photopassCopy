@@ -33,9 +33,9 @@
             android:layout_centerInParent="true"
             android:text="@string/submitorder"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
+
 
     <ListView
         android:id="@+id/listView_submitorder"
@@ -74,7 +74,7 @@
             android:padding="15dp"
             android:text="@string/checkout"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
 
         <TextView
             android:id="@+id/submitorder_textView3"

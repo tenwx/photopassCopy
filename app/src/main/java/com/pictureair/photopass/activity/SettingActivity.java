@@ -1,5 +1,6 @@
 package com.pictureair.photopass.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -15,38 +16,33 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
 /**
  * 用户功能设置
  */
 public class SettingActivity extends BaseActivity implements OnClickListener {
+    private SettingUtil settingUtil;
     private RelativeLayout feedback;
     private ImageView back;
     private Button logout;
     private TextView tvSettingLanguage;
     private MyApplication application;
 
+    private ImageButton ibGprWifiDownload, ibWifiOnlyDownload, ibAutoUpdate; // ico
+    private RelativeLayout rlGprsWifiDoenload , rlWifiOnlyDownload , rlAutoUpdate;
+
     // 用于显示的 按钮。
-    private ImageButton wifiDownload;
-    private ImageButton autoDownload;
-    private ImageButton autoAyncPhotoIb;
-
-    private RelativeLayout rl_wifi_download;
-    private RelativeLayout rl_auto_download;
-    private RelativeLayout rl_auto_sync_photo;
-
-    boolean isSync;//同步
-    boolean isWifiDownload;//仅wifi下载
-
-    private SharedPreferences sharedPreferences;
     private PictureAirDbManager pictureAirDbManager;
+    private SharedPreferences sharedPreferences;
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -111,69 +107,37 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         back = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
         application = (MyApplication) getApplication();
-        wifiDownload = (ImageButton) findViewById(R.id.wifi_download);
-        autoDownload = (ImageButton) findViewById(R.id.auto_download);
-        autoAyncPhotoIb = (ImageButton) findViewById(R.id.ib_auto_sync_photo);
-        rl_wifi_download = (RelativeLayout) findViewById(R.id.rl_wifi_download);
-        rl_auto_download = (RelativeLayout) findViewById(R.id.rl_auto_download);
-        rl_auto_sync_photo = (RelativeLayout) findViewById(R.id.rl_auto_sync_photo);
+
+        ibGprWifiDownload = (ImageButton) findViewById(R.id.ib_gprs_wifi_download);
+        ibWifiOnlyDownload = (ImageButton) findViewById(R.id.ib_wifi_only_download);
+        ibAutoUpdate = (ImageButton) findViewById(R.id.ib_auto_update);
+
+        rlGprsWifiDoenload = (RelativeLayout) findViewById(R.id.rl_gprs_wifi_download);
+        rlWifiOnlyDownload = (RelativeLayout) findViewById(R.id.rl_wifi_only_download);
+        rlAutoUpdate = (RelativeLayout) findViewById(R.id.rl_auto_update);
 
         logout.setOnClickListener(this);
         feedback.setOnClickListener(this);
         back.setOnClickListener(this);
         tvSettingLanguage.setOnClickListener(this);
-        rl_wifi_download.setOnClickListener(this);
-        rl_auto_download.setOnClickListener(this);
-        rl_auto_sync_photo.setOnClickListener(this);
-        wifiDownload.setOnClickListener(this);
-        autoDownload.setOnClickListener(this);
-        autoAyncPhotoIb.setOnClickListener(this);
+        rlGprsWifiDoenload.setOnClickListener(this);
+        rlWifiOnlyDownload.setOnClickListener(this);
+        rlAutoUpdate.setOnClickListener(this);
+        ibGprWifiDownload.setOnClickListener(this);
+        ibWifiOnlyDownload.setOnClickListener(this);
+        ibAutoUpdate.setOnClickListener(this);
 
         pictureAirDbManager = new PictureAirDbManager(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-        isSync = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
-        isWifiDownload = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
+        settingUtil = new SettingUtil(this);
+        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
+                Context.MODE_PRIVATE);
+        judgeSettingStatus();
 
-        setDownloadPhotos(isWifiDownload);
-        setSyncPhotos(isSync);
-
-    }
-
-    /**
-     * 设置下载在方式
-     *
-     * @param isWifiDownload 是否是wifi下载
-     */
-    private void setDownloadPhotos(boolean isWifiDownload) {
-        if (!isWifiDownload) {
-            //自动下载(2G/3G/wifi)
-            autoDownload.setImageResource(R.drawable.sele);
-            wifiDownload.setImageResource(R.drawable.nosele);
-            pictureAirDbManager.deleteSettingStatus(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
-        } else {
-            //wifi下载
-            autoDownload.setImageResource(R.drawable.nosele);
-            wifiDownload.setImageResource(R.drawable.sele);
-            pictureAirDbManager.insertSettingStatus(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
-        }
 
     }
 
-    /**
-     * 同步更新照片
-     *
-     * @param isSync
-     */
-    private void setSyncPhotos(boolean isSync) {
-        if (isSync) {
-            autoAyncPhotoIb.setImageResource(R.drawable.sele);
-            pictureAirDbManager.insertSettingStatus(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
-        } else {
-            autoAyncPhotoIb.setImageResource(R.drawable.nosele);
-            pictureAirDbManager.deleteSettingStatus(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
-        }
 
-    }
+
 
 
     @Override
@@ -185,10 +149,23 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.logout:
-                // logout 之后，清空上个用户的数据。
-                application.setLast_tab(0);   // 设置 进入 app为主页
-                //断开推送
-                API1.noticeSocketDisConnect(handler);
+                new CustomDialog(SettingActivity.this, R.string.comfirm_logout, R.string.button_cancel, R.string.button_ok, new CustomDialog.MyDialogInterface() {
+                    @Override
+                    public void yes() {
+                        // TODO Auto-generated method stub // 确定退出：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
+                        // logout 之后，清空上个用户的数据。
+                        application.setLast_tab(0);   // 设置 进入 app为主页
+                        //断开推送
+                        API1.noticeSocketDisConnect(handler);
+                    }
+
+                    @Override
+                    public void no() {
+                        // TODO Auto-generated method stub // 取消退出：不做操作
+
+                    }
+                });
+
                 break;
 
             case R.id.sub_opinions://消息回馈按钮
@@ -203,30 +180,54 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 startActivity(intent);
 
                 break;
-            case R.id.rl_wifi_download:
-            case R.id.wifi_download:
-            case R.id.rl_auto_download:
-            case R.id.auto_download:
-                if (isWifiDownload) {
-                    isWifiDownload = false;
+            case R.id.ib_gprs_wifi_download:
+            case R.id.rl_gprs_wifi_download: // 4g/3g/wifi 下载
+                if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                    settingUtil.deleteSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                 } else {
-                    isWifiDownload = true;
+
                 }
-                setDownloadPhotos(isWifiDownload);
+                judgeSettingStatus();
                 break;
-            case R.id.ib_auto_sync_photo:
-            case R.id.rl_auto_sync_photo:
-                //设置是否同步
-                if (isSync) {
-                    isSync = false;
+            case R.id.ib_wifi_only_download:
+            case R.id.rl_wifi_only_download: // 仅wifi下载
+                if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+
                 } else {
-                    isSync = true;
+                    settingUtil.insertSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                 }
-                setSyncPhotos(isSync);
+                judgeSettingStatus();
+                break;
+            case R.id.ib_auto_update:
+            case R.id.rl_auto_update: // 自动更新
+                if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                }else{
+                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                }
+                judgeSettingStatus();
                 break;
             default:
                 break;
         }
+    }
 
+    /**
+     * 判断当前的设置模式，并且作出相应的视图。
+     */
+    private void judgeSettingStatus(){
+        if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+            ibGprWifiDownload.setImageResource(R.drawable.nosele);
+            ibWifiOnlyDownload.setImageResource(R.drawable.sele);
+        } else {
+            ibGprWifiDownload.setImageResource(R.drawable.sele);
+            ibWifiOnlyDownload.setImageResource(R.drawable.nosele);
+        }
+
+        if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+            ibAutoUpdate.setImageResource(R.drawable.sele);
+        } else {
+            ibAutoUpdate.setImageResource(R.drawable.nosele);
+        }
     }
 }

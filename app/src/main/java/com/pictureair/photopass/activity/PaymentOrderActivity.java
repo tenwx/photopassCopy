@@ -36,15 +36,15 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.PaypalUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 import com.pictureair.photopass.wxpay.Constants;
 import com.pictureair.photopass.wxpay.MD5;
 import com.pictureair.photopass.wxpay.Util;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
@@ -209,14 +209,14 @@ public class PaymentOrderActivity extends BaseActivity implements
 			introductString = "Made by PictureAir";
 		}
 
-		needAddress = getIntent().getBooleanExtra("addressType", false);
-		if (!needAddress) {// 不需要地址
-			// pickupTextView.setVisibility(View.GONE);
-			pickupTextView.setText(R.string.noexpress);
-		} else {
-			pickupTextView.setText(getString(R.string.pick_up_address)
-					+ getString(R.string.disney_address));
-		}
+//		needAddress = getIntent().getBooleanExtra("addressType", false);
+//		if (!needAddress) {// 不需要地址
+//			// pickupTextView.setVisibility(View.GONE);
+//			pickupTextView.setText(R.string.noexpress);
+//		} else {
+//			pickupTextView.setText(getString(R.string.pick_up_address)
+//					+ getString(R.string.disney_address));
+//		}
 	}
 
 	/**
@@ -241,10 +241,10 @@ public class PaymentOrderActivity extends BaseActivity implements
 			try {
 				String info = AliPayUtil.getOrderInfo(orderId, nameString,
 						introductString);
-				System.out.println("info:" + info);
+				PictureAirLog.v(TAG, "info:" + info);
 				// 对订单做RSA 签名
 				String sign = AliPayUtil.sign(info);
-				System.out.println("sign:" + sign);
+				PictureAirLog.v(TAG, "sign:" + sign);
 				// 仅需对sign 做URL编码
 				sign = URLEncoder.encode(sign, "UTF-8");
 				// 完整的符合支付宝参数规范的订单信息
@@ -261,7 +261,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 						String result = alipay.pay(payInfo);
 						// Result result = new
 						// Result(alipay.pay(orderInfo).toString());
-						System.out.println("pay info=" + result);
+						PictureAirLog.v(TAG, "pay info=" + result);
 						PayResult payResult = new PayResult(result);
 						// String resultInfo = payResult.getResult();
 
@@ -288,10 +288,10 @@ public class PaymentOrderActivity extends BaseActivity implements
 						Common.TOAST_SHORT_TIME);
 			}
 		} else if (1 == payType) {
-			System.out.println("yl");
+			PictureAirLog.v(TAG, "yl");
 			mHandler.sendEmptyMessage(RQF_SUCCESS);
 		} else if (6 == payType) {
-			System.out.println("paypal");
+			PictureAirLog.v(TAG, "paypal");
 			/*
 			 * PAYMENT_INTENT_SALE will cause the payment to complete
 			 * immediately. Change PAYMENT_INTENT_SALE to -
@@ -321,13 +321,13 @@ public class PaymentOrderActivity extends BaseActivity implements
 			startActivityForResult(intent, REQUEST_CODE_PAYMENT);
 
 		} else if (payType == 7) {
-			System.out.println("wechat");
+			PictureAirLog.v(TAG, "wechat");
 			// 调起微信支付
 			// 生成prepay_id
 			GetPrepayIdTask getPrepayId = new GetPrepayIdTask();
 			getPrepayId.execute();
 		} else {
-			System.out.println("other");
+			PictureAirLog.v(TAG, "other");
 		}
 	}
 
@@ -359,7 +359,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
 		case R.id.button_smpm:// 提交支付
 			sbmtButton.setEnabled(false);
-			System.out.println("-------------pay on click");
+			PictureAirLog.v(TAG, "-------------pay on click");
 			// 直接调用接口
 			pay(orderid);
 			break;
@@ -370,7 +370,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 			yhkButton.setImageResource(R.drawable.nosele);
 			paypalButton.setImageResource(R.drawable.nosele);
 			wechatButton.setImageResource(R.drawable.nosele);
-			System.out.println("ZFB");
+			PictureAirLog.v(TAG, "ZFB");
 			break;
 
 		case R.id.yl:// 选择银联支付
@@ -379,7 +379,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 			yhkButton.setImageResource(R.drawable.sele);
 			paypalButton.setImageResource(R.drawable.nosele);
 			wechatButton.setImageResource(R.drawable.nosele);
-			System.out.println("YL");
+			PictureAirLog.v(TAG, "YL");
 			break;
 
 		case R.id.paypal:// paypal支付
@@ -388,7 +388,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 			yhkButton.setImageResource(R.drawable.nosele);
 			paypalButton.setImageResource(R.drawable.sele);
 			wechatButton.setImageResource(R.drawable.nosele);
-			System.out.println("PAYPAL");
+			PictureAirLog.v(TAG, "PAYPAL");
 			break;
 
 		case R.id.weixin:// wechat支付
@@ -397,7 +397,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 			yhkButton.setImageResource(R.drawable.nosele);
 			paypalButton.setImageResource(R.drawable.nosele);
 			wechatButton.setImageResource(R.drawable.sele);
-			System.out.println("WECHAT");
+			PictureAirLog.v(TAG, "WECHAT");
 			break;
 
 		default:
@@ -437,11 +437,11 @@ public class PaymentOrderActivity extends BaseActivity implements
 			}
 			// String payKey =
 			// data.getStringExtra(PayPalActivity.EXTRA_PAY_KEY);
-			// System.out.println("paypal pay success"+payKey);
+			// PictureAirLog.v(TAG,"paypal pay success"+payKey);
 			mHandler.sendEmptyMessage(RQF_SUCCESS);
 		} else if (resultCode == RESULT_CANCELED) {
 			// paypal取消支付
-			System.out.println("paypal pay cancel");
+			PictureAirLog.v(TAG, "paypal pay cancel");
 			mHandler.sendEmptyMessage(RQF_CANCEL);
 		} else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
 			// paypal付款失败
@@ -487,7 +487,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 	// 成功支付之后的操作
 	private void SuccessAfterPayment() {
 		// TODO Auto-generated method stub
-		System.out.println("start finish expired activity");
+		PictureAirLog.v(TAG, "start finish expired activity");
 		AppManager.getInstance().killActivity(SubmitOrderActivity.class);
 		AppManager.getInstance().killActivity(PreviewProductActivity.class);
 		// AppManager.getInstance().killActivity(BlurActivity.class);
@@ -503,7 +503,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			// Result result = new Result((String) msg.obj);
-			// System.out.println((String) msg.obj);
+			// PictureAirLog.v(TAG,(String) msg.obj);
 			// sbmtButton.setEnabled(true);
 			switch (msg.what) {
 			case RQF_ERROR:
@@ -519,21 +519,21 @@ public class PaymentOrderActivity extends BaseActivity implements
 				CancelInPayment();
 				break;
 			case RQF_SUCCESS:
-				System.out.println("RQF_PAY-----------");
+				PictureAirLog.v(TAG, "RQF_PAY-----------");
 				/********* 测试阶段，需要做一个修改订单状态的接口 ************/
 				RequestParams requestParams = new RequestParams();
 				requestParams.put("orderId", orderid);
 				requestParams.put("orderPayStatus", 2);// 修改订单状态，2表示已经支付
 				requestParams.put("payType", payType);
-				requestParams.put("userId",
-						sPreferences.getString(Common.USERINFO_ID, ""));
-				System.out.println("orderid" + orderid + "_userId_"
-						+ sPreferences.getString(Common.USERINFO_ID, ""));
+				requestParams.put("userId", sPreferences.getString(Common.USERINFO_ID, ""));
+				PictureAirLog.v(TAG, "orderid" + orderid + "_userId_" + sPreferences.getString(Common.USERINFO_ID, ""));
+
+
 				HttpUtil.post(Common.BASE_URL + "/shopping/modifyOrderStatus",
 						requestParams, new JsonHttpResponseHandler() {
 							public void onSuccess(int statusCode,
 									Header[] headers, JSONObject response) {
-								System.out.println(response + "result");
+								PictureAirLog.v(TAG, response + "result");
 								try {
 									JSONObject resultJsonObject = response
 											.getJSONObject("result");
@@ -541,7 +541,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 											.getString("type"))) {
 
 										if (resultJsonObject.has("pppCode")) {// 判断是否购买ppp，如果购买ppp，则去ppp页面，否则去订单界面
-											System.out.println(resultJsonObject
+											PictureAirLog.v(TAG, resultJsonObject
 													.getString("pppCode"));
 											if (null == resultJsonObject
 													.getString("pppCode")
@@ -565,9 +565,9 @@ public class PaymentOrderActivity extends BaseActivity implements
 														|| myApplication
 																.getRefreshViewAfterBuyBlurPhoto()
 																.equals(Common.FROM_BLUR)) {
-													System.out.println("flag is -------------------->"
+													PictureAirLog.v(TAG, "flag is -------------------->"
 															+ myApplication
-																	.getRefreshViewAfterBuyBlurPhoto());
+															.getRefreshViewAfterBuyBlurPhoto());
 													myApplication
 															.setPhotoIsPaid(true);
 													ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
@@ -682,12 +682,12 @@ public class PaymentOrderActivity extends BaseActivity implements
 							public void onFailure(int statusCode,
 									Header[] headers, Throwable throwable,
 									JSONObject errorResponse) {
-								System.out.println("fail========="
+								PictureAirLog.v(TAG, "fail========="
 										+ errorResponse);
 							};
 
 							public void onStart() {
-								System.out.println("start=======");
+								PictureAirLog.v(TAG, "start=======");
 							};
 
 						});

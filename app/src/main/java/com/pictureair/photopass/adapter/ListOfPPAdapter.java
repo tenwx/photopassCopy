@@ -562,10 +562,10 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                                 } else {
                                     ++choice;
                                     for (int j = 0; j < arrayList.size(); j++) {
-                                        PPinfo pp = (PPinfo) arrayList.get(j);
-                                        if (!pp.getShootDate().equals(ppInfo.getShootDate())) {// && !pp.time.equals("")
-                                            pp.isSelected = 2;
-                                        }
+//                                        PPinfo pp = (PPinfo) arrayList.get(j);
+//                                        if (!pp.getShootDate().equals(ppInfo.getShootDate())) {// && !pp.time.equals("")
+//                                            pp.isSelected = 2;
+//                                        }
                                     }
                                     ppInfo.isSelected = 1;
                                     ++useNumber;

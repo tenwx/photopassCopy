@@ -12,6 +12,7 @@ public class CartItemInfo1 implements Serializable{
     private String storeId; //string,商城编号
     private String goodsKey; //string,商品项key
     private String productName; //string,商品名称
+    private String productNameAlias; //商品名称别称
     private String description; //string,商品描述
     private int embedPhotosCount; //number,商品合成所需照片数
     private int unitPrice; //number,商品单价
@@ -57,6 +58,14 @@ public class CartItemInfo1 implements Serializable{
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public String getProductNameAlias() {
+        return productNameAlias;
+    }
+
+    public void setProductNameAlias(String productNameAlias) {
+        this.productNameAlias = productNameAlias;
     }
 
     public String getDescription() {

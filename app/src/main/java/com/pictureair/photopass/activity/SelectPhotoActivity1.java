@@ -99,6 +99,13 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         photocount = getIntent().getIntExtra("photoCount", 1);
         context = this;
         goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goodsInfo");
+        if (goodsInfo != null) {
+            photocount = goodsInfo.getEmbedPhotosCount();
+        }
+        if (photocount == 0) {
+            photocount = 1;
+        }
+
         initview();
     }
 
@@ -181,6 +188,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         for (PhotoInfo photoInfo : myApplication.photoPassPicList) {
             photoInfo.isChecked = 1;
             photoInfo.isSelected = 0;
+            photoInfo.showMask = 0;
             if (isBuy) {
                 if (photoInfo.isPayed == 1) {
                     PictureAirLog.v(TAG, "photoInfo.isPayed");
@@ -230,13 +238,16 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         photoURLlist.remove(info);
                     }
                     info.isSelected = 0;
+                    info.showMask = 0;
                     selectedCount--;
                     PictureAirLog.v(TAG, "点过了，取消选中");
                     int visiblePos = gridView.getFirstVisiblePosition();
+
                     viewPhotoGridViewAdapter.refreshView(position, gridView.getChildAt(position - visiblePos), 1);
                 } else {
                     if (selectedCount < photocount) {
                         info.isSelected = 1;
+                        info.showMask = 1;
                         PictureAirLog.v(TAG, "没点过，选中");
                         selectedCount++;
                         int visiblePos = gridView.getFirstVisiblePosition();
@@ -265,6 +276,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
+            case R.id.view_mask:
             case R.id.btn_submit:
                 popupWindow.dismiss();
                 finish();
@@ -352,13 +364,15 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
-        ColorDrawable dw = new ColorDrawable(getResources().getColor(R.color.pp_light_gray_background));
+        ColorDrawable dw = new ColorDrawable(getResources().getColor(R.color.transparent));
         popupWindow.setBackgroundDrawable(dw);
         //设置popwindow出现和消失动画
-        popupWindow.setAnimationStyle(R.style.from_bottom_anim);
+        popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.BOTTOM, 0, 0);
         popupWindow.setOutsideTouchable(false);
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
+        View view = (View)popView.findViewById(R.id.view_mask);
+        view.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
 //        popupWindow.showAtLocation(gridView, Gravity.BOTTOM, 100, 100);
         popupWindow.update();

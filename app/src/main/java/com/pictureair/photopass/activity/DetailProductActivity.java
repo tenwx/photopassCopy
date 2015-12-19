@@ -29,6 +29,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
@@ -77,7 +78,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                     break;
 
                 case API1.ADD_TO_CART_FAILED:
-                    myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
 
                 default:
@@ -153,7 +154,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                 } else {
                     intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
                     intent.putExtra("activity", "detailproductactivity");
-                    intent.putExtra("goodsInfo",goodsInfo);
+                    intent.putExtra("goodsInfo", goodsInfo);
                     startActivity(intent);
                 }
                 break;

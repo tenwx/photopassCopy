@@ -26,10 +26,12 @@ import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.BannerView_PPPIntroduce;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -75,6 +77,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private String errorMessage = "";
     private PPPPop pppPop;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
+    private PPPinfo ppp;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -107,20 +110,19 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     listPPP.setAdapter(listPPPAdapter);
                     break;
 
-                case API.GET_PPP_SUCCESS://成功获取ppp信息
-                    PictureAirLog.v(TAG, "成功获取PPP信息");
-                    if (API.PPPlist.size() == 0) {
+                case API1.GET_PPP_SUCCESS://成功获取ppp信息
+                    if (API1.PPPlist.size() == 0) {
                         listPPP.setVisibility(View.GONE);
                         nopppLayout.setVisibility(View.VISIBLE);
                         text_instruction.setVisibility(View.VISIBLE);
 
                     } else {
                         Editor editor = sharedPreferences.edit();
-                        editor.putInt(Common.PPP_COUNT, API.PPPlist.size());
+                        editor.putInt(Common.PPP_COUNT, API1.PPPlist.size());
                         editor.commit();
-                        for (int i = 0; i < API.PPPlist.size(); i++) {
+                        for (int i = 0; i < API1.PPPlist.size(); i++) {
 //						PPPinfo dayOfPPP = new PPPinfo();
-                            PPPinfo ppPinfo = API.PPPlist.get(i);
+                            PPPinfo ppPinfo = API1.PPPlist.get(i);
 //						dayOfPPP.time = ppPinfo.ownOn;
 //						dayOfPPP.pppId = ppPinfo.PPPCode;
 //						dayOfPPP.amount = ppPinfo.capacity;
@@ -161,7 +163,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     }
                     break;
 
-                case API.GET_PPP_FAILED:
+                case API1.GET_PPP_FAILED:
                     if (msg.obj != null && msg.obj.toString().equals("PPHasUpgraded")) {
                         PictureAirLog.v(TAG, "PP has upgraded");
                         newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
@@ -190,6 +192,18 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                     //重新加载购物车数据
                     GetPPPList();
+                    break;
+                case API1.GET_PPS_BY_PPP_AND_DATE_SUCCESS:
+                    PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_SUCCESS");
+                    intent =  new Intent(MyPPPActivity.this,MyPPActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("ppp", ppp);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    break;
+                case API1.GET_PPS_BY_PPP_AND_DATE_FAILED:
+                    PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_FAILED");
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1),Common.TOAST_SHORT_TIME);
                     break;
 
                 default:
@@ -237,16 +251,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (list1.get(position).bindInfo.size() < list1.get(position).capacity) {
                     PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
-                    //是没用完的ppp  跳转到选择日期的界面。
-                    Intent intent = new Intent(MyPPPActivity.this, MyPPActivity.class);
-                    // 选择 页面 和 pp＋页面的标识
-                    intent.putExtra("isSeletePP", true);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("ppp", list1.get(position));
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
-
+                    ppp = list1.get(position);
+                    API1.getPPsByPPPAndDate(ppp.PPPCode, mHandler);
                 } else {
                     //用完了的PPP  弹出窗口提示
                     customdialog = new CustomDialog.Builder(MyPPPActivity.this).setMessage(getResources().getString(R.string.buy_ppp_tips))
@@ -293,7 +299,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
         list1.clear();
         hasOtherAvailablePPP = false;
-        API.PPPlist.clear();//清空之前的list，从网络中重新获取
+        API1.PPPlist.clear();//清空之前的list，从网络中重新获取
         getData();
     }
 
@@ -312,9 +318,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
      * 获取数据
      */
     private void getData() {
-        if (API.PPPlist.size() == 0) {//没有数据，需要重新获取
+        if (API1.PPPlist.size() == 0) {//没有数据，需要重新获取
             PictureAirLog.v(TAG, "ppp = 0");
-            API.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), mHandler);
+            API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), mHandler);
         } else {//有数据
             PictureAirLog.v(TAG, "ppp != 0");
             for (int i = 0; i < API.PPPlist.size(); i++) {

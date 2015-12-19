@@ -546,4 +546,11 @@
     <string name="notifacation_new_photo">You have new photos</string>
     <string name="notifacation_new_video">You have new videos</string>
     <string name="local_photo_not_support_makegift">Local photo does not support make gift</string>
+    <string name="transport">transport</string>
+    <string name="goods_info">Shop Info</string>
+
+    <string name="gprs_wifi_download">4G/3G/WIfI Download</string>
+    <string name="wifi_only_download">WIFI Only</string>
+
+    <string name="comfirm_logout">Do you want to Log Out?</string>
 </resources>

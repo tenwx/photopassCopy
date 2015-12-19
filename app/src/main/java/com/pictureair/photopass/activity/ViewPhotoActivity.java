@@ -390,9 +390,11 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					Bundle bundle = new Bundle();
 					if (info.isSelected == 1) {//取消选择
 						info.isSelected = 0;
+						info.showMask = 0;
 						bundle.putInt("flag", 10);
 					}else {//选择
 						info.isSelected = 1;
+						info.showMask = 1;
 						bundle.putInt("flag", 11);
 					}
 					viewPhotoGridViewAdapter.refreshView(position, myGridView.getChildAt(position-visiblePos), 1);
@@ -629,7 +631,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		PhotoInfo selectedInfo;
 		PictureAirLog.v(TAG, "photoURLlist.size: " + photoURLlist.size());
 		photoURLlist.clear();//每次全选，清空全部数据
-		for (int i = 1; i < arraylist.size(); i++) {//因为每个arraylist中的第一项为空，所以直接从1开始
+		for (int i = 0; i < arraylist.size(); i++) {//因为每个arraylist中的第一项为空，所以直接从1开始
 			selectedInfo = new PhotoInfo();
 			//			selectedInfo.albumName = album;
 			selectedInfo.photoPathOrURL = arraylist.get(i).photoPathOrURL;

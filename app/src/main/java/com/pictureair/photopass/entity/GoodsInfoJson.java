@@ -15,5 +15,4 @@ public class GoodsInfoJson {
     public void setGoods(List<GoodsInfo1> goods) {
         this.goods = goods;
     }
-
 }

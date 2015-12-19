@@ -100,7 +100,7 @@
                 android:background="@color/line_color" />
 
             <RelativeLayout
-                android:id="@+id/rl_auto_download"
+                android:id="@+id/rl_gprs_wifi_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_32"
@@ -111,12 +111,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/auto_download"
+                    android:text="@string/gprs_wifi_download"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_12" />
 
                 <ImageButton
-                    android:id="@+id/auto_download"
+                    android:id="@+id/ib_gprs_wifi_download"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -130,7 +130,7 @@
                 android:layout_height="1px"
                 android:background="@color/line_color" />
             <RelativeLayout
-                android:id="@+id/rl_wifi_download"
+                android:id="@+id/rl_wifi_only_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_32"
@@ -141,13 +141,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/wifi_download"
+                    android:text="@string/wifi_only_download"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_12" />
 
 
                 <ImageButton
-                    android:id="@+id/wifi_download"
+                    android:id="@+id/ib_wifi_only_download"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -179,7 +179,7 @@
                 android:background="@color/line_color" />
 
             <RelativeLayout
-                android:id="@+id/rl_auto_sync_photo"
+                android:id="@+id/rl_auto_update"
                 android:layout_marginLeft="@dimen/pp_margin_32"
                 android:layout_marginRight="@dimen/pp_margin_16"
                 android:padding="@dimen/pp_padding_16"
@@ -196,7 +196,7 @@
                     android:textSize="@dimen/text_size_12" />
 
                 <ImageButton
-                    android:id="@+id/ib_auto_sync_photo"
+                    android:id="@+id/ib_auto_update"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

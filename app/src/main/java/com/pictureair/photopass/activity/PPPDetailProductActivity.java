@@ -22,7 +22,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.API;
@@ -55,22 +56,11 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
     private Button addToCartButton;
     private TextView cartCountTextView;
     private BannerView_Detail bannerViewDetail;
-    //	private TextView privilegeTextView;
-//	private TextView originalTextView;
     private TextView shopAddressTextView;
 
     //申明变量
     private final static String TAG = "PPPDetailProductAct";
     private int recordCount = 0; //记录数据库中有几条记录
-    private String storeIdString = null;
-    private String PPPProductId = null;
-    private String NameAliasString = null;
-    private String PPPNameString = null;
-    private String PPPDetail = null;
-    private double PPPPrice = 0;
-    private int promotionPrice = 0;
-    private String PPPUrl = "";
-    private String currencyString = "";
     private boolean isBuyNow = false;
 
     //申明其他类
@@ -78,6 +68,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
     private SharedPreferences sharedPreferences;
     private Editor editor;
     private MyToast myToast;
+
+    private String[] photoUrls;
 
     private Handler mhandler = new Handler() {
         @Override
@@ -94,27 +86,25 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                     editor = sharedPreferences.edit();
                     editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
                     editor.commit();
-
                     String cartId = jsonObject.getString("cartId");
                     if (isBuyNow) {
                         //生成订单
                         Intent intent = new Intent(PPPDetailProductActivity.this, SubmitOrderActivity.class);
-                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<CartItemInfo>();
-                        CartItemInfo cartItemInfo = new CartItemInfo();
-                        cartItemInfo.cart_productName = PPPNameString;
-                        cartItemInfo.cart_originalPrice = PPPPrice;
-                        cartItemInfo.cart_photoUrls = null;
-                        cartItemInfo.cart_productIntroduce = PPPDetail;
-                        cartItemInfo.cart_quantity = 1;
-                        cartItemInfo.cart_id = cartId;
-                        cartItemInfo.cart_storeId = storeIdString;
-                        String[] urlStrings = PPPUrl.split(",");
-                        cartItemInfo.cart_productImageUrl = urlStrings[0];
-                        cartItemInfo.cart_productId = PPPProductId;
-                        cartItemInfo.cart_productType = 3;
-                        orderinfoArrayList.add(cartItemInfo);
-                        intent.putParcelableArrayListExtra("orderinfo", orderinfoArrayList);
+                        ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
+                        CartItemInfo1 cartItemInfo = new CartItemInfo1();
+                        cartItemInfo.setCartId(cartId);
+                        cartItemInfo.setProductName(goodsInfo.getName());
+                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                        cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                        cartItemInfo.setDescription(goodsInfo.getDescription());
+                        cartItemInfo.setQty(1);
+                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
+                        cartItemInfo.setPictures(photoUrls);
+                        cartItemInfo.setPrice(goodsInfo.getPrice());
+                        cartItemInfo.setCartProductType(3);
 
+                        orderinfoArrayList.add(cartItemInfo);
+                        intent.putExtra("orderinfo", orderinfoArrayList);
                         startActivity(intent);
                     } else {
                         buyImg = new ImageView(PPPDetailProductActivity.this);// buyImg是动画的图片
@@ -167,10 +157,14 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         shopAddressTextView.setText(getString(R.string.address_digital_goods));
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
-
             List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();
             goodInfoPicturesList.remove(0);
             bannerViewDetail.findimagepath(goodInfoPicturesList);
+            //封装购物车宣传图
+            photoUrls = new String[goodsInfo.getPictures().size()];
+            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+            }
         }
         buyButton.setText(R.string.buy_good);
     }
@@ -229,6 +223,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 
     /**
      * 设置添加购物车动画
+     *
      * @param v
      */
     private void setAnim(final View v) {

@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.pictureair.photopass.activity.CrashHandler;
+import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
@@ -63,6 +64,9 @@ public class MyApplication extends Application {
 
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
     public final static boolean DEBUG = true;
+    private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
+
+    public static Address address;
 
     @Override
     public void onCreate() {
@@ -475,5 +479,19 @@ public class MyApplication extends Application {
      */
     public void setPushViedoCount(int pushViedoCount) {
         this.pushViedoCount = pushViedoCount;
+    }
+
+    public String getUpgradedPhotosMessage() {
+        return upgradedPhotosMessage;
+    }
+
+    /**
+     * 购买照片或者升级PP+后，设置服务器传过来的值。通过该值判断。
+     * 升级PP+后的值：{"c":{"customerId":"DPPPTV9BH3U4Z2WS","shootDate":"2015-12-18"}}
+     * 购买照片过后的返回值：{"c":{"id":"*******"}  具体需要测试后才知道。
+     * @param upgradedPhotosMessage
+     */
+    public void setUpgradedPhotosMessage(String upgradedPhotosMessage) {
+        this.upgradedPhotosMessage = upgradedPhotosMessage;
     }
 }

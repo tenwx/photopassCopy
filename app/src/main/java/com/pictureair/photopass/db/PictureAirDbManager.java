@@ -371,7 +371,7 @@ public class PictureAirDbManager {
 	 * @param type 1 代表直接进入的 PP 页面， 2 代表是从selectPP进入的
 	 * @return
 	 */
-	public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList,int type) {  
+	public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList,int type) {
 		ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
 		//获取需要显示的PP(去掉重复、隐藏的)
 		for (int j = 0; j < ppCodeList.size(); j++) {
@@ -396,10 +396,10 @@ public class PictureAirDbManager {
 							+ " where photoCode like ? order by shootOn desc", new String[] { "%" + ppInfo.getPpCode() + "%" });
 					Log.e("cursor cursor cursor ", "cursor :"+cursor.getCount());
 				}else {
-					cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + 
+					cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE +
 							" where photoCode like ? and shootTime=? order by shootOn", new String[] {"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
 				}
-				
+
 				if (cursor != null && cursor.moveToFirst()) {
 					do {
 						// 获取图片路径
@@ -411,7 +411,7 @@ public class PictureAirDbManager {
 						sInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
 						sInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
 						sInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
-						sInfo.locationId = cursor.getString(cursor.getColumnIndex("location"));
+						sInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
 						sInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
 						sInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
 						sInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
