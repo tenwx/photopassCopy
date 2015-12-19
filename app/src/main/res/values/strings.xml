@@ -577,5 +577,6 @@
     <string name="gprs_wifi_download">4G/3G/Wifi下载</string>
     <string name="wifi_only_download">仅WiFi下载</string>
 
+    <string name="comfirm_logout">确定退出?</string>
 
 </resources>
