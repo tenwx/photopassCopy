@@ -13,20 +13,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.widget.MyToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import cz.msebera.android.httpclient.Header;
 
 /**
  * 注册和修改密码的页面，前提都是通过了手机号码验证才会来到这个页面， 根据intent传递过来的type值判断是注册还是修改密码 type == 0
@@ -225,37 +221,37 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 					params.put(Common.TERMINAL, "android");
 					params.put(Common.UUID, Installation.id(this));
 					
-					HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-						@Override
-						public void onStart() {
-							super.onStart();
-							System.out.println("get tokenid start");
-						}
-						public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-							super.onSuccess(statusCode, headers, response);
-							try {
-								System.out.println("tokenid=="+response);
-								Editor e = sp.edit();
-								if (response.has(Common.USERINFO_TOKENID)) {
-									System.out.println("add tokenid=============");
-									e.putString(Common.USERINFO_TOKENID, response.getString(Common.USERINFO_TOKENID));
-								}
-								e.commit();
-								API.Sign(SignOrForgetActivity.this, phone, p2 , handler);
-							} catch (JSONException e1) {
-								e1.printStackTrace();
-							}
-						}
-
-						@Override
-						public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-							super.onFailure(statusCode, headers, responseString, throwable);
-							throwable.printStackTrace();
-							newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-						}
-					});
+//					HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
+//						@Override
+//						public void onStart() {
+//							super.onStart();
+//							System.out.println("get tokenid start");
+//						}
+//						public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//							super.onSuccess(statusCode, headers, response);
+//							try {
+//								System.out.println("tokenid=="+response);
+//								Editor e = sp.edit();
+//								if (response.has(Common.USERINFO_TOKENID)) {
+//									System.out.println("add tokenid=============");
+//									e.putString(Common.USERINFO_TOKENID, response.getString(Common.USERINFO_TOKENID));
+//								}
+//								e.commit();
+//								API.Sign(SignOrForgetActivity.this, phone, p2 , handler);
+//							} catch (JSONException e1) {
+//								e1.printStackTrace();
+//							}
+//						}
+//
+//						@Override
+//						public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//							super.onFailure(statusCode, headers, responseString, throwable);
+//							throwable.printStackTrace();
+//							newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+//						}
+//					});
 				}else {
-					API.Sign(this, phone, p2 , handler);
+//					API.Sign(this, phone, p2 , handler);
 				}
 			} else if (type == 1) {
 				// 修改密码请求

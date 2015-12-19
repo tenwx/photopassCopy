@@ -19,9 +19,10 @@ public class Common {
     public static final String BASE_URL = "http://192.168.8.3:3001";//harry
 
 
-//    public static final String BASE_URL_TEST = "http://172.16.20.135:3001";//测试Shop
+    public static final String BASE_URL_TEST2 = "http://172.16.20.135:3001";//(齐超)测试分享
 
     public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+
     public static final String PHOTO_URL = "http://192.168.8.3:4000/";
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
@@ -41,6 +42,7 @@ public class Common {
     public static final String BIND_PPP_TO_USER = "/ppp/bindPPPToUser";// 将PPP绑定到当前用户
     public static final String GET_LATEST_PHOTOS = "/p/getLatestPhotos";// 获取用户最新的照片
     public static final String GET_PHOTOS_BY_CONDITIONS = "/p/getPhotosByConditions";// 获取用户的照片
+    public static final String GET_VIDEO_LIST = "/video/getVideoList";//获取视频信息
     public static final String GET_LATEST_PHOTO_BY_PP = "/p/getLatestPhotosByPP";// 获取pp最新的照片
     public static final String GET_FAVORITE_LOCATIONS = "/user/getFavoriteLocations";// 获取用户收藏的location
     public static final String EDIT_FAVORITE_LOCATION = "/user/editFavoriteLocation";// 编辑收藏的location信息
@@ -96,7 +98,8 @@ public class Common {
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
 
     public static final String ME_HELP = "/help/getHelpList";
-    public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
+    public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
+    public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
 
 
     //user的SharedPreferences    以及   接口参数
@@ -177,12 +180,17 @@ public class Common {
     public static final String ppp1 = "ppp";
     //	public static final String AUTO_BIND_PP = "autobindpp";//购买ppp之后，是否需要自动绑定标记，photoid：表示需要自动绑定；其他：不需要自动绑定
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
+    public static final String LAST_UPDATE_VIDEO_TIME = "lastUpdateVideoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference
     public static final String LOCATION_ID = "locationId";
     public static final String ACTION = "action";
     public static final String CLEAR_TYPE = "clearType";//判断订单还是照片推送
+    public static final String SHARE_MODE = "mode";//分享的类型
+    public static final String SHARE_PHOTO_ID = "ids";//分享的类型
+    public static final String IS_USE_SHORT_URL = "isUseShortUrl";//分享的短链接或者长链接
+    public static final String SHARE_CONTENT = "shareContent";//分享的短链接或者长链接
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";
@@ -332,4 +340,15 @@ public class Common {
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
 //        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
     public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
+
+
+    //保存设置中的字段  start
+    public static final String SETTING_ONLY_WIFI = "onlyWifi";  // 仅wifi的下载模式， 如果存在，是
+    public static final String SETTING_AUTO_UPDATE = "autoUpdate"; // 自动更新，如果字段存在，是
+    //保存设置中的字段   end
+    // tips 需要的字段  start
+    public static final String SETTING_FIRST_TIPS_SYNS = "firstTipsSyns"; // 如果字段存在,就不是第一次提示同步。如果不存在，就是第一次
+    public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
+    // tips 需要的字段  end
+//    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
 }

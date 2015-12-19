@@ -390,9 +390,11 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					Bundle bundle = new Bundle();
 					if (info.isSelected == 1) {//取消选择
 						info.isSelected = 0;
+						info.showMask = 0;
 						bundle.putInt("flag", 10);
 					}else {//选择
 						info.isSelected = 1;
+						info.showMask = 1;
 						bundle.putInt("flag", 11);
 					}
 					viewPhotoGridViewAdapter.refreshView(position, myGridView.getChildAt(position-visiblePos), 1);

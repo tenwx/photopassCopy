@@ -274,7 +274,7 @@ public class PictureAirDbManager {
 	public void insertSettingStatus(String settingType, String userInfoId){
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			database.execSQL("insert into "+Common.FIRST_START_ACTIVITY_INFO_TABLE+" values(null,?,?)", new String[]{settingType, userInfoId});
+			database.execSQL("insert into " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " values(null,?,?)", new String[]{settingType, userInfoId});
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -315,7 +315,7 @@ public class PictureAirDbManager {
 		boolean result = false;
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			cursor = database.rawQuery("select * from "+ Common.FIRST_START_ACTIVITY_INFO_TABLE +" where activity = ? and userId = ?", new String[]{settingType, userInfoId});
+			cursor = database.rawQuery("select * from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
 			result = (cursor.getCount() > 0) ? true : false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -371,7 +371,7 @@ public class PictureAirDbManager {
 	 * @param type 1 代表直接进入的 PP 页面， 2 代表是从selectPP进入的
 	 * @return
 	 */
-	public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList,int type) {  
+	public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList,int type) {
 		ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
 		//获取需要显示的PP(去掉重复、隐藏的)
 		for (int j = 0; j < ppCodeList.size(); j++) {
@@ -396,10 +396,10 @@ public class PictureAirDbManager {
 							+ " where photoCode like ? order by shootOn desc", new String[] { "%" + ppInfo.getPpCode() + "%" });
 					Log.e("cursor cursor cursor ", "cursor :"+cursor.getCount());
 				}else {
-					cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + 
+					cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE +
 							" where photoCode like ? and shootTime=? order by shootOn", new String[] {"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
 				}
-				
+
 				if (cursor != null && cursor.moveToFirst()) {
 					do {
 						// 获取图片路径
@@ -411,7 +411,7 @@ public class PictureAirDbManager {
 						sInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
 						sInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
 						sInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
-						sInfo.locationId = cursor.getString(cursor.getColumnIndex("location"));
+						sInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
 						sInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
 						sInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
 						sInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
@@ -508,7 +508,23 @@ public class PictureAirDbManager {
 			database.close();
 		}
 	}
-	
+
+	/**
+	 * 删除photopassInfo中的内容
+	 * @param tableName 需要清空的表的名字
+	 * @param isVideo 是不是视频数据
+	 */
+	public void deleteAllInfoFromTable(String tableName, boolean isVideo){
+		database = photoInfoDBHelper.getWritableDatabase();
+		try {
+			database.execSQL("delete from " + tableName + " where isVideo = ?", new String[]{isVideo ? "1" : "0"});
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			database.close();
+		}
+	}
+
 	/**
 	 * 将照片插入到photoPassInfo表中
 	 * @param responseArray
@@ -526,11 +542,12 @@ public class PictureAirDbManager {
 				}
 				resultArrayList.add(photo);
 				//将数据插入到数据库
-				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
 						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
 						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
 						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"", photo.locationName,
-						photo.locationCountry, photo.shareURL, photo.isVideo+""});
+						photo.locationCountry, photo.shareURL, photo.isVideo+"", photo.fileSize + "",
+						photo.videoWidth + "", photo.videoHeight + ""});
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
@@ -540,16 +557,45 @@ public class PictureAirDbManager {
 		database.close();
 		return resultArrayList;
 	}
-	
+	/**
+	 * 将照片插入到photoPassInfo表中
+	 * @param responseArray
+	 */
+	public ArrayList<PhotoInfo> insertVideoInfoIntoPhotoPassInfo(JSONArray responseArray){
+		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
+		database = photoInfoDBHelper.getWritableDatabase();
+		database.beginTransaction();
+		for (int i = 0; i < responseArray.size(); i++) {
+			try {
+				JSONObject object = responseArray.getJSONObject(i);
+				PhotoInfo photo = JsonUtil.getVideoInfo(object);
+				resultArrayList.add(photo);
+				//将数据插入到数据库
+				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
+						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
+						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"", photo.locationName,
+						photo.locationCountry, photo.shareURL, photo.isVideo+"", photo.fileSize + "",
+						photo.videoWidth + "", photo.videoHeight + ""});
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+		}
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		database.close();
+		return resultArrayList;
+	}
+
 	/**
 	 * 查询数据库中的图片信息
 	 * @return
 	 */
-	public ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(){
+	public ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
 		database = photoInfoDBHelper.getReadableDatabase();
 		//查询photo表的信息
-		Cursor cursor = database.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" order by shootOn desc", null);
+		Cursor cursor = database.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" where isVideo = ? order by shootOn desc", new String[]{isVideo ? "1" : "0"});
 		PhotoInfo photoInfo;
 		if (cursor.moveToFirst()) {//判断是否photo数据
 			do {
@@ -570,6 +616,9 @@ public class PictureAirDbManager {
 				photoInfo.locationCountry = cursor.getString(13);//locationCountry
 				photoInfo.shareURL = cursor.getString(14);//shareURL
 				photoInfo.isVideo = cursor.getInt(15);//isVideo
+				photoInfo.fileSize = cursor.getInt(16);//fileSize
+				photoInfo.videoWidth = cursor.getInt(17);//videoWidth
+				photoInfo.videoHeight = cursor.getInt(18);//videoHeight
 				photoInfo.onLine = 1;
 				photoInfo.isChecked = 0;
 				photoInfo.isSelected = 0;

@@ -14,10 +14,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -245,6 +244,14 @@ public class NotificationService extends android.app.Service {
 							// TODO Auto-generated method stub
 							Log.e("  ====  arg2", " :"+arg2);
 							Log.e("===on===","Server triggered event '" + event + "'");
+							// 解决问题：购买照片与升级PP＋,同一用户不同设备不同步的问题。
+							// 升级PP＋与购买照片后发送的事件，记录下来，并且保存在application中。
+							if (event.toString().equals("upgradedPhotos")) {
+								JSONObject message = (JSONObject) arg2[0];
+								PictureAirLog.e("推送", "收到推送："+message.toString());
+								application.setUpgradedPhotosMessage(message.toString());
+							}
+
 							if (event.toString().equals("catchOrderInfoOf"+userId)) {
 								sendType = "orderSend";
 								handler.sendEmptyMessage(3333);

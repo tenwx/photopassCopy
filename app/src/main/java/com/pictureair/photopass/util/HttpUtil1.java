@@ -24,7 +24,7 @@ public class HttpUtil1 {
     private static final String TAG = "HttpUtil1";
     private static final int HTTP_ERROR = 401;//请求失败的错误代码
     private static final String[] HTTP_HEAD_CONTENT_TYPE = new String[]{"application/json;charset=utf-8", "text/html;charset=utf-8",
-            "video/mp4", "audio/x-mpegurl", "image/jpeg", "image/png","application/vnd.android.package-archive"};
+            "video/mp4", "audio/x-mpegurl", "image/jpeg", "image/png", "application/vnd.android.package-archive"};
 
     static {
         if (threadPool == null) {
@@ -49,7 +49,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asyncGet url: " + url);
+        PictureAirLog.v(TAG, "asyncGet url: " + url);
         asyncHttpClient.get(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -105,7 +105,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asyncGet url: " + url);
+        PictureAirLog.v(TAG, "asyncGet url: " + url);
         asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -161,7 +161,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asyncPost url: " + url);
+        PictureAirLog.v(TAG, "asyncPost url: " + url);
         asyncHttpClient.post(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -219,7 +219,8 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asyncPost url: " + url);
+        PictureAirLog.v(TAG, "asyncPost url: " + url);
+        PictureAirLog.v(TAG, "asyncPost params: " + params);
         asyncHttpClient.post(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -276,7 +277,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPut(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asyncPut url: " + url);
+        PictureAirLog.v(TAG, "asyncPut url: " + url);
         asyncHttpClient.put(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -333,7 +334,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncDelete(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asyncDelete url: " + url);
+        PictureAirLog.v(TAG, "asyncDelete url: " + url);
         asyncHttpClient.delete(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -390,7 +391,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asynDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asynDownloadBinaryData url: " + url);
+        PictureAirLog.v(TAG, "asynDownloadBinaryData url: " + url);
         asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
@@ -429,7 +430,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asynDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG,"asynDownloadBinaryData url: " + url);
+        PictureAirLog.v(TAG, "asynDownloadBinaryData url: " + url);
         asyncHttpClient.post(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {

@@ -40,6 +40,7 @@ public class MyApplication extends Application {
     private int pushViedoCount = 0; // 推送视频的数量。
     private ArrayList<HashMap<String, String>> codeList;// 记录登录之前扫描的pp或者ppp
     public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
+    public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
     public ArrayList<PhotoInfo> magicPicList;// 所有的使用magic相机拍出来的图片的信息
     public ArrayList<PhotoItemInfo> boughtPicList;// 所有已经购买的图片的信息
     public ArrayList<PhotoItemInfo> allPicList;// 所有的图片信息
@@ -63,6 +64,7 @@ public class MyApplication extends Application {
 
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
     public final static boolean DEBUG = true;
+    private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
 
     public static Address address;
 
@@ -83,6 +85,7 @@ public class MyApplication extends Application {
             initImageLoader(getApplicationContext());
             codeList = new ArrayList<HashMap<String, String>>();
             photoPassPicList = new ArrayList<PhotoInfo>();
+            photoPassVideoList = new ArrayList<>();
             allPicList = new ArrayList<PhotoItemInfo>();
             magicPicList = new ArrayList<PhotoInfo>();
             boughtPicList = new ArrayList<PhotoItemInfo>();
@@ -476,5 +479,19 @@ public class MyApplication extends Application {
      */
     public void setPushViedoCount(int pushViedoCount) {
         this.pushViedoCount = pushViedoCount;
+    }
+
+    public String getUpgradedPhotosMessage() {
+        return upgradedPhotosMessage;
+    }
+
+    /**
+     * 购买照片或者升级PP+后，设置服务器传过来的值。通过该值判断。
+     * 升级PP+后的值：{"c":{"customerId":"DPPPTV9BH3U4Z2WS","shootDate":"2015-12-18"}}
+     * 购买照片过后的返回值：{"c":{"id":"*******"}  具体需要测试后才知道。
+     * @param upgradedPhotosMessage
+     */
+    public void setUpgradedPhotosMessage(String upgradedPhotosMessage) {
+        this.upgradedPhotosMessage = upgradedPhotosMessage;
     }
 }
