@@ -83,9 +83,9 @@
                 android:id="@+id/rl_myprofile"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:padding="8dp"
-                android:layout_marginLeft="@dimen/pp_padding_16"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,16 +107,16 @@
                 android:id="@+id/rl_myorder"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="@dimen/pp_padding_8">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_order"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_myorder"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -131,16 +131,16 @@
                 android:id="@+id/rl_pp"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="@dimen/pp_padding_8">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_pp"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_pp"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -155,16 +155,16 @@
                 android:id="@+id/rl_ppp"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="@dimen/pp_padding_8">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/my_ppp1"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_ppp"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -179,16 +179,16 @@
                 android:id="@+id/rl_help"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="@dimen/pp_padding_8">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/help"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_help"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -203,16 +203,18 @@
                 android:id="@+id/rl_setting"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="@dimen/pp_padding_8">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
+
                     android:drawableLeft="@drawable/setting"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
+
                     android:text="@string/mypage_setting"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
@@ -227,16 +229,16 @@
                 android:id="@+id/rl_about"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:gravity="center_vertical">
+                android:layout_marginLeft="@dimen/pp_padding_8"
+                android:gravity="center_vertical"
+                android:padding="@dimen/pp_padding_8">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:drawableLeft="@drawable/about"
                     android:drawablePadding="@dimen/drawable_padding"
                     android:gravity="center"
-                    android:padding="@dimen/pp_padding_8"
                     android:text="@string/mypage_about"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_size_16" />
