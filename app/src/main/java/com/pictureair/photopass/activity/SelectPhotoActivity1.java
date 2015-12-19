@@ -99,6 +99,13 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         photocount = getIntent().getIntExtra("photoCount", 1);
         context = this;
         goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goodsInfo");
+        if (goodsInfo != null) {
+            photocount = goodsInfo.getEmbedPhotosCount();
+        }
+        if (photocount == 0) {
+            photocount = 1;
+        }
+
         initview();
     }
 

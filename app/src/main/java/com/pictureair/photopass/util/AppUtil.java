@@ -134,6 +134,9 @@ public class AppUtil {
 		files = file.listFiles();
 		long max = 0;
 		String path = "";
+		if (files == null || files.length <= 0){
+			return path;
+		}
 		for (int i = 0; i < files.length; i++) {
 			if(files[i].getName().endsWith(".JPG") && files[i].length() > 0){
 				if(files[i].lastModified()>max){

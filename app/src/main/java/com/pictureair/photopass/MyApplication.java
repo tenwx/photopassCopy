@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.pictureair.photopass.activity.CrashHandler;
+import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
@@ -62,6 +63,8 @@ public class MyApplication extends Application {
 
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
     public final static boolean DEBUG = true;
+
+    public static Address address;
 
     @Override
     public void onCreate() {

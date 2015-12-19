@@ -63,8 +63,7 @@ public class Common {
     public static final String ADD_TO_CART = "/api/carts";//加入购物车
     public static final String MODIFY_TO_CART = "/api/carts";//修改购物车
     public static final String DELETE_TO_CART = "/api/carts";//删除购物车
-
-
+    public static final String ADD_ORDER = "/api/checkOut";//用户提交订单
 
 
     public static final String GET_TOP_GOODS = "/ms/getTop4Goods";//获取热门商品
@@ -73,6 +72,8 @@ public class Common {
     public static final String MODIFY_CART = "/shopping/modifyCart";//修改购物车信息
     public static final String UPLOAD_PHOTOS = "/p/userUploadPhoto";//上传图片
     public static final String ADD_ON_ORDER = "/ms/AddOnOrder";//生成订单，并且获取订单信息
+    public static final String BUY_PHOTO = "/api/buyPhoto";//一键放入数码商品至购物车信息
+    public static final String GET_OUTLET_ID = "/api/outlets";//获取门店地址信息
 
     public static final String GET_BANNER_GOODS = "/shopping/getBanners";//得到banner商品
 
@@ -81,12 +82,12 @@ public class Common {
     public static final String DELETE_ADDRESS = "/shopping/deleteAddress";//删除收货地址
     public static final String MODIFY_ADDRESS = "/shopping/modifyAddress";//修改收货地址
     public static final String ADD_ADDRESS = "/shopping/addAddress";//添加收货地址
-    public static final String GET_ALL_ORDERS = "/shopping/getAllOrders";//添加收货地址
+    public static final String GET_ALL_ORDERS = "/api/getAllOrders";//获取所有订单
+    public static final String DELETE_ORDER = "/api/delOrder";//用户删除某个订单
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
     public static final String ALIPAY_NOTIFY = "http://140.206.125.194:3001/shopping/webPayNotify";//alipay的异步通知URL
-    public static final String DELETE_ORDER = "/shopping/deleteOrder";//删除收货地址
     public static final String HIDE_PPS = "/user/hidePPs";//隐藏PP
     public static final String GET_PP_BY_DATE = "/user/getNeedUpgradePPsByDate";
     public static final String BIND_PPS_DATE_TO_PPP = "/ppp/bindPPsAndBindDatesToPPP";//将pp绑定到ppp   多了时间。
@@ -95,7 +96,7 @@ public class Common {
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
 
     public static final String ME_HELP = "/help/getHelpList";
-    public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
+    public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
 
 
     //user的SharedPreferences    以及   接口参数
@@ -189,6 +190,7 @@ public class Common {
     public static final String BANNER_GOODS = "bannergoods";
     public static final String PPP_GOOD = "pppgood";
     public static final String LOCATION_INFO = "locationInfo";
+    public static final String ACACHE_ADDRESS = "address";//收货地址缓存
     //	public static final String CHANGE_CUR_TAB = "change_cur_tab";
 
     //photo sqlite数据库字段
@@ -325,7 +327,7 @@ public class Common {
     // 纪录 MainTab 中 tab 的高度。
     public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
 
-//    public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
+    //    public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.avi";// 测试的网络地址
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
 //        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";

@@ -629,7 +629,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		PhotoInfo selectedInfo;
 		PictureAirLog.v(TAG, "photoURLlist.size: " + photoURLlist.size());
 		photoURLlist.clear();//每次全选，清空全部数据
-		for (int i = 1; i < arraylist.size(); i++) {//因为每个arraylist中的第一项为空，所以直接从1开始
+		for (int i = 0; i < arraylist.size(); i++) {//因为每个arraylist中的第一项为空，所以直接从1开始
 			selectedInfo = new PhotoInfo();
 			//			selectedInfo.albumName = album;
 			selectedInfo.photoPathOrURL = arraylist.get(i).photoPathOrURL;

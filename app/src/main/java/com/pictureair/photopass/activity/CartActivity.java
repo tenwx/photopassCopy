@@ -184,7 +184,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     //重新加载购物车数据
                     PictureAirLog.v(TAG, "onclick with reload");
                     customProgressDialog = CustomProgressDialog.show(CartActivity.this, getString(R.string.is_loading), false, null);
-                    API.getcart(CartActivity.this, Common.BASE_URL + Common.GET_CART, userId, handler);
+                    API1.getCarts(handler);
                     cartInfoList.clear();
                     break;
 
@@ -436,32 +436,47 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     API1.removeCartItems(jsonArray, handler);
 
                 } else {//支付操作
-                    ArrayList<CartItemInfo1> orderinfo = new ArrayList<CartItemInfo1>();
+                    //获取选中的购物项
+                    ArrayList<CartItemInfo1> selectCartInfoList = new ArrayList<>();
                     for (int i = 0; i < cartInfoList.size(); i++) {//查找键值对中select为true的值，并将它放入orderinfo2中
                         if (cartInfoList.get(i).getIsSelect()) {
-                            orderinfo.add(cartInfoList.get(i));
+                            selectCartInfoList.add(cartInfoList.get(i));
                         }
                     }
-                    PictureAirLog.v(TAG, "order info count = " + orderinfo.size());
-                    if (0 == cartInfoList.size()) {
-                        PictureAirLog.v(TAG, "cartinfolist = 0");
-                        newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
-                    } else if (0 == orderinfo.size()) {
-                        PictureAirLog.v(TAG, "orderinfo = 0");
-                        newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
-                    } else {
-                        /**********判断是否有图片没有添加*********/
-                        for (int i = 0; i < orderinfo.size(); i++) {
-                            if (!orderinfo.get(i).getHasPhoto()) {
-                                PictureAirLog.v(TAG, "have no photo");
-                                newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
-                                return;
+                    //判断购物车是否为空
+                    if (cartInfoList == null || cartInfoList.size() < 0) {
+                        ShowNoNetOrNoCountView();
+                        return;
+                    }
+                    if (selectCartInfoList.size() > 0) {
+                        PictureAirLog.v(TAG, "selectCartInfoList size: " + selectCartInfoList.size());
+                        //判断是否有图片没有添加
+                        for (CartItemInfo1 cartItemInfo : selectCartInfoList) {
+                            //PP+不需要图片
+                            if (cartItemInfo.getCartProductType() != 3) {
+                                if (cartItemInfo.getEmbedPhotos() == null || cartItemInfo.getEmbedPhotos().size() <= 0) {
+                                    PictureAirLog.v(TAG, "no photo");
+                                    newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
+                                    return;
+                                } else {
+                                    for (CartPhotosInfo1 cartPhotosInfo : cartItemInfo.getEmbedPhotos()) {
+                                        if (cartPhotosInfo == null || cartPhotosInfo.getPhotoId() == null || cartPhotosInfo.getPhotoUrl() == null) {
+                                            PictureAirLog.v(TAG, "no photo");
+                                            newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
+                                            return;
+                                        }
+
+                                    }
+                                }
                             }
                         }
                         intent = new Intent(this, SubmitOrderActivity.class);
-                        intent.putExtra("orderinfo", orderinfo);
+                        intent.putExtra("orderinfo", selectCartInfoList);
                         startActivity(intent);
                         finish();
+                    } else {
+                        PictureAirLog.v(TAG, "selectCartInfoList = 0");
+                        newToast.setTextAndShow(R.string.selectyourcart, Common.TOAST_SHORT_TIME);
                     }
                 }
                 break;
@@ -522,6 +537,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             default:
                 break;
         }
+
     }
 
     /**

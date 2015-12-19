@@ -132,7 +132,7 @@ public class CartInfoAdapter extends BaseAdapter {
         gridlayoutList = new ArrayList<>();
         String pictureUrl;
         String[] pictureUrlArray = goodArrayList.get(position).getPictures();
-        if (pictureUrlArray != null || pictureUrlArray.length > 0) {
+        if (pictureUrlArray != null && pictureUrlArray.length > 0) {
             pictureUrl = pictureUrlArray[0];
         } else {
             pictureUrl = "";
@@ -153,13 +153,13 @@ public class CartInfoAdapter extends BaseAdapter {
 //
 //        } else
         if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
-            imageLoader.displayImage(Common.BASE_URL + pictureUrl, viewHolder.cartGoodImageView);
+            imageLoader.displayImage(Common.BASE_URL_TEST + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
             viewHolder.cartLineImageView.setVisibility(View.GONE);
             viewHolder.hideImageView.setVisibility(View.GONE);
         } else {//其他商品
             PictureAirLog.v(TAG, "other product");
-            imageLoader.displayImage(Common.BASE_URL + pictureUrl, viewHolder.cartGoodImageView);
+            imageLoader.displayImage(Common.BASE_URL_TEST + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.hideImageView.setVisibility(View.INVISIBLE);
@@ -236,6 +236,11 @@ public class CartInfoAdapter extends BaseAdapter {
         } else {
             viewHolder.editBarLayout.setVisibility(View.GONE);
             viewHolder.cartGoodNameTextView.setVisibility(View.VISIBLE);
+        }
+        if (goodArrayList.get(position).getQty() > 1) {
+            viewHolder.cartReduceImageView.setEnabled(true);//当数量>1时 可点击
+        } else {
+            viewHolder.cartReduceImageView.setEnabled(false);//当数量为1时,不可点击
         }
         viewHolder.selectedImageView.setOnClickListener(new SelectOnClick(viewHolder, goodArrayList.get(position)));
         return convertView;
@@ -334,6 +339,10 @@ public class CartInfoAdapter extends BaseAdapter {
                     PictureAirLog.v(TAG, "remove");
                     if (count > 1) {// 判断数量是否小于1件，如果小于1，则不让更改
                         count--;
+                        if (count <= 1){
+                            //减完后=1，也不可点击
+                            holderView.cartReduceImageView.setEnabled(false);//当数量为1时,不可点击
+                        }
                         addcount = false;
                     } else {
                         holderView.cartReduceImageView.setEnabled(false);//当数量为1时  不可点击

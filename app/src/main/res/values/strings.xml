@@ -549,4 +549,6 @@
     <string name="notifacation_new_message">新的消息</string>
     <string name="notifacation_new_photo">您有新的照片</string>
     <string name="notifacation_new_video">您有新的视频</string>
+    <string name="transport">运输</string>
+    <string name="goods_info">商品信息</string>
 </resources>

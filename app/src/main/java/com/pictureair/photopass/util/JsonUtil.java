@@ -11,8 +11,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
-import com.loopj.android.http.RequestParams;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfo1;
@@ -491,31 +489,27 @@ public class JsonUtil {
     public static OrderInfo getOrderGroupInfo(JSONObject orderJsonObject) {
         OrderInfo orderInfo = new OrderInfo();
         try {
-            orderInfo.orderId = orderJsonObject.getString("_id");//订单ID
-            orderInfo.orderStatus = orderJsonObject.getIntValue("status");//订单状态
 
+            //resume
             JSONObject resumeJsonObject = orderJsonObject.getJSONObject("resume");
+            orderInfo.orderNumber = resumeJsonObject.getString("code");//订单号
             orderInfo.orderTime = resumeJsonObject.getString("time");//订单时间
             orderInfo.orderPayMentMethod = resumeJsonObject.getIntValue("payType");//支付类型
-            orderInfo.orderNumber = resumeJsonObject.getString("code");//订单号
+            orderInfo.orderStatus = resumeJsonObject.getIntValue("status");//订单状态
+            //priceInfo
+            JSONObject priceJsonObject = orderJsonObject.getJSONObject("priceInfo");
+            orderInfo.deliveryShipping = priceJsonObject.getDouble("shipping");//运费
+//            orderInfo.productPrice = priceJsonObject.getDouble("productPrice");//商品价格
+            orderInfo.orderTotalPrice = priceJsonObject.getDouble("totalPrice");//商品总价
 
+            //deliveryInfo
             JSONObject deliveryJsonObject = orderJsonObject.getJSONObject("deliveryInfo");
-            if (deliveryJsonObject.containsKey("deliveryType")) {//快递方式
+            if (deliveryJsonObject.containsKey("deliveryType")) {
+                //物流类型
                 orderInfo.deliveryMethod = deliveryJsonObject.getIntValue("deliveryType");
             }
 
-            JSONObject logisticJsonObject = deliveryJsonObject.getJSONObject("logisticsInfo");
-            if (logisticJsonObject.containsKey("company")) {//快递公司
-                orderInfo.deliveryCompany = logisticJsonObject.getString("company");
-            } else {
-                orderInfo.deliveryCompany = "";
-            }
-            if (logisticJsonObject.containsKey("code")) {//快递单号
-                orderInfo.deliveryNumber = logisticJsonObject.getString("code");
-            } else {
-                orderInfo.deliveryNumber = "";
-            }
-
+            //deliveryAddress
             JSONObject deliveryAddressJsonObject = deliveryJsonObject.getJSONObject("deliveryAddress");
             if (deliveryAddressJsonObject.containsKey("consignee")) {//收货人
                 orderInfo.deliveryCustomer = deliveryAddressJsonObject.getString("consignee");
@@ -556,10 +550,19 @@ public class JsonUtil {
                 orderInfo.deliveryAddress = "";
             }
 
-            JSONObject priceJsonObject = orderJsonObject.getJSONObject("priceInfo");
-            orderInfo.deliveryShipping = priceJsonObject.getDouble("shipping");//运费
-            orderInfo.productPrice = priceJsonObject.getDouble("productPrice");//商品价格
-            orderInfo.orderTotalPrice = orderInfo.deliveryShipping + orderInfo.productPrice;//商品总价
+
+            //logisticsInfo
+            JSONObject logisticJsonObject = deliveryJsonObject.getJSONObject("logisticsInfo");
+            if (logisticJsonObject.containsKey("company")) {//快递公司
+                orderInfo.deliveryCompany = logisticJsonObject.getString("company");
+            } else {
+                orderInfo.deliveryCompany = "";
+            }
+            if (logisticJsonObject.containsKey("code")) {//快递单号
+                orderInfo.deliveryNumber = logisticJsonObject.getString("code");
+            } else {
+                orderInfo.deliveryNumber = "";
+            }
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -577,15 +580,12 @@ public class JsonUtil {
      */
     public static ArrayList<CartItemInfo> getOrderChildInfo(JSONObject orderJsonObject) {
         ArrayList<CartItemInfo> orderDetailsArrayList = new ArrayList<CartItemInfo>();
-        CartItemInfo cartItemInfo = null;
-        JSONObject productInfoJsonObject;
+        CartItemInfo cartItemInfo;
         try {
-            productInfoJsonObject = orderJsonObject.getJSONObject("productInfo");
-            JSONArray productsArray = productInfoJsonObject.getJSONArray("products");
+            JSONArray productsArray = orderJsonObject.getJSONArray("productInfo");
             //获取订单下的所有商品
             CartPhotosInfo cartPhotosInfo = null;
             JSONArray usePhotosArray;
-            JSONObject usePhotoObject;
             for (int i = 0; i < productsArray.size(); i++) {
                 cartItemInfo = new CartItemInfo();
                 JSONObject productJsonObject = productsArray.getJSONObject(i);
@@ -600,7 +600,7 @@ public class JsonUtil {
                 } else {
                     ArrayList<CartPhotosInfo> photourlsArrayList = new ArrayList<CartPhotosInfo>();
                     for (int j = 0; j < usePhotosArray.size(); j++) {
-                        usePhotoObject = usePhotosArray.getJSONObject(j);
+                        JSONObject usePhotoObject = usePhotosArray.getJSONObject(j);
                         cartPhotosInfo = new CartPhotosInfo();
                         cartPhotosInfo.cart_photoUrl = usePhotoObject.getString("photoUrl");//商品添加图片的URL
                         photourlsArrayList.add(cartPhotosInfo);
@@ -765,14 +765,14 @@ public class JsonUtil {
 
     }
 
-    public static ArrayList<HelpInfo> getHelpInfoList(JSONObject jsonObject){
-        ArrayList<HelpInfo> helpInfos= new ArrayList<HelpInfo>();
+    public static ArrayList<HelpInfo> getHelpInfoList(JSONObject jsonObject) {
+        ArrayList<HelpInfo> helpInfos = new ArrayList<HelpInfo>();
         JSONArray array = jsonObject.getJSONArray("helpList");
         HelpInfo info = null;
         JSONObject obj = null;
-        for(int i= 0; i<array.size();i++){
+        for (int i = 0; i < array.size(); i++) {
             info = new HelpInfo();
-            obj = (JSONObject)array.get(i);
+            obj = (JSONObject) array.get(i);
             info.setHelpId(obj.getString("_id"));
             info.setHelpQuestionEN(obj.getString("ENQuestion"));
             info.setHelpAnswerEN(obj.getString("ENAnswer"));

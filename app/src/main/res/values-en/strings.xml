@@ -544,4 +544,6 @@
     <string name="notifacation_new_order">New Order</string>
     <string name="notifacation_new_photo">You have new photos</string>
     <string name="notifacation_new_video">You have new videos</string>
+    <string name="transport">transport</string>
+    <string name="goods_info">Shop Info</string>
 </resources>

@@ -3,13 +3,17 @@ package com.pictureair.photopass.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
@@ -71,6 +75,7 @@ public class API1 {
 
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2030;
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2031;
+
     /**
      * 扫描
      */
@@ -107,10 +112,27 @@ public class API1 {
 
     public static final int ADD_TO_CART_FAILED = 4310;
     public static final int ADD_TO_CART_SUCCESS = 4311;
+
     public static final int MODIFY_CART_FAILED = 4320;
     public static final int MODIFY_CART_SUCCESS = 4321;
+
     public static final int DELETE_CART_FAILED = 4330;
     public static final int DELETE_CART_SUCCESS = 4331;
+
+    public static final int ADD_ORDER_FAILED = 4340;
+    public static final int ADD_ORDER_SUCCESS = 4341;
+
+    public static final int GET_ORDER_SUCCESS = 4350;
+    public static final int GET_ORDER_FAILED = 4351;
+
+    public static final int BUY_PHOTO_FAILED = 4360;
+    public static final int BUY_PHOTO_SUCCESS = 4361;
+
+    public static final int GET_OUTLET_ID_FAILED = 4370;
+    public static final int GET_OUTLET_ID_SUCCESS = 4371;
+
+    public static final int DELETE_ORDER_FAILED = 4380;
+    public static final int DELETE_ORDER_SUCCESS = 4381;
 
 
     //Shop模块 end
@@ -140,7 +162,6 @@ public class API1 {
     // 推送
     public static final int SOCKET_DISCONNECT_FAILED = 5800;
     public static final int SOCKET_DISCONNECT_SUCCESS = 5801;
-
 
 
     /**
@@ -227,11 +248,11 @@ public class API1 {
         RequestParams params = new RequestParams();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT,params, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "Logout onSuccess:"+jsonObject);
+                PictureAirLog.e(TAG, "Logout onSuccess:" + jsonObject);
                 handler.sendEmptyMessage(LOGOUT_SUCCESS);
             }
 
@@ -963,8 +984,162 @@ public class API1 {
 
     }
 
+    /**
+     * 提交订单
+     *
+     * @param cartItemIds  JSONArray
+     * @param deliveryType 物流方式(必须，送货方式,物流(0)、自提(1)、直送(2),虚拟类商品无须快递(3))
+     * @param outletId     门店编号门店主键(与addressId互斥,但不能都存在,若物流方式为3则无此条约束)
+     * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
+     * @param handler      handler
+     */
+    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("cartItemIds", cartItemIds.toString());
+        params.put("deliveryType", deliveryType);
+        if (deliveryType == 0) {
+            //物流
+            params.put("addressId", addressId);
+        } else if (deliveryType == 1) {
+            //自提
+            params.put("outletId", outletId);
+        }
+        PictureAirLog.v(TAG, "addOrder params: " + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(ADD_ORDER_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADD_ORDER_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /**
+     * 获取订单信息
+     *
+     * @param handler handler
+     */
+    public static void getOrderInfo(final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_ORDER_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_ORDER_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+    /**
+     * 删除订单信息
+     *
+     * @param handler
+     */
+    public static void removeOrder(String orderId, final OrderInfo groupInfo, final ArrayList<CartItemInfo> childInfo, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.ORDER_ID, orderId);
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                Message msg = handler.obtainMessage();
+                Bundle b = new Bundle();
+                b.putParcelable("group", groupInfo);
+                b.putParcelableArrayList("child", childInfo);
+                msg.what = DELETE_ORDER_SUCCESS;
+                msg.setData(b);
+                handler.sendMessage(msg);
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(DELETE_ORDER_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
+    /**
+     * 购买单张照片
+     * 一键放入数码商品至购物车信息
+     *
+     * @param photoId photoId
+     * @param handler handler
+     */
+    public static void buyPhoto(String photoId, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.PHOTO_ID, photoId);
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BUY_PHOTO, params,
+                new HttpCallback() {
+                    @Override
+                    public void onSuccess(JSONObject jsonObject) {
+                        super.onSuccess(jsonObject);
+                        handler.obtainMessage(BUY_PHOTO_SUCCESS, jsonObject)
+                                .sendToTarget();
+                    }
+
+                    @Override
+                    public void onFailure(int status) {
+                        super.onFailure(status);
+                        handler.obtainMessage(BUY_PHOTO_FAILED, status, 0)
+                                .sendToTarget();
+
+                    }
+                });
+
+    }
+
+    /**
+     * 获取门店地址信息
+     *
+     * @param handler handler
+     */
+    public static void getOutlets(final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put("tokenId", MyApplication.getTokenId());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_OUTLET_ID_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_OUTLET_ID_FAILED, status, 0).sendToTarget();
+            }
+        });
+
+    }
+
 
     /***************************************Shop模块 end**************************************/
+
 
     /**
      * 上传照片到服务器合成视频
@@ -1085,11 +1260,12 @@ public class API1 {
         });
     }
 
+
     /***************************************推送 Start**************************************/
     /**
      * socket链接后处理方法
      */
-    public static void noticeSocketConnect(){
+    public static void noticeSocketConnect() {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1103,7 +1279,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "socket 链接失败,状态码："+ status);
+                PictureAirLog.e(TAG, "socket 链接失败,状态码：" + status);
             }
         });
     }
@@ -1112,7 +1288,7 @@ public class API1 {
     /**
      * 手机端退出登录前调用
      */
-    public static void noticeSocketDisConnect(final Handler handler){
+    public static void noticeSocketDisConnect(final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1128,18 +1304,18 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
-                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码："+status);
+                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码：" + status);
             }
         });
     }
 
 
-
     /**
      * 手机端接收到推送后，调用清空推送数据
+     *
      * @param clearType
      */
-    public static void clearSocketCachePhotoCount(String clearType){
+    public static void clearSocketCachePhotoCount(String clearType) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CLEAR_TYPE, clearType);
@@ -1153,7 +1329,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码："+status);
+                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码：" + status);
             }
         });
     }

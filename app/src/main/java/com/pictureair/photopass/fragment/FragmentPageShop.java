@@ -16,13 +16,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CartActivity;
 import com.pictureair.photopass.activity.DetailProductActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
+import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.util.ACache;
@@ -79,9 +82,11 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     }
                     //将数据保存到缓存中
 //                    ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, goodsInfoJson.toString());
-                    customProgressDialog.dismiss();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);
                     shopGoodListViewAdapter.refresh(allGoodsList);
+                    //获取收货地址列表
+                    API1.getOutlets(mHandler);
+
                     break;
 
                 case API1.GET_GOODS_FAILED://获取商品失败
@@ -89,6 +94,25 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
                     noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
                     break;
+
+                case API1.GET_OUTLET_ID_SUCCESS:
+                    //获取自提地址成功
+                    Address address = JsonTools.parseObject((JSONObject) msg.obj, Address.class);
+                    //存入缓存
+                    MyApplication.address = address;
+//                    ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, address);
+                    customProgressDialog.dismiss();
+                    break;
+
+                case API1.GET_OUTLET_ID_FAILED:
+                    //获取自提地址失败
+                    customProgressDialog.dismiss();
+//                    noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+//                    noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
+
+
+                    break;
+
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                     //重新加载购物车数据

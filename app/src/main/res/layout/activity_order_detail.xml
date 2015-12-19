@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_light"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/order_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/blue" >
+        android:background="@color/blue">
 
         <ImageView
             android:id="@+id/order_detail_return"
@@ -27,32 +27,31 @@
             android:layout_centerInParent="true"
             android:text="@string/order_detail_activity"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none" >
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <!-- 订单详情 -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:padding="10dp" >
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/or_time"
@@ -80,8 +79,7 @@
                         android:paddingTop="5dp"
                         android:text="@string/payment_order"
                         android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/text_size_16" />
                 </RelativeLayout>
 
                 <com.pictureair.photopass.widget.DashedLineView
@@ -96,7 +94,7 @@
                     android:orientation="horizontal"
                     android:paddingBottom="10dp"
                     android:paddingLeft="15dp"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -127,7 +125,7 @@
                     android:orientation="horizontal"
                     android:paddingBottom="10dp"
                     android:paddingLeft="15dp"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -158,7 +156,7 @@
                     android:orientation="horizontal"
                     android:paddingBottom="10dp"
                     android:paddingLeft="15dp"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -189,7 +187,7 @@
                     android:orientation="horizontal"
                     android:paddingBottom="10dp"
                     android:paddingLeft="15dp"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -220,7 +218,7 @@
                     android:orientation="horizontal"
                     android:paddingBottom="10dp"
                     android:paddingLeft="15dp"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -245,14 +243,14 @@
                 </LinearLayout>
             </LinearLayout>
             <!-- 订单详情 结束 -->
-            
+
             <!-- 物流信息 开始 -->
             <LinearLayout
                 android:id="@+id/deliveryInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="10dp" >
+                android:paddingTop="10dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -276,7 +274,7 @@
                     android:orientation="horizontal"
                     android:paddingBottom="10dp"
                     android:paddingLeft="15dp"
-                    android:paddingTop="10dp" >
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -298,12 +296,12 @@
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
-             <!-- 物流信息 结束 -->
-             <LinearLayout
+            <!-- 物流信息 结束 -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="10dp" >
+                android:paddingTop="10dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -314,21 +312,21 @@
                     android:text="@string/product_information"
                     android:textColor="@color/gray"
                     android:textSize="12sp" />
-                
+
                 <com.pictureair.photopass.widget.DashedLineView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/white" />
-                
+
                 <com.pictureair.photopass.widget.NoScrollListView
-                android:id="@+id/product_detail_listview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:clickable="false"
-                android:divider="@null"
-                android:focusable="false" />
-                
+                    android:id="@+id/product_detail_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:clickable="false"
+                    android:divider="@null"
+                    android:focusable="false" />
+
             </LinearLayout>
 
         </LinearLayout>
