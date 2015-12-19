@@ -72,6 +72,7 @@ public class API1 {
 
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2030;
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2031;
+
     /**
      * 扫描
      */
@@ -81,6 +82,16 @@ public class API1 {
     public static final int ADD_SCANE_CODE_FAIED = 2040;
     public static final int ADD_PP_CODE_TO_USER_SUCCESS = 2041;
     public static final int ADD_PPP_CODE_TO_USER_SUCCESS = 2042;
+
+    /**
+     * 获取视频信息
+     */
+    public static final int GET_ALL_VIDEO_LIST_FAILED = 2050;
+    public static final int GET_ALL_VIDEO_LIST_SUCCESS = 2051;
+
+    public static final int GET_REFRESH_VIDEO_LIST_FAILED = 2060;
+    public static final int GET_REFRESH_VIDEO_LIST_SUCCESS = 2061;
+
 
 
     /**
@@ -145,6 +156,9 @@ public class API1 {
     //PP & PP＋模块
     public static final int GET_PPS_BY_PPP_AND_DATE_FAILED = 5500;
     public static final int GET_PPS_BY_PPP_AND_DATE_SUCCESS = 5501;
+    //分享
+    public static final int GET_SHARE_URL_SUCCESS = 6021;
+    public static final int GET_SHARE_URL_FAILED = 6020;
 
     public static final int BIND_PPS_DATE_TO_PP_FAILED = 5600;
     public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5601;
@@ -233,11 +247,11 @@ public class API1 {
         RequestParams params = new RequestParams();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT,params, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.LOGOUT, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "Logout onSuccess:"+jsonObject);
+                PictureAirLog.e(TAG, "Logout onSuccess:" + jsonObject);
                 handler.sendEmptyMessage(LOGOUT_SUCCESS);
             }
 
@@ -387,6 +401,38 @@ public class API1 {
     }
 
     /**
+     * 获取视频信息
+     * @param time 如果是null，则全部获取，如果不为null，则获取最新数据
+     */
+    public static void getVideoList(final String time, final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LAST_UPDATE_TIME, time);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_VIDEO_LIST, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                if (time == null) {//全部数据
+                    handler.obtainMessage(GET_ALL_VIDEO_LIST_SUCCESS, jsonObject).sendToTarget();
+                } else {//刷新数据
+                    handler.obtainMessage(GET_REFRESH_VIDEO_LIST_SUCCESS, jsonObject).sendToTarget();
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                if (time == null) {//全部数据
+                    handler.obtainMessage(GET_ALL_VIDEO_LIST_FAILED, status, 0).sendToTarget();
+                } else {//刷新数据
+                    handler.obtainMessage(GET_REFRESH_VIDEO_LIST_FAILED, status, 0).sendToTarget();
+                }
+            }
+        });
+
+    }
+
+    /**
      * 检查扫描的结果是否正确，并且返回是否已经被使用
      *
      * @param code
@@ -396,7 +442,6 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CODE, code);
-        params.put(Common.USERINFO_TOKENID, tokenId);
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_CODE_AVAILABLE, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -802,34 +847,6 @@ public class API1 {
     }
 
 
-    /**
-     * 获取指定商品数据
-     *
-     * @param storeId 商城id编号参数（必须
-     * @param goodId  商品编号参数（必须）
-     */
-    public static void getSingleGoods(String tokenId, String storeId, String goodId, final Handler handler) {
-        String url = Common.BASE_URL_TEST + Common.GET_SINGLE_GOOD + storeId + "/goods/" + goodId;
-        RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
-        HttpUtil1.asyncGet(url, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_SINGLE_GOOD_SUCCESS, jsonObject).sendToTarget();
-
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(GET_SINGLE_GOOD_FAILED, status, 0).sendToTarget();
-
-            }
-        });
-
-    }
 
     /**
      * 获取用户购物车信息
@@ -998,6 +1015,18 @@ public class API1 {
         });
     }
 
+
+    public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
+            + "'version': '2.1.2', 'createdOn': '2015-09-23T06:06:17.371Z', "
+            + " 'mandatory': 'false',  '__v': 0, "
+            + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
+            + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
+            + "'downloadChannel':[ {'channel':'360',"
+            + "'downloadUrl':'http://gdown.baidu.com/data/wisegame/1f10e30a23693de1/baidushoujizhushou_16786079.apk'},"
+            + " { 'channel':'tencent',"
+            + "'downloadUrl':'http://mmgr.myapp.com/myapp/gjbig/packmanage/24/2/3/102027/tencentmobilemanager5.7.0_android_build3146_102027.apk'}]}}";
+
+
     /**
      * 获取最新的版本信息
      *
@@ -1095,7 +1124,7 @@ public class API1 {
     /**
      * socket链接后处理方法
      */
-    public static void noticeSocketConnect(){
+    public static void noticeSocketConnect() {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1109,7 +1138,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "socket 链接失败,状态码："+ status);
+                PictureAirLog.e(TAG, "socket 链接失败,状态码：" + status);
             }
         });
     }
@@ -1118,7 +1147,7 @@ public class API1 {
     /**
      * 手机端退出登录前调用
      */
-    public static void noticeSocketDisConnect(final Handler handler){
+    public static void noticeSocketDisConnect(final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1134,18 +1163,18 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
-                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码："+status);
+                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码：" + status);
             }
         });
     }
 
 
-
     /**
      * 手机端接收到推送后，调用清空推送数据
+     *
      * @param clearType
      */
-    public static void clearSocketCachePhotoCount(String clearType){
+    public static void clearSocketCachePhotoCount(String clearType) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CLEAR_TYPE, clearType);
@@ -1159,13 +1188,12 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码："+status);
+                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码：" + status);
             }
         });
     }
 
     /***************************************推送 End**************************************/
-
 
     public static ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>();
     /**
@@ -1214,16 +1242,47 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 handler.obtainMessage(BIND_PPS_DATE_TO_PP_SUCESS, jsonObject).sendToTarget();
-
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(BIND_PPS_DATE_TO_PP_FAILED, status, 0).sendToTarget();
-
             }
         });
     }
 
+    /**
+     * 获取分享的URL
+     */
+    public static void getShareUrl(String photoID, String shareType, final Handler handler) {
+        RequestParams params = new RequestParams();
+        JSONObject orgJSONObject = new JSONObject();
+        try {
+            orgJSONObject.put(Common.SHARE_MODE, shareType);
+            orgJSONObject.put(Common.SHARE_PHOTO_ID, photoID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
+        params.put(Common.IS_USE_SHORT_URL, false);
+        //BASE_URL_TEST2 测试成功
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "获取分享成功");
+                handler.obtainMessage(GET_SHARE_URL_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "获取分享失败" + status);
+                handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
 }

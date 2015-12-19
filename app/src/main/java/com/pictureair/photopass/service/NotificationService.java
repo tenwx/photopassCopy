@@ -14,10 +14,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;

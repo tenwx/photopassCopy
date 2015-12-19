@@ -79,7 +79,7 @@
                 android:drawableTop="@drawable/button_share_selector"
                 android:gravity="center"
                 android:text="@string/share"
-                android:textColor="@color/gray"
+                android:textColor="@drawable/textview_selector_onclick"
                 android:textSize="@dimen/text_size_12" />
         </LinearLayout>
 
@@ -100,7 +100,7 @@
                 android:drawableTop="@drawable/button_download_selector"
                 android:gravity="center"
                 android:text="@string/down"
-                android:textColor="@color/gray"
+                android:textColor="@drawable/textview_selector_onclick"
                 android:textSize="@dimen/text_size_12" />
 
         </LinearLayout>

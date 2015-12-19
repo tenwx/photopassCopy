@@ -471,6 +471,7 @@
     <string name="modify_password_empty_hint">Please enter a password.</string>
     <string name="show_password">Show password</string>
     <string name="magic_location">Magic Camera</string>
+    <string name="video_location">Disney Story</string>
     <string name="order_detail_activity">Order detail</string>
     <string name="mobile_exist">Mobile exists</string>
     <string name="loading_percent">Is uploading %1$d</string>

@@ -21,7 +21,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public int showMask;//mask底层是否显示，1，显示，0，不显示
 	public String index;//被选中的索引值
 	public int isUploaded;//图片是否已经上传，1，已经上传，0，未上传
-	public String shootTime;// 拍摄时间 年月日
+	public String shootTime;// 拍摄时间 年月日，用于页面显示
 	public String locationId;//拍摄地点
 	public String shootOn;//拍摄时间 年月日时分秒，用来数据库的排序
 	public long lastModify;//文件最后修改的时间
@@ -32,7 +32,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public String locationCountry;//景点的国家城市
 	public String locationName;//每张图片的地点名称
 	public int isVideo;//1是视频，0是图片
-	
+	public int fileSize;//文件大小
+	public int videoWidth;//视频文件宽
+	public int videoHeight;//视频文件高
 
 	public static final Parcelable.Creator<PhotoInfo> CREATOR = new Creator<PhotoInfo>() {
 
@@ -76,6 +78,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		locationCountry = source.readString();
 		locationName = source.readString();
 		isVideo = source.readInt();
+		fileSize = source.readInt();
+		videoWidth = source.readInt();
+		videoHeight = source.readInt();
 	}
 
 	@Override
@@ -109,6 +114,9 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeString(locationCountry);
 		dest.writeString(locationName);
 		dest.writeInt(isVideo);
+		dest.writeInt(fileSize);
+		dest.writeInt(videoWidth);
+		dest.writeInt(videoHeight);
 	}
 
 	@Override

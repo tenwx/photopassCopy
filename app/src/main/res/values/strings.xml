@@ -472,6 +472,7 @@
     <string name="modify_password_empty_hint">请输入密码</string>
     <string name="show_password">显示密码</string>
     <string name="magic_location">魔法相册</string>
+    <string name="video_location">Disney Story</string>
     <string name="order_detail_activity">订单详情</string>
     <string name="mobile_exist">手机号已经存在</string>
     <string name="loading_percent">正在上传%1$d</string>

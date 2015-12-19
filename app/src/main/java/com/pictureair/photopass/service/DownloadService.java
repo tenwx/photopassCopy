@@ -56,7 +56,6 @@ public class DownloadService extends Service {
     private final static int FINISH_DOWNLOAD = 1;
     private final static int START_DOWNLOAD = 2;
 
-
     private boolean isDownloading = false;
 
     private String tokenId;
@@ -174,7 +173,6 @@ public class DownloadService extends Service {
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
 
-
         /***********************testing code******************************/
         //				HttpUtil.get(sb.toString(), params, new BinaryHttpResponseHandler() {
         //
@@ -203,7 +201,6 @@ public class DownloadService extends Service {
         //					}
         //				});
         /***********************testing code******************************/
-
 
         if (!file.exists()) {
             // 使用友盟统计点击下载次数
@@ -277,7 +274,8 @@ public class DownloadService extends Service {
             });
         } else {//video
             //目前测试的路径
-            HttpUtil.get(Common.DATA_VIDEO, params, new BinaryHttpResponseHandler(new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/png", "image/jpeg"}) {
+            String downloadURL = downloadList.get(0).photoPathOrURL;
+            HttpUtil.get(downloadURL, params, new BinaryHttpResponseHandler(new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/png", "image/jpeg"}) {
 
                 @Override
                 public void onStart() {
