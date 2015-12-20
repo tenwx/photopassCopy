@@ -529,46 +529,19 @@ public class PictureAirDbManager {
 	 * 将照片插入到photoPassInfo表中
 	 * @param responseArray
 	 */
-	public ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray){
+	public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isVideo){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
 		database = photoInfoDBHelper.getWritableDatabase();
 		database.beginTransaction();
 		for (int i = 0; i < responseArray.size(); i++) {
 			try {
 				JSONObject object = responseArray.getJSONObject(i);
-				final PhotoInfo photo = JsonUtil.getPhoto(database,object);
-				if (photo.locationId == null || photo.locationId.equals("")) {
-					continue;
+				PhotoInfo photo = isVideo ? JsonUtil.getVideoInfo(object) : JsonUtil.getPhoto(object);
+				if (!isVideo) {
+					if (photo.locationId == null || photo.locationId.equals("")) {
+						continue;
+					}
 				}
-				resultArrayList.add(photo);
-				//将数据插入到数据库
-				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
-						photo.photoId, photo.photoPassCode,photo.shootTime,photo.photoPathOrURL,
-						photo.photoThumbnail,photo.photoThumbnail_512,photo.photoThumbnail_1024,
-						photo.locationId, photo.shootOn, 0+"",photo.isPayed+"", photo.locationName,
-						photo.locationCountry, photo.shareURL, photo.isVideo+"", photo.fileSize + "",
-						photo.videoWidth + "", photo.videoHeight + ""});
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-			}
-		}
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
-		return resultArrayList;
-	}
-	/**
-	 * 将照片插入到photoPassInfo表中
-	 * @param responseArray
-	 */
-	public ArrayList<PhotoInfo> insertVideoInfoIntoPhotoPassInfo(JSONArray responseArray){
-		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
-		database = photoInfoDBHelper.getWritableDatabase();
-		database.beginTransaction();
-		for (int i = 0; i < responseArray.size(); i++) {
-			try {
-				JSONObject object = responseArray.getJSONObject(i);
-				PhotoInfo photo = JsonUtil.getVideoInfo(object);
 				resultArrayList.add(photo);
 				//将数据插入到数据库
 				database.execSQL("insert into "+Common.PHOTOPASS_INFO_TABLE+" values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{

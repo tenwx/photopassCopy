@@ -3,7 +3,6 @@ package com.pictureair.photopass.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
 import com.alibaba.fastjson.JSON;
@@ -62,7 +61,7 @@ public class JsonUtil {
     /**
      * 照片信息解析 ，并且把数据插入到数据库中作为缓存数据
      */
-    public static PhotoInfo getPhoto(SQLiteDatabase db, JSONObject object) throws JSONException {
+    public static PhotoInfo getPhoto(JSONObject object) throws JSONException {
         PhotoInfo info = new PhotoInfo();
         info.onLine = 1;
         //获取图片的ID
