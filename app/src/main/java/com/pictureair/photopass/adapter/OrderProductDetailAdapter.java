@@ -96,7 +96,7 @@ public class OrderProductDetailAdapter extends BaseAdapter {
                 params.height = screenWight;
                 imageView.setLayoutParams(params);
 
-                imageLoader.displayImage(Common.BASE_URL_TEST + list.get(position).cart_photoUrls.get(i).cart_photoUrl, imageView);
+                imageLoader.displayImage(Common.PHOTO_URL + list.get(position).cart_photoUrls.get(i).cart_photoUrl, imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);

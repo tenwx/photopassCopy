@@ -193,7 +193,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                 params.width = screenWight;
                 params.height = screenWight;
                 imageView.setLayoutParams(params);
-                imageLoader.displayImage(Common.BASE_URL_TEST + childlist.get(groupPosition).get(childPosition).cart_photoUrls.get(i).cart_photoUrl, imageView);
+                imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).get(childPosition).cart_photoUrls.get(i).cart_photoUrl, imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(childPosition * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);

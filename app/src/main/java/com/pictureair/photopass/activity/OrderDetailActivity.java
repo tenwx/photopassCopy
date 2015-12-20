@@ -133,13 +133,18 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         switch (orderInfo.deliveryMethod) {
             case 1:
-                //自提
-                address.setText(orderInfo.deliveryAddress == null ? "orderInfo.deliveryAddress" : orderInfo.deliveryAddress);
+                //自提、
+                if (orderInfo.deliveryAddress != null && !orderInfo.deliveryAddress.equals("")) {
+                    if (orderInfo.deliveryAddress.contains("null")) {
+                        orderInfo.deliveryAddress = orderInfo.deliveryAddress.replaceAll("null", "");
+                    }
+                    address.setText(orderInfo.deliveryAddress);
+                }
                 break;
             case 3:
                 //虚拟类商品无须快递,
 //                deliveryInfo.setVisibility(View.GONE);
-                address.setText(R.string.self_collect);
+                address.setText(getString(R.string.address_digital_goods));
                 break;
 
             default:

@@ -19,9 +19,9 @@ public class Common {
     public static final String BASE_URL = "http://192.168.8.3:3001";//harry
 
 
-    public static final String BASE_URL_TEST = "http://172.16.20.135:3001";//(齐超)测试分享
+//    public static final String BASE_URL_TEST = "http://172.16.20.135:3001";//(齐超)测试分享
 
-//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
 
     public static final String PHOTO_URL = "http://192.168.8.3:4000/";
     //接口
