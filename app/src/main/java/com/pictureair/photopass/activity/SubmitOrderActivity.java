@@ -9,8 +9,10 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.AddressAdapter;
 import com.pictureair.photopass.adapter.SubmitOrderListViewAdapter;
 import com.pictureair.photopass.entity.Address;
+import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API;
@@ -46,9 +49,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private TextView totalpriceTextView, currencyTextView, allGoodsTextView;
 
     private ArrayList<CartItemInfo1> list;
-    private String nameString;
-    private String introduceString;
-
     private ListView infoListView;
     private SubmitOrderListViewAdapter submitorderAdapter;
 
@@ -71,8 +71,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private JSONObject cartItemId;
     private String orderId = "";
     private int deliveryType = 3;//物流方式
-    private List<Address> addressList;//收货地址
-    private Address address;
+    private List<Address> addressList;
+    private ListView transportListView;
+    private AddressAdapter addressAdapter;
+    private int curPositon = -1;//记录选择的地址
 
 
     private Handler mHandler = new Handler() {
@@ -83,17 +85,22 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     break;
                 case API1.GET_OUTLET_ID_SUCCESS:
                     //获取自提地址成功
-                    address = JsonTools.parseObject((JSONObject) msg.obj, Address.class);
-                    //存入缓存
-                    MyApplication.address = address;
+                    AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
+                    if (addressJson != null && addressJson.getOutlets().size() > 0) {
+                        //更新地址信息
+                        addressAdapter.refresh(addressJson.getOutlets());
+                        //完全显示
+                        fixListViewHeight(transportListView);
+                        //存入缓存
+                        MyApplication.address = addressJson.getOutlets();
 //                    ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, address);
-                    API1.addOrder(cartItemIds, deliveryType, "", "", mHandler);
-
+                        API1.addOrder(cartItemIds, deliveryType, "", "", mHandler);
+                    }
                     break;
 
                 case API1.GET_OUTLET_ID_FAILED:
                     //获取自提地址失败
-                    API1.addOrder(cartItemIds, deliveryType, "", "", mHandler);
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                     break;
 
@@ -119,7 +126,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         intent2.putExtra("orderId", orderId);
 //                        intent2.putExtra("addressType", needAddressGood);
                         SubmitOrderActivity.this.startActivity(intent2);
-
                     }
 
                     break;
@@ -226,7 +232,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         infoListView.setAdapter(submitorderAdapter);
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);
-        infoListView.addHeaderView(initHeaderAndFooterView(true));
+        infoListView.addHeaderView(initHeaderAndFooterView(true, null));
         if (list == null || list.size() < 0) {
             PictureAirLog.v(TAG, "initView list == null ");
             return;
@@ -257,7 +263,18 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
         if (deliveryType == 1) {
-            infoListView.addFooterView(initHeaderAndFooterView(false));
+
+            //显示地址
+            if (MyApplication.address == null) {
+                PictureAirLog.v(TAG, "MyApplication.address == null");
+                addressList = new ArrayList<>();
+                infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
+                API1.getOutlets(mHandler);
+            } else {
+                addressList = MyApplication.address;
+                infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
+            }
+
         }
         totalpriceTextView.setText((int) totalprice + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
@@ -271,48 +288,94 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      * @param isHeader
      * @return
      */
-    public View initHeaderAndFooterView(boolean isHeader) {
+    public View initHeaderAndFooterView(final boolean isHeader, List<Address> list) {
         View view = LayoutInflater.from(this).inflate(R.layout.address_layout, null);
         ImageView transportIv = (ImageView) view.findViewById(R.id.transport_iv);
         TextView transportTv = (TextView) view.findViewById(R.id.transport_tv);
-        ListView transportList = (ListView) view.findViewById(R.id.transport_list);
+        transportListView = (ListView) view.findViewById(R.id.transport_list);
         if (isHeader) {
             transportIv.setImageResource(R.drawable.icon_shop);
             transportTv.setText(R.string.goods_info);
-            transportList.setVisibility(View.GONE);
+            transportListView.setVisibility(View.GONE);
         } else {
             transportIv.setImageResource(R.drawable.icon_transport);
             transportTv.setText(R.string.transport);
-            transportList.setVisibility(View.VISIBLE);
-            addressList = new ArrayList<>();
-            address = new Address();
-            address.setAddress("自提地址。。。");
-            address.setIsSelect(true);
-            addressList.add(address);
-            AddressAdapter addressAdapter = new AddressAdapter(this, addressList);
-            transportList.setAdapter(addressAdapter);
+            transportListView.setVisibility(View.VISIBLE);
+            addressAdapter = new AddressAdapter(this, list, new AddressAdapter.doOnClickAddressListener() {
+                @Override
+                public void doOnClickAddressListener(int position) {
+                    if (position == curPositon) {
+                        return;
+                    } else {
+                        curPositon = position;
+                    }
+                    //选择地址
+                    if (addressList != null && addressList.size() > 0) {
+                        //单选
+                        boolean isSelect = addressList.get(position).getIsSelect();
+                        if (isSelect) {
+                            isSelect = false;
+                        } else {
+                            isSelect = true;
+                        }
+                        for (Address address : addressList) {
+                            if (address == addressList.get(position)) {
+                                address.setIsSelect(isSelect);
+                            } else {
+                                address.setIsSelect(!isSelect);
+                            }
+                        }
+                        addressAdapter.refresh(addressList);
+                    }
+                }
+            });
+            transportListView.setAdapter(addressAdapter);
+            fixListViewHeight(transportListView);
         }
+
 
         return view;
 
+    }
+
+    public void fixListViewHeight(ListView listView) {
+        // 如果没有设置数据适配器，则ListView没有子项，返回。
+        ListAdapter listAdapter = listView.getAdapter();
+        int totalHeight = 0;
+        if (listAdapter == null) {
+            return;
+        }
+        for (int index = 0; index < listAdapter.getCount(); index++) {
+            View listViewItem = listAdapter.getView(index, null, listView);
+            // 计算子项View 的宽高
+            listViewItem.measure(0, 0);
+            // 计算所有子项的高度和
+            totalHeight += listViewItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        // listView.getDividerHeight()获取子项间分隔符的高度
+        // params.height设置ListView完全显示需要的高度
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button2_submit:
-                if (orderId.equals("")) {
-                    customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                    PictureAirLog.v(TAG, "onClick nameString" + nameString);
+                PictureAirLog.v(TAG, "onClick" + deliveryType);
+                if (orderId == null || orderId.equals("")) {
                     if (deliveryType == 1) {
                         //获取收货地址
-                        if (MyApplication.address == null) {
-                            API1.getOutlets(mHandler);
+                        if (curPositon < 0) {
+                            newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
-                            address = MyApplication.address;
-                            API1.addOrder(cartItemIds, deliveryType, address.getOutletId(), "", mHandler);
+                            customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                            API1.addOrder(cartItemIds, deliveryType, addressList.get(curPositon).getOutletId(), "", mHandler);
                         }
                     } else {
+                        customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                         API1.addOrder(cartItemIds, 3, "", "", mHandler);
                     }
                 } else {

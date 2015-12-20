@@ -107,7 +107,6 @@
                     android:id="@+id/detail_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="rmb"
                     android:textColor="@color/pp_orange"
                     android:textSize="@dimen/text_size_20" />
 
@@ -117,7 +116,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_toRightOf="@id/detail_currency"
-                    android:text="111"
                     android:textColor="@color/pp_orange"
                     android:textSize="@dimen/text_size_20" />
 
@@ -127,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/detail_currency"
                     android:layout_marginTop="10dp"
-                    android:text="place"
+                    android:text="@string/self_collect"
                     android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_12" />
             </RelativeLayout>

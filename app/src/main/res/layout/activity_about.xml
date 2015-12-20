@@ -59,7 +59,7 @@
                 android:layout_below="@+id/logo"
                 android:layout_marginTop="-10dp"
                 android:layout_toRightOf="@+id/logo"
-                android:text="1.1"
+                android:text="1.0"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
         </RelativeLayout>
@@ -74,9 +74,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="我迪故事里有您更精彩"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
+                android:text="@string/about_tips"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_20" />
         </RelativeLayout>
 
         <RelativeLayout

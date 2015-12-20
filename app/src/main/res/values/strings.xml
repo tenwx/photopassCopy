@@ -248,9 +248,11 @@
     <string name="order_status">订单状态:</string>
     <string name="product_information">商品详情:</string>
     <string name="delivery_info">物流信息:</string>
+    <string name="order_info">订单信息:</string>
     <string name="customer">收件人:</string>
     <string name="phone_number">电话号码:</string>
     <string name="deliveryaddress">寄送地址:</string>
+    <string name="self_collect_address">自提地址:</string>
     <string name="orderprice">订单总额:</string>
     <string name="productprice">商品价格:</string>
     <string name="shipping">航运:</string>
@@ -581,6 +583,8 @@
     <string name="wifi_only_download">仅WiFi下载</string>
 
     <string name="comfirm_logout">确定退出?</string>
-
->>>>>>> 2edfc984491d91ba481445769bdb5ffa6fe639f8
+    <string name="self_collect">自提</string>
+    <string name="preferential">优惠:</string>
+    <string name="select_address">请选择自提地址</string>
+    <string name="about_tips">我迪故事里 , 有您更精彩</string>
 </resources>

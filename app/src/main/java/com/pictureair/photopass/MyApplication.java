@@ -25,6 +25,7 @@ import com.pictureair.photopass.util.UmengUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * ImageLoader的配置 百度定位的配置 全局数据的共享
@@ -66,7 +67,7 @@ public class MyApplication extends Application {
     public final static boolean DEBUG = true;
     private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
 
-    public static Address address;
+    public static List<Address> address;//存放收货地址
 
     @Override
     public void onCreate() {
@@ -467,6 +468,7 @@ public class MyApplication extends Application {
 
     /**
      * 获取视频推送的数量
+     *
      * @return
      */
     public int getPushViedoCount() {
@@ -475,6 +477,7 @@ public class MyApplication extends Application {
 
     /**
      * 设置视频推送的数量
+     *
      * @return
      */
     public void setPushViedoCount(int pushViedoCount) {
@@ -489,6 +492,7 @@ public class MyApplication extends Application {
      * 购买照片或者升级PP+后，设置服务器传过来的值。通过该值判断。
      * 升级PP+后的值：{"c":{"customerId":"DPPPTV9BH3U4Z2WS","shootDate":"2015-12-18"}}
      * 购买照片过后的返回值：{"c":{"id":"*******"}  具体需要测试后才知道。
+     *
      * @param upgradedPhotosMessage
      */
     public void setUpgradedPhotosMessage(String upgradedPhotosMessage) {

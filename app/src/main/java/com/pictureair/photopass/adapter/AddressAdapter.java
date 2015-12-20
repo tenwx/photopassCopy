@@ -21,15 +21,17 @@ public class AddressAdapter extends BaseAdapter {
     private Context context;
     private List<Address> addresses;
     private ViewHolder viewHolder;
+    private doOnClickAddressListener doOnClickAddressListener;
 
-    public AddressAdapter(Context context, List<Address> addresses) {
+    public AddressAdapter(Context context, List<Address> addresses, doOnClickAddressListener listener) {
         this.context = context;
         this.addresses = addresses;
+        this.doOnClickAddressListener = listener;
 
     }
 
-    public void refresh(List<Address> addresses) {
-        this.addresses = addresses;
+    public void refresh(List<Address> list) {
+        this.addresses = list;
         notifyDataSetChanged();
     }
 
@@ -49,7 +51,7 @@ public class AddressAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.item_address_list_layout, null);
@@ -69,6 +71,14 @@ public class AddressAdapter extends BaseAdapter {
         } else {
             viewHolder.addressIv.setImageResource(R.drawable.cart_not_select);
         }
+        viewHolder.addressIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doOnClickAddressListener.doOnClickAddressListener(position);
+            }
+        });
+
+
         return convertView;
     }
 
@@ -77,5 +87,8 @@ public class AddressAdapter extends BaseAdapter {
         ImageView addressIv;
     }
 
+    public interface doOnClickAddressListener {
+        void doOnClickAddressListener(int position);
+    }
 
 }

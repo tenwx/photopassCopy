@@ -25,7 +25,7 @@ import com.pictureair.photopass.activity.CartActivity;
 import com.pictureair.photopass.activity.DetailProductActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
-import com.pictureair.photopass.entity.Address;
+import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.util.ACache;
@@ -97,11 +97,14 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
                 case API1.GET_OUTLET_ID_SUCCESS:
                     //获取自提地址成功
-                    Address address = JsonTools.parseObject((JSONObject) msg.obj, Address.class);
-                    //存入缓存
-                    MyApplication.address = address;
-//                    ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, address);
                     customProgressDialog.dismiss();
+                    AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
+                    if (addressJson != null && addressJson.getOutlets().size() > 0) {
+                        //存入缓存
+                        MyApplication.address = addressJson.getOutlets();
+//                    ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, address);
+
+                    }
                     break;
 
                 case API1.GET_OUTLET_ID_FAILED:

@@ -246,10 +246,11 @@
     <string name="paymethod">Payment Method:</string>
     <string name="order_status">Order Status:</string>
     <string name="product_information">Product Information</string>
-    <string name="delivery_info">Delivery Information</string>
+    <string name="order_info">Order Information</string>
     <string name="customer">Customer:</string>
     <string name="phone_number">Phone Number:</string>
     <string name="deliveryaddress">Delivery Address:</string>
+    <string name="self_collect_address">Self Collect:</string>
     <string name="orderprice">Order Price:</string>
     <string name="productprice">Product Price:</string>
     <string name="shipping">Shipping:</string>
@@ -553,4 +554,8 @@
     <string name="wifi_only_download">WIFI Only</string>
 
     <string name="comfirm_logout">Do you want to Log Out?</string>
+    <string name="self_collect">Self-collect</string>
+    <string name="preferential">Preferential:</string>
+    <string name="select_address">Please Select Address</string>
+    <string name="about_tips">我迪故事里有您更精彩</string>
 </resources>
