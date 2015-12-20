@@ -62,7 +62,7 @@ public class NotificationService extends android.app.Service {
 //				API.getDisConnect(preferences.getString(Common.USERINFO_TOKENID, null));
 //				break;
 
-			case 3333: // 接受到信息之后。
+			case 3333: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
 				API1.clearSocketCachePhotoCount(sendType);
 				break;
 
@@ -247,6 +247,8 @@ public class NotificationService extends android.app.Service {
 							// 解决问题：购买照片与升级PP＋,同一用户不同设备不同步的问题。
 							// 升级PP＋与购买照片后发送的事件，记录下来，并且保存在application中。
 							if (event.toString().equals("upgradedPhotos")) {
+								sendType = "upgradedPhoto";
+								handler.sendEmptyMessage(3333);
 								JSONObject message = (JSONObject) arg2[0];
 								PictureAirLog.e("推送", "收到推送："+message.toString());
 								application.setUpgradedPhotosMessage(message.toString());
@@ -338,6 +340,8 @@ public class NotificationService extends android.app.Service {
 							}
 
 							if (event.toString().equals("videoGenerate")) {
+								sendType = "videoGenerate";
+								handler.sendEmptyMessage(3333);
 
 								JSONObject message = (JSONObject) arg2[0];
 								try {

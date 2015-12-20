@@ -20,6 +20,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 	public String ownOn;    //对应  time
 	
 	public String pp1,pp2,pp3;//ppp对应三个pp的号码
+	public String expiredOn; //PPP的有效期。
 	
 	public static final Parcelable.Creator<PPPinfo> CREATOR = new Creator<PPPinfo>() {
 		
@@ -58,6 +59,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		pp1 = source.readString();
 		pp2 = source.readString();
 		pp3 = source.readString();
+		expiredOn = source.readString();
 	}
 	@Override
 	public int describeContents() {
@@ -85,6 +87,8 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		dest.writeString(pp1);
 		dest.writeString(pp2);
 		dest.writeString(pp3);
+
+		dest.writeString(expiredOn);
 		
 	}
 	@Override

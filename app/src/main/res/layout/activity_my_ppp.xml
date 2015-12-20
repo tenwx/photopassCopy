@@ -48,12 +48,39 @@
             android:src="@drawable/add_righttop" />
     </RelativeLayout>
 
-    <com.pictureair.photopass.widget.BannerView_PPPIntroduce
+    <!--<com.pictureair.photopass.widget.BannerView_PPPIntroduce-->
+        <!--android:id="@+id/nopppinfo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/head"-->
+        <!--android:visibility="visible" />-->
+
+    <LinearLayout
         android:id="@+id/nopppinfo"
+        android:layout_margin="20dp"
+        android:layout_below="@id/head"
+        android:layout_above="@+id/text_instruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/head"
-        android:visibility="visible" />
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_weight="3"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/ppp_introduce1"/>
+
+
+        <TextView
+            android:layout_weight="1"
+            android:text="@string/instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"/>
+
+    </LinearLayout>
+
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork_view"
@@ -64,12 +91,10 @@
 
     <Button
         android:id="@+id/text_instruction"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nopppinfo"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
         android:background="@drawable/button_blue_shape_and_selector"
         android:gravity="center"
         android:padding="@dimen/pp_padding_10"

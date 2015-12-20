@@ -61,6 +61,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img = (ImageView)convertView.findViewById(R.id.ppp_imageView1);
 			holder.pp2_img = (ImageView)convertView.findViewById(R.id.ppp_imageView2);
 			holder.pp3_img = (ImageView)convertView.findViewById(R.id.ppp_imageView3);
+			holder.tvState =(TextView)convertView.findViewById(R.id.tv_state);
+			holder.tvExpired = (TextView)convertView.findViewById(R.id.tv_expired);
 //			holder.ppp_imageView = (ImageView) convertView.findViewById(R.id.ppp_imageView);
 			convertView.setTag(holder);
 		} else {
@@ -90,28 +92,37 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			pppCode += "-"+ dpp.PPPCode.substring(4 * i + 4, 4 * i + 8);
 		}
 		holder.pppNumber.setText(pppCode);
+		if (dpp.expiredOn.equals("")){ // 如果有效期为空。就不显示，如果不为空，就显示。
+			holder.tvExpired.setText("");
+		}else{
+			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + dpp.expiredOn);
+		}
 
 		//初始化ppp三个格子
 		switch (dpp.bindInfo.size()) {
 		case 0://全新的
+			holder.tvState.setText(R.string.no_activated);
 			holder.pp1_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
 			break;
 
 		case 1://用过一张
+			holder.tvState.setText(R.string.activated);
 			holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
 			break;
 
 		case 2://用过两张
+			holder.tvState.setText(R.string.activated);
 			holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
 			break;
 
 		case 3://全部用过
+			holder.tvState.setText(R.string.activated);
 			holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.has_ppp_icon);
@@ -147,6 +158,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		TextView time;//绑定的时间
 		TextView pppNumber;//ppp卡的序列号
 		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
+		TextView tvState; //状态
+		TextView tvExpired; //日期
 //		ImageView ppp_imageView;//背景图
 	}
 

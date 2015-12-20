@@ -811,6 +811,11 @@ public class JsonUtil {
                         bindInfo.bindDate = bindInfoObj.getString("bindDate");
                         ppPinfo.bindInfo.add(bindInfo);
                     }
+                    if (ppplist.containsKey("expiredOn")){ //如果存在有效日期，就取值，如果不存在，就为空
+                        ppPinfo.expiredOn=ppplist.getString("expiredOn");
+                    }else{
+                        ppPinfo.expiredOn = "";
+                    }
                     ppPinfoArrayList.add(ppPinfo);
                 }
             } catch (JSONException e) {

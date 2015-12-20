@@ -5,15 +5,34 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+    <RelativeLayout
         android:padding="10dp"
-        android:text="2015-22-20"
-        android:textColor="@color/gray"
-        android:textSize="15sp" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="2015-22-20"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_state"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_activated"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,6 +40,8 @@
         android:paddingBottom="5dp" >
 
         <ImageView
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:id="@+id/ppp_imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,18 +91,34 @@
                 android:src="@drawable/no_ppp_icon" />
         </LinearLayout>
 
+    <RelativeLayout
+        android:background="@color/ppp_cover"
+        android:layout_alignBottom="@id/ppp_imageView"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
         <TextView
-            android:id="@+id/ppp_number"
-            android:layout_width="match_parent"
+            android:id="@+id/tv_expired"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/ppp_imageView"
-            android:layout_alignParentRight="true"
-            android:background="@color/ppp_cover"
-            android:gravity="right"
+            android:layout_alignParentLeft="true"
             android:padding="10dp"
             android:text="fadsfd"
             android:textColor="@color/white"
             android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/ppp_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:text="fadsfd"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

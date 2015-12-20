@@ -92,7 +92,7 @@ public class HelpActivity extends BaseActivity implements OnClickListener {
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
             handler.sendEmptyMessage(NOT_NETWORK);
         } else {
-//        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), true, null);
             mListView.setVisibility(View.VISIBLE);
             noNetWorkOrNoCountView.setVisibility(View.GONE);
             API1.getHelp(handler);
