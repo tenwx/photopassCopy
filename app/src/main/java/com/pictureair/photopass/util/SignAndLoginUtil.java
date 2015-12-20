@@ -9,7 +9,6 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginCallBack;
 import com.pictureair.photopass.entity.CartItemInfoJson;
@@ -188,7 +187,7 @@ public class SignAndLoginUtil {
                     ed.putInt(Common.CART_COUNT, cartCount);
                     ed.commit();
                     PictureAirLog.out("start get pp");
-                    API1.getPPSByUserId(MyApplication.getTokenId(), handler);// 获取pp列表
+                    API1.getPPSByUserId(handler);// 获取pp列表
                     break;
 
                 case API1.GET_PPS_SUCCESS://获取pp成功

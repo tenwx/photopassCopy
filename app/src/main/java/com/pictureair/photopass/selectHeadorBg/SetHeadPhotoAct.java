@@ -48,7 +48,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case API1.UPLOAD_PHOTO_SUCCESS:
+                case API1.UPDATE_USER_IMAGE_SUCCESS:
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_HEADPHOTO, Common.HEADPHOTO_PATH);
                     e.apply();
@@ -69,7 +69,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     finish();
                     break;
 
-                case API1.UPLOAD_PHOTO_FAILED:
+                case API1.UPDATE_USER_IMAGE_FAILED:
                     //删除头像的临时文件
                     dialog.dismiss();
                     if (headPhoto.exists()) {
@@ -150,7 +150,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                         params.put(Common.USERINFO_TOKENID, tokenId);
                         params.put("updateType", "avatar");
                         params.put("file", headPhoto);
-                        API1.SetPhoto(params, handler, 0, dialog);
+                        API1.updateUserImage(params, handler, 0, dialog);
                     } catch (FileNotFoundException ee) {
                         // TODO Auto-generated catch block
                         ee.printStackTrace();

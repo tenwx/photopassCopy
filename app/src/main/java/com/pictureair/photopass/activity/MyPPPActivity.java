@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,6 +24,10 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.API;
@@ -30,6 +35,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
+import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.BannerView_PPPIntroduce;
@@ -43,6 +49,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -58,7 +65,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private ListView listPPP;
     private ImageView back;
     private ImageView optionImageView;
-    private TextView optoinTextView, text_instruction;
+    private Button text_instruction;
+    private TextView optoinTextView;
 
     private BannerView_PPPIntroduce nopppLayout;
 
@@ -79,15 +87,21 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private PPPinfo ppp;
 
+    private List<GoodsInfo1> allGoodsList;//全部商品
+    private GoodsInfo1 pppGoodsInfo;
+    private String[] photoUrls;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             Intent intent;
             switch (msg.what) {
-                case 999://购买PP
-                    intent = new Intent(MyPPPActivity.this, PPPDetailProductActivity.class);
-                    startActivity(intent);
+                case 999://购买PPP
+                    //购买PP+，先获取商品 然后进入订单界面
+                    dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
+                    //获取商品（以后从缓存中取）
+                    API1.getGoods(mHandler);
                     if (pppPop.isShowing()) {
                         pppPop.dismiss();
                     }
@@ -195,7 +209,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     break;
                 case API1.GET_PPS_BY_PPP_AND_DATE_SUCCESS:
                     PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_SUCCESS");
-                    intent =  new Intent(MyPPPActivity.this,MyPPActivity.class);
+                    intent = new Intent(MyPPPActivity.this, MyPPActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("ppp", ppp);
                     intent.putExtras(bundle);
@@ -203,7 +217,66 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     break;
                 case API1.GET_PPS_BY_PPP_AND_DATE_FAILED:
                     PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_FAILED");
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1),Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                    break;
+
+                case API1.GET_GOODS_SUCCESS:
+                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                        allGoodsList = goodsInfoJson.getGoods();
+                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                    }
+                    //获取PP+
+                    for (GoodsInfo1 goodsInfo : allGoodsList) {
+                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                            pppGoodsInfo = goodsInfo;
+                            //封装购物车宣传图
+                            photoUrls = new String[goodsInfo.getPictures().size()];
+                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+                            }
+                            break;
+                        }
+                    }
+                    API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, mHandler);
+                    break;
+                case API1.GET_GOODS_FAILED:
+                    dialog.dismiss();
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                    break;
+
+                case API1.ADD_TO_CART_FAILED:
+                    dialog.dismiss();
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
+                    break;
+
+                case API1.ADD_TO_CART_SUCCESS:
+                    dialog.dismiss();
+                    com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) msg.obj;
+                    editor = sharedPreferences.edit();
+                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
+                    editor.commit();
+                    String cartId = jsonObject.getString("cartId");
+
+                    //生成订单
+                    Intent intent1 = new Intent(MyPPPActivity.this, SubmitOrderActivity.class);
+                    ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
+                    CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
+                    cartItemInfo1.setCartId(cartId);
+                    cartItemInfo1.setProductName(pppGoodsInfo.getName());
+                    cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
+                    cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                    cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
+                    cartItemInfo1.setQty(1);
+                    cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
+                    cartItemInfo1.setPictures(photoUrls);
+                    cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
+                    cartItemInfo1.setCartProductType(3);
+
+                    orderinfoArrayList.add(cartItemInfo1);
+                    intent1.putExtra("orderinfo", orderinfoArrayList);
+                    startActivity(intent1);
                     break;
 
                 default:
@@ -227,7 +300,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         newToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //找控件
-        text_instruction = (TextView) findViewById(R.id.text_instruction);
+        text_instruction = (Button) findViewById(R.id.text_instruction);
         back = (ImageView) findViewById(R.id.back);
         setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (BannerView_PPPIntroduce) findViewById(R.id.nopppinfo);
@@ -404,8 +477,14 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.text_instruction:
-                Intent intent = new Intent(MyPPPActivity.this, PPPDetailProductActivity.class);
-                startActivity(intent);
+                //购买PP+，先获取商品 然后进入订单界面
+                if (!isNetWorkConnect(MyApplication.getInstance())) {
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                //获取商品（以后从缓存中取）
+                API1.getGoods(mHandler);
                 break;
 
             default:

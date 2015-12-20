@@ -73,6 +73,8 @@ public class Common {
     public static final String REMOVE_CART = "/shopping/removeCart";//删除购物车信息
     public static final String MODIFY_CART = "/shopping/modifyCart";//修改购物车信息
     public static final String UPLOAD_PHOTOS = "/p/userUploadPhoto";//上传图片
+    public static final String UPDATE_USER_IMAGE = "/user/updateUserImage";//更新用户头像或头部背景图
+
     public static final String ADD_ON_ORDER = "/ms/AddOnOrder";//生成订单，并且获取订单信息
     public static final String BUY_PHOTO = "/api/buyPhoto";//一键放入数码商品至购物车信息
     public static final String GET_OUTLET_ID = "/api/outlets";//获取门店地址信息

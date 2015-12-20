@@ -149,7 +149,7 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
                     //重新加载购物车数据
                     customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
                     customProgressDialog.show();
-                    API.getOrderInfo(sharedPreferences.getString(Common.USERINFO_ID, ""), handler);
+                    API1.getOrderInfo(handler);
                     break;
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
