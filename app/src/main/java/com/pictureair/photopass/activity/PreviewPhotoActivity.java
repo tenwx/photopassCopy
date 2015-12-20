@@ -341,6 +341,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     out = false;
                     break;
                 case API1.BUY_PHOTO_SUCCESS:
+                    progressDialog.dismiss();
                     cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                     PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                     //将当前购买的照片信息存放到application中
@@ -363,8 +364,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     startActivity(intent);
                     break;
                 case API1.BUY_PHOTO_FAILED:
-
                     //购买失败
+                    progressDialog.dismiss();
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
+
                     break;
                 case API1.GET_GOODS_SUCCESS:
                     GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
@@ -374,7 +378,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     //获取PP+
                     for (GoodsInfo1 goodsInfo : allGoodsList) {
-                        if (goodsInfo.getName() == Common.GOOD_NAME_PPP) {
+                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
                             pppGoodsInfo = goodsInfo;
                             //封装购物车宣传图
                             photoUrls = new String[goodsInfo.getPictures().size()];
@@ -1175,6 +1179,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     return;
                 }
+                progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 API1.buyPhoto(photoInfo.photoId, handler);
                 dia.dismiss();
                 break;
@@ -1186,9 +1191,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     return;
                 }
+                progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
                 API1.getGoods(handler);
-
                 dia.dismiss();
                 break;
             case R.id.leadknow:

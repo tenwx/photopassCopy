@@ -38,6 +38,9 @@ public class API1 {
     public static final int GET_PPP_SUCCESS = 371;
     public static final int GET_PPP_FAILED = 370;
 
+    public static final int UPDATE_USER_IMAGE_FAILED = 200;
+    public static final int UPDATE_USER_IMAGE_SUCCESS = 201;
+
 
     public static final int UPLOAD_PHOTO_SUCCESS = 511;
     public static final int UPLOAD_PHOTO_FAILED = 510;
@@ -95,7 +98,6 @@ public class API1 {
 
     public static final int GET_REFRESH_VIDEO_LIST_FAILED = 2060;
     public static final int GET_REFRESH_VIDEO_LIST_SUCCESS = 2061;
-
 
 
     /**
@@ -423,9 +425,10 @@ public class API1 {
 
     /**
      * 获取视频信息
+     *
      * @param time 如果是null，则全部获取，如果不为null，则获取最新数据
      */
-    public static void getVideoList(final String time, final Handler handler){
+    public static void getVideoList(final String time, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LAST_UPDATE_TIME, time);
@@ -582,6 +585,42 @@ public class API1 {
 
     /***************************************我的模块 start**************************************/
 
+
+    /**
+     * 更新用户头像或头部背景图
+     *
+     * @param params
+     * @param handler
+     * @param position 修改图片的时候需要这个参数来定位
+     * @throws FileNotFoundException
+     */
+    public static void updateUserImage(RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
+        // 需要更新服务器中用户背景图片信息
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(UPDATE_USER_IMAGE_SUCCESS, position, 0, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(UPDATE_USER_IMAGE_FAILED, status, 0).sendToTarget();
+
+
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                diaBarPop.setProgress(bytesWritten, totalSize);
+            }
+        });
+    }
+
+
     /**
      * 上传个人图片信息，头像或背景图
      *
@@ -658,12 +697,11 @@ public class API1 {
     /**
      * 获取所有的PP
      *
-     * @param tokenId tokenId
      * @param handler handler
      */
-    public static void getPPSByUserId(String tokenId, final Handler handler) {
+    public static void getPPSByUserId(final Handler handler) {
         RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPS_BY_USERID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -866,7 +904,6 @@ public class API1 {
             }
         });
     }
-
 
 
     /**
@@ -1369,11 +1406,15 @@ public class API1 {
         });
     }
 
-    /***************************************推送 End**************************************/
+    /***************************************
+     * 推送 End
+     **************************************/
 
     public static ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>();
+
     /**
      * 根据PP+选择PP界面。  曾经根据日期选择，现在不需要日期。
+     *
      * @param pppCode
      * @param handler
      */
@@ -1403,6 +1444,7 @@ public class API1 {
 
     /**
      * 选择PP+ 绑定PP。现在的逻辑： 一张PP+卡只能绑定一张PP卡的某一天。
+     *
      * @param pps
      * @param pppCode
      * @param handler

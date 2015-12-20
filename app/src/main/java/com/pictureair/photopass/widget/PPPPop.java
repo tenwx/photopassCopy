@@ -44,7 +44,7 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 
 		setWidth(ScreenUtil.getScreenWidth(context) * 2 / 5);
 		setHeight(LayoutParams.WRAP_CONTENT);
-		setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+		setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
 		setFocusable(true);
 		setOutsideTouchable(true);
 	}

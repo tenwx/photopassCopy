@@ -1,6 +1,4 @@
 package com.pictureair.photopass.activity;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +36,9 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.XListViewHeader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
  * 显示用户所有的PP或某张PP+可绑定的PP
@@ -87,7 +88,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 //                    for (int i = 0; i < showPPCodeList.size(); i++) {
 //                        PictureAirLog.out("index:" + i + "," + showPPCodeList.get(i).getPpCode() + ",hide" + showPPCodeList.get(i).getIsHidden());
 //                    }
-                    showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList,1);// 根据条码从数据库获取图片
+                    showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
 //                    PictureAirLog.e(TAG,"之后："+showPPCodeList.size());
                     // 更新界面
                     if (showPPCodeList != null && showPPCodeList.size() > 0) {
@@ -95,7 +96,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                             delete.setVisibility(View.VISIBLE);
                         }
                         listPPAdapter.refresh(showPPCodeList);
-                    }else {
+                    } else {
                         listPPAdapter.refresh(new ArrayList<PPinfo>());
                         delete.setVisibility(View.GONE);
                     }
@@ -104,32 +105,23 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 case API1.HIDE_PP_SUCCESS:
                     // 请求删除API成功
-                    PictureAirLog.e(TAG,"删除PP成功");
+                    PictureAirLog.e(TAG, "删除PP成功");
                     JSONObject objectSuccess;
-                    try {
-                        objectSuccess = JSONObject.parseObject(msg.obj.toString());
-                        boolean result = objectSuccess.getBoolean("success");
-                        if (result) {
-                            //更新界面
-                            if (showPPCodeList != null && showPPCodeList.size() > 0) {
-                                API1.getPPSByUserId(
-                                        sharedPreferences.getString(Common.USERINFO_TOKENID, null),
-                                        mHandler);
-                            }
-                        } else {
+                    objectSuccess = JSONObject.parseObject(msg.obj.toString());
+                    boolean result = objectSuccess.getBoolean("success");
+                    if (result) {
+                        //更新界面
+                        if (showPPCodeList != null && showPPCodeList.size() > 0) {
+                            API1.getPPSByUserId(mHandler);
                         }
-
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
                     }
 
                     break;
 
                 case API1.HIDE_PP_FAILED:
                     // 请求删除API失败
-                    PictureAirLog.e(TAG,"删除PP成功");
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1),Common.TOAST_SHORT_TIME);
+                    PictureAirLog.e(TAG, "删除PP成功");
+                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
                 case DELETE_PHOTO:
                     //更新界面
@@ -165,7 +157,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                         } else {
                                             if (isupgrade == 1) {
                                                 ppCodeInfo.setIsUpgrade(1);
-                                                ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount()+pplist.getIntValue("photoCount"));
+                                                ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount() + pplist.getIntValue("photoCount"));
                                                 System.out
                                                         .println("changing------------");
                                             }
@@ -199,7 +191,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     break;
 
                 case API1.GET_PPS_FAILED:// 获取pp列表失败
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(),msg.arg1),Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     customProgressDialog.dismiss();
                     netWorkOrNoCountView.setVisibility(View.VISIBLE);
                     netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
@@ -209,12 +201,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     break;
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                     customProgressDialog = CustomProgressDialog.show(MyPPActivity.this, getString(R.string.is_loading), false, null);
-                    API.getPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null),mHandler);
+                    API1.getPPSByUserId(mHandler);
                     break;
 
                 // seletePP的页面
                 case GET_SELECT_PP_SUCCESS:
-                    listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, null,true,mHandler,dppp);
+                    listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, null, true, mHandler, dppp);
                     listPP.setAdapter(listPPAdapter);
 
                     if (showPPCodeList.size() == 0) {
@@ -227,9 +219,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 case API.BIND_PP_FAILURE://网络获取失败
                     if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
-                        myToast.setTextAndShow(R.string.select_pp_hasUpgraded,Common.TOAST_SHORT_TIME);
-                    }else {//获取失败
-                        myToast.setTextAndShow(R.string.failed,Common.TOAST_SHORT_TIME);
+                        myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+                    } else {//获取失败
+                        myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
                         listPP.setVisibility(View.GONE);
                     }
                     if (dialog.isShowing()) {
@@ -239,9 +231,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 case API.FAILURE://连接失败
                     if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
-                          myToast.setTextAndShow(R.string.select_pp_hasUpgraded,Common.TOAST_SHORT_TIME);
-                    }else {//获取失败
-                        myToast.setTextAndShow(R.string.select_bind_pp_faile,Common.TOAST_SHORT_TIME);
+                        myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+                    } else {//获取失败
+                        myToast.setTextAndShow(R.string.select_bind_pp_faile, Common.TOAST_SHORT_TIME);
                     }
                     break;
 
@@ -250,7 +242,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(Common.NEED_FRESH, true);
                     editor.commit();
-                    ((MyApplication)getApplication()).setNeedRefreshPPPList(true);
+                    ((MyApplication) getApplication()).setNeedRefreshPPPList(true);
 //                    goIntent(); //备注。
 //                     tips。如果绑定成功。
                     if (settingUtil.isFirstTipsSyns(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
@@ -260,13 +252,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                 downloadPhotoList(); // 下载。
                             }
                             goIntent();
-                        }else{
+                        } else {
                             new CustomDialog(MyPPActivity.this, R.string.first_tips_syns_msg2, R.string.first_tips_syns_no_msg2, R.string.first_tips_syns_yes_msg2, new CustomDialog.MyDialogInterface() {
 
                                 @Override
                                 public void yes() {
                                     // TODO Auto-generated method stub 同步更新：下载照片。
-                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID,""));
+                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                                     if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
                                         downloadPhotoList();
                                     }
@@ -276,13 +268,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                 @Override
                                 public void no() {
                                     // TODO Auto-generated method stub 取消：不操作
-                                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID,""));
+                                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                                     goIntent();
                                 }
                             });
                         }
-                        settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences.getString(Common.USERINFO_ID,""));
-                    }else{
+                        settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    } else {
                         if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
                             // 下载。
                             if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
@@ -295,7 +287,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
                     dialog.dismiss();
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(),msg.arg1),Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
 
                 default:
@@ -315,13 +307,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         if (dppp != null) {
             initView_selectPP();
             tvTitle.setText(R.string.selectionpp);  //选择PP界面
-        }else{
+        } else {
             initView_notSelectPP();
             tvTitle.setText(R.string.mypage_pp); // PP 界面。
         }
     }
 
-    private void initView_common(){
+    private void initView_common() {
         settingUtil = new SettingUtil(this);
         myToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
@@ -335,7 +327,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         back.setOnClickListener(this);
     }
 
-    private void initView_selectPP(){
+    private void initView_selectPP() {
         ok = (TextView) findViewById(R.id.ok);
         ok.setVisibility(View.VISIBLE);
         ok.setOnClickListener(this);
@@ -349,9 +341,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         delete.setOnClickListener(this);
         // 获取PP信息
         customProgressDialog = CustomProgressDialog.show(MyPPActivity.this, getString(R.string.is_loading), false, null);
-        API1.getPPSByUserId(
-                sharedPreferences.getString(Common.USERINFO_TOKENID, null),
-                mHandler);
+        API1.getPPSByUserId(mHandler);
         // pPCodeList = getIntent().getParcelableArrayListExtra("pPCodeList");
         showPPCodeList = new ArrayList<PPinfo>();
         listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this,
@@ -370,7 +360,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 // TODO Auto-generated method stub
                 deleteAPI(position);// 提交删除PP
             }
-        },false,null,null);
+        }, false, null, null);
 
         listPP.addHeaderView(new XListViewHeader(this));
         listPP.setAdapter(listPPAdapter);
@@ -468,16 +458,16 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             case R.id.ok://确认绑定按钮
                 HashMap<Integer, Boolean> map = listPPAdapter.getMap();
                 if (map.size() == 0) {
-                    myToast.setTextAndShow(R.string.select_your_pp,Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(R.string.select_your_pp, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 for (int i = 0; i < map.size(); i++) {
-                    System.out.println("->"+map.get(i));
+                    System.out.println("->" + map.get(i));
                 }
                 JSONArray pps = new JSONArray();
                 tempPhotoLists = new ArrayList<PhotoInfo>();
                 //			String binddate = null;
-                System.out.println("size="+map.size());
+                System.out.println("size=" + map.size());
                 for (int j = 0; j < showPPCodeList.size(); j++) {
                     JSONObject jsonObject = new JSONObject();
                     if (null != map.get(j) && map.get(j)) {
@@ -515,8 +505,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         super.onResume();
         if (dppp != null) {
 
-        }else{
-            System.out.println("MyPPActivity----->"+myApplication.getRefreshViewAfterBuyBlurPhoto());
+        } else {
+            System.out.println("MyPPActivity----->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
                 System.out.println("deal data after bought photo");
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
@@ -534,7 +524,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     //处理解析结果，并且从数据库中获取照片信息，新开线程，防止阻塞主线程
     private void getPhotoUrlFromDatabase() {
-        new Thread(){
+        new Thread() {
             public void run() {
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(API1.PPlist, 2);
                 mHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
@@ -543,11 +533,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             ;
         }.start();
     }
+
     // 请求删除API
     public boolean deleteAPI(int position) {
         RequestParams params = new RequestParams();
-        String tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID,"");
-        PictureAirLog.e(TAG, "tokenId:"+sharedPreferences.getString(Common.USERINFO_TOKENID,""));
+        String tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, "");
+        PictureAirLog.e(TAG, "tokenId:" + sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
         params.put("tokenId", tokenId);
         if (showPPCodeList == null || showPPCodeList.size() <= 0
                 || tokenId.equals("")) {
@@ -579,9 +570,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     //下载照片
-    private void downloadPhotoList(){
+    private void downloadPhotoList() {
         Log.e("＝＝＝＝＝", "downloadPhotoList");
-        if (tempPhotoLists.size()>0) {
+        if (tempPhotoLists.size() > 0) {
             for (int i = 0; i < tempPhotoLists.size(); i++) {
                 download(pictureAirDbManager.getPhotoUrlByPhotoIDAndShootOn(tempPhotoLists.get(i).photoId, tempPhotoLists.get(i).shootTime));
             }
@@ -589,9 +580,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         goIntent();
     }
 
-    private void download(ArrayList<PhotoInfo> arrayList){
-        Log.e("=======", "arrayList.size()："+arrayList.size());
-        if (arrayList.size()>0) {
+    private void download(ArrayList<PhotoInfo> arrayList) {
+        Log.e("=======", "arrayList.size()：" + arrayList.size());
+        if (arrayList.size() > 0) {
             Intent intent = new Intent(MyPPActivity.this,
                     DownloadService.class);
             Bundle bundle = new Bundle();
@@ -601,7 +592,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    private void goIntent(){
+    private void goIntent() {
         Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
         API.PPPlist.clear();
         if (dialog.isShowing()) {
