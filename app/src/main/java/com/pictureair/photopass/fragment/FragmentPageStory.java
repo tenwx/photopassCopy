@@ -2,7 +2,6 @@ package com.pictureair.photopass.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -33,7 +32,6 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
-import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -205,6 +203,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     break;
 
                 case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED://获取刷新失败
+                    PictureAirLog.out("get photo refresh failed------>");
                     getPhotoInfoDone = true;
                     if (getPhotoInfoDone && getVideoInfoDone) {
                         finishLoad(false);
@@ -212,6 +211,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     break;
 
                 case API1.GET_REFRESH_VIDEO_LIST_FAILED://获取刷新失败
+                    PictureAirLog.out("get video refresh failed------>");
                     getVideoInfoDone = true;
                     if (getPhotoInfoDone && getVideoInfoDone) {
                         finishLoad(false);
@@ -477,21 +477,27 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             }
             new Thread() {
                 public void run() {
-                    System.out.println("-----------------> start insert data into database");
-                    if (isVideo) {
-                        app.photoPassVideoList.addAll(pictureAirDbManager.insertVideoInfoIntoPhotoPassInfo(responseArray));
-                    } else {
-                        app.photoPassPicList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray));
+                    synchronized (this) {
+                        if (isVideo) {
+                            if (refreshVideoDataCount > 0) {
+                                PictureAirLog.out("-----------------> start insert video data into database");
+                                app.photoPassVideoList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, true));
+                            }
+                        } else {
+                            if (refreshDataCount > 0) {
+                                PictureAirLog.out("-----------------> start insert photo data into database");
+                                app.photoPassPicList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false));
+                            }
+                        }
+
+                        //通知已经处理完毕
+                        if (isAll) {
+                            handler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
+
+                        } else {
+                            handler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
+                        }
                     }
-
-                    //通知已经处理完毕
-                    if (isAll) {
-                        handler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
-
-                    } else {
-                        handler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
-                    }
-
                 }
 
                 ;
