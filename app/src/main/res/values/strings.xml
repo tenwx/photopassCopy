@@ -583,5 +583,10 @@
 
     <string name="comfirm_logout">确定退出?</string>
 
->>>>>>> 2edfc984491d91ba481445769bdb5ffa6fe639f8
+    <string name="instruction">Instruction...</string>  <!-- 无英文状态。-->
+    <string name="no_activated">未激活</string>
+    <string name="activated">已激活</string>
+    <string name="expired_on">有效时间:</string>
+
+    >>>>>>> 2edfc984491d91ba481445769bdb5ffa6fe639f8
 </resources>
