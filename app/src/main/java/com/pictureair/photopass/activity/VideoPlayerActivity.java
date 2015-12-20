@@ -42,6 +42,7 @@ import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.SharePop;
 import com.pictureair.photopass.widget.VideoPlayerView;
 import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
@@ -87,18 +88,23 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private int mNetWorkType;  //当前网络的状态
     private CustomDialog customdialog; //  对话框
     private PictureAirDbManager pictureAirDbManager;
-//    private boolean isLoading = true;
+    //    private boolean isLoading = true;
     //视频实际播放的宽高//4:3默认尺寸
     private int videoHeight = 600;
     private int videoWidth = 800;
-
-
-    public boolean isOnline = true;//测试
+//    private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
+    private final int NOT_NETWORK = 111;
+    private boolean isOnline ;//网络true || 本地false
+    private String videoPath;//视频本地路径 || 视频网络地址
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            //分享回调
+            switch (msg.what) {
+                case NOT_NETWORK:
+                    tvLoding.setText(R.string.no_network);
+                    break;
+            }
         }
     };
 
@@ -106,6 +112,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+
                 case PROGRESS_CHANGED:// 进度改变
                     int i = videoPlayerView.getCurrentPosition();
                     seekBar.setProgress(i);
@@ -167,16 +174,28 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         initSeekBarEvent();// 进度条调整
 //		 myGestureDetectr();//手势检测器
         initVVEvent();// VideoPlayerView类的回调
-        startVideo();// 开始播放视频
+        getNetwork();
     }
 
+    private void getNetwork() {
+        if (!isOnline) {
+            startVideo();
+        } else {
+            if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
+                handler.sendEmptyMessage(NOT_NETWORK);
+            } else {
+                startVideo();// 开始播放视频
+            }
+        }
+    }
 
     private void initView() {
         videoInfo = (PhotoInfo) getIntent().getExtras().get(DisneyVideoTool.FROM_STORY);
-        if ( 0!=videoInfo.videoWidth || 0!=videoInfo.videoHeight ){
+        if (0 != videoInfo.videoWidth || 0 != videoInfo.videoHeight) {
             this.videoWidth = videoInfo.videoWidth;
             this.videoHeight = videoInfo.videoHeight;
         }
+        getIsOnline();//读取网络视频还是本地
         sharePop = new SharePop(context);
         pictureAirDbManager = new PictureAirDbManager(context);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
@@ -188,6 +207,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         ivIsLove = (ImageView) findViewById(R.id.iv_isLove);
         llShare = (LinearLayout) findViewById(R.id.ll_share);
         llDownload = (LinearLayout) findViewById(R.id.ll_download);
+//        noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.storyNoNetWorkView);
 
         rlHead = (RelativeLayout) findViewById(R.id.ll_head);
         llEnd = (LinearLayout) findViewById(R.id.ll_end);
@@ -221,20 +241,25 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         ivIsLove.setOnClickListener(this);
     }
 
-    private void startVideo() {
+    private void getIsOnline(){
         String fileName = ScreenUtil.getReallyFileName(videoInfo.photoPathOrURL);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
-        if (!file.exists()){
-            PictureAirLog.e(TAG," 网络播放");
-            videoPlayerView.setVideoPath(videoInfo.photoPathOrURL);
-
-        }else {
-            PictureAirLog.e(TAG," 本地播放");
-            videoPlayerView.setVideoPath(file.getPath());
+        if (!file.exists()) {
+            PictureAirLog.v(TAG, " 网络播放");
+            videoPath = videoInfo.photoPathOrURL;
+            isOnline = true;
+        } else {
+            PictureAirLog.v(TAG, " 本地播放");
+            videoPath = file.getPath();
+            isOnline = false;
         }
+    }
+
+    private void startVideo() {
+        videoPlayerView.setVideoPath(videoPath);
         cancelDelayHide();
         hideControllerDelay();
     }
@@ -243,7 +268,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         videoPlayerView.setMyMediapalerPrepared(new VideoPlayerView.myMediapalerPrepared() {
             @Override
             public void myOnrepared(MediaPlayer mp) {
-                PictureAirLog.e(TAG,"===> myOnrepared");
+                PictureAirLog.e(TAG, "===> myOnrepared");
                 tvLoding.setVisibility(View.GONE);
                 llShow.setEnabled(true);
 //                isLoading = false;
@@ -252,7 +277,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         videoPlayerView.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer arg0) {
-                PictureAirLog.e(TAG,"===> onPrepared");
+                PictureAirLog.e(TAG, "===> onPrepared");
                 setVideoScale(SCREEN_DEFAULT);// 按比例（全屏）
                 // setVideoScale(SCREEN_FULL);//全屏（会改变视频尺寸）
                 if (isControllerShow) {
@@ -283,7 +308,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
             @Override
             public void onCompletion(MediaPlayer arg0) {
-                PictureAirLog.e(TAG,"===> onCompletion");
+                PictureAirLog.e(TAG, "===> onCompletion");
 
 //				VideoPlayerView.stopPlayback();
 //				startVideo();
@@ -302,7 +327,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             @Override
             public void onProgressChanged(SeekBar seekbar, int progress,
                                           boolean fromUser) {
-                PictureAirLog.e(TAG,"===> onProgressChanged");
+                PictureAirLog.e(TAG, "===> onProgressChanged");
 
                 if (fromUser) {
 //                    if (!isLoading) {
@@ -314,14 +339,14 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
             @Override
             public void onStartTrackingTouch(SeekBar arg0) {
-                PictureAirLog.e(TAG,"===> onStartTrackingTouch");
+                PictureAirLog.e(TAG, "===> onStartTrackingTouch");
 
                 myHandler.removeMessages(HIDE_CONTROLER);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                PictureAirLog.e(TAG,"===> onStopTrackingTouch");
+                PictureAirLog.e(TAG, "===> onStopTrackingTouch");
 
                 myHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
             }
@@ -332,7 +357,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         videoPlayerView.setMySizeChangeLinstener(new MySizeChangeLinstener() {
             @Override
             public void doMyThings() {
-                PictureAirLog.e(TAG,"===> doMyThings");
+                PictureAirLog.e(TAG, "===> doMyThings");
 
                 setVideoScale(SCREEN_DEFAULT);
             }
@@ -344,7 +369,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                PictureAirLog.e(TAG,"===> onError");
+                PictureAirLog.e(TAG, "===> onError");
 
                 videoPlayerView.stopPlayback();
                 return false;
@@ -355,7 +380,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void onPause() {
-        PictureAirLog.e(TAG,"=======>onPause");
+        PictureAirLog.e(TAG, "=======>onPause");
         playedTime = videoPlayerView.getCurrentPosition();
         videoPlayerView.pause();
         btnPlayOrStop.setImageResource(R.drawable.play);
@@ -499,23 +524,24 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         llEnd.setVisibility(View.VISIBLE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
 
-        setVideoResolution(true, videoWidth,videoHeight);
+        setVideoResolution(true, videoWidth, videoHeight);
 
         setVideoScale(SCREEN_DEFAULT);
     }
 
     /**
      * 设置视频显示尺寸
-     * @param isVertical 竖屏？横屏
+     *
+     * @param isVertical  竖屏？横屏
      * @param videoWidth  视频宽
-     * @param videoHeight   视频高
+     * @param videoHeight 视频高
      */
-    private void setVideoResolution(boolean isVertical,int videoWidth,int videoHeight){
+    private void setVideoResolution(boolean isVertical, int videoWidth, int videoHeight) {
         ViewGroup.LayoutParams layoutParams = llShow.getLayoutParams();
-        if (isVertical){//竖屏
+        if (isVertical) {//竖屏
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             layoutParams.height = layoutParams.width * videoHeight / videoWidth;
-        }else{//横屏
+        } else {//横屏
             layoutParams.height = ScreenUtil.getScreenHeight(this);
             layoutParams.width = layoutParams.height * videoWidth / videoHeight;
         }
@@ -523,10 +549,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void isPausedOrPlay() {
-        if (isPaused){
+        if (isPaused) {
             videoPlayerView.pause();
             btnPlayOrStop.setImageResource(R.drawable.play);
-        }else{
+        } else {
             videoPlayerView.start();
 //        btnPlayOrStop.setImageResource(R.drawable.play);
             btnPlayOrStop.setImageResource(0);
@@ -540,7 +566,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
         switch (v.getId()) {
             case R.id.ll_share:
-                sharePop.setshareinfo(null,videoInfo.shareURL, null, "online", handler);
+                sharePop.setshareinfo(null, videoInfo.shareURL, null, "online", handler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.ll_download:
@@ -586,10 +612,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
             return;
         }
-        if (videoInfo.onLine == 1) {//是pp的照片
+        if (isOnline) {
             downLoadPhotos();
         } else {
-            myToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
+            myToast.setTextAndShow(R.string.neednotdownload_video, Common.TOAST_SHORT_TIME);
         }
     }
 

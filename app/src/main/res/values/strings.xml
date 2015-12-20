@@ -532,6 +532,7 @@
     <string name="we_will_send_you_to">我们会送你去</string>
     <string name="my_disney_story_once_it_is_ready">我的迪士尼故事一旦准备好了</string>
     <string name="start">开始</string>
+    <string name="neednotdownload_video">此视频已经存在</string>
     <!-- Disney video 引导页介绍，暂时没有中文，先用英文代替-->
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <!-- Disney video End-->

@@ -26,6 +26,7 @@ import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -83,6 +84,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED:
                     // 处理失败，数据错误
 //                    initPopWindow();
+                    newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)),Common.TOAST_SHORT_TIME);
                     PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
                     break;
                 default:
@@ -294,6 +296,10 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.button1://选择确定按钮
+                if(AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID){
+                    newToast.setTextAndShow(R.string.no_network,Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 if (photoURLlist.size() == 0) {
                     newToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
                 } else if (photoURLlist.size() < photocount) {
