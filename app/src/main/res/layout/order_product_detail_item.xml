@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:focusable="false"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingLeft="10dp" >
 
         <ImageView
@@ -28,10 +29,11 @@
         <TextView
             android:id="@+id/order_textView_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="top"
             android:layout_marginLeft="5dp"
             android:layout_weight="4"
+            android:gravity="center_vertical"
             android:focusable="false"
             android:text="product"
             android:textColor="@color/gray"
@@ -39,7 +41,7 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="top"
             android:layout_marginLeft="5dp"
             android:layout_weight="2"
@@ -60,7 +62,6 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:focusable="false"
-                    android:gravity="center"
                     android:text="$"
                     android:textColor="@color/gray"
                     android:textSize="12sp" />

@@ -9,7 +9,7 @@
         android:id="@+id/order_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/blue">
+        android:background="@color/pp_blue">
 
         <ImageView
             android:id="@+id/order_detail_return"
@@ -17,7 +17,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:padding="10dp"
+            android:paddingBottom="13dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="13dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -40,29 +43,64 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- 商品详情 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:text="@string/product_information"
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_12" />
+
+                <com.pictureair.photopass.widget.DashedLineView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <com.pictureair.photopass.widget.NoScrollListView
+                    android:id="@+id/product_detail_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:clickable="false"
+                    android:divider="@null"
+                    android:focusable="false" />
+
+            </LinearLayout>
+
             <!-- 订单详情 -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:padding="10dp">
+                    android:padding="@dimen/pp_padding_10"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16">
 
                     <TextView
                         android:id="@+id/or_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="6dp"
                         android:gravity="center"
                         android:text="@string/order_information"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
+                        android:textColor="@color/pp_dark_blue"
+                        android:textSize="@dimen/text_size_12" />
 
                     <Button
                         android:id="@+id/order_detail_payment"
@@ -87,7 +125,40 @@
                     android:layout_height="1dp"
                     android:background="@color/white" />
 
-                <LinearLayout
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="@string/productprice"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <TextView
+                        android:id="@+id/order_productprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
+                        android:gravity="center"
+                        android:text="fsa"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_12" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
@@ -101,24 +172,23 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/order_no"
-                        android:textColor="@color/gray2"
+                        android:text="@string/preferential"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/order_detail_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
-                        android:paddingLeft="10dp"
-                        android:text="fsa"
-                        android:textColor="@color/gray2"
+                        android:text="-0"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
@@ -132,24 +202,25 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/order_time"
-                        android:textColor="@color/gray2"
+                        android:text="@string/totalprice"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/order_detail_time"
+                        android:id="@+id/pay_total_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
-                        android:paddingLeft="10dp"
                         android:text="fsa"
-                        android:textColor="@color/gray2"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
@@ -164,83 +235,22 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:text="@string/paymethod"
-                        android:textColor="@color/gray2"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/order_detail_paymethod"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
-                        android:paddingLeft="10dp"
                         android:text="fsa"
-                        android:textColor="@color/gray2"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:text="@string/order_status"
-                        android:textColor="@color/gray2"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/order_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
-                        android:gravity="center"
-                        android:paddingLeft="10dp"
-                        android:text="fsa"
-                        android:textColor="@color/gray2"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:text="@string/productprice"
-                        android:textColor="@color/gray2"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/order_productprice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
-                        android:gravity="center"
-                        android:paddingLeft="10dp"
-                        android:text="fsa"
-                        android:textColor="@color/gray2"
-                        android:textSize="12sp" />
-                </LinearLayout>
             </LinearLayout>
             <!-- 订单详情 结束 -->
 
@@ -258,16 +268,16 @@
                     android:background="@color/white"
                     android:gravity="center_vertical"
                     android:padding="15dp"
-                    android:text="@string/delivery_info"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp" />
+                    android:text="@string/order_info"
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_12" />
 
                 <com.pictureair.photopass.widget.DashedLineView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/white" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
@@ -281,53 +291,116 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="@string/deliveryaddress"
-                        android:textColor="@color/gray2"
+                        android:text="@string/order_no"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/order_detail_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/pp_margin_16"
+                        android:gravity="center"
+                        android:text="fsa"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="@string/order_time"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/order_detail_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/pp_margin_16"
+                        android:gravity="center"
+                        android:text="fsa"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="@string/self_collect_address"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/order_delivery_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:text="@string/disney_address"
-                        android:textColor="@color/gray2"
+                        android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="@string/order_status"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/order_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/pp_margin_16"
+                        android:gravity="center"
+                        android:text="fsa"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="12sp" />
+                </RelativeLayout>
             </LinearLayout>
             <!-- 物流信息 结束 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center_vertical"
-                    android:padding="15dp"
-                    android:text="@string/product_information"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp" />
-
-                <com.pictureair.photopass.widget.DashedLineView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white" />
-
-                <com.pictureair.photopass.widget.NoScrollListView
-                    android:id="@+id/product_detail_listview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:clickable="false"
-                    android:divider="@null"
-                    android:focusable="false" />
-
-            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

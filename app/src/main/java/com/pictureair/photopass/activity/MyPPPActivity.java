@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -68,7 +69,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private Button text_instruction;
     private TextView optoinTextView;
 
-    private BannerView_PPPIntroduce nopppLayout;
+//    private BannerView_PPPIntroduce nopppLayout;
+   private LinearLayout nopppLayout;
 
     private CustomProgressDialog dialog;
     private MyToast newToast;
@@ -303,7 +305,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         text_instruction = (Button) findViewById(R.id.text_instruction);
         back = (ImageView) findViewById(R.id.back);
         setting = (ImageView) findViewById(R.id.ppp_setting);
-        nopppLayout = (BannerView_PPPIntroduce) findViewById(R.id.nopppinfo);
+        nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
         listPPP = (ListView) findViewById(R.id.list_ppp);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         list3 = new ArrayList<>();
