@@ -33,6 +33,7 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.AliPayUtil;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.PaypalUtil;
@@ -358,6 +359,11 @@ public class PaymentOrderActivity extends BaseActivity implements
 			break;
 
 		case R.id.button_smpm:// 提交支付
+			if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+				newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+				return;
+			}
+
 			sbmtButton.setEnabled(false);
 			PictureAirLog.v(TAG, "-------------pay on click");
 			// 直接调用接口

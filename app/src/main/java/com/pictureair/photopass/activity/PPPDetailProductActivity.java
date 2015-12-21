@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
@@ -28,6 +29,7 @@ import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -78,7 +80,6 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                 case API.GET_PHOTOPASSPLUS_FAILED:
                 case API1.ADD_TO_CART_FAILED:
                     myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-
                     break;
 
                 case API1.ADD_TO_CART_SUCCESS:
@@ -188,17 +189,29 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         switch (v.getId()) {
             case R.id.textview_cart_count:
             case R.id.button_bag:
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 intent = new Intent(this, CartActivity.class);
                 startActivity(intent);
                 break;
 
             case R.id.button_buy:
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 //购买按钮，需要将当前商品的类型和单价存储起来
                 isBuyNow = true;//立即购买
                 addtocart();
                 break;
 
             case R.id.button_cart:
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 //加入购物车，会有动画效果,如果没有登录，先提示登录
                 isBuyNow = false;
                 addtocart();
@@ -218,7 +231,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
      */
     private void addtocart() {
         //调用addToCart API
-        API1.addToCart(goodsInfo.getGoodsKey(), 1, true, null, mhandler);
+        API1.addToCart(goodsInfo.getGoodsKey(), 1, isBuyNow, null, mhandler);
     }
 
     /**

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -26,11 +27,13 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.util.ArrayList;
@@ -72,6 +75,7 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
     private static String TAG = "OrderActivity";
 
     private CustomProgressDialog customProgressDialog;
+    private MyToast myToast;
 
     Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -147,6 +151,10 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
 
                 case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                     //重新加载购物车数据
+                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                        return;
+                    }
                     customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
                     customProgressDialog.show();
                     API1.getOrderInfo(handler);
@@ -226,6 +234,8 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
         backLayout.setOnClickListener(this);
+
+        myToast = new MyToast(this);
     }
 
 

@@ -66,4 +66,5 @@ public class BaseFragmentActivity extends FragmentActivity{
         }
         return true;
     }
+
 }
