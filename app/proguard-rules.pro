@@ -58,7 +58,7 @@
 #-libraryjars libs/ShareSDK-Wechat-Moments-2.6.1.jar
 #-libraryjars libs/socketio
 #-libraryjars libs/umeng-analytics-v5.5.3.jar
-#-libraryjars libs/universal-image-loader-1.9.2-with-sources.jar
+#-libraryjars libs/universal-image-loader-1.9.3-with-sources.jar
 #-libraryjars libs/zxing.jar
 
 #将api自带的设置避免混淆
