@@ -24,6 +24,7 @@
 -optimizationpasses 5
 -dontusemixedcaseclassnames
 # 是否混淆第三方jar
+-dontskipnonpubliclibraryclassmembers
 -dontskipnonpubliclibraryclasses
 -dontpreverify
 -verbose
@@ -31,6 +32,7 @@
 -keepattributes InnerClasses,LineNumberTable
 -keepattributes *Annotation*
 -keepattributes Signature
+-keepattributes Signture
 
 #注意：studio里面的jar，工具自动添加混淆 不需要写，写上去会报重复申明
 #将jar全部设置混淆
@@ -121,9 +123,7 @@
     public static ** valueOf(java.lang.String);
 }
 
--keep class **.R$* {
-    *;
-}
+-keep class **.R$* {*;}
 
 -keep class * implements android.os.Parcelable {
 	public static final android.os.Parcelable$Creator *;
@@ -132,11 +132,6 @@
 #友盟混淆
 -keepclassmembers class * {
    	public <init>(org.json.JSONObject);
-}
-
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
 }
 
 -keep public class com.pictureAir.R$*{
@@ -153,11 +148,10 @@
 
 # fastjson 混淆
 -dontwarn com.alibaba.fastjson.**
--dontskipnonpubliclibraryclassmembers
--dontskipnonpubliclibraryclasses
+
 -keep class com.alibaba.fastjson.** { *; }
 -keepclassmembers class * {
-public <methods>;
+    public <methods>;
 }
 -keepclassmembers class * implements java.io.Serializable {
     static final long serialVersionUID;
@@ -168,4 +162,3 @@ public <methods>;
     java.lang.Object readResolve();
     public <fields>;
 }
--keepattributes Signture
