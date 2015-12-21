@@ -249,7 +249,7 @@ public class PictureAirDbManager {
 				question.answer = cursor.getString(cursor.getColumnIndex("answer"));
 				resultArray.add(question);
 			}
-			System.out.println("-------find the question and the size is "+ resultArray.size());
+			System.out.println("-------find the question and the size is " + resultArray.size());
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -292,7 +292,7 @@ public class PictureAirDbManager {
 	public void deleteSettingStatus(String settingType, String userInfoId){
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			database.execSQL("delete from "+ Common.FIRST_START_ACTIVITY_INFO_TABLE +" where activity = ? and userId = ?", new String[]{settingType, userInfoId});
+			database.execSQL("delete from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -341,9 +341,9 @@ public class PictureAirDbManager {
 		Cursor cursor = null;
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ? and shootTime=? order by shootOn", new String[] {"%" + photoCode + "%", shootOn});
+			cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ? and shootTime=? order by shootOn", new String[]{"%" + photoCode + "%", shootOn});
 
-			Log.e("查出来的数据。", "cursor.getCount(); ;"+cursor.getCount());
+			Log.e("查出来的数据。", "cursor.getCount(); ;" + cursor.getCount());
 			if (cursor.moveToFirst()) {
 				do {
 					PhotoInfo photoInfo = new PhotoInfo();
@@ -455,7 +455,7 @@ public class PictureAirDbManager {
 	public void updatePhotoBought(String selectedPhotoId){
 		try {
 			database = photoInfoDBHelper.getWritableDatabase();
-			database.execSQL("update "+Common.PHOTOPASS_INFO_TABLE+" set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
+			database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -531,6 +531,9 @@ public class PictureAirDbManager {
 	 */
 	public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isVideo){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
+		if (responseArray.size() == 0) {
+			return resultArrayList;
+		}
 		database = photoInfoDBHelper.getWritableDatabase();
 		database.beginTransaction();
 		for (int i = 0; i < responseArray.size(); i++) {

@@ -444,7 +444,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             final JSONArray responseArray = jsonObject.getJSONArray(isVideo ? "videoList" : "photos");
 
             String updatetimeString = jsonObject.getString(isVideo ? "t" : "time");
-            System.out.println("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
+            PictureAirLog.out("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
 
             if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
                 //需要存储这个时间
@@ -479,15 +479,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 public void run() {
                     synchronized (this) {
                         if (isVideo) {
-                            if (refreshVideoDataCount > 0) {
+//                            if (refreshVideoDataCount > 0) {
                                 PictureAirLog.out("-----------------> start insert video data into database");
                                 app.photoPassVideoList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, true));
-                            }
+//                            }
                         } else {
-                            if (refreshDataCount > 0) {
+//                            if (refreshDataCount > 0) {
                                 PictureAirLog.out("-----------------> start insert photo data into database");
                                 app.photoPassPicList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false));
-                            }
+//                            }
                         }
 
                         //通知已经处理完毕
