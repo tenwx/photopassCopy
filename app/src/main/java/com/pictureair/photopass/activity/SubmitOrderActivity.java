@@ -27,7 +27,9 @@ import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -84,16 +86,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     break;
                 case API1.GET_OUTLET_ID_SUCCESS:
                     //获取自提地址成功
-                    AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
+                    AddressJson addressJson = JsonTools.parseObject(msg.obj.toString(), AddressJson.class);
                     if (addressJson != null && addressJson.getOutlets().size() > 0) {
-                        //更新地址信息
+                        //更新地址信息View
                         addressAdapter.refresh(addressJson.getOutlets());
-                        //完全显示
                         fixListViewHeight(transportListView);
                         //存入缓存
-                        MyApplication.address = addressJson.getOutlets();
-//                    ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, address);
-                        API1.addOrder(cartItemIds, deliveryType, "", "", mHandler);
+                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString());
                     }
                     break;
 
@@ -262,23 +261,28 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
         if (deliveryType == 1) {
-
-            //显示地址
-            if (MyApplication.address == null) {
-                PictureAirLog.v(TAG, "MyApplication.address == null");
-                addressList = new ArrayList<>();
-                infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
-                API1.getOutlets(mHandler);
-            } else {
-                addressList = MyApplication.address;
-                infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
-            }
-
+            //需要显示自提地址列表
+            addressList = new ArrayList<>();
+            infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
+            //获取地址
+            getAddress();
         }
         totalpriceTextView.setText((int) totalprice + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
 
+    }
+
+    /**
+     * 获取收货地址列表
+     */
+    public void getAddress() {
+        String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
+        if (addressByACache != null && !addressByACache.equals("")) {
+            mHandler.obtainMessage(API1.GET_OUTLET_ID_SUCCESS, addressByACache).sendToTarget();
+        } else {
+            API1.getOutlets(mHandler);
+        }
     }
 
     /**
@@ -331,10 +335,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             transportListView.setAdapter(addressAdapter);
             fixListViewHeight(transportListView);
         }
-
-
         return view;
-
     }
 
     public void fixListViewHeight(ListView listView) {
@@ -363,6 +364,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button2_submit:
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
                 if (orderId == null || orderId.equals("")) {
                     if (deliveryType == 1) {
@@ -374,6 +380,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             API1.addOrder(cartItemIds, deliveryType, addressList.get(curPositon).getOutletId(), "", mHandler);
                         }
                     } else {
+                        //PP+/数码商品不需要地址
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                         API1.addOrder(cartItemIds, 3, "", "", mHandler);
                     }

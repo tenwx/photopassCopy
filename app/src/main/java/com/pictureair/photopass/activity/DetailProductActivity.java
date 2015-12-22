@@ -27,6 +27,7 @@ import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -147,6 +148,10 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         switch (v.getId()) {
             case R.id.textview_cart_count:
             case R.id.button_bag:
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 intent = new Intent(DetailProductActivity.this, CartActivity.class);
                 DetailProductActivity.this.startActivity(intent);
                 break;
@@ -166,6 +171,10 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                 break;
 
             case R.id.button_cart://加入购物车，会有动画效果
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 //判断tokenId是否为空
                 if (MyApplication.getTokenId().isEmpty()) {
                     intent = new Intent(DetailProductActivity.this, LoginActivity.class);

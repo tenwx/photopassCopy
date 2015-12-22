@@ -169,6 +169,9 @@ public class API1 {
 
     public static final int BIND_PPS_DATE_TO_PP_FAILED = 5090;
     public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5091;
+
+    public static final int MODIFY_PWD_SUCCESS = 5101;
+    public static final int MODIFY_PWD_FAILED = 5100;
     //我的模块 end
 
 
@@ -876,6 +879,35 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(GET_HELP_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
+     * 修改密码或者忘记密码接口
+     *
+     * @param oldPwd  旧密码，修改的时候用到，如果是忘记密码的话，设为null
+     * @param newPwd  新密码
+     * @param handler
+     */
+    public static void modifyPwd(String oldPwd, String newPwd, final Handler handler) {
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.NEW_PASSWORD, AppUtil.md5(newPwd));
+        params.put(Common.OLD_PASSWORD, AppUtil.md5(oldPwd));
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.MODIFYPWD, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(MODIFY_PWD_SUCCESS);
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(MODIFY_PWD_FAILED, status, 0).sendToTarget();
+
             }
         });
     }

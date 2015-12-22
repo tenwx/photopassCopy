@@ -20,8 +20,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
     }
@@ -34,7 +34,6 @@ dependencies {
     compile files('libs/MobCommons.jar')
     compile files('libs/MobLogCollector.jar')
     compile files('libs/MobTools.jar')
-    compile files('libs/PayPalAndroidSDK-2.8.7.jar')
     compile files('libs/ShareSDK-Core-2.6.4.jar')
     compile files('libs/ShareSDK-Facebook-2.6.4.jar')
     compile files('libs/ShareSDK-QQ-2.6.4.jar')
@@ -59,8 +58,8 @@ dependencies {
     compile files('libs/zxing.jar')
     compile project(':SMSSDK')
     compile files('libs/mframework.jar')
-    compile 'com.alibaba:fastjson:1.2.7'
-    compile 'com.loopj.android:android-async-http:1.4.9'
     compile files('libs/eventbus-3.0.0-beta1.jar')
     compile files('libs/android-support-v4.jar')
+    compile 'com.alibaba:fastjson:1.2.7'
+    compile 'com.loopj.android:android-async-http:1.4.9'
 }

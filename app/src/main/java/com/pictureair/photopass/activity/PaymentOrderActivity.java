@@ -19,12 +19,6 @@ import android.widget.TextView;
 import com.alipay.sdk.app.PayTask;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
-import com.paypal.android.sdk.payments.ShippingAddress;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.alipay.PayResult;
@@ -33,9 +27,9 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AliPayUtil;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
-import com.pictureair.photopass.util.PaypalUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -109,29 +103,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
 	private boolean isPaying = false;
 
-	/**
-	 * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
-	 * 
-	 * - Set to PayPalConfiguration.ENVIRONMENT_SANDBOX to use your test
-	 * credentials from https://developer.paypal.com
-	 * 
-	 * - Set to PayPalConfiguration.ENVIRONMENT_NO_NETWORK to kick the tires
-	 * without communicating to PayPal's servers.
-	 */
-	private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_NO_NETWORK;
-
-	// note that these credentials will differ between live & sandbox
-	// environments.
-	private static final String CONFIG_CLIENT_ID = "credential from developer.paypal.com";// 账号注册号之后就会有这个ID
-
 	private static final String TAG = "PaymentOrderActivity";
-
-	private static final int REQUEST_CODE_PAYMENT = 1;
-	private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
-	private static final int REQUEST_CODE_PROFILE_SHARING = 3;
-
-	private static PayPalConfiguration config = new PayPalConfiguration()
-			.environment(CONFIG_ENVIRONMENT).clientId(CONFIG_CLIENT_ID);
 
 	// -----------微信支付参数----------------//
 	PayReq req;
@@ -171,9 +143,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 				MODE_PRIVATE);
 		newToast = new MyToast(this);
 		myApplication = (MyApplication) getApplication();
-
-		// 初始化paypal
-		InitPayPal();
 
 		// 获取wechat的实例对象
 		req = new PayReq();
@@ -219,15 +188,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 //		}
 	}
 
-	/**
-	 * 初始化PayPal
-	 */
-	private void InitPayPal() {
-		// TODO Auto-generated method stub
-		Intent intent = new Intent(this, PayPalService.class);
-		intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-		startService(intent);
-	}
 
 	/**
 	 * 支付函数
@@ -292,33 +252,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 			mHandler.sendEmptyMessage(RQF_SUCCESS);
 		} else if (6 == payType) {
 			PictureAirLog.v(TAG, "paypal");
-			/*
-			 * PAYMENT_INTENT_SALE will cause the payment to complete
-			 * immediately. Change PAYMENT_INTENT_SALE to -
-			 * PAYMENT_INTENT_AUTHORIZE to only authorize payment and capture
-			 * funds later. - PAYMENT_INTENT_ORDER to create a payment for
-			 * authorization and capture later via calls from your server.
-			 * 
-			 * Also, to include additional payment details and an item list, see
-			 * getStuffToBuy() below.
-			 */
-			PayPalPayment thingToBuy = PaypalUtil.getStuffToBuy(
-					PayPalPayment.PAYMENT_INTENT_SALE, nameString);
-			addAppProvidedShippingAddress(thingToBuy);
-			enableShippingAddressRetrieval(thingToBuy, true);
-			/*
-			 * See getStuffToBuy(..) for examples of some available payment
-			 * options.
-			 */
-
-			Intent intent = new Intent(this, PaymentActivity.class);
-
-			// send the same configuration for restart resiliency
-			intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-
-			intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
-
-			startActivityForResult(intent, REQUEST_CODE_PAYMENT);
 
 		} else if (payType == 7) {
 			PictureAirLog.v(TAG, "wechat");
@@ -331,23 +264,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 		}
 	}
 
-	/*
-	 * 添加收货地址到paypal
-	 */
-	private void addAppProvidedShippingAddress(PayPalPayment paypalPayment) {
-		ShippingAddress shippingAddress = new ShippingAddress()
-				.recipientName("alieen").line1("abc").city("上海").state("浦东")
-				.postalCode("0011").countryCode("US");
-		paypalPayment.providedShippingAddress(shippingAddress);
-	}
-
-	/*
-	 * 是否打开地址检索功能，如果true，则会从paypal账号中获取地址，如果false，不会获取地址
-	 */
-	private void enableShippingAddressRetrieval(PayPalPayment paypalPayment,
-			boolean enable) {
-		paypalPayment.enablePayPalShippingAddressesRetrieval(enable);
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -358,6 +274,11 @@ public class PaymentOrderActivity extends BaseActivity implements
 			break;
 
 		case R.id.button_smpm:// 提交支付
+			if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+				newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+				return;
+			}
+
 			sbmtButton.setEnabled(false);
 			PictureAirLog.v(TAG, "-------------pay on click");
 			// 直接调用接口
@@ -403,53 +324,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 		default:
 			break;
 		}
-	}
-
-	// 支付成功回调函数
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
-			// paypal支付成功
-			PaymentConfirmation confirm = data
-					.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-			if (confirm != null) {
-				try {
-					Log.i("PayPal", confirm.toJSONObject().toString(4));
-					Log.i("PayPal", confirm.getPayment().toJSONObject()
-							.toString(4));
-					/**
-					 * TODO: send 'confirm' (and possibly confirm.getPayment()
-					 * to your server for verification or consent completion.
-					 * See https://developer.paypal.com/webapps/developer/docs/
-					 * integration/mobile/verify-mobile-payment/ for more
-					 * details.
-					 * 
-					 * For sample mobile backend interactions, see
-					 * https://github
-					 * .com/paypal/rest-api-sdk-python/tree/master/
-					 * samples/mobile_backend
-					 */
-
-				} catch (JSONException e) {
-					Log.e("PayPal", "an extremely unlikely failure occurred: ",
-							e);
-				}
-			}
-			// String payKey =
-			// data.getStringExtra(PayPalActivity.EXTRA_PAY_KEY);
-			// PictureAirLog.v(TAG,"paypal pay success"+payKey);
-			mHandler.sendEmptyMessage(RQF_SUCCESS);
-		} else if (resultCode == RESULT_CANCELED) {
-			// paypal取消支付
-			PictureAirLog.v(TAG, "paypal pay cancel");
-			mHandler.sendEmptyMessage(RQF_CANCEL);
-		} else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
-			// paypal付款失败
-			mHandler.sendEmptyMessage(RQF_ERROR);
-		} else if (resultCode == 30) {// 取消添加收货地址
-
-		}
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	// 支付失败处理

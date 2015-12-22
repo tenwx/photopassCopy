@@ -132,8 +132,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 Context.MODE_PRIVATE);
         judgeSettingStatus();
-
-
     }
 
 

@@ -45,6 +45,7 @@ import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
+import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -375,24 +376,26 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
                         allGoodsList = goodsInfoJson.getGoods();
                         PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                    }
-                    //获取PP+
-                    for (GoodsInfo1 goodsInfo : allGoodsList) {
-                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                            pppGoodsInfo = goodsInfo;
-                            //封装购物车宣传图
-                            photoUrls = new String[goodsInfo.getPictures().size()];
-                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+                        //获取PP+
+                        for (GoodsInfo1 goodsInfo : allGoodsList) {
+                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                                pppGoodsInfo = goodsInfo;
+                                //封装购物车宣传图
+                                photoUrls = new String[goodsInfo.getPictures().size()];
+                                for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                                    photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+                                }
+                                break;
                             }
-                            break;
                         }
+                        API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, handler);
+                        //将数据保存到缓存中
+                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString());
                     }
-                    API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, handler);
                     break;
                 case API1.GET_GOODS_FAILED:
                     progressDialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(),msg.arg1), Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
 
                 case API1.ADD_TO_CART_FAILED:
@@ -1192,13 +1195,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                //获取商品（以后从缓存中取）
-                API1.getGoods(handler);
+                //获取商品
+                getALlGoods();
                 dia.dismiss();
                 break;
             case R.id.leadknow:
             case R.id.blur_lead_view:
-                PictureAirLog.v(TAG,"know");
+                PictureAirLog.v(TAG, "know");
                 leadView.setVisibility(View.GONE);
                 break;
 
@@ -1220,6 +1223,27 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             default:
                 break;
         }
+    }
+
+
+    /**
+     * 初始化数据
+     */
+    public void getALlGoods() {
+        //从缓层中获取数据
+        String goodsByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS);
+        if (goodsByACache != null && !goodsByACache.equals("")) {
+            handler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+        } else {
+            //从网络获取商品,先检查网络
+            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
+                API1.getGoods(handler);
+            } else {
+                //提醒检查网络
+                newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+            }
+        }
+
     }
 
     /**
