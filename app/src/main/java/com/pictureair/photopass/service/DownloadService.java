@@ -14,13 +14,10 @@ import android.os.IBinder;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -274,7 +271,7 @@ public class DownloadService extends Service {
             });
         } else {//video
             //目前测试的路径
-            String downloadURL = downloadList.get(0).photoPathOrURL;
+            String downloadURL = Common.PHOTO_URL + downloadList.get(0).photoPathOrURL;
             HttpUtil.get(downloadURL, params, new BinaryHttpResponseHandler(new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/png", "image/jpeg"}) {
 
                 @Override

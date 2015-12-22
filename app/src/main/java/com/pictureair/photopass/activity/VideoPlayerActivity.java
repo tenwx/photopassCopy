@@ -250,7 +250,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
             PictureAirLog.v(TAG, " 网络播放");
-            videoPath = videoInfo.photoPathOrURL;
+            videoPath = Common.PHOTO_URL + videoInfo.photoPathOrURL;
             isOnline = true;
         } else {
             PictureAirLog.v(TAG, " 本地播放");
