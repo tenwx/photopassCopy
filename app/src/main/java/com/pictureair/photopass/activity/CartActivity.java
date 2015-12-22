@@ -97,10 +97,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         cartInfoList.addAll(cartItemInfoJson.getItems());
                         //更新购物车数量
                         Editor editor = sPreferences.edit();
-                        editor.putInt(Common.CART_COUNT, cartInfoList.size());
+                        editor.putInt(Common.CART_COUNT, cartItemInfoJson.getTotalCount());
                         editor.commit();
 
-                        totalTextView.setText((float) cartItemInfoJson.getTotalPrice() + "");
+                        totalTextView.setText((int) cartItemInfoJson.getTotalPrice() + "");
                         paymentButton.setVisibility(View.VISIBLE);
                         paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size()));
                         editTextView.setEnabled(true);
@@ -140,16 +140,22 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     isDelete = false;
                     //删除删除项
                     cartInfoList.removeAll(deleteCartItemInfoList);
+                    cartItemInfoJson.setItems(cartInfoList);
+                    //获取删除的商品数
+                    int deleteCount = 0;
+                    for (CartItemInfo1 cartItemInfo : deleteCartItemInfoList) {
+                        deleteCount += cartItemInfo.getQty();
+                    }
                     //清空数据
                     deleteCartItemInfoList.clear();
                     //更新界面
                     cartAdapter.refresh(cartInfoList);
                     //保存购物车数量
                     Editor editor = sPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, cartInfoList.size());
+                    editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) - deleteCount);
                     editor.commit();
+                    paymentButton.setBackgroundResource(R.color.gray_light3);
                     if (cartInfoList.size() == 0) {
-                        paymentButton.setBackgroundResource(R.color.gray_light3);
                         cancelEdit();
                         ShowNoNetOrNoCountView();
                     }
@@ -247,12 +253,12 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 case CartInfoAdapter.SELECTED:// 选中item
                     totalPrice = Float.parseFloat(totalTextView.getText().toString());
                     totalPrice += Float.parseFloat(msg.obj.toString());
-                    totalTextView.setText(totalPrice + "");
+                    totalTextView.setText((int) totalPrice + "");
                     disSelectedCount--;
                     if (disSelectedCount == 0) {
                         cartSelectAllImageView.setImageResource(R.drawable.cart_select);
                         if (isEdit) {
-                            paymentButton.setBackgroundResource(R.color.orange);
+                            paymentButton.setBackgroundResource(R.color.red);
 
                         } else {//购买状态
                             if (cartItemInfoJson.getItems().size() == disSelectedCount) {//没有选中任何
@@ -266,7 +272,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         if (!isEdit) {
                             paymentButton.setBackgroundResource(R.color.blue);
                         } else {
-                            paymentButton.setBackgroundResource(R.color.orange);
+                            paymentButton.setBackgroundResource(R.color.red);
                         }
                     }
 
@@ -277,13 +283,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 case CartInfoAdapter.NOSELECTED:// 取消选中item
                     totalPrice = Float.parseFloat(totalTextView.getText().toString());
                     totalPrice -= Float.parseFloat(msg.obj.toString());
-                    totalTextView.setText(totalPrice + "");
+                    totalTextView.setText((int) totalPrice + "");
                     disSelectedCount++;
                     if (disSelectedCount == 0) {
                         cartSelectAllImageView.setImageResource(R.drawable.cart_select);
                         if (isEdit) {
 
-                            paymentButton.setBackgroundResource(R.color.orange);
+                            paymentButton.setBackgroundResource(R.color.red);
                         } else {
                             paymentButton.setBackgroundResource(R.color.gray_light3);
 
@@ -494,7 +500,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     if (cartInfoList == null || cartInfoList.size() == 0 || disSelectedCount == cartItemInfoJson.getItems().size()) {
                         paymentButton.setBackgroundResource(R.color.gray_light3);
                     } else {
-                        paymentButton.setBackgroundResource(R.color.orange);
+                        paymentButton.setBackgroundResource(R.color.red);
                     }
                     paymentButton.setText(R.string.delete);
                     rtButton.setVisibility(View.GONE);
@@ -509,7 +515,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     cartInfoList.get(i).setIsSelect((disSelectedCount == 0) ? false : true);
                     totalPrice += cartInfoList.get(i).getPrice();
                 }
-
                 cartAdapter.notifyDataSetChanged();
                 if (disSelectedCount == 0) {
                     disSelectedCount = cartItemInfoJson.getItems().size();
@@ -519,15 +524,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 } else {
                     cartSelectAllImageView.setImageResource(R.drawable.cart_select);
                     if (isEdit) {
-
-                        paymentButton.setBackgroundResource(R.color.orange);
+                        paymentButton.setBackgroundResource(R.color.red);
                     } else {
                         paymentButton.setBackgroundResource(R.color.blue);
 
                     }
                     disSelectedCount = 0;
                 }
-                totalTextView.setText(totalPrice + "");
+                totalTextView.setText((int) totalPrice + "");
                 if (!isEdit) {
                     paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
                 }
@@ -540,6 +544,21 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     }
 
     /**
+     * 获取总价格
+     *
+     * @return
+     */
+    public float getTotalPrice() {
+        float price = 0;
+        for (CartItemInfo1 cartItemInfo : cartInfoList) {
+            if (cartItemInfo.getIsSelect()) {
+                price += cartItemInfo.getPrice();
+            }
+        }
+        return price;
+    }
+
+    /**
      * 取消编辑
      */
     private void cancelEdit() {
@@ -548,12 +567,16 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         editTextView.setText(R.string.edit);
         cartPriceLinearLayout.setVisibility(View.VISIBLE);
         paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
-        if (cartItemInfoJson.getItems().size() == disSelectedCount) {//没有选中
-            paymentButton.setBackgroundResource(R.color.gray_light3);
-        } else {
 
-            paymentButton.setBackgroundResource(R.color.blue);
+        for (CartItemInfo1 cartItemInfo : cartInfoList) {
+            if (cartItemInfo.getIsSelect()) {
+                paymentButton.setBackgroundResource(R.color.blue);
+                break;
+            } else {
+                paymentButton.setBackgroundResource(R.color.gray_light3);
+            }
         }
+        totalTextView.setText((int) getTotalPrice() + "");
         rtButton.setVisibility(View.VISIBLE);
     }
 

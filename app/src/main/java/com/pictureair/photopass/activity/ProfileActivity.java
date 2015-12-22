@@ -27,7 +27,7 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
  * 个人信息页面
  */
 public class ProfileActivity extends BaseActivity implements OnClickListener {
-    private TextView tvNickName, tvGender, tvBirthday, tvQq;
+    private TextView tvNickName, tvGender, tvBirthday, countryTv, accountTv,tvQq;
     private RelativeLayout nn, g, bd, q, item_password;
     private ImageView back;
     private SharedPreferences sp;
@@ -50,7 +50,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     tvNickName.invalidate();
                     break;
                 case R.id.item_gender:
-                    if (!isNetWorkConnect(MyApplication.getInstance())){
+                    if (!isNetWorkConnect(MyApplication.getInstance())) {
                         newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                         return;
                     }
@@ -65,7 +65,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), sp.getString(Common.USERINFO_BIRTHDAY, ""), sex.toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
                     break;
                 case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
-                    if (!isNetWorkConnect(MyApplication.getInstance())){
+                    if (!isNetWorkConnect(MyApplication.getInstance())) {
                         newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                         return;
                     }
@@ -77,7 +77,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     break;
 
                 case API1.UPDATE_PROFILE_FAILED:
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(),msg.arg1),Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
 
                 case API1.UPDATE_PROFILE_SUCCESS:
@@ -118,6 +118,9 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         tvGender = (TextView) findViewById(R.id.sex);
         tvBirthday = (TextView) findViewById(R.id.birthday);
         tvQq = (TextView) findViewById(R.id.qq);
+        countryTv = (TextView) findViewById(R.id.country_tv);
+        accountTv = (TextView) findViewById(R.id.account_tv);
+
 
         nn = (RelativeLayout) findViewById(R.id.item_nickname);
         g = (RelativeLayout) findViewById(R.id.item_gender);
@@ -148,6 +151,8 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         }
         tvBirthday.setText(birthdayString);
         tvQq.setText(sp.getString(Common.USERINFO_QQ, ""));
+        countryTv.setText(sp.getString(Common.USERINFO_COUNTRY, ""));
+        accountTv.setText(sp.getString(Common.USERINFO_NAME, ""));
     }
 
     @Override
@@ -224,7 +229,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         Log.e("resultCode", " " + resultCode);
         switch (resultCode) {
             case 1://更改昵称的标识
-                if (!isNetWorkConnect(this)){
+                if (!isNetWorkConnect(this)) {
                     newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                     return;
                 }
@@ -234,7 +239,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), name, sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""), sp.getString(Common.USERINFO_QQ, ""), handler);
                 break;
             case 2://更改QQ的标识
-                if (!isNetWorkConnect(this)){
+                if (!isNetWorkConnect(this)) {
                     newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                     return;
                 }

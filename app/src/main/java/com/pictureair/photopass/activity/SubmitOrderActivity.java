@@ -71,7 +71,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private JSONArray cartItemIds;
     private JSONObject cartItemId;
     private String orderId = "";
-    private int deliveryType = 3;//物流方式
+    private String deliveryType = "3";//物流方式 (1和3拼接在一起的)
     private List<Address> addressList;
     private ListView transportListView;
     private AddressAdapter addressAdapter;
@@ -89,10 +89,16 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     AddressJson addressJson = JsonTools.parseObject(msg.obj.toString(), AddressJson.class);
                     if (addressJson != null && addressJson.getOutlets().size() > 0) {
                         //更新地址信息View
-                        addressAdapter.refresh(addressJson.getOutlets());
+                        if (addressList != null) {
+                            addressList.clear();
+                        }
+                        addressList = addressJson.getOutlets();
+                        addressAdapter.refresh(addressList);
                         fixListViewHeight(transportListView);
                         //存入缓存
-                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString());
+                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        }
                     }
                     break;
 
@@ -245,22 +251,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             //获取购物车ID
             cartItemIds.add(list.get(i).getCartId());
             //根据商品名称，判断收货类型
-            if (list.get(i).getProductName().equals(Common.GOOD_NAME_TSHIRT)) {
-                deliveryType = 1;
-                break;
-
-            } else if (list.get(i).getProductName().equals(Common.GOOD_NAME_6R)) {
-                deliveryType = 1;
-                break;
-
-            } else if (list.get(i).getProductName().equals(Common.GOOD_NAME_COOK)) {
-                deliveryType = 1;
-                break;
-
+            if (list.get(i).getProductName().equals(Common.ppp) || list.get(i).getProductName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                deliveryType += 3 + ",";
+            } else {
+                deliveryType += 1 + ",";
             }
         }
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
-        if (deliveryType == 1) {
+        if (deliveryType.contains("1")) {
             //需要显示自提地址列表
             addressList = new ArrayList<>();
             infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
@@ -371,13 +369,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
                 if (orderId == null || orderId.equals("")) {
-                    if (deliveryType == 1) {
+                    if (deliveryType.contains("1")) {
                         //获取收货地址
                         if (curPositon < 0) {
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                            API1.addOrder(cartItemIds, deliveryType, addressList.get(curPositon).getOutletId(), "", mHandler);
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", mHandler);
                         }
                     } else {
                         //PP+/数码商品不需要地址

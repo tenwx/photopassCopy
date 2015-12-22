@@ -138,7 +138,7 @@ public class MainTabActivity extends BaseFragmentActivity {
             //设置成为上次的tab页面
             mTabHost.setCurrentTab(last_tab);
         }
-        if (!currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+        if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
             mTabHost.clearAllTabs();
             mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
             loadFragment(fragmentArray.length);
@@ -153,6 +153,7 @@ public class MainTabActivity extends BaseFragmentActivity {
         // 接收消息回复
         UmengUtil.syncFeedback(this);
     }
+
 
     @Override
     protected void onPause() {
