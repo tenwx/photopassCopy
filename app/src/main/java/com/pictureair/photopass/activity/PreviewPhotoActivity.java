@@ -390,7 +390,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                         API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, handler);
                         //将数据保存到缓存中
-                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString());
+                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        }
                     }
                     break;
                 case API1.GET_GOODS_FAILED:

@@ -594,4 +594,7 @@
     <string name="no_activated">未激活</string>
     <string name="activated">已激活</string>
     <string name="expired_on">有效时间:</string>
+    <string name="country">国家</string>
+    <string name="account">账户</string>
+    <string name="nick_name_empty">昵称不能为空!</string>
 </resources>

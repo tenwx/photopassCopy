@@ -2,15 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
-    tools:context="com.pictureair.photopass.activity.UpdateUserinfoActivity" >
+    android:background="@color/pp_light_gray_background"
+    tools:context="com.pictureair.photopass.activity.UpdateUserinfoActivity">
 
     <RelativeLayout
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue">
 
         <ImageView
             android:id="@+id/back"
@@ -43,35 +43,58 @@
             android:layout_centerInParent="true"
             android:text="@string/title_update_nickname"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="@dimen/text_size_16" />
 
-        <ImageButton
-            android:id="@+id/ib_save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@color/transparent"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/preview_save" />
+        <!--<ImageButton-->
+        <!--android:id="@+id/ib_save"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:background="@color/transparent"-->
+        <!--android:paddingBottom="13dp"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:paddingTop="13dp"-->
+        <!--android:scaleType="centerInside"-->
+        <!--android:src="@drawable/preview_save" />-->
     </RelativeLayout>
+
 
     <cn.smssdk.gui.EditTextWithClear
         android:id="@+id/et_userinfo_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/head"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/editview_inputuserinfo_selected"
+        android:layout_marginTop="@dimen/pp_margin_20"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_16"
+        android:background="@null"
         android:hint="@string/hint_text_nickname"
-        android:textColor="@color/gray"
         android:imeOptions="actionDone"
+        android:textColor="@color/gray"
         android:textSize="@dimen/text_size_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/pp_padding_8"
+        android:layout_below="@+id/et_userinfo_text"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:background="@color/pp_blue" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/pp_margin_16"
+        android:background="@drawable/button_blue_shape_and_selector"
+        android:textColor="@drawable/textview_selector_blue_white"
+        android:padding="@dimen/pp_padding_10"
+        android:text="@string/ok"
+        android:textSize="@dimen/text_size_16"/>
 
 </RelativeLayout>

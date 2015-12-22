@@ -181,7 +181,7 @@ public class SignAndLoginUtil {
                     int cartCount = 0;
                     CartItemInfoJson cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                     if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
-                        cartCount = cartItemInfoJson.getItems().size();
+                        cartCount = cartItemInfoJson.getTotalCount();
                     }
                     Editor ed = sp.edit();
                     ed.putInt(Common.CART_COUNT, cartCount);

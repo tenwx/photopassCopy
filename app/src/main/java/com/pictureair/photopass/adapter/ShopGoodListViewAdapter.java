@@ -96,7 +96,7 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         viewHolder.goodDetailIntroduce.setText(goodsInfo1.getDescription());
 
         if (goodsInfo1.getPictures() != null && goodsInfo1.getPictures().size() > 0) {
-            UniversalImageLoadTool.loadDiscoverImage(Common.BASE_URL_TEST + goodsInfo1.getPictures().get(0).getUrl(), viewHolder.goodImageView, options);
+            UniversalImageLoadTool.loadDiscoverImage(Common.PHOTO_URL + goodsInfo1.getPictures().get(0).getUrl(), viewHolder.goodImageView, options);
 
         } else {
             UniversalImageLoadTool.loadDiscoverImage(null, viewHolder.goodImageView, options);

@@ -153,13 +153,13 @@ public class CartInfoAdapter extends BaseAdapter {
 //
 //        } else
         if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
-            imageLoader.displayImage(Common.BASE_URL_TEST + pictureUrl, viewHolder.cartGoodImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
             viewHolder.cartLineImageView.setVisibility(View.GONE);
             viewHolder.hideImageView.setVisibility(View.GONE);
         } else {//其他商品
             PictureAirLog.v(TAG, "other product");
-            imageLoader.displayImage(Common.BASE_URL_TEST + pictureUrl, viewHolder.cartGoodImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.hideImageView.setVisibility(View.INVISIBLE);
