@@ -67,6 +67,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 	private int currentProgress = 0;
 
 	private SharePop sharePop;//分享
+	private int shareType = 0;
 
 	private final static int DELETEFILE = 12;
 //	private final static int PROGRESSDIALOG = 0x112;
@@ -211,6 +212,14 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			scanPhotosThread = new ScanPhotosThread();
 			scanPhotosThread.start();
 		}
+
+		if (sharePop != null) {
+			PictureAirLog.out("sharePop not null");
+			if (shareType != SharePop.TWITTER) {
+				PictureAirLog.out("dismiss dialog");
+				sharePop.dismissDialog();
+			}
+		}
 	}
 
 
@@ -303,13 +312,13 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						newToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, null,"online",mHandler);
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, null,"online", SharePop.SHARE_PHOTO_TYPE, mhHandler);
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					PictureAirLog.v(TAG, "本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null,null, "local",mHandler);
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null,null, "local", SharePop.SHARE_PHOTO_TYPE, mhHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张
@@ -426,6 +435,10 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
+				case SharePop.TWITTER:
+					shareType = msg.what;
+					break;
+
 			case DELETEFILE:
 //				deleteFileDialog.setProgress(msg.arg1);
 				customProgressBarPop.setProgress(msg.arg1, photoURLlist.size());

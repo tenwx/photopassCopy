@@ -1537,8 +1537,12 @@ public class API1 {
 
     /**
      * 获取分享的URL
+     * @param photoID id
+     * @param shareType 视频还是照片
+     * @param id 点击id
+     * @param handler
      */
-    public static void getShareUrl(String photoID, String shareType, final Handler handler) {
+    public static void getShareUrl(String photoID, String shareType, final int id, final Handler handler) {
         RequestParams params = new RequestParams();
         JSONObject orgJSONObject = new JSONObject();
         try {
@@ -1556,7 +1560,7 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 PictureAirLog.e(TAG, "获取分享成功");
-                handler.obtainMessage(GET_SHARE_URL_SUCCESS, jsonObject).sendToTarget();
+                handler.obtainMessage(GET_SHARE_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
 
             }
 

@@ -104,6 +104,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     //	private String userId;
     private static final String TAG = "PreviewPhotoActivity";
 
+    private int shareType = 0;
+
     private TextView textView;
 
     //图片显示框架
@@ -341,6 +343,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     flag = false;
                     out = false;
                     break;
+
+                case SharePop.TWITTER:
+                    shareType = msg.what;
+                    break;
+
+
                 case API1.BUY_PHOTO_SUCCESS:
                     progressDialog.dismiss();
                     cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
@@ -1078,13 +1086,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", handler);
+                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", SharePop.SHARE_PHOTO_TYPE, handler);
                     } else {//编辑前
                         //判断图片是本地还是网路图片
                         if (photoInfo.onLine == 1) {//网络图片
-                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "online", handler);
+                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "online", SharePop.SHARE_PHOTO_TYPE, handler);
                         } else {
-                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", handler);
+                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", SharePop.SHARE_PHOTO_TYPE, handler);
                         }
 
                     }
@@ -1499,7 +1507,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        sharePop.dismissDialog();//防止分享未成功  一直显示加载状态
+        if (sharePop != null) {
+            PictureAirLog.out("sharePop not null");
+            if (shareType != SharePop.TWITTER) {
+                PictureAirLog.out("dismiss dialog");
+                sharePop.dismissDialog();
+            }
+        }
     }
 
     // 判断 是否第一次提示 同步更新。，并弹出相应的tips

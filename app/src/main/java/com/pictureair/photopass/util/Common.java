@@ -10,6 +10,7 @@ public class Common {
     public static final String APP_KEY = "photoPass";
     public static final String APP_SECRET = "pictureworks";
     public static String APPLICATION_NAME = "photoPass";// app英文名字
+    public static final String SHARE_APP_NAME = "PhotoPass";
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
     public static final String SMS_APPKEY = "7c07eba9fe66"; // SMSS，公司的账号

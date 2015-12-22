@@ -118,7 +118,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         rbWoman = (RadioButton) findViewById(R.id.rb_btn_woman);// 获取RadioButton控件;
 
         rg.setOnCheckedChangeListener(mChangeListener);// 单选框的改变事件
-        rbMan.setChecked(true);
+//        rbMan.setChecked(true);
         // 日期选择器
         ll_brith = (LinearLayout) findViewById(R.id.ll_birth);
 
