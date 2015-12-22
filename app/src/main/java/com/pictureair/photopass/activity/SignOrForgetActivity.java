@@ -1,11 +1,7 @@
 package com.pictureair.photopass.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,14 +11,9 @@ import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.Installation;
 import com.pictureair.photopass.widget.MyToast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * 注册和修改密码的页面，前提都是通过了手机号码验证才会来到这个页面， 根据intent传递过来的type值判断是注册还是修改密码 type == 0
@@ -39,123 +30,6 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 	private MyToast newToast;
 	private int type;// 判断跳转来自注册还是密码修改 0：注册；1：修改密码；
 
-	private Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case API.SUCCESS://sign成功
-				System.out.println("login success-------------");
-//				API.getcartcount(SignOrForgetActivity.this,sp.getString(Common.USERINFO_ID, ""),handler);
-				break;
-				
-			case API.FAILURE:
-			case API.GET_CART_COUNT_FAILED:
-			case API.GET_PPP_FAILED:
-			case API.GET_STOREID_FAILED:
-				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				break;
-				
-			case API.SIGN_FAILED:
-				try {
-					JSONObject infoJsonObject = (JSONObject) msg.obj;
-					if (infoJsonObject.has("type")) {
-						if (infoJsonObject.getString("type").equals("shortPassword")) {
-							newToast.setTextAndShow(R.string.pwd_is_short, Common.TOAST_SHORT_TIME);
-//						}else {
-//							myToast.setTextAndShow(R.string.pwd_is_short, Common.TOAST_SHORT_TIME);
-						}else if (infoJsonObject.getString("type").equals("existedEmail")) {
-							newToast.setTextAndShow(R.string.email_exist, Common.TOAST_SHORT_TIME);
-							
-						}
-					}else {
-						newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-				
-			case API.GET_CART_COUNT_SUCCESS:
-				System.out.println("get cart count success------------");
-				API.getPPSByUserId(sp.getString(Common.USERINFO_TOKENID, null), handler);
-				break;
-				
-			case API.GET_PPS_SUCCESS:// 获取pp列表成功
-				/**
-				 * 获取pp成功之后，需要放入sharedPrefence中
-				 */
-				JSONObject ppsJsonObject = (JSONObject) msg.obj;
-//				Log.d(TAG, "pps===" + ppsJsonObject);
-				if (ppsJsonObject.has("PPList")) {
-					try {
-						JSONArray pplists = ppsJsonObject
-								.getJSONArray("PPList");
-						Editor editor = sp.edit();
-						editor.putInt(Common.PP_COUNT, pplists.length());
-						editor.commit();
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-				break;
-				
-			case API.GET_PPS_FAILED:// 获取pp列表失败
-//				dialog.dismiss();
-				newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-				break;
-				
-//			case API.GET_PPP_SUCCESS:
-//				System.out.println("get ppp success ----------------");
-//				JSONObject ppplistJsonObject = (JSONObject) msg.obj;
-//				try {
-//					JSONArray ppplistArray = ppplistJsonObject.getJSONArray("PPPList");
-//					if (0!=ppplistArray.length()) {//说明有ppp
-//						System.out.println("length="+ppplistArray.length());
-//						Editor editor = sp.edit();
-//						editor.putInt(Common.PPP_COUNT, ppplistArray.length());
-//						editor.commit();
-//					}
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				API.getStoreIdbyIP("140.206.125.195", handler);
-//				break;
-				
-			case API.GET_STOREID_SUCCESS:
-				System.out.println("get storeid success----------------");
-				JSONObject obj = (JSONObject) msg.obj;
-				try {
-					Editor editor = sp.edit();
-					editor.putString(Common.CURRENCY, obj.getString("currency").toString());
-					editor.putString(Common.STORE_ID, obj.getString("storeId").toString());
-					editor.commit();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				Intent i = new Intent();
-				i.setClass(SignOrForgetActivity.this, MainTabActivity.class);
-				finish();
-				startActivity(i);
-				break;
-				
-			case API.MODIFY_PWD_FAILED:
-				System.out.println("signorfotget------modify pwd failed");
-				//提示错误
-				break;
-				
-			case API.MODIFY_PWD_SUCCESS:
-				System.out.println("signorforget------modify pwd success");
-				//跳转至登录界面
-				break;
-				
-			default:
-				break;
-			}
-		}
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -221,86 +95,13 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 					params.put(Common.TERMINAL, "android");
 					params.put(Common.UUID, Installation.id(this));
 					
-//					HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-//						@Override
-//						public void onStart() {
-//							super.onStart();
-//							System.out.println("get tokenid start");
-//						}
-//						public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//							super.onSuccess(statusCode, headers, response);
-//							try {
-//								System.out.println("tokenid=="+response);
-//								Editor e = sp.edit();
-//								if (response.has(Common.USERINFO_TOKENID)) {
-//									System.out.println("add tokenid=============");
-//									e.putString(Common.USERINFO_TOKENID, response.getString(Common.USERINFO_TOKENID));
-//								}
-//								e.commit();
-//								API.Sign(SignOrForgetActivity.this, phone, p2 , handler);
-//							} catch (JSONException e1) {
-//								e1.printStackTrace();
-//							}
-//						}
-//
-//						@Override
-//						public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//							super.onFailure(statusCode, headers, responseString, throwable);
-//							throwable.printStackTrace();
-//							newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-//						}
-//					});
 				}else {
-//					API.Sign(this, phone, p2 , handler);
 				}
 			} else if (type == 1) {
 				// 修改密码请求
 				// 注册请求
 				newToast.setTextAndShow(R.string.not_open, Common.TOAST_SHORT_TIME);
-//				if (null == sp.getString(Common.USERINFO_TOKENID, null)) {//需要重新获取一次tokenid
-//					System.out.println("no tokenid, need to obtain one");
-//					final StringBuffer sb = new StringBuffer();
-//					sb.append(Common.BASE_URL).append(Common.GET_TOKENID);
-//					RequestParams params = new RequestParams();
-//					params.put(Common.TERMINAL, "android");
-//					params.put(Common.UUID, Installation.id(this));
-//					HttpUtil.get(sb.toString(), params, new JsonHttpResponseHandler() {
-//						@Override
-//						public void onStart() {
-//							// TODO Auto-generated method stub
-//							super.onStart();
-//							System.out.println("get tokenid start");
-//						}
-//						public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//							// TODO Auto-generated method stub
-//							super.onSuccess(statusCode, headers, response);
-//							try {
-//								System.out.println("tokenid=="+response);
-//								Editor e = sp.edit();
-//								if (response.has(Common.USERINFO_TOKENID)) {
-//									System.out.println("add tokenid=============");
-//									e.putString(Common.USERINFO_TOKENID, response.getString(Common.USERINFO_TOKENID));
-//								}
-//								e.commit();
-//								API.modifyPwd(SignOrForgetActivity.this, null, p2, "forget", handler);
-//							} catch (JSONException e1) {
-//								// TODO Auto-generated catch block
-//								e1.printStackTrace();
-//							}
-//						}
-//
-//						@Override
-//						public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//							// TODO Auto-generated method stub
-//							super.onFailure(statusCode, headers, responseString, throwable);
-//							throwable.printStackTrace();
-//							newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-//						}
-//					});
-//				}else {
-//					API.modifyPwd(this, null, p2, "forget", handler);
-//				}
-				
+
 			}
 			break;
 		default:

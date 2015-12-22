@@ -35,19 +35,6 @@ public class API1 {
     private static final String APP_KEY = "photoPass";
     private static final String APP_SECRET = "pictureworks";
 
-    public static final int GET_PPP_SUCCESS = 371;
-    public static final int GET_PPP_FAILED = 370;
-
-    public static final int UPDATE_USER_IMAGE_FAILED = 200;
-    public static final int UPDATE_USER_IMAGE_SUCCESS = 201;
-
-
-    public static final int UPLOAD_PHOTO_SUCCESS = 511;
-    public static final int UPLOAD_PHOTO_FAILED = 510;
-
-    public static final int HIDE_PP_SUCCESS = 531;
-    public static final int HIDE_PP_FAILED = 530;
-
     /**
      * 启动
      */
@@ -62,8 +49,9 @@ public class API1 {
 
     public static final int LOGOUT_SUCCESS = 1031;
     public static final int LOGOUT_FAILED = 1030;
-    public static final int GET_PPS_SUCCESS = 1031;
-    public static final int GET_PPS_FAILED = 1030;
+
+    public static final int GET_PPS_SUCCESS = 1041;
+    public static final int GET_PPS_FAILED = 1040;
 
     /**
      * Story
@@ -76,9 +64,6 @@ public class API1 {
 
     public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED = 2020;
     public static final int GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS = 2021;
-
-    public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2030;
-    public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2031;
 
     /**
      * 扫描
@@ -99,6 +84,12 @@ public class API1 {
     public static final int GET_REFRESH_VIDEO_LIST_FAILED = 2060;
     public static final int GET_REFRESH_VIDEO_LIST_SUCCESS = 2061;
 
+    public static final int GET_LAST_CONTENT_SUCCESS = 2071;
+    public static final int GET_LAST_CONTENT_FAILED = 2070;
+
+
+    public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2080;
+    public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2081;
 
     /**
      * 发现
@@ -114,38 +105,35 @@ public class API1 {
     public static final int GET_STOREID_FAILED = 4000;
     public static final int GET_STOREID_SUCCESS = 4001;
 
-    public static final int GET_GOODS_FAILED = 4100;
-    public static final int GET_GOODS_SUCCESS = 4101;
+    public static final int GET_GOODS_FAILED = 4010;
+    public static final int GET_GOODS_SUCCESS = 4011;
 
-    public static final int GET_SINGLE_GOOD_FAILED = 4200;
-    public static final int GET_SINGLE_GOOD_SUCCESS = 4201;
+    public static final int GET_CART_FAILED = 4020;
+    public static final int GET_CART_SUCCESS = 4021;
 
-    public static final int GET_CART_FAILED = 4300;
-    public static final int GET_CART_SUCCESS = 4301;
+    public static final int ADD_TO_CART_FAILED = 4030;
+    public static final int ADD_TO_CART_SUCCESS = 4031;
 
-    public static final int ADD_TO_CART_FAILED = 4310;
-    public static final int ADD_TO_CART_SUCCESS = 4311;
+    public static final int MODIFY_CART_FAILED = 4040;
+    public static final int MODIFY_CART_SUCCESS = 4041;
 
-    public static final int MODIFY_CART_FAILED = 4320;
-    public static final int MODIFY_CART_SUCCESS = 4321;
+    public static final int DELETE_CART_FAILED = 4050;
+    public static final int DELETE_CART_SUCCESS = 4051;
 
-    public static final int DELETE_CART_FAILED = 4330;
-    public static final int DELETE_CART_SUCCESS = 4331;
+    public static final int ADD_ORDER_FAILED = 4060;
+    public static final int ADD_ORDER_SUCCESS = 4061;
 
-    public static final int ADD_ORDER_FAILED = 4340;
-    public static final int ADD_ORDER_SUCCESS = 4341;
+    public static final int GET_ORDER_SUCCESS = 4070;
+    public static final int GET_ORDER_FAILED = 4071;
 
-    public static final int GET_ORDER_SUCCESS = 4350;
-    public static final int GET_ORDER_FAILED = 4351;
+    public static final int BUY_PHOTO_FAILED = 4080;
+    public static final int BUY_PHOTO_SUCCESS = 4081;
 
-    public static final int BUY_PHOTO_FAILED = 4360;
-    public static final int BUY_PHOTO_SUCCESS = 4361;
+    public static final int GET_OUTLET_ID_FAILED = 4090;
+    public static final int GET_OUTLET_ID_SUCCESS = 4091;
 
-    public static final int GET_OUTLET_ID_FAILED = 4370;
-    public static final int GET_OUTLET_ID_SUCCESS = 4371;
-
-    public static final int DELETE_ORDER_FAILED = 4380;
-    public static final int DELETE_ORDER_SUCCESS = 4381;
+    public static final int DELETE_ORDER_FAILED = 4100;
+    public static final int DELETE_ORDER_SUCCESS = 4101;
 
 
     //Shop模块 end
@@ -157,11 +145,30 @@ public class API1 {
     public static final int UPDATE_PROFILE_SUCCESS = 5011;
     public static final int UPDATE_PROFILE_FAILED = 5010;
 
-    public static final int SCAN_PPP_FAILED = 5400;
-    public static final int SCAN_PPP_SUCCESS = 5401;
-
     public static final int GET_HELP_SUCCESS = 5021;
     public static final int GET_HELP_FAILED = 5020;
+
+    public static final int UPDATE_USER_IMAGE_FAILED = 5030;
+    public static final int UPDATE_USER_IMAGE_SUCCESS = 5031;
+
+    public static final int SCAN_PPP_FAILED = 5040;
+    public static final int SCAN_PPP_SUCCESS = 5041;
+
+    public static final int HIDE_PP_SUCCESS = 5051;
+    public static final int HIDE_PP_FAILED = 5050;
+
+    public static final int UPLOAD_PHOTO_SUCCESS = 5061;
+    public static final int UPLOAD_PHOTO_FAILED = 5060;
+
+    public static final int GET_PPP_SUCCESS = 5071;
+    public static final int GET_PPP_FAILED = 5070;
+
+    //PP & PP＋模块
+    public static final int GET_PPS_BY_PPP_AND_DATE_FAILED = 5080;
+    public static final int GET_PPS_BY_PPP_AND_DATE_SUCCESS = 5081;
+
+    public static final int BIND_PPS_DATE_TO_PP_FAILED = 5090;
+    public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5091;
     //我的模块 end
 
 
@@ -173,18 +180,15 @@ public class API1 {
 
 
     // 推送
-    public static final int SOCKET_DISCONNECT_FAILED = 5800;
-    public static final int SOCKET_DISCONNECT_SUCCESS = 5801;
+    public static final int SOCKET_DISCONNECT_FAILED = 6020;
+    public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
 
-    //PP & PP＋模块
-    public static final int GET_PPS_BY_PPP_AND_DATE_FAILED = 5500;
-    public static final int GET_PPS_BY_PPP_AND_DATE_SUCCESS = 5501;
+
     //分享
-    public static final int GET_SHARE_URL_SUCCESS = 6021;
-    public static final int GET_SHARE_URL_FAILED = 6020;
+    public static final int GET_SHARE_URL_SUCCESS = 6031;
+    public static final int GET_SHARE_URL_FAILED = 6030;
 
-    public static final int BIND_PPS_DATE_TO_PP_FAILED = 5600;
-    public static final int BIND_PPS_DATE_TO_PP_SUCESS = 5601;
+
 
     /**
      * 发送设备ID获取tokenId
@@ -580,6 +584,35 @@ public class API1 {
                                 status, 0).sendToTarget();
                     }
                 });
+    }
+
+
+    /**
+     * 获取最新的边框以及饰品信息
+     * @param lastUpdateTime 上次更新时间
+     * @param handler
+     */
+    public static void getLastContent(String lastUpdateTime, final Handler handler){
+        StringBuffer sBuffer = new StringBuffer();
+        sBuffer.append(Common.BASE_URL_TEST);
+        sBuffer.append(Common.GET_LASTEST_CONTENT);
+
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LAST_UPDATE_TIME, lastUpdateTime);
+        HttpUtil1.asyncGet(sBuffer.toString(), params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_LAST_CONTENT_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_LAST_CONTENT_FAILED, status, 0).sendToTarget();
+            }
+        });
     }
 
 

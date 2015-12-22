@@ -26,7 +26,6 @@ import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo1;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -75,7 +74,6 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         @Override
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
-                case API.GET_PHOTOPASSPLUS_FAILED:
                 case API1.ADD_TO_CART_FAILED:
                     myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
 

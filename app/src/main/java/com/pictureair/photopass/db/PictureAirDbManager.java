@@ -697,29 +697,6 @@ public class PictureAirDbManager {
 			}
 			if (jsonObject.containsKey("cliparts")) {
 				insertFrameAndSticker(jsonObject.getJSONArray("cliparts"), false);
-				
-				
-//				JSONArray stickersArray = jsonObject.getJSONArray("cliparts");
-//				if (stickersArray.length() > 0) {
-//					Log.d(TAG, "stickers length is " + stickersArray.length());
-//					//开始解析数据，并且将数据写入数据库
-//					for (int i = 0; i < stickersArray.length(); i++) {
-//						//解析json
-//						frameInfo = JsonUtil.getStickerInfo(stickersArray.getJSONObject(i));
-//						//插入数据
-//						if (frameInfo.isActive == 1) {
-//							database.execSQL("insert into " + Common.FRAME_STICKER_TABLES + " values(null,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
-//									frameInfo.frameName, frameInfo.frameOriginalPathLandscape, frameInfo.frameOriginalPathPortrait, frameInfo.frameThumbnailPathLandscape400
-//									, frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPath160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "", 
-//									frameInfo.isDownload + "", frameInfo.fileSize+"", "0"});
-//						} else {//如果为0，说明需要修改以前的数据状态
-//							//根据边框或者饰品名字修改使用状态
-//							database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isActive = 0 where frameName = ? and fileType = ?", new String[]{frameInfo.frameName, "0"});
-//						}
-//					}
-//				}else {
-//					Log.d(TAG, "has no any stickers");
-//				}
 			}
 			
 		} catch (JSONException e) {

@@ -31,7 +31,6 @@ import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -109,7 +108,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                 selectPhotoItemInfo.photoPathOrURL = list.get(upload_index).photoPathOrURL;
                                 list.set(upload_index, selectPhotoItemInfo);
                                 Message message = handler.obtainMessage();
-                                message.what = API.UPLOAD_PHOTO_SUCCESS;
+                                message.what = API1.UPLOAD_PHOTO_SUCCESS;
                                 message.obj = "start";
                                 handler.sendMessage(message);
                             } else {//还没有上传
@@ -134,7 +133,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                             info.photoPathOrURL = list.get(upload_index).photoThumbnail_512;
                             list.set(upload_index, info);
                             Message message = handler.obtainMessage();
-                            message.what = API.UPLOAD_PHOTO_SUCCESS;
+                            message.what = API1.UPLOAD_PHOTO_SUCCESS;
                             message.obj = "start";
                             handler.sendMessage(message);
                         }

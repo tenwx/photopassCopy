@@ -24,7 +24,6 @@ import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -131,7 +130,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     break;
 
                 case API1.DELETE_CART_FAILED:
-                case API.UPLOAD_PHOTO_FAILED:
+                case API1.UPLOAD_PHOTO_FAILED:
                     isDelete = false;
                     newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                     editTextView.setEnabled(true);
@@ -156,7 +155,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     }
                     break;
 
-                case API.UPLOAD_PHOTO_SUCCESS:
+                case API1.UPLOAD_PHOTO_SUCCESS:
                     JSONArray embedPhotos = (JSONArray) msg.obj;
                     PictureAirLog.v(TAG, "embedPhotos: " + embedPhotos);
                     position = msg.arg1;//位置
@@ -590,7 +589,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 jsonArray.add(object);
 
                 Message msg = handler.obtainMessage();
-                msg.what = API.UPLOAD_PHOTO_SUCCESS;
+                msg.what = API1.UPLOAD_PHOTO_SUCCESS;
                 msg.arg1 = requestCode;
                 msg.obj = jsonArray;
                 handler.sendMessage(msg);

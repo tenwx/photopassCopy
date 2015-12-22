@@ -30,7 +30,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.alipay.PayResult;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AliPayUtil;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -651,7 +651,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 												Intent intent = new Intent(
 														PaymentOrderActivity.this,
 														MyPPPActivity.class);
-												API.PPPlist.clear();
+												API1.PPPlist.clear();
 												SuccessAfterPayment();
 												startActivity(intent);
 												finish();

@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.BaseCheckUpdate;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -38,11 +38,11 @@ public class CheckUpdateManager {
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case API.APK_NEED_NOT_UPDATE:
+			case API1.APK_NEED_NOT_UPDATE:
 				PictureAirLog.out("apk need not update");
 				break;
 				
-			case API.APK_NEED_UPDATE:
+			case API1.APK_NEED_UPDATE:
 				PictureAirLog.out("apk need update");
 				//开始显示对话框
 				String objsString[] = (String[]) msg.obj;
@@ -70,13 +70,13 @@ public class CheckUpdateManager {
 				}
 				break;
 				
-			case API.DOWNLOAD_APK_FAILED:
+			case API1.DOWNLOAD_APK_FAILED:
 				PictureAirLog.out("failed");
 				customProgressBarPop.dismiss();
 				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
 				break;
 				
-			case API.DOWNLOAD_APK_SUCCESS:
+			case API1.DOWNLOAD_APK_SUCCESS:
 				//下载成功
 				PictureAirLog.out("success");
 				if (customProgressBarPop != null) {

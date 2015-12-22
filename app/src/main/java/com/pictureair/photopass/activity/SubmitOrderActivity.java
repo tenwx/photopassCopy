@@ -27,7 +27,6 @@ import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
@@ -136,11 +135,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
 
-                case API.UPLOAD_PHOTO_FAILED:
+                case API1.UPLOAD_PHOTO_FAILED:
                     newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
                     break;
 
-                case API.UPLOAD_PHOTO_SUCCESS:
+                case API1.UPLOAD_PHOTO_SUCCESS:
                     PictureAirLog.v(TAG, "UPLOAD_PHOTO_SUCCESS " + msg.obj.toString());
                     JSONObject result = (JSONObject) msg.obj;
                     String photoUrlString = null;
@@ -415,7 +414,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 object.put("photoUrl", updatephotolist.get(0).photoThumbnail_512);
                 object.put("photoId", updatephotolist.get(0).photoId);
                 Message msg = mHandler.obtainMessage();
-                msg.what = API.UPLOAD_PHOTO_SUCCESS;
+                msg.what = API1.UPLOAD_PHOTO_SUCCESS;
                 msg.arg1 = requestCode;
                 msg.obj = object;
                 mHandler.sendMessage(msg);
@@ -424,15 +423,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             } else {
                 String photourl = updatephotolist.get(0).photoPathOrURL;
                 // 需要上传选择的图片
-                StringBuffer sb = new StringBuffer();
-                sb.append(Common.BASE_URL).append(Common.UPLOAD_PHOTOS);
                 RequestParams params = new RequestParams();
                 String tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, null);
                 PictureAirLog.v(TAG, "上传的图片URL" + photourl);
                 try {
                     params.put("file", new File(photourl), "application/octet-stream");
                     params.put(Common.USERINFO_TOKENID, tokenId);
-                    API.SetPhoto(sb.toString(), params, mHandler, requestCode, customProgressBarPop);
+                    API1.SetPhoto(params, mHandler, requestCode, customProgressBarPop);
 //					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
                     customProgressBarPop.show(0);
                 } catch (FileNotFoundException e) {

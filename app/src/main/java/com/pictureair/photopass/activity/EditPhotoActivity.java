@@ -62,7 +62,7 @@ import com.pictureair.photopass.filter.LomoFilter;
 import com.pictureair.photopass.filter.NormalFilter;
 import com.pictureair.photopass.filter.OldFilter;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
@@ -200,7 +200,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						dialog.dismiss();
 					}
 					//开始从网络获取最新数据
-					API.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), handler);
+					API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), handler);
 					break;
 
 				case 0000:
@@ -218,7 +218,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					loadframe(curFramePosition);
 					break;
 
-				case API.GET_LAST_CONTENT_SUCCESS://获取更新包成功
+				case API1.GET_LAST_CONTENT_SUCCESS://获取更新包成功
 					Log.d(TAG, "get lastest info success" + msg.obj);
 					try {
 						com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()) ;
@@ -275,7 +275,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 					break;
 
-				case API.GET_LAST_CONTENT_FAILED://获取更新包失败
+				case API1.GET_LAST_CONTENT_FAILED://获取更新包失败
 
 					break;
 

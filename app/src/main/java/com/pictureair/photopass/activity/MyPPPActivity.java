@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
@@ -31,7 +32,6 @@ import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -39,13 +39,11 @@ import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.BannerView_PPPIntroduce;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -167,7 +165,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     dialog.dismiss();
                     break;
 
-                case API.FAILURE://获取失败
+                case API1.BIND_PP_FAILURE://获取失败
                     if (msg.obj != null && msg.obj.toString().equals("PPHasUpgraded")) {
                         PictureAirLog.v(TAG, "PP has upgraded");
                         newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
@@ -195,13 +193,13 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     break;
 
 
-                case API.SUCCESS://绑定成功
+                case API1.BIND_PP_SUCCESS://绑定成功
                     Editor editor = sharedPreferences.edit();
                     editor.putBoolean(Common.NEED_FRESH, true);
                     editor.commit();
                     list1.clear();
                     hasOtherAvailablePPP = false;
-                    API.PPPlist.clear();
+                    API1.PPPlist.clear();
                     getData();
                     break;
 
@@ -398,9 +396,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), mHandler);
         } else {//有数据
             PictureAirLog.v(TAG, "ppp != 0");
-            for (int i = 0; i < API.PPPlist.size(); i++) {
+            for (int i = 0; i < API1.PPPlist.size(); i++) {
                 PictureAirLog.v(TAG, "load==========");
-                PPPinfo ppPinfo = API.PPPlist.get(i);
+                PPPinfo ppPinfo = API1.PPPlist.get(i);
                 String bindddateString = ppPinfo.bindInfo.get(0).bindDate;
                 PictureAirLog.v(TAG, bindddateString);
                 bindddateString = bindddateString.replace("[", "").replace("]", "").replaceAll("\"", "").trim();
@@ -593,8 +591,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                         if (needBindToUser) {//是否已经绑定，如果已经绑定，则直接绑定到ppp，如果没有绑定，先绑定到user，在绑定到ppp
                             //已经被绑定了，所以直接绑定ppp
                             JSONArray pps = new JSONArray();
-                            pps.put(PPCode);
-                            API.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, mHandler);
+                            pps.add(PPCode);
+                            API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, mHandler);
                         } else {
                             //没有被绑定，则先绑到user，再绑到ppp
                             RequestParams params = new RequestParams();
@@ -608,8 +606,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                                     if (statusCode == 200) {
                                         //绑定成功
                                         JSONArray pps = new JSONArray();
-                                        pps.put(PPCode);
-                                        API.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, mHandler);
+                                        pps.add(PPCode);
+                                        API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, mHandler);
                                     }
                                 }
 

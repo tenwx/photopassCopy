@@ -23,7 +23,6 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -134,7 +133,7 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
                     netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
                     viewPager.setVisibility(View.INVISIBLE);
                     break;
-                case API.DELETE_ORDER_SUCCESS:
+                case API1.DELETE_ORDER_SUCCESS:
 //				int deletePosition = msg.arg1;
                     allOrderArrayList.remove(0);
                     allOrderChildArrayList.remove(0);

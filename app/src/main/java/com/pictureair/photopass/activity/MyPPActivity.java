@@ -25,7 +25,6 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.API;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -217,7 +216,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     ok.setText(formaStringPPP(msg.arg1 - dppp.bindInfo.size(), dppp.capacity - dppp.bindInfo.size()));
                     break;
 
-                case API.BIND_PP_FAILURE://网络获取失败
+                case API1.BIND_PP_FAILURE://网络获取失败
                     if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
                         myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
                     } else {//获取失败
@@ -229,13 +228,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     }
                     break;
 
-                case API.FAILURE://连接失败
-                    if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
-                        myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
-                    } else {//获取失败
-                        myToast.setTextAndShow(R.string.select_bind_pp_faile, Common.TOAST_SHORT_TIME);
-                    }
-                    break;
+//                case API1.FAILURE://连接失败
+//                    if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
+//                        myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+//                    } else {//获取失败
+//                        myToast.setTextAndShow(R.string.select_bind_pp_faile, Common.TOAST_SHORT_TIME);
+//                    }
+//                    break;
 
                 case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
 
@@ -594,7 +593,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     private void goIntent() {
         Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
-        API.PPPlist.clear();
+        API1.PPPlist.clear();
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
