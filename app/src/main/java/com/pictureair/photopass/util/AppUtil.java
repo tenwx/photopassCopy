@@ -659,10 +659,10 @@ public class AppUtil {
 	 * @return 转换后的经纬度
 	 */
 	public static LatLng converterFromGPS2AMAP(JSONObject obj) throws NumberFormatException, JSONException {
-				double lat = Double.valueOf("31.1616667");//我的座位
-				double lng = Double.valueOf("121.7083333");
-//		double lat = Double.valueOf(obj.getString("GPSLatitude"));
-//		double lng = Double.valueOf(obj.getString("GPSLongitude"));
+//				double lat = Double.valueOf("31.1616667");//我的座位
+//				double lng = Double.valueOf("121.7083333");
+		double lat = Double.valueOf(obj.getString("GPSLatitude"));
+		double lng = Double.valueOf(obj.getString("GPSLongitude"));
 		GeoPoint geoPoint = CoordinateConvert.fromGpsToAMap(lat, lng);
 		LatLng latLng = new LatLng(geoPoint.getLatitudeE6()*1e-6, geoPoint.getLongitudeE6()*1e-6);
 

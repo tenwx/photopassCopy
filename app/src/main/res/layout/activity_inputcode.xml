@@ -73,9 +73,8 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:padding="10dp"
-
         android:text="@string/ok"
-        android:textColor="@color/pp_blue"
+        android:textColor="@drawable/textview_selector_blue_white"
         android:textSize="@dimen/text_size_16" />
 
     <TextView

@@ -71,6 +71,8 @@ public class StoryFragment extends Fragment {
 	public StoryFragment() {
 		// TODO Auto-generated constructor stub
 	}
+
+
 	
 	@Override
 	public void onAttach(Context context) {

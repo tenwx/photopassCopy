@@ -113,7 +113,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
                             dialog = CustomProgressDialog.show(
                                     ModifyPasswordActivity.this,
                                     getString(R.string.connecting), false, null);
-                            API1.modifyPwd(oldPassword.getText().toString().trim(), newPassword.getText().toString(), mHandler);
+                            API1.modifyPwd(oldPassword.getText().toString(), newPassword.getText().toString(), mHandler);
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
