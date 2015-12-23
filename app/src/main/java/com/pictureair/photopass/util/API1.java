@@ -1555,13 +1555,14 @@ public class API1 {
         params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
         params.put(Common.IS_USE_SHORT_URL, false);
         //BASE_URL_TEST2 测试成功
+        PictureAirLog.out("get share url----------------");
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
+
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "获取分享成功");
+                PictureAirLog.e(TAG, "获取分享成功" + jsonObject.toString());
                 handler.obtainMessage(GET_SHARE_URL_SUCCESS, id, 0, jsonObject).sendToTarget();
-
             }
 
             @Override
@@ -1569,6 +1570,31 @@ public class API1 {
                 super.onFailure(status);
                 PictureAirLog.e(TAG, "获取分享失败" + status);
                 handler.obtainMessage(GET_SHARE_URL_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
+     * 分享成功的回调，通知服务器已经成功分享
+     * @param shareId
+     * @param platform
+     */
+    public static void shareCallBack(String shareId, String platform){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.SHARE_ID, shareId);
+        params.put(Common.SHARE_PLATFORM, platform);
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("call back success---->" + jsonObject);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
             }
         });
     }

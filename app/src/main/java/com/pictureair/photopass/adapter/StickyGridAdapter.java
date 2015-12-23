@@ -93,7 +93,11 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
                 mViewHolder.videoImageView.setLayoutParams(params2);
             } else {
                 PictureAirLog.out("load online photo--->" + list.get(position).photoPathOrURL);
-                UniversalImageLoadTool.loadImage(list.get(position).photoThumbnail, mViewHolder.mImageView);
+                if (list.get(position).isPayed == 1) {
+                    UniversalImageLoadTool.loadImage(list.get(position).photoThumbnail_512, mViewHolder.mImageView);
+                } else {
+                    UniversalImageLoadTool.loadImage(list.get(position).photoThumbnail, mViewHolder.mImageView);
+                }
                 mViewHolder.videoImageView.setVisibility(View.GONE);
             }
         } else {

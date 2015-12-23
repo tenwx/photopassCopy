@@ -843,8 +843,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
      */
     private void loadDataFromDataBase() {
         System.out.println("load data from database");
-        ArrayList<PhotoInfo> resultPhotoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false);
-        ArrayList<PhotoInfo> resultVideoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true);
+        long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+        ArrayList<PhotoInfo> resultPhotoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
+        ArrayList<PhotoInfo> resultVideoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true, sdf.format(new Date(cacheTime)));
         PictureAirLog.out("photo from db ---->" + resultPhotoArrayList.size());
         PictureAirLog.out("video from db ---->" + resultVideoArrayList.size());
         ppPhotoCount = resultPhotoArrayList.size();

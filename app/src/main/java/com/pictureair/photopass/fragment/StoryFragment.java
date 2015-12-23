@@ -114,12 +114,6 @@ public class StoryFragment extends Fragment {
             		message.arg1 = tab;
             		handler.sendMessage(message);
 				}
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        refreshLayout.setRefreshing(false);
-//                    }
-//                }, 1000);
             }
         });
         
@@ -210,18 +204,6 @@ public class StoryFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 
-//			Intent i = new Intent();
-//			i.setClass(getContext(), PreviewPhotoActivity.class);
-//			Bundle bundle = new Bundle();
-//			bundle.putString("activity", "storyFragment");
-//			bundle.putInt("position", position);//在那个相册中的位置
-//			bundle.putString("photoId", photoInfoArrayList.get(position).photoId);
-//			application.previewPhotoList.clear();
-//			application.previewPhotoList.addAll(photoInfoArrayList);
-//			bundle.putParcelableArrayList("targetphotos", targetArrayList);
-//			i.putExtra("bundle", bundle);
-//			getContext().startActivity(i);
-
 			if (photoInfoArrayList.get(position).isVideo == 1) {
 				PictureAirLog.v(TAG,"点击了视频");
 				PhotoInfo info = photoInfoArrayList.get(position);
@@ -306,4 +288,5 @@ public class StoryFragment extends Fragment {
 			}
 		}
 	}
+
 }

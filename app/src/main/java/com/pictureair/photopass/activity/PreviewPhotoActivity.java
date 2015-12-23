@@ -1086,13 +1086,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", SharePop.SHARE_PHOTO_TYPE, handler);
+                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, handler);
                     } else {//编辑前
                         //判断图片是本地还是网路图片
                         if (photoInfo.onLine == 1) {//网络图片
-                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "online", SharePop.SHARE_PHOTO_TYPE, handler);
+                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL,
+                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE, handler);
                         } else {
-                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", SharePop.SHARE_PHOTO_TYPE, handler);
+                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, handler);
                         }
 
                     }

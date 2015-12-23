@@ -103,6 +103,7 @@ public class Common {
     public static final String ME_HELP = "/help/getHelpList";
     public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
+    public static final String SHARE_CALL_BACK = "/api/share";//分享回调
 
 
     //user的SharedPreferences    以及   接口参数
@@ -194,6 +195,8 @@ public class Common {
     public static final String SHARE_PHOTO_ID = "ids";//分享的类型
     public static final String IS_USE_SHORT_URL = "isUseShortUrl";//分享的短链接或者长链接
     public static final String SHARE_CONTENT = "shareContent";//分享的短链接或者长链接
+    public static final String SHARE_ID = "shareId";
+    public static final String SHARE_PLATFORM = "platform";
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";
