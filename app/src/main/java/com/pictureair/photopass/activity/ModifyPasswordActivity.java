@@ -24,7 +24,6 @@ import com.pictureair.photopass.widget.MyToast;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
     private SharedPreferences sharedPreferences;
-    private ImageView back;
     private EditText oldPassword, newPassword;
     private Button submit;
     private MyToast newToast;
@@ -72,14 +71,14 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
     private void initView() {
         newToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopTitleShow(R.string.modify);
         radio = (ImageButton) findViewById(R.id.modify_password_radio);
-        back = (ImageView) findViewById(R.id.back_modify);
         oldPassword = (EditText) findViewById(R.id.old_password);
         newPassword = (EditText) findViewById(R.id.new_password);
         submit = (Button) findViewById(R.id.submit);
 
         radio.setOnClickListener(this);
-        back.setOnClickListener(this);
         submit.setOnClickListener(this);
     }
 
@@ -87,9 +86,6 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.back_modify:
-                this.finish();
-                break;
             case R.id.submit:
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
                     newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
@@ -172,6 +168,18 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+    }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            default:
+                break;
+        }
     }
 
 

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="52dp"
     android:layout_alignParentTop="true"
-    android:background="@color/blue">
-
+    android:background="@color/pp_blue">
 
     <LinearLayout
         android:id="@+id/topLeftView"
@@ -13,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/pp_margin_16"
         android:gravity="center_vertical"
         android:onClick="TopViewClick"
         android:orientation="horizontal">
@@ -24,6 +22,8 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:paddingBottom="13dp"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
             android:paddingTop="13dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white"
@@ -41,13 +41,11 @@
 
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/topTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/title_update_nickname"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16" />
 
@@ -76,7 +74,9 @@
             android:id="@+id/topRight_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/pp_margin_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_10"
+            android:paddingBottom="@dimen/pp_margin_10"
             android:clickable="false"
             android:text="@string/title_update_nickname"
             android:textColor="@color/white"

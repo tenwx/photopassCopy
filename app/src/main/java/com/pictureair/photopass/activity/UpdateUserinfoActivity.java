@@ -16,15 +16,10 @@ import com.pictureair.photopass.widget.MyToast;
 import cn.smssdk.gui.EditTextWithClear;
 
 public class UpdateUserinfoActivity extends BaseActivity implements OnClickListener {
-	private ImageView back;  // back btn
 	private Button ibSave;   // save btn
-	
-	private TextView tvHeader;
 	private EditTextWithClear etUserInfo;
 	private int type;
 	private MyToast myToast;
-	
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,32 +29,29 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
 	}
 
 	private void init() {
-		tvHeader = (TextView) findViewById(R.id.tvHeader);
+		setTopLeftValueAndShow(R.drawable.back_white,true);
 		etUserInfo = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
 		myToast = new MyToast(this);
-		
 		//判断是从哪个页面跳转过来的。
 		Intent intent=getIntent();
 		type = intent.getIntExtra(Common.USERINFOTYPE, 0);
 		switch (type) {
 		case Common.NICKNAMETYPE:
-			tvHeader.setText(R.string.nn);
+			setTopTitleShow(R.string.nn);
 			etUserInfo.setHint(R.string.hint_text_nickname);
 			break;
         case Common.EMAILTYPE:
-        	tvHeader.setText(R.string.title_update_email);
+			setTopTitleShow(R.string.title_update_email);
         	etUserInfo.setHint(R.string.hint_text_email);
 			break;
         case Common.QQTYPE:
-        	tvHeader.setText(R.string.title_update_qq);
+			setTopTitleShow(R.string.title_update_qq);
         	etUserInfo.setHint(R.string.hint_text_qq);
 			break;
 
 		default:
 			break;
 		}
-		back = (ImageView) findViewById(R.id.back);
-		back.setOnClickListener(this);
 		ibSave = (Button) findViewById(R.id.submit);
 		ibSave.setOnClickListener(this);
 	}
@@ -68,9 +60,6 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.back:
-			this.finish();
-			break;
 		case R.id.submit:
 			Intent mIntent;
 			String userInfo = etUserInfo.getText().toString().trim();
@@ -102,6 +91,17 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
 
 		default:
 			break;
+		}
+	}
+	@Override
+	public void TopViewClick(View view) {
+		super.TopViewClick(view);
+		switch (view.getId()) {
+			case R.id.topLeftView:
+				finish();
+				break;
+			default:
+				break;
 		}
 	}
 

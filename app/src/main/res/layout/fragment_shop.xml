@@ -8,10 +8,10 @@
     <RelativeLayout
         android:id="@+id/frag3_rl"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:background="@color/pp_blue">
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
