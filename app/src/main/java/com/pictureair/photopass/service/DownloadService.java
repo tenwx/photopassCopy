@@ -5,22 +5,22 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.util.Base64;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil;
-import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -44,21 +44,18 @@ public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
     private ArrayList<PhotoInfo> downloadList = new ArrayList<PhotoInfo>();
     private int downed_num = 0;//实际下载照片数
-    private int exist_num = 0;//无需下载的照片数
+    private int exist_num = 0 , scan_num = 0;//无需下载的照片数,扫描成功的照片数
     private int failed_num = 0;//下载失败的照片数
-    private int scan_num = 0;//扫描成功的照片数
 
     private Context mContext = this;
     private NotificationManager manager;
     private Notification notification;
-    private SharedPreferences sp;
-    private StringBuffer sb = new StringBuffer();
     private final static int FINISH_DOWNLOAD = 1;
     private final static int START_DOWNLOAD = 2;
 
     private boolean isDownloading = false;
-
-    private String tokenId;
+    private File file;  //文件
+    private String photoId;// 图片的photoId
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -69,10 +66,7 @@ public class DownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         System.out.println("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-        sb.append(Common.BASE_URL).append(Common.DOWNLOAD_PHOTO);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        tokenId = sp.getString(Common.USERINFO_TOKENID, null);
     }
 
     @SuppressWarnings("deprecation")
@@ -114,12 +108,8 @@ public class DownloadService extends Service {
                 case START_DOWNLOAD:
                     if (downloadList.size() > 0) {//开始下载
                         System.out.println("start download----------------->");
-                        RequestParams params = new RequestParams();
-                        params.put(Common.USERINFO_TOKENID, tokenId);
-                        System.out.println("tokenid = " + tokenId);
-                        params.put("photoIds", downloadList.get(0).photoId);
-//					System.out.println(downloadList.get(0)._id+"===="+downloadList.get(0).originalUrl);
-                        downLoad(downloadList.get(0).photoPathOrURL, params, downloadList.get(0).photoId, downloadList.get(0).isVideo);
+                        photoId = downloadList.get(0).photoId;
+                        downLoad(downloadList.get(0).photoPathOrURL, downloadList.get(0).photoId, downloadList.get(0).isVideo);
                     } else {//说明列表已经全部下载完,要对完成的结果进行处理
                         System.out.println("finish download-------------->");
                         handler.sendEmptyMessage(FINISH_DOWNLOAD);
@@ -147,6 +137,17 @@ public class DownloadService extends Service {
                     isDownloading = false;
                     //				}
                     break;
+                case API1.DOWNLOAD_PHOTO_SUCCESS://下载成功之后获取data数据，然后base64解码，然后保存。
+                    JSONObject objectSuccess;
+                    objectSuccess = JSONObject.parseObject(msg.obj.toString());
+                    saveFile(file, Base64.decodeFast(objectSuccess.getString("data")));
+                    break;
+                case API1.DOWNLOAD_PHOTO_FAILED:
+                    ++failed_num;
+                    downloadList.remove(0);
+                    handler.sendEmptyMessage(START_DOWNLOAD);
+                    break;
+
 
                 default:
                     break;
@@ -163,49 +164,17 @@ public class DownloadService extends Service {
      * 3.如果缓存不存在此文件，调用API下载图片，并且保存到SDcard
      *
      * @param originalUrl 需要下载文件的原始路径
-     * @param params      调用API的参数
      * @param id          对应文件的id
      */
-    private void downLoad(String originalUrl, RequestParams params, String id, int isVideo) {
+    private void downLoad(String originalUrl, String id, int isVideo) {
         String fileName = ScreenUtil.getReallyFileName(originalUrl);
         System.out.println("filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
-        final File file = new File(filedir + "/" + fileName);
-
-        /***********************testing code******************************/
-        //				HttpUtil.get(sb.toString(), params, new BinaryHttpResponseHandler() {
-        //
-        //					@Override
-        //					public void onStart() {
-        //						// TODO Auto-generated method stub
-        //						super.onStart();
-        //						System.out.println("start download====");
-        //					}
-        //					@Override
-        //					public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-        //						// TODO Auto-generated method stub
-        //						System.out.println("download success"+file.toString());
-        //						System.out.println("data===="+arg2.length);
-        //						saveFile(file, arg2);
-        //					}
-        //
-        //					@Override
-        //					public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-        //						// TODO Auto-generated method stub
-        //						System.out.println("failed"+arg3);
-        //						++failed_num;
-        //						//						sendMsg(file);
-        //						downloadList.remove(0);
-        //						handler.sendEmptyMessage(START_DOWNLOAD);
-        //					}
-        //				});
-        /***********************testing code******************************/
-
+        file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
             // 使用友盟统计点击下载次数
             UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
-            System.out.println("file not exist" + sb.toString() + "_" + params.toString());
             System.out.println(originalUrl);
 
             File dirfile = new File(mContext.getCacheDir() + "/" + id + "_ori");
@@ -234,8 +203,7 @@ public class DownloadService extends Service {
                 System.out.println("download success from cache" + file.toString());
                 saveFile(file, arg2);
             } else {//如果缓存中不存在目标文件，需要调用接口去下载文件
-                System.out.println("url====" + sb.toString());
-                downloadImgOrVideo(params, file, isVideo);
+                downloadImgOrVideo(file, isVideo);
             }
         } else {
             System.out.println("file exist");
@@ -247,34 +215,17 @@ public class DownloadService extends Service {
         }
     }
 
-    private void downloadImgOrVideo(RequestParams params, final File file, int isVideo) {
+    /**
+     * 判断下载视频还是 图片
+     */
+    private void downloadImgOrVideo(final File file, int isVideo) {
         if (isVideo == 0) {//photo
-            HttpUtil.get(sb.toString(), params, new BinaryHttpResponseHandler() {
-                @Override
-                public void onStart() {
-                    // TODO Auto-generated method stub
-                    super.onStart();
-                    System.out.println("start download====");
-                }
-                @Override
-                public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-                    // TODO Auto-generated method stub
-                    System.out.println("download success" + file.toString());
-                    saveFile(file, arg2);
-                }
-                @Override
-                public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-                    // TODO Auto-generated method stub
-                    System.out.println("failed" + arg3);
-                    ++failed_num;
-                    //						sendMsg(file);
-                    downloadList.remove(0);
-                    handler.sendEmptyMessage(START_DOWNLOAD);
-                }
-            });
+            API1.downLoadPhotos(handler, photoId);
         } else {//video
-            //目前测试的路径
-            String downloadURL = downloadList.get(0).photoPathOrURL;
+            String downloadURL = Common.PHOTO_URL + downloadList.get(0).photoPathOrURL;
+            RequestParams params = new RequestParams();
+            params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+            params.put(Common.PHOTOIDS, photoId);
             HttpUtil.get(downloadURL, params, new BinaryHttpResponseHandler(new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/png", "image/jpeg"}) {
 
                 @Override
@@ -283,12 +234,14 @@ public class DownloadService extends Service {
                     super.onStart();
                     PictureAirLog.v("asynDownloadFile", " onStart");
                 }
+
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
                     // TODO Auto-generated method stub
                     saveFile(file, arg2);
                     PictureAirLog.v("asynDownloadFile onSuccess", "binaryData size: " + arg2.length);
                 }
+
                 @Override
                 public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
                     // TODO Auto-generated method stub
@@ -306,12 +259,6 @@ public class DownloadService extends Service {
             });
         }
     }
-
-    /**
-     * 判断下载视频还是 图片
-     */
-
-
     /**
      * 保存文件到SDcard
      *
@@ -338,10 +285,6 @@ public class DownloadService extends Service {
                     // 使用友盟统计下载成功次数
                     UmengUtil.onEvent(mContext, Common.EVENT_DOWNLOAD_FINISH);
                     scan(file.toString());
-
-                    //					sendMsg(file);
-                    //					downloadList.remove(0);
-                    //					handler.sendEmptyMessage(START_DOWNLOAD);
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -350,7 +293,6 @@ public class DownloadService extends Service {
         }
 
     }
-
     /**
      * 扫描文件
      *
@@ -370,7 +312,6 @@ public class DownloadService extends Service {
                     }
                 });
     }
-
 
     @Override
     public void onDestroy() {

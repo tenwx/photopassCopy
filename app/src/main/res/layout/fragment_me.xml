@@ -38,7 +38,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/my_profile" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -131,7 +131,8 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/my_order" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -165,7 +166,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/my_pp" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -199,7 +200,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/my_ppp1" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -233,7 +234,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/help" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -268,7 +269,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/setting" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
@@ -302,7 +303,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/about" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"

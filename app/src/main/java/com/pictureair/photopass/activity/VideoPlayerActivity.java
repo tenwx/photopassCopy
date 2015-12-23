@@ -249,8 +249,8 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         filedir.mkdirs();
         final File file = new File(filedir + "/" + fileName);
         if (!file.exists()) {
-            PictureAirLog.v(TAG, " 网络播放");
-            videoPath = videoInfo.photoPathOrURL;
+            videoPath = Common.PHOTO_URL+videoInfo.photoPathOrURL;
+            PictureAirLog.v(TAG, " 网络播放:"+videoPath);
             isOnline = true;
         } else {
             PictureAirLog.v(TAG, " 本地播放");

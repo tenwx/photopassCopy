@@ -29,7 +29,6 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 public class ProfileActivity extends BaseActivity implements OnClickListener {
     private TextView tvNickName, tvGender, tvBirthday, countryTv, accountTv, tvQq;
     private RelativeLayout nn, g, bd, q, item_password;
-    private ImageView back;
     private SharedPreferences sp;
     private MyToast newToast;
     private String birthdayString;
@@ -114,6 +113,8 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
+        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopTitleShow(R.string.profile);
         tvNickName = (TextView) findViewById(R.id.nick_name);
         tvGender = (TextView) findViewById(R.id.sex);
         tvBirthday = (TextView) findViewById(R.id.birthday);
@@ -127,14 +128,14 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         bd = (RelativeLayout) findViewById(R.id.item_birth);
         q = (RelativeLayout) findViewById(R.id.item_qq);
         item_password = (RelativeLayout) findViewById(R.id.item_modify);
-        back = (ImageView) findViewById(R.id.back);
+//        back = (ImageView) findViewById(R.id.back);
 
         item_password.setOnClickListener(this);
         nn.setOnClickListener(this);
         g.setOnClickListener(this);
         bd.setOnClickListener(this);
         q.setOnClickListener(this);
-        back.setOnClickListener(this);
+//        back.setOnClickListener(this);
     }
 
     private void initData() {
@@ -188,10 +189,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 intent = new Intent(ProfileActivity.this, UpdateUserinfoActivity.class);
                 intent.putExtra(Common.USERINFOTYPE, Common.QQTYPE);
                 startActivityForResult(intent, 1);
-                break;
-
-            case R.id.back:
-                finish();
                 break;
 
             case R.id.item_modify:
@@ -294,4 +291,17 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         super.onResume();
     }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
+
 }

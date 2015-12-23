@@ -29,7 +29,7 @@
     <dimen name="pp_margin_32">32dp</dimen>
     <dimen name="pp_margin_20">20dp</dimen>
     <dimen name="pp_margin_10">10dp</dimen>
-    <dimen name="pp_top_bar_height">50dp</dimen>
+    <dimen name="pp_top_bar_height">52dp</dimen>
     <dimen name="pp_margin_8">8dp</dimen>
     <dimen name="pp_margin_40">40dp</dimen>
     <dimen name="pp_margin_5">5dp</dimen>

@@ -32,13 +32,13 @@ import com.pictureair.photopass.util.UmengUtil;
 public class SettingActivity extends BaseActivity implements OnClickListener {
     private SettingUtil settingUtil;
     private RelativeLayout feedback;
-    private ImageView back;
+    //    private ImageView back;
     private Button logout;
     private TextView tvSettingLanguage;
     private MyApplication application;
 
     private ImageButton ibGprWifiDownload, ibWifiOnlyDownload, ibAutoUpdate; // ico
-    private RelativeLayout rlGprsWifiDoenload , rlWifiOnlyDownload , rlAutoUpdate;
+    private RelativeLayout rlGprsWifiDoenload, rlWifiOnlyDownload, rlAutoUpdate;
 
     // 用于显示的 按钮。
     private PictureAirDbManager pictureAirDbManager;
@@ -102,9 +102,12 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
+
+        setTopLeftValueAndShow(R.drawable.back_white, true);
+        setTopTitleShow(R.string.setting);
         logout = (Button) findViewById(R.id.logout);
         feedback = (RelativeLayout) findViewById(R.id.sub_opinions);
-        back = (ImageView) findViewById(R.id.back);
+//        back = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
         application = (MyApplication) getApplication();
 
@@ -118,7 +121,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
         logout.setOnClickListener(this);
         feedback.setOnClickListener(this);
-        back.setOnClickListener(this);
+//        back.setOnClickListener(this);
         tvSettingLanguage.setOnClickListener(this);
         rlGprsWifiDoenload.setOnClickListener(this);
         rlWifiOnlyDownload.setOnClickListener(this);
@@ -135,16 +138,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     }
 
 
-
-
-
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.back:
-                finish();
-                break;
+//            case R.id.back:
+//                finish();
+//                break;
 
             case R.id.logout:
                 new CustomDialog(SettingActivity.this, R.string.comfirm_logout, R.string.button_cancel, R.string.button_ok, new CustomDialog.MyDialogInterface() {
@@ -200,7 +200,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             case R.id.rl_auto_update: // 自动更新
                 if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
                     settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                }else{
+                } else {
                     settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                 }
                 judgeSettingStatus();
@@ -213,7 +213,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     /**
      * 判断当前的设置模式，并且作出相应的视图。
      */
-    private void judgeSettingStatus(){
+    private void judgeSettingStatus() {
         if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
             ibGprWifiDownload.setImageResource(R.drawable.nosele);
             ibWifiOnlyDownload.setImageResource(R.drawable.sele);
@@ -228,4 +228,17 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             ibAutoUpdate.setImageResource(R.drawable.nosele);
         }
     }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
+
 }

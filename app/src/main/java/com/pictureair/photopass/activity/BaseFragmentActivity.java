@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentActivity;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.UmengUtil;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 /**
  * Created by milo on 15/12/16.
  */
@@ -47,6 +49,11 @@ public class BaseFragmentActivity extends FragmentActivity{
     protected void onDestroy() {
         super.onDestroy();
         AppManager.getInstance().killActivity(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
     }
 
     /**

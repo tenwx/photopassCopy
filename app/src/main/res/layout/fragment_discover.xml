@@ -26,7 +26,7 @@
             android:src="@drawable/discover_selection"
             android:visibility="gone" />
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/photopass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
