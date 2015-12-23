@@ -273,8 +273,7 @@ public class DownloadService extends Service {
                 }
             });
         } else {//video
-            //目前测试的路径
-            String downloadURL = downloadList.get(0).photoPathOrURL;
+            String downloadURL = Common.PHOTO_URL + downloadList.get(0).photoPathOrURL;
             HttpUtil.get(downloadURL, params, new BinaryHttpResponseHandler(new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/png", "image/jpeg"}) {
 
                 @Override
