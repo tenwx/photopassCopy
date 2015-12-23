@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         android:background="@color/gray_light" >
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/no_photo_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

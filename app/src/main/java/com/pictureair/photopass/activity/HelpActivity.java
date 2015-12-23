@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -30,10 +29,10 @@ import java.util.ArrayList;
  *
  * @author bass
  */
-public class HelpActivity extends BaseActivity implements OnClickListener {
+public class HelpActivity extends BaseActivity {
     private final String TAG = "HelpActivity ";
     private Context context;
-    private ImageView back;
+//    private ImageView back;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private final int NOT_NETWORK = 111;
     private ArrayList<HelpInfo> helpInfos;
@@ -101,22 +100,21 @@ public class HelpActivity extends BaseActivity implements OnClickListener {
 
     private void initView() {
         myToast = new MyToast(context);
+        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopTitleShow(R.string.mypage_help);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.storyNoNetWorkView);
-        back = (ImageView) findViewById(R.id.back);
         mListView = (ListView) findViewById(R.id.lv_helps);
-
-        back.setOnClickListener(this);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back:
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
                 finish();
                 break;
             default:
                 break;
         }
     }
-
 }

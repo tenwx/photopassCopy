@@ -259,7 +259,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 					editor = sp.edit();
 					editor.putInt(Common.CART_COUNT, sp.getInt(Common.CART_COUNT, 0) + 1);
 					editor.commit();
-					String itemidString = addcart.getString("cartItemId");
+					String itemidString = addcart.getString("cartId");
 
 					if (isbuynow) {//获取订单信息，传送到下一界面
 						Intent intent = new Intent(MakegiftActivity.this, SubmitOrderActivity.class);

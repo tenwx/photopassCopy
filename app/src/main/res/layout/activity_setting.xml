@@ -1,246 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <include
+        android:id="@+id/head"
+        layout="@layout/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true" />
 
-        <RelativeLayout
-            android:id="@+id/head"
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/head"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/pp_blue">
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:background="@color/pp_light_gray_background"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:scrollbars="none">
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingBottom="13dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="13dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/back_white" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/action_settings"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                 />
-        </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginTop="@dimen/pp_margin_16"
+                    android:background="@color/line_color" />
+
+                <RelativeLayout
+                    android:id="@+id/sub_opinions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/submit_opinions"
+                        android:textColor="@color/pp_blue"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/arrow" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/line_color" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/pp_padding_16"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16"
+                    android:text="@string/download_tpye"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/line_color" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_gprs_wifi_download"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_margin_32"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/gprs_wifi_download"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <ImageButton
+                        android:id="@+id/ib_gprs_wifi_download"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@null"
+                        android:src="@drawable/nosele" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginLeft="@dimen/pp_margin_32"
+                    android:background="@color/line_color" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_wifi_only_download"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_margin_32"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/wifi_only_download"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_12" />
+
+
+                    <ImageButton
+                        android:id="@+id/ib_wifi_only_download"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@null"
+                        android:src="@drawable/nosele" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/line_color" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16"
+                    android:text="@string/updata_pictures"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/line_color" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_auto_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/pp_margin_32"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/pp_margin_16"
+                        android:text="@string/auto_sync"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <ImageButton
+                        android:id="@+id/ib_auto_update"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@null"
+                        android:src="@drawable/nosele" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/line_color" />
+
+                <TextView
+                    android:id="@+id/setting_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/pp_margin_16"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:padding="@dimen/pp_padding_16"
+                    android:text="@string/setting_language"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_16" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/line_color" />
+            </LinearLayout>
+        </ScrollView>
 
         <LinearLayout
-            android:id="@+id/ll1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/head"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/pp_margin_16"
             android:background="@color/white"
-            android:orientation="vertical">
+            android:gravity="center_vertical">
 
-            <View
-                android:layout_marginTop="@dimen/pp_margin_16"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <RelativeLayout
-                android:id="@+id/sub_opinions"
+            <Button
+                android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_16"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/submit_opinions"
-                    android:textColor="@color/pp_blue"
-                    android:textSize="@dimen/text_size_16"
-                     />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/arrow" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_padding_16"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16"
-                android:text="@string/download_tpye"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16"
-                 />
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <RelativeLayout
-                android:id="@+id/rl_gprs_wifi_download"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_32"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/gprs_wifi_download"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12" />
-
-                <ImageButton
-                    android:id="@+id/ib_gprs_wifi_download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:src="@drawable/nosele" />
-            </RelativeLayout>
-            <View
-                android:layout_marginLeft="@dimen/pp_margin_32"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-            <RelativeLayout
-                android:id="@+id/rl_wifi_only_download"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pp_margin_32"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/wifi_only_download"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12" />
-
-
-                <ImageButton
-                    android:id="@+id/ib_wifi_only_download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:src="@drawable/nosele" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_16"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16"
-                android:text="@string/updata_pictures"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16"
-                 />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <RelativeLayout
-                android:id="@+id/rl_auto_update"
-                android:layout_marginLeft="@dimen/pp_margin_32"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:text="@string/auto_sync"
-                    android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12" />
-
-                <ImageButton
-                    android:id="@+id/ib_auto_update"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:src="@drawable/nosele" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
-
-            <TextView
-                android:id="@+id/setting_language"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/pp_margin_16"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:padding="@dimen/pp_padding_16"
-                android:text="@string/setting_language"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_16"
-                 />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/line_color" />
+                android:background="@drawable/button_blue_shape_and_selector"
+                android:padding="@dimen/pp_padding_10"
+                android:text="@string/logout"
+                android:textColor="@drawable/textview_selector_blue_white"
+                android:textSize="@dimen/text_size_16" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ll1"
-            android:layout_margin="@dimen/pp_margin_16"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
-            android:text="@string/logout"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16"
-             />
-
-    </RelativeLayout>
-</ScrollView>
+    </LinearLayout>
+</LinearLayout>

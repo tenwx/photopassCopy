@@ -35,4 +35,6 @@
         <attr name="border_color" format="color" />
     </declare-styleable>
 
+    <attr name="fontPath" format="string"/>
+
 </resources>

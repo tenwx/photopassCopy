@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dashLine = "http://schemas.android.com/apk/res-auto"
+    xmlns:dashLine="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
+    android:background="@color/white"
     android:clickable="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
     android:focusableInTouchMode="false"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginTop="5dp" />
+        android:layout_height="@dimen/pp_margin_5"
+        android:background="@color/pp_light_gray_background" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="10dp" >
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8">
 
         <TextView
             android:id="@+id/or_states"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
             android:gravity="center"
             android:text="@string/order_status"
-            android:textColor="@color/gray"
-            android:textSize="15sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/order_states"
@@ -41,39 +43,40 @@
             android:layout_toRightOf="@id/or_states"
             android:gravity="center"
             android:text="未付款"
-            android:textColor="@color/gray2"
-            android:textSize="15sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_10" />
 
         <Button
             android:id="@+id/order_payment1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/button_orange"
+            android:background="@drawable/button_blue"
             android:focusable="false"
-            android:paddingBottom="5dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="5dp"
+            android:paddingBottom="@dimen/pp_margin_5"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_margin_5"
             android:text="@string/payment_order"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <com.pictureair.photopass.widget.DashedLineView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white"
-        dashLine:dashColor="@color/gray_light4" />
+        dashLine:dashColor="@color/pp_gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:padding="15dp" >
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8">
 
         <TextView
             android:layout_width="wrap_content"
@@ -81,8 +84,8 @@
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:text="@string/order_no"
-            android:textColor="@color/gray"
-            android:textSize="12sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/order_number"
@@ -92,8 +95,8 @@
             android:layout_marginLeft="15dp"
             android:gravity="center"
             android:text="fsa"
-            android:textColor="@color/gray2"
-            android:textSize="12sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
     <RelativeLayout
@@ -101,8 +104,8 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="10dp" >
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16">
 
         <TextView
             android:id="@+id/or_price_currency"
@@ -110,11 +113,10 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
             android:gravity="center"
             android:text="@string/orderprice"
-            android:textColor="@color/gray"
-            android:textSize="12sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/order_price_currency"
@@ -127,7 +129,7 @@
             android:gravity="center"
             android:text="currency"
             android:textColor="@color/red"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/order_total_price"
@@ -140,14 +142,14 @@
             android:gravity="center"
             android:text="fsa"
             android:textColor="@color/red"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_12" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingRight="10dp"
+            android:layout_marginRight="@dimen/pp_margin_8"
             android:src="@drawable/order_detail" />
     </RelativeLayout>
 
@@ -155,7 +157,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="15dp" >
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8">
 
         <TextView
             android:id="@+id/or_time"
@@ -164,8 +169,8 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/order_time"
-            android:textColor="@color/gray"
-            android:textSize="12sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/order_time"
@@ -176,31 +181,30 @@
             android:layout_toRightOf="@id/or_time"
             android:gravity="center"
             android:text="fsad"
-            android:textColor="@color/gray2"
-            android:textSize="12sp" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
-    <LinearLayout
+
+    <com.pictureair.photopass.widget.DashedLineView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white" >
-
-        <com.pictureair.photopass.widget.DashedLineView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/white"
-            dashLine:dashColor="@color/gray_light3" />
-    </LinearLayout>
+        android:layout_height="1dp"
+        android:layout_margin="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:background="@color/white"
+        dashLine:dashColor="@color/pp_gray" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:padding="15dp"
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8"
         android:text="@string/order_detail"
-        android:textColor="@color/gray"
+        android:textColor="@color/pp_gray"
         android:textSize="12sp" />
 
 </LinearLayout>

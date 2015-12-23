@@ -270,7 +270,7 @@ public class Common {
     public static final String GOOD_NAME_PPP = "PhotoPass+";
     public static final String GOOD_NAME_SINGLE_DIGITAL = "Digital Photo";
     public static final String GOOD_NAME_6R = "6R Print";
-    public static final String GOOD_NAME_TSHIRT = "Duffy T-shirt";
+    public static final String GOOD_NAME_TSHIRT = "Duffy Bear Personalised T-Shirt";
     public static final String GOOD_NAME_COOK = "Your personal cookies gift";
 
     // 友盟参数
@@ -357,4 +357,6 @@ public class Common {
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
     // tips 需要的字段  end
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
+
+    public static final String DEFULT_FONT = "fonts/AvenirLTStd-Roman.otf";//默认字体
 }

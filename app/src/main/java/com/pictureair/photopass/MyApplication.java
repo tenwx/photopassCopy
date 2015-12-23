@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -24,6 +25,8 @@ import com.pictureair.photopass.util.UmengUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * ImageLoader的配置 百度定位的配置 全局数据的共享
@@ -64,10 +67,12 @@ public class MyApplication extends Application {
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
     public final static boolean DEBUG = true;
     private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
+    public Typeface typeface;//设置默认字体用
 
     @Override
     public void onCreate() {
         super.onCreate();
+        CalligraphyConfig.initDefault(Common.DEFULT_FONT, R.attr.fontPath);
         if (!DEBUG) {
             CrashHandler handler = CrashHandler.getInstance();
             handler.init(getApplicationContext());
@@ -90,6 +95,7 @@ public class MyApplication extends Application {
         } else {
             System.err.println("application not on create------>");
         }
+        typeface = Typeface.createFromAsset(getAssets(), Common.DEFULT_FONT);//初始化字体
     }
 
     /**

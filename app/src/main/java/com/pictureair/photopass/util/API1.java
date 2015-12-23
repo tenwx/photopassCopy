@@ -191,7 +191,9 @@ public class API1 {
     public static final int GET_SHARE_URL_SUCCESS = 6031;
     public static final int GET_SHARE_URL_FAILED = 6030;
 
-
+    //下载
+    public static final int  DOWNLOAD_PHOTO_SUCCESS = 6041;
+    public static final int  DOWNLOAD_PHOTO_FAILED = 6040;
 
     /**
      * 发送设备ID获取tokenId
@@ -1598,4 +1600,32 @@ public class API1 {
             }
         });
     }
+
+    /**************************************下载图片 Start**************************************/
+    /**
+     * 下载图片的接口。
+     * @param handler
+     * @param photoId
+     */
+    public static void downLoadPhotos(final Handler handler , String photoId) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.PHOTOIDS, photoId);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "调用下载照片API成功");
+                handler.obtainMessage(DOWNLOAD_PHOTO_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
+                handler.obtainMessage(DOWNLOAD_PHOTO_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+    /**************************************下载图片 End**************************************/
 }

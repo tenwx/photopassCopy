@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CartInfoAdapter;
 import com.pictureair.photopass.entity.CartItemInfo1;
@@ -26,6 +27,7 @@ import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -407,6 +409,11 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 finish();
                 break;
             case R.id.button3_pm://支付提交按钮
+                //检查网络
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 if (isEdit) {
                     //需要删除操作
                     if (cartInfoList.size() == 0) {
@@ -503,7 +510,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         paymentButton.setBackgroundResource(R.color.red);
                     }
                     paymentButton.setText(R.string.delete);
-                    rtButton.setVisibility(View.GONE);
+                    rtButton.setVisibility(View.INVISIBLE);
 
                 }
                 cartAdapter.notifyDataSetChanged();

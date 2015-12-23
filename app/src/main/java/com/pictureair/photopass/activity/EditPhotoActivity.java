@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -33,11 +34,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.util.Base64;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.adapter.FontAdapter;
@@ -68,6 +71,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.LocationUtil.LocationNotification;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.FontEditDialog;
@@ -414,7 +418,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		imageHeight = 1200;
 
 		photoInfo = getIntent().getParcelableExtra("photo");
-		photoURL = photoInfo.photoPathOrURL;
+//		photoURL = photoInfo.photoPathOrURL;
+		photoURL = photoInfo.photoThumbnail_1024;
 		if (photoInfo.onLine == 1) {
 			//网络图片。
 			isOnlinePic = true;
@@ -865,7 +870,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			System.out.println("file not exists");
 			// 获取在缓存中的文件的名字
 			final File dirfile = new File(this.getCacheDir() + "/"
-					+ photoInfo.photoId+"_ori");
+					+ photoInfo.photoId);
 			System.out.println("dirfile = " + dirfile.toString());
 			if (dirfile.exists()) {// 5、如果缓存存在，则从缓存中获取图片信息
 				System.out.println("cache exists");
