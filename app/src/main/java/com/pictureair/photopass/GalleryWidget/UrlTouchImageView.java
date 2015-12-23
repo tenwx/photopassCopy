@@ -169,7 +169,7 @@ public class UrlTouchImageView extends RelativeLayout {
 			
 		}else {//4、如果SD卡不存在，判断是否在缓存中
 			System.out.println("file not in sd card");
-			dirfile = new File(mContext.getCacheDir()+"/"+photoId+"_ori");
+			dirfile = new File(mContext.getCacheDir()+"/"+photoId);
 			if (dirfile.exists()) {//5、如果缓存存在，则从缓存中获取图片信息
 				System.out.println("file in cache");
 				new Thread(){
