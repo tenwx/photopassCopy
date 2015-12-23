@@ -267,7 +267,7 @@ public class Common {
     public static final String GOOD_NAME_PPP = "PhotoPass+";
     public static final String GOOD_NAME_SINGLE_DIGITAL = "Digital Photo";
     public static final String GOOD_NAME_6R = "6R Print";
-    public static final String GOOD_NAME_TSHIRT = "Duffy T-shirt";
+    public static final String GOOD_NAME_TSHIRT = "Duffy Bear Personalised T-Shirt";
     public static final String GOOD_NAME_COOK = "Your personal cookies gift";
 
     // 友盟参数

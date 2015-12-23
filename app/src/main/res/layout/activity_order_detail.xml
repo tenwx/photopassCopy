@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:padding="15dp"
+                    android:padding="@dimen/pp_padding_16"
                     android:text="@string/product_information"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_12" />
@@ -71,7 +71,11 @@
                     android:background="@color/white"
                     android:clickable="false"
                     android:divider="@null"
-                    android:focusable="false" />
+                    android:focusable="false"
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_padding_16"
+                    android:paddingTop="@dimen/pp_padding_8" />
 
             </LinearLayout>
 
@@ -80,24 +84,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/pp_margin_5"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:padding="@dimen/pp_padding_10"
-                    android:paddingLeft="@dimen/pp_margin_16"
-                    android:paddingRight="@dimen/pp_margin_16">
+                    android:background="@color/white">
 
                     <TextView
                         android:id="@+id/or_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="6dp"
                         android:gravity="center"
+                        android:padding="@dimen/pp_padding_16"
                         android:text="@string/order_information"
                         android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_size_12" />
@@ -108,13 +109,13 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:background="@drawable/button_orange"
                         android:focusable="false"
-                        android:paddingBottom="5dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingTop="5dp"
+                        android:paddingBottom="@dimen/pp_margin_5"
+                        android:paddingLeft="@dimen/pp_padding_16"
+                        android:paddingRight="@dimen/pp_padding_16"
+                        android:paddingTop="@dimen/pp_margin_5"
                         android:text="@string/payment_order"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_16" />
@@ -130,9 +131,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_padding_16"
+                    android:paddingRight="@dimen/pp_padding_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -151,7 +153,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="3dp"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="fsa"
                         android:textColor="@color/pp_gray"
@@ -163,9 +164,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -181,7 +183,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="-0"
                         android:textColor="@color/pp_gray"
@@ -193,9 +194,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -212,7 +214,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="fsa"
                         android:textColor="@color/pp_gray"
@@ -225,9 +226,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -244,7 +246,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="fsa"
                         android:textColor="@color/pp_gray"
@@ -260,14 +261,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="10dp">
+                android:paddingTop="@dimen/pp_margin_5">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:padding="15dp"
+                    android:padding="@dimen/pp_padding_16"
                     android:text="@string/order_info"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_12" />
@@ -282,9 +283,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -301,7 +303,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="fsa"
                         android:textColor="@color/pp_gray"
@@ -313,9 +314,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -332,7 +334,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="fsa"
                         android:textColor="@color/pp_gray"
@@ -344,9 +345,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -363,7 +365,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:text="@string/disney_address"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
@@ -374,9 +375,10 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -393,7 +395,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginRight="@dimen/pp_margin_16"
                         android:gravity="center"
                         android:text="fsa"
                         android:textColor="@color/pp_gray"

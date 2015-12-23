@@ -23,12 +23,12 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.DashedLineView;
 import com.pictureair.photopass.widget.ListViewImageView;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -115,7 +115,7 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.cartGoodCountTextView = (TextView) convertView.findViewById(R.id.cartProductCountTextView);
             viewHolder.cartGoodPhotosGridLayout = (GridLayout) convertView.findViewById(R.id.cartPhotoGridLayout);
             viewHolder.editBarLayout = (LinearLayout) convertView.findViewById(R.id.cartEditBar);
-            viewHolder.cartLineImageView = (DashedLineView) convertView.findViewById(R.id.cartLine1);
+//            viewHolder.cartLineImageView = (DashedLineView) convertView.findViewById(R.id.cartLine1);
             viewHolder.hideImageView = (ImageView) convertView.findViewById(R.id.hideView);
             convertView.setTag(viewHolder);
         } else {
@@ -155,12 +155,12 @@ public class CartInfoAdapter extends BaseAdapter {
         if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
             imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
-            viewHolder.cartLineImageView.setVisibility(View.GONE);
+//            viewHolder.cartLineImageView.setVisibility(View.GONE);
             viewHolder.hideImageView.setVisibility(View.GONE);
         } else {//其他商品
             PictureAirLog.v(TAG, "other product");
             imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
-            viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
+//            viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.hideImageView.setVisibility(View.INVISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
@@ -258,7 +258,7 @@ public class CartInfoAdapter extends BaseAdapter {
         TextView cartGoodCountTextView;//商品数量（编辑数量的时候的数量）
         GridLayout cartGoodPhotosGridLayout;//商品携带图片的控件
         LinearLayout editBarLayout;//编辑数量
-        DashedLineView cartLineImageView;//线
+        //        DashedLineView cartLineImageView;//线
         ImageView hideImageView;//占位置的一个View
     }
 
@@ -320,6 +320,11 @@ public class CartInfoAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
+            //检查网络
+            if(AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID){
+                myToast.setTextAndShow(R.string.no_network,Common.TOAST_SHORT_TIME);
+                return;
+            }
             if (!ishandle) {//如果已经在处理中，则忽略响应，反之，进行处理
                 if (cartItemInfo.getCartProductType() == 2) {//如果是pp不允许添加或者减少数量
                     myToast.setTextAndShow(R.string.cannot_change_count, Common.TOAST_SHORT_TIME);
@@ -339,7 +344,7 @@ public class CartInfoAdapter extends BaseAdapter {
                     PictureAirLog.v(TAG, "remove");
                     if (count > 1) {// 判断数量是否小于1件，如果小于1，则不让更改
                         count--;
-                        if (count <= 1){
+                        if (count <= 1) {
                             //减完后=1，也不可点击
                             holderView.cartReduceImageView.setEnabled(false);//当数量为1时,不可点击
                         }

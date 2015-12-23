@@ -27,7 +27,7 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
  * 个人信息页面
  */
 public class ProfileActivity extends BaseActivity implements OnClickListener {
-    private TextView tvNickName, tvGender, tvBirthday, countryTv, accountTv,tvQq;
+    private TextView tvNickName, tvGender, tvBirthday, countryTv, accountTv, tvQq;
     private RelativeLayout nn, g, bd, q, item_password;
     private ImageView back;
     private SharedPreferences sp;
@@ -275,10 +275,12 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         } else {
             iVisSelectMale.setImageResource(R.drawable.nosele);
             iVisSelectFemale.setImageResource(R.drawable.sele);
-
         }
         isSelectMale.setOnClickListener(this);
         isSelectFemale.setOnClickListener(this);
+        mySexDialog.setCancelable(true);
+        myBuilder.setCancelable(true);
+        mySexDialog.setCanceledOnTouchOutside(true);
     }
 
     @Override
