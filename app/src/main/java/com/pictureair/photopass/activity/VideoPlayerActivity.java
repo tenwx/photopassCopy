@@ -1,6 +1,5 @@
 package com.pictureair.photopass.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,21 +27,18 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.SharePop;
 import com.pictureair.photopass.widget.VideoPlayerView;
 import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
@@ -96,11 +92,16 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private final int NOT_NETWORK = 111;
     private boolean isOnline ;//网络true || 本地false
     private String videoPath;//视频本地路径 || 视频网络地址
+    private int shareType = 0;
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case SharePop.TWITTER:
+                    shareType = msg.what;
+                    break;
+
                 case NOT_NETWORK:
                     tvLoding.setText(R.string.no_network);
                     break;
@@ -400,6 +401,14 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             hideControllerDelay();
         }
         isPaused = false;
+
+        if (sharePop != null) {
+            PictureAirLog.out("sharePop not null");
+            if (shareType != SharePop.TWITTER) {
+                PictureAirLog.out("dismiss dialog");
+                sharePop.dismissDialog();
+            }
+        }
         super.onResume();
     }
 
@@ -566,7 +575,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
         switch (v.getId()) {
             case R.id.ll_share:
-                sharePop.setshareinfo(null, videoInfo.shareURL, null, "online", handler);
+                sharePop.setshareinfo(null, videoInfo.shareURL, "online", videoInfo.photoId, SharePop.SHARE_VIDEO_TYOE, handler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.ll_download:

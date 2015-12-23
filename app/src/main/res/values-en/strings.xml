@@ -391,13 +391,13 @@
     <!-- 我的页面 -->
     <string name="mypage_message">Message</string>
     <string name="mypage_coupons">Coupons</string>
-    <string name="mypage_myprofile">My Profile</string>
-    <string name="mypage_myorder">My Orders</string>
+    <string name="mypage_myprofile">Profile</string>
+    <string name="mypage_myorder">Orders</string>
     <string name="mypage_pp">PhotoPass</string>
     <string name="mypage_ppp">PhotoPass+</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
-    <string name="mypage_about">About us</string>
+    <string name="mypage_about">About</string>
     <!-- 我的订单页面 -->
     <string name="payment_order_btn">Payment</string>
     <string name="delete_order_btn">Delete</string>
@@ -559,4 +559,7 @@
     <string name="preferential">Preferential:</string>
     <string name="select_address">Please Select Address</string>
     <string name="about_tips">我迪故事里, 有您更精彩</string>
+    <string name="country">Country</string>
+    <string name="account">Account</string>
+    <string name="nick_name_empty">Nickname can not be empty</string>
 </resources>

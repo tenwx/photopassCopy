@@ -175,7 +175,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
         if (childlist.get(groupPosition).get(childPosition).cart_productImageUrl.contains("http")) {
             imageLoader.displayImage(childlist.get(groupPosition).get(childPosition).cart_productImageUrl, hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.BASE_URL_TEST + childlist.get(groupPosition).get(childPosition).cart_productImageUrl, hView.goodsImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).get(childPosition).cart_productImageUrl, hView.goodsImageView);
         }
         hView.goodsName.setText(childlist.get(groupPosition).get(childPosition).cart_productName);
         hView.goodsCount.setText(childlist.get(groupPosition).get(childPosition).cart_quantity + "");

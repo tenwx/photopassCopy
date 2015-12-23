@@ -152,7 +152,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
             }
         }
         if (arrayList.get(position).getPictures() != null && arrayList.get(position).getPictures().length > 0) {
-            imageLoader.displayImage(Common.BASE_URL_TEST + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
         }
         gridLayoutLists.add(imageViews);
         viewHolder.goodQuentityTextView.setText("x" + arrayList.get(position).getQty());//数量

@@ -3,9 +3,6 @@ package com.pictureair.photopass.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.AboutActivity;
@@ -32,8 +31,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
-import java.io.File;
-
 /**
  * 我的界面
  * 处理用户信息、订单、乐拍通、乐拍通+、设置、帮助、关于
@@ -46,11 +43,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private SharedPreferences sp;
-    private Long originalHeadLastModifyTime;
-    private File file;
     private String userPP = "";//用户PP号
     private String avatarUrl = "";//用户头像url
     private boolean isCodePic = false;//是否已经生成二维码
+
+    private DisplayImageOptions headOptions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,9 +75,23 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         //初始化控件
         sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         userPP = sp.getString(Common.USERINFO_USER_PP, "");
-        file = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
-
+        //设置头像ImageLoader参数
+        headOptions = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.default_photo)
+                .showImageForEmptyUri(R.drawable.default_photo)
+                .showImageOnFail(R.drawable.default_photo)
+                .cacheOnDisk(true)
+                .cacheInMemory(true)
+                .build();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        // 初始化数据
+        initData();
     }
 
     /**
@@ -89,11 +100,32 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      */
     private void initData() {
         name.setText(sp.getString(Common.USERINFO_NICKNAME, "photoPass"));
-        avatarUrl = sp.getString(Common.USERINFO_HEADPHOTO, "");
-        setCodePic();
-        setHeadImage();
+        avatarUrl = sp.getString(Common.USERINFO_HEADPHOTO, null);
+        setCodePic();//设置二维码
+        setHeadImage();//设置头像
     }
 
+    /**
+     * 设置头像
+     */
+    private void setHeadImage() {
+        // TODO Auto-generated method stub
+        if (avatarUrl == null || avatarUrl.equals("")) {
+            //如果user中的头像为空，显示默认头像
+            PictureAirLog.v(TAG, "setHeadImage == null");
+            headPhoto.setImageResource(R.drawable.default_photo);
+        } else {//如果有数据，加载图片
+            PictureAirLog.v(TAG, "setHeadImage: " + avatarUrl);
+            initUserHeadImage();
+        }
+    }
+
+    /**
+     * 初始化头像
+     */
+    public void initUserHeadImage() {
+        ImageLoader.getInstance().displayImage(Common.PHOTO_URL + avatarUrl, headPhoto, headOptions);
+    }
 
     /**
      * 生成二维码
@@ -112,40 +144,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             }
         }
 
-    }
-
-    /**
-     * 设置头像
-     */
-    private void setHeadImage() {
-        // TODO Auto-generated method stub
-        if (avatarUrl.isEmpty()) {
-            //如果user中的头像为空，显示默认头像
-            PictureAirLog.v(TAG, "null" + avatarUrl);
-            headPhoto.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
-            originalHeadLastModifyTime = 0L;
-        } else {//如果有数据，加载图片
-            Bitmap bm1 = null;
-            Options options = new Options();
-            options.inSampleSize = 2;
-            bm1 = BitmapFactory.decodeFile(Common.USER_PATH + Common.HEADPHOTO_PATH, options);
-
-            originalHeadLastModifyTime = file.lastModified();
-            if (bm1 != null) {
-                headPhoto.setImageBitmap(bm1);
-            } else {
-                headPhoto.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
-            }
-
-        }
-    }
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-        // 初始化数据
-        initData();
     }
 
     @Override

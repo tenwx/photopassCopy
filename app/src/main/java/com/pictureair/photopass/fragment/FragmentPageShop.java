@@ -86,7 +86,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                         //更新界面
                         shopGoodListViewAdapter.refresh(allGoodsList);
                         //将数据保存到缓存中
-                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString());
+                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        }
                     }
 
                     //获取收货地址列表
@@ -108,8 +110,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
                     if (addressJson != null && addressJson.getOutlets().size() > 0) {
                         //存入缓存
-                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString());
-
+                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        }
                     }
                     break;
 
@@ -173,10 +176,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 Intent intent = null;
                 if (Common.ppp.equals(allGoodsList.get(position).getName())) {
                     intent = new Intent(getActivity(), PPPDetailProductActivity.class);
-                    ;
                     intent.putExtra("goods", allGoodsList.get(position));
                     intent.putExtra("showComment", "Y");
-
                 } else {
                     intent = new Intent(getActivity(), DetailProductActivity.class);
                     intent.putExtra("storeid", storeIdString);
@@ -240,11 +241,11 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     public void onResume() {
         super.onResume();
         cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
-        if (cartCount <= 0) {
-            cartCountTextView.setVisibility(View.INVISIBLE);
-        } else {
+        if (cartCount > 0) {
             cartCountTextView.setVisibility(View.VISIBLE);
             cartCountTextView.setText(cartCount + "");
+        } else {
+            cartCountTextView.setVisibility(View.INVISIBLE);
         }
     }
 }

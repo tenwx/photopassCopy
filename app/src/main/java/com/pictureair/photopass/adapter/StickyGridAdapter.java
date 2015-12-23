@@ -85,7 +85,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         if (list.get(position).onLine == 1) {
             if (list.get(position).isVideo == 1) {
                 PictureAirLog.out("load video--->" + list.get(position).photoPathOrURL);
-                UniversalImageLoadTool.loadImage(list.get(position).photoPathOrURL, mViewHolder.mImageView);
+                UniversalImageLoadTool.loadImage(Common.PHOTO_URL + list.get(position).photoPathOrURL, mViewHolder.mImageView);
                 mViewHolder.videoImageView.setVisibility(View.VISIBLE);
                 LayoutParams params2 = mViewHolder.videoImageView.getLayoutParams();
                 params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);

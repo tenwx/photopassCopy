@@ -42,7 +42,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="bottom">
 
             <ImageView
@@ -94,22 +94,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/copyright"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_margin_8"
                     android:text="@string/copyright1"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_margin_8"
                     android:text="@string/copyright2"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp" />
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

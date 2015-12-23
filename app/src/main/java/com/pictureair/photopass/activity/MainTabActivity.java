@@ -3,7 +3,6 @@ package com.pictureair.photopass.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -33,15 +32,6 @@ import com.pictureair.photopass.widget.BadgeView;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
 
-/**
- * ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘
- * ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘
- * ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘
- * ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘
- * ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘ḻ͔̦͎̊̅ͦ͛͂̍͐̑̔͛̚̕͘
- * <p/>
- * 铁塔镇楼，保佑代码无bug
- */
 
 /**
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
@@ -148,7 +138,7 @@ public class MainTabActivity extends BaseFragmentActivity {
             //设置成为上次的tab页面
             mTabHost.setCurrentTab(last_tab);
         }
-        if (!currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+        if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
             mTabHost.clearAllTabs();
             mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
             loadFragment(fragmentArray.length);
@@ -163,6 +153,7 @@ public class MainTabActivity extends BaseFragmentActivity {
         // 接收消息回复
         UmengUtil.syncFeedback(this);
     }
+
 
     @Override
     protected void onPause() {
