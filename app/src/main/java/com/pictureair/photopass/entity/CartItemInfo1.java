@@ -7,13 +7,14 @@ import java.util.List;
  * Created by milo on 15/12/14.
  * 购物车实体类
  */
-public class CartItemInfo1 implements Serializable{
+public class CartItemInfo1 implements Serializable {
     private String cartId = ""; //string,购物项主键
     private String storeId = ""; //string,商城编号
     private String goodsKey = ""; //string,商品项key
     private String productName = ""; //string,商品名称
     private String productNameAlias = ""; //商品名称别称
     private String description = ""; //string,商品描述
+    private int entityType;//int 商品虚拟／实体类型（0,1）
     private int embedPhotosCount = 0; //number,商品合成所需照片数
     private int unitPrice = 0; //number,商品单价
     private int qty = 0; //number,商品数量
@@ -25,7 +26,7 @@ public class CartItemInfo1 implements Serializable{
     private int showEdit = 0;//1，开始编辑数量，0，不需要编辑数量
     private int showPhotos = 0;//1,展示照片，0，不展示照片
     private boolean isFullPhotos = false;//商品是否加满照片
-    private int cartProductType = 3;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品
+    private int cartProductType = 3;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品(自己添加)
     private String cartProductImageUrl = "";//自己添加，购物车商品预览图
 
     public String getCartId() {
@@ -178,5 +179,13 @@ public class CartItemInfo1 implements Serializable{
 
     public void setCartProductImageUrl(String cartProductImageUrl) {
         this.cartProductImageUrl = cartProductImageUrl;
+    }
+
+    public int getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(int entityType) {
+        this.entityType = entityType;
     }
 }

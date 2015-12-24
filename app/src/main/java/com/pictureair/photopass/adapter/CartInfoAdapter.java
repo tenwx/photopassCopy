@@ -152,7 +152,7 @@ public class CartInfoAdapter extends BaseAdapter {
 //            viewHolder.hideImageView.setVisibility(View.GONE);
 //
 //        } else
-        if (Common.ppp.equals(goodArrayList.get(position).getProductName())) {//ppp商品
+        if (goodArrayList.get(position).getEntityType() == 0 && Common.GOOD_NAME_PPP.equals(goodArrayList.get(position).getProductName())) {//ppp商品
             imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
 //            viewHolder.cartLineImageView.setVisibility(View.GONE);
@@ -321,8 +321,8 @@ public class CartInfoAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             //检查网络
-            if(AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID){
-                myToast.setTextAndShow(R.string.no_network,Common.TOAST_SHORT_TIME);
+            if (AppUtil.getNetWorkType(MyApplication.getInstance()) == AppUtil.NETWORKTYPE_INVALID) {
+                myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                 return;
             }
             if (!ishandle) {//如果已经在处理中，则忽略响应，反之，进行处理
