@@ -58,7 +58,6 @@ import java.util.Random;
 
 public class PaymentOrderActivity extends BaseActivity implements
 		OnClickListener {
-	private ImageView lrtLayout;
 	private TextView sbmtButton;
 	private String nameString;
 	private String priceString;
@@ -121,7 +120,8 @@ public class PaymentOrderActivity extends BaseActivity implements
 	}
 
 	private void findViewById() {
-		lrtLayout = (ImageView) findViewById(R.id.lrt);
+		setTopTitleShow(R.string.pay);
+		setTopLeftValueAndShow(R.drawable.back_white,true);
 		sbmtButton = (TextView) findViewById(R.id.button_smpm);
 		// 支付方式选择
 		zfButton = (ImageView) findViewById(R.id.imageButton1_zfb);
@@ -150,7 +150,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
 		msgApi.registerApp(Constants.APP_ID);
 
-		lrtLayout.setOnClickListener(this);
+//		lrtLayout.setOnClickListener(this);
 		sbmtButton.setOnClickListener(this);
 		zfButton.setImageResource(R.drawable.sele);
 		yhkButton.setImageResource(R.drawable.nosele);
@@ -269,10 +269,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.lrt:// 返回
-			finish();
-			break;
-
 		case R.id.button_smpm:// 提交支付
 			if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
 				newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
@@ -817,5 +813,17 @@ public class PaymentOrderActivity extends BaseActivity implements
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+	}
+
+	@Override
+	public void TopViewClick(View view) {
+		super.TopViewClick(view);
+		switch (view.getId()) {
+			case R.id.topLeftView:
+				finish();
+				break;
+			default:
+				break;
+		}
 	}
 }

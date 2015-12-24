@@ -34,7 +34,7 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
     private List<View> mList;
     private Button btnStart;
     private View view1, view2;
-    private ImageView ivBack;
+//    private ImageView ivBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,21 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
     }
 
     private void initView() {
+        setTopTitleShow(R.string.my_disney_story);
+        setTopLeftValueAndShow(R.drawable.back_white,true);
         mViewPager = (ViewPager) findViewById(R.id.vP_is_one_video);
+    }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            default:
+                break;
+        }
     }
 
     private void initData() {
@@ -58,8 +72,8 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
 
         view2 = inflater.inflate(R.layout.viewpager_disney_video1, null);
         view2.setBackgroundResource(R.drawable.img_disneyvideo1);
-        ivBack = (ImageView) findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(this);
+//        ivBack = (ImageView) findViewById(R.id.iv_back);
+//        ivBack.setOnClickListener(this);
         btnStart = (Button) view2.findViewById(R.id.btn_start);
         btnStart.setVisibility(View.VISIBLE);
 

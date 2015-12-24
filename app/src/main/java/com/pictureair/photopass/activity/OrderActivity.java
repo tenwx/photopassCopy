@@ -42,14 +42,14 @@ import java.util.ArrayList;
  *
  * @author bauer_bao
  */
-public class OrderActivity extends BaseActivity implements OnClickListener {
+public class OrderActivity extends BaseActivity {
 
     private ViewPager viewPager;
     private OrderViewPagerAdapter orderAdapter;
     private ArrayList<View> listViews;
     private ImageView cursorImageView;//动画图片
     private TextView paymentOrderTextView, deliveryOrderTextView, allOrderTextView;//选项卡
-    private ImageView backLayout;
+//    private ImageView backLayout;
 
     //group列表信息
     private ArrayList<OrderInfo> paymentOrderArrayList;
@@ -180,7 +180,6 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         initView();
@@ -193,15 +192,14 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         // 显示进度条。
         customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
         API1.getOrderInfo(handler);
-
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-
+        setTopTitleShow(R.string.my_order);
+        setTopLeftValueAndShow(R.drawable.back_white, true);
         paymentOrderTextView = (TextView) findViewById(R.id.order_payment);
         deliveryOrderTextView = (TextView) findViewById(R.id.order_delivery);
         allOrderTextView = (TextView) findViewById(R.id.order_all);
         viewPager = (ViewPager) findViewById(R.id.order_vPager);
         cursorImageView = (ImageView) findViewById(R.id.cursor);
-        backLayout = (ImageView) findViewById(R.id.order_return);
 
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
@@ -232,7 +230,6 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         paymentOrderTextView.setOnClickListener(new viewPagerOnClickListener(0));
         deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
-        backLayout.setOnClickListener(this);
 
         myToast = new MyToast(this);
     }
@@ -305,16 +302,19 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.order_return://返回按钮
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView://返回按钮
+
+
                 doBack();
                 break;
-
             default:
                 break;
         }
     }
+
 
     //退出app进行的判断，判断是否是栈中的唯一一个app，如果是，启动主页
     private void doBack() {
