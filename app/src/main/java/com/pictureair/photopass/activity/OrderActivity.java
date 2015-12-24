@@ -24,6 +24,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
+import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -36,6 +37,7 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order
@@ -59,10 +61,10 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
 
     private OrderInfo orderInfo;
     //child列表信息
-    private ArrayList<ArrayList<CartItemInfo>> paymentOrderChildArrayList;
-    private ArrayList<ArrayList<CartItemInfo>> deliveryOrderChildArrayList;
-    private ArrayList<ArrayList<CartItemInfo>> allOrderChildArrayList;
-    private ArrayList<ArrayList<CartItemInfo>> downOrderChildArrayList;
+    private List<OrderProductInfo> paymentOrderChildArrayList;
+    private List<OrderProductInfo> deliveryOrderChildArrayList;
+    private List<OrderProductInfo> allOrderChildArrayList;
+    private List<OrderProductInfo> downOrderChildArrayList;
     private ArrayList<CartItemInfo> cartItemInfo;
 
     private SharedPreferences sharedPreferences;
@@ -101,18 +103,22 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
                         cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
                         PictureAirLog.v(TAG, "child size = " + cartItemInfo.size());
 
+                        OrderProductInfo orderProductInfo = new OrderProductInfo();
+                        orderProductInfo.setOrderTime(orderInfo.orderTime);
+                        orderProductInfo.setCartItemInfos(cartItemInfo);
+
                         if (orderInfo.orderStatus == 1) {//1等待买家付款
                             paymentOrderArrayList.add(orderInfo);
-                            paymentOrderChildArrayList.add(cartItemInfo);
+                            paymentOrderChildArrayList.add(orderProductInfo);
                         } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
                             deliveryOrderArrayList.add(orderInfo);
-                            deliveryOrderChildArrayList.add(cartItemInfo);
+                            deliveryOrderChildArrayList.add(orderProductInfo);
                         } else if (orderInfo.orderStatus == 4 || orderInfo.orderStatus == 5) {
                             downOrderArrayList.add(orderInfo);
-                            downOrderChildArrayList.add(cartItemInfo);
+                            downOrderChildArrayList.add(orderProductInfo);
                         }
                         allOrderArrayList.add(orderInfo);
-                        allOrderChildArrayList.add(cartItemInfo);
+                        allOrderChildArrayList.add(orderProductInfo);
                     }
                     orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
                             paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
@@ -214,10 +220,10 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         deliveryOrderArrayList = new ArrayList<OrderInfo>();
         allOrderArrayList = new ArrayList<OrderInfo>();
         downOrderArrayList = new ArrayList<OrderInfo>();
-        paymentOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
-        deliveryOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
-        allOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
-        downOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
+        paymentOrderChildArrayList = new ArrayList<>();
+        deliveryOrderChildArrayList = new ArrayList<>();
+        allOrderChildArrayList = new ArrayList<>();
+        downOrderChildArrayList = new ArrayList<>();
 
         LayoutInflater mInflater = getLayoutInflater();
         listViews.add(mInflater.inflate(R.layout.order_list, null));
