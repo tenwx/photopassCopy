@@ -541,7 +541,7 @@
 
     <string name="auto_sync">自动更新</string>
     <string name="no_photo_in_airpass">没有照片, 赶快来使用AirPass吧!</string>
-    <string name="no_photo_in_magiccam">没有照片, 赶快来使用相机吧!</string>
+    <string name="no_photo_in_magiccam">还没有照片哦, 赶快去拍照吧!</string>
     <string name="no_photo_in_bought">没有照片,赶快来购买吧!</string>
     <string name="no_photo_in_favourite">没有照片,赶快去收藏吧!</string>
 

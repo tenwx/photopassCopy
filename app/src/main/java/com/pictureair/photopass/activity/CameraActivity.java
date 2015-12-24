@@ -845,6 +845,16 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 			}
 		}
 
+
+		if (cameraPosition == 1){
+			if (camera_flash == 2){
+				flashButton.setImageResource(R.drawable.camera_flash_on);
+				flashButton.setScaleType(ScaleType.CENTER_INSIDE);
+				myParameters.setFlashMode(Parameters.FLASH_MODE_ON);
+				mycamera.setParameters(myParameters);
+			}
+		}
+
 	}
 
 	/*
