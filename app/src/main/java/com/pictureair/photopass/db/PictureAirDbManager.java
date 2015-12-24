@@ -29,6 +29,8 @@ public class PictureAirDbManager {
 	private static final String TAG = "PictureAirDbManager";
 	private PictureAirDBHelper photoInfoDBHelper;
 	private SQLiteDatabase database;
+	public static final long DAY_TIME = 24 * 60 * 60 * 1000;//一天的毫秒数
+	public static final int CACHE_DAY = 30;//30天的有效期
 
 	public PictureAirDbManager(Context context) {
 		if (photoInfoDBHelper == null) {
@@ -567,17 +569,18 @@ public class PictureAirDbManager {
 	 * 查询数据库中的图片信息
 	 * @return
 	 */
-	public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo){
+	public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo, String deleteTime){
 		ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
 		database = photoInfoDBHelper.getReadableDatabase();
 		//根据当前时间，删除超过30天并且未支付的数据信息
+		/**
+		 * 1.获取当前时间，以毫秒为单位
+		 * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
+		 */
+//		database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where shootOn < datetime(?)", new String[]{"2015-12-22 19:55:50"});
+		database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
 
-
-
-
-
-
-		//查询photo表的信息
+		//删除过期的数据之后，再查询photo表的信息
 		Cursor cursor = database.rawQuery("select * from "+Common.PHOTOPASS_INFO_TABLE+" where isVideo = ? order by shootOn desc", new String[]{isVideo ? "1" : "0"});
 		PhotoInfo photoInfo;
 		if (cursor.moveToFirst()) {//判断是否photo数据

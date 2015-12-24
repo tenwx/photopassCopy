@@ -50,7 +50,6 @@
         android:id="@+id/goodDetailIntroduce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:textColor="@color/pp_light_gray_press" />
 
 

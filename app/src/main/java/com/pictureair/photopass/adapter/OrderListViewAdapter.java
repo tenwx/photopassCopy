@@ -116,14 +116,14 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             groupHolderView = (GroupHolderView) convertView.getTag();
         }
         //初始化group
-        groupHolderView.orderTimeTextView.setText(grouplist.get(groupPosition).orderTime.substring(0, 10));
+        groupHolderView.orderTimeTextView.setText(grouplist.get(groupPosition).orderTime.substring(0, 16));
         groupHolderView.orderNumberTextView.setText(grouplist.get(groupPosition).orderNumber);
         groupHolderView.totalPriceTextView.setText((int) grouplist.get(groupPosition).orderTotalPrice + "");
         switch (grouplist.get(groupPosition).orderStatus) {
             case 1://1等待买家付款
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
                 groupHolderView.paymentButton.setText(R.string.payment_order_btn);
-//			groupHolderView.paymentButton.setBackgroundColor(R.color.orange1);
+                groupHolderView.paymentButton.setBackgroundResource(R.drawable.button_blue);
                 groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.white));
                 groupHolderView.orderStatesTextView.setText(R.string.order_unpaid);
                 break;
@@ -131,7 +131,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
             case 3:
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
-                groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.orange));
+                groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.red));
                 groupHolderView.paymentButton.setText(R.string.delete_order_btn);
                 groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
                 groupHolderView.orderStatesTextView.setText(R.string.order_paid);

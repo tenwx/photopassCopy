@@ -75,7 +75,7 @@ public class OrderProductDetailAdapter extends BaseAdapter {
         if (list.get(position).cart_productImageUrl.contains("http")) {
             imageLoader.displayImage(list.get(position).cart_productImageUrl, hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.BASE_URL_TEST + list.get(position).cart_productImageUrl, hView.goodsImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + list.get(position).cart_productImageUrl, hView.goodsImageView);
         }
         hView.goodsName.setText(list.get(position).cart_productName);
         hView.goodsCount.setText(list.get(position).cart_quantity + "");

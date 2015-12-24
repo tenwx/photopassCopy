@@ -32,6 +32,7 @@ import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -163,14 +164,15 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     editor = sharedPreferences.edit();
                     editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
                     editor.commit();
-                    String itemidString = addcart.getString("cartItemId");
+                    String itemidString = addcart.getString("cartId");
 
                     if (isbuynow) {//获取订单信息，传送到下一界面
                         Intent intent = new Intent(PreviewProductActivity.this, SubmitOrderActivity.class);
                         ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
                         CartItemInfo1 cartItemInfo = new CartItemInfo1();
                         cartItemInfo.setProductName(goodsInfo.getName());
-                        cartItemInfo.setPrice(goodsInfo.getPrice());
+                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                        cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
                         cartItemInfo.setCartProductType(1);
                         CartPhotosInfo1 cartPhotosInfo;
                         listAfterUploaded.clear();
@@ -377,6 +379,11 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 break;
 
             case R.id.button_buy_now:
+                //检查网络
+                if (AppUtil.getNetWorkType(PreviewProductActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 Message msg = handler.obtainMessage();
                 msg.what = API1.UPLOAD_PHOTO_SUCCESS;
                 isbuynow = true;//buy now
@@ -387,6 +394,11 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 break;
 
             case R.id.button_add_to_cart://先要上传选择的图片，然后再加入购物车
+                //检查网络
+                if (AppUtil.getNetWorkType(PreviewProductActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 Message message = handler.obtainMessage();
                 message.what = API1.UPLOAD_PHOTO_SUCCESS;
                 isbuynow = false;//add to cart
@@ -398,6 +410,11 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 
             case R.id.textview_cart_count:
             case R.id.button1_cart:
+                //检查网络
+                if (AppUtil.getNetWorkType(PreviewProductActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
                 intent = new Intent(this, CartActivity.class);
                 PreviewProductActivity.this.startActivity(intent);
                 break;

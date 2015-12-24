@@ -18,6 +18,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mob.tools.utils.UIHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -66,6 +67,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	private TextView sharecancel;
 	private String imagePath, imageUrl, shareUrl, type;
 	private String sharePlatform;
+	private String shareId;
 	private Handler handler;
 	/**
 	 * 打开程序进行分享比较耗时间，所以再点击分享的时候，就显示进度条
@@ -91,8 +93,14 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			switch (msg.what) {
 				case API1.GET_SHARE_URL_SUCCESS:
 					//拿到shareUrl
-					shareUrl = msg.obj.toString();
+					JSONObject shareInfo = JSONObject.parseObject(msg.obj.toString());
+					shareUrl = shareInfo.getString("shareUrl");
+					shareId = shareInfo.getString("shareId");
 					PictureAirLog.e(TAG,"拿到了分享链接："+shareUrl);
+
+//					//测试回调代码
+//					API1.shareCallBack(shareId, "qq");
+//
 					startShare(msg.arg1);
 					break;
 
@@ -101,6 +109,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 					if (dialog.isShowing()) {
 						dialog.dismiss();
 					}
+					shareUrl = null;
+					shareId = null;
 					int resId = getStringRes(context, "http_error_code_401");
 					if (resId > 0) {
 						showNotification(2000, context.getString(resId));
@@ -400,16 +410,19 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		switch (id) {
 			case R.id.wechat_moments:
 				shareType = Common.EVENT_ONCLICK_SHARE_WECHAT_MOMENTS;
+				sharePlatform = "wechat moments";
 				wechatmonentsShare(context, imagePath, imageUrl, shareUrl, type);
 				break;
 
 			case R.id.wechat:
 				shareType = Common.EVENT_ONCLICK_SHARE_WECHAT;
+				sharePlatform = "wechat";
 				wechatFriendsShare(context, imagePath, imageUrl, shareUrl, type);
 				break;
 
 			case R.id.qq:
 				shareType = Common.EVENT_ONCLICK_SHARE_QQ;
+				sharePlatform = "qq";
 				if (type.equals("local")) {// 本地
 					createThumbNail(id);
 				} else {
@@ -419,11 +432,13 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
 			case R.id.qqzone:
 				shareType = Common.EVENT_ONCLICK_SHARE_QQZONE;
+				sharePlatform = "qzone";
 				qzoneShare(context, imagePath, imageUrl, shareUrl, type);
 				break;
 
 			case R.id.sina:
 				shareType = Common.EVENT_ONCLICK_SHARE_SINA_WEIBO;
+				sharePlatform = "sina";
 				if (type.equals("local")) {// 本地
 					createThumbNail(id);
 				} else {
@@ -434,6 +449,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			case R.id.facebook:
 				PictureAirLog.out("fb on click");
 				shareType = Common.EVENT_ONCLICK_SHARE_FACEBOOK;
+				sharePlatform = "facebook";
 				facebookShare(context, imagePath, imageUrl, shareUrl, type);
 				break;
 
@@ -465,9 +481,12 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			case R.id.sina:
 			case R.id.facebook:
 			case R.id.twitter:
+				PictureAirLog.out("share on click--->");
 				if ("local".equals(type)) {//开始分享
+					PictureAirLog.out("local");
 					startShare(v.getId());
 				} else if ("online".equals(type)) {//网络，需要获取shareURL
+					PictureAirLog.out("online");
 					API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
 				}
 				break;
@@ -597,6 +616,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			switch (msg.arg1) {
 			case 1: {
 				// 成功
+				API1.shareCallBack(shareId, sharePlatform);
 				int resId = getStringRes(context, "share_completed");
 				if (resId > 0) {
 					showNotification(2000, context.getString(resId));

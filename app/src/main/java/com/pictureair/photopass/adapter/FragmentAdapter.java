@@ -13,7 +13,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	private List<Fragment> mFragments;
 	private List<String> tagList;
 	private FragmentManager fragmentManager;
- 
+
 	public FragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
 		super(fm);
 		fragmentManager = fm;
@@ -54,37 +54,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	@Override
 	public void finishUpdate(ViewGroup container) {
 		// TODO Auto-generated method stub
-//		System.out.println("fragmentadapter -----> finishupdate");
 		super.finishUpdate(container);
 	}
-	
-//	public void setFragments(List<Fragment> fragments) {
-//		System.out.println("set fragments");
-//		if(mFragments != null){
-//			FragmentTransaction ft = fragmentManager.beginTransaction();
-//			for(Fragment f : mFragments){
-////				if (ft.) {
-////					
-////				}
-//				ft.remove(f);
-//			}
-//			ft.commit();
-//			ft=null;
-//			fragmentManager.executePendingTransactions();
-//		}
-//		mFragments = fragments;
-//		notifyDataSetChanged();
-//	}
-	
-	/**
-	 * 更新数据
-	 * @param photoInfoArrayList
-	 * @param targetArrayList
-	 */
-//	public void update(ArrayList<PhotoInfo> photoInfoArrayList, ArrayList<PhotoInfo> targetArrayList, int item) {
-//		Fragment fragment = fragmentManager.findFragmentByTag(tagList.get(item));
-//		if (fragment != null) {
-//			((StoryFragment) fragment).update(photoInfoArrayList, targetArrayList);
-//		}
-//	}
+
 }

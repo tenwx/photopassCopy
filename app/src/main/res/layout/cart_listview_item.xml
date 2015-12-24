@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dashLine = "http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -9,14 +8,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp" >
+        android:paddingLeft="@dimen/pp_padding_16"
+        android:paddingRight="@dimen/pp_padding_16">
 
         <ImageView
             android:id="@+id/cartSelectImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:padding="5dp"
             android:src="@drawable/cart_select" />
 
         <ImageView
@@ -36,8 +35,8 @@
             android:layout_marginLeft="@dimen/pp_margin_10"
             android:layout_marginRight="@dimen/pp_margin_32"
             android:layout_toRightOf="@id/cartProductImageView"
-            android:gravity="center_vertical"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:lines="2"
             android:textColor="@color/gray"
             android:textSize="15sp" />
@@ -49,32 +48,31 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/cartProductImageView"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <com.pictureair.photopass.widget.ListViewImageView
                 android:id="@+id/cartRemoveImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/rem_btn" 
-                android:clickable="true"/>
+                android:clickable="true"
+                android:src="@drawable/rem_btn" />
 
             <TextView
                 android:id="@+id/cartProductCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_bg"
                 android:layout_gravity="center"
+                android:background="@drawable/edit_bg"
                 android:gravity="center"
                 android:textColor="@color/pp_gray"
-                android:textSize="15sp" >
-            </TextView>
+                android:textSize="15sp"></TextView>
 
             <com.pictureair.photopass.widget.ListViewImageView
                 android:id="@+id/cartAddImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/add_btn"
-				android:clickable="true" />
+                android:clickable="true"
+                android:src="@drawable/add_btn" />
         </LinearLayout>
 
         <TextView
@@ -91,8 +89,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/cartPrice"
             android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/cartPrice"
             android:textColor="@color/gray"
             android:textSize="12sp" />
 
@@ -106,20 +104,18 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
-    <com.pictureair.photopass.widget.DashedLineView
-        android:id="@+id/cartLine1"
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        dashLine:dashColor="@color/gray_light3" />
+    <!--<com.pictureair.photopass.widget.DashedLineView-->
+    <!--android:id="@+id/cartLine1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="2px"-->
+    <!--android:layout_marginLeft="@dimen/pp_margin_16"-->
+    <!--android:layout_marginRight="@dimen/pp_margin_16"-->
+    <!--dashLine:dashColor="@color/gray_light3" />-->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal" >
+        android:layout_marginLeft="10dp">
 
         <ImageView
             android:id="@+id/hideView"
@@ -132,15 +128,25 @@
 
         <GridLayout
             android:id="@+id/cartPhotoGridLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/cartLine1"
-            android:layout_margin="5dp"
-            android:layout_toRightOf="@id/cartSelectImageView"
+            android:layout_toRightOf="@id/hideView"
+            android:background="@drawable/bg_border_stroke"
             android:columnCount="4"
             android:orientation="horizontal"
-            android:useDefaultMargins="true" >
-        </GridLayout>
-    </LinearLayout>
+            android:padding="@dimen/pp_padding_10"
+            android:layout_marginRight="@dimen/pp_margin_16"
+            android:useDefaultMargins="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/cartPhotoGridLayout"
+            android:layout_marginBottom="@dimen/pp_margin_8"
+            android:layout_marginTop="@dimen/pp_margin_8"
+            android:layout_toRightOf="@id/hideView"
+            android:background="@color/pp_light_gray_normal" />
+    </RelativeLayout>
+
 
 </LinearLayout>

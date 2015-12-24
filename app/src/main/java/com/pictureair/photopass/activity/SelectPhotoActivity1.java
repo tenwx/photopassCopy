@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -51,6 +52,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private TextView okButton, tvHead;
     private GridView gridView;
     private ViewPhotoGridViewAdapter photoPassAdapter;
+    private RelativeLayout noPhotoRelativeLayout;
 
     private MyToast newToast;
     private MyApplication myApplication;
@@ -84,7 +86,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED:
                     // 处理失败，数据错误
 //                    initPopWindow();
-                    newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)),Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)), Common.TOAST_SHORT_TIME);
                     PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
                     break;
                 default:
@@ -120,6 +122,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         llNullPhoto = (LinearLayout) findViewById(R.id.ll_null_photo);
         btnGoToSelectPhoto = (Button) findViewById(R.id.btn_goto_select);
         tvHead = (TextView) findViewById(R.id.tv_head);
+        noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         //初始化控件
         okButton = (TextView) findViewById(R.id.button1);
         rtLayout = (ImageView) findViewById(R.id.rlrt);
@@ -149,7 +152,20 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
             } else {
                 gridView.setVisibility(View.GONE);
                 llNullPhoto.setVisibility(View.VISIBLE);
+                okButton.setVisibility(View.GONE);
                 okButton.setEnabled(false);
+                return;
+            }
+        } else {
+            if (photoPassArrayList != null && photoPassArrayList.size() > 0) {
+                noPhotoRelativeLayout.setVisibility(View.GONE);
+                gridView.setVisibility(View.VISIBLE);
+            } else {
+                gridView.setVisibility(View.GONE);
+                noPhotoRelativeLayout.setVisibility(View.INVISIBLE);
+                okButton.setVisibility(View.GONE);
+                okButton.setEnabled(false);
+                return;
             }
         }
         //设置默认没有选中
@@ -296,8 +312,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.button1://选择确定按钮
-                if(AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID){
-                    newToast.setTextAndShow(R.string.no_network,Common.TOAST_SHORT_TIME);
+                if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 if (photoURLlist.size() == 0) {
@@ -377,7 +393,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         popupWindow.showAtLocation(okButton, Gravity.BOTTOM, 0, 0);
         popupWindow.setOutsideTouchable(false);
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
-        View view = (View)popView.findViewById(R.id.view_mask);
+        View view = (View) popView.findViewById(R.id.view_mask);
         view.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
 //        popupWindow.showAtLocation(gridView, Gravity.BOTTOM, 100, 100);

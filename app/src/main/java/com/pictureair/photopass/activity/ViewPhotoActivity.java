@@ -312,13 +312,13 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						newToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, null,"online", SharePop.SHARE_PHOTO_TYPE, mhHandler);
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online", photoURLlist.get(0).photoId, SharePop.SHARE_PHOTO_TYPE, mhHandler);
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					PictureAirLog.v(TAG, "本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null,null, "local", SharePop.SHARE_PHOTO_TYPE, mhHandler);
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, mhHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张

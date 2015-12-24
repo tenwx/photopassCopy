@@ -21,7 +21,6 @@ import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.DashedLineView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
             viewHolder.goodQuentityTextView = (TextView) convertView.findViewById(R.id.editText_count1);
             viewHolder.goodPhotosGridLayout = (GridLayout) convertView.findViewById(R.id.gridView_cartphoto);
             viewHolder.goodRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.submitOrderRelativeLayout);
-            viewHolder.goodDashedLineView = (DashedLineView) convertView.findViewById(R.id.submitLine1);
+//            viewHolder.goodDashedLineView = (DashedLineView) convertView.findViewById(R.id.submitLine1);
             viewHolder.showOrHidePhotoImageView = (ImageView) convertView.findViewById(R.id.showOrHeight);
             convertView.setTag(viewHolder);
         } else {
@@ -103,7 +102,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         if (Common.ppp.equals(arrayList.get(position).getProductName())) {//ppp产品
             PictureAirLog.v(TAG, "ppp product");
             viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
-            viewHolder.goodDashedLineView.setVisibility(View.GONE);
+//            viewHolder.goodDashedLineView.setVisibility(View.GONE);
             viewHolder.showOrHidePhotoImageView.setVisibility(View.GONE);
             viewHolder.goodRelativeLayout.setClickable(false);
         } else {//为其他产品
@@ -134,22 +133,25 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
                 imageViews.add(imageView);
-                //imageview设置监听
-                imageView.setOnClickListener(new SubmitOrderOnClickListener(viewHolder, arrayList.get(position)));
+                //imageview设置监听 订单确认界面无法选图片 和修改数量
+//                imageView.setOnClickListener(new SubmitOrderOnClickListener(viewHolder, arrayList.get(position)));
                 viewHolder.goodPhotosGridLayout.addView(imageView, params);
+                viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
+//                viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
             }
             //是否显示图片
-            if (arrayList.get(position).getShowPhotos() == 1) {
-                viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
-                viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
-                viewHolder.showOrHidePhotoImageView.setVisibility(View.VISIBLE);
-                viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_hide_photo);
-            } else {
-                viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_show_photo);
-                viewHolder.showOrHidePhotoImageView.setVisibility(View.VISIBLE);
-                viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
-                viewHolder.goodDashedLineView.setVisibility(View.GONE);
-            }
+
+//            if (arrayList.get(position).getShowPhotos() == 1) {
+//                viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
+//                viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
+//                viewHolder.showOrHidePhotoImageView.setVisibility(View.VISIBLE);
+//                viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_hide_photo);
+//            } else {
+//                viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_show_photo);
+//                viewHolder.showOrHidePhotoImageView.setVisibility(View.VISIBLE);
+//                viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
+//                viewHolder.goodDashedLineView.setVisibility(View.GONE);
+//            }
         }
         if (arrayList.get(position).getPictures() != null && arrayList.get(position).getPictures().length > 0) {
             imageLoader.displayImage(Common.PHOTO_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
@@ -161,9 +163,9 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         viewHolder.goodNameTextView.setText(arrayList.get(position).getProductName());
         viewHolder.goodRelativeLayout.setClickable(true);
         //PP+商品不需要显示照片
-        if (arrayList.get(position).getCartProductType() != 3) {
-            viewHolder.goodRelativeLayout.setOnClickListener(new SubmitOrderOnClickListener(viewHolder, arrayList.get(position)));
-        }
+//        if (arrayList.get(position).getCartProductType() != 3) {
+//            viewHolder.goodRelativeLayout.setOnClickListener(new SubmitOrderOnClickListener(viewHolder, arrayList.get(position)));
+//        }
         return convertView;
     }
 
@@ -175,7 +177,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         TextView goodQuentityTextView;
         GridLayout goodPhotosGridLayout;
         RelativeLayout goodRelativeLayout;
-        DashedLineView goodDashedLineView;
+        //        DashedLineView goodDashedLineView;
         ImageView showOrHidePhotoImageView;
     }
 
@@ -194,12 +196,12 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
                 PictureAirLog.v(TAG, "Item onclick");
                 if (cartItemInfo.getShowPhotos() == 1) {
                     viewHolder.goodPhotosGridLayout.setVisibility(View.GONE);
-                    viewHolder.goodDashedLineView.setVisibility(View.GONE);
+//                    viewHolder.goodDashedLineView.setVisibility(View.GONE);
                     viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_show_photo);
                     cartItemInfo.setShowPhotos(0);
                 } else {
                     viewHolder.goodPhotosGridLayout.setVisibility(View.VISIBLE);
-                    viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
+//                    viewHolder.goodDashedLineView.setVisibility(View.VISIBLE);
                     viewHolder.showOrHidePhotoImageView.setImageResource(R.drawable.good_hide_photo);
                     cartItemInfo.setShowPhotos(1);
                 }

@@ -51,27 +51,28 @@
 			明道	           http://open.mingdao.com/
 			Line           http://media.line.me/zh-hant/
 			Pocket         http://getpocket.com/developer/apps/new
-			2fa794c6c3b8      53f05a239bee
+			2fa794c6c3b8      53f05a239bee
+
     -->
 
-    <ShareSDK AppKey="8c6f00e8cf38" />
+    <ShareSDK AppKey="d081a701ad18" />
  <!-- 修改成你在sharesdk后台注册的应用的appkey" -->
 
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
 
     <SinaWeibo
-        AppKey="2073292968"
-        AppSecret="d1245524e61777c0e6acff87ade4baf8"
+        AppKey="932683602"
+        AppSecret="08db92d679175c50a6bb75062fd14434"
         Enable="true"
         Id="1"
-        RedirectUrl="http://www.pictureair.com"
+        RedirectUrl="http://www.pictureair.com/"
         ShareByAppClient="true"
         SortId="1" />
 
     <QZone
-        AppId="1104727541"
-        AppKey="wbfSdVstNhlyTXIH"
+        AppId="1105004402"
+        AppKey="i3UTWIdTzWncslRV"
         Enable="true"
         Id="2"
         ShareByAppClient="true"
@@ -87,36 +88,38 @@
 		
 		BypassApproval是绕过审核的标记，设置为true后AppId将被忽略，故不经过
 		审核的应用也可以执行分享，但是仅限于分享文字和图片，不能分享其他类型，
-		默认值为false。此外，微信收藏不支持此字段。
+		默认值为false。此外，微信收藏不支持此字段。
+
     -->
 
     <Wechat
-        AppId="wxb41738d7ee3af024"
-        AppSecret="c04d17ea8acf7aa0fbf82b86ea3b12cc"
+        AppId="wxc3d2d4d75042f800"
+        AppSecret="9f0875206d788474e7c496c24cd142b5"
         BypassApproval="false"
         Enable="true"
         Id="3"
         SortId="3" />
 
     <WechatMoments
-        AppId="wxb41738d7ee3af024"
-        AppSecret="c04d17ea8acf7aa0fbf82b86ea3b12cc"
+        AppId="wxc3d2d4d75042f800"
+        AppSecret="9f0875206d788474e7c496c24cd142b5"
         BypassApproval="false"
         Enable="true"
         Id="4"
         SortId="4" />
 
     <Facebook
-        ConsumerKey="188501484544514"
-        ConsumerSecret="317c094c348dc023312fe5067245840c"
+        ConsumerKey="1726999457532483"
+        ConsumerSecret="aedfa49634152bddd73976c269020ab0"
+        RedirectUrl="http://www.pictureair.com/"
         Enable="true"
         Id="5"
         SortId="5" />
 
     <Twitter
         CallbackUrl="http://www.pictureair.com/"
-        ConsumerKey="hcCGQuwtWBNBgNII7TlIIMeif"
-        ConsumerSecret="BjOf3dvToshjiPJUtlgfipuB3Q9xXMMT6T6SThtfrGwk5SRFT5"
+        ConsumerKey="07uwuiAvci5vq8kkQTHOZO1a7"
+        ConsumerSecret="Me59J2BZPqX7VUxaHyAQI9SfuZN08LrYz0CQzP22W4mWeDeSAs"
         Enable="true"
         Id="6"
         SortId="6" />

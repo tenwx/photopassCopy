@@ -6,7 +6,7 @@ import java.util.List;
  * Created by milo on 15/12/20.
  */
 public class AddressJson {
-    List<Address> outlets;
+    List<Address> outlets = null;
 
     public List<Address> getOutlets() {
         return outlets;

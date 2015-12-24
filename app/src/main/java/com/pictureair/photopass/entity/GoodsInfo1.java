@@ -7,18 +7,20 @@ import java.util.List;
  * Created by milo on 15/12/13.
  * 商品信息
  */
-public class GoodsInfo1 implements Serializable{
-    private String goodsKey;//string, 商品key
-    private String productId;//string,商品主键
-    private String storeId;//string,商城主键
-    private String name;//string,商品名称
-    private String nameAlias;//string,商品别名
-    private String description;//string,商品描述
-    private int embedPhotosCount;//int,商品合成所需图片数量
-    private List<GoodInfoPictures> pictures;//商品图片信息
-    private int price;//int, 商品价格
-    private int sequence;//int,商品序号
-    public String good_SVG_Info;//SVG信息
+public class GoodsInfo1 implements Serializable {
+    private String goodsKey = "";//string, 商品key
+    private String productId = "";//string,商品主键
+    private String storeId = "";//string,商城主键
+    private String name = "";//string,商品名称
+    private String nameAlias = "";//string,商品别名
+    private String description = "";//string,商品描述
+    private int embedPhotosCount = 9;//int,商品合成所需图片数量
+    private List<GoodInfoPictures> pictures = null;//商品图片信息
+    private int entityType = 0; //int,商品虚拟／实体类型（0,1）
+    private EmbedPhotoConfig ssConfig = null;//商品合成设置（单位：px）
+    private int price = 0;//int, 商品价格
+    private int sequence = 0;//int,商品序号
+    public String good_SVG_Info = "";//SVG信息
 
     public String getGoodsKey() {
         return goodsKey;
@@ -106,5 +108,21 @@ public class GoodsInfo1 implements Serializable{
 
     public void setGood_SVG_Info(String good_SVG_Info) {
         this.good_SVG_Info = good_SVG_Info;
+    }
+
+    public int getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(int entityType) {
+        this.entityType = entityType;
+    }
+
+    public EmbedPhotoConfig getSsConfig() {
+        return ssConfig;
+    }
+
+    public void setSsConfig(EmbedPhotoConfig ssConfig) {
+        this.ssConfig = ssConfig;
     }
 }
