@@ -62,8 +62,11 @@ public class CountryListView extends RelativeLayout implements OnTouchListener {
 		int dp_9 = dipToPx(context, 16);
 		lpContries.setMargins(dp_9, 0, dp_9, 0);
 		addView(lvContries, lpContries);
-
 		tvScroll = new TextView(context);
+		Typeface typeface;
+		typeface = Typeface.createFromAsset(context.getAssets(), "fonts/AvenirLTStd-Roman.otf");
+		tvScroll.setTypeface(typeface);
+
 		resId = getColorRes(context, "smssdk_white");
 		if (resId > 0) {
 			tvScroll.setTextColor(context.getResources().getColor(resId));

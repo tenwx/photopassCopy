@@ -1,6 +1,7 @@
 package cn.smssdk.gui;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,9 +29,9 @@ public class EditTextWithClear extends EditText implements OnFocusChangeListener
 
 	public EditTextWithClear(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+		init(context);
 	}
-	private void init() {
+	private void init(Context context) {
 		// 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片,2是获得右边的图片  顺序是左上右下（0,1,2,3,）
 		mClearDrawable = getCompoundDrawables()[2];
 		if (mClearDrawable == null) {
@@ -46,6 +47,9 @@ public class EditTextWithClear extends EditText implements OnFocusChangeListener
 		setOnFocusChangeListener(this);
 		// 设置输入框里面内容发生改变的监听
 		addTextChangedListener(this);
+		Typeface typeface;
+		typeface = Typeface.createFromAsset(context.getAssets(), "fonts/AvenirLTStd-Roman.otf");
+		setTypeface(typeface);
 	}
 
 	/**
