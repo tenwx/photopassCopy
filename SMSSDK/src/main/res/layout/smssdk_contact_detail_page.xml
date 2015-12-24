@@ -32,7 +32,7 @@
 	    	android:layout_marginBottom="10dip"
 	    	android:layout_marginLeft="2dip"
 		    android:orientation="vertical">
-		    <TextView
+		    <com.pictureair.photopass.widget.CustomTextView
 			    android:id="@+id/tv_contact_name"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
@@ -45,13 +45,13 @@
 		    	android:layout_marginTop="12dip"
 		    	android:layout_marginRight="8dip"
 			    android:orientation="horizontal">
-			    <TextView
+			    <com.pictureair.photopass.widget.CustomTextView
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 			    	android:text="@string/smssdk_contacts_phones"
 			    	android:textSize="14sp"
 			    	android:textColor="#ff000000"/>
-			    <TextView
+			    <com.pictureair.photopass.widget.CustomTextView
 				    android:id="@+id/tv_contact_phones"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
 			 </LinearLayout>
 	    </LinearLayout>
     </LinearLayout>
-	<TextView  
+	<com.pictureair.photopass.widget.CustomTextView
 	    android:id="@+id/tv_invite_hint"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

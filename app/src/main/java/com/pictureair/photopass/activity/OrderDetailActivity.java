@@ -135,9 +135,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 1:
                 //自提、
                 if (orderInfo.deliveryAddress != null && !orderInfo.deliveryAddress.equals("")) {
-                    if (orderInfo.deliveryAddress.contains("null")) {
-                        orderInfo.deliveryAddress = orderInfo.deliveryAddress.replaceAll("null", "");
-                    }
                     address.setText(orderInfo.deliveryAddress);
                 }
                 break;

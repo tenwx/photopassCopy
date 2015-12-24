@@ -17,20 +17,21 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
-import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
+import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrderListViewAdapter extends BaseExpandableListAdapter {
     private LayoutInflater mInflater;
     private Context context;
     private String currency;
     private ArrayList<OrderInfo> grouplist;//group信息
-    private ArrayList<ArrayList<CartItemInfo>> childlist;//child信息
+    private List<OrderProductInfo> childlist;//child信息
     private ArrayList<ImageView> gridlayoutList;
     private ImageLoader imageLoader;
 
@@ -38,12 +39,12 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
 
     private Handler handler;
 
-    public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, ArrayList<ArrayList<CartItemInfo>> orderChildlist, String currency, Handler handler) {
+    public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler) {
         this.context = context;
         this.currency = currency;
         this.handler = handler;
-        grouplist = list;
-        childlist = orderChildlist;
+        this.grouplist = list;
+        this.childlist = orderChildlist;
         mInflater = LayoutInflater.from(context);
         imageLoader = ImageLoader.getInstance();
         screenWight = ScreenUtil.getScreenWidth(context) / 3 - 40;
@@ -59,7 +60,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int groupPosition) {
         // TODO Auto-generated method stub
         System.out.println("getChildrenCount===" + groupPosition + "===child size==" + childlist.size() + ",group size = " + grouplist.size());
-        return childlist.get(groupPosition).size();
+        return childlist.get(groupPosition).getCartItemInfos().size();
     }
 
     @Override
@@ -71,7 +72,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         // TODO Auto-generated method stub
-        return childlist.get(groupPosition).get(childPosition);
+        return childlist.get(groupPosition).getCartItemInfos().get(childPosition);
     }
 
     @Override
@@ -172,28 +173,28 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             hView = (ChildHolderView) convertView.getTag();
         }
         //初始化控件值
-        if (childlist.get(groupPosition).get(childPosition).cart_productImageUrl.contains("http")) {
-            imageLoader.displayImage(childlist.get(groupPosition).get(childPosition).cart_productImageUrl, hView.goodsImageView);
+        if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productImageUrl.contains("http")) {
+            imageLoader.displayImage(childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productImageUrl, hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).get(childPosition).cart_productImageUrl, hView.goodsImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productImageUrl, hView.goodsImageView);
         }
-        hView.goodsName.setText(childlist.get(groupPosition).get(childPosition).cart_productName);
-        hView.goodsCount.setText(childlist.get(groupPosition).get(childPosition).cart_quantity + "");
+        hView.goodsName.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productName);
+        hView.goodsCount.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_quantity + "");
         hView.currency.setText(currency);
-        hView.priceTextView.setText((int) childlist.get(groupPosition).get(childPosition).cart_promotionPrice + "");
+        hView.priceTextView.setText((int) childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_promotionPrice + "");
         //初始化添加的图片信息
-        if (childlist.get(groupPosition).get(childPosition).cart_photoUrls == null || childlist.get(groupPosition).get(childPosition).cart_photoUrls.size() <= 0) {
+        if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls == null || childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls.size() <= 0) {
             hView.gridLayout.setVisibility(View.GONE);
         } else {
             hView.gridLayout.removeAllViews();
             //依次添加照片
-            for (int i = 0; i < childlist.get(groupPosition).get(childPosition).cart_photoUrls.size(); i++) {
+            for (int i = 0; i < childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls.size(); i++) {
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = screenWight;
                 params.height = screenWight;
                 imageView.setLayoutParams(params);
-                imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).get(childPosition).cart_photoUrls.get(i).cart_photoUrl, imageView);
+                imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls.get(i).cart_photoUrl, imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(childPosition * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);
@@ -254,7 +255,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
 
                 case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
                 case 3:
-                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position), handler);
+                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position).getCartItemInfos(), handler);
                     break;
 
                 case 4://4交易成功，5交易关闭,订单冻结,暂时这个功能不开放

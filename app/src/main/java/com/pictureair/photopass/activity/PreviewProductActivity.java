@@ -171,6 +171,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
                         CartItemInfo1 cartItemInfo = new CartItemInfo1();
                         cartItemInfo.setProductName(goodsInfo.getName());
+                        cartItemInfo.setEntityType(goodsInfo.getEntityType());
                         cartItemInfo.setUnitPrice(goodsInfo.getPrice());
                         cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
                         cartItemInfo.setCartProductType(1);
@@ -182,7 +183,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                             cartPhotosInfo.setPhotoId(list.get(i).photoId);
                             listAfterUploaded.add(cartPhotosInfo);
                         }
-
                         cartItemInfo.setEmbedPhotos(listAfterUploaded);
                         cartItemInfo.setDescription(goodsInfo.getDescription());
                         cartItemInfo.setQty(1);
@@ -236,7 +236,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         //获取从selectphotoactivity传递过来的信息
         goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goodsInfo");
         list = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photopath");
-        PictureAirLog.v(TAG, "list size " + list.size());
+        PictureAirLog.v(TAG, "goodsInfo name" + goodsInfo.getName());
+        PictureAirLog.v(TAG, "list size" + list.size());
         listAfterUploaded = new ArrayList<>();
         init();
     }
@@ -283,7 +284,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 bannerView_Preview.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 viewHeight = bannerView_Preview.getHeight();
                 viewWidth = bannerView_Preview.getWidth();
-                PictureAirLog.v(TAG, "-------------->" + goodsInfo.getNameAlias());
+                PictureAirLog.v(TAG, "-------------->" + goodsInfo.getEntityType());
                 if (goodsInfo.getName().equals("canvas")) {
                     //1.画布，商品宽 355
                     //		 商品高 258

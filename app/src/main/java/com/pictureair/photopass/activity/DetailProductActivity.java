@@ -128,12 +128,15 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         detail.setText(goodsInfo.getDescription());
         promotionPrice.setText(goodsInfo.getPrice() + "");
         //实体商品-自提，数码商品-数码下载
-        if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+        if (goodsInfo == null) {
+            return;
+        }
+        //根据商品类型判，断是否有自提地址
+        if (goodsInfo.getEntityType() == 0) {
             receiveAdress.setText(getString(R.string.address_digital_goods));
         } else {
             receiveAdress.setText(getString(R.string.self_collect));
         }
-
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo picture size" + goodsInfo.getPictures().size());
             List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();

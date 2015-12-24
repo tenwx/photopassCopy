@@ -24,6 +24,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
+import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -36,20 +37,21 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order
  *
  * @author bauer_bao
  */
-public class OrderActivity extends BaseActivity implements OnClickListener {
+public class OrderActivity extends BaseActivity {
 
     private ViewPager viewPager;
     private OrderViewPagerAdapter orderAdapter;
     private ArrayList<View> listViews;
     private ImageView cursorImageView;//动画图片
     private TextView paymentOrderTextView, deliveryOrderTextView, allOrderTextView;//选项卡
-    private ImageView backLayout;
+//    private ImageView backLayout;
 
     //group列表信息
     private ArrayList<OrderInfo> paymentOrderArrayList;
@@ -59,10 +61,10 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
 
     private OrderInfo orderInfo;
     //child列表信息
-    private ArrayList<ArrayList<CartItemInfo>> paymentOrderChildArrayList;
-    private ArrayList<ArrayList<CartItemInfo>> deliveryOrderChildArrayList;
-    private ArrayList<ArrayList<CartItemInfo>> allOrderChildArrayList;
-    private ArrayList<ArrayList<CartItemInfo>> downOrderChildArrayList;
+    private List<OrderProductInfo> paymentOrderChildArrayList;
+    private List<OrderProductInfo> deliveryOrderChildArrayList;
+    private List<OrderProductInfo> allOrderChildArrayList;
+    private List<OrderProductInfo> downOrderChildArrayList;
     private ArrayList<CartItemInfo> cartItemInfo;
 
     private SharedPreferences sharedPreferences;
@@ -101,18 +103,22 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
                         cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
                         PictureAirLog.v(TAG, "child size = " + cartItemInfo.size());
 
+                        OrderProductInfo orderProductInfo = new OrderProductInfo();
+                        orderProductInfo.setOrderTime(orderInfo.orderTime);
+                        orderProductInfo.setCartItemInfos(cartItemInfo);
+
                         if (orderInfo.orderStatus == 1) {//1等待买家付款
                             paymentOrderArrayList.add(orderInfo);
-                            paymentOrderChildArrayList.add(cartItemInfo);
+                            paymentOrderChildArrayList.add(orderProductInfo);
                         } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
                             deliveryOrderArrayList.add(orderInfo);
-                            deliveryOrderChildArrayList.add(cartItemInfo);
+                            deliveryOrderChildArrayList.add(orderProductInfo);
                         } else if (orderInfo.orderStatus == 4 || orderInfo.orderStatus == 5) {
                             downOrderArrayList.add(orderInfo);
-                            downOrderChildArrayList.add(cartItemInfo);
+                            downOrderChildArrayList.add(orderProductInfo);
                         }
                         allOrderArrayList.add(orderInfo);
-                        allOrderChildArrayList.add(cartItemInfo);
+                        allOrderChildArrayList.add(orderProductInfo);
                     }
                     orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
                             paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
@@ -180,7 +186,6 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         initView();
@@ -193,15 +198,14 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         // 显示进度条。
         customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
         API1.getOrderInfo(handler);
-
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-
+        setTopTitleShow(R.string.my_order);
+        setTopLeftValueAndShow(R.drawable.back_white, true);
         paymentOrderTextView = (TextView) findViewById(R.id.order_payment);
         deliveryOrderTextView = (TextView) findViewById(R.id.order_delivery);
         allOrderTextView = (TextView) findViewById(R.id.order_all);
         viewPager = (ViewPager) findViewById(R.id.order_vPager);
         cursorImageView = (ImageView) findViewById(R.id.cursor);
-        backLayout = (ImageView) findViewById(R.id.order_return);
 
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
@@ -214,10 +218,10 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         deliveryOrderArrayList = new ArrayList<OrderInfo>();
         allOrderArrayList = new ArrayList<OrderInfo>();
         downOrderArrayList = new ArrayList<OrderInfo>();
-        paymentOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
-        deliveryOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
-        allOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
-        downOrderChildArrayList = new ArrayList<ArrayList<CartItemInfo>>();
+        paymentOrderChildArrayList = new ArrayList<>();
+        deliveryOrderChildArrayList = new ArrayList<>();
+        allOrderChildArrayList = new ArrayList<>();
+        downOrderChildArrayList = new ArrayList<>();
 
         LayoutInflater mInflater = getLayoutInflater();
         listViews.add(mInflater.inflate(R.layout.order_list, null));
@@ -232,7 +236,6 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
         paymentOrderTextView.setOnClickListener(new viewPagerOnClickListener(0));
         deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
-        backLayout.setOnClickListener(this);
 
         myToast = new MyToast(this);
     }
@@ -305,16 +308,19 @@ public class OrderActivity extends BaseActivity implements OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.order_return://返回按钮
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView://返回按钮
+
+
                 doBack();
                 break;
-
             default:
                 break;
         }
     }
+
 
     //退出app进行的判断，判断是否是栈中的唯一一个app，如果是，启动主页
     private void doBack() {

@@ -18,15 +18,19 @@ import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.OrderDetailActivity;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
+import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.OrderInfoDateSortUtil;
+import com.pictureair.photopass.util.OrderProductDateSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,9 +48,9 @@ public class OrderViewPagerAdapter extends PagerAdapter {
     private ArrayList<OrderInfo> paymentOrderList;
     private ArrayList<OrderInfo> deliveryOrderList;
     private ArrayList<OrderInfo> allOrderList;
-    private ArrayList<ArrayList<CartItemInfo>> paymentChildlist;
-    private ArrayList<ArrayList<CartItemInfo>> deliveryChildlist;
-    private ArrayList<ArrayList<CartItemInfo>> allChildlist;
+    private List<OrderProductInfo> paymentChildlist;
+    private List<OrderProductInfo> deliveryChildlist;
+    private List<OrderProductInfo> allChildlist;
     private OrderListViewAdapter paymentOrderAdapter;
     private OrderListViewAdapter deliveryOrderAdapter;
     private OrderListViewAdapter allOrderAdapter;
@@ -93,19 +97,43 @@ public class OrderViewPagerAdapter extends PagerAdapter {
 
     public OrderViewPagerAdapter(Context context, List<View> list, ArrayList<OrderInfo> orderInfos1,
                                  ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
-                                 ArrayList<ArrayList<CartItemInfo>> orderChildlist1, ArrayList<ArrayList<CartItemInfo>> orderChildlist2,
-                                 ArrayList<ArrayList<CartItemInfo>> orderChildlist3, String currency) {
+                                 List<OrderProductInfo> orderChildlist1, List<OrderProductInfo> orderChildlist2,
+                                 List<OrderProductInfo> orderChildlist3, String currency) {
         listViews = list;
-        paymentOrderList = orderInfos1;
-        deliveryOrderList = orderInfos2;
-        allOrderList = orderInfos3;
+        paymentOrderList = OrderDateSort(orderInfos1);
+        deliveryOrderList = OrderDateSort(orderInfos2);
+        allOrderList = OrderDateSort(orderInfos3);
         this.currency = currency;
         this.context = context;
-        paymentChildlist = orderChildlist1;
-        deliveryChildlist = orderChildlist2;
-        allChildlist = orderChildlist3;
+        paymentChildlist = OrderProductDateSort(orderChildlist1);
+        deliveryChildlist = OrderProductDateSort(orderChildlist2);
+        allChildlist = OrderProductDateSort(orderChildlist3);
         myToast = new MyToast(context);
     }
+
+    /**
+     * 订单信息降序排列
+     *
+     * @param orderInfoList1
+     * @return
+     */
+    private ArrayList<OrderInfo> OrderDateSort(ArrayList<OrderInfo> orderInfoList1) {
+        Collections.sort(orderInfoList1, new OrderInfoDateSortUtil());
+        return orderInfoList1;
+    }
+
+
+    /**
+     * 商品信息信息降序排列
+     *
+     * @param orderInfoList1
+     * @return
+     */
+    private List<OrderProductInfo> OrderProductDateSort(List<OrderProductInfo> orderInfoList1) {
+        Collections.sort(orderInfoList1, new OrderProductDateSortUtil());
+        return orderInfoList1;
+    }
+
 
     @Override
     public void destroyItem(View container, int position, Object object) {
@@ -254,17 +282,17 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         switch (index) {
             case 0:
                 bundle.putParcelable("groupitem", paymentOrderList.get(groupPosition));//传递对象
-                bundle.putParcelableArrayList("childitemlist", paymentChildlist.get(groupPosition));//传递list
+                bundle.putParcelableArrayList("childitemlist", paymentChildlist.get(groupPosition).getCartItemInfos());//传递list
                 break;
 
             case 1:
                 bundle.putParcelable("groupitem", deliveryOrderList.get(groupPosition));
-                bundle.putParcelableArrayList("childitemlist", deliveryChildlist.get(groupPosition));
+                bundle.putParcelableArrayList("childitemlist", deliveryChildlist.get(groupPosition).getCartItemInfos());
                 break;
 
             case 2:
                 bundle.putParcelable("groupitem", allOrderList.get(groupPosition));
-                bundle.putParcelableArrayList("childitemlist", allChildlist.get(groupPosition));
+                bundle.putParcelableArrayList("childitemlist", allChildlist.get(groupPosition).getCartItemInfos());
                 break;
 
             default:
