@@ -58,9 +58,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private float totalprice = 0;
     private boolean needAddressGood = false;//是否有需要地址的商品
     private static final int CHANGE_PHOTO = 1;//修改图片
-    private static final int DELIVERY_EXPRESS = 0;//物流
-    private static final int DELIVERY_PICKUP = 1;//选择自提
-    private static final int DELIVERY_NOEXPRESS = 3;//虚拟类商品无须快递
     private int payType = 0;//支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
 
     private CustomProgressBarPop customProgressBarPop;
@@ -250,8 +247,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             totalprice += list.get(i).getUnitPrice() * list.get(i).getQty();
             //获取购物车ID
             cartItemIds.add(list.get(i).getCartId());
-            //根据商品名称，判断收货类型
-            if (list.get(i).getProductName().equals(Common.ppp) || list.get(i).getProductName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+            //根据商品名称，判断收货类型 0 -虚拟商品 1-实体商品（需要地址）
+            if (list.get(i).getEntityType() == 0) {
                 deliveryType += 3 + ",";
             } else {
                 deliveryType += 1 + ",";
@@ -366,7 +363,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
-
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
                 if (orderId == null || orderId.equals("")) {
                     if (deliveryType.contains("1")) {

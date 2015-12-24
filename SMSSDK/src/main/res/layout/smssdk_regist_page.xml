@@ -30,7 +30,7 @@
                 android:paddingBottom="16dp"
                 android:paddingTop="20dp">
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
@@ -40,7 +40,7 @@
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:id="@+id/tv_country"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -64,7 +64,7 @@
                 android:paddingRight="5dp"
                 android:paddingTop="5dp">
 
-                <TextView
+                <com.pictureair.photopass.widget.CustomTextView
                     android:id="@+id/tv_country_num"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -210,7 +210,7 @@
                     android:textColorHint="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
 
-                <Button
+                <cn.smssdk.gui.CustomButtonFont
                     android:id="@+id/btn_next"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -219,14 +219,13 @@
                     android:enabled="false"
                     android:background="@drawable/button_blue_shape_and_selector"
                     android:paddingLeft="15dp"
-
                     android:paddingRight="15dp"
                     android:text="@string/smssdk_send_verification_code"
                     android:textColor="@drawable/textview_selector_blue_white"
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>
 
-            <Button
+            <cn.smssdk.gui.CustomButtonFont
                 android:id="@+id/sure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -238,7 +237,7 @@
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
 
-            <TextView
+            <com.pictureair.photopass.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -247,7 +246,7 @@
                 android:textColor="@color/pp_blue"
                 android:textSize="@dimen/text_size_12" />
 
-            <TextView
+            <com.pictureair.photopass.widget.CustomTextView
                 android:id="@+id/tv_otherRegistered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

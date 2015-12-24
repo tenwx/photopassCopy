@@ -20,13 +20,13 @@
         android:layout_marginLeft="10dip"
         android:orientation="vertical"
         android:layout_centerVertical="true">
-	    <TextView
+	    <com.pictureair.photopass.widget.CustomTextView
 	        android:id="@+id/tv_name"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textColor="#333333"
 	        android:textSize="17sp"/>
-	    <TextView
+	    <com.pictureair.photopass.widget.CustomTextView
 	        android:id="@+id/tv_contact"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

@@ -59,7 +59,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
     //申明变量
     private int cartCount = 0; // 记录数据库中有几条记录
-    private String storeIdString = "";
     private String currency = "";//货币种类
 
     //申明实例类
@@ -152,7 +151,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         //初始化数据
         sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);//获取购物车数量
-        storeIdString = sharedPreferences.getString(Common.STORE_ID, "");//获取storeId
         currency = sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
         //设置购物车数量
         if (cartCount <= 0) {
@@ -173,14 +171,16 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Intent intent = null;
-                if (Common.ppp.equals(allGoodsList.get(position).getName())) {
+                Intent intent;
+                if (allGoodsList == null || allGoodsList.get(position) == null) {
+                    return;
+                }
+                //根据类型判断 为0,虚拟商品（PP+、Digital Photo）
+                if (allGoodsList.get(position).getEntityType() == 0 && allGoodsList.get(position).getName().equals(Common.GOOD_NAME_PPP)) {
                     intent = new Intent(getActivity(), PPPDetailProductActivity.class);
                     intent.putExtra("goods", allGoodsList.get(position));
-                    intent.putExtra("showComment", "Y");
                 } else {
                     intent = new Intent(getActivity(), DetailProductActivity.class);
-                    intent.putExtra("storeid", storeIdString);
                     //从第二张开始显示
                     intent.putExtra("goods", allGoodsList.get(position));
                 }

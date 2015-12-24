@@ -534,7 +534,7 @@
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
     <string name="auto_sync">Auto Sync</string>
-    <string name="no_photo_in_airpass">Start collecting your photos into AirPass now!</string>
+    <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo ! </string>
     <string name="no_photo_in_magiccam">Start collecting your photos into Camera now!</string>
     <string name="no_photo_in_bought">Start buying your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>

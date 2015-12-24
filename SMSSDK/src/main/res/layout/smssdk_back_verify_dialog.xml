@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <com.pictureair.photopass.widget.CustomTextView
         android:id="@+id/tv_dialog_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
