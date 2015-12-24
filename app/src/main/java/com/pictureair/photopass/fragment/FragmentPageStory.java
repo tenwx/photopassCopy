@@ -1336,6 +1336,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 //		if (sharedPreferences.getInt(Common.PP_COUNT, 0) > 1) {
 //			storyViewPagerAdapter.startRefresh();
 //		}
+//        fragments.get(1).startre
     }
 
 }

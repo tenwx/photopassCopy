@@ -46,6 +46,8 @@
     <color name="gray_deep">#8F8F8F</color>
     <color name="hint">#afafaf</color>
     <color name="cover">#aaffffff</color>
+    <!-- 60%白透明-->
+    <color name="cover_60">#eeffffff</color>
     <color name="orange">#FFA300</color>
     <color name="blur_mask">#b2000000</color>
     <color name="ppp_cover">#7a000000</color>

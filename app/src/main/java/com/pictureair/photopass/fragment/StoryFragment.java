@@ -289,4 +289,8 @@ public class StoryFragment extends Fragment {
 		}
 	}
 
+	public void startRefresh() {
+
+	}
+
 }

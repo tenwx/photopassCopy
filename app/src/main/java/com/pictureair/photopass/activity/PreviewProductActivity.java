@@ -330,7 +330,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //		 预览图片宽 240-10-10 = 220
                     //		 预览图片高 180-14-14 = 152
                     bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
-                            240, 180, 10, 14, 220, 152, 0, 0, 0, goodsInfo.getNameAlias());//设置bannerview的图片
+                            750, 560, 10, 14, 220, 152, 0, 0, 0, goodsInfo.getNameAlias());//设置bannerview的图片
                 } else if (goodsInfo.getName().equals("keyChain")) {
                     //6.钥匙圈，商品宽 205
                     //		 商品高 89

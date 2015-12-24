@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:text="@string/touchtoclean"
             android:textColor="@color/white"
             android:textSize="15sp"

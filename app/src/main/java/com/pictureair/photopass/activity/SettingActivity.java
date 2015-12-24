@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,6 +62,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                     application.scanMagicFinish = false;
                     application.fragmentStoryLastSelectedTab = 0;
                     pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
+
+                    MyApplication.clearTokenId();
+
                     //取消通知
                     Intent intent = new Intent(SettingActivity.this, NotificationService.class);
                     intent.putExtra("status", "disconnect");

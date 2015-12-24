@@ -171,6 +171,15 @@ public class SignAndLoginUtil {
 
                 //修改个人信息成功
                 case API1.UPDATE_PROFILE_SUCCESS:
+                    if (needModifyInfo) {
+                        //需要将个人信息保存部分
+                        editor = sp.edit();
+                        editor.putString(Common.USERINFO_COUNTRY, country);
+                        editor.putString(Common.USERINFO_GENDER, gender);
+                        editor.putString(Common.USERINFO_BIRTHDAY, birthday);
+                        editor.putString(Common.USERINFO_NICKNAME, name);
+                        editor.apply();
+                    }
                     PictureAirLog.v(TAG, "start get cart");
                     PictureAirLog.out("start get cart");
                     API1.getCarts(handler);

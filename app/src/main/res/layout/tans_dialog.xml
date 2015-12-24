@@ -3,7 +3,7 @@
     android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:background="@color/cover_60">
 
     <View
         android:id="@+id/blur_translate"
@@ -33,7 +33,6 @@
             android:id="@+id/blur_button_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="vertical" >
             <TextView
                 android:id="@+id/buy_ppp"
