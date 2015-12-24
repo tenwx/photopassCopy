@@ -7,3 +7,4 @@
     <item android:drawable="@drawable/edit_album_all_enable" android:state_focused="false"/>
 
 </selector>
+

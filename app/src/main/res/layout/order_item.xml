@@ -189,7 +189,7 @@
     <com.pictureair.photopass.widget.DashedLineView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_margin="@dimen/pp_margin_16"
+        android:layout_marginLeft="@dimen/pp_margin_16"
         android:layout_marginRight="@dimen/pp_margin_16"
         android:background="@color/white"
         dashLine:dashColor="@color/pp_gray" />

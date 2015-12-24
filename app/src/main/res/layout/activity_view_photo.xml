@@ -23,7 +23,7 @@
             android:paddingRight="10dp"
             android:paddingTop="13dp"
             android:scaleType="centerInside"
-            android:src="@drawable/sel2" />
+            android:src="@drawable/view_photo_eidt" />
 
         <ImageView
             android:id="@+id/rlrt"
@@ -107,6 +107,7 @@
 
         <TextView
             android:id="@+id/select_makegift"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -134,5 +135,34 @@
         android:stretchMode="columnWidth"
         android:verticalSpacing="5dp" >
     </GridView>
+
+
+
+    <LinearLayout
+        android:id="@+id/no_photo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_photos_img"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/no_photo_in_magiccam"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_middle_size"
+            android:layout_marginBottom="40dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

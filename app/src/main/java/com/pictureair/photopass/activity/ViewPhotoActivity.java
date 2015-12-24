@@ -18,6 +18,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -78,6 +79,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 	private Editor editor;
 	private SimpleDateFormat sdf;
 	private CustomProgressBarPop customProgressBarPop;
+	private LinearLayout noPhotoLayout; // 无图状态的布局。
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +127,8 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		viewPhotoGridViewAdapter = new ViewPhotoGridViewAdapter(this, magicArrayList);
 		myGridView.setAdapter(viewPhotoGridViewAdapter);
 		myGridView.setOnItemClickListener(new PhotoSelectedListener());
+
+		noPhotoLayout = (LinearLayout) findViewById(R.id.no_photo_layout);
 
 		dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
 		//		dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.is_loading), false, false);
@@ -233,6 +237,9 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 		case R.id.imageButton_edit://点击编辑按钮
 			PictureAirLog.v(TAG, "edit photo");
+			if (magicArrayList.size() == 0) {
+				new MyToast(ViewPhotoActivity.this).setTextAndShow(R.string.no_photo_in_magiccam, Toast.LENGTH_SHORT);
+			}else{
 			if (!select_photo_flag) {
 				selectllLayout.setVisibility(View.VISIBLE);
 				select_photo_flag = true;
@@ -252,6 +259,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 				photoURLlist.clear();//清除选择的图片
 				//				editImageButton.setImageResource(R.drawable.preview_edit);
 				rtLayout.setVisibility(View.VISIBLE);
+			}
 			}
 			break;
 
@@ -441,6 +449,20 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 			case DELETEFILE:
 //				deleteFileDialog.setProgress(msg.arg1);
+				// 如果没有图片，就显示  没有照片的布局
+				if (magicArrayList.size() == 0) {
+					noPhotoLayout.setVisibility(View.VISIBLE);
+					// 如果全部图片都已经删除，退出编辑模式。
+					editImageButton.setVisibility(View.VISIBLE);
+//					cancel.setVisibility(View.GONE);
+					rtLayout.setVisibility(View.VISIBLE);
+
+					selectllLayout.setVisibility(View.GONE);
+					selectAll.setText(R.string.all);
+					rtLayout.setVisibility(View.VISIBLE);
+//					}
+				}
+
 				customProgressBarPop.setProgress(msg.arg1, photoURLlist.size());
 				if (msg.arg1 == photoURLlist.size()) {
 					photoURLlist.clear();
@@ -460,6 +482,10 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 				viewPhotoGridViewAdapter.notifyDataSetChanged();
 				if (dialog.isShowing()) {
 					dialog.dismiss();
+				}
+				//照片为空的话，显示无图的布局。
+				if (magicArrayList.size() == 0) {
+					noPhotoLayout.setVisibility(View.VISIBLE);
 				}
 				break;
 
