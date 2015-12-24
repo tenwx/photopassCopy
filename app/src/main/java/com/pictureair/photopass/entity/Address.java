@@ -7,9 +7,9 @@ import java.io.Serializable;
  * 收货地址实体类
  */
 public class Address implements Serializable {
-    private String outletId;
-    private String address;
-    private boolean isSelect;
+    private String outletId = "";
+    private String address = "";
+    private boolean isSelect = false;
 
     public boolean getIsSelect() {
         return isSelect;

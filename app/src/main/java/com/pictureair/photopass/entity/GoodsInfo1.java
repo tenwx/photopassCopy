@@ -8,19 +8,19 @@ import java.util.List;
  * 商品信息
  */
 public class GoodsInfo1 implements Serializable {
-    private String goodsKey;//string, 商品key
-    private String productId;//string,商品主键
-    private String storeId;//string,商城主键
-    private String name;//string,商品名称
-    private String nameAlias;//string,商品别名
-    private String description;//string,商品描述
-    private int embedPhotosCount;//int,商品合成所需图片数量
-    private List<GoodInfoPictures> pictures;//商品图片信息
-    private int entityType; //int,商品虚拟／实体类型（0,1）
-    private EmbedPhotoConfig ssConfig;//商品合成设置（单位：px）
-    private int price;//int, 商品价格
-    private int sequence;//int,商品序号
-    public String good_SVG_Info;//SVG信息
+    private String goodsKey = "";//string, 商品key
+    private String productId = "";//string,商品主键
+    private String storeId = "";//string,商城主键
+    private String name = "";//string,商品名称
+    private String nameAlias = "";//string,商品别名
+    private String description = "";//string,商品描述
+    private int embedPhotosCount = 9;//int,商品合成所需图片数量
+    private List<GoodInfoPictures> pictures = null;//商品图片信息
+    private int entityType = 0; //int,商品虚拟／实体类型（0,1）
+    private EmbedPhotoConfig ssConfig = null;//商品合成设置（单位：px）
+    private int price = 0;//int, 商品价格
+    private int sequence = 0;//int,商品序号
+    public String good_SVG_Info = "";//SVG信息
 
     public String getGoodsKey() {
         return goodsKey;

@@ -9,10 +9,10 @@ import java.util.List;
  */
 public class EmbedPhotoConfig implements Serializable {
 
-    private List<Foreground> foreground;
-    private Background background;
-    private Output output;
-    private List<Middle> middle;
+    private List<Foreground> foreground = null;
+    private Background background = null;
+    private Output output = null;
+    private List<Middle> middle = null;
 
     public List<Foreground> getForeground() {
         return foreground;
@@ -47,12 +47,12 @@ public class EmbedPhotoConfig implements Serializable {
     }
 
     private class Foreground implements Serializable {
-        private String url; //; //string,前景图地址
-        private int seq; //int,前景图序号
-        private int width; //number,前景图宽度
-        private int height; //number,前景图高度
-        private int topMargin; //number,上边距
-        private int leftMargin; //number 左边距
+        private String url = ""; //; //string,前景图地址
+        private int seq = 0; //int,前景图序号
+        private int width = 0; //number,前景图宽度
+        private int height = 0; //number,前景图高度
+        private int topMargin = 0; //number,上边距
+        private int leftMargin = 0; //number 左边距
 
         public String getUrl() {
             return url;
@@ -104,11 +104,11 @@ public class EmbedPhotoConfig implements Serializable {
     }
 
     private class Background implements Serializable {
-        private String url; //string,背景图地址
-        private int width; //number,背景图宽度
-        private int height; //number,背景图高度
-        private int topMargin; //number,上边距
-        private int leftMargin; //number 左边距
+        private String url = ""; //string,背景图地址
+        private int width = 0; //number,背景图宽度
+        private int height = 0; //number,背景图高度
+        private int topMargin = 0; //number,上边距
+        private int leftMargin = 0; //number 左边距
 
         public String getUrl() {
             return url;
@@ -152,8 +152,8 @@ public class EmbedPhotoConfig implements Serializable {
     }
 
     private class Output implements Serializable {
-        private int width; //number,最终输出图宽度
-        private int height; //number 最终输出图高度
+        private int width = 0; //number,最终输出图宽度
+        private int height = 0; //number 最终输出图高度
 
         public int getWidth() {
             return width;
@@ -173,13 +173,13 @@ public class EmbedPhotoConfig implements Serializable {
     }
 
     private class Middle implements Serializable {
-        private String url; //string, 填充图地址
-        private int width; //number, 填充图宽度
-        private int height; //number,填充图高度
-        private int topMargin; //number, 上边距
-        private int leftMargin; //number 左边距
-        private int rotate; //number,旋转角度
-        private int scale; //number 偏移度
+        private String url = ""; //string, 填充图地址
+        private int width = 0; //number, 填充图宽度
+        private int height = 0; //number,填充图高度
+        private int topMargin = 0; //number, 上边距
+        private int leftMargin = 0; //number 左边距
+        private int rotate = 0; //number,旋转角度
+        private int scale = 0; //number 偏移度
 
         public String getUrl() {
             return url;

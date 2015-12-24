@@ -7,11 +7,11 @@ import java.util.List;
  * Created by milo on 15/12/14.
  * 获取用户购物车信息
  */
-public class CartItemInfoJson implements Serializable{
-    private List<CartItemInfo1> items;
-    private int totalCount; //number,购物车内总商品数
-    private int totalPrice; //number,购物车内商品总价
-    private int preferentialPrice; //number 优惠费用
+public class CartItemInfoJson implements Serializable {
+    private List<CartItemInfo1> items = null;
+    private int totalCount = 0; //number,购物车内总商品数
+    private int totalPrice = 0; //number,购物车内商品总价
+    private int preferentialPrice = 0; //number 优惠费用
 
     public List<CartItemInfo1> getItems() {
         return items;
@@ -45,7 +45,7 @@ public class CartItemInfoJson implements Serializable{
         this.preferentialPrice = preferentialPrice;
     }
 
-    public static String getString(){
+    public static String getString() {
         String dataStr = "{\n" +
                 "  \"items\": [\n" +
                 "    {\n" +

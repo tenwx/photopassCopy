@@ -6,7 +6,7 @@ import java.util.List;
  * Created by milo on 15/12/13.
  */
 public class GoodsInfoJson {
-    List<GoodsInfo1> goods;
+    List<GoodsInfo1> goods = null;
 
     public List<GoodsInfo1> getGoods() {
         return goods;

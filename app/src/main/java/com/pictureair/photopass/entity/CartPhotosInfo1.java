@@ -3,10 +3,10 @@ package com.pictureair.photopass.entity;
 import java.io.Serializable;
 
 public class CartPhotosInfo1 implements Serializable{
-	private String photoId;//购物车添加图片的URL
-	private String photoUrl;//照片url地址
-	private String cartPhotoCount;//购物车对应的数量
-	private String cartPhotoLocalAlbum;//购物车对应照片在本地属于的相册名称
+	private String photoId = "";//购物车添加图片的URL
+	private String photoUrl = "";//照片url地址
+	private String cartPhotoCount = "";//购物车对应的数量
+	private String cartPhotoLocalAlbum = "";//购物车对应照片在本地属于的相册名称
 
 	public String getPhotoId() {
 		return photoId;
