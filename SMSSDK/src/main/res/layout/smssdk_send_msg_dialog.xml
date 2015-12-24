@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:background="@drawable/bg_dialog_white_content" >
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_dialog_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             android:textColor="@color/gray"
             android:textSize="@dimen/text_middle_size" />
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_dialog_gray_ok2">
 
-        <Button
+        <cn.smssdk.gui.CustomButtonFont
             android:id="@+id/btn_dialog_ok"
             android:layout_width="0dip"
             android:layout_height="50dip"
@@ -58,7 +58,7 @@
             android:layout_width="1px"
             android:layout_height="match_parent"
             android:background="@color/pp_gray" />
-        <Button
+        <cn.smssdk.gui.CustomButtonFont
             android:id="@+id/btn_dialog_cancel"
             android:layout_width="0dip"
             android:layout_height="50dip"

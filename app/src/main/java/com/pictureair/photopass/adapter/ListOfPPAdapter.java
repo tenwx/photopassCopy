@@ -148,6 +148,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             } else {//不可选
                 holder.img_no_check.setImageResource(R.drawable.del1);
             }
+            holder.img_no_check.setOnClickListener(childClickListener);
             holder.itemLayout.setOnClickListener(childClickListener);
         } else {
             //判断是否显示删除按钮
@@ -551,6 +552,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             if (arrayList.get(position) instanceof PPinfo) {
                 PPinfo ppInfo = (PPinfo) arrayList.get(position);
                 switch (v.getId()) {
+                    case R.id.img:
                     case R.id.pp_item:
                         System.out.println("adapter---size=" + map.size());
                         if (null != mHandler) {

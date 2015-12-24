@@ -1,6 +1,7 @@
 package cn.smssdk.gui;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +13,21 @@ public class MyToast extends Toast{
 
 	private Toast toast;
 	private TextView textView;
+	private Typeface typeface;
 	public MyToast(Context context) {
 		super(context);
 		toast = new Toast(context);
 		// TODO Auto-generated constructor stub
 		//获取LayoutInflater对象  
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);   
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		//由layout文件创建一个View对象  
 		View layout = inflater.inflate(R.layout.newtoast, null);  
 		//实例化ImageView和TextView对象  
-		textView = (TextView) layout.findViewById(R.id.toast_textview); 
+		textView = (TextView) layout.findViewById(R.id.toast_textview);
+		if (null == typeface) {
+			typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_NAME);
+		}
+		textView.setTypeface(typeface);
 		toast.setView(layout);  
 	}
 

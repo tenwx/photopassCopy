@@ -6,8 +6,9 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+
+import cn.smssdk.gui.CustomFontManager;
 
 /**
  * 由于Fragment中字体不受chlligraphy框架的影响
@@ -19,14 +20,18 @@ public class CustomTextView extends TextView {
 
     public CustomTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Typeface typeface;
-        if (null == MyApplication.getInstance().typeface){
-            PictureAirLog.v(TAG,"Myapplication typeface is null");
-            typeface = Typeface.createFromAsset(context.getAssets(), Common.DEFULT_FONT);
-        }else {
-            PictureAirLog.v(TAG,"Myapplication typeface is not null");
-            typeface = MyApplication.getInstance().typeface;
+
+        if (CustomFontManager.IS_CUSOTM_FONT) {
+            Typeface typeface;
+            if (null == MyApplication.getInstance().typeface) {
+                PictureAirLog.v(TAG, "Myapplication typeface is null");
+                typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_NAME);
+            } else {
+                PictureAirLog.v(TAG, "Myapplication typeface is not null");
+                typeface = MyApplication.getInstance().typeface;
+            }
+            setTypeface(typeface);
         }
-        setTypeface(typeface);
+
     }
 }

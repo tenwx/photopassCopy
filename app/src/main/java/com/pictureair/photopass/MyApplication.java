@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.smssdk.gui.CustomFontManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -72,7 +73,10 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CalligraphyConfig.initDefault(Common.DEFULT_FONT, R.attr.fontPath);
+        if (CustomFontManager.IS_CUSOTM_FONT){
+            CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);
+            typeface = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_NAME);//初始化字体
+        }
         if (!DEBUG) {
             CrashHandler handler = CrashHandler.getInstance();
             handler.init(getApplicationContext());
@@ -95,7 +99,6 @@ public class MyApplication extends Application {
         } else {
             System.err.println("application not on create------>");
         }
-        typeface = Typeface.createFromAsset(getAssets(), Common.DEFULT_FONT);//初始化字体
     }
 
     /**

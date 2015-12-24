@@ -14,7 +14,7 @@
         android:paddingLeft="16dip"
         android:paddingRight="16dip" >
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_identify_notify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:textColor="#999999"
             android:textSize="15sp" />
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
 
 </RelativeLayout>
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_unreceive_identify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
