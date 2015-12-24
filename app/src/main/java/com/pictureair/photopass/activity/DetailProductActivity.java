@@ -131,12 +131,12 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         if (goodsInfo == null) {
             return;
         }
-        if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+        //根据商品类型判，断是否有自提地址
+        if (goodsInfo.getEntityType() == 0) {
             receiveAdress.setText(getString(R.string.address_digital_goods));
         } else {
             receiveAdress.setText(getString(R.string.self_collect));
         }
-
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo picture size" + goodsInfo.getPictures().size());
             List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();

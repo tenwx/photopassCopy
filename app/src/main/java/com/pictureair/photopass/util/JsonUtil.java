@@ -163,7 +163,7 @@ public class JsonUtil {
         info.isVideo = 1;
         //获取图片的原始路径信息
         if (object.containsKey("url")) {
-                info.photoPathOrURL = object.getString("url");
+            info.photoPathOrURL = object.getString("url");
         }
         //获取图片对应的pp码
         info.photoPassCode = "";
@@ -172,8 +172,8 @@ public class JsonUtil {
             String time = object.getString("createdOn");
             info.shootOn = AppUtil.GTMToLocal(time);
             info.shootTime = info.shootOn.substring(0, 10);
-            PictureAirLog.out("get transfer time----> "+ info.shootOn);
-            PictureAirLog.out("shootTime----> "+ info.shootTime);
+            PictureAirLog.out("get transfer time----> " + info.shootOn);
+            PictureAirLog.out("shootTime----> " + info.shootTime);
         }
 
         if (object.containsKey("fileSize")) {
@@ -600,8 +600,8 @@ public class JsonUtil {
             if (deliveryAddressJsonObject.containsKey("county")) {//区
                 orderInfo.deliveryAddress += deliveryAddressJsonObject.getString("county") + ",";
             }
-            if (deliveryAddressJsonObject.containsKey("detailedAddress")) {//街道
-                orderInfo.deliveryAddress += deliveryAddressJsonObject.getString("detailedAddress");
+            if (deliveryAddressJsonObject.containsKey("detailedAddress")) {//详细地址
+                orderInfo.deliveryAddress = deliveryAddressJsonObject.getString("detailedAddress");
             }
             if (orderInfo.deliveryAddress == null) {
                 orderInfo.deliveryAddress = "";
@@ -810,9 +810,9 @@ public class JsonUtil {
                         bindInfo.bindDate = bindInfoObj.getString("bindDate");
                         ppPinfo.bindInfo.add(bindInfo);
                     }
-                    if (ppplist.containsKey("expiredOn")){ //如果存在有效日期，就取值，如果不存在，就为空
-                        ppPinfo.expiredOn=ppplist.getString("expiredOn");
-                    }else{
+                    if (ppplist.containsKey("expiredOn")) { //如果存在有效日期，就取值，如果不存在，就为空
+                        ppPinfo.expiredOn = ppplist.getString("expiredOn");
+                    } else {
                         ppPinfo.expiredOn = "";
                     }
                     ppPinfoArrayList.add(ppPinfo);
@@ -850,10 +850,11 @@ public class JsonUtil {
 
     /**
      * 解析选择PP数据。
+     *
      * @param jsonObject
      * @return
      */
-    public static ArrayList<PPinfo> getPPSByPPP(JSONObject jsonObject){
+    public static ArrayList<PPinfo> getPPSByPPP(JSONObject jsonObject) {
         ArrayList<PPinfo> ppInfoArrayList = new ArrayList<>();
         if (jsonObject.containsKey("PPList")) {
             JSONArray pplists = jsonObject.getJSONArray("PPList");

@@ -92,8 +92,8 @@ public class OrderProductDetailAdapter extends BaseAdapter {
             for (int i = 0; i < list.get(position).cart_photoUrls.size(); i++) {
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = screenWight;
-                params.height = screenWight;
+                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
+                params.height = params.width;
                 imageView.setLayoutParams(params);
 
                 imageLoader.displayImage(Common.PHOTO_URL + list.get(position).cart_photoUrls.get(i).cart_photoUrl, imageView);

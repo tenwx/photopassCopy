@@ -71,11 +71,7 @@
                     android:background="@color/white"
                     android:clickable="false"
                     android:divider="@null"
-                    android:focusable="false"
-                    android:paddingBottom="@dimen/pp_padding_8"
-                    android:paddingLeft="@dimen/pp_margin_16"
-                    android:paddingRight="@dimen/pp_padding_16"
-                    android:paddingTop="@dimen/pp_padding_8" />
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -154,7 +150,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="3dp"
                         android:gravity="center"
-                        android:text="fsa"
                         android:textColor="@color/pp_gray"
                         android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
@@ -215,7 +210,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="fsa"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
@@ -247,7 +241,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="fsa"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
@@ -304,7 +297,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="fsa"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
@@ -335,7 +327,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="fsa"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
@@ -365,7 +356,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/disney_address"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
@@ -396,7 +386,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
-                        android:text="fsa"
                         android:textColor="@color/pp_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
