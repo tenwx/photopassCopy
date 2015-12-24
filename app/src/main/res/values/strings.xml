@@ -345,8 +345,8 @@
     <string name="original_price">原价：</string>
     <string name="pick_up_address">自提地址：</string>
     <string name="disney_address">上海迪斯尼乐园美妙记忆屋</string>
-    <string name="scan_intro">请把您的乐拍通和乐拍通+卡对准扫描中心，扫一扫即可获得您的照片</string>
-    <string name="manul_input_intro">请输入您的乐拍通和乐拍通+卡背面的16位数字条码信息，即可获得您的照片信息</string>
+    <string name="scan_intro">请把您的乐拍通对准扫描中心, 扫一扫即可获得您的照片</string>
+    <string name="manul_input_intro">请输入你的乐拍通卡背面16位数字条码信息，即可获得您的照片信息</string>
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
     <string name="two_days_ago">2天前</string>

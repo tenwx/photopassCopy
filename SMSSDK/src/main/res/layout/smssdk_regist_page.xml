@@ -221,6 +221,7 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:text="@string/smssdk_send_verification_code"
+                    android:textStyle="bold"
                     android:textColor="@drawable/textview_selector_blue_white"
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>
@@ -234,6 +235,7 @@
                 android:enabled="false"
                 android:padding="10dp"
                 android:text="@string/smssdk_sign_up"
+                android:textStyle="bold"
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
 

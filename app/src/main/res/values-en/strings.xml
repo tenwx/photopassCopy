@@ -344,8 +344,8 @@
     <string name="original_price">Original price:</string>
     <string name="pick_up_address">Self-collect： </string>
     <string name="disney_address"> Carefree Corner</string>
-    <string name="scan_intro">Please put your PhotoPass or PhotoPass+ on the scanning center, scan to get your photos</string>
-    <string name="manul_input_intro">Please input the back of PhotoPass or PhotoPass+ 16 digits barcode to get your photos</string>
+    <string name="scan_intro">Please Scan your Park Ticket / PhotoPass Card QR code to get your photos.</string>
+    <string name="manul_input_intro">Please input your 16-digit number on the back of your park ticket / PhotoPass card.</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="two_days_ago">2 days ago</string>
