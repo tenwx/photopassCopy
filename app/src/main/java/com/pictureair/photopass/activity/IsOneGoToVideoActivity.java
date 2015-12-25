@@ -11,7 +11,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -71,10 +73,12 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
 //		view1.setBackgroundResource(R.drawable.loding_1);
 
         view2 = inflater.inflate(R.layout.viewpager_disney_video1, null);
+        ((TextView)view2.findViewById(R.id.tv_video1)).setTypeface(MyApplication.getInstance().getFontBold());
         view2.setBackgroundResource(R.drawable.img_disneyvideo1);
 //        ivBack = (ImageView) findViewById(R.id.iv_back);
 //        ivBack.setOnClickListener(this);
         btnStart = (Button) view2.findViewById(R.id.btn_start);
+        btnStart.setTypeface(MyApplication.getInstance().getFontBold());
         btnStart.setVisibility(View.VISIBLE);
 
 //		mList.add(view1);
@@ -94,10 +98,6 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
                 // 如果有已购买照片，直接进入选择照片制作故事的页面；
                 // 如果无已购买的照片，直接进入没有乐拍通照片的页面；
                 DisneyVideoTool.getIsEditImageGoToVideo(context);
-            case R.id.iv_back:
-                finish();
-                break;
-
             default:
                 break;
         }
