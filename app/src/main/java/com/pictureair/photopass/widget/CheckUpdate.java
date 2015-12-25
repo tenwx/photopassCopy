@@ -20,7 +20,12 @@ public class CheckUpdate implements BaseCheckUpdate{
 		}
 		return checkUpdate;
 	}
-	
+
+	@Override
+	public void getTokenId(Context context, Handler handler) {
+		API1.getTokenId(context, handler);
+	}
+
 	@Override
 	public void checkUpdate(Context context, Handler handler, String versionName, String currentLanguage) {
 		// TODO Auto-generated method stub

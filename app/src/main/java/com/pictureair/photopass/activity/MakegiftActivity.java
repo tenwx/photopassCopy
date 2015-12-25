@@ -33,6 +33,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.MakegiftGoodsAdapter;
 import com.pictureair.photopass.entity.CartItemInfo1;
@@ -333,7 +334,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener{
 		cartButton = (ImageView)findViewById(R.id.button_cart);
 		selectButton = (TextView)findViewById(R.id.product_name_tv);
 		buyButton = (Button)findViewById(R.id.button_buy);
+		buyButton.setTypeface(MyApplication.getInstance().getFontBold());
 		addtocartButton = (Button)findViewById(R.id.button_addtocart);
+		addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
 		cartButton.setOnClickListener(this);
 		progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate),CustomProgressBarPop.TYPE_UPLOAD);
 		selectButton.setOnClickListener(this);

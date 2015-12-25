@@ -174,24 +174,24 @@
         android:padding="@dimen/pp_margin_16" >
 
         <Button
-            android:id="@+id/button_addtocart"
+            android:id="@+id/button_buy"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/button_blue_shape_and_selector"
             android:padding="10dp"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:text="@string/add_to_cart"
+            android:text="@string/buy_good2"
             android:textSize="@dimen/pp_margin_16" />
 
         <Button
-            android:id="@+id/button_buy"
+            android:id="@+id/button_addtocart"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/button_sign_shape_and_selector"
             android:padding="10dp"
-            android:text="@string/buy_good2"
+            android:text="@string/add_to_cart"
             android:layout_marginTop="@dimen/pp_margin_16"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/pp_margin_16" />

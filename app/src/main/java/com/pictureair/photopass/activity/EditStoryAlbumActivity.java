@@ -39,7 +39,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private TextView buyTextView;
 	private TextView selectDisAllTextView;
 	private LinearLayout editBarLinearLayout;
-//	private ProgressDialog deleteFileDialog;
 	private CustomProgressBarPop customProgressBarPop;
 	private GridView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
@@ -166,14 +165,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		albumArrayList = new ArrayList<>();
 		originalAlbumArrayList = b.getParcelableArrayList("photos");
 		albumArrayList.addAll(originalAlbumArrayList);
-		if (getIntent().getStringExtra("mode").equals("edit")) {//编辑模式
-			editMode = true;
-			editPhotoImageView.setVisibility(View.GONE);
-		}else if (getIntent().getStringExtra("mode").equals("noedit")) {//非编辑模式
-			editMode = false;
-			
-			editPhotoImageView.setOnClickListener(this);
-		}
+//		if (getIntent().getStringExtra("mode").equals("edit")) {//编辑模式
+//			editMode = true;
+//			editPhotoImageView.setVisibility(View.GONE);
+//		}else if (getIntent().getStringExtra("mode").equals("noedit")) {//非编辑模式
+//			editMode = false;
+//
+//			editPhotoImageView.setOnClickListener(this);
+//		}
 		albumArrayList.addAll(originalAlbumArrayList);
 //		setListCheckedStatus(editMode);
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//

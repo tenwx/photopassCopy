@@ -3,12 +3,14 @@ package com.pictureair.photopass.customDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
@@ -163,12 +165,16 @@ public class CustomDialog extends Dialog {
 			
 			View layout = View.inflate(mContext, R.layout.layout_custom_dialog, null);
 			dialog.addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			
-			//设置title属性。我们这里用不到这个属性
-//			if (title != null) {
-//				TextView tvTitle = (TextView) layout.findViewById(R.id.tv_title);
-//				tvTitle.setText(title);
-//			}
+
+			TextView tvTitle = (TextView) layout.findViewById(R.id.dia_title);
+			if (title != null) {//如果有title
+				tvTitle.setText(title);
+				tvTitle.setVisibility(View.VISIBLE);
+				RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById(R.id.dia);
+				relativeLayout.setBackgroundColor(Color.WHITE);
+			} else {
+				tvTitle.setVisibility(View.GONE);
+			}
 			
 			if (message != null) {
 				TextView tvMessage = (TextView) layout.findViewById(R.id.tv_message);

@@ -66,7 +66,7 @@ public class BannerView extends LinearLayout {
 
 		for (int i = 0; i < count; i++) {//加载图片
 			System.out.println(list.get(i).get("targetURL")+"+"+list.get(i).get("imageurl"));
-			pathString = Common.BASE_URL+list.get(i).get("imageurl");
+			pathString = Common.BASE_URL_TEST + list.get(i).get("imageurl");
 			imageView = new ImageView(getContext());//新建一个新的imageview
 			imageLoader.displayImage(pathString, imageView);
 			bannerViewList.add(imageView);
