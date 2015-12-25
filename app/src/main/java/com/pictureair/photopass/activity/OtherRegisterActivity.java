@@ -28,7 +28,6 @@ import cn.smssdk.gui.EditTextWithClear;
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, LoginCallBack{
     // 声明控件
-    private ImageView back;
     private EditTextWithClear etEmail, etPwd, etPwd2, etName;
     private TextView etYear, etMonth, etDay, etCounry;
     private RadioGroup rg;
@@ -101,7 +100,8 @@ public class OtherRegisterActivity extends BaseActivity implements
     private void initview() {
         myToast = new MyToast(OtherRegisterActivity.this);
 //		getDateYMD();
-        back = (ImageView) findViewById(R.id.login_back);// 返回按键
+        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopTitleShow(R.string.smssdk_regist);
         etEmail = (EditTextWithClear) findViewById(R.id.other_sign_email);
         etPwd = (EditTextWithClear) findViewById(R.id.other_sign_password);
         etPwd2 = (EditTextWithClear) findViewById(R.id.other_sign_password2);
@@ -123,7 +123,6 @@ public class OtherRegisterActivity extends BaseActivity implements
         ll_brith = (LinearLayout) findViewById(R.id.ll_birth);
 
         ll_brith.setOnClickListener(this);
-        back.setOnClickListener(this);
         btn_submit_sign.setOnClickListener(this);
         etCounry.setOnClickListener(this);
         etYear.setOnClickListener(this);
@@ -166,12 +165,7 @@ public class OtherRegisterActivity extends BaseActivity implements
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
-            case R.id.login_back:
-                finish();
-                break;
-
             case R.id.btn_other_sign_submit:
 			/*
 			 * 1.先提交用户名和密码 2.根据修改用户来提交 个人信息。
@@ -291,4 +285,17 @@ public class OtherRegisterActivity extends BaseActivity implements
         startActivity(i);
         finish();
     }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
+
 }

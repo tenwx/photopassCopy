@@ -61,7 +61,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private ImageButton btnPlayOrStop = null;
     private RelativeLayout rlHead, rlBackground;
     private LinearLayout llEnd;
-    private ImageView ivBack, ivIsLove;
+    private ImageView ivIsLove;
     private TextView tvLoding;
     private MyToast myToast;
     private SharePop sharePop;
@@ -201,16 +201,15 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         pictureAirDbManager = new PictureAirDbManager(context);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         myToast = new MyToast(context);
-
+        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopTitleShow(R.string.my_disney_story);
+        ivIsLove = getTopRightImageView();
         rlBackground = (RelativeLayout) findViewById(R.id.rl_background);
         tvLoding = (TextView) findViewById(R.id.tv_loding);
-        ivBack = (ImageView) findViewById(R.id.iv_back);
-        ivIsLove = (ImageView) findViewById(R.id.iv_isLove);
         llShare = (LinearLayout) findViewById(R.id.ll_share);
         llDownload = (LinearLayout) findViewById(R.id.ll_download);
-//        noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.storyNoNetWorkView);
 
-        rlHead = (RelativeLayout) findViewById(R.id.ll_head);
+        rlHead = (RelativeLayout) findViewById(R.id.head);
         llEnd = (LinearLayout) findViewById(R.id.ll_end);
         llShow = (LinearLayout) findViewById(R.id.ll_show);
         llShow.setEnabled(false);
@@ -235,11 +234,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
      * 所有按钮的事件
      */
     private void initBtnEvent() {
-        ivBack.setOnClickListener(this);
         llShow.setOnClickListener(this);
         llShare.setOnClickListener(this);
         llDownload.setOnClickListener(this);
-        ivIsLove.setOnClickListener(this);
+//        ivIsLove.setOnClickListener(this);
     }
 
     private void getIsOnline(){
@@ -581,12 +579,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             case R.id.ll_download:
                 downloadVideo();
                 break;
-            case R.id.iv_isLove:
-                isLoveEvent();
-                break;
-            case R.id.iv_back:
-                finish();
-                break;
             case R.id.ll_show:
                 // 单次处理
                 if (isPaused) {
@@ -604,6 +596,21 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 isPaused = !isPaused;
                 break;
 
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            case R.id.topRightView:
+                isLoveEvent();
+                break;
             default:
                 break;
         }
