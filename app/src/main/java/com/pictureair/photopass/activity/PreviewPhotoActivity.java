@@ -1336,6 +1336,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 myApplication.setneedScanPhoto(true);
                 myApplication.scanMagicFinish = false;
                 //				flag = 0;
+                //5,更新 标题栏。
+                locationTextView.setText(R.string.magic_location);
             }
         }
     }

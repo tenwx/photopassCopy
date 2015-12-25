@@ -60,6 +60,7 @@
                     android:textSize="@dimen/text_size_12" />
 
                 <com.pictureair.photopass.widget.DashedLineView
+                    android:paddingBottom="@dimen/pp_margin_8"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/white" />

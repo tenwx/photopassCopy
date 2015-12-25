@@ -50,6 +50,7 @@ public class HelpInfosAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.help_item, null);
             helpView.answer = (TextView) convertView.findViewById(R.id.tv_answer);
             helpView.question = (TextView) convertView.findViewById(R.id.tv_question);
+            helpView.question.setTypeface(MyApplication.getInstance().getFontBold());
             convertView.setTag(helpView);
         } else {
             helpView = (HelpView) convertView.getTag();

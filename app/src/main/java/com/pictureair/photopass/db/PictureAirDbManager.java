@@ -638,7 +638,7 @@ public class PictureAirDbManager {
 				frameInfo.frameOriginalPathPortrait = cursor.getString(cursor.getColumnIndex("originalPathPortrait"));
 				frameInfo.frameThumbnailPathLandscape400 = cursor.getString(cursor.getColumnIndex("thumbnailPathLandscape400"));
 				frameInfo.frameThumbnailPathPortrait400 = cursor.getString(cursor.getColumnIndex("thumbnailPathPortrait400"));
-				frameInfo.frameThumbnailPath160 = cursor.getString(cursor.getColumnIndex("thumbnailPath160"));
+				frameInfo.frameThumbnailPathH160 = cursor.getString(cursor.getColumnIndex("thumbnailPath160")); //测试代码，需要修改。
 				frameInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
 				frameInfo.isActive = cursor.getInt(cursor.getColumnIndex("isActive"));
 				frameInfo.onLine = cursor.getInt(cursor.getColumnIndex("onLine"));
@@ -675,8 +675,8 @@ public class PictureAirDbManager {
 				if (frameInfo.isActive == 1) {
 					database.execSQL("insert into " + Common.FRAME_STICKER_TABLES + " values(null,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
 							frameInfo.frameName, frameInfo.frameOriginalPathLandscape, frameInfo.frameOriginalPathPortrait, frameInfo.frameThumbnailPathLandscape400
-							, frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPath160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "", 
-							frameInfo.isDownload + "", frameInfo.fileSize+"", isFrame ? "1" : "0"});
+							, frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPathH160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "",
+							frameInfo.isDownload + "", frameInfo.fileSize+"", isFrame ? "1" : "0"});//测试代码，需要修改。
 				} else {//如果为0，说明需要修改以前的数据状态
 					//根据边框或者饰品名字修改使用状态
 					database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isActive = 0 where frameName = ? and fileType = ?", new String[]{frameInfo.frameName, isFrame ? "1" : "0"});

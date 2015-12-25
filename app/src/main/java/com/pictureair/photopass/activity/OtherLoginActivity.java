@@ -30,7 +30,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 	private EditTextWithClear userName, password;
 	
 	private TextView forgot;
-	private ImageView back;
+//	private ImageView back;
 
 	// 申明变量
 	private StringBuffer loginUrl = new StringBuffer();// 登录的url
@@ -49,15 +49,13 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 	private void initView() {
 		loginUrl.append(Common.BASE_URL_TEST).append(Common.LOGIN);// 链接地址
 		myToast = new MyToast(OtherLoginActivity.this);// 获取toast
+		setTopLeftValueAndShow(R.drawable.back_white, true);
+		setTopTitleShow(R.string.user_login);
 		sign = (Button) findViewById(R.id.sign);
 		login = (Button) findViewById(R.id.btnOtherLogin);
 		userName = (EditTextWithClear) findViewById(R.id.otherLogin_email);
 		password = (EditTextWithClear) findViewById(R.id.otherLogin_password);
 		forgot = (TextView) findViewById(R.id.forgot);
-		back = (ImageView) findViewById(R.id.login_back);// 返回按键
-
-
-		back.setOnClickListener(this);
 		sign.setOnClickListener(this);
 		login.setOnClickListener(this);
 		forgot.setOnClickListener(this);
@@ -80,7 +78,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
+										  KeyEvent event) {
 				// TODO Auto-generated method stub
 				/* 判断是否是“GO”键 */
 				if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -115,10 +113,6 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 
-		case R.id.login_back:
-			finish();
-			break;
-			
 		case R.id.btnOtherLogin:
 			System.out.println("登录按钮");
 			// 登录
@@ -194,4 +188,17 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 		AppManager.getInstance().killActivity(LoginActivity.class);
 		finish();
 	}
+
+	@Override
+	public void TopViewClick(View view) {
+		super.TopViewClick(view);
+		switch (view.getId()) {
+			case R.id.topLeftView:
+				finish();
+				break;
+			default:
+				break;
+		}
+	}
+
 }
