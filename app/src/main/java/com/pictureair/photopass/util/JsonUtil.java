@@ -44,9 +44,12 @@ public class JsonUtil {
             JSONObject obj = (JSONObject) object.get("GPS");
 //			System.out.println("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
-            LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
-            info.latitude = latLng.latitude;
-            info.longitude = latLng.longitude;
+            if (obj != null){
+                LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
+                info.latitude = latLng.latitude;
+                info.longitude = latLng.longitude;
+            }
+
 //			System.out.println("转换之后的坐标"+latLng.toString());
         }
         if (object.containsKey("description")) {

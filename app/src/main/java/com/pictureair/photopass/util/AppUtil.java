@@ -677,6 +677,9 @@ public class AppUtil {
     public static LatLng converterFromGPS2AMAP(JSONObject obj) throws NumberFormatException, JSONException {
 //				double lat = Double.valueOf("31.1616667");//我的座位
 //				double lng = Double.valueOf("121.7083333");
+        if (!obj.containsKey("GPSLatitude") || !obj.containsKey("GPSLongitude")) {
+            return new LatLng(0, 0);
+        }
         double lat = Double.valueOf(obj.getString("GPSLatitude"));
         double lng = Double.valueOf(obj.getString("GPSLongitude"));
         GeoPoint geoPoint = CoordinateConvert.fromGpsToAMap(lat, lng);

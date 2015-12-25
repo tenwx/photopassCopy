@@ -39,7 +39,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/nn"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -72,7 +72,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/grender"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -118,7 +118,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/birthday"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -149,7 +149,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/country"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -183,7 +183,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/account"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -260,7 +260,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/modify"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
 

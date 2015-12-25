@@ -74,7 +74,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (CustomFontManager.IS_CUSOTM_FONT){
+        if (CustomFontManager.IS_CUSOTM_FONT) {
             CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);
             typeface = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_NAME);//初始化字体
         }
@@ -209,7 +209,8 @@ public class MyApplication extends Application {
                         // .showImageForEmptyUri(R.drawable.ic_empty) //
                         // 设置图片Uri为空或是错误的时候显示的图片
                         showImageOnLoading(R.drawable.ic_loading)
-                .showImageOnFail(R.drawable.ic_failed).build();
+                .showImageOnFail(R.drawable.ic_failed)
+                .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 context)
                 .memoryCacheExtraOptions(1000, 1000)
@@ -218,7 +219,7 @@ public class MyApplication extends Application {
                         // 线程池内加载的数量
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .denyCacheImageMultipleSizesInMemory()
-                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCacheSize(5 * 1024 * 1024)
                         // memoryCache(...)和memoryCacheSize(...)这两个参数会互相覆盖，所以在ImageLoaderConfiguration中使用一个就好了
                 .diskCacheFileNameGenerator(new Md5FileNameGenerator())
                         // 将保存的时候的URI名称用MD5 加密
@@ -232,7 +233,7 @@ public class MyApplication extends Application {
                         // FileCountLimitedDiskCache
                         // (设置总缓存文件数量，当到达警戒值时，删除最久之前的缓存。如果文件的大小都一样的时候，可以使用该模式)
                         // LimitedAgeDiskCache (不限制缓存大小，但是设置缓存时间，到期后删除)
-                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheSize(30 * 1024 * 1024)
                         // 50m本地缓存
                 .defaultDisplayImageOptions(defaultOptions)
                 .imageDownloader(

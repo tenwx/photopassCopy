@@ -6,9 +6,10 @@
     android:clickable="false"
     android:focusable="false"
     android:focusableInTouchMode="false"
-    android:paddingBottom="@dimen/pp_padding_10"
+    android:paddingBottom="@dimen/pp_margin_8"
     android:paddingLeft="@dimen/pp_padding_16"
-    android:paddingRight="@dimen/pp_padding_16">
+    android:paddingRight="@dimen/pp_padding_16"
+    android:paddingTop="@dimen/pp_margin_8">
 
     <RelativeLayout
         android:id="@+id/order_detail"
@@ -22,6 +23,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
+            android:background="@color/pp_light_gray_normal"
             android:focusable="false"
             android:src="@drawable/ic_stub" />
 
@@ -115,6 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/order_detail"
+        android:layout_marginTop="@dimen/pp_margin_8"
         android:background="@drawable/bg_border_stroke"
         android:columnCount="4"
         android:focusable="false"

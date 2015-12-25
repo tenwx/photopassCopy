@@ -116,7 +116,6 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.cartGoodPhotosGridLayout = (GridLayout) convertView.findViewById(R.id.cartPhotoGridLayout);
             viewHolder.editBarLayout = (LinearLayout) convertView.findViewById(R.id.cartEditBar);
 //            viewHolder.cartLineImageView = (DashedLineView) convertView.findViewById(R.id.cartLine1);
-            viewHolder.hideImageView = (ImageView) convertView.findViewById(R.id.hideView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -156,13 +155,11 @@ public class CartInfoAdapter extends BaseAdapter {
             imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
 //            viewHolder.cartLineImageView.setVisibility(View.GONE);
-            viewHolder.hideImageView.setVisibility(View.GONE);
         } else {//其他商品
             PictureAirLog.v(TAG, "other product");
             imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
 //            viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
-            viewHolder.hideImageView.setVisibility(View.INVISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
             if (0 == gridviewlist.size()) {//如果照片数量为0
                 PictureAirLog.v(TAG, "0 == gridviewlist.size()");
@@ -259,7 +256,6 @@ public class CartInfoAdapter extends BaseAdapter {
         GridLayout cartGoodPhotosGridLayout;//商品携带图片的控件
         LinearLayout editBarLayout;//编辑数量
         //        DashedLineView cartLineImageView;//线
-        ImageView hideImageView;//占位置的一个View
     }
 
     private class PhotoOnClickListener implements OnClickListener {
