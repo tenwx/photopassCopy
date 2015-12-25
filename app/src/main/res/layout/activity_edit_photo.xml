@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/pp_margin_16"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="13dp"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="13dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -41,8 +41,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/left_back"
+            android:paddingBottom="13dp"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="13dp"
+            android:src="@drawable/back_white"
             android:visibility="gone" />
 
         <!--
@@ -67,6 +70,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:paddingRight="10dp"
+                android:padding="10dp"
+                android:scaleType="centerInside"
                 android:src="@drawable/cancel1" />
 
             <ImageButton
@@ -75,6 +80,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:paddingLeft="10dp"
+                android:padding="10dp"
+                android:scaleType="centerInside"
                 android:src="@drawable/forward1" />
         </LinearLayout>
 
@@ -270,7 +277,7 @@
     <com.pictureair.photopass.widget.HorizontalListView
         android:id="@+id/horizontalListView"
         android:layout_width="fill_parent"
-        android:layout_height="117dp"
+        android:layout_height="116dp"
         android:paddingBottom="@dimen/pp_margin_16"
         android:paddingTop="@dimen/pp_margin_16"
         android:layout_alignParentBottom="true"

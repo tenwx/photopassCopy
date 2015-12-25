@@ -26,7 +26,6 @@ public class NationalListSelectionActivity extends BaseActivity {
 	// 组件
 	private ListView lv;
 	private myAdapter adapter;
-	private ImageView back;// 返回
 	// 选中的
 	private String countryCode = "";
 	private String country = "";
@@ -88,16 +87,9 @@ public class NationalListSelectionActivity extends BaseActivity {
 	}
 	
 	private void initView() {
-
-		back = (ImageView) findViewById(R.id.login_back);
+		setTopLeftValueAndShow(R.drawable.back_white,true);
+		setTopTitleShow(R.string.select_a_country);
 		lv = (ListView) findViewById(R.id.listView_nationalList_Selection);
-		back.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				finish();
-			}
-		});
-
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -157,4 +149,15 @@ public class NationalListSelectionActivity extends BaseActivity {
 		}
 	}
 
+	@Override
+	public void TopViewClick(View view) {
+		super.TopViewClick(view);
+		switch (view.getId()) {
+			case R.id.topLeftView:
+				finish();
+				break;
+			default:
+				break;
+		}
+	}
 }

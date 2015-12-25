@@ -725,7 +725,7 @@ public class JsonUtil {
                 if (thumbNailPortraritJsonObject.containsKey("x120")) {
                     JSONObject x160JsonObject = thumbNailPortraritJsonObject.getJSONObject("x120");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
+                        frameInfo.frameThumbnailPathH160 = x160JsonObject.getString("url");//测试代码，需要修改。
                     }
                 }
             }
@@ -774,7 +774,7 @@ public class JsonUtil {
                 if (thumbnailJsonObject.containsKey("x160")) {
                     JSONObject x160JsonObject = thumbnailJsonObject.getJSONObject("x160");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
+                        frameInfo.frameThumbnailPathH160 = x160JsonObject.getString("url");//测试代码，需要修改。
                     }
                 }
             }

@@ -70,6 +70,8 @@ public class MyApplication extends Application {
     public final static boolean DEBUG = true;
     private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
     public Typeface typeface;//设置默认字体用
+    public Typeface typefaceBold;//设置粗字体用
+
 
     @Override
     public void onCreate() {
@@ -77,6 +79,7 @@ public class MyApplication extends Application {
         if (CustomFontManager.IS_CUSOTM_FONT) {
             CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);
             typeface = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_NAME);//初始化字体
+            typefaceBold = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
         }
         if (!DEBUG) {
             CrashHandler handler = CrashHandler.getInstance();
@@ -513,5 +516,18 @@ public class MyApplication extends Application {
      */
     public void setUpgradedPhotosMessage(String upgradedPhotosMessage) {
         this.upgradedPhotosMessage = upgradedPhotosMessage;
+    }
+
+    /**
+     * 读取粗字体
+     */
+    public Typeface getFontBold() {
+        if (getLanguageType().equals("cn")) {
+            return Typeface.DEFAULT_BOLD;
+        }
+        if (null == typefaceBold) {
+            typefaceBold = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
+        }
+        return typefaceBold;
     }
 }

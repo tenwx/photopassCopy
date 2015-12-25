@@ -121,6 +121,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         //空照片介绍页面
         llNullPhoto = (LinearLayout) findViewById(R.id.ll_null_photo);
         btnGoToSelectPhoto = (Button) findViewById(R.id.btn_goto_select);
+        btnGoToSelectPhoto.setTypeface(MyApplication.getInstance().getFontBold());
         tvHead = (TextView) findViewById(R.id.tv_head);
         noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         //初始化控件
@@ -392,7 +393,10 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.BOTTOM, 0, 0);
         popupWindow.setOutsideTouchable(false);
+        TextView tv1 = (TextView)popView.findViewById(R.id.tv_video_popup1);
+        tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
+        btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
         View view = (View) popView.findViewById(R.id.view_mask);
         view.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);

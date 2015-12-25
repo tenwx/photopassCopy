@@ -10,7 +10,12 @@ public class CustomFontManager {
      */
     public static final boolean IS_CUSOTM_FONT = true;
     /**
-     * 字体名：更换字体时直接改这个名字
+     * 字体名：更换字体时直接改这个名字（默认字体）
      */
     public static final String CUSOTM_FONT_NAME = "fonts/AvenirLTStd-Roman.otf";
+
+    /**
+     * 字体名：更换字体时直接改这个名字（粗体）
+     */
+    public static final String CUSOTM_FONT_BOLD_NAME = "fonts/AvenirLTStd-Heavy.otf";
 }
