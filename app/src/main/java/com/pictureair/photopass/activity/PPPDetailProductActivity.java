@@ -248,8 +248,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         animMaskLayout = null;
         animMaskLayout = createAnimLayout();
         int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
-        start_location[0] = ScreenUtil.getScreenWidth(PPPDetailProductActivity.this) / 2 - 80;//减去的值和图片大小有关系
-        start_location[1] = ScreenUtil.getScreenHeight(PPPDetailProductActivity.this) / 2 - 76;
+        start_location[0] = ScreenUtil.getScreenWidth(PPPDetailProductActivity.this) / 2 - Common.CART_WIDTH;//减去的值和图片大小有关系
+        start_location[1] = ScreenUtil.getScreenHeight(PPPDetailProductActivity.this) / 2 - Common.CART_HEIGHT;
         // 将组件添加到我们的动画层上
         final View view = addViewToAnimLayout(animMaskLayout, v, start_location);
         int[] end_location = new int[2];
