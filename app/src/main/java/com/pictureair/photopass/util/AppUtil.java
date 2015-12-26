@@ -423,17 +423,19 @@ public class AppUtil {
     /**
      * 根据之前的日期转换成更加人性化的日期
      *
-     * @param compareDate 需要转化的日期
+     * @param compareDate 需要转化的日期，yyyy-mm-dd hh:mm:ss
      * @param context
      * @return 返回页面需要暂时的结果
      * @throws ParseException
      */
     public static String dateToSmartDate(String compareDate, Context context) throws ParseException {
+        String date = compareDate.substring(0, 10);
+        String time = compareDate.substring(11, 19);
         String result = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //将需要比较的日期转成calendar
         Calendar d1 = new GregorianCalendar();
-        d1.setTime(sdf.parse(compareDate));
+        d1.setTime(sdf.parse(date));
         //获取今天的calendar
         Calendar d2 = new GregorianCalendar();
         d2.setTime(new Date());
@@ -444,10 +446,10 @@ public class AppUtil {
         if (d1.get(Calendar.YEAR) != y2) {
             days += d1.getActualMaximum(Calendar.DAY_OF_YEAR);
         }
-        Log.d(TAG, "d1:" + d1.get(Calendar.YEAR) + "d2:" + y2);
+        PictureAirLog.d(TAG, "d1:" + d1.get(Calendar.YEAR) + "d2:" + y2);
         //判断相差几天
-        if (days == 0) {
-            result = context.getString(R.string.today);
+        if (days == 0) {//当天的，只需要显示hh:mm
+            result = time.substring(0, 5);
         } else if (days == 1) {
             result = context.getString(R.string.yesterday);
         } else if (days == 2) {
@@ -461,13 +463,13 @@ public class AppUtil {
         } else if (days == 6) {
             result = context.getString(R.string.six_days_ago);
         } else {
-            result = compareDate.replaceAll("-", "/");
+            result = date.replaceAll("-", "/");
             //需要判断是否刚刚过年，如果是，7天内依旧显示天数，超出7天，显示年份
             if (d1.get(Calendar.YEAR) == y2) {//不需要显示年份
                 result = result.substring(5, 10);
             }
         }
-        Log.d(TAG, compareDate + "----------->" + result);
+        PictureAirLog.d(TAG, date + "----------->" + result);
         return result;
     }
 
@@ -742,6 +744,35 @@ public class AppUtil {
         //32位
         return md5StrBuff.toString();
     }
+
+    /**
+     * 将简码转换成 国家名称
+     */
+    public static String getCountryByCountryCode(String countryCode,
+                                                 Context context) {
+        String[] codeStrings;
+        String country = null;
+        // 国家名称集合
+        //		Map<String, String> countryMap = new HashMap<String, String>();
+        /** 读取国家简码 */
+        codeStrings = context.getResources().getStringArray(R.array.country_code);
+        if (null != codeStrings) {
+
+            for (int i = 0; i < codeStrings.length; i++) {
+                String bb[] = codeStrings[i].split(",");
+                //bb[0]:国家
+                //bb[1]:简码
+                //				countryMap.put(bb[1].trim(), bb[0].trim());
+                if (countryCode.trim().equals(bb[1].trim())) {
+                    country = bb[0].trim();
+                    break;
+                }
+            }
+        }
+        //		country = countryMap.get(countryCode.trim());
+        return country;
+    }
+
 
     /**
      * 验证密码是否可用

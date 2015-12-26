@@ -16,11 +16,6 @@ public class Common {
     public static final String SMS_APPKEY = "7c07eba9fe66"; // SMSS，公司的账号
     public static final String SMS_APPSECRET = "c3e30ac3daba694656287afef2686edf"; // SMSS
 
-    public static final String BASE_URL2 = "http://192.168.8.3:3001";
-    public static final String BASE_URL = "http://192.168.8.3:3001";//harry
-
-
-//    public static final String BASE_URL_TEST = "http://172.16.20.135:3001";//(齐超)测试分享
 
     public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
 
@@ -126,6 +121,7 @@ public class Common {
     public static final String USERINFO_QQ = "qq";
     public static final String USERINFO_WECHAT = "wechat";
     public static final String USERINFO_TWITTER = "twitter";
+    public static final String USERINFO_ACCOUNT = "account";
     public static final String SOCKETPUSHCONNECTED = "isConnected";
     public static final String NEW_PASSWORD = "newPwd";
     public static final String OLD_PASSWORD = "oldPwd";

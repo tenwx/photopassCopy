@@ -337,7 +337,7 @@
     <string name="story_tab_magic">MagicCam</string>
     <string name="story_tab_bought">Purchased</string>
     <string name="story_tab_favorite">Favorite</string>
-    <string name="story_no_pp">Please scan your park ticket or PhotoPass card to start associating your pictures!</string>
+    <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / PhotoPass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
     <string name="suprise_price">Special Price</string>
     <string name="privilege_today">Special Offer</string>
@@ -563,5 +563,7 @@
     <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Nickname can not be empty</string>
-
+    <!-- 新增 推送 部分字段。-->
+    <string name="notifacation_order_completed_msg">Payment successfully, connecting memories !</string>
+    <string name="notifacation_order_submit_msg">Please pay your order,thanks！</string>
 </resources>

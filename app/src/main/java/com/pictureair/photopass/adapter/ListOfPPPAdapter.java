@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPPinfo;
+import com.pictureair.photopass.util.AppUtil;
 
 import java.util.ArrayList;
 
@@ -63,7 +64,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp3_img = (ImageView)convertView.findViewById(R.id.ppp_imageView3);
 			holder.tvState =(TextView)convertView.findViewById(R.id.tv_state);
 			holder.tvExpired = (TextView)convertView.findViewById(R.id.tv_expired);
-//			holder.ppp_imageView = (ImageView) convertView.findViewById(R.id.ppp_imageView);
+			holder.ppp_imageView = (ImageView) convertView.findViewById(R.id.ppp_imageView);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -95,7 +96,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		if (dpp.expiredOn.equals("")){ // 如果有效期为空。就不显示，如果不为空，就显示。
 			holder.tvExpired.setText("");
 		}else{
-			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + dpp.expiredOn);
+			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + AppUtil.GTMToLocal(dpp.expiredOn));
 		}
 
 		//初始化ppp三个格子
@@ -105,6 +106,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+			holder.ppp_imageView.setImageResource(R.drawable.ppp_bottom1);
 			break;
 
 		case 1://用过一张
@@ -112,6 +114,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+			holder.ppp_imageView.setImageResource(R.drawable.ppp_bottom1);
 			break;
 
 		case 2://用过两张
@@ -119,6 +122,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+			holder.ppp_imageView.setImageResource(R.drawable.ppp_bottom1);
 			break;
 
 		case 3://全部用过
@@ -126,6 +130,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 			holder.pp3_img.setImageResource(R.drawable.has_ppp_icon);
+			holder.ppp_imageView.setImageResource(R.drawable.ppp_bottom1_used);
 			break;
 
 		default:
@@ -160,7 +165,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
 		TextView tvState; //状态
 		TextView tvExpired; //日期
-//		ImageView ppp_imageView;//背景图
+		ImageView ppp_imageView;//背景图
 	}
 
 }

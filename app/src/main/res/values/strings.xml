@@ -154,7 +154,7 @@
     <string name="hint_address">输入详细地址</string>
     <string name="delete">删除</string>
     <string name="photopass">乐拍通</string>
-    <string name="photopassplus">VIP</string>
+    <string name="photopassplus">PhotoPass+</string>
     <string name="getitnow">现在就去购买乐拍通+</string>
     <string name="mylocation">我的地址</string>
     <string name="myfavourite">我的最爱</string>
@@ -338,7 +338,7 @@
     <string name="story_tab_magic">魔法相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">已收藏</string>
-    <string name="story_no_pp">亲！扫一扫您的乐拍通和乐拍通+卡，采集您的迪斯尼故事</string>
+    <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者乐拍通卡上的二维码, 更快获得你们的游玩照片。</string>
     <string name="story_scan">扫一扫</string>
     <string name="suprise_price">惊喜价</string>
     <string name="privilege_today">今日特惠</string>
@@ -598,5 +598,9 @@
     <string name="country">国家</string>
     <string name="account">账户</string>
     <string name="nick_name_empty">昵称不能为空!</string>
+
+    <!-- 新增 推送 部分字段。-->
+    <string name="notifacation_order_completed_msg">亲，您已经支付成功，美好影像体验尽在迪彩！</string>
+    <string name="notifacation_order_submit_msg">亲，您已经下单成功，快去支付吧！</string>
 
 </resources>

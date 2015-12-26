@@ -67,6 +67,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.crypto.NoSuchPaddingException;
@@ -640,9 +641,27 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "photoid ===== " + getIntent().getStringExtra("photoId"));
 
         //获取intent传递过来的信息
-        photolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photos");//获取图片路径list
+        photolist = new ArrayList<>();
+        photolist.addAll((ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photos"));//获取图片路径list
         targetphotolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("targetphotos");
         currentPosition = getIntent().getIntExtra("position", 0);
+
+        PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
+
+        PictureAirLog.out("photolist size ---->" + photolist.size());
+        Iterator<PhotoInfo> photoInfoIterator = photolist.iterator();
+        while (photoInfoIterator.hasNext()) {
+            PhotoInfo info = photoInfoIterator.next();
+            if (info.isVideo == 1) {
+                photoInfoIterator.remove();
+            }
+        }
+        PictureAirLog.out("photolist size ---->" + photolist.size());
+        PictureAirLog.out("currentPosition ---->" + currentPosition);
+        currentPosition = photolist.indexOf(currentPhotoInfo);
+        PictureAirLog.out("currentPosition ---->" + currentPosition);
+
+
         PictureAirLog.v(TAG, "photo size is " + photolist.size());
         PictureAirLog.v(TAG, "thumbnail is " + photolist.get(currentPosition).photoThumbnail);
         PictureAirLog.v(TAG, "thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);

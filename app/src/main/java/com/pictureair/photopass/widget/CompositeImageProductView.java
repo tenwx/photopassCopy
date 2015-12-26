@@ -94,7 +94,7 @@ public class CompositeImageProductView extends RelativeLayout{
 		//如果以下商品需要加载商品图片
 		if (goodName.equals("canvas")||goodName.equals("iphone5Case")||goodName.equals("keyChain")||goodName.equals("mug")) {
 			onlySelectedImageView.setVisibility(View.INVISIBLE);
-			imageLoader.loadImage(Common.BASE_URL + goodURL, new SimpleImageLoadingListener(){
+			imageLoader.loadImage(Common.BASE_URL_TEST + goodURL, new SimpleImageLoadingListener(){
 				@Override
 				public void onLoadingComplete(String imageUri, View view,
 						Bitmap loadedImage) {

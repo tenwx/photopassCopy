@@ -98,6 +98,7 @@ public class IsOneGoToVideoActivity extends BaseActivity implements
                 // 如果有已购买照片，直接进入选择照片制作故事的页面；
                 // 如果无已购买的照片，直接进入没有乐拍通照片的页面；
                 DisneyVideoTool.getIsEditImageGoToVideo(context);
+                finish();
             default:
                 break;
         }

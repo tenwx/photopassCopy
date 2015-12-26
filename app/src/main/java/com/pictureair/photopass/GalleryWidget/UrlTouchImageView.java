@@ -38,6 +38,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.io.BufferedOutputStream;
@@ -145,7 +146,7 @@ public class UrlTouchImageView extends RelativeLayout {
 		//2、判断文件是否存在sd卡中
 		File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
 		if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
-			System.out.println("file in sd card");
+			PictureAirLog.out("file in sd card");
 //			final File file2 = file;
 			//使用imageloader加载图片
 			imageLoader.loadImage("file://"+file.toString(), new SimpleImageLoadingListener(){
@@ -168,10 +169,10 @@ public class UrlTouchImageView extends RelativeLayout {
 			
 			
 		}else {//4、如果SD卡不存在，判断是否在缓存中
-			System.out.println("file not in sd card");
+			PictureAirLog.out("file not in sd card");
 			dirfile = new File(mContext.getCacheDir()+"/"+photoId);
 			if (dirfile.exists()) {//5、如果缓存存在，则从缓存中获取图片信息
-				System.out.println("file in cache");
+				PictureAirLog.out("file in cache");
 				new Thread(){
 					public void run() {
 						
@@ -202,7 +203,7 @@ public class UrlTouchImageView extends RelativeLayout {
 				}.start();
 				
 			}else {//6.如果缓存不存在，从网络获取图片信息，
-				System.out.println("file not in cache and load from network");
+				PictureAirLog.out("file not in cache and load from network");
 				//				new ImageLoadTask().execute(imageUrl);
 				loadImage(imageUrl);
 			}
@@ -216,13 +217,11 @@ public class UrlTouchImageView extends RelativeLayout {
 
 	private void loadImage(String url) {
 		// TODO Auto-generated method stub
+
 		HttpUtil.get(url, new BinaryHttpResponseHandler() {
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-				// TODO Auto-generated method stub
 				Bitmap bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-
-
 				//7.将网络获取的图片信息存放到缓存
 				BufferedOutputStream stream = null;
 				try {

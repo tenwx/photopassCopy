@@ -211,7 +211,7 @@ public class JsonUtil {
     /**
      * 用户信息解析
      */
-    public static void getUserInfo(final Context context, JSONObject object, Handler handler) throws JSONException {
+    public static void getUserInfo(final Context context, JSONObject object, String account, Handler handler) throws JSONException {
         SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
         e.putString(Common.USERINFO_TOKENID, object.getString("tokenId"));
@@ -251,6 +251,8 @@ public class JsonUtil {
 
             e.putString(Common.USERINFO_BIRTHDAY, obj.getString("birthday").split("T")[0]);
         }
+
+        e.putString(Common.USERINFO_ACCOUNT, account);
 
         String headUrl = null;
         if (obj.containsKey("avatarUrl")) {

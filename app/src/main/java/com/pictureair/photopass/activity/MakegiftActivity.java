@@ -687,7 +687,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         animLayout.setLayoutParams(lp);
-        animLayout.setBackgroundResource(android.R.color.transparent);
+		animLayout.setBackgroundResource(android.R.color.transparent);
         rootView.addView(animLayout);
         return animLayout;
     }
