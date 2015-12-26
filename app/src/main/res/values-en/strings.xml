@@ -403,6 +403,7 @@
     <string name="delete_order_btn">Delete</string>
     <string name="order_unpaid">Unpaid</string>
     <string name="order_paid">Completed</string>
+    <string name="order_pending">Pending</string>
     <!-- 帮助页面 -->
     <string name="search_hint">Search</string>
     <!-- 扫一扫 -->
@@ -562,4 +563,5 @@
     <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Nickname can not be empty</string>
+
 </resources>

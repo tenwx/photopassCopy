@@ -99,16 +99,42 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                                  ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
                                  List<OrderProductInfo> orderChildlist1, List<OrderProductInfo> orderChildlist2,
                                  List<OrderProductInfo> orderChildlist3, String currency) {
-        listViews = list;
-        paymentOrderList = OrderDateSort(orderInfos1);
-        deliveryOrderList = OrderDateSort(orderInfos2);
-        allOrderList = OrderDateSort(orderInfos3);
+        this.listViews = list;
+        this.paymentOrderList = OrderDateSort(orderInfos1);
+        this.deliveryOrderList = OrderDateSort(orderInfos2);
+        this.allOrderList = OrderDateSort(orderInfos3);
         this.currency = currency;
         this.context = context;
-        paymentChildlist = OrderProductDateSort(orderChildlist1);
-        deliveryChildlist = OrderProductDateSort(orderChildlist2);
-        allChildlist = OrderProductDateSort(orderChildlist3);
-        myToast = new MyToast(context);
+        this.paymentChildlist = OrderProductDateSort(orderChildlist1);
+        this.deliveryChildlist = OrderProductDateSort(orderChildlist2);
+        this.allChildlist = OrderProductDateSort(orderChildlist3);
+        this.myToast = new MyToast(context);
+    }
+
+    /**
+     * 刷新数据
+     *
+     * @param list
+     * @param orderInfos1
+     * @param orderInfos2
+     * @param orderInfos3
+     * @param orderChildlist1
+     * @param orderChildlist2
+     * @param orderChildlist3
+     */
+    public void refresh(List<View> list, ArrayList<OrderInfo> orderInfos1,
+                        ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
+                        List<OrderProductInfo> orderChildlist1, List<OrderProductInfo> orderChildlist2,
+                        List<OrderProductInfo> orderChildlist3) {
+
+        this.listViews = list;
+        this.paymentOrderList = OrderDateSort(orderInfos1);
+        this.deliveryOrderList = OrderDateSort(orderInfos2);
+        this.allOrderList = OrderDateSort(orderInfos3);
+        this.paymentChildlist = OrderProductDateSort(orderChildlist1);
+        this.deliveryChildlist = OrderProductDateSort(orderChildlist2);
+        this.allChildlist = OrderProductDateSort(orderChildlist3);
+        notifyDataSetChanged();
     }
 
     /**
@@ -152,15 +178,12 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         NoNetWorkOrNoCountView netWorkOrNoCountView = (NoNetWorkOrNoCountView) listViews.get(position).findViewById(R.id.nonetwork);
         switch (position) {
             case 0:
-
-                System.out.println("instantiateItem----0");
                 orderListView1 = (ExpandableListView) listViews.get(position).findViewById(R.id.order_viewpager_listview1);
                 paymentOrderAdapter = new OrderListViewAdapter(context, paymentOrderList, paymentChildlist, currency, handler); //
                 orderListView1.setGroupIndicator(null);
                 orderListView1.setAdapter(paymentOrderAdapter);
                 orderListView1.setOnGroupClickListener(new GroupOnClick(0));
                 orderListView1.setOnChildClickListener(new ChildOnClick(0));
-
 
                 if (paymentOrderList.size() == 0) {
                     orderListView1.setVisibility(View.GONE);
@@ -170,15 +193,12 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 break;
 
             case 1:
-                System.out.println("instantiateItem----1");
-
                 orderListView2 = (ExpandableListView) listViews.get(position).findViewById(R.id.order_viewpager_listview1);
                 deliveryOrderAdapter = new OrderListViewAdapter(context, deliveryOrderList, deliveryChildlist, currency, handler);
                 orderListView2.setGroupIndicator(null);
                 orderListView2.setAdapter(deliveryOrderAdapter);
                 orderListView2.setOnGroupClickListener(new GroupOnClick(1));
                 orderListView2.setOnChildClickListener(new ChildOnClick(1));
-
                 if (deliveryOrderList.size() == 0) {
                     orderListView2.setVisibility(View.GONE);
                     netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
@@ -187,7 +207,6 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 break;
 
             case 2:
-                System.out.println("instantiateItem----2");
                 orderListView3 = (ExpandableListView) listViews.get(position).findViewById(R.id.order_viewpager_listview1);
                 allOrderAdapter = new OrderListViewAdapter(context, allOrderList, allChildlist, currency, handler);
                 orderListView3.setGroupIndicator(null);

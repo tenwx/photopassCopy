@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
@@ -77,6 +78,8 @@ public class OrderActivity extends BaseActivity {
 
     private CustomProgressDialog customProgressDialog;
     private MyToast myToast;
+    private PictureAirDbManager pictureAirDbManager;
+    private List<String> orderIds;
 
     Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -108,6 +111,16 @@ public class OrderActivity extends BaseActivity {
                         orderProductInfo.setCartItemInfos(cartItemInfo);
 
                         if (orderInfo.orderStatus == 1) {//1等待买家付款
+                            if (orderIds != null && orderIds.size() > 0) {
+                                for (String orderId : orderIds) {
+                                    //判断orderId是否相同，且状态是否为1（未付款）
+                                    if (orderId == orderInfo.orderId) {
+                                        orderInfo.orderStatus = 6;
+                                    } else {
+                                        pictureAirDbManager.removePaymentOrderIdDB(orderId);
+                                    }
+                                }
+                            }
                             paymentOrderArrayList.add(orderInfo);
                             paymentOrderChildArrayList.add(orderProductInfo);
                         } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
@@ -120,6 +133,7 @@ public class OrderActivity extends BaseActivity {
                         allOrderArrayList.add(orderInfo);
                         allOrderChildArrayList.add(orderProductInfo);
                     }
+
                     orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
                             paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
                     viewPager.setAdapter(orderAdapter);
@@ -127,13 +141,9 @@ public class OrderActivity extends BaseActivity {
                         viewPager.setCurrentItem(1);
                     } else {
                         viewPager.setCurrentItem(0);
-
                     }
                     orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
 
-                    if (allOrderArrayList.size() == 0) {
-                        customProgressDialog.dismiss();
-                    }
                     break;
 
                 case API1.GET_ORDER_FAILED:
@@ -191,13 +201,22 @@ public class OrderActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        //从网络获取数据
+        API1.getOrderInfo(handler);
+        //获取本地已付款为收到推送的order
+        getLocalPaymentOrder();
+    }
+
     //初始化
     private void initView() {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //获取订单接口
         // 显示进度条。
         customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
-        API1.getOrderInfo(handler);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         setTopTitleShow(R.string.my_order);
         setTopLeftValueAndShow(R.drawable.back_white, true);
@@ -207,37 +226,60 @@ public class OrderActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.order_vPager);
         cursorImageView = (ImageView) findViewById(R.id.cursor);
 
+        paymentOrderTextView.setTextColor(getResources().getColor(R.color.blue));
+        deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+        allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
         matrix.postTranslate(0, 0);
         cursorImageView.setImageMatrix(matrix);// 设置动画初始位置
 
-        listViews = new ArrayList<View>();
+        initData();
+    }
+
+    /**
+     * 初始化数据
+     */
+    public void initData() {
+        listViews = new ArrayList<>();
         //初始化expandablelistview需要的数据
-        paymentOrderArrayList = new ArrayList<OrderInfo>();
-        deliveryOrderArrayList = new ArrayList<OrderInfo>();
-        allOrderArrayList = new ArrayList<OrderInfo>();
-        downOrderArrayList = new ArrayList<OrderInfo>();
+        paymentOrderArrayList = new ArrayList<>();
+        deliveryOrderArrayList = new ArrayList<>();
+        allOrderArrayList = new ArrayList<>();
+        downOrderArrayList = new ArrayList<>();
         paymentOrderChildArrayList = new ArrayList<>();
         deliveryOrderChildArrayList = new ArrayList<>();
         allOrderChildArrayList = new ArrayList<>();
         downOrderChildArrayList = new ArrayList<>();
+        orderIds = new ArrayList<>();
+
+        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+        paymentOrderTextView.setOnClickListener(new viewPagerOnClickListener(0));
+        deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
+        allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
 
         LayoutInflater mInflater = getLayoutInflater();
         listViews.add(mInflater.inflate(R.layout.order_list, null));
         listViews.add(mInflater.inflate(R.layout.order_list, null));
         listViews.add(mInflater.inflate(R.layout.order_list, null));
 
-        paymentOrderTextView.setTextColor(getResources().getColor(R.color.blue));
-        deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-        allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
-
-        paymentOrderTextView.setOnClickListener(new viewPagerOnClickListener(0));
-        deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
-        allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
-
         myToast = new MyToast(this);
+        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+
+
+    }
+
+    /**
+     * 获取本地已付款为收到推送的order
+     */
+    public void getLocalPaymentOrder() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                orderIds = pictureAirDbManager.searchPaymentOrderIdDB();
+            }
+        });
     }
 
 
@@ -347,11 +389,5 @@ public class OrderActivity extends BaseActivity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
     }
 }

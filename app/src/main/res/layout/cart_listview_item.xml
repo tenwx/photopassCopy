@@ -116,6 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pp_margin_8"
+            android:layout_marginRight="@dimen/pp_margin_16"
             android:background="@drawable/bg_border_stroke"
             android:columnCount="4"
             android:orientation="horizontal"

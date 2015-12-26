@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
@@ -258,6 +259,9 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         counTextView = (TextView) findViewById(R.id.textview_cart_count);
         counTextView.setOnClickListener(this);
         shoppingcartButton.setOnClickListener(this);
+        buynowButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
+
         //上传进度条
         dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
 

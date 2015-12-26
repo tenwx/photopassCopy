@@ -405,6 +405,7 @@
     <string name="delete_order_btn">删除</string>
     <string name="order_unpaid">未付款</string>
     <string name="order_paid">已完成</string>
+    <string name="order_pending">处理中</string>
     <!-- 帮助页面 -->
     <string name="search_hint">遇到问题搜一搜</string>
     <!-- 扫一扫 -->
@@ -597,4 +598,5 @@
     <string name="country">国家</string>
     <string name="account">账户</string>
     <string name="nick_name_empty">昵称不能为空!</string>
+
 </resources>

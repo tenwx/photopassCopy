@@ -136,6 +136,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         shopAddressTextView = (TextView) findViewById(R.id.detail_receive_address);
         buyButton = (Button) findViewById(R.id.button_buy);
         addToCartButton = (Button) findViewById(R.id.button_cart);
+        buyButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addToCartButton.setTypeface(MyApplication.getInstance().getFontBold());
 
         //绑定监听
         returnLayout.setOnClickListener(this);
@@ -149,10 +151,15 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //获取传过来的值
         goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
-        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         nameTextView.setText(goodsInfo.getNameAlias());
-        detailTextView.setText(goodsInfo.getDescription());
+
+        promotionPriceTextView.setTypeface(MyApplication.getInstance().getFontBold());
+        currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
+        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         promotionPriceTextView.setText(goodsInfo.getPrice() + "");
+
+        detailTextView.setText(goodsInfo.getDescription());
+
         shopAddressTextView.setText(getString(R.string.address_digital_goods));
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());

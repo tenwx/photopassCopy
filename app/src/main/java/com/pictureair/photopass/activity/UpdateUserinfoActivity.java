@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.MyToast;
@@ -55,6 +56,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
                 break;
         }
         ibSave = (Button) findViewById(R.id.submit);
+        ibSave.setTypeface(MyApplication.getInstance().getFontBold());
         ibSave.setOnClickListener(this);
         bgUpdateInfo.setOnClickListener(this);
     }

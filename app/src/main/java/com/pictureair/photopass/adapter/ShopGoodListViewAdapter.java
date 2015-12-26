@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.Common;
@@ -103,6 +104,10 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         }
         PictureAirLog.v(TAG, "getView goodInfo name: " + goodsInfo1.getName());
         //初始化数据
+        viewHolder.goodNameAlias.setTypeface(MyApplication.getInstance().getFontBold());
+        viewHolder.goodPrice.setTypeface(MyApplication.getInstance().getFontBold());
+        viewHolder.goodCurrency.setTypeface(MyApplication.getInstance().getFontBold());
+
         viewHolder.goodNameAlias.setText(goodsInfo1.getNameAlias());
         viewHolder.goodPrice.setText(goodsInfo1.getPrice() + "");
         viewHolder.goodCurrency.setText(currency);

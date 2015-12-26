@@ -301,6 +301,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //找控件
         text_instruction = (Button) findViewById(R.id.text_instruction);
+        text_instruction.setTypeface(MyApplication.getInstance().getFontBold());
         back = (ImageView) findViewById(R.id.back);
         setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);

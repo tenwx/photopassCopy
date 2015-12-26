@@ -327,6 +327,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         selectButton = (TextView) findViewById(R.id.product_name_tv);
         buyButton = (Button) findViewById(R.id.button_buy);
         addtocartButton = (Button) findViewById(R.id.button_addtocart);
+        buyButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
         cartButton.setOnClickListener(this);
         progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), CustomProgressBarPop.TYPE_UPLOAD);
         selectButton.setOnClickListener(this);
@@ -549,7 +551,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
             case R.id.addimage://添加图片按钮
                 System.out.println("addimage");
-                intent = new Intent(this, SelectPhotoActivity.class);
+                intent = new Intent(this, SelectPhotoActivity1.class);
                 intent.putExtra("photopath", photoList);
                 intent.putExtra("activity", "makegiftactivity");
                 startActivityForResult(intent, 1);

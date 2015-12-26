@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="5dp"
     android:layout_marginTop="20dp"
-    android:orientation="vertical" >
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/pp_padding_8">
 
     <RelativeLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/good_name"
@@ -19,8 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_blue"
-            android:textStyle="bold"
-            android:text="PhotoPass"
             android:textSize="@dimen/text_size_16" />
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -30,54 +28,53 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_orange"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_16" />
-        
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/good_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/good_price"
             android:layout_alignBaseline="@+id/good_price"
             android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/good_price"
             android:textColor="@color/pp_orange"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
     <TextView
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
         android:id="@+id/goodDetailIntroduce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/pp_light_gray_press" />
-
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/goodImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
 
         <!--<TextView-->
-            <!--android:id="@+id/goodDetailIntroduce"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:background="@color/ppp_cover"-->
-            <!--android:padding="10dp"-->
-            <!--android:singleLine="true"-->
-            <!--android:textColor="@color/white" />-->
+        <!--android:id="@+id/goodDetailIntroduce"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="@color/ppp_cover"-->
+        <!--android:padding="10dp"-->
+        <!--android:singleLine="true"-->
+        <!--android:textColor="@color/white" />-->
     </RelativeLayout>
 
 </LinearLayout>

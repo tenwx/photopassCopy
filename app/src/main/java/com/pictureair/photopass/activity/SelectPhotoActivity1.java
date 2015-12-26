@@ -163,7 +163,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 gridView.setVisibility(View.VISIBLE);
             } else {
                 gridView.setVisibility(View.GONE);
-                noPhotoRelativeLayout.setVisibility(View.INVISIBLE);
+                noPhotoRelativeLayout.setVisibility(View.VISIBLE);
                 okButton.setVisibility(View.GONE);
                 okButton.setEnabled(false);
                 return;

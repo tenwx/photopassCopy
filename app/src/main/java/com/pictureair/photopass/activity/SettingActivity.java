@@ -120,6 +120,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         rlGprsWifiDoenload = (RelativeLayout) findViewById(R.id.rl_gprs_wifi_download);
         rlWifiOnlyDownload = (RelativeLayout) findViewById(R.id.rl_wifi_only_download);
         rlAutoUpdate = (RelativeLayout) findViewById(R.id.rl_auto_update);
+        logout.setTypeface(MyApplication.getInstance().getFontBold());
 
         logout.setOnClickListener(this);
         feedback.setOnClickListener(this);

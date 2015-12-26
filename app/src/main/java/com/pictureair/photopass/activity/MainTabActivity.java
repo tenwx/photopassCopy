@@ -59,6 +59,7 @@ public class MainTabActivity extends BaseFragmentActivity {
     private MyToast newToast;
 
     public static boolean changeToShopTab = false;
+    private String flag = "";
 
     private MyApplication application;
     private SharedPreferences sharedPreferences;
@@ -128,28 +129,37 @@ public class MainTabActivity extends BaseFragmentActivity {
         PictureAirLog.out("maintab ==== resume");
         Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
         this.startService(intent1);
-
-        if (changeToShopTab) {
-            PictureAirLog.out("skip to shop tab");
-            mTabHost.setCurrentTab(3);
-            changeToShopTab = false;
-        } else {
-            PictureAirLog.out("skip to last tab");
+        //判断是否是支付未收到推送进入主界面-me
+        flag = getIntent().getStringExtra("flag");
+        PictureAirLog.v("MainTabActivity", " onResume() flag: " + flag);
+        if (flag != null && flag.equals("payment_pending")) {
+            last_tab = 4;
             //设置成为上次的tab页面
             mTabHost.setCurrentTab(last_tab);
+        } else {
+            if (changeToShopTab) {
+                PictureAirLog.out("skip to shop tab");
+                mTabHost.setCurrentTab(3);
+                changeToShopTab = false;
+            } else {
+                PictureAirLog.out("skip to last tab");
+                //设置成为上次的tab页面
+                mTabHost.setCurrentTab(last_tab);
+            }
+            if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+                mTabHost.clearAllTabs();
+                mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+                loadFragment(fragmentArray.length);
+                mTabHost.setCurrentTab(4);
+                currentLanguage = MyApplication.getInstance().getLanguageType();
+            }
+            PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
+            if (application.getPushPhotoCount() > 0) {//显示红点
+                MainTabActivity.maintabbadgeView.show();
+                application.setPushPhotoCount(0);
+            }
         }
-        if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
-            mTabHost.clearAllTabs();
-            mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-            loadFragment(fragmentArray.length);
-            mTabHost.setCurrentTab(4);
-            currentLanguage = MyApplication.getInstance().getLanguageType();
-        }
-        PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
-        if (application.getPushPhotoCount() > 0) {//显示红点
-            MainTabActivity.maintabbadgeView.show();
-            application.setPushPhotoCount(0);
-        }
+
         // 接收消息回复
         UmengUtil.syncFeedback(this);
     }

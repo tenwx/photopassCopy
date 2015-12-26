@@ -86,8 +86,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                     break;
             }
         }
-
-        ;
     };
 
     @Override
@@ -111,6 +109,9 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         currencyTextView = (TextView) findViewById(R.id.detail_currency);
         receiveAdress = (TextView) findViewById(R.id.detail_receive_address);
 
+        buyButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
+
         //绑定监听
         returnLayout.setOnClickListener(this);
         cartCountTextView.setOnClickListener(this);
@@ -122,11 +123,14 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         myToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 
-        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
         name.setText(goodsInfo.getNameAlias());
         detail.setText(goodsInfo.getDescription());
+        promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());
+        currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
+        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         promotionPrice.setText(goodsInfo.getPrice() + "");
+
         //实体商品-自提，数码商品-数码下载
         if (goodsInfo == null) {
             return;

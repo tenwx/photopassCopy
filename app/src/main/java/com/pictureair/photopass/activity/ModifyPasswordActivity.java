@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -77,6 +76,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
         oldPassword = (EditText) findViewById(R.id.old_password);
         newPassword = (EditText) findViewById(R.id.new_password);
         submit = (Button) findViewById(R.id.submit);
+        submit.setTypeface(MyApplication.getInstance().getFontBold());
 
         radio.setOnClickListener(this);
         submit.setOnClickListener(this);

@@ -92,7 +92,7 @@ public class Common {
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
-    public static final String ALIPAY_NOTIFY = "http://140.206.125.194:3001/shopping/webPayNotify";//alipay的异步通知URL
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
     public static final String HIDE_PPS = "/user/hidePPs";//隐藏PP
     public static final String GET_PP_BY_DATE = "/user/getNeedUpgradePPsByDate";
     public static final String BIND_PPS_DATE_TO_PPP = "/ppp/bindPPsAndBindDatesToPPP";//将pp绑定到ppp   多了时间。
@@ -218,6 +218,7 @@ public class Common {
     public static final int PHOTOPASS_INFO_VERSION = 1;
     public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
     public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
+    public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
 
 
     //相册名称字段
