@@ -359,7 +359,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                     } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                     } else {
-                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_BLUR);
+                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
                     }
                     List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
                     Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
@@ -1363,7 +1363,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITYANDPAYED)) {
 
-            } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_BLURPAYED)) {
+            } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY_PAY)) {
 
             } else {
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");

@@ -252,11 +252,8 @@ public class Common {
     public static final String FROM_VIEWORSELECTACTIVITYANDPAYED = "fromViewOrSelectBuy";
     public static final String FROM_MYPHOTOPASS = "fromMyPhotoPass";
     public static final String FROM_MYPHOTOPASSPAYED = "fromMyPhotoPassBuy";
-    public static final String FROM_BLUR = "fromBlur";
-    public static final String FROM_BLURPAYED = "fromBlurBuy";
-    //	public static final String IS_BUYING_FROM_VIEWORSELECT = "isBuyingFromViewOrSelect";
-    //	public static final String IS_BUYING_FROM_LOCATION = "isBuyingFromLocation";
-    //	public static final String IS_BUYING_FROM_BLUR = "isBuyingFromBlur";
+    public static final String FROM_PREVIEW_PHOTO_ACTIVITY = "fromPreviewPhotoActivity";
+    public static final String FROM_PREVIEW_PHOTO_ACTIVITY_PAY = "fromPreviewPhotoActivityBuy";
     //修改个人信息，判断是从哪里跳转去修改页面。
     public static final String USERINFOTYPE = "userinfotype";
 
