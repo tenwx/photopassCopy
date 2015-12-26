@@ -13,24 +13,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/good_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_blue"
-            android:textSize="15sp" />
+            android:textStyle="bold"
+            android:text="PhotoPass"
+            android:textSize="@dimen/text_size_16" />
 
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/good_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_orange"
-            android:textSize="15sp" />
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_16" />
         
-        <TextView
+        <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/good_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +41,8 @@
             android:layout_alignBaseline="@+id/good_price"
             android:layout_marginRight="2dp"
             android:textColor="@color/pp_orange"
-            android:textSize="15sp" />
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_16" />
 
     </RelativeLayout>
 

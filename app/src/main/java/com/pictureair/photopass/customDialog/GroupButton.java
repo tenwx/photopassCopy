@@ -18,6 +18,7 @@ public class GroupButton extends FrameLayout {
 	
 	private TextView btnNegative;
 	private TextView btnPositive;
+	private View view;
 	
 	public interface OnClickListener {
 		void onNegativeButtonClicked();
@@ -29,12 +30,6 @@ public class GroupButton extends FrameLayout {
 	public void setOnClickListener(OnClickListener onClickListener) {
 		this.onClickListener = onClickListener;
 	}
-	
-//	Paint p = new Paint(); 
-//	{
-//		p.setStrokeWidth(1);
-//		p.setColor(Color.GRAY);
-//	}
 	
 	public GroupButton(Context context) {
 		super(context);
@@ -63,9 +58,15 @@ public class GroupButton extends FrameLayout {
 				}
 			}
 		});
+		
+		view = (View) findViewById(R.id.middle_line);
 	}
 	
-	//设置按钮的内容，如果内容为null，则不显示按钮
+	/**
+	 * 设置按钮的内容，如果内容为null，则不显示按钮
+	 * @param positive
+	 * @param negative
+	 */
 	public void setButtonText(String positive, String negative){
 		//设置取消按钮
 		if (negative == null) {
@@ -79,9 +80,9 @@ public class GroupButton extends FrameLayout {
 			btnPositive.setVisibility(View.GONE);
 		}else {
 			if (negative == null) {
-				btnPositive.setBackgroundResource(R.drawable.dia_ok1);
+				view.setVisibility(View.GONE);
 			}else {
-				btnPositive.setBackgroundResource(R.drawable.dia_ok);
+				view.setVisibility(View.VISIBLE);
 			}
 			btnPositive.setVisibility(View.VISIBLE);
 			btnPositive.setText(positive);
@@ -89,26 +90,5 @@ public class GroupButton extends FrameLayout {
 		invalidate();
 	}
 	
-//	public void setPositivtText(String positive, int image){
-//		if (positive == null) {
-//			btnPositive.setVisibility(View.GONE);
-//			invalidate();
-//		}else {
-//			btnPositive.setVisibility(View.VISIBLE);
-//			invalidate();
-//			btnPositive.setText(positive);
-//		}
-//	}
-	
-	
-	
-//	@Override
-//	protected void onDraw(Canvas canvas) {
-//		super.onDraw(canvas);
-//		if (btnNegative.isShown() && btnPositive.isShown()) {
-//			canvas.drawLine(0, 0, getWidth(), 0, p);
-//			canvas.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight(), p);
-//		}
-//	}
 
 }

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/pp_margin_16">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,8 +24,9 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="@dimen/pp_margin_5"
             android:layout_toRightOf="@id/cartSelectImageView"
+            android:background="@color/pp_light_gray_normal"
             android:src="@drawable/ic_stub" />
 
         <TextView
@@ -104,47 +106,27 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
-    <!--<com.pictureair.photopass.widget.DashedLineView-->
-    <!--android:id="@+id/cartLine1"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="2px"-->
-    <!--android:layout_marginLeft="@dimen/pp_margin_16"-->
-    <!--android:layout_marginRight="@dimen/pp_margin_16"-->
-    <!--dashLine:dashColor="@color/gray_light3" />-->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp">
-
-        <ImageView
-            android:id="@+id/hideView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:padding="5dp"
-            android:src="@drawable/cart_select"
-            android:visibility="invisible" />
+        android:paddingLeft="@dimen/pp_padding_16">
 
         <GridLayout
             android:id="@+id/cartPhotoGridLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/hideView"
+            android:layout_marginTop="@dimen/pp_margin_8"
             android:background="@drawable/bg_border_stroke"
             android:columnCount="4"
             android:orientation="horizontal"
             android:padding="@dimen/pp_padding_10"
-            android:layout_marginRight="@dimen/pp_margin_16"
-            android:useDefaultMargins="true"/>
+            android:useDefaultMargins="true" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/cartPhotoGridLayout"
-            android:layout_marginBottom="@dimen/pp_margin_8"
-            android:layout_marginTop="@dimen/pp_margin_8"
-            android:layout_toRightOf="@id/hideView"
+            android:layout_marginTop="@dimen/pp_margin_16"
             android:background="@color/pp_light_gray_normal" />
     </RelativeLayout>
 

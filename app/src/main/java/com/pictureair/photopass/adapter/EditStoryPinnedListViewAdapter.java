@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 public class EditStoryPinnedListViewAdapter extends BaseAdapter implements StickyGridHeadersSimpleAdapter{
 	private ArrayList<PhotoInfo> photoList;
 	private LayoutInflater layoutInflater;
+	private static final int COLUMN_COUNT = 3;
 	
 	private Context context;
 	private static final String TAG = "StoryPinnedListView";
@@ -93,24 +96,44 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		ViewHolder viewHolder = null;
-			Log.d(TAG, "item------->" + position);
-			if (convertView == null) {
-				viewHolder = new ViewHolder();
-				convertView = layoutInflater.inflate(R.layout.sticky_grid_view, null);
-				viewHolder.imageView = (ImageView) convertView.findViewById(R.id.sticky_imageView);
-				convertView.setTag(viewHolder);
-			}else {
-				viewHolder = (ViewHolder) convertView.getTag();
-			}
+		if (convertView == null) {
+			viewHolder = new ViewHolder();
+			// 图片的 布局
+			convertView = layoutInflater.inflate(R.layout.sticky_grid_view, parent, false);
 
+			// 布局的 图片
+			viewHolder.imageView = (ImageView) convertView.findViewById(R.id.sticky_imageView);
+			viewHolder.videoImageView = (ImageView) convertView.findViewById(R.id.play_video_iv);
+			convertView.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
 		ViewGroup.LayoutParams params = viewHolder.imageView.getLayoutParams();
-		params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / 3;
+		params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / COLUMN_COUNT;
 		params.height = params.width;
 		viewHolder.imageView.setLayoutParams(params);
+
 		if (photoList.get(position).onLine == 1) {
-			UniversalImageLoadTool.loadImage(photoList.get(position).photoThumbnail, viewHolder.imageView);
-		}else {
+			if (photoList.get(position).isVideo == 1) {
+				PictureAirLog.out("load video--->" + photoList.get(position).photoPathOrURL);
+				UniversalImageLoadTool.loadImage(Common.PHOTO_URL + photoList.get(position).photoPathOrURL, viewHolder.imageView);
+				viewHolder.videoImageView.setVisibility(View.VISIBLE);
+				ViewGroup.LayoutParams params2 = viewHolder.videoImageView.getLayoutParams();
+				params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);
+				params2.height = params2.width;
+				viewHolder.videoImageView.setLayoutParams(params2);
+			} else {
+				PictureAirLog.out("load online photo--->" + photoList.get(position).photoPathOrURL);
+				if (photoList.get(position).isPayed == 1) {
+					UniversalImageLoadTool.loadImage(Common.PHOTO_URL + photoList.get(position).photoThumbnail_512, viewHolder.imageView);
+				} else {
+					UniversalImageLoadTool.loadImage(photoList.get(position).photoThumbnail, viewHolder.imageView);
+				}
+				viewHolder.videoImageView.setVisibility(View.GONE);
+			}
+		} else {
 			UniversalImageLoadTool.loadImage("file://" + photoList.get(position).photoPathOrURL, viewHolder.imageView);
+			viewHolder.videoImageView.setVisibility(View.GONE);
 		}
 		return convertView;
 	}
@@ -153,7 +176,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		}
 
 		try {
-			viewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(photoList.get(position).shootTime, context));
+			viewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(photoList.get(position).shootOn, context));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -170,13 +193,14 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 
 	private class ViewHolder{
-		ImageView imageView;//图片布局
+		private ImageView imageView;//图片布局
+		private ImageView videoImageView;
 	}
 
-	public class HeaderViewHolder {
-		public TextView storyTimeTextView;
-		public TextView storyAddressNameTextView;
-		public TextView storyCountryTextView;
+	private class HeaderViewHolder {
+		private TextView storyTimeTextView;
+		private TextView storyAddressNameTextView;
+		private TextView storyCountryTextView;
 	}
 
 //	//照片点击的监听类

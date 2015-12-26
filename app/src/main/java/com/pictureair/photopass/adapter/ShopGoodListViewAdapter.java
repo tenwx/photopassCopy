@@ -1,21 +1,24 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UniversalImageLoadTool;
 
 import java.util.List;
 
@@ -31,21 +34,31 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
     private String currency;
     private int width = 0;
     private DisplayImageOptions options;
+    private ImageLoader imageLoader;
 
     public ShopGoodListViewAdapter(List<GoodsInfo1> list, Context c, String currency) {
         goodList = list;
         layoutInflater = LayoutInflater.from(c);
         this.currency = currency;
         width = ScreenUtil.getScreenWidth(c) - ScreenUtil.dip2px(c, 10);
-        options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_discover_loading).
-                showImageOnFail(R.drawable.ic_discover_failed).cacheInMemory(true).cacheOnDisk(true).build();
+        options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.ic_discover_loading)
+                .showImageOnFail(R.drawable.ic_discover_failed)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.NONE)
+                .bitmapConfig(Bitmap.Config.RGB_565)//设置为RGB565比起默认的ARGB_8888要节省大量的内存
+                .delayBeforeLoading(100)//载入图片前稍做延时可以提高整体滑动的流畅度
+                .build();
+        imageLoader = ImageLoader.getInstance();
     }
 
     /**
      * 更新数据
+     *
      * @param list data
      */
-    public void refresh(List<GoodsInfo1> list){
+    public void refresh(List<GoodsInfo1> list) {
         this.goodList = list;
         notifyDataSetChanged();
     }
@@ -80,27 +93,29 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        LayoutParams layoutParams = viewHolder.goodImageView.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = width / 2;
+//        LayoutParams layoutParams = viewHolder.goodImageView.getLayoutParams();
+//        layoutParams.width = width;
+//        layoutParams.height = width / 2;
         GoodsInfo1 goodsInfo1 = goodList.get(position);
         if (goodsInfo1 == null) {
-            PictureAirLog.v(TAG,"getView goodInfo == null");
+            PictureAirLog.v(TAG, "getView goodInfo == null");
             return convertView;
         }
-        PictureAirLog.v(TAG,"getView goodInfo name: " + goodsInfo1.getName());
+        PictureAirLog.v(TAG, "getView goodInfo name: " + goodsInfo1.getName());
         //初始化数据
         viewHolder.goodNameAlias.setText(goodsInfo1.getNameAlias());
-        viewHolder.goodPrice.setText(goodsInfo1.getPrice()+"");
+        viewHolder.goodPrice.setText(goodsInfo1.getPrice() + "");
         viewHolder.goodCurrency.setText(currency);
         viewHolder.goodDetailIntroduce.setText(goodsInfo1.getDescription());
-
+        ImageAware imageAware = new ImageViewAware(viewHolder.goodImageView, false);
         if (goodsInfo1.getPictures() != null && goodsInfo1.getPictures().size() > 0) {
-            UniversalImageLoadTool.loadDiscoverImage(Common.PHOTO_URL + goodsInfo1.getPictures().get(0).getUrl(), viewHolder.goodImageView, options);
-
+            if (viewHolder.goodImageView.getTag() == null || !viewHolder.goodImageView.getTag().equals(goodsInfo1.getPictures().get(0).getUrl())) {
+                imageLoader.displayImage(Common.PHOTO_URL + goodsInfo1.getPictures().get(0).getUrl(), imageAware, options);
+                viewHolder.goodImageView.setTag(goodsInfo1.getPictures().get(0).getUrl());
+            }
         } else {
-            UniversalImageLoadTool.loadDiscoverImage(null, viewHolder.goodImageView, options);
-            viewHolder.goodImageView.setTag("null");
+            imageLoader.displayImage("", imageAware, options);
+            viewHolder.goodImageView.setTag("");
         }
         return convertView;
     }

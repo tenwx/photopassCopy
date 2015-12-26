@@ -21,7 +21,6 @@ public class AnswerActivity extends BaseActivity {
 	// 申明控件
 	private TextView answerName;
 	private TextView answerContent;
-	private ImageView back;
 	private QuestionAdapter adapter;
 
 	public final static int RESULT_CODE = 1;
@@ -29,18 +28,10 @@ public class AnswerActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_answer);
-
+		setTopLeftValueAndShow(R.drawable.back_white, true);
+		setTopTitleShow(R.string.answer);
 		answerName = (TextView) findViewById(R.id.answerName);
 		answerContent = (TextView) findViewById(R.id.answerContent);
-		back = (ImageView) findViewById(R.id.back);
-
-		back.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
 
 		// 传递问题
 		Intent intent = getIntent();
@@ -51,5 +42,20 @@ public class AnswerActivity extends BaseActivity {
 		// 答案
 		answerContent.setText(question.answer);
 	}
-	
+
+	@Override
+	public void TopViewClick(View view) {
+		super.TopViewClick(view);
+		switch (view.getId()) {
+			case R.id.topLeftView:
+				finish();
+				break;
+			default:
+				break;
+		}
+	}
+
+
+
+
 }

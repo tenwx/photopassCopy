@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/tt"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:background="@color/pp_blue">
 
         <ImageView
@@ -18,8 +18,8 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:paddingTop="13dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
@@ -103,6 +103,7 @@
                 android:textSize="15sp" />
 
             <TextView
+                android:fontFamily=""
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -139,7 +140,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/line"
         android:layout_below="@id/tt"
-        android:layout_marginTop="@dimen/pp_margin_8"
         android:background="@color/white"
         android:divider="@color/pp_light_gray_normal"
         android:dividerHeight="0dp"

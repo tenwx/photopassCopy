@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.BaseCheckUpdate;
 import com.pictureair.photopass.util.API1;
@@ -38,6 +39,14 @@ public class CheckUpdateManager {
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
+				case API1.GET_TOKEN_ID_FAILED:
+					break;
+
+				case API1.GET_TOKEN_ID_SUCCESS:
+					baseCheckUpdate.checkUpdate(context, handler, deviceInfos.get(1), currentLanguage);
+					break;
+
+
 			case API1.APK_NEED_NOT_UPDATE:
 				PictureAirLog.out("apk need not update");
 				break;
@@ -162,7 +171,12 @@ public class CheckUpdateManager {
 	 */
 	public void startCheck(){
 		deviceInfos = AppUtil.getDeviceInfos(context);
-		baseCheckUpdate.checkUpdate(context, handler, deviceInfos.get(1), currentLanguage);
+		if (MyApplication.getTokenId() == null) {
+			baseCheckUpdate.getTokenId(context, handler);
+		} else {
+			handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
+		}
+
 	}
 	
 	/**

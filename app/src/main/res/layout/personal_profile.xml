@@ -39,7 +39,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/nn"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -48,8 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="2dp"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:text="@string/add"
+                android:textColor="@color/pp_light_gray_press"
+                android:textSize="@dimen/text_size_10" />
         </RelativeLayout>
 
         <View
@@ -72,7 +73,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/grender"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -81,8 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="2dp"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:text="@string/add"
+                android:textColor="@color/pp_light_gray_press"
+                android:textSize="@dimen/text_size_10" />
         </RelativeLayout>
 
         <View
@@ -118,7 +120,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/birthday"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -127,8 +129,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="2dp"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textColor="@color/pp_light_gray_press"
+                android:text="@string/add"
+                android:textSize="@dimen/text_size_10" />
         </RelativeLayout>
 
         <View
@@ -149,7 +152,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/country"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -158,8 +161,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="2dp"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_12" />
+                android:textColor="@color/pp_light_gray_press"
+                android:text="@string/add"
+                android:textSize="@dimen/text_size_10" />
         </RelativeLayout>
 
 
@@ -183,7 +187,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/account"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 
             <TextView
@@ -192,10 +196,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="2dp"
+                android:text="@string/add"
                 android:maxWidth="200dp"
                 android:singleLine="true"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_12" />
+                android:textColor="@color/pp_light_gray_press"
+                android:textSize="@dimen/text_size_10" />
         </RelativeLayout>
 
         <View
@@ -260,7 +265,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="2dp"
                 android:text="@string/modify"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
 

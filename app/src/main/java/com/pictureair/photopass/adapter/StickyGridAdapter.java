@@ -122,8 +122,17 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             viewHolder = (HeaderViewHolder) convertView.getTag();
         }
 
+        String headerTime = list.get(position).shootOn;
+        for (int i = position; i >= 0; i-- ){
+            if (list.get(position).sectionId == list.get(i).sectionId) {//当前的
+                headerTime = list.get(i).shootOn;
+            } else {
+                break;
+            }
+        }
+
         try {
-            viewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(list.get(position).shootTime, context));
+            viewHolder.storyTimeTextView.setText(AppUtil.dateToSmartDate(headerTime, context));
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -160,12 +169,12 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         return convertView;
     }
 
-    public class ViewHolder {
+    private class ViewHolder {
         public ImageView mImageView;
         public ImageView videoImageView;
     }
 
-    public class HeaderViewHolder {
+    private class HeaderViewHolder {
         public TextView storyTimeTextView;
         public TextView storyAddressNameTextView;
         public TextView storyCountryTextView;

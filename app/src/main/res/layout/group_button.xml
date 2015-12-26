@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/transparent" >
+    android:layout_height="50dp"
+    android:background="@color/transparent"
+    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/btn_negative"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@drawable/dia_no"
+        android:background="@color/transparent"
         android:clickable="true"
         android:gravity="center"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:text="@string/dialog_cancel"
+        android:text="@string/button_cancel"
         android:textColor="@color/gray"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_middle_size" />
+
+    <View
+        android:id="@+id/middle_line"
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/gray_light3" />
 
     <TextView
         android:id="@+id/btn_positive"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@drawable/dia_ok"
+        android:background="@color/transparent"
         android:clickable="true"
         android:gravity="center"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:text="@string/dialog_ok"
+        android:text="@string/button_ok"
         android:textColor="@color/blue"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_middle_size" />
 
 </LinearLayout>
