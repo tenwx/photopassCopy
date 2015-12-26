@@ -94,6 +94,9 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private String videoPath;//视频本地路径 || 视频网络地址
     private int shareType = 0;
 
+    private boolean isPlayFinash = false;//是否播放完毕
+
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -258,6 +261,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void startVideo() {
+        isPlayFinash = false;
         videoPlayerView.setVideoPath(videoPath);
         cancelDelayHide();
         hideControllerDelay();
@@ -316,6 +320,8 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 cancelDelayHide();
                 showController();
                 isPaused = true;
+
+                isPlayFinash = true;
             }
         });
     }
@@ -391,14 +397,17 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     @Override
     protected void onResume() {
         PictureAirLog.e(TAG, "=======>onResume");
-        videoPlayerView.seekTo(playedTime);
-        videoPlayerView.start();
-        if (videoPlayerView.isPlaying()) {
+        isPaused = true;
+        if (!isPlayFinash){
+            videoPlayerView.seekTo(playedTime);
+            videoPlayerView.start();
+            if (videoPlayerView.isPlaying()) {
 //            btnPlayOrStop.setImageResource(R.drawable.pause);
-            btnPlayOrStop.setImageResource(0);
-            hideControllerDelay();
+                btnPlayOrStop.setImageResource(0);
+                hideControllerDelay();
+            }
+         isPaused = false;
         }
-        isPaused = false;
 
         if (sharePop != null) {
             PictureAirLog.out("sharePop not null");

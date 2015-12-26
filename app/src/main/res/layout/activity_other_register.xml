@@ -292,7 +292,6 @@
                 android:background="@drawable/button_blue_shape_and_selector"
                 android:padding="10dp"
                 android:text="@string/sign"
-                android:textStyle="bold"
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
             <!-- 其他方式 -->

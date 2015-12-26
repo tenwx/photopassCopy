@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -59,6 +60,9 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 		sign.setOnClickListener(this);
 		login.setOnClickListener(this);
 		forgot.setOnClickListener(this);
+
+		login.setTypeface(MyApplication.getInstance().getFontBold());
+		sign.setTypeface(MyApplication.getInstance().getFontBold());
 
 		userName.setOnKeyListener(new OnKeyListener() {
 
