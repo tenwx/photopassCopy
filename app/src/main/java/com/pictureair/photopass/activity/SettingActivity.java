@@ -104,13 +104,14 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
-
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.setting);
         logout = (Button) findViewById(R.id.logout);
+        logout.setTypeface(MyApplication.getInstance().getFontBold());
         feedback = (RelativeLayout) findViewById(R.id.sub_opinions);
 //        back = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
+        tvSettingLanguage.setTypeface(MyApplication.getInstance().getFontBold());
         application = (MyApplication) getApplication();
 
         ibGprWifiDownload = (ImageButton) findViewById(R.id.ib_gprs_wifi_download);
@@ -120,6 +121,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         rlGprsWifiDoenload = (RelativeLayout) findViewById(R.id.rl_gprs_wifi_download);
         rlWifiOnlyDownload = (RelativeLayout) findViewById(R.id.rl_wifi_only_download);
         rlAutoUpdate = (RelativeLayout) findViewById(R.id.rl_auto_update);
+        ((TextView)findViewById(R.id.tv_feedback)).setTypeface(MyApplication.getInstance().getFontBold());
+        ((TextView)findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
+        ((TextView)findViewById(R.id.tv_update_photo)).setTypeface(MyApplication.getInstance().getFontBold());
 
         logout.setOnClickListener(this);
         feedback.setOnClickListener(this);
@@ -138,7 +142,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 Context.MODE_PRIVATE);
         judgeSettingStatus();
     }
-
 
     @Override
     public void onClick(View v) {

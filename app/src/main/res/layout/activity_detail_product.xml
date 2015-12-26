@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:background="@color/pp_blue">
 
         <ImageView
@@ -16,10 +16,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="14dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="22dp"
-            android:paddingTop="14dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/cart" />
 
@@ -55,10 +55,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
     </RelativeLayout>
