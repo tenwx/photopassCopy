@@ -70,11 +70,11 @@
                     android:text="@string/umeng_fb_send"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="@dimen/pp_padding_10"
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
                     android:textSize="@dimen/text_middle_size"
-                    android:paddingRight="10dp"
+                    android:paddingRight="@dimen/pp_padding_10"
                     android:textColor="@color/white"
                     android:visibility="visible" />
             </FrameLayout>

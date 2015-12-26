@@ -38,7 +38,7 @@
             android:layout_marginTop="20dp"
             android:text="@string/umeng_fb_slide_up_cancel"
             android:textColor="@color/umeng_fb_white"
-            android:textSize="16sp" />
+            android:textSize="@dimen/text_size_16" />
 
 
     </RelativeLayout>

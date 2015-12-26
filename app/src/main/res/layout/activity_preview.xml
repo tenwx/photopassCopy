@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/relative"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@color/pp_blue" >
@@ -19,10 +19,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingRight="@dimen/pp_padding_10"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -42,7 +42,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingBottom="14dp"
-            android:paddingLeft="10dp"
+            android:paddingLeft="@dimen/pp_padding_10"
             android:paddingRight="22dp"
             android:paddingTop="14dp"
             android:scaleType="centerInside"
@@ -60,7 +60,7 @@
             android:padding="1dp"
             android:text="0"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
     </RelativeLayout>
 
     <RelativeLayout

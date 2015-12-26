@@ -82,7 +82,7 @@
             <RelativeLayout
                 android:id="@+id/rl_myprofile"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="8dp">
@@ -116,7 +116,7 @@
             <RelativeLayout
                 android:id="@+id/rl_myorder"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="@dimen/pp_padding_8">
@@ -151,7 +151,7 @@
             <RelativeLayout
                 android:id="@+id/rl_pp"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="@dimen/pp_padding_8">
@@ -185,7 +185,7 @@
             <RelativeLayout
                 android:id="@+id/rl_ppp"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="@dimen/pp_padding_8">
@@ -219,7 +219,7 @@
             <RelativeLayout
                 android:id="@+id/rl_help"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="@dimen/pp_padding_8">
@@ -253,7 +253,7 @@
             <RelativeLayout
                 android:id="@+id/rl_setting"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="@dimen/pp_padding_8">
@@ -288,7 +288,7 @@
             <RelativeLayout
                 android:id="@+id/rl_about"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="@dimen/pp_top_bar_height"
                 android:layout_marginLeft="@dimen/pp_padding_8"
                 android:gravity="center_vertical"
                 android:padding="@dimen/pp_padding_8">

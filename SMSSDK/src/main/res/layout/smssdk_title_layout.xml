@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:background="@color/pp_blue" >
 
         <ImageView
@@ -15,10 +15,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingBottom="13dp"
+            android:paddingBottom="@dimen/pp_padding_13"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="13dp"
+            android:paddingTop="@dimen/pp_padding_13"
             android:src="@drawable/back_white" />
 
         <com.pictureair.photopass.widget.CustomTextView

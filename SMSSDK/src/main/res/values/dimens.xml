@@ -20,4 +20,20 @@
     <dimen name="text_size_8">8sp</dimen>
     <dimen name="text_size_6">6sp</dimen>
 
+    <dimen name="pp_margin_16">16dp</dimen>
+    <dimen name="pp_padding_8">8dp</dimen>
+    <dimen name="pp_padding_16">16dp</dimen>
+    <dimen name="pp_padding_20">20dp</dimen>
+    <dimen name="pp_padding_10">10dp</dimen>
+    <dimen name="pp_margin_32">32dp</dimen>
+    <dimen name="pp_margin_20">20dp</dimen>
+    <dimen name="pp_margin_10">10dp</dimen>
+    <dimen name="pp_top_bar_height">52dp</dimen>
+    <dimen name="pp_margin_8">8dp</dimen>
+    <dimen name="pp_margin_40">40dp</dimen>
+    <dimen name="pp_margin_5">5dp</dimen>
+    <dimen name="pp_margin_13">13dp</dimen>
+    <dimen name="pp_margin_22">22dp</dimen>
+    <dimen name="pp_padding_13">13dp</dimen>
+
 </resources>

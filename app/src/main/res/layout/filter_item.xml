@@ -18,6 +18,6 @@
         android:layout_margin="3dp"
         android:text="Lomo"
         android:textColor="@color/gray"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_small_size" />
 
 </RelativeLayout>

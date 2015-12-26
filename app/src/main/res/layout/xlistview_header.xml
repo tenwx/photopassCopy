@@ -32,13 +32,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/xlistview_header_last_time"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_small_size" />
 
                 <TextView
                     android:id="@+id/xlistview_header_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_small_size" />
             </LinearLayout>
         </LinearLayout>
 
