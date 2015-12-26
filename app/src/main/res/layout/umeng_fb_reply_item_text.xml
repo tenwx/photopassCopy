@@ -24,7 +24,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            android:paddingRight="10dp"
+            android:paddingRight="@dimen/pp_padding_10"
             android:textColor="@color/gray"
             android:textSize="@dimen/umeng_fb_item_content_size" />
 

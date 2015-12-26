@@ -67,7 +67,7 @@
                 android:layout_height="50dip"
                 android:layout_alignParentBottom="true"
                 android:text="@string/smssdk_send_sounds_verify"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_small_size"
                 android:textColor="@color/smssdk_white"
                 android:background="@drawable/button_blue"
                 android:padding="10dip"

@@ -107,7 +107,7 @@
             android:padding="10dp"
             android:text="fadsfd"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/ppp_number"

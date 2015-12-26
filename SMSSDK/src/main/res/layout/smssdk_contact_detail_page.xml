@@ -68,7 +68,7 @@
         android:layout_marginTop="13dip"
         android:layout_marginLeft="16dip"
         android:layout_marginRight="16dip"
-    	android:textSize="16sp"
+    	android:textSize="@dimen/text_size_16"
     	android:textColor="#5c5c5c"
     	android:gravity="center_horizontal"/>
 	<Button 
@@ -79,7 +79,7 @@
         android:layout_marginLeft="16dip"
         android:layout_marginRight="16dip"
     	android:text="@string/smssdk_send_invitation"
-    	android:textSize="16sp"
+    	android:textSize="@dimen/text_size_16"
     	android:textColor="#ffffff"
 	    android:background="@drawable/smssdk_btn_enable"/>
 </LinearLayout>

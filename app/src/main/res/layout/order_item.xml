@@ -205,6 +205,6 @@
         android:paddingTop="@dimen/pp_padding_8"
         android:text="@string/order_detail"
         android:textColor="@color/pp_gray"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_small_size" />
 
 </LinearLayout>

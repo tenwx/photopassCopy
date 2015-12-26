@@ -46,7 +46,7 @@
             android:layout_marginLeft="20dp"
             android:text="00:00"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <SeekBar
             android:id="@+id/seekbar"
@@ -67,7 +67,7 @@
             android:layout_marginRight="20dp"
             android:text="00:00"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
     </LinearLayout>
 
 </RelativeLayout>
