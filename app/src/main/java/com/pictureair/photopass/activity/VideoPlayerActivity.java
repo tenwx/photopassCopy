@@ -118,6 +118,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             switch (msg.what) {
 
                 case PROGRESS_CHANGED:// 进度改变
+
                     int i = videoPlayerView.getCurrentPosition();
                     seekBar.setProgress(i);
                     if (isOnline) {
@@ -134,6 +135,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                     minute %= 60;
                     // playedTextView.setText(String.format("%02d:%02d:%02d", hour,
                     // minute, second));
+
                     playedTextView.setText(String.format("%02d:%02d", minute,
                             second));
                     sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
@@ -591,6 +593,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             case R.id.ll_show:
                 // 单次处理
                 if (isPaused) {
+                    isPlayFinash = false;
                     videoPlayerView.start();
 //                    btnPlayOrStop.setImageResource(R.drawable.pause);
                     btnPlayOrStop.setImageResource(0);
