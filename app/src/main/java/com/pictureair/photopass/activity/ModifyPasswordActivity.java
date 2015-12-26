@@ -77,6 +77,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
         oldPassword = (EditTextWithClear) findViewById(R.id.old_password);
         newPassword = (EditTextWithClear) findViewById(R.id.new_password);
         submit = (Button) findViewById(R.id.submit);
+        submit.setTypeface(MyApplication.getInstance().getFontBold());
 
         radio.setOnClickListener(this);
         submit.setOnClickListener(this);

@@ -168,7 +168,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.order_detail_return:
-                this.finish();
+                finish();
                 break;
             case R.id.order_detail_payment:
                 Intent intent = new Intent(this, PaymentOrderActivity.class);

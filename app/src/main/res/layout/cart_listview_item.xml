@@ -84,7 +84,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/gray"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/cartCurrency"
@@ -94,7 +94,7 @@
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@id/cartPrice"
             android:textColor="@color/gray"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/cartCount"
@@ -103,7 +103,7 @@
             android:layout_alignBottom="@id/cartProductImageView"
             android:layout_alignParentRight="true"
             android:textColor="@color/gray"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -116,6 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pp_margin_8"
+            android:layout_marginRight="@dimen/pp_margin_16"
             android:background="@drawable/bg_border_stroke"
             android:columnCount="4"
             android:orientation="horizontal"

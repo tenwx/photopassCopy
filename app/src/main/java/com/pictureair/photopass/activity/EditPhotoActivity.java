@@ -211,6 +211,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					break;
 
 				case 1111:
+					// 判断 如果图片是 4:3 就不要去裁减。
+					if ((float)mainBitmap.getWidth()/mainBitmap.getHeight() == (float)4/3 || (float)mainBitmap.getWidth()/mainBitmap.getHeight() == (float)3/4) {
+
+					}else{
+						changeMainBitmap(EditPhotoUtil.cropBitmap(mainBitmap, 4, 3));
+					}
+
 					btn_onedit_save.setVisibility(View.VISIBLE);
 					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
 					editType = 1;
@@ -487,6 +494,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					if (frameImageView.isShown()) {
 						frameImageView.setVisibility(View.INVISIBLE);
 					}
+					//恢复到没有裁减的状态。
+					if (photoInfo.onLine == 1) {
+						//网络图片。
+						isOnlinePic = true;
+						loadOnlineImg(photoURL);
+					}else{
+						//本地图片
+						isOnlinePic = false;
+						loadImage(photoURL);
+					}
 				}
 
 				//如果有饰品，饰品消失。
@@ -517,7 +534,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						isOnlinePic = false;
 						loadImage(photoURL);
 					}
-					pathList.add(photoURL);
+//					pathList.add(photoURL);
 				}
 
 				exitEditStates(); // 推出编辑状态

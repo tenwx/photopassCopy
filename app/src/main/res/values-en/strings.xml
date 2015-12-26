@@ -403,6 +403,7 @@
     <string name="delete_order_btn">Delete</string>
     <string name="order_unpaid">Unpaid</string>
     <string name="order_paid">Completed</string>
+    <string name="order_pending">Pending</string>
     <!-- 帮助页面 -->
     <string name="search_hint">Search</string>
     <!-- 扫一扫 -->
@@ -567,4 +568,7 @@
     <string name="finish_download">Download Successful!</string>
     <string name="download_detail1">Downloaded %1$d photo(s)!</string>
     <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s)!</string>
+    <!-- 新增 推送 部分字段。-->
+    <string name="notifacation_order_completed_msg">Payment successfully, connecting memories !</string>
+    <string name="notifacation_order_submit_msg">Please pay your order,thanks！</string>
 </resources>

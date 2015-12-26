@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/frag3_rl"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:background="@color/pp_blue">
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -26,7 +26,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingBottom="12dp"
-            android:paddingLeft="10dp"
+            android:paddingLeft="@dimen/pp_padding_10"
             android:paddingRight="22dp"
             android:paddingTop="12dp"
             android:scaleType="centerInside"
@@ -44,7 +44,7 @@
             android:padding="1dp"
             android:text="1"
             android:textColor="#ffffff"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
     </RelativeLayout>
 

@@ -326,9 +326,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         cartButton = (ImageView) findViewById(R.id.button_cart);
         selectButton = (TextView) findViewById(R.id.product_name_tv);
         buyButton = (Button) findViewById(R.id.button_buy);
-		buyButton.setTypeface(MyApplication.getInstance().getFontBold());
         addtocartButton = (Button) findViewById(R.id.button_addtocart);
-		addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
+        buyButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
         cartButton.setOnClickListener(this);
         progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), CustomProgressBarPop.TYPE_UPLOAD);
         selectButton.setOnClickListener(this);
@@ -551,7 +551,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
             case R.id.addimage://添加图片按钮
                 System.out.println("addimage");
-                intent = new Intent(this, SelectPhotoActivity.class);
+                intent = new Intent(this, SelectPhotoActivity1.class);
                 intent.putExtra("photopath", photoList);
                 intent.putExtra("activity", "makegiftactivity");
                 startActivityForResult(intent, 1);
@@ -595,8 +595,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         anim_mask_layout = null;
         anim_mask_layout = createAnimLayout();
         int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
-        start_location[0] = ScreenUtil.getScreenWidth(this) / 2 - 80;//减去的值和图片大小有关系
-        start_location[1] = ScreenUtil.getScreenHeight(this) / 2 - 76;
+        start_location[0] = ScreenUtil.getScreenWidth(this) / 2 - Common.CART_WIDTH;//减去的值和图片大小有关系
+        start_location[1] = ScreenUtil.getScreenHeight(this) / 2 - Common.CART_HEIGHT;
         // 将组件添加到我们的动画层上
         final View view = addViewToAnimLayout(anim_mask_layout, v, start_location);
         int[] end_location = new int[2];

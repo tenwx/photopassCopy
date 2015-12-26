@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -83,6 +84,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	private Button btnSubmit;// 提交按钮
 
 	private MyToast myToast;
+	private Typeface typeface;
 
 	// 用来传递一个值到项目中去。其他注册
 
@@ -189,10 +191,29 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 			resId = getStringRes(activity, "china");
 			tvCountry.setText(getContext().getString(resId));
 
-			/*
-			 * 新增控件初始化
-			 */
-			initIdentify();
+			// 提交按钮
+			int reId2 = getIdRes(activity, "sure");
+			btnSubmit = (Button) activity.findViewById(reId2);
+			btnSubmit.setOnClickListener(this);
+			btnSubmit.setEnabled(false);
+			// 输入验证码
+			reId2 = getIdRes(activity, "et_put_identify");
+			etIdentifyNum = (EditTextWithClear) activity.findViewById(reId2);
+			etIdentifyNum.addTextChangedListener(new MyTextWatcher());
+			// 第一个密码输入框
+			reId2 = getIdRes(activity, "pwd");
+			etPwd = (EditTextWithClear) activity.findViewById(reId2);
+			etPwd.addTextChangedListener(new MyTextWatcher());
+			// 第二个密码输入框
+			reId2 = getIdRes(activity, "pwd_again");
+			etPwd2 = (EditTextWithClear) activity.findViewById(reId2);
+			etPwd2.addTextChangedListener(new MyTextWatcher());
+
+			if (CustomFontManager.IS_CUSOTM_FONT){
+				typeface = Typeface.createFromAsset(activity.getAssets(),CustomFontManager.CUSOTM_FONT_BOLD_NAME);
+				btnNext.setTypeface(typeface);
+				btnSubmit.setTypeface(typeface);
+			}
 
 			resId = getIdRes(activity, "iv_clear");
 			// ivClear = (ImageView) activity.findViewById(resId);// 找到清除图标
@@ -903,31 +924,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 				dialog.show();
 			}
 		}
-	}
-
-	/**
-	 * 这个方法写入验证码输入界面的组件，第二次修改的界面 note：这个 btnSubmit 提交按钮是提交验证码的按钮 1.需要合并 ‘注册’ 按钮
-	 * 当点击‘注册’按钮的时候，先验证验证码。再进行保存密码
-	 */
-	private void initIdentify() {
-
-		// 提交按钮
-		int reId2 = getIdRes(activity, "sure");
-		btnSubmit = (Button) activity.findViewById(reId2);
-		btnSubmit.setOnClickListener(this);
-		btnSubmit.setEnabled(false);
-		// 输入验证码
-		reId2 = getIdRes(activity, "et_put_identify");
-		etIdentifyNum = (EditTextWithClear) activity.findViewById(reId2);
-		etIdentifyNum.addTextChangedListener(new MyTextWatcher());
-		// 第一个密码输入框
-		reId2 = getIdRes(activity, "pwd");
-		etPwd = (EditTextWithClear) activity.findViewById(reId2);
-		etPwd.addTextChangedListener(new MyTextWatcher());
-		// 第二个密码输入框
-		reId2 = getIdRes(activity, "pwd_again");
-		etPwd2 = (EditTextWithClear) activity.findViewById(reId2);
-		etPwd2.addTextChangedListener(new MyTextWatcher());
 	}
 
 	private class MyTextWatcher implements TextWatcher {

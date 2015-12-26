@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
@@ -258,6 +259,9 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         counTextView = (TextView) findViewById(R.id.textview_cart_count);
         counTextView.setOnClickListener(this);
         shoppingcartButton.setOnClickListener(this);
+        buynowButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
+
         //上传进度条
         dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
 
@@ -457,8 +461,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         anim_mask_layout = null;
         anim_mask_layout = createAnimLayout();
         int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
-        start_location[0] = ScreenUtil.getScreenWidth(PreviewProductActivity.this) / 2 - 80;//减去的值和图片大小有关系
-        start_location[1] = ScreenUtil.getScreenHeight(PreviewProductActivity.this) / 2 - 76;
+        start_location[0] = ScreenUtil.getScreenWidth(PreviewProductActivity.this) / 2 - Common.CART_WIDTH;//减去的值和图片大小有关系
+        start_location[1] = ScreenUtil.getScreenHeight(PreviewProductActivity.this) / 2 - Common.CART_HEIGHT;
         final View view = addViewToAnimLayout(anim_mask_layout, v,
                 start_location);
         int[] end_location = new int[2];// 这是用来存储动画结束位置的X、Y坐标

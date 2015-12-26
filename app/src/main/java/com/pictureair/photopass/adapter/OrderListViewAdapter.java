@@ -15,6 +15,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.entity.OrderInfo;
@@ -121,27 +122,36 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
         groupHolderView.orderNumberTextView.setText(grouplist.get(groupPosition).orderNumber);
         groupHolderView.totalPriceTextView.setText((int) grouplist.get(groupPosition).orderTotalPrice + "");
         switch (grouplist.get(groupPosition).orderStatus) {
-            case 1://1等待买家付款
+            case 1:
+                //1等待买家付款
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
                 groupHolderView.paymentButton.setText(R.string.payment_order_btn);
                 groupHolderView.paymentButton.setBackgroundResource(R.drawable.button_blue);
                 groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.white));
                 groupHolderView.orderStatesTextView.setText(R.string.order_unpaid);
+                groupHolderView.paymentButton.setClickable(true);
                 break;
 
             case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
             case 3:
+            case 4://4交易成功，5交易关闭,订单冻结
+            case 5:
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
                 groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.red));
                 groupHolderView.paymentButton.setText(R.string.delete_order_btn);
                 groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
                 groupHolderView.orderStatesTextView.setText(R.string.order_paid);
+                groupHolderView.paymentButton.setClickable(true);
                 break;
+            case 6:
+                //已付款，服务器未返回推送
+                groupHolderView.paymentButton.setVisibility(View.VISIBLE);
+                groupHolderView.paymentButton.setText(R.string.payment_order_btn);
+                groupHolderView.paymentButton.setBackgroundResource(R.drawable.button_gray);
+                groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.white));
+                groupHolderView.orderStatesTextView.setText(R.string.order_pending);
+                groupHolderView.paymentButton.setClickable(false);
 
-            case 4://4交易成功，5交易关闭,订单冻结
-            case 5:
-                groupHolderView.paymentButton.setVisibility(View.GONE);
-//			groupHolderView.paymentButton.setText(R.string.buy_again);
                 break;
 
             default:
@@ -164,6 +174,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             convertView = mInflater.inflate(R.layout.order_product_detail_item, null);
             hView.goodsImageView = (ImageView) convertView.findViewById(R.id.order_imageView_pd);
             hView.goodsName = (TextView) convertView.findViewById(R.id.order_textView_name);
+            hView.goodsName.setTypeface(MyApplication.getInstance().getFontBold());
             hView.goodsCount = (TextView) convertView.findViewById(R.id.order_editText_count);
             hView.currency = (TextView) convertView.findViewById(R.id.order_textview_currency2);
             hView.priceTextView = (TextView) convertView.findViewById(R.id.order_textView_pr);
@@ -246,7 +257,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             Intent intent = null;
             switch (type) {
                 case 1://1等待买家付款
-                    System.out.println("payment");
                     intent = new Intent(context, PaymentOrderActivity.class);
                     intent.putExtra("flag", "order");
                     intent.putExtra("deliveryInfo", grouplist.get(position));
@@ -255,12 +265,9 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
 
                 case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
                 case 3:
-                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position).getCartItemInfos(), handler);
-                    break;
-
                 case 4://4交易成功，5交易关闭,订单冻结,暂时这个功能不开放
                 case 5:
-                    System.out.println("buyagain");
+                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position).getCartItemInfos(), handler);
                     break;
 
                 default:

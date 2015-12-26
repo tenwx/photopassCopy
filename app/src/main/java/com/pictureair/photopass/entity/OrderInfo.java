@@ -14,7 +14,7 @@ public class OrderInfo implements Parcelable {
     public String orderNumber;//订单号
     public double orderTotalPrice;//订单总价 = 商品价格 + 运费
     public int orderPayMentMethod;//订单支付方式  支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
-    public int orderStatus;//订单当前状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结
+    public int orderStatus;//订单当前状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结 , 6：已付款，且服务器返回仍未未付款状态（本地）
     public String orderIntroduce;//订单明细，支付宝下单的时候需要这个参数
     public int deliveryMethod;//送货方式,物流(0)、自提(1)、直送(2),虚拟类商品无须快递(3)
     public String deliveryCustomer;//快递收货人姓名

@@ -33,5 +33,8 @@
     <dimen name="pp_margin_8">8dp</dimen>
     <dimen name="pp_margin_40">40dp</dimen>
     <dimen name="pp_margin_5">5dp</dimen>
+    <dimen name="pp_margin_13">13dp</dimen>
+    <dimen name="pp_margin_22">22dp</dimen>
+    <dimen name="pp_padding_13">13dp</dimen>
 
 </resources>

@@ -154,7 +154,7 @@
     <string name="hint_address">输入详细地址</string>
     <string name="delete">删除</string>
     <string name="photopass">乐拍通</string>
-    <string name="photopassplus">VIP</string>
+    <string name="photopassplus">PhotoPass+</string>
     <string name="getitnow">现在就去购买乐拍通+</string>
     <string name="mylocation">我的地址</string>
     <string name="myfavourite">我的最爱</string>
@@ -405,6 +405,7 @@
     <string name="delete_order_btn">删除</string>
     <string name="order_unpaid">未付款</string>
     <string name="order_paid">已完成</string>
+    <string name="order_pending">处理中</string>
     <!-- 帮助页面 -->
     <string name="search_hint">遇到问题搜一搜</string>
     <!-- 扫一扫 -->
@@ -602,4 +603,9 @@
     <string name="finish_download">下载完成!</string>
     <string name="download_detail1">下载完成%1$d张!</string>
     <string name="download_detail2">下载完成%1$d张, 下载失败%2$d张!</string>
+
+    <!-- 新增 推送 部分字段。-->
+    <string name="notifacation_order_completed_msg">亲，您已经支付成功，美好影像体验尽在迪彩！</string>
+    <string name="notifacation_order_submit_msg">亲，您已经下单成功，快去支付吧！</string>
+
 </resources>

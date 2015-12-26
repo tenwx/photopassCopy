@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
         android:background="@color/pp_blue" >
 
@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="8dp"
+            android:paddingBottom="@dimen/pp_padding_13"
             android:paddingLeft="@dimen/pp_margin_16"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -42,7 +42,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingBottom="8dp"
-            android:paddingLeft="8dp"
+            android:paddingLeft="@dimen/pp_padding_16"
             android:paddingRight="@dimen/pp_margin_16"
             android:paddingTop="8dp"
             android:visibility="gone"
@@ -92,7 +92,7 @@
             android:padding="2dp"
             android:text="@string/disall"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/select_all"
@@ -104,7 +104,7 @@
             android:padding="2dp"
             android:text="@string/all"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/select_share"
@@ -116,7 +116,7 @@
             android:padding="2dp"
             android:text="@string/Share"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/select_delete"
@@ -128,7 +128,7 @@
             android:padding="2dp"
             android:text="@string/delete"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
 
         <TextView
             android:id="@+id/select_makegift"
@@ -140,7 +140,7 @@
             android:padding="2dp"
             android:text="@string/buy"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
     </LinearLayout>
 
 </RelativeLayout>

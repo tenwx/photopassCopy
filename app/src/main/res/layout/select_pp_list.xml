@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="10dp" >
+            android:paddingRight="@dimen/pp_padding_10" >
 
             <ImageView
                 android:id="@+id/lefttop"

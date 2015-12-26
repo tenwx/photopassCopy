@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@color/blue" >

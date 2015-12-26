@@ -136,6 +136,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         shopAddressTextView = (TextView) findViewById(R.id.detail_receive_address);
         buyButton = (Button) findViewById(R.id.button_buy);
         addToCartButton = (Button) findViewById(R.id.button_cart);
+        buyButton.setTypeface(MyApplication.getInstance().getFontBold());
+        addToCartButton.setTypeface(MyApplication.getInstance().getFontBold());
 
         //绑定监听
         returnLayout.setOnClickListener(this);
@@ -149,10 +151,15 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //获取传过来的值
         goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
-        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         nameTextView.setText(goodsInfo.getNameAlias());
-        detailTextView.setText(goodsInfo.getDescription());
+
+        promotionPriceTextView.setTypeface(MyApplication.getInstance().getFontBold());
+        currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
+        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         promotionPriceTextView.setText(goodsInfo.getPrice() + "");
+
+        detailTextView.setText(goodsInfo.getDescription());
+
         shopAddressTextView.setText(getString(R.string.address_digital_goods));
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
@@ -241,8 +248,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         animMaskLayout = null;
         animMaskLayout = createAnimLayout();
         int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
-        start_location[0] = ScreenUtil.getScreenWidth(PPPDetailProductActivity.this) / 2 - 80;//减去的值和图片大小有关系
-        start_location[1] = ScreenUtil.getScreenHeight(PPPDetailProductActivity.this) / 2 - 76;
+        start_location[0] = ScreenUtil.getScreenWidth(PPPDetailProductActivity.this) / 2 - Common.CART_WIDTH;//减去的值和图片大小有关系
+        start_location[1] = ScreenUtil.getScreenHeight(PPPDetailProductActivity.this) / 2 - Common.CART_HEIGHT;
         // 将组件添加到我们的动画层上
         final View view = addViewToAnimLayout(animMaskLayout, v, start_location);
         int[] end_location = new int[2];

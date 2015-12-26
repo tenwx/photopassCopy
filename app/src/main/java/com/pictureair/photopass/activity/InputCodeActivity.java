@@ -31,7 +31,6 @@ import com.pictureair.photopass.widget.MyToast;
 public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	private Button ok;
 	private EditText input;
-	private ImageView back;
 	private SharedPreferences sp;
 	private MyToast newToast;
 
@@ -109,12 +108,11 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 
 	private void initview(){
 		sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-		back = (ImageView) findViewById(R.id.back);
 		ok = (Button) findViewById(R.id.sure);
 		input = (EditText) findViewById(R.id.input);
-		back.setOnClickListener(this);
 		ok.setOnClickListener(this);
-
+		setTopLeftValueAndShow(R.drawable.back_white,true);
+		setTopTitleShow(R.string.manual);
 		input.setOnEditorActionListener(new OnEditorActionListener() {
 
 			@Override
@@ -153,14 +151,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	public void onClick(View  v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.back:
-			//			Intent intent = new Intent(this, MipcaActivityCapture.class);
-			//			startActivity(intent);
-			if (getIntent().getBooleanExtra("needCallBack", false)) {
-				setResult(RESULT_CANCELED);
-			}
-			finish();
-			break;
 		case R.id.sure:
 			if ("".equals(input.getText().toString())) {
 				//				Toast.makeText(InputCodeAct.this, R.string.nocontext, Common.TOAST_SHORT_TIME).show();
@@ -179,6 +169,21 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 			break;
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void TopViewClick(View view) {
+		super.TopViewClick(view);
+		switch (view.getId()) {
+			case R.id.topLeftView:
+				if (getIntent().getBooleanExtra("needCallBack", false)) {
+					setResult(RESULT_CANCELED);
+				}
+				finish();
+				break;
+			default:
+				break;
 		}
 	}
 }

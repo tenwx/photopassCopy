@@ -87,7 +87,7 @@ public class Common {
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
-    public static final String ALIPAY_NOTIFY = "http://140.206.125.194:3001/shopping/webPayNotify";//alipay的异步通知URL
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
     public static final String HIDE_PPS = "/user/hidePPs";//隐藏PP
     public static final String GET_PP_BY_DATE = "/user/getNeedUpgradePPsByDate";
     public static final String BIND_PPS_DATE_TO_PPP = "/ppp/bindPPsAndBindDatesToPPP";//将pp绑定到ppp   多了时间。
@@ -96,7 +96,7 @@ public class Common {
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
 
     public static final String ME_HELP = "/help/getHelpList";
-    public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
+    public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
 
@@ -214,6 +214,7 @@ public class Common {
     public static final int PHOTOPASS_INFO_VERSION = 1;
     public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
     public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
+    public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
 
 
     //相册名称字段
@@ -251,11 +252,8 @@ public class Common {
     public static final String FROM_VIEWORSELECTACTIVITYANDPAYED = "fromViewOrSelectBuy";
     public static final String FROM_MYPHOTOPASS = "fromMyPhotoPass";
     public static final String FROM_MYPHOTOPASSPAYED = "fromMyPhotoPassBuy";
-    public static final String FROM_BLUR = "fromBlur";
-    public static final String FROM_BLURPAYED = "fromBlurBuy";
-    //	public static final String IS_BUYING_FROM_VIEWORSELECT = "isBuyingFromViewOrSelect";
-    //	public static final String IS_BUYING_FROM_LOCATION = "isBuyingFromLocation";
-    //	public static final String IS_BUYING_FROM_BLUR = "isBuyingFromBlur";
+    public static final String FROM_PREVIEW_PHOTO_ACTIVITY = "fromPreviewPhotoActivity";
+    public static final String FROM_PREVIEW_PHOTO_ACTIVITY_PAY = "fromPreviewPhotoActivityBuy";
     //修改个人信息，判断是从哪里跳转去修改页面。
     public static final String USERINFOTYPE = "userinfotype";
 
@@ -351,6 +349,9 @@ public class Common {
     // tips 需要的字段  start
     public static final String SETTING_FIRST_TIPS_SYNS = "firstTipsSyns"; // 如果字段存在,就不是第一次提示同步。如果不存在，就是第一次
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
+    public static final int CART_HEIGHT = 98;
+    public static final int CART_WIDTH = 98;
+
     // tips 需要的字段  end
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
 }

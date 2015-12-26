@@ -7,8 +7,34 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:background="@color/pp_blue">
+
+        <ImageView
+            android:id="@+id/rt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_13"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <TextView
+            android:id="@+id/detail_good_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/pp_padding_8"
+            android:layout_toLeftOf="@+id/button_bag"
+            android:layout_toRightOf="@+id/rt"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:id="@+id/button_bag"
@@ -16,10 +42,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="14dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="22dp"
-            android:paddingTop="14dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/cart" />
 
@@ -33,34 +59,9 @@
             android:background="@drawable/bg1"
             android:gravity="center"
             android:padding="1dp"
-            android:text="0"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/detail_good_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/button_bag"
-            android:layout_toRightOf="@+id/rt"
-            android:gravity="center"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/rt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_white" />
+            android:text="1"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_small_size" />
     </RelativeLayout>
 
     <LinearLayout
@@ -111,14 +112,14 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp">
 
-                        <TextView
+                        <com.pictureair.photopass.widget.CustomTextView
                             android:id="@+id/detail_currency"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/pp_orange"
                             android:textSize="@dimen/text_size_20" />
 
-                        <TextView
+                        <com.pictureair.photopass.widget.CustomTextView
                             android:id="@+id/detail_promotion_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

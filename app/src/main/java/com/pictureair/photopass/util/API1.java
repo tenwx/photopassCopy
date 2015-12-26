@@ -197,8 +197,8 @@ public class API1 {
     public static final int GET_SHARE_URL_FAILED = 6030;
 
     //下载
-    public static final int  DOWNLOAD_PHOTO_SUCCESS = 6041;
-    public static final int  DOWNLOAD_PHOTO_FAILED = 6040;
+    public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
+    public static final int DOWNLOAD_PHOTO_FAILED = 6040;
 
     /**
      * 发送设备ID获取tokenId
@@ -599,10 +599,11 @@ public class API1 {
 
     /**
      * 获取最新的边框以及饰品信息
+     *
      * @param lastUpdateTime 上次更新时间
      * @param handler
      */
-    public static void getLastContent(String lastUpdateTime, final Handler handler){
+    public static void getLastContent(String lastUpdateTime, final Handler handler) {
         StringBuffer sBuffer = new StringBuffer();
         sBuffer.append(Common.BASE_URL_TEST);
         sBuffer.append(Common.GET_LASTEST_CONTENT);
@@ -1189,7 +1190,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.ORDER_ID, orderId);
-
+        PictureAirLog.v(TAG, "removeOrder params：" + params);
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.DELETE_ORDER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1359,7 +1360,7 @@ public class API1 {
                     }
                     if (flag) {
                         //更新
-                        String [] objsStrings = new String[4];
+                        String[] objsStrings = new String[4];
                         objsStrings[0] = versionName;
                         objsStrings[1] = mandatory;
 
@@ -1368,7 +1369,7 @@ public class API1 {
 
                         if (null != language && language.equals("en")) {
                             objsStrings[2] = content_EN;
-                        }else {
+                        } else {
                             objsStrings[2] = content;
                         }
                         Message message = new Message();
@@ -1378,7 +1379,7 @@ public class API1 {
                     } else {
                         handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
                     }
-                }else {
+                } else {
                     handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
                 }
 
@@ -1560,9 +1561,10 @@ public class API1 {
 
     /**
      * 获取分享的URL
-     * @param photoID id
+     *
+     * @param photoID   id
      * @param shareType 视频还是照片
-     * @param id 点击id
+     * @param id        点击id
      * @param handler
      */
     public static void getShareUrl(String photoID, String shareType, final int id, final Handler handler) {
@@ -1599,10 +1601,11 @@ public class API1 {
 
     /**
      * 分享成功的回调，通知服务器已经成功分享
+     *
      * @param shareId
      * @param platform
      */
-    public static void shareCallBack(String shareId, String platform){
+    public static void shareCallBack(String shareId, String platform) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.SHARE_ID, shareId);
@@ -1625,10 +1628,11 @@ public class API1 {
     /**************************************下载图片 Start**************************************/
     /**
      * 下载图片的接口。
+     *
      * @param handler
      * @param photoId
      */
-    public static void downLoadPhotos(final Handler handler , String photoId) {
+    public static void downLoadPhotos(final Handler handler, String photoId) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, photoId);

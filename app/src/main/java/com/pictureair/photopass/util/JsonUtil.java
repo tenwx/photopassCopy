@@ -44,7 +44,7 @@ public class JsonUtil {
             JSONObject obj = (JSONObject) object.get("GPS");
 //			System.out.println("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
-            if (obj != null){
+            if (obj != null) {
                 LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
                 info.latitude = latLng.latitude;
                 info.longitude = latLng.longitude;
@@ -554,6 +554,7 @@ public class JsonUtil {
 
             //resume
             JSONObject resumeJsonObject = orderJsonObject.getJSONObject("resume");
+            orderInfo.orderId = resumeJsonObject.getString("orderId");
             orderInfo.orderNumber = resumeJsonObject.getString("code");//订单号
             orderInfo.orderTime = resumeJsonObject.getString("time");//订单时间
             orderInfo.orderPayMentMethod = resumeJsonObject.getIntValue("payType");//支付类型

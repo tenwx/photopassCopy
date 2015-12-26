@@ -63,6 +63,7 @@ public class OrderProductDetailAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.order_product_detail_item, null);
             hView.goodsImageView = (ImageView) convertView.findViewById(R.id.order_imageView_pd);
             hView.goodsName = (TextView) convertView.findViewById(R.id.order_textView_name);
+            hView.goodsName.setTextColor(context.getResources().getColor(R.color.pp_dark_blue));
             hView.goodsCount = (TextView) convertView.findViewById(R.id.order_editText_count);
             hView.currency = (TextView) convertView.findViewById(R.id.order_textview_currency2);
             hView.priceTextView = (TextView) convertView.findViewById(R.id.order_textView_pr);

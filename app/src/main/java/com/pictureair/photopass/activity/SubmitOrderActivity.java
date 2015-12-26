@@ -400,7 +400,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     //选择照片
     private void selectPhoto(int requestCode) {
-        Intent intent = new Intent(this, SelectPhotoActivity.class);
+        Intent intent = new Intent(this, SelectPhotoActivity1.class);
         intent.putExtra("activity", "cartactivity");
         startActivityForResult(intent, requestCode);
     }

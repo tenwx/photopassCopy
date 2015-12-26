@@ -94,10 +94,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SelectPhotoActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.SelectPhotoActivity1"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
