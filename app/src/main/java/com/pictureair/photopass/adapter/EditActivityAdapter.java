@@ -165,27 +165,70 @@ public class EditActivityAdapter extends BaseAdapter {
 		}
 		
 		if(editType == 1){//边框
+//			LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
+//			layoutParams.height = ScreenUtil.dip2px(mContext, 80);
+//			layoutParams.width = ScreenUtil.dip2px(mContext, 60);
+//
+//			holderView.itemRelativeLayout.setLayoutParams(layoutParams);
+//			EditPhotoUtil.setMargins(holderView.itemRelativeLayout , 5, 5, 5, 5);
+//			holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
+//			holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
+////			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
+//			if (frameInfos.get(position).onLine == 1) {
+//				ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPath160, holderView.editImageview, options);
+//				if (frameInfos.get(position).isDownload == 0) {
+//					holderView.maskImageView.setVisibility(View.VISIBLE);
+//					holderView.fileSizeTextView.setVisibility(View.VISIBLE);
+//					holderView.fileSizeTextView.setText(frameInfos.get(position).fileSize / 1024 / 1024 + "M");
+//				}else {
+//					holderView.maskImageView.setVisibility(View.GONE);
+//					holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
+//				}
+//			}else {
+//				ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPath160, holderView.editImageview, options);
+//			}
+//			holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
 			LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
-			layoutParams.height = ScreenUtil.dip2px(mContext, 80);
-			layoutParams.width = ScreenUtil.dip2px(mContext, 60);
-			
+			LayoutParams layoutParam1 = holderView.editImageview.getLayoutParams();
+			if (bitmap.getWidth() > bitmap.getHeight()) {
+				layoutParams.height = LayoutParams.MATCH_PARENT;
+				layoutParams.width = ScreenUtil.dip2px(mContext, 80);
+
+				layoutParam1.height = ScreenUtil.dip2px(mContext, 60);
+				layoutParam1.width = ScreenUtil.dip2px(mContext, 80);
+			} else {
+				layoutParams.height = LayoutParams.MATCH_PARENT;
+				layoutParams.width = ScreenUtil.dip2px(mContext, 60);
+
+				layoutParam1.height = ScreenUtil.dip2px(mContext, 80);
+				layoutParam1.width = ScreenUtil.dip2px(mContext, 60);
+			}
+
 			holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-			EditPhotoUtil.setMargins(holderView.itemRelativeLayout , 5, 5, 5, 5);
+			holderView.editImageview.setLayoutParams(layoutParam1);
+
+			EditPhotoUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
 			holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
 			holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
 			if (frameInfos.get(position).onLine == 1) {
-				ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPath160, holderView.editImageview, options);
-				if (frameInfos.get(position).isDownload == 0) {
-					holderView.maskImageView.setVisibility(View.VISIBLE);
-					holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-					holderView.fileSizeTextView.setText(frameInfos.get(position).fileSize / 1024 / 1024 + "M");
-				}else {
-					holderView.maskImageView.setVisibility(View.GONE);
-					holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
-				}
+				// 网络边框。 3.0版本
+//				ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+//				if (frameInfos.get(position).isDownload == 0) {
+//					holderView.maskImageView.setVisibility(View.VISIBLE);
+//					holderView.fileSizeTextView.setVisibility(View.VISIBLE);
+//					holderView.fileSizeTextView.setText(frameInfos.get(position).fileSize / 1024 / 1024 + "M");
+//				}else {
+//					holderView.maskImageView.setVisibility(View.GONE);
+//					holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
+//				}
 			}else {
-				ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPath160, holderView.editImageview, options);
+				if (bitmap.getWidth() > bitmap.getHeight()) {
+					ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
+				}else{
+					ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+				}
+
 			}
 			holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
 		}

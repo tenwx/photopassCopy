@@ -598,7 +598,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                             RequestParams params = new RequestParams();
                             params.put(Common.USERINFO_TOKENID, sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
                             params.put(Common.CUSTOMERID, PPCode);
-                            HttpUtil.get(Common.BASE_URL + Common.ADD_CODE_TO_USER, params, new JsonHttpResponseHandler() {
+                            HttpUtil.get(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     // TODO Auto-generated method stub

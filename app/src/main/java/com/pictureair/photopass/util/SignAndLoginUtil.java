@@ -123,7 +123,7 @@ public class SignAndLoginUtil {
 
                     if (needModifyInfo) {//需要修改个人信息
                         API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""),
-                                name, birthday, gender, country, "", handler);
+                                name, birthday, gender, country, "", API1.UPDATE_PROFILE_ALL, handler);
                     } else {
                         handler.sendEmptyMessage(API1.UPDATE_PROFILE_SUCCESS);
                     }

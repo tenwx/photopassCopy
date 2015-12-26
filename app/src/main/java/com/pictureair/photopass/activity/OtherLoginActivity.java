@@ -47,7 +47,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 
 	/** 初始化 */
 	private void initView() {
-		loginUrl.append(Common.BASE_URL).append(Common.LOGIN);// 链接地址
+		loginUrl.append(Common.BASE_URL_TEST).append(Common.LOGIN);// 链接地址
 		myToast = new MyToast(OtherLoginActivity.this);// 获取toast
 		setTopLeftValueAndShow(R.drawable.back_white, true);
 		setTopTitleShow(R.string.user_login);

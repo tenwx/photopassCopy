@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -34,13 +33,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.util.Base64;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.adapter.FontAdapter;
@@ -71,7 +68,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.LocationUtil.LocationNotification;
-import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.FontEditDialog;
@@ -381,26 +377,30 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		filterPathList.add("filter/filter6.png");
 
 		FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPath160 = Scheme.ASSETS.wrap("frame/frame_none.png");
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_none.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_none.png");
 		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_none.png");
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_none.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPath160 = Scheme.ASSETS.wrap("frame/frame_t_1.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_o_1.png");
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_1t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_1t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_1.png");
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_1.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPath160 = Scheme.ASSETS.wrap("frame/frame_t_2.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_o_2.png");
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_2t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_2t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_2.png");
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_2.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPath160 = Scheme.ASSETS.wrap("frame/frame_t_3.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_o_3.png");
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_3t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_3t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_3.png");
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_3.png");
 		frameInfos.add(frameInfo);
 
@@ -418,14 +418,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		imageHeight = 1200;
 
 		photoInfo = getIntent().getParcelableExtra("photo");
-//		photoURL = photoInfo.photoPathOrURL;
-		photoURL = photoInfo.photoThumbnail_1024;
 		if (photoInfo.onLine == 1) {
 			//网络图片。
+			photoURL = photoInfo.photoThumbnail_1024;
 			isOnlinePic = true;
 			loadOnlineImg(photoURL);
 		}else{
 			//本地图片
+			photoURL = photoInfo.photoPathOrURL;
 			isOnlinePic = false;
 			loadImage(photoURL);
 		}
@@ -716,12 +716,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				break;
 			case R.id.tv_left90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
-				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,90);
+				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,-90);
 				mainImage.setImageBitmap(mainBitmap);
 				break;
 			case R.id.tv_right90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
-				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,-90);
+				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,90);
 				mainImage.setImageBitmap(mainBitmap);
 				break;
 

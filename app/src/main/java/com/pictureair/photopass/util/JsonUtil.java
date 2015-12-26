@@ -44,9 +44,12 @@ public class JsonUtil {
             JSONObject obj = (JSONObject) object.get("GPS");
 //			System.out.println("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
-            LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
-            info.latitude = latLng.latitude;
-            info.longitude = latLng.longitude;
+            if (obj != null){
+                LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
+                info.latitude = latLng.latitude;
+                info.longitude = latLng.longitude;
+            }
+
 //			System.out.println("转换之后的坐标"+latLng.toString());
         }
         if (object.containsKey("description")) {
@@ -208,7 +211,7 @@ public class JsonUtil {
     /**
      * 用户信息解析
      */
-    public static void getUserInfo(final Context context, JSONObject object, Handler handler) throws JSONException {
+    public static void getUserInfo(final Context context, JSONObject object, String account, Handler handler) throws JSONException {
         SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
         e.putString(Common.USERINFO_TOKENID, object.getString("tokenId"));
@@ -248,6 +251,8 @@ public class JsonUtil {
 
             e.putString(Common.USERINFO_BIRTHDAY, obj.getString("birthday").split("T")[0]);
         }
+
+        e.putString(Common.USERINFO_ACCOUNT, account);
 
         String headUrl = null;
         if (obj.containsKey("avatarUrl")) {
@@ -722,7 +727,7 @@ public class JsonUtil {
                 if (thumbNailPortraritJsonObject.containsKey("x120")) {
                     JSONObject x160JsonObject = thumbNailPortraritJsonObject.getJSONObject("x120");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
+                        frameInfo.frameThumbnailPathH160 = x160JsonObject.getString("url");//测试代码，需要修改。
                     }
                 }
             }
@@ -771,7 +776,7 @@ public class JsonUtil {
                 if (thumbnailJsonObject.containsKey("x160")) {
                     JSONObject x160JsonObject = thumbnailJsonObject.getJSONObject("x160");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPath160 = x160JsonObject.getString("url");
+                        frameInfo.frameThumbnailPathH160 = x160JsonObject.getString("url");//测试代码，需要修改。
                     }
                 }
             }

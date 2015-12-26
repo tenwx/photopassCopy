@@ -399,7 +399,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 				PictureAirLog.v(TAG, "orderid" + orderid + "_userId_" + sPreferences.getString(Common.USERINFO_ID, ""));
 
 
-				HttpUtil.post(Common.BASE_URL + "api/webPayNotify",
+				HttpUtil.post(Common.BASE_URL_TEST + "api/webPayNotify",
 						requestParams, new JsonHttpResponseHandler() {
 							public void onSuccess(int statusCode,
 									Header[] headers, JSONObject response) {

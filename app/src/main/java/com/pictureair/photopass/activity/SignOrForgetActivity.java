@@ -89,7 +89,7 @@ public class SignOrForgetActivity extends BaseActivity implements OnClickListene
 				if (null == sp.getString(Common.USERINFO_TOKENID, null)) {//需要重新获取一次tokenid
 					System.out.println("no tokenid, need to obtain one");
 					final StringBuffer sb = new StringBuffer();
-					sb.append(Common.BASE_URL).append(Common.GET_TOKENID);//获取地址
+					sb.append(Common.BASE_URL_TEST).append(Common.GET_TOKENID);//获取地址
 					
 					RequestParams params = new RequestParams();
 					params.put(Common.TERMINAL, "android");

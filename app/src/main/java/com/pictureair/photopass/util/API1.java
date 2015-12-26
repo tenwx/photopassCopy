@@ -144,6 +144,11 @@ public class API1 {
 
     public static final int UPDATE_PROFILE_SUCCESS = 5011;
     public static final int UPDATE_PROFILE_FAILED = 5010;
+    public static final int UPDATE_PROFILE_NAME = 5012;
+    public static final int UPDATE_PROFILE_GENDER = 5013;
+    public static final int UPDATE_PROFILE_BIRTHDAY = 5014;
+    public static final int UPDATE_PROFILE_COUNTRY = 5015;
+    public static final int UPDATE_PROFILE_ALL = 5016;
 
     public static final int GET_HELP_SUCCESS = 5021;
     public static final int GET_HELP_FAILED = 5020;
@@ -244,7 +249,7 @@ public class API1 {
      * @param password
      * @param handler
      */
-    public static void Login(final Context context, String userName, String password, final Handler handler) {
+    public static void Login(final Context context, final String userName, String password, final Handler handler) {
         RequestParams params = new RequestParams();
         PictureAirLog.v("MyApplication.getTokenId()", MyApplication.getTokenId());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -255,7 +260,7 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 try {
-                    JsonUtil.getUserInfo(context, jsonObject, handler);
+                    JsonUtil.getUserInfo(context, jsonObject, userName, handler);
                     handler.sendEmptyMessage(LOGIN_SUCCESS);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -703,7 +708,7 @@ public class API1 {
      * @param QQ       qq
      * @param handler  handler
      */
-    public static void updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final Handler handler) {
+    public static void updateProfile(String tokenId, String name, String birthday, String gender, String country, String QQ, final int modifyType, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.USERINFO_NICKNAME, name);
@@ -716,7 +721,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.sendEmptyMessage(UPDATE_PROFILE_SUCCESS);
+                handler.obtainMessage(UPDATE_PROFILE_SUCCESS, modifyType, 0).sendToTarget();
             }
 
             @Override
@@ -1320,47 +1325,63 @@ public class API1 {
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                jsonObject = jsonObject.getJSONObject("version");
-                String versionName = jsonObject.getString("version");
-                String mandatory = jsonObject.getString("mandatory");
-                String content_EN = jsonObject.getString("content_EN");
-                String content = jsonObject.getString("content");
-                JSONArray array = jsonObject.getJSONArray("downloadChannel");
-                String downloadUrl = null;
-                for (int i = 0; i < array.size(); i++) {
-                    String channel = array.getJSONObject(i).getString("channel");
-                    if (Common.UMENG_CHANNEL.equals(channel)) {
-                        downloadUrl = array.getJSONObject(i).getString("downloadUrl");
-                        break;
-                    }
-                }
-                boolean flag = false;// 为false则不更新
-                int[] number = CheckUpdateManager.verNameChangeInt(thisVerName);
-                int[] newNumber = CheckUpdateManager.verNameChangeInt(versionName);
-                for (int i = 0; i < number.length; i++) {
-                    if (number[i] < newNumber[i]) {
-                        // 需要更新
-                        flag = true;
-                        break;
-                    }
-                }
-                if (flag) {
-                    // 更新
-                    String[] resultArray = new String[4];
-                    resultArray[0] = versionName;
-                    resultArray[1] = mandatory;
-                    resultArray[3] = downloadUrl;
 
-                    if (null != language && language.equals("en")) {
-                        resultArray[2] = content_EN;
-                    } else {
-                        resultArray[2] = content;
+                super.onSuccess(jsonObject);
+
+                if (jsonObject.getJSONObject("version").getJSONArray("versionOS").toString().contains("android")) {
+                    //结果不为null，并且结果更新平台中有android，则需要更新
+                    JSONObject versionObject = jsonObject.getJSONObject("version");
+                    String versionName = versionObject.getString("version");
+                    String mandatory = versionObject.getString("mandatory");
+                    String content_EN = versionObject.getString("content_EN");
+                    String content = versionObject.getString("content");
+                    String channel = "";
+                    String downloadUrl = "";
+
+                    JSONArray array = versionObject.getJSONArray("downloadChannel");
+                    for (int i = 0; i < array.size(); i++) {
+                        channel = array.getJSONObject(i).getString("channel");
+                        if (Common.UMENG_CHANNEL.equals(channel)) {
+                            downloadUrl = array.getJSONObject(i).getString("downloadUrl");
+                            break;
+                        }
                     }
-                    handler.obtainMessage(APK_NEED_UPDATE, resultArray).sendToTarget();
-                } else {
+
+                    boolean flag = false;//为false则不更新
+                    int[] number = CheckUpdateManager.verNameChangeInt(thisVerName);
+                    int[] newNumber = CheckUpdateManager.verNameChangeInt(versionName);
+                    for (int i = 0; i < number.length; i++) {
+                        if (number[i] < newNumber[i]) {
+                            //需要更新
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (flag) {
+                        //更新
+                        String [] objsStrings = new String[4];
+                        objsStrings[0] = versionName;
+                        objsStrings[1] = mandatory;
+
+                        objsStrings[3] = downloadUrl;
+                        PictureAirLog.d("api update", language);
+
+                        if (null != language && language.equals("en")) {
+                            objsStrings[2] = content_EN;
+                        }else {
+                            objsStrings[2] = content;
+                        }
+                        Message message = new Message();
+                        message.what = APK_NEED_UPDATE;
+                        message.obj = objsStrings;
+                        handler.sendMessage(message);
+                    } else {
+                        handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+                    }
+                }else {
                     handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
                 }
+
             }
 
             @Override

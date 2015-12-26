@@ -14,7 +14,8 @@ public class FrameOrStikerInfo implements Parcelable{
 	public String frameOriginalPathPortrait;//边框竖直原图，也表示饰品的原图
 	public String frameThumbnailPathLandscape400;//边框水平400缩略图
 	public String frameThumbnailPathPortrait400;//边框竖直400缩略图
-	public String frameThumbnailPath160;//边框160缩略图，也表示饰品的缩略图
+	public String frameThumbnailPathH160;//边框横160缩略图，也表示饰品的缩略图
+	public String frameThumbnailPathV160;//边框垂直160缩略图
 	public String locationId;//边框对应的locationId
 	public int isActive;//边框是否可用
 	public int onLine;//本地还是网络图片，1：网络，0：本地
@@ -45,7 +46,8 @@ public class FrameOrStikerInfo implements Parcelable{
 		frameOriginalPathPortrait = source.readString();
 		frameThumbnailPathLandscape400 = source.readString();
 		frameThumbnailPathPortrait400 = source.readString();
-		frameThumbnailPath160 = source.readString();
+		frameThumbnailPathH160 = source.readString();
+		frameThumbnailPathV160 = source.readString();
 		locationId = source.readString();
 		isActive = source.readInt();
 		onLine = source.readInt();
@@ -66,7 +68,8 @@ public class FrameOrStikerInfo implements Parcelable{
 		dest.writeString(frameOriginalPathPortrait);
 		dest.writeString(frameThumbnailPathLandscape400);
 		dest.writeString(frameThumbnailPathPortrait400);
-		dest.writeString(frameThumbnailPath160);
+		dest.writeString(frameThumbnailPathH160);
+		dest.writeString(frameThumbnailPathV160);
 		dest.writeString(locationId);
 		dest.writeInt(isActive);
 		dest.writeInt(onLine);

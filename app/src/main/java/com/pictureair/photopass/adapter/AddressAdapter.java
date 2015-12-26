@@ -67,9 +67,9 @@ public class AddressAdapter extends BaseAdapter {
         Address address = addresses.get(position);
         viewHolder.addressTv.setText(address.getAddress());
         if (address.getIsSelect()) {
-            viewHolder.addressIv.setImageResource(R.drawable.cart_select);
+            viewHolder.addressIv.setImageResource(R.drawable.sele);
         } else {
-            viewHolder.addressIv.setImageResource(R.drawable.cart_not_select);
+            viewHolder.addressIv.setImageResource(R.drawable.nosele);
         }
         viewHolder.addressIv.setOnClickListener(new View.OnClickListener() {
             @Override
