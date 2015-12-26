@@ -154,7 +154,7 @@
     <string name="hint_address">输入详细地址</string>
     <string name="delete">删除</string>
     <string name="photopass">乐拍通</string>
-    <string name="photopassplus">VIP</string>
+    <string name="photopassplus">PhotoPass+</string>
     <string name="getitnow">现在就去购买乐拍通+</string>
     <string name="mylocation">我的地址</string>
     <string name="myfavourite">我的最爱</string>
@@ -597,4 +597,10 @@
     <string name="country">国家</string>
     <string name="account">账户</string>
     <string name="nick_name_empty">昵称不能为空!</string>
+
+
+    <!-- 新增 推送 部分字段。-->
+    <string name="notifacation_order_completed_msg">亲，您已经支付成功，美好影像体验尽在迪彩！</string>
+    <string name="notifacation_order_submit_msg">亲，您已经下单成功，快去支付吧！</string>
+
 </resources>

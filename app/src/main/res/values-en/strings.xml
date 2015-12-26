@@ -562,4 +562,8 @@
     <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Nickname can not be empty</string>
+
+    <!-- 新增 推送 部分字段。-->
+    <string name="notifacation_order_completed_msg">Payment successfully, connecting memories !</string>
+    <string name="notifacation_order_submit_msg">Please pay your order,thanks！</string>
 </resources>

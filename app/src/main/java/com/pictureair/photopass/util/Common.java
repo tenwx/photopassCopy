@@ -92,7 +92,7 @@ public class Common {
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
-    public static final String ALIPAY_NOTIFY = "http://140.206.125.194:3001/shopping/webPayNotify";//alipay的异步通知URL
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
     public static final String HIDE_PPS = "/user/hidePPs";//隐藏PP
     public static final String GET_PP_BY_DATE = "/user/getNeedUpgradePPsByDate";
     public static final String BIND_PPS_DATE_TO_PPP = "/ppp/bindPPsAndBindDatesToPPP";//将pp绑定到ppp   多了时间。

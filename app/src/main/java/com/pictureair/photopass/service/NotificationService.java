@@ -244,6 +244,40 @@ public class NotificationService extends android.app.Service {
 							// TODO Auto-generated method stub
 							Log.e("  ====  arg2", " :"+arg2);
 							Log.e("===on===","Server triggered event '" + event + "'");
+							//订单完成的推送。
+							if (event.toString().equals("doneOrderPay")) {
+								sendType = "doneOrderPay";
+								handler.sendEmptyMessage(3333);// 清空服务器消息。
+
+								JSONObject message = (JSONObject) arg2[0];
+//								try {
+//									message = (JSONObject)message.get("c");
+//									String orderId = message.getString("orderId");
+									NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+									Notification notification = new Notification(
+											R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),
+											System.currentTimeMillis());
+									notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
+									notification.defaults = Notification.DEFAULT_ALL;
+									Intent intent = new Intent(
+											getApplicationContext(),
+											com.pictureair.photopass.activity.MainTabActivity.class);
+									PendingIntent pendingIntent = PendingIntent
+											.getActivity(
+													getApplicationContext(), 0,
+													intent, 0);
+									notification.setLatestEventInfo(
+											NotificationService.this,
+											getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_order_completed_msg), pendingIntent);
+									manager.notify(0, notification);
+
+//								} catch (JSONException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+							}
+
+
 							// 解决问题：购买照片与升级PP＋,同一用户不同设备不同步的问题。
 							// 升级PP＋与购买照片后发送的事件，记录下来，并且保存在application中。
 							if (event.toString().equals("upgradedPhotos")) {
@@ -256,23 +290,23 @@ public class NotificationService extends android.app.Service {
 
 							if (event.toString().equals("catchOrderInfoOf"+userId)) {
 								sendType = "orderSend";
-								handler.sendEmptyMessage(3333);
+									handler.sendEmptyMessage(3333);
 //								Log.e("   订单事件中 ", " === ");
-								JSONObject message = (JSONObject) arg2[0];
-								try {
-									String info = message.getString("info");
-									
-									Log.e(" 接受的订单信息 ", " === "+info);
-									
-									NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-									Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),System.currentTimeMillis());
-									notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
+									JSONObject message = (JSONObject) arg2[0];
+									try {
+										String info = message.getString("info");
+
+										Log.e(" 接受的订单信息 ", " === "+info);
+
+										NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+										Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),System.currentTimeMillis());
+										notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
 									notification.defaults = Notification.DEFAULT_ALL;
 									Intent intent = new Intent(getApplicationContext(),
 											MainTabActivity.class);
 									
 									PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
-									notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_order), info, pendingIntent);
+									notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_order), getResources().getString(R.string.notifacation_order_submit_msg), pendingIntent);
 									manager.notify(0, notification);
 									
 									Log.e("=====", "执行");

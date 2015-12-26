@@ -399,168 +399,168 @@ public class PaymentOrderActivity extends BaseActivity implements
 				PictureAirLog.v(TAG, "orderid" + orderid + "_userId_" + sPreferences.getString(Common.USERINFO_ID, ""));
 
 
-				HttpUtil.post(Common.BASE_URL + "api/webPayNotify",
-						requestParams, new JsonHttpResponseHandler() {
-							public void onSuccess(int statusCode,
-									Header[] headers, JSONObject response) {
-								PictureAirLog.v(TAG, response + "result");
-								try {
-									JSONObject resultJsonObject = response
-											.getJSONObject("result");
-									if ("success".equals(resultJsonObject
-											.getString("type"))) {
-
-										if (resultJsonObject.has("pppCode")) {// 判断是否购买ppp，如果购买ppp，则去ppp页面，否则去订单界面
-											PictureAirLog.v(TAG, resultJsonObject
-													.getString("pppCode"));
-											if (null == resultJsonObject
-													.getString("pppCode")
-													|| "null"
-															.equals(resultJsonObject
-																	.getString("pppCode"))) {// 去订单页面
-												System.out
-														.println("------------------->buy photo");
-
-												// 获取存放的photopass信息
-												// PhotoInfo photopassmap =
-												// myApplication.getIsBuyingPhotoInfo();
-												Intent intent;
-												// 以下三种情况要回到清晰图片页面
-												if (myApplication
-														.getRefreshViewAfterBuyBlurPhoto()
-														.equals(Common.FROM_VIEWORSELECTACTIVITY)
-														|| myApplication
-																.getRefreshViewAfterBuyBlurPhoto()
-																.equals(Common.FROM_MYPHOTOPASS)
-														|| myApplication
-																.getRefreshViewAfterBuyBlurPhoto()
-																.equals(Common.FROM_BLUR)) {
-													PictureAirLog.v(TAG, "flag is -------------------->"
-															+ myApplication
-															.getRefreshViewAfterBuyBlurPhoto());
-													myApplication
-															.setPhotoIsPaid(true);
-													ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-													photopassArrayList
-															.addAll(myApplication
-																	.getIsBuyingPhotoInfoList());
-													// 找出购买的info，并且将购买属性改为1
-													photopassArrayList.get(myApplication
-															.getIsBuyingIndex()).isPayed = 1;
-
-													intent = new Intent(
-															PaymentOrderActivity.this,
-															PreviewPhotoActivity.class);
-													intent.putExtra("activity",
-															"paymentorderactivity");
-													intent.putExtra(
-															"position",
-															myApplication
-																	.getIsBuyingIndex()
-																	+ "");// 在那个相册中的位置
-													intent.putExtra(
-															"photoId",
-															photopassArrayList
-																	.get(myApplication
-																			.getIsBuyingIndex()).photoId);
-													intent.putExtra("photos",
-															photopassArrayList);// 那个相册的全部图片路径
-													intent.putExtra(
-															"targetphotos",
-															myApplication.magicPicList);
-													// 清空标记
-													myApplication
-															.clearIsBuyingPhotoList();
-
-													SuccessAfterPayment();
-
-													if (myApplication
-															.getRefreshViewAfterBuyBlurPhoto()
-															.equals(Common.FROM_VIEWORSELECTACTIVITY)) {
-														myApplication
-																.setRefreshViewAfterBuyBlurPhoto(Common.FROM_VIEWORSELECTACTIVITYANDPAYED);
-													} else if (myApplication
-															.getRefreshViewAfterBuyBlurPhoto()
-															.equals(Common.FROM_MYPHOTOPASS)) {
-														myApplication
-																.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASSPAYED);
-													} else if (myApplication
-															.getRefreshViewAfterBuyBlurPhoto()
-															.equals(Common.FROM_BLUR)) {
-														myApplication
-																.setRefreshViewAfterBuyBlurPhoto("");
-													}
-
-												} else {
-													// 回到订单页面
-													intent = new Intent(
-															PaymentOrderActivity.this,
-															OrderActivity.class);
-													intent.putExtra("flag",
-															"two");
-													SuccessAfterPayment();
-												}
-
-												Editor editor = sPreferences
-														.edit();
-												editor.putBoolean(
-														Common.NEED_FRESH, true);
-												editor.commit();
-												startActivity(intent);
-												finish();
-											} else {// 去ppp页面
-												System.out
-														.println("----------------->buy ppp");
-												Editor editor = sPreferences
-														.edit();
-												editor.putBoolean(
-														Common.NEED_FRESH, true);
-												editor.commit();
-												myApplication
-														.setNeedRefreshPPPList(true);
-												Intent intent = new Intent(
-														PaymentOrderActivity.this,
-														MyPPPActivity.class);
-												API1.PPPlist.clear();
-												SuccessAfterPayment();
-												startActivity(intent);
-												finish();
-											}
-										} else {// 去订单页面
-											System.out
-													.println("----------------->buy product");
-											SuccessAfterPayment();
-											Intent intent = new Intent(
-													PaymentOrderActivity.this,
-													OrderActivity.class);
-											intent.putExtra("flag", "two");
-											Editor editor = sPreferences.edit();
-											editor.putBoolean(
-													Common.NEED_FRESH, true);
-											editor.commit();
-											startActivity(intent);
-											finish();
-										}
-									}
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-
-							};
-
-							public void onFailure(int statusCode,
-									Header[] headers, Throwable throwable,
-									JSONObject errorResponse) {
-								PictureAirLog.v(TAG, "fail========="
-										+ errorResponse);
-							};
-
-							public void onStart() {
-								PictureAirLog.v(TAG, "start=======");
-							};
-
-						});
+//				HttpUtil.post(Common.BASE_URL + "api/webPayNotify",
+//						requestParams, new JsonHttpResponseHandler() {
+//							public void onSuccess(int statusCode,
+//									Header[] headers, JSONObject response) {
+//								PictureAirLog.v(TAG, response + "result");
+//								try {
+//									JSONObject resultJsonObject = response
+//											.getJSONObject("result");
+//									if ("success".equals(resultJsonObject
+//											.getString("type"))) {
+//
+//										if (resultJsonObject.has("pppCode")) {// 判断是否购买ppp，如果购买ppp，则去ppp页面，否则去订单界面
+//											PictureAirLog.v(TAG, resultJsonObject
+//													.getString("pppCode"));
+//											if (null == resultJsonObject
+//													.getString("pppCode")
+//													|| "null"
+//															.equals(resultJsonObject
+//																	.getString("pppCode"))) {// 去订单页面
+//												System.out
+//														.println("------------------->buy photo");
+//
+//												// 获取存放的photopass信息
+//												// PhotoInfo photopassmap =
+//												// myApplication.getIsBuyingPhotoInfo();
+//												Intent intent;
+//												// 以下三种情况要回到清晰图片页面
+//												if (myApplication
+//														.getRefreshViewAfterBuyBlurPhoto()
+//														.equals(Common.FROM_VIEWORSELECTACTIVITY)
+//														|| myApplication
+//																.getRefreshViewAfterBuyBlurPhoto()
+//																.equals(Common.FROM_MYPHOTOPASS)
+//														|| myApplication
+//																.getRefreshViewAfterBuyBlurPhoto()
+//																.equals(Common.FROM_BLUR)) {
+//													PictureAirLog.v(TAG, "flag is -------------------->"
+//															+ myApplication
+//															.getRefreshViewAfterBuyBlurPhoto());
+//													myApplication
+//															.setPhotoIsPaid(true);
+//													ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
+//													photopassArrayList
+//															.addAll(myApplication
+//																	.getIsBuyingPhotoInfoList());
+//													// 找出购买的info，并且将购买属性改为1
+//													photopassArrayList.get(myApplication
+//															.getIsBuyingIndex()).isPayed = 1;
+//
+//													intent = new Intent(
+//															PaymentOrderActivity.this,
+//															PreviewPhotoActivity.class);
+//													intent.putExtra("activity",
+//															"paymentorderactivity");
+//													intent.putExtra(
+//															"position",
+//															myApplication
+//																	.getIsBuyingIndex()
+//																	+ "");// 在那个相册中的位置
+//													intent.putExtra(
+//															"photoId",
+//															photopassArrayList
+//																	.get(myApplication
+//																			.getIsBuyingIndex()).photoId);
+//													intent.putExtra("photos",
+//															photopassArrayList);// 那个相册的全部图片路径
+//													intent.putExtra(
+//															"targetphotos",
+//															myApplication.magicPicList);
+//													// 清空标记
+//													myApplication
+//															.clearIsBuyingPhotoList();
+//
+//													SuccessAfterPayment();
+//
+//													if (myApplication
+//															.getRefreshViewAfterBuyBlurPhoto()
+//															.equals(Common.FROM_VIEWORSELECTACTIVITY)) {
+//														myApplication
+//																.setRefreshViewAfterBuyBlurPhoto(Common.FROM_VIEWORSELECTACTIVITYANDPAYED);
+//													} else if (myApplication
+//															.getRefreshViewAfterBuyBlurPhoto()
+//															.equals(Common.FROM_MYPHOTOPASS)) {
+//														myApplication
+//																.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASSPAYED);
+//													} else if (myApplication
+//															.getRefreshViewAfterBuyBlurPhoto()
+//															.equals(Common.FROM_BLUR)) {
+//														myApplication
+//																.setRefreshViewAfterBuyBlurPhoto("");
+//													}
+//
+//												} else {
+//													// 回到订单页面
+//													intent = new Intent(
+//															PaymentOrderActivity.this,
+//															OrderActivity.class);
+//													intent.putExtra("flag",
+//															"two");
+//													SuccessAfterPayment();
+//												}
+//
+//												Editor editor = sPreferences
+//														.edit();
+//												editor.putBoolean(
+//														Common.NEED_FRESH, true);
+//												editor.commit();
+//												startActivity(intent);
+//												finish();
+//											} else {// 去ppp页面
+//												System.out
+//														.println("----------------->buy ppp");
+//												Editor editor = sPreferences
+//														.edit();
+//												editor.putBoolean(
+//														Common.NEED_FRESH, true);
+//												editor.commit();
+//												myApplication
+//														.setNeedRefreshPPPList(true);
+//												Intent intent = new Intent(
+//														PaymentOrderActivity.this,
+//														MyPPPActivity.class);
+//												API1.PPPlist.clear();
+//												SuccessAfterPayment();
+//												startActivity(intent);
+//												finish();
+//											}
+//										} else {// 去订单页面
+//											System.out
+//													.println("----------------->buy product");
+//											SuccessAfterPayment();
+//											Intent intent = new Intent(
+//													PaymentOrderActivity.this,
+//													OrderActivity.class);
+//											intent.putExtra("flag", "two");
+//											Editor editor = sPreferences.edit();
+//											editor.putBoolean(
+//													Common.NEED_FRESH, true);
+//											editor.commit();
+//											startActivity(intent);
+//											finish();
+//										}
+//									}
+//								} catch (JSONException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//
+//							};
+//
+//							public void onFailure(int statusCode,
+//									Header[] headers, Throwable throwable,
+//									JSONObject errorResponse) {
+//								PictureAirLog.v(TAG, "fail========="
+//										+ errorResponse);
+//							};
+//
+//							public void onStart() {
+//								PictureAirLog.v(TAG, "start=======");
+//							};
+//
+//						});
 				break;
 			default:
 				break;

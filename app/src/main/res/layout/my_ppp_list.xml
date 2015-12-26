@@ -95,17 +95,19 @@
         android:background="@color/ppp_cover"
         android:layout_alignBottom="@id/ppp_imageView"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        >
 
         <TextView
             android:id="@+id/tv_expired"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:padding="10dp"
             android:text="fadsfd"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/ppp_number"
