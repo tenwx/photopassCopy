@@ -65,6 +65,8 @@ public class MainTabActivity extends BaseFragmentActivity {
     private CheckUpdateManager checkUpdateManager;
     private String currentLanguage;
 
+    private static final String TAG = "MainTabActivity";
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -183,7 +185,10 @@ public class MainTabActivity extends BaseFragmentActivity {
                 case 0:
                     System.out.println("photo tab on click");
                     if (mTabHost.getCurrentTab() == 0) {//获取最新数据
+                        PictureAirLog.d(TAG, "need refresh");
                         FragmentPageStory.doRefresh();
+                    } else {
+                        PictureAirLog.d(TAG, "need not refresh");
                     }
                     mTabHost.setCurrentTab(0);
                     last_tab = 0;

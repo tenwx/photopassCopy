@@ -597,4 +597,9 @@
     <string name="country">国家</string>
     <string name="account">账户</string>
     <string name="nick_name_empty">昵称不能为空!</string>
+    <!-- 下载-->
+    <string name="downloading">正在下载</string>
+    <string name="finish_download">下载完成!</string>
+    <string name="download_detail1">下载完成%1$d张!</string>
+    <string name="download_detail2">下载完成%1$d张, 下载失败%2$d张!</string>
 </resources>

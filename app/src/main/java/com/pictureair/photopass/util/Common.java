@@ -13,8 +13,8 @@ public class Common {
     public static final String SHARE_APP_NAME = "PhotoPass";
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
-    public static final String SMS_APPKEY = "7c07eba9fe66"; // SMSS，公司的账号
-    public static final String SMS_APPSECRET = "c3e30ac3daba694656287afef2686edf"; // SMSS
+    public static final String SMS_APPKEY = "d082b4315aed"; // SMSS，公司的账号
+    public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
 
 
     public static final String BASE_URL_TEST = "http://192.168.8.3:3006";

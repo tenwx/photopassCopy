@@ -562,4 +562,9 @@
     <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Nickname can not be empty</string>
+    <!-- 下载-->
+    <string name="downloading">Downloading Now</string>
+    <string name="finish_download">Download Successful!</string>
+    <string name="download_detail1">Downloaded %1$d photo(s)!</string>
+    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s)!</string>
 </resources>

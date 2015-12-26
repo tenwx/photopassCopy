@@ -104,13 +104,13 @@ public class LocationUtil implements AMapLocationListener{
 	@Override
 	public void onLocationChanged(AMapLocation arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("map"+arg0);
+		PictureAirLog.out("map" + arg0);
 		locationChanged = true;
 		if (arg0 != null && arg0.getAMapException().getErrorCode() == 0) {
 			latitude = arg0.getLatitude();
 			longitude = arg0.getLongitude();
 			mapLocation = arg0;
-			Log.d(TAG, "latitude --->"+ latitude+",longitude--->"+longitude);
+			PictureAirLog.d(TAG, "latitude --->"+ latitude+",longitude--->"+longitude);
 			//每次改动location，都需要判断当前是否在扫描定位通知中，如果不是，则启动线程，开始扫描
 			if (!isScanFence && locationItemInfos != null && locationItemInfos.size() > 0) {
 				scanFence();

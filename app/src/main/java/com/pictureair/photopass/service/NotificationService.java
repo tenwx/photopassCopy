@@ -254,6 +254,7 @@ public class NotificationService extends android.app.Service {
 								application.setUpgradedPhotosMessage(message.toString());
 							}
 
+							//下单的时候获取推送
 							if (event.toString().equals("catchOrderInfoOf"+userId)) {
 								sendType = "orderSend";
 								handler.sendEmptyMessage(3333);
@@ -288,7 +289,7 @@ public class NotificationService extends android.app.Service {
 							
 							
 							
-							
+							//图片推送
 							if (event.toString().equals("sendNewPhotosCountOf"+userId)) {
 								JSONObject message = (JSONObject) arg2[0];
 								try {
@@ -339,6 +340,7 @@ public class NotificationService extends android.app.Service {
 								}
 							}
 
+							//video推送
 							if (event.toString().equals("videoGenerate")) {
 								sendType = "videoGenerate";
 								handler.sendEmptyMessage(3333);
@@ -358,6 +360,10 @@ public class NotificationService extends android.app.Service {
 									PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
 									notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_video), pendingIntent);
 									manager.notify(0, notification);
+
+									Intent intent1 = new Intent();// 创建Intent对象
+									intent1.setAction("com.receiver.UpdateUiRecriver");
+									sendBroadcast(intent1);
 
 									application.setPushViedoCount(videoCount);//设置VideoCount
 								} catch (JSONException e) {

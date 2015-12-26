@@ -99,7 +99,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      * 用户名、图像、
      */
     private void initData() {
-        name.setText(sp.getString(Common.USERINFO_NICKNAME, "photoPass"));
+        if ("".equals(sp.getString(Common.USERINFO_NICKNAME, ""))) {
+            name.setText(sp.getString(Common.USERINFO_ACCOUNT, "PhotoPass"));
+        } else {
+            name.setText(sp.getString(Common.USERINFO_NICKNAME, ""));
+        }
         avatarUrl = sp.getString(Common.USERINFO_HEADPHOTO, null);
         setCodePic();//设置二维码
         setHeadImage();//设置头像
