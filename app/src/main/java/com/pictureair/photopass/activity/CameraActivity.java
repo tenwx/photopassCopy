@@ -276,9 +276,11 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 				if (success) {
 					if (cameraPosition == 1) {
 						if (isSupportContinuous) {
-							myParameters
-									.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-							camera.setParameters(myParameters);
+							handler.removeCallbacks(runnable9);
+							handler.postDelayed(runnable9, 3000);
+//							myParameters
+//									.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//							camera.setParameters(myParameters);
 						}
 					}
 					// camera.startPreview();
@@ -293,10 +295,10 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 				y1 = 0;
 				z1 = 0;
 				isfocus = false;
-				if (camera_flash == 2) {
-					myParameters.setFlashMode(Parameters.FLASH_MODE_ON);
-					mycamera.setParameters(myParameters);
-				}
+//				if (camera_flash == 2) {
+//					myParameters.setFlashMode(Parameters.FLASH_MODE_ON);
+//					mycamera.setParameters(myParameters);
+//				}
 			}
 		};
 		// 添加饰品。
@@ -361,14 +363,14 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 					setCameraRotation();// 设置Camera 角度属性。
 					handler.removeCallbacks(runnable4);
 					handler.removeCallbacks(runnable2);
+					handler.removeCallbacks(runnable9); //取消设置属性。
 					mycamera.takePicture(null, null, myjpegCallback);
 					handler.postDelayed(runnable5, 500);
 				}
 				taking_flag = true;
 			} else {
-				// System.out.println("fail");
-				// newToast.setTextAndShow(R.string.please_wait,
-				// Common.TOAST_SHORT_TIME);
+				 newToast.setTextAndShow(getResources().getString(R.string.please_wait),
+				 Common.TOAST_SHORT_TIME);
 			}
 			break;
 		default:
@@ -422,7 +424,6 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 				photoFile = new File(nameFile + "/"
 						+ dateFormat.format(new Date()) + ".JPG");
 				mycamera.stopPreview();
-
 				// magic模式拍照。有饰品的时候，合成饰品，没有饰品，就正常拍摄。
 				if (isMagicShot) {
 					// 消失掉 magicShow 的模版，动画继续
@@ -516,12 +517,12 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 				editor.commit();
 
 				UpdateLastPhoto(photoFile.toString());
+				((MyApplication) getApplication()).scanMagicFinish = false;
+				CameraUtil.scan(photoFile.toString(), CameraActivity.this);
 				if (!isMagicShot) {
 					mycamera.startPreview();
 					taking_flag = false;
 				}
-				((MyApplication) getApplication()).scanMagicFinish = false;
-				CameraUtil.scan(photoFile.toString(), CameraActivity.this);
 
 			} else {
 				// 数据为空。拍照失败。
@@ -975,6 +976,18 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 			mycamera.cancelAutoFocus();// 取消一切对焦的动作
 		}
 	};
+
+	// 定时操作。 让聚焦图片消失。并且取消聚焦。
+	Runnable runnable9 = new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			// 要做的事情
+			myParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+			mycamera.setParameters(myParameters);
+		}
+	};
+
 
 	private void setFocusView() {
 		handler.postDelayed(runnable3, 1000);

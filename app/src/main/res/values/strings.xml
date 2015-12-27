@@ -558,7 +558,7 @@
     <string name="transport">运输</string>
     <string name="goods_info">商品信息</string>
 
-    <!--  tips Start  无英文状态。-->
+    <!--  tips Start -->
     <!--   网络下载模式流程  -->
     <string name="one_photo_download_msg1">亲，您设置了仅WIFI状态下载，当前为非WIFI网络，是否需要更改？</string>
     <string name="one_photo_download_no_msg1">考虑下</string>
@@ -567,19 +567,19 @@
     <string name="one_photo_download_msg2">亲，当前非WIFI网络，继续下载将会消耗手机流量哦</string>
     <string name="one_photo_download_no_msg2">停止下载</string>
     <string name="one_photo_download_yes_msg2">继续下载</string>
-    <!--   推广AirPass＋流程  -->
-    <string name="pp_first_up10_msg">亲，升级您的AirPass+即可拥有此卡内所有高清数码照片！</string>
+    <!--   推广PhotoPass＋流程  -->
+    <string name="pp_first_up10_msg">亲，升级您的PhotoPass+即可拥有此卡内所有高清数码照片！</string>
     <string name="pp_first_up10_no_msg">考虑下</string>
     <string name="pp_first_up10_yes_msg">去升级</string>
     <!--   同步更新照片流程  -->
-    <string name="first_tips_syns_msg1">亲，您需要同步自动更新下载您的AirPass相册吗？</string>
+    <string name="first_tips_syns_msg1">亲，您需要同步自动更新下载您的PhotoPass相册吗？</string>
     <string name="first_tips_syns_no_msg1">取消</string>
     <string name="first_tips_syns_yes_msg1">同步更新</string>
 
-    <string name="first_tips_syns_msg2">亲，您需要同步自动更新下载已购买的AirPass照片吗？</string>
+    <string name="first_tips_syns_msg2">亲，您需要同步自动更新下载已购买的PhotoPass照片吗？</string>
     <string name="first_tips_syns_no_msg2">取消</string>
     <string name="first_tips_syns_yes_msg2">同步更新</string>
-    <!--  tips End   无英文状态。-->
+    <!--  tips End  -->
 
     <string name="gprs_wifi_download">4G/3G/Wifi下载</string>
     <string name="wifi_only_download">仅WiFi下载</string>
@@ -591,7 +591,6 @@
     <string name="about_tips">我迪故事里, 有您更精彩</string>
 
     <string name="instruction">Instruction...</string>
-    <!-- 无英文状态。-->
     <string name="no_activated">未激活</string>
     <string name="activated">已激活</string>
     <string name="expired_on">有效时间:</string>
@@ -607,5 +606,7 @@
     <!-- 新增 推送 部分字段。-->
     <string name="notifacation_order_completed_msg">亲，您已经支付成功，美好影像体验尽在迪彩！</string>
     <string name="notifacation_order_submit_msg">亲，您已经下单成功，快去支付吧！</string>
+
+    <string name="please_wait">正在拍照，请稍后</string>
 
 </resources>

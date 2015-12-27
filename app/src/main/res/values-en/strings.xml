@@ -571,4 +571,33 @@
     <!-- 新增 推送 部分字段。-->
     <string name="notifacation_order_completed_msg">Payment successfully, connecting memories !</string>
     <string name="notifacation_order_submit_msg">Please pay your order,thanks！</string>
+
+    <string name="please_wait">Taking pictures, please wait.</string>
+
+    <!--  tips Start -->
+    <!--   网络下载模式流程  -->
+    <string name="one_photo_download_msg1">Dear,you set the WIFI status only download, the current non WIFI network, whether you need to change？</string>
+    <string name="one_photo_download_no_msg1">Consideration</string>
+    <string name="one_photo_download_yes_msg1">To change</string>
+
+    <string name="one_photo_download_msg2">Dear，Current non WIFI network, continue to download will consume mobile traffic oh</string>
+    <string name="one_photo_download_no_msg2">Stop Download</string>
+    <string name="one_photo_download_yes_msg2">Continue download</string>
+    <!--   推广PhotoPass＋流程  -->
+    <string name="pp_first_up10_msg">Dear，Upgrade your PhotoPass+ you can have this card all HD digital photos！</string>
+    <string name="pp_first_up10_no_msg">Consideration</string>
+    <string name="pp_first_up10_yes_msg">To change</string>
+    <!--   同步更新照片流程  -->
+    <string name="first_tips_syns_msg1">Dear，Do you need to sync with the automatic updates to download your PhotoPass album？</string>
+    <string name="first_tips_syns_no_msg1">Cancel</string>
+    <string name="first_tips_syns_yes_msg1">Auto Sycn</string>
+
+    <string name="first_tips_syns_msg2">Dear，Do you need to sync the PhotoPass photos that have been purchased automatically by the download？</string>
+    <string name="first_tips_syns_no_msg2">Cancel</string>
+    <string name="first_tips_syns_yes_msg2">Auto Sycn</string>
+    <!--  tips End  -->
+
+    <string name="no_activated">nonactivated</string>
+    <string name="activated">activated</string>
+    <string name="expired_on">effective time:</string>
 </resources>
