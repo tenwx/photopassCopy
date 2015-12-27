@@ -59,7 +59,6 @@ public class MainTabActivity extends BaseFragmentActivity {
     private MyToast newToast;
 
     public static boolean changeToShopTab = false;
-    private String flag = "";
 
     private MyApplication application;
     private SharedPreferences sharedPreferences;
@@ -72,18 +71,9 @@ public class MainTabActivity extends BaseFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-        String _id = sp.getString(Common.USERINFO_ID, null);
-        if (_id != null) {//判断是否已经登录 // 用来解决 “退出账户之后，点击推送，进入MainTabActivity的问题。”
-            application = (MyApplication) getApplication();
-            instances = this;
-            initView();
-        } else {
-            AppManager.killOtherActivity(MainTabActivity.class); //杀死出这个activity之外的所有Activity
-            startActivity(new Intent(MainTabActivity.this, LoginActivity.class));
-            this.finish();
-        }
-
+        application = (MyApplication) getApplication();
+        instances = this;
+        initView();
     }
 
     //清除acahe框架的缓存数据
@@ -141,35 +131,26 @@ public class MainTabActivity extends BaseFragmentActivity {
         PictureAirLog.out("maintab ==== resume");
         Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
         this.startService(intent1);
-        //判断是否是支付未收到推送进入主界面-me
-        if (PaymentOrderActivity.PAYMENT_PENGDING) {
-            PictureAirLog.v("MainTabActivity", " onResume() payment_pending: ");
-            last_tab = 4;
+        if (changeToShopTab) {
+            PictureAirLog.out("skip to shop tab");
+            mTabHost.setCurrentTab(3);
+            changeToShopTab = false;
+        } else {
+            PictureAirLog.out("skip to last tab");
             //设置成为上次的tab页面
             mTabHost.setCurrentTab(last_tab);
-            PaymentOrderActivity.PAYMENT_PENGDING = false;
-        } else {
-            if (changeToShopTab) {
-                PictureAirLog.out("skip to shop tab");
-                mTabHost.setCurrentTab(3);
-                changeToShopTab = false;
-            } else {
-                PictureAirLog.out("skip to last tab");
-                //设置成为上次的tab页面
-                mTabHost.setCurrentTab(last_tab);
-            }
-            if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
-                mTabHost.clearAllTabs();
-                mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-                loadFragment(fragmentArray.length);
-                mTabHost.setCurrentTab(4);
-                currentLanguage = MyApplication.getInstance().getLanguageType();
-            }
-            PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
-            if (application.getPushPhotoCount() > 0) {//显示红点
-                MainTabActivity.maintabbadgeView.show();
-                application.setPushPhotoCount(0);
-            }
+        }
+        if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+            mTabHost.clearAllTabs();
+            mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+            loadFragment(fragmentArray.length);
+            mTabHost.setCurrentTab(4);
+            currentLanguage = MyApplication.getInstance().getLanguageType();
+        }
+        PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
+        if (application.getPushPhotoCount() > 0) {//显示红点
+            MainTabActivity.maintabbadgeView.show();
+            application.setPushPhotoCount(0);
         }
 
         // 接收消息回复

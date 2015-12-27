@@ -108,7 +108,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     private PictureAirDbManager pictureAirDbManager;
     public static org.json.JSONObject resultJsonObject;
-    public static boolean PAYMENT_PENGDING = false;//是否收到支付完成推送
     private CustomProgressDialog customProgressDialog;
 
     @Override
@@ -434,7 +433,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         }
 
         @Override
-        public void onFinish() {
+        public void onFinish() {//支付超时或者失败
             PictureAirLog.v(TAG, "onFinish ");
             if (resultJsonObject == null) {
                 if (customProgressDialog.isShowing()) {
@@ -442,12 +441,8 @@ public class PaymentOrderActivity extends BaseActivity implements
                 }
                 PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
                 pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-                PAYMENT_PENGDING = true;//未收到推送进入我的界面
+
                 SuccessAfterPayment();
-                Intent intent = new Intent();
-                intent.setClass(PaymentOrderActivity.this, MainTabActivity.class);
-                intent.putExtra("flag", "payment_pending");
-                startActivity(intent);
                 finish();
             }
         }
