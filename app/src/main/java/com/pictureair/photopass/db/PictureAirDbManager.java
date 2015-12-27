@@ -120,12 +120,23 @@ public class PictureAirDbManager {
         try {
             database = photoInfoDBHelper.getWritableDatabase();
             for (int i = 0; i < originalPhotosArrayList.size(); i++) {
-                photoItemInfo = originalPhotosArrayList.get(i);
-                photoInfos = new ArrayList<PhotoInfo>();
+                photoItemInfo = new PhotoItemInfo();
+                photoItemInfo.locationId = originalPhotosArrayList.get(i).locationId;
+                photoItemInfo.locationIds = originalPhotosArrayList.get(i).locationIds;
+                photoItemInfo.shootTime = originalPhotosArrayList.get(i).shootTime;
+                photoItemInfo.shootOn = originalPhotosArrayList.get(i).shootOn;
+                photoItemInfo.place = originalPhotosArrayList.get(i).place;
+                photoItemInfo.list = originalPhotosArrayList.get(i).list;
+                photoItemInfo.placeUrl = originalPhotosArrayList.get(i).placeUrl;
+                photoItemInfo.islove = originalPhotosArrayList.get(i).islove;
+                photoItemInfo.latitude = originalPhotosArrayList.get(i).latitude;
+                photoItemInfo.longitude = originalPhotosArrayList.get(i).longitude;
+
+                photoInfos = new ArrayList<>();
                 photoInfos.addAll(photoItemInfo.list);
                 Iterator<PhotoInfo> iterator = photoInfos.iterator();
                 while (iterator.hasNext()) {
-                    photoInfo = (PhotoInfo) iterator.next();
+                    photoInfo = iterator.next();
                     //检查是否是收藏图片
                     if (photoInfo.photoId == null) {
                         photoInfo.photoId = "";

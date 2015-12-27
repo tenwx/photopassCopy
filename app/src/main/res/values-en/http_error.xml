@@ -187,4 +187,15 @@
     <string name="http_error_code_5030">Please login!</string>
     <string name="http_error_code_5031">query Item Photo Error!</string>
     <string name="http_error_code_5032">Your carts has no goods!</string>
+    <string name="http_error_code_5033">checkOutFail!</string>
+    <string name="http_error_code_5034">photoQueryError!</string>
+    <string name="http_error_code_5035">notExistsPhoto!</string>
+    <string name="http_error_code_5036">getOutletsError!</string>
+    <string name="http_error_code_5037">oneKeyBuyPhotoError!</string>
+    <string name="http_error_code_5038">createShareUrlError!</string>
+    <string name="http_error_code_5039">numberCheckInError!</string>
+    <string name="http_error_code_5040">invalidShareContent!</string>
+    <string name="http_error_code_5041">shareFail!</string>
+    <string name="http_error_code_5042">orderPhotoExecError!</string>
+    <string name="http_error_code_5043">orderPhotoNotExists!</string>
 </resources>

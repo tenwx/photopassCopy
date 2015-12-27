@@ -289,9 +289,10 @@ public class StoryFragment extends Fragment {
 				}
 				EventBus.getDefault().removeStickyEvent(storyFragmentEvent);
 			}
-		} else if (baseBusEvent instanceof StoryRefreshEvent) {//通知页面开始刷新
+		} else if (baseBusEvent instanceof StoryRefreshEvent) {
 			StoryRefreshEvent storyRefreshEvent = (StoryRefreshEvent) baseBusEvent;
-			if (storyRefreshEvent.getTab() == tab) {
+			if (storyRefreshEvent.getTab() == tab &&
+					storyRefreshEvent.getRefreshStatus() == StoryRefreshEvent.START_REFRESH) {//通知页面开始刷新
 				PictureAirLog.out(tab + "------>start refresh from bus");
 				if (!refreshLayout.isRefreshing()) {
 					refreshLayout.setRefreshing(true);
@@ -301,6 +302,15 @@ public class StoryFragment extends Fragment {
 				message.arg1 = tab;
 				handler.sendMessage(message);
 
+				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
+			}
+
+			if (storyRefreshEvent.getTab() == tab &&
+					storyRefreshEvent.getRefreshStatus() == StoryRefreshEvent.STOP_REFRESH) {//开始关闭刷新
+				PictureAirLog.out(tab + "------>stop refresh from bus");
+				if (refreshLayout.isRefreshing()) {
+					refreshLayout.setRefreshing(false);
+				}
 				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
 			}
 		}

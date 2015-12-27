@@ -371,6 +371,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
 
+        } else {//刷新失败
+            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.STOP_REFRESH));
         }
         noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
     }
@@ -1336,7 +1339,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     //执行下拉刷新
     public static void doRefresh() {
-        EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab));
+        EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.START_REFRESH));
     }
 
 }

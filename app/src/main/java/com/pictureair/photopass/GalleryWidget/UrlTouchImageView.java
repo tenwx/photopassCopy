@@ -190,11 +190,15 @@ public class UrlTouchImageView extends RelativeLayout {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                        Options options = new Options();
-                        options.inSampleSize = 2;//缩小为原来的1/2
-                        bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length, options);
+                        if (arg2.length != 0){
+                            Options options = new Options();
+                            options.inSampleSize = 2;//缩小为原来的1/2
+                            bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length, options);
+                        } else {
+                            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_failed);
+                        }
                         handler.sendEmptyMessage(LOAD_FILE_DONE);
-                    };
+                    }
                 }.start();
 
             } else {//6.如果缓存不存在，从网络获取图片信息，
