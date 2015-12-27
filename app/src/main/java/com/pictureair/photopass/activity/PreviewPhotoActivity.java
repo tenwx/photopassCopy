@@ -378,7 +378,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     progressDialog.dismiss();
                     newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
-
                     break;
                 case API1.GET_GOODS_SUCCESS:
                     GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()

@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.renderscript.Sampler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -449,7 +449,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     /**
      * 设置旋转动画
      */
-    private void setRotatingAnimation(float value){
+    private void setRotatingAnimation(float value) {
         RotateAnimation ra;
         ra = new RotateAnimation(0f, value, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ra.setRepeatCount(1);//设置重复次数
@@ -577,7 +577,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 if (selproductPopupWindow.isShowing()) {
                     selproductPopupWindow.dismiss();
                     buttonSelectproductShowDown();
-                }else{
+                } else {
                     mAdapter.notifyDataSetChanged();
                     selproductPopupWindow.showAsDropDown(findViewById(R.id.product_name_tv));
                     buttonSelectproductShowUp();
@@ -585,6 +585,10 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.button_buy:
+                if (goodsInfo == null) {
+                    newToast.setTextAndShow(R.string.http_error_code_5005, Toast.LENGTH_SHORT);
+                    return;
+                }
                 if (null != sp.getString(Common.USERINFO_ID, null)) {
                     Message message = handler.obtainMessage();
                     message.what = API1.UPLOAD_PHOTO_SUCCESS;
@@ -599,6 +603,10 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.button_addtocart://加入购物车因为还有个上传图片的过程，先上传图片，获取photo返回数据之后再调用购物车API。所以整个动画流程中，有一部分需要进度条
+                if (goodsInfo == null) {
+                    newToast.setTextAndShow(R.string.http_error_code_5005, Toast.LENGTH_SHORT);
+                    return;
+                }
                 if (null != sp.getString(Common.USERINFO_ID, null)) {
                     Message message = handler.obtainMessage();
                     message.what = API1.UPLOAD_PHOTO_SUCCESS;
