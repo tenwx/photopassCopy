@@ -14,6 +14,16 @@ public class EmbedPhotoConfig implements Serializable {
     private Output output = null;
     private List<Middle> middle = null;
 
+    public EmbedPhotoConfig() {
+    }
+
+    public EmbedPhotoConfig(List<Foreground> foreground, Background background, Output output, List<Middle> middle) {
+        this.foreground = foreground;
+        this.background = background;
+        this.output = output;
+        this.middle = middle;
+    }
+
     public List<Foreground> getForeground() {
         return foreground;
     }
@@ -53,6 +63,18 @@ public class EmbedPhotoConfig implements Serializable {
         private int height = 0; //number,前景图高度
         private int topMargin = 0; //number,上边距
         private int leftMargin = 0; //number 左边距
+
+        public Foreground() {
+        }
+
+        public Foreground(String url, int seq, int width, int height, int topMargin, int leftMargin) {
+            this.url = url;
+            this.seq = seq;
+            this.width = width;
+            this.height = height;
+            this.topMargin = topMargin;
+            this.leftMargin = leftMargin;
+        }
 
         public String getUrl() {
             return url;
@@ -110,6 +132,17 @@ public class EmbedPhotoConfig implements Serializable {
         private int topMargin = 0; //number,上边距
         private int leftMargin = 0; //number 左边距
 
+        public Background(int leftMargin, String url, int width, int height, int topMargin) {
+            this.leftMargin = leftMargin;
+            this.url = url;
+            this.width = width;
+            this.height = height;
+            this.topMargin = topMargin;
+        }
+
+        public Background() {
+        }
+
         public String getUrl() {
             return url;
         }
@@ -155,6 +188,14 @@ public class EmbedPhotoConfig implements Serializable {
         private int width = 0; //number,最终输出图宽度
         private int height = 0; //number 最终输出图高度
 
+        public Output() {
+        }
+
+        public Output(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+
         public int getWidth() {
             return width;
         }
@@ -180,6 +221,19 @@ public class EmbedPhotoConfig implements Serializable {
         private int leftMargin = 0; //number 左边距
         private int rotate = 0; //number,旋转角度
         private int scale = 0; //number 偏移度
+
+        public Middle() {
+        }
+
+        public Middle(String url, int width, int height, int topMargin, int leftMargin, int rotate, int scale) {
+            this.url = url;
+            this.width = width;
+            this.height = height;
+            this.topMargin = topMargin;
+            this.leftMargin = leftMargin;
+            this.rotate = rotate;
+            this.scale = scale;
+        }
 
         public String getUrl() {
             return url;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -407,55 +408,63 @@ public class PaymentOrderActivity extends BaseActivity implements
                     PictureAirLog.v(TAG, "RQF_SUCCESS");
                     //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
                     customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
-                    mHandler.postAtTime(new Runnable() {
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (resultJsonObject == null) {
-                                pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-                            } else {
-                                dealData(resultJsonObject);
-                                customProgressDialog.dismiss();
-                            }
+                            satrtTimer();
+                            getData();
                         }
-                    }, 5000);
+                    });
                     break;
                 default:
                     break;
             }
         }
     };
-//
-//    new CountDownTimer(5000, 1000) {
-//        @Override
-//        public void onTick(long millisUntilFinished) {
-//            if (resultJsonObject == null) {
-//                pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-//            } else {
-//                dealData(resultJsonObject);
-//                customProgressDialog.dismiss();
-//                this.cancel();
-//            }
-//        }
-//
-//        @Override
-//        public void onFinish() {
-//            pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-//            customProgressDialog.dismiss();
-//            //页面跳转
-//            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
-//            AppManager.getInstance().killActivity(PreviewProductActivity.class);
-//            // AppManager.getInstance().killActivity(BlurActivity.class);
-//            AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
-//            AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-//            AppManager.getInstance().killActivity(MakegiftActivity.class);
-//            AppManager.getInstance().killActivity(DetailProductActivity.class);
-//
-//            Intent intent = new Intent();
-//            intent.setClass(PaymentOrderActivity.this, MainTabActivity.class);
-//            intent.putExtra("flag", "payment_pending");
-//            startActivity(intent);
-//        }
-//    }.start();
+
+    /**
+     * 获取推送消息，跳转相应界面
+     */
+    public void satrtTimer() {
+        PictureAirLog.v(TAG, "satrtTimer ");
+        new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                PictureAirLog.v(TAG, "onFinish ");
+                if (resultJsonObject == null) {
+                    if (customProgressDialog.isShowing()) {
+                        customProgressDialog.dismiss();
+                    }
+                    PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
+                    pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                    SuccessAfterPayment();
+                    Intent intent = new Intent();
+                    intent.setClass(PaymentOrderActivity.this, MainTabActivity.class);
+                    intent.putExtra("flag", "payment_pending");
+                    startActivity(intent);
+                }
+            }
+        }.start();
+
+    }
+
+
+    /**
+     * 获取推送消息，跳转相应界面
+     */
+    public void getData() {
+        PictureAirLog.v(TAG, "getData ");
+        while (resultJsonObject != null) {
+            PictureAirLog.v(TAG, "onTick resultJsonObject: " + resultJsonObject.toString());
+            dealData(resultJsonObject);
+            break;
+        }
+    }
 
     /**
      * 处理收到推送的数据
@@ -463,11 +472,11 @@ public class PaymentOrderActivity extends BaseActivity implements
      * @param resultJsonObject
      */
     public void dealData(org.json.JSONObject resultJsonObject) {
-        PictureAirLog.e(TAG, "dealData resultJsonObject: " + resultJsonObject.toString());
+        PictureAirLog.v(TAG, "dealData()");
         // fasd;
         if (resultJsonObject.has("pppCode")) {// ppp
             // product
-            PictureAirLog.out("----------------->buy ppp");
+            PictureAirLog.v(TAG, "----------------->buy ppp");
             SharedPreferences.Editor editor = sPreferences.edit();
             editor.putBoolean(Common.NEED_FRESH, true);
             editor.commit();
@@ -479,24 +488,23 @@ public class PaymentOrderActivity extends BaseActivity implements
             }
             SuccessAfterPayment();
             startActivity(intent);
-
             finish();
         } else {
             Intent intent;
             // 以下两种情况，进入图片清晰页面
-            PictureAirLog.e("get refresh view after buy blur photo---->", myApplication.getRefreshViewAfterBuyBlurPhoto());
+            PictureAirLog.v(TAG, "get refresh view after buy blur photo---->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             // 以下三种情况要回到清晰图片页面
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)
                     || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)
                     || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
-                PictureAirLog.e("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
+                PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
                 myApplication.setPhotoIsPaid(true);
                 ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
                 photopassArrayList.addAll(myApplication.getIsBuyingPhotoInfoList());
                 // 找出购买的info，并且将购买属性改为1
                 photopassArrayList.get(myApplication.getIsBuyingIndex()).isPayed = 1;
-                PictureAirLog.e("position--->", myApplication.getIsBuyingIndex() + "");
-                PictureAirLog.e("photoId---->", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
+                PictureAirLog.v("position--->", myApplication.getIsBuyingIndex() + "");
+                PictureAirLog.v("photoId---->", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
 
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
                 intent.putExtra("activity", "paymentorderactivity");
@@ -515,8 +523,10 @@ public class PaymentOrderActivity extends BaseActivity implements
                 } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
                     myApplication.setRefreshViewAfterBuyBlurPhoto("");
                 }
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 SuccessAfterPayment();
-
                 SharedPreferences.Editor editor = sPreferences.edit();
                 editor.putBoolean(Common.NEED_FRESH, true);
                 editor.commit();
@@ -524,9 +534,14 @@ public class PaymentOrderActivity extends BaseActivity implements
                 finish();
             } else {
                 // 回到订单页面
+                PictureAirLog.v(TAG, "----------------->回到订单页面");
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                 intent.putExtra("flag", "two");
                 SuccessAfterPayment();
+                startActivity(intent);
                 finish();
             }
 

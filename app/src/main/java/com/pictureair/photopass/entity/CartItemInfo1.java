@@ -29,6 +29,32 @@ public class CartItemInfo1 implements Serializable {
     private int cartProductType = 3;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品(自己添加)
     private String cartProductImageUrl = "";//自己添加，购物车商品预览图
 
+    public CartItemInfo1() {
+    }
+
+    public CartItemInfo1(String cartId, String storeId, String goodsKey, String productName, String productNameAlias, String description, int entityType, int embedPhotosCount, int unitPrice, int qty, int price, String[] pictures, List<CartPhotosInfo1> embedPhotos, boolean isSelect, boolean hasPhoto, int showEdit, int showPhotos, boolean isFullPhotos, int cartProductType, String cartProductImageUrl) {
+        this.cartId = cartId;
+        this.storeId = storeId;
+        this.goodsKey = goodsKey;
+        this.productName = productName;
+        this.productNameAlias = productNameAlias;
+        this.description = description;
+        this.entityType = entityType;
+        this.embedPhotosCount = embedPhotosCount;
+        this.unitPrice = unitPrice;
+        this.qty = qty;
+        this.price = price;
+        this.pictures = pictures;
+        this.embedPhotos = embedPhotos;
+        this.isSelect = isSelect;
+        this.hasPhoto = hasPhoto;
+        this.showEdit = showEdit;
+        this.showPhotos = showPhotos;
+        this.isFullPhotos = isFullPhotos;
+        this.cartProductType = cartProductType;
+        this.cartProductImageUrl = cartProductImageUrl;
+    }
+
     public String getCartId() {
         return cartId;
     }

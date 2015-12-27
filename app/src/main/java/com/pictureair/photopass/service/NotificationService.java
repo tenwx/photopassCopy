@@ -243,8 +243,8 @@ public class NotificationService extends android.app.Service {
                         public void on(String event,
                                        IOAcknowledge arg1, Object... arg2) {
                             // TODO Auto-generated method stub
-                            Log.e("  ====  arg2", " :" + arg2);
-                            Log.e("===on===", "Server triggered event '" + event + "'");
+                            PictureAirLog.v("  ====  arg2", " :" + arg2);
+                            PictureAirLog.v("===on===", "Server triggered event '" + event + "'");
                             //订单完成的推送。
                             if (event.toString().equals("doneOrderPay")) {
                                 sendType = "doneOrderPay";

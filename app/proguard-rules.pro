@@ -101,10 +101,12 @@
 -dontwarn cn.sharesdk.**
 -dontwarn **.R$*
 
+#保持 native 的方法不去混淆
 -keepclasseswithmembernames class * {
     native <methods>;
 }
 
+#保持自定义控件类不被混淆，指定格式的构造方法不去混淆
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet);
 }
@@ -113,28 +115,59 @@
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
 
+#保持指定规则的方法不被混淆（Android layout 布局文件中为控件配置的onClick方法不能混淆）
 -keepclassmembers class * extends android.app.Activity {
    public void *(android.view.View);
 }
 
+#保持自定义控件指定规则的方法不被混淆
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(...);
+}
+
+#保持枚举 enum 不被混淆
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
 
+#保持R文件不被混淆，否则，你的反射是获取不到资源id的
 -keep class **.R$* {*;}
 
+#-keep public class com.pictureAir.R$*{
+#	public static final int *;
+#}
+
+#保持 Parcelable 不被混淆（aidl文件不能去混淆）
 -keep class * implements android.os.Parcelable {
 	public static final android.os.Parcelable$Creator *;
 }
 
+#需要序列化和反序列化的类不能被混淆（注：Java反射用到的类也不能被混淆）
+-keepnames class * implements java.io.Serializable
+
+#保护实现接口Serializable的类中，指定规则的类成员不被混淆
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    !static !transient <fields>;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+    public <fields>;
+}
+
+-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
+
+-keepclassmembernames com.pictureair.photopass.entity.** { *; }  #转换JSON的JavaBean，类成员名称保护，使其不被混淆
+
 #友盟混淆
 -keepclassmembers class * {
    	public <init>(org.json.JSONObject);
-}
-
--keep public class com.pictureAir.R$*{
-	public static final int *;
 }
 
 # universal-image-loader 混淆
@@ -145,19 +178,13 @@
 -dontwarn android-async-http-1.4.9.jar.**
 -keep class android-async-http-1.4.9.jar.**{*;}
 
-# fastjson 混淆
+ # fastjson 混淆
 -dontwarn com.alibaba.fastjson.**
-
 -keep class com.alibaba.fastjson.** { *; }
 -keepclassmembers class * {
     public <methods>;
-}
--keepclassmembers class * implements java.io.Serializable {
-    static final long serialVersionUID;
-    private static final java.io.ObjectStreamField[] serialPersistentFields;
-    private void writeObject(java.io.ObjectOutputStream);
-    private void readObject(java.io.ObjectInputStream);
-    java.lang.Object writeReplace();
-    java.lang.Object readResolve();
-    public <fields>;
-}
+ }
+
+
+
+

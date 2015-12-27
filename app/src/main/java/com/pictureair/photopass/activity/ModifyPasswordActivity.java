@@ -140,12 +140,12 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
             case R.id.modify_password_radio:
 
                 if (isSele) {
-                    radio.setImageResource(R.drawable.modify_password_radio_nor);
+                    radio.setImageResource(R.drawable.sele);
                     oldPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     newPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     isSele = false;
                 } else {
-                    radio.setImageResource(R.drawable.modify_password_radio_sele);
+                    radio.setImageResource(R.drawable.nosele);
                     oldPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     newPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     isSele = true;
