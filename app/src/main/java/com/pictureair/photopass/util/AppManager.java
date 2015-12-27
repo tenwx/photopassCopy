@@ -126,7 +126,7 @@ public class AppManager {
 	 * 结束除了specialActivity之外的其他的activity
 	 * @param specialActivity 指定的activity
 	 */
-	public void killOtherActivity(Class<?> specialActivity){
+	public static void killOtherActivity(Class<?> specialActivity){
 		Iterator<Activity> iterator = mActivityStack.iterator();
 		while (iterator.hasNext()) {
 			Activity activity = (Activity) iterator.next();
