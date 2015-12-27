@@ -17,9 +17,9 @@ public class Common {
     public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
 
 
-    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
 
-    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
     public static final String GET_ALL_LOCATIONS_OF_ALBUM_GROUP = "/park/getLocationsOfAlbumGroup";//获得location信息
@@ -87,7 +87,7 @@ public class Common {
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
-    public static final String ALIPAY_NOTIFY = "http://pwsh.pictureworks.biz:3006/api/webPayNotify";//alipay的异步通知URL
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
     public static final String HIDE_PPS = "/user/hidePPs";//隐藏PP
     public static final String GET_PP_BY_DATE = "/user/getNeedUpgradePPsByDate";
     public static final String BIND_PPS_DATE_TO_PPP = "/ppp/bindPPsAndBindDatesToPPP";//将pp绑定到ppp   多了时间。

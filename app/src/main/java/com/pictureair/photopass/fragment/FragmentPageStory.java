@@ -666,7 +666,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
                 EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
                 EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
-                EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 4));
+                EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
 
 
             } else {//没有图片
