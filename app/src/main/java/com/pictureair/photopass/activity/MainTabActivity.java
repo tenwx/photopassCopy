@@ -68,16 +68,17 @@ public class MainTabActivity extends BaseFragmentActivity {
 
     private static final String TAG = "MainTabActivity";
 
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         String _id = sp.getString(Common.USERINFO_ID, null);
-        if(_id != null){//判断是否已经登录 // 用来解决 “退出账户之后，点击推送，进入MainTabActivity的问题。”
+        if (_id != null) {//判断是否已经登录 // 用来解决 “退出账户之后，点击推送，进入MainTabActivity的问题。”
             application = (MyApplication) getApplication();
             instances = this;
             initView();
-        }else{
+        } else {
             AppManager.killOtherActivity(MainTabActivity.class); //杀死出这个activity之外的所有Activity
             startActivity(new Intent(MainTabActivity.this, LoginActivity.class));
             this.finish();
@@ -141,12 +142,12 @@ public class MainTabActivity extends BaseFragmentActivity {
         Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
         this.startService(intent1);
         //判断是否是支付未收到推送进入主界面-me
-        flag = getIntent().getStringExtra("flag");
-        PictureAirLog.v("MainTabActivity", " onResume() flag: " + flag);
-        if (flag != null && flag.equals("payment_pending")) {
+        if (PaymentOrderActivity.PAYMENT_PENGDING) {
+            PictureAirLog.v("MainTabActivity", " onResume() payment_pending: ");
             last_tab = 4;
             //设置成为上次的tab页面
             mTabHost.setCurrentTab(last_tab);
+            PaymentOrderActivity.PAYMENT_PENGDING = false;
         } else {
             if (changeToShopTab) {
                 PictureAirLog.out("skip to shop tab");

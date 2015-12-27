@@ -50,7 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Timer;
 
 public class PaymentOrderActivity extends BaseActivity implements
         OnClickListener {
@@ -109,10 +108,8 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     private PictureAirDbManager pictureAirDbManager;
     public static org.json.JSONObject resultJsonObject;
-    private static boolean PAYMENT_SUCCESS = false;//是否收到支付完成推送
-    private int count = 0;
+    public static boolean PAYMENT_PENGDING = false;//是否收到支付完成推送
     private CustomProgressDialog customProgressDialog;
-    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -445,11 +442,13 @@ public class PaymentOrderActivity extends BaseActivity implements
                 }
                 PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
                 pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                PAYMENT_PENGDING = true;//未收到推送进入我的界面
                 SuccessAfterPayment();
                 Intent intent = new Intent();
                 intent.setClass(PaymentOrderActivity.this, MainTabActivity.class);
                 intent.putExtra("flag", "payment_pending");
                 startActivity(intent);
+                finish();
             }
         }
     };
