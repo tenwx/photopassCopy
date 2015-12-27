@@ -28,6 +28,7 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PPinfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
@@ -37,6 +38,7 @@ import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.XListViewHeader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /*
@@ -83,12 +85,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             // TODO Auto-generated method stub
             switch (msg.what) {
                 case UPDATE_UI:
-//                    PictureAirLog.e(TAG,"之前："+showPPCodeList.size());
-//                    for (int i = 0; i < showPPCodeList.size(); i++) {
-//                        PictureAirLog.out("index:" + i + "," + showPPCodeList.get(i).getPpCode() + ",hide" + showPPCodeList.get(i).getIsHidden());
-//                    }
                     showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
-//                    PictureAirLog.e(TAG,"之后："+showPPCodeList.size());
                     // 更新界面
                     if (showPPCodeList != null && showPPCodeList.size() > 0) {
                         if (!isDeletePhoto) {
@@ -151,6 +148,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                     if (ppcode.equals(showPPCodeList.get(j).getPpCode())) {
                                         createnew = true;
                                         ppCodeInfo = showPPCodeList.get(j);
+                                        ppCodeInfo.setShootDate(pplist.getString("shootDate")); //new add 取最新的时间，解决PP排序问题。
                                         if (ppCodeInfo.getIsUpgrade() == 1) {
 
                                         } else {
@@ -176,6 +174,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                     showPPCodeList.add(ppCodeInfo);
                                 }
                             }
+                            Collections.sort(showPPCodeList, new PPinfoSortUtil());
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
