@@ -307,15 +307,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 //					//		 预览图片高 946
                     bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
                             480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
-                } else if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-                    //3.数码商品，商品宽 300
-                    //		 商品高 217
-                    //       左边留白 22
-                    //		 上边留白 26
-                    //		 预览图片宽 300-22-21 = 257
-                    //		 预览图片高 217-26-25 = 166
-                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
-                            300, 217, 22, 26, 257, 166, 0, 0, 0, Common.GOOD_NAME_SINGLE_DIGITAL);//设置bannerview的图片
                 } else if (goodsInfo.getName().equals("4R Print")) {
                     //4.4r相框，商品宽 180
                     //		 商品高 120
@@ -354,6 +345,24 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 //					//		 预览图片高 160-12-34 = 114
 //                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
 //                            185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
+                } else if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                    //3.数码商品，商品宽 300
+                    //		 商品高 217
+                    //       左边留白 22
+                    //		 上边留白 26
+                    //		 预览图片宽 300-22-21 = 257
+                    //		 预览图片高 217-26-25 = 166
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
+                            300, 217, 22, 26, 257, 166, 0, 0, 0, Common.GOOD_NAME_SINGLE_DIGITAL);//设置bannerview的图片
+                } else {
+                    //3.数码商品，商品宽 300
+                    //		 商品高 217
+                    //       左边留白 22
+                    //		 上边留白 26
+                    //		 预览图片宽 300-22-21 = 257
+                    //		 预览图片高 217-26-25 = 166
+                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
+                            300, 217, 22, 26, 257, 166, 0, 0, 0, Common.GOOD_NAME_SINGLE_DIGITAL);//设置bannerview的图片
                 }
 
             }

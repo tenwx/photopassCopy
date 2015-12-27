@@ -483,6 +483,14 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 //			//		 预览图片宽 185-10-61 = 114
 //			//		 预览图片高 160-12-34 = 114
 //			bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 185, 160, 10, 12, 114, 114, 0, 0, R.drawable.mug_mask_top, "mug");//设置bannerview的图片
+        } else {
+            //3.数码商品，商品宽 300
+            //		 商品高 217
+            //       左边留白 22
+            //		 上边留白 26
+            //		 预览图片宽 300-22-21 = 257
+            //		 预览图片高 217-26-25 = 166
+            bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 300, 217, 22, 26, 257, 166, 0, 0, 0, Common.GOOD_NAME_SINGLE_DIGITAL);//设置bannerview的图片
         }
     }
 
