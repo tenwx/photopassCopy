@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/order_relativelayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:background="@color/pp_blue">
 
         <ImageView
@@ -17,10 +17,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="13dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingRight="@dimen/pp_padding_10"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -172,7 +172,7 @@
                         android:gravity="center"
                         android:text="@string/preferential"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -182,7 +182,7 @@
                         android:gravity="center"
                         android:text="-0"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -202,7 +202,7 @@
                         android:gravity="center"
                         android:text="@string/totalprice"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:id="@+id/pay_total_price"
@@ -212,7 +212,7 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
 
 
@@ -233,7 +233,7 @@
                         android:gravity="center"
                         android:text="@string/paymethod"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:id="@+id/order_detail_paymethod"
@@ -243,7 +243,7 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -289,7 +289,7 @@
                         android:gravity="center"
                         android:text="@string/order_no"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:id="@+id/order_detail_number"
@@ -299,7 +299,7 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -319,7 +319,7 @@
                         android:gravity="center"
                         android:text="@string/order_time"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:id="@+id/order_detail_time"
@@ -329,7 +329,7 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -349,7 +349,7 @@
                         android:gravity="center"
                         android:text="@string/self_collect_address"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:id="@+id/order_delivery_address"
@@ -358,7 +358,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -378,7 +378,7 @@
                         android:gravity="center"
                         android:text="@string/order_status"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
 
                     <TextView
                         android:id="@+id/order_status"
@@ -388,7 +388,7 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_small_size" />
                 </RelativeLayout>
             </LinearLayout>
             <!-- 物流信息 结束 -->

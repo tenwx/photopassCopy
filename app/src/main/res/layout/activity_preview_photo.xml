@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/preview_titlebar"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
         android:background="@color/pp_blue" >
 
@@ -147,7 +147,7 @@
             android:layout_height="wrap_content"
             android:text="111"
             android:textColor="@color/pp_gray"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_small_size" />
     </LinearLayout>
 
     <LinearLayout

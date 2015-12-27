@@ -24,7 +24,7 @@
         android:gravity="center"
         android:text=""
         android:textColor="@color/gray2"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_small_size" />
 
     <Button
         android:id="@+id/reloadOrOtherButton"

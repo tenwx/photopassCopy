@@ -23,6 +23,6 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/gray"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_small_size" />
 
 </LinearLayout>

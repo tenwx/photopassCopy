@@ -173,7 +173,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //
 //			editPhotoImageView.setOnClickListener(this);
 //		}
-		albumArrayList.addAll(originalAlbumArrayList);
 //		setListCheckedStatus(editMode);
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);

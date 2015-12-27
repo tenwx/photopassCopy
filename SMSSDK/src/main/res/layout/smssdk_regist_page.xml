@@ -8,7 +8,7 @@
     <include
         layout="@layout/smssdk_title_layout"
         android:layout_width="match_parent"
-        android:layout_height="52dp" />
+        android:layout_height="@dimen/pp_top_bar_height" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,15 +27,15 @@
                 android:id="@+id/rl_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
+                android:paddingBottom="@dimen/pp_padding_16"
                 android:paddingTop="20dp">
 
                 <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="@dimen/pp_padding_10"
+                    android:paddingRight="@dimen/pp_padding_10"
                     android:text="@string/smssdk_country"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="@dimen/pp_padding_16"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp">
 
@@ -70,7 +70,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="@dimen/pp_padding_10"
                     android:text="+86"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
@@ -87,7 +87,7 @@
                     android:hint="@string/smssdk_write_mobile_phone"
                     android:imeOptions="actionNext"
                     android:inputType="phone"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="@dimen/pp_padding_10"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="@dimen/pp_padding_16"
                 android:paddingRight="5dp">
 
                 <ImageView
@@ -132,7 +132,7 @@
                     android:hint="@string/smssdk_pwd"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="@dimen/pp_padding_10"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="@dimen/pp_padding_16"
                 android:paddingRight="5dp">
 
                 <ImageView
@@ -176,7 +176,7 @@
                     android:hint="@string/smssdk_pwd2"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="@dimen/pp_padding_10"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
@@ -204,7 +204,7 @@
                     android:imeOptions="actionGo"
                     android:inputType="number"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="@dimen/pp_padding_16"
                     android:singleLine="true"
                     android:textColor="@color/pp_gray"
                     android:textColorHint="@color/pp_gray"

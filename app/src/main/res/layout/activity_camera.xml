@@ -140,7 +140,7 @@
                 android:layout_toRightOf="@id/imageButton_time"
                 android:text="0&apos;S"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_small_size" />
         </RelativeLayout>
 
         <com.pictureair.photopass.widget.RotateView

@@ -9,7 +9,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.pictureair.photopass.MyApplication;
@@ -21,13 +20,15 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
+import cn.smssdk.gui.EditTextWithClear;
+
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
     private SharedPreferences sharedPreferences;
-    private EditText oldPassword, newPassword;
+    private EditTextWithClear oldPassword, newPassword;
     private Button submit;
     private MyToast newToast;
-    boolean isSele = true;
-    ImageButton radio;
+    private boolean isSele = true;
+    private ImageButton radio;
     private CustomProgressDialog dialog;
 
     private Handler mHandler = new Handler() {
@@ -73,8 +74,8 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.modify);
         radio = (ImageButton) findViewById(R.id.modify_password_radio);
-        oldPassword = (EditText) findViewById(R.id.old_password);
-        newPassword = (EditText) findViewById(R.id.new_password);
+        oldPassword = (EditTextWithClear) findViewById(R.id.old_password);
+        newPassword = (EditTextWithClear) findViewById(R.id.new_password);
         submit = (Button) findViewById(R.id.submit);
         submit.setTypeface(MyApplication.getInstance().getFontBold());
 

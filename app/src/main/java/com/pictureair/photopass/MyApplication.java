@@ -522,7 +522,7 @@ public class MyApplication extends Application {
      * 读取粗字体
      */
     public Typeface getFontBold() {
-        if (getLanguageType().equals("cn")) {
+        if (getLanguageType() != null && getLanguageType().equals("cn")) {
             return Typeface.DEFAULT_BOLD;
         }
         if (null == typefaceBold) {

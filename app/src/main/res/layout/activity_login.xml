@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@color/pp_blue">
@@ -40,14 +40,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="@dimen/pp_padding_16">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="bottom"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingLeft="@dimen/pp_padding_10"
+                android:paddingRight="@dimen/pp_padding_10"
                 android:text="@string/smssdk_country"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            android:paddingBottom="16dp"
+            android:paddingBottom="@dimen/pp_padding_16"
             android:paddingRight="5dp">
 
             <TextView
@@ -121,8 +121,8 @@
             android:hint="@string/pwd"
             android:imeOptions="actionGo"
             android:inputType="textPassword"
-            android:paddingBottom="16dp"
-            android:paddingLeft="10dp"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_10"
             android:paddingRight="5dp"
             android:textColor="@color/pp_gray"
             android:textColorHint="@color/pp_gray"

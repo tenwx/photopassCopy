@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="top|center_horizontal"
         android:textColor="@drawable/tab_selector_onclick"
-        android:textSize="12sp" >
+        android:textSize="@dimen/text_small_size" >
     </TextView>
 
 </LinearLayout>

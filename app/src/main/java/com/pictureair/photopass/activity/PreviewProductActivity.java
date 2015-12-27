@@ -461,8 +461,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         anim_mask_layout = null;
         anim_mask_layout = createAnimLayout();
         int[] start_location = new int[2];// 一个整型数组，用来存储按钮的在屏幕的X、Y坐标
-        start_location[0] = ScreenUtil.getScreenWidth(PreviewProductActivity.this) / 2 - 80;//减去的值和图片大小有关系
-        start_location[1] = ScreenUtil.getScreenHeight(PreviewProductActivity.this) / 2 - 76;
+        start_location[0] = ScreenUtil.getScreenWidth(PreviewProductActivity.this) / 2 - Common.CART_WIDTH;//减去的值和图片大小有关系
+        start_location[1] = ScreenUtil.getScreenHeight(PreviewProductActivity.this) / 2 - Common.CART_HEIGHT;
         final View view = addViewToAnimLayout(anim_mask_layout, v,
                 start_location);
         int[] end_location = new int[2];// 这是用来存储动画结束位置的X、Y坐标

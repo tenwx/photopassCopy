@@ -164,14 +164,17 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initData() {
-        tvNickName.setText(sp.getString(Common.USERINFO_NICKNAME, "pictureAir"));
-        tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
+        nickNameString = sp.getString(Common.USERINFO_NICKNAME, "");
+        if (!"".equals(nickNameString)) {
+            tvNickName.setText(nickNameString);
+            tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
+        }
 
-        String genderStr = sp.getString(Common.USERINFO_GENDER, "male").toLowerCase();
-        if (genderStr.equals("male") || genderStr.equals("男")) {
+        genderString = sp.getString(Common.USERINFO_GENDER, "").toLowerCase();
+        if (genderString.equals("male") || genderString.equals("男")) {
             tvGender.setText(R.string.male);
             tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
-        } else if (genderStr.equals("female") || genderStr.equals("女")){
+        } else if (genderString.equals("female") || genderString.equals("女")){
             tvGender.setText(R.string.female);
             tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
         }
@@ -223,6 +226,9 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.item_country:
+                if (!countryString.trim().equals("")) {
+                    return;
+                }
                 intent = new Intent();
                 intent.setClass(this, NationalListSelectionActivity.class);
                 intent.putExtra("isCountrycode", "isCountryCode");
