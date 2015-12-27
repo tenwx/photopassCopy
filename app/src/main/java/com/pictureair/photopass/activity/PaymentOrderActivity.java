@@ -392,15 +392,13 @@ public class PaymentOrderActivity extends BaseActivity implements
             switch (msg.what) {
                 case RQF_ERROR:
                     PictureAirLog.v(TAG, "RQF_ERROR");
-                    Intent intent1 = new Intent(PaymentOrderActivity.this,
-                            OrderActivity.class);
+                    Intent intent1 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                     startActivity(intent1);
                     ErrorInPayment();
                     break;
                 case RQF_CANCEL:
                     PictureAirLog.v(TAG, "RQF_CANCEL");
                     Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                    intent2.putExtra("flag", "RQF_CANCEL");
                     startActivity(intent2);
                     CancelInPayment();
                     break;
@@ -488,7 +486,6 @@ public class PaymentOrderActivity extends BaseActivity implements
             }
             SuccessAfterPayment();
             startActivity(intent);
-            finish();
         } else {
             Intent intent;
             // 以下两种情况，进入图片清晰页面
@@ -531,7 +528,6 @@ public class PaymentOrderActivity extends BaseActivity implements
                 editor.putBoolean(Common.NEED_FRESH, true);
                 editor.commit();
                 startActivity(intent);
-                finish();
             } else {
                 // 回到订单页面
                 PictureAirLog.v(TAG, "----------------->回到订单页面");
@@ -542,9 +538,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                 intent.putExtra("flag", "two");
                 SuccessAfterPayment();
                 startActivity(intent);
-                finish();
             }
-
         }
     }
 
@@ -796,10 +790,24 @@ public class PaymentOrderActivity extends BaseActivity implements
         super.TopViewClick(view);
         switch (view.getId()) {
             case R.id.topLeftView:
-                finish();
+                //返回键
+                PictureAirLog.v(TAG, "TopViewClick topLeftView");
+                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                startActivity(intent2);
+                CancelInPayment();
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //返回键
+        PictureAirLog.v(TAG, "TopViewClick onBackPressed");
+        Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+        startActivity(intent2);
+        CancelInPayment();
     }
 }

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,8 +33,10 @@ import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.JsonTools;
@@ -67,8 +70,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private Button text_instruction;
     private TextView optoinTextView;
 
-//    private BannerView_PPPIntroduce nopppLayout;
-   private LinearLayout nopppLayout;
+    //    private BannerView_PPPIntroduce nopppLayout;
+    private LinearLayout nopppLayout;
 
     private CustomProgressDialog dialog;
     private MyToast newToast;
@@ -485,12 +488,32 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 }
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
-                API1.getGoods(mHandler);
+                getGoods();
+                //API1.getGoods(mHandler);
                 break;
 
             default:
                 break;
         }
+    }
+
+    /**
+     * 初始化数据
+     */
+    public void getGoods() {
+        //从缓层中获取数据
+        String goodsByACache = ACache.get(MyPPPActivity.this).getAsString(Common.ALL_GOODS);
+        if (goodsByACache != null && !goodsByACache.equals("")) {
+            mHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+        } else {
+            //从网络获取商品,先检查网络
+            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
+                API1.getGoods(mHandler);
+            } else {
+                newToast.setTextAndShow(R.string.http_error_code_401, Toast.LENGTH_SHORT);
+            }
+        }
+
     }
 
     @Override
