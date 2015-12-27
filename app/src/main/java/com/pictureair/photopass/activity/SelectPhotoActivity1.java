@@ -109,7 +109,6 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         if (photocount == 0) {
             photocount = 1;
         }
-
         initview();
     }
 
