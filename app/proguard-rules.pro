@@ -163,8 +163,6 @@
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
 
--keepclassmembernames com.pictureair.photopass.entity.** { *; }  #转换JSON的JavaBean，类成员名称保护，使其不被混淆
-
 #友盟混淆
 -keepclassmembers class * {
    	public <init>(org.json.JSONObject);
