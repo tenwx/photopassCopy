@@ -896,4 +896,22 @@ public class AppUtil {
     }
 
 
+
+    /**
+     * 字符串转日期
+     *
+     * @param strDate 2015-12-24
+     * @return
+     */
+    public static Date getDateFromStr1(String strDate) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return df.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

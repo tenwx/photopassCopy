@@ -71,9 +71,18 @@ public class MainTabActivity extends BaseFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        application = (MyApplication) getApplication();
-        instances = this;
-        initView();
+        SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        String _id = sp.getString(Common.USERINFO_ID, null);
+        if(_id != null){//判断是否已经登录 // 用来解决 “退出账户之后，点击推送，进入MainTabActivity的问题。”
+            application = (MyApplication) getApplication();
+            instances = this;
+            initView();
+        }else{
+            AppManager.killOtherActivity(MainTabActivity.class); //杀死出这个activity之外的所有Activity
+            startActivity(new Intent(MainTabActivity.this, LoginActivity.class));
+            this.finish();
+        }
+
     }
 
     //清除acahe框架的缓存数据

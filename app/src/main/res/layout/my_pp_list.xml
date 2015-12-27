@@ -37,12 +37,13 @@
 
             <ImageView
                 android:id="@+id/delete_my_pp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/pp_code"
+                android:layout_centerVertical="true"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
                 android:layout_alignParentRight="true"
                 android:clickable="true"
-                android:padding="10dp"
+                android:padding="@dimen/pp_margin_10"
+                android:scaleType="centerInside"
                 android:src="@drawable/delete_my_pp_btn" />
             
              <ImageView

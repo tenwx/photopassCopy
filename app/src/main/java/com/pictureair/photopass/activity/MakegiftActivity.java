@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.Sampler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
@@ -71,6 +74,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private Button buyButton;
     private Button addtocartButton;
     private TextView cartcountTextView, currencytextview;
+    private ImageView buttonSelectproduct;
 
     private ViewGroup anim_mask_layout;//动画层
     private ImageView buyImg;// 这是在界面上跑的小图片
@@ -106,6 +110,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private int previewViewHeight;
 
     private final static int WAIT_DRAW_FINISH = 111;
+    private LinearLayout productNameLl;
 
     private final static String TAG = "MakegiftAct";
 
@@ -325,13 +330,17 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         returnLayout.setOnClickListener(this);
         cartButton = (ImageView) findViewById(R.id.button_cart);
         selectButton = (TextView) findViewById(R.id.product_name_tv);
+        productNameLl = (LinearLayout) findViewById(R.id.product_name_ll);
         buyButton = (Button) findViewById(R.id.button_buy);
         addtocartButton = (Button) findViewById(R.id.button_addtocart);
         buyButton.setTypeface(MyApplication.getInstance().getFontBold());
         addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
+        buttonSelectproduct = (ImageView) findViewById(R.id.button_selectproduct);
         cartButton.setOnClickListener(this);
         progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), CustomProgressBarPop.TYPE_UPLOAD);
-        selectButton.setOnClickListener(this);
+//        selectButton.setOnClickListener(this);
+
+        productNameLl.setOnClickListener(this);
         buyButton.setOnClickListener(this);
         addtocartButton.setOnClickListener(this);
         cartcountTextView = (TextView) findViewById(R.id.textview_cart_count);
@@ -386,8 +395,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         });
         //选择商品的popupwindow
         selproductView_popwindow = getLayoutInflater().inflate(R.layout.popupwindow_selectproduct, null);
-        selproductPopupWindow = new PopupWindow(selproductView_popwindow, ScreenUtil.getScreenWidth(this) / 2, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-        selproductPopupWindow.setFocusable(true);//设置能够获得焦点
+        selproductPopupWindow = new PopupWindow(selproductView_popwindow, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        selproductPopupWindow.setFocusable(false);//设置能够获得焦点
         selproductPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//此代码和上一条代码两者结合，实现能够点击popupwindow外面将popupwindow关闭
         goodsGridView = (ListView) selproductView_popwindow.findViewById(R.id.id_horizontalScrollView);
         mAdapter = new MakegiftGoodsAdapter(MakegiftActivity.this, allList);
@@ -411,12 +420,52 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 priceTextView.setText(goodsInfo.getPrice() + "");
                 introduceTextView.setText(goodsInfo.getDescription());
                 setProductImage(goodsInfo.getName(), (goodsInfo.getPictures().size() > 0) ? goodsInfo.getPictures().get(0).getUrl() : "");
-                if (selproductPopupWindow.isShowing()) {
-                    selproductPopupWindow.dismiss();
-                }
+                gonePopupwindow();
             }
         });
 
+        selproductView_popwindow.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                gonePopupwindow();
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 头部三角符号 朝上（pop显示的时候）
+     */
+    private void buttonSelectproductShowUp() {
+        setRotatingAnimation(180f);
+    }
+
+    /**
+     * 头部三角符号 朝下（pop显示的时候）
+     */
+    private void buttonSelectproductShowDown() {
+        setRotatingAnimation(360f);
+    }
+
+    /**
+     * 设置旋转动画
+     */
+    private void setRotatingAnimation(float value){
+        RotateAnimation ra;
+        ra = new RotateAnimation(0f, value, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ra.setRepeatCount(1);//设置重复次数
+        ra.setDuration(10);//设置动画持续时间
+        ra.setFillAfter(true);//动画执行完后是否停留在执行完的状态
+        buttonSelectproduct.startAnimation(ra);
+    }
+
+    /**
+     * popwindow消失
+     */
+    private void gonePopupwindow() {
+        if (selproductPopupWindow.isShowing()) {
+            selproductPopupWindow.dismiss();
+            buttonSelectproductShowDown();
+        }
     }
 
     /**
@@ -515,10 +564,16 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 startActivity(intent);
                 break;
 
-            case R.id.product_name_tv:
+            case R.id.product_name_ll:
                 PictureAirLog.out("选择商品");
-                mAdapter.notifyDataSetChanged();
-                selproductPopupWindow.showAsDropDown(findViewById(R.id.product_name_tv));
+                if (selproductPopupWindow.isShowing()) {
+                    selproductPopupWindow.dismiss();
+                    buttonSelectproductShowDown();
+                }else{
+                    mAdapter.notifyDataSetChanged();
+                    selproductPopupWindow.showAsDropDown(findViewById(R.id.product_name_tv));
+                    buttonSelectproductShowUp();
+                }
                 break;
 
             case R.id.button_buy:
@@ -687,7 +742,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         animLayout.setLayoutParams(lp);
-		animLayout.setBackgroundResource(android.R.color.transparent);
+        animLayout.setBackgroundResource(android.R.color.transparent);
         rootView.addView(animLayout);
         return animLayout;
     }
@@ -706,5 +761,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         return view;
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gonePopupwindow();
+    }
 }

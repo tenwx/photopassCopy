@@ -46,7 +46,6 @@ import java.util.List;
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
     private TextView submitButton;
-    private ImageView llrtLayout;
     private TextView totalpriceTextView, currencyTextView, allGoodsTextView;
 
     private ArrayList<CartItemInfo1> list;
@@ -218,13 +217,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     private void initView() {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+
+        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopTitleShow(R.string.submitorder);
         totalpriceTextView = (TextView) findViewById(R.id.submitorder_textView3);
         currencyTextView = (TextView) findViewById(R.id.textView_currency);
         submitButton = (TextView) findViewById(R.id.button2_submit);
         allGoodsTextView = (TextView) findViewById(R.id.good_count);
         submitButton.setOnClickListener(this);
-        llrtLayout = (ImageView) findViewById(R.id.llrt);
-        llrtLayout.setOnClickListener(this);
         customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
         list = (ArrayList<CartItemInfo1>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
@@ -389,10 +389,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 }
                 break;
 
-            case R.id.llrt:
-                finish();
-                break;
-
             default:
                 break;
         }
@@ -437,6 +433,18 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    @Override
+    public void TopViewClick(View view) {
+        super.TopViewClick(view);
+        switch (view.getId()) {
+            case R.id.topLeftView:
+                finish();
+                break;
+            default:
+                break;
         }
     }
 }
