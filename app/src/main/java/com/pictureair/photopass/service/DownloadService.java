@@ -93,9 +93,9 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         System.out.println("DownloadService ----------> preparedownload");
         System.out.println("DownloadService ----------> before notification");
-        notification = new Notification(R.drawable.pp_icon, "Downloading...", System.currentTimeMillis());
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
-        notification.setLatestEventInfo(mContext, "PhotoPass", "Downloading...", null);
+        notification = new Notification(R.drawable.pp_icon, mContext.getString(R.string.downloading), System.currentTimeMillis());
+        notification.flags = Notification.FLAG_NO_CLEAR;
+        notification.setLatestEventInfo(mContext, mContext.getString(R.string.app_name), mContext.getString(R.string.downloading), null);
         manager.notify(0, notification);
         System.out.println("DownloadService ----------> after notification");
         handler.sendEmptyMessage(START_DOWNLOAD);
@@ -117,26 +117,26 @@ public class DownloadService extends Service {
                     break;
                 case FINISH_DOWNLOAD:
                     //如果下载数目一致，提示用户下载完毕，并且让service停止掉
-                    //				if (downed_num + failed_num == photos.size()&&scan_num + exist_num == downed_num) {
                     System.out.println("下载完毕,共下载了" + downed_num + "张照片，失败了" + failed_num + "张");
-                    String notificationDetail = "Download " + downed_num + " photos";
-                    if (failed_num > 0) {
-                        notificationDetail += ", " + failed_num + " photos failed";
+                    String notificationDetail = String.format(mContext.getString(R.string.download_detail1), downed_num);
+                    if (failed_num >0) {
+                        notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
                     }
-                    notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
-                    notification.defaults = Notification.DEFAULT_SOUND;//默认下载完成声音
+                    notification = new Notification(R.drawable.pp_icon, mContext.getString(R.string.finish_download), System.currentTimeMillis());
                     //						Intent intentBack = new Intent(mContext, SelectPhotoActivity.class);
                     //						PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intentBack, PendingIntent.FLAG_UPDATE_CURRENT);
                     //						notification.setLatestEventInfo(mContext, "下载完毕", "共" + downed_num + "张", pIntent);
-                    notification.setLatestEventInfo(mContext, "PhotoPass", notificationDetail, null);
+                    notification.setLatestEventInfo(mContext, mContext.getString(R.string.app_name), notificationDetail, null);
+                    notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
+                    notification.defaults = Notification.DEFAULT_SOUND;//默认下载完成声音
                     //					scan(msg.obj.toString());
                     stopSelf();//下载服务停止
                     manager.notify(0, notification);
                     downed_num = 0;
                     failed_num = 0;
                     isDownloading = false;
-                    //				}
                     break;
+
                 case API1.DOWNLOAD_PHOTO_SUCCESS://下载成功之后获取data数据，然后base64解码，然后保存。
                     JSONObject objectSuccess;
                     objectSuccess = JSONObject.parseObject(msg.obj.toString());
@@ -320,24 +320,4 @@ public class DownloadService extends Service {
         super.onDestroy();
     }
 
-//	public static boolean isServiceRunning(Context context) {
-//		boolean isRunning = false;
-//
-//		ActivityManager activityManager =
-//				(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//		List<ActivityManager.RunningServiceInfo> serviceList
-//		= activityManager.getRunningServices(Integer.MAX_VALUE);
-//
-//		if (serviceList == null || serviceList.size() == 0) {
-//			return false;
-//		}
-//
-//		for (int i = 0; i < serviceList.size(); i++) {
-//			if (serviceList.get(i).service.getClassName().equals(DownloadService.class.getName())) {
-//				isRunning = true;
-//				break;
-//			}
-//		}
-//		return isRunning;
-//	}
 }

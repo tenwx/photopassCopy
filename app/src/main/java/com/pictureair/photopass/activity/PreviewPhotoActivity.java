@@ -359,7 +359,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                     } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                     } else {
-                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_BLUR);
+                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
                     }
                     List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
                     Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
@@ -771,6 +771,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //更新序列号
         currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
         currentPhotoInfoTextView.setText(photoInfo.shootOn);
+
+
         //更新上一张下一张按钮
         if (currentPosition == 0) {
             lastPhotoImageView.setVisibility(View.INVISIBLE);
@@ -784,20 +786,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             nextPhotoImageView.setVisibility(View.VISIBLE);
         }
 
-//        if (currentPosition == 0) {
-//            lastPhotoImageView.setVisibility(View.INVISIBLE);
-//            nextPhotoImageView.setVisibility(View.VISIBLE);
-//        } else if (currentPosition == (isEdited ? targetphotolist.size() - 1 : photolist.size() - 1)) {
-//            nextPhotoImageView.setVisibility(View.INVISIBLE);
-//            lastPhotoImageView.setVisibility(View.VISIBLE);
-//        } else {
-//            lastPhotoImageView.setVisibility(View.VISIBLE);
-//            nextPhotoImageView.setVisibility(View.VISIBLE);
-//        }
-//        if (targetphotolist.size() == 1 || photolist.size() == 1) {
-//            nextPhotoImageView.setVisibility(View.INVISIBLE);
-//            lastPhotoImageView.setVisibility(View.INVISIBLE);
-//        }
         //更新title地点名称
         //		locationTextView.setText(getString(R.string.story_tab_magic));
         locationTextView.setText(photoInfo.locationName);
@@ -1330,14 +1318,20 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 currentPosition = 0;
                 //4.更新底部工具栏
                 isEdited = true;
-                currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
-                currentPhotoInfoTextView.setText(selectPhotoItemInfo.shootOn);
-                PictureAirLog.v(TAG, "targetphotolist size is " + targetphotolist.size());
+
+                updateIndexTools(false);
+
+//                currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
+//                currentPhotoInfoTextView.setText(selectPhotoItemInfo.shootOn);
+//                PictureAirLog.v(TAG, "targetphotolist size is " + targetphotolist.size());
+
+
+//                fsa;
                 myApplication.setneedScanPhoto(true);
                 myApplication.scanMagicFinish = false;
                 //				flag = 0;
                 //5,更新 标题栏。
-                locationTextView.setText(R.string.magic_location);
+//                locationTextView.setText(R.string.magic_location);
             }
         }
     }
@@ -1363,7 +1357,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITYANDPAYED)) {
 
-            } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_BLURPAYED)) {
+            } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY_PAY)) {
 
             } else {
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");

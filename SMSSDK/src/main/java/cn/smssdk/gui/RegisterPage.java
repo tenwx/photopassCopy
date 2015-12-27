@@ -188,7 +188,8 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
 			// 设置选择后的区号
 			tvCountryNum.setText("+" + countryCode);
-			tvCountry.setText(countryC + "");
+			resId = getStringRes(activity, "china");
+			tvCountry.setText(getContext().getString(resId));
 
 			// 提交按钮
 			int reId2 = getIdRes(activity, "sure");

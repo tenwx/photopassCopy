@@ -111,31 +111,6 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         this.myToast = new MyToast(context);
     }
 
-    /**
-     * 刷新数据
-     *
-     * @param list
-     * @param orderInfos1
-     * @param orderInfos2
-     * @param orderInfos3
-     * @param orderChildlist1
-     * @param orderChildlist2
-     * @param orderChildlist3
-     */
-    public void refresh(List<View> list, ArrayList<OrderInfo> orderInfos1,
-                        ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
-                        List<OrderProductInfo> orderChildlist1, List<OrderProductInfo> orderChildlist2,
-                        List<OrderProductInfo> orderChildlist3) {
-
-        this.listViews = list;
-        this.paymentOrderList = OrderDateSort(orderInfos1);
-        this.deliveryOrderList = OrderDateSort(orderInfos2);
-        this.allOrderList = OrderDateSort(orderInfos3);
-        this.paymentChildlist = OrderProductDateSort(orderChildlist1);
-        this.deliveryChildlist = OrderProductDateSort(orderChildlist2);
-        this.allChildlist = OrderProductDateSort(orderChildlist3);
-        notifyDataSetChanged();
-    }
 
     /**
      * 订单信息降序排列
@@ -178,6 +153,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         NoNetWorkOrNoCountView netWorkOrNoCountView = (NoNetWorkOrNoCountView) listViews.get(position).findViewById(R.id.nonetwork);
         switch (position) {
             case 0:
+                //未付款
                 orderListView1 = (ExpandableListView) listViews.get(position).findViewById(R.id.order_viewpager_listview1);
                 paymentOrderAdapter = new OrderListViewAdapter(context, paymentOrderList, paymentChildlist, currency, handler); //
                 orderListView1.setGroupIndicator(null);
@@ -193,6 +169,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 break;
 
             case 1:
+                //已付款，未收货
                 orderListView2 = (ExpandableListView) listViews.get(position).findViewById(R.id.order_viewpager_listview1);
                 deliveryOrderAdapter = new OrderListViewAdapter(context, deliveryOrderList, deliveryChildlist, currency, handler);
                 orderListView2.setGroupIndicator(null);
@@ -207,6 +184,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 break;
 
             case 2:
+                //订单完成
                 orderListView3 = (ExpandableListView) listViews.get(position).findViewById(R.id.order_viewpager_listview1);
                 allOrderAdapter = new OrderListViewAdapter(context, allOrderList, allChildlist, currency, handler);
                 orderListView3.setGroupIndicator(null);
@@ -239,18 +217,25 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         switch (current) {
             case 0:
                 for (int i = 0; i < paymentOrderList.size(); i++) {
-                    orderListView1.expandGroup(i);
+                    if (orderListView1 != null) {
+                        orderListView1.expandGroup(i);
+                    }
+
                 }
                 break;
             case 1:
                 for (int i = 0; i < deliveryOrderList.size(); i++) {
-                    orderListView2.expandGroup(i);
+                    if (orderListView2 != null) {
+                        orderListView2.expandGroup(i);
+                    }
                 }
                 break;
 
             case 2:
                 for (int i = 0; i < allOrderList.size(); i++) {
-                    orderListView3.expandGroup(i);
+                    if (orderListView3 != null) {
+                        orderListView3.expandGroup(i);
+                    }
                 }
                 break;
 

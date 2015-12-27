@@ -13,8 +13,8 @@ public class Common {
     public static final String SHARE_APP_NAME = "PhotoPass";
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
-    public static final String SMS_APPKEY = "7c07eba9fe66"; // SMSS，公司的账号
-    public static final String SMS_APPSECRET = "c3e30ac3daba694656287afef2686edf"; // SMSS
+    public static final String SMS_APPKEY = "d082b4315aed"; // SMSS，公司的账号
+    public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
 
 
     public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
@@ -96,7 +96,7 @@ public class Common {
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
 
     public static final String ME_HELP = "/help/getHelpList";
-    public static final String VIDEO_GENERATEVIDEO= "/video/generateVideo";//上传照片到服务器合成视频
+    public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
 
@@ -252,11 +252,8 @@ public class Common {
     public static final String FROM_VIEWORSELECTACTIVITYANDPAYED = "fromViewOrSelectBuy";
     public static final String FROM_MYPHOTOPASS = "fromMyPhotoPass";
     public static final String FROM_MYPHOTOPASSPAYED = "fromMyPhotoPassBuy";
-    public static final String FROM_BLUR = "fromBlur";
-    public static final String FROM_BLURPAYED = "fromBlurBuy";
-    //	public static final String IS_BUYING_FROM_VIEWORSELECT = "isBuyingFromViewOrSelect";
-    //	public static final String IS_BUYING_FROM_LOCATION = "isBuyingFromLocation";
-    //	public static final String IS_BUYING_FROM_BLUR = "isBuyingFromBlur";
+    public static final String FROM_PREVIEW_PHOTO_ACTIVITY = "fromPreviewPhotoActivity";
+    public static final String FROM_PREVIEW_PHOTO_ACTIVITY_PAY = "fromPreviewPhotoActivityBuy";
     //修改个人信息，判断是从哪里跳转去修改页面。
     public static final String USERINFOTYPE = "userinfotype";
 
@@ -352,6 +349,9 @@ public class Common {
     // tips 需要的字段  start
     public static final String SETTING_FIRST_TIPS_SYNS = "firstTipsSyns"; // 如果字段存在,就不是第一次提示同步。如果不存在，就是第一次
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
+    public static final int CART_HEIGHT = 98;
+    public static final int CART_WIDTH = 98;
+
     // tips 需要的字段  end
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
 }

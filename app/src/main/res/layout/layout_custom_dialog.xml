@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dia_title"
-            android:background="@drawable/bg_dialog_white_content" >
+            android:background="@drawable/bg_dialog_white_content_gender" >
 
             <FrameLayout
                 android:id="@+id/content_view"
@@ -39,13 +39,13 @@
 
                 <TextView
                     android:id="@+id/tv_message"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingTop="10dp"
+                    android:layout_gravity="center_vertical"
                     android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
                     android:textColor="@color/gray"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/text_middle_size" />
             </FrameLayout>
         </RelativeLayout>
         <View android:id="@+id/middle_horizontal_line"

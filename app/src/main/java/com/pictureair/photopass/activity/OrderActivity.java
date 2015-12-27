@@ -137,11 +137,7 @@ public class OrderActivity extends BaseActivity {
                     orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
                             paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
                     viewPager.setAdapter(orderAdapter);
-                    if (getIntent().getStringExtra("flag") != null) {
-                        viewPager.setCurrentItem(1);
-                    } else {
-                        viewPager.setCurrentItem(0);
-                    }
+                    viewPager.setCurrentItem(0);
                     orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
 
                     break;
@@ -205,14 +201,14 @@ public class OrderActivity extends BaseActivity {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        //从网络获取数据
-        API1.getOrderInfo(handler);
-        //获取本地已付款为收到推送的order
-        getLocalPaymentOrder();
     }
 
     //初始化
     private void initView() {
+        //从网络获取数据
+        API1.getOrderInfo(handler);
+        //获取本地已付款为收到推送的order
+        getLocalPaymentOrder();
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //获取订单接口
         // 显示进度条。
@@ -234,7 +230,6 @@ public class OrderActivity extends BaseActivity {
         Matrix matrix = new Matrix();
         matrix.postTranslate(0, 0);
         cursorImageView.setImageMatrix(matrix);// 设置动画初始位置
-
         initData();
     }
 

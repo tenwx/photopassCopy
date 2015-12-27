@@ -28,6 +28,7 @@ import com.pictureair.photopass.adapter.StickyGridAdapter;
 import com.pictureair.photopass.entity.BaseBusEvent;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.StoryFragmentEvent;
+import com.pictureair.photopass.entity.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -55,6 +56,8 @@ public class StoryFragment extends Fragment {
 	private static Handler handler;
 	
 	private static StoryFragment storyFragment;
+
+	private static final int REFRESH = 666;
 	
 	public static StoryFragment getInstance(ArrayList<PhotoInfo> photoInfoArrayList, ArrayList<PhotoInfo> targetArrayList, int tab, Handler h){
 //		System.out.println("storyfragment----->getinstance");
@@ -104,18 +107,18 @@ public class StoryFragment extends Fragment {
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         refreshLayout.setEnabled(true);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-            	PictureAirLog.out("start refresh");
-            	if (photoInfoArrayList.size() != 0) {
-					
-            		Message message = handler.obtainMessage();
-            		message.what = 666;
-            		message.arg1 = tab;
-            		handler.sendMessage(message);
+			@Override
+			public void onRefresh() {
+				PictureAirLog.out("start refresh");
+				if (photoInfoArrayList.size() != 0) {
+
+					Message message = handler.obtainMessage();
+					message.what = REFRESH;
+					message.arg1 = tab;
+					handler.sendMessage(message);
 				}
-            }
-        });
+			}
+		});
         
         
 		
@@ -246,21 +249,21 @@ public class StoryFragment extends Fragment {
 	
 	@Subscribe
 	public void onUserEvent(BaseBusEvent baseBusEvent) {
-		if (baseBusEvent instanceof StoryFragmentEvent) {
+		if (baseBusEvent instanceof StoryFragmentEvent) {//获取刷新数据更新页面
+			PictureAirLog.out("get data from bus");
 			StoryFragmentEvent storyFragmentEvent = (StoryFragmentEvent) baseBusEvent;
-//			System.out.println("get data from bus");
 			PictureAirLog.out("tab = "+ tab);
 			if (storyFragmentEvent.getTab() == tab) {
-//				System.out.println("start refresh"+ tab);
-				PictureAirLog.out("storyFragmentEvent.getTab() = "+ storyFragmentEvent.getTab());
+				PictureAirLog.out("start update" + tab);
+				PictureAirLog.out("storyFragmentEvent.getTab() = " + storyFragmentEvent.getTab());
 				photoInfoArrayList.clear();
 				targetArrayList.clear();
 				photoInfoArrayList.addAll(storyFragmentEvent.getPhotoInfos());
 				targetArrayList.addAll(storyFragmentEvent.getTargetInfos());
-//				System.out.println("photo size from eventBus--"+storyFragmentEvent.getPhotoInfos().size());
-//				System.out.println("photo size from eventBus--"+storyFragmentEvent.getTargetInfos().size());
-//				System.out.println("photo size from eventBus--"+storyFragmentEvent.getTab());
-//				System.out.println("photo size --"+photoInfoArrayList.size());
+//				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getPhotoInfos().size());
+//				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTargetInfos().size());
+//				PictureAirLog.out("photo size from eventBus--" + storyFragmentEvent.getTab());
+				PictureAirLog.out("photo size --" + photoInfoArrayList.size());
 				if (photoInfoArrayList.size() == 0) {
 					gridView.setVisibility(View.GONE);
 					noPhotoRelativeLayout.setVisibility(View.VISIBLE);
@@ -286,11 +289,22 @@ public class StoryFragment extends Fragment {
 				}
 				EventBus.getDefault().removeStickyEvent(storyFragmentEvent);
 			}
+		} else if (baseBusEvent instanceof StoryRefreshEvent) {//通知页面开始刷新
+			StoryRefreshEvent storyRefreshEvent = (StoryRefreshEvent) baseBusEvent;
+			if (storyRefreshEvent.getTab() == tab) {
+				PictureAirLog.out(tab + "------>start refresh from bus");
+				if (!refreshLayout.isRefreshing()) {
+					refreshLayout.setRefreshing(true);
+				}
+				Message message = handler.obtainMessage();
+				message.what = REFRESH;
+				message.arg1 = tab;
+				handler.sendMessage(message);
+
+				EventBus.getDefault().removeStickyEvent(storyRefreshEvent);
+			}
 		}
 	}
 
-	public void startRefresh() {
-
-	}
 
 }
