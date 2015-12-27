@@ -11,6 +11,15 @@ public class Address implements Serializable {
     private String address = "";
     private boolean isSelect = false;
 
+    public Address() {
+    }
+
+    public Address(String outletId, String address, boolean isSelect) {
+        this.outletId = outletId;
+        this.address = address;
+        this.isSelect = isSelect;
+    }
+
     public boolean getIsSelect() {
         return isSelect;
     }

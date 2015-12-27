@@ -67,7 +67,7 @@ public class MyApplication extends Application {
     // onCreate方法不建议写耗时的操作
 
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
-    public final static boolean DEBUG = true;
+    public final static boolean DEBUG = false;
     private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
     public Typeface typeface;//设置默认字体用
     public Typeface typefaceBold;//设置粗字体用

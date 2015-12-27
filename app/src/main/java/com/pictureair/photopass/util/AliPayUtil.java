@@ -40,8 +40,7 @@ public class AliPayUtil {
 		orderInfo += "&total_fee=" + "\"" + "0.01" + "\"";
 		//		sb.append(priceString);
 		// 服务器异步通知页面路径
-		orderInfo += "&notify_url=" + "\"" + Common.ALIPAY_NOTIFY
-				+ "\"";
+		orderInfo += "&notify_url=" + "\"" + Common.ALIPAY_NOTIFY + "\"";
 		// 服务接口名称， 固定值
 		orderInfo += "&service=\"mobile.securitypay.pay\"";
 		// 支付类型， 固定值

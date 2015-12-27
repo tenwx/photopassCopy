@@ -22,6 +22,25 @@ public class GoodsInfo1 implements Serializable {
     private int sequence = 0;//int,商品序号
     public String good_SVG_Info = "";//SVG信息
 
+    public GoodsInfo1(String goodsKey, String productId, String storeId, String name, String nameAlias, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info) {
+        this.goodsKey = goodsKey;
+        this.productId = productId;
+        this.storeId = storeId;
+        this.name = name;
+        this.nameAlias = nameAlias;
+        this.description = description;
+        this.embedPhotosCount = embedPhotosCount;
+        this.pictures = pictures;
+        this.entityType = entityType;
+        this.ssConfig = ssConfig;
+        this.price = price;
+        this.sequence = sequence;
+        this.good_SVG_Info = good_SVG_Info;
+    }
+
+    public GoodsInfo1() {
+    }
+
     public String getGoodsKey() {
         return goodsKey;
     }

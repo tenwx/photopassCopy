@@ -1552,13 +1552,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 public void yes() {
                                     // TODO Auto-generated method stub
                                     // //同步更新：下载单张照片，并且修改设置。
-                                    settingUtil
-                                            .insertSettingAutoUpdateStatus(sharedPreferences
-                                                    .getString(
-                                                            Common.USERINFO_ID,
-                                                            ""));
-                                    if (AppUtil
-                                            .getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
                                         downloadPic();
                                     }
                                 }
@@ -1566,11 +1561,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                                 @Override
                                 public void no() {
                                     // TODO Auto-generated method stub // 取消；不操作
-                                    settingUtil
-                                            .deleteSettingAutoUpdateStatus(sharedPreferences
-                                                    .getString(
-                                                            Common.USERINFO_ID,
-                                                            ""));
+                                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                                 }
                             });
                 }

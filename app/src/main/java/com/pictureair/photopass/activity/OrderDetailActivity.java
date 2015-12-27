@@ -92,35 +92,28 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         payMethod.setText(paymethod);  //支付方式
         switch (orderInfo.orderStatus) {
-            //订单当前状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结
+            //订单当前状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结,6,已付款 未收到推送
             case 1:
                 orderstatus = getResources().getString(R.string.waitpay);
                 deliveryButton.setVisibility(View.VISIBLE);
                 deliveryButton.setText(R.string.pay);
+                deliveryButton.setClickable(true);
                 break;
 
             case 2:
-                orderstatus = getResources().getString(R.string.haspay);
-                deliveryButton.setVisibility(View.GONE);
-//			deliveryButton.setText(R.string.delivery_details);
-                break;
-
             case 3:
-                orderstatus = getResources().getString(R.string.hasdelivery);
-                deliveryButton.setVisibility(View.GONE);
-//			deliveryButton.setText(R.string.delivery_details);
-                break;
-
             case 4:
-                orderstatus = getResources().getString(R.string.hassign);
-                deliveryButton.setVisibility(View.GONE);
-//			deliveryButton.setText(R.string.buy_again);
-                break;
-
             case 5:
-                orderstatus = getResources().getString(R.string.orderclose);
+                orderstatus = getResources().getString(R.string.order_paid);
                 deliveryButton.setVisibility(View.GONE);
-//			deliveryButton.setText(R.string.buy_again);
+                break;
+            case 6:
+                orderstatus = getResources().getString(R.string.order_pending);
+                deliveryButton.setVisibility(View.VISIBLE);
+                deliveryButton.setBackgroundResource(R.drawable.button_gray);
+                deliveryButton.setText(R.string.pay);
+                deliveryButton.setClickable(false);
+
                 break;
 
             default:

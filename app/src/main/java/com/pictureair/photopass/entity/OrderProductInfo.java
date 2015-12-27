@@ -11,6 +11,14 @@ public class OrderProductInfo implements Serializable {
     private ArrayList<CartItemInfo> cartItemInfos;
     private String orderTime;
 
+    public OrderProductInfo() {
+    }
+
+    public OrderProductInfo(ArrayList<CartItemInfo> cartItemInfos, String orderTime) {
+        this.cartItemInfos = cartItemInfos;
+        this.orderTime = orderTime;
+    }
+
     public ArrayList<CartItemInfo> getCartItemInfos() {
         return cartItemInfos;
     }

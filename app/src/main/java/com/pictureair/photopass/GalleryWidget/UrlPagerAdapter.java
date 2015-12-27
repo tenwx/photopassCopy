@@ -17,40 +17,42 @@
  */
 package com.pictureair.photopass.GalleryWidget;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.ViewGroup;
 
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.PictureAirLog;
+
+import java.util.List;
 
 
 /**
- Class wraps URLs to adapter, then it instantiates {@link ru.truba.touchgallery.TouchView.UrlTouchImageView} objects to paging up through them.
+ * Class wraps URLs to adapter, then it instantiates {@link ru.truba.touchgallery.TouchView.UrlTouchImageView} objects to paging up through them.
  */
 public class UrlPagerAdapter extends BasePagerAdapter {
 
-	public UrlPagerAdapter(Context context, List<PhotoInfo> resources)
-	{
-		super(context, resources);
-	}
+    public UrlPagerAdapter(Context context, List<PhotoInfo> resources) {
+        super(context, resources);
+    }
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        ((GalleryViewPager)container).mCurrentView = ((UrlTouchImageView)object).getImageView();
+        ((GalleryViewPager) container).mCurrentView = ((UrlTouchImageView) object).getImageView();
     }
 
     @Override
-    public Object instantiateItem(ViewGroup collection, final int position){
+    public Object instantiateItem(ViewGroup collection, final int position) {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
-        	System.out.println("---------online and ispayed"+position);
-        	iv.setUrl(mResources.get(position).photoThumbnail_1024, mResources.get(position).photoId);
-		}else if (mResources.get(position).onLine == 0) {
-			System.out.println("--------local photo"+position);
-			iv.setImagePath(mResources.get(position).photoPathOrURL);
-		}
+            System.out.println();
+            PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
+            iv.setUrl(mResources.get(position).photoThumbnail_1024, mResources.get(position).photoId);
+        } else if (mResources.get(position).onLine == 0) {
+
+            PictureAirLog.v("instantiateItem", "local photo : " + position + position);
+            iv.setImagePath(mResources.get(position).photoPathOrURL);
+        }
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collection.addView(iv, 0);
         return iv;
