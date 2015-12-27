@@ -26,10 +26,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,36 +172,7 @@ public class DownloadService extends Service {
         if (!file.exists()) {
             // 使用友盟统计点击下载次数
             UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
-            System.out.println(originalUrl);
-
-            File dirfile = new File(mContext.getCacheDir() + "/" + id + "_ori");
-            System.out.println("dirfile = " + dirfile.toString());
-            if (dirfile.exists()) {//如果目标文件在缓存文件中，直接从缓存文件中获取
-                System.out.println("file exist");
-                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int len = 0;
-                FileInputStream inStream;
-                try {
-                    inStream = new FileInputStream(dirfile);
-                    while ((len = inStream.read(buffer)) != -1) {
-                        outStream.write(buffer, 0, len);
-                    }
-                    outStream.close();
-                    inStream.close();
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                byte[] arg2 = outStream.toByteArray();
-                System.out.println("download success from cache" + file.toString());
-                saveFile(file, arg2);
-            } else {//如果缓存中不存在目标文件，需要调用接口去下载文件
-                downloadImgOrVideo(file, isVideo);
-            }
+            downloadImgOrVideo(file, isVideo);
         } else {
             System.out.println("file exist");
             ++downed_num;

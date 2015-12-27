@@ -525,24 +525,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     break;
                 case 1:
-//                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-//                    byte[] buffer = new byte[1024];
-//                    int len = 0;
-//                    FileInputStream inStream;
-//                    try {
-//                        inStream = new FileInputStream(dirFile);
-//                        while ((len = inStream.read(buffer)) != -1) {
-//                            outStream.write(buffer, 0, len);
-//                        }
-//                        outStream.close();
-//                        inStream.close();
-//                    } catch (FileNotFoundException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
                     byte[] arg2 = null;
                     try {
                         arg2 = AESKeyHelper.decrypt(dirFile.toString(), Common.AES_ENCRYPTION_KEY);
@@ -551,9 +533,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-
-
-//                        byte[] arg2 = outStream.toByteArray();
                     bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
                     if (null != bitmap2) {
                         progressDialog.dismiss();
@@ -705,28 +684,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 @Override
                 public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-//                    // TODO Auto-generated method stub
-//                    BufferedOutputStream stream = null;
-//                    try {
-//                        PictureAirLog.v(TAG,dirFile.toString());
-//                        FileOutputStream fsStream = new FileOutputStream(dirFile);
-//                        stream = new BufferedOutputStream(fsStream);
-//                        stream.write(arg2);
-//                    } catch (Exception e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    } finally {
-//                        try {
-//                            if (stream != null) {
-//                                stream.flush();
-//                                stream.close();
-//                            }
-//                        } catch (IOException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-//                        PictureAirLog.v(TAG,"done");
-//                    }
                     try {
                         AESKeyHelper.encrypt(arg2, dirFile.toString(), Common.AES_ENCRYPTION_KEY);
                     } catch (InvalidKeyException

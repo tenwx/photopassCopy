@@ -317,8 +317,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
                             180, 120, 7, 7, 166, 106, 0, 0, 0, "4R Print");//设置bannerview的图片
                 } else if (goodsInfo.getName().equals(Common.GOOD_NAME_6R) ||
-                        goodsInfo.getName().equals(Common.GOOD_NAME_COOK) ||
-                        goodsInfo.getName().equals(Common.GOOD_NAME_TSHIRT)) {
+                        goodsInfo.getName().equals(Common.GOOD_NAME_COOK)) {
                     //5.6r相框，商品宽 240
                     //		 商品高 180
                     //       左边留白 10
