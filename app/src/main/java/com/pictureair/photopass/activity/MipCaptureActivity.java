@@ -19,8 +19,8 @@ import android.view.View;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
@@ -33,6 +33,8 @@ import com.pictureair.photopass.zxing.view.ViewfinderView;
 
 import java.io.IOException;
 import java.util.Vector;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Initial the camera
@@ -54,18 +56,9 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
     private SurfaceView surfaceView;
     private SharedPreferences sp;
     private String code;
-    private String type;
-//	private ImageView back;
-
-    private final static int SCAN_SUCCESS = 11;
-    private final static int SCAN_PPP_SUCCESS = 12;
-    private final static int SCAN_FAILED = 15;
-    private final static int MANUAL_INPUT_CODE = 13;
-    private final static int CHECK_CODE = 14;
 
     private MyToast newToast;
 
-    private MyApplication myApplication;
     private CustomProgressDialog dialog;
     private DealCodeUtil dealCodeUtil;
 
@@ -78,10 +71,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
                         dialog.dismiss();
                     }
                     if (msg.obj != null) {//从ppp页面过来，需要返回
-                        Intent intent2 = new Intent();
-                        intent2.putExtra("result", "failed");
-                        intent2.putExtra("errorType", Integer.valueOf(msg.obj.toString()));
-                        setResult(RESULT_OK, intent2);
+                        EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false));
                     }
                     finish();
                     break;
@@ -92,17 +82,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
                     }
 
                     if (msg.obj != null) {//从ppp过来
-                        Intent intent2 = new Intent();
                         Bundle bundle = (Bundle) msg.obj;
                         if (bundle.getInt("status") == 1) {
-                            intent2.putExtra("result", bundle.getString("result"));
-                            setResult(RESULT_OK, intent2);
+                            EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
                         } else if (bundle.getInt("status") == 2) {//将pp码返回
-                            intent2.putExtra("result", bundle.getString("result"));
-                            intent2.putExtra("hasBind", bundle.getBoolean("hasBind"));
-                            setResult(RESULT_OK, intent2);
+                            EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), bundle.getBoolean("hasBind")));
                         } else if (bundle.getInt("status") == 3) {
-                            intent2.setClass(MipCaptureActivity.this, MyPPPActivity.class);
+                            Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
                             API1.PPPlist.clear();
                             startActivity(intent2);
                         } else if (bundle.getInt("status") == 4) {
@@ -111,8 +97,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
                             editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
                             editor.commit();
                         } else if (bundle.getInt("status") == 5) {
-                            intent2.putExtra("result", bundle.getString("result"));
-                            setResult(RESULT_OK, intent2);
+                            EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
                         }
                     }
 
@@ -143,7 +128,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.auto);
         setTopRightValueAndShow(R.drawable.manual_input,true);
-        myApplication = (MyApplication) getApplication();
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), handler2);
@@ -238,6 +222,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
             newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
             Intent intent = new Intent();
             intent.setClass(this, InputCodeActivity.class);
+            intent.putExtra("type", getIntent().getStringExtra("type"));
+            intent.putExtra("needbind", getIntent().getStringExtra("needbind"));
+            intent.putExtra("binddate", getIntent().getStringExtra("binddate"));
+            intent.putExtra("pppid", getIntent().getStringExtra("pppid"));
             finish();
             return;
         }
@@ -338,6 +326,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
             case R.id.topRightView:
                 //跳转到输入  code 的界面。
                 Intent i = new Intent(MipCaptureActivity.this, InputCodeActivity.class);
+                i.putExtra("type", getIntent().getStringExtra("type"));
+                i.putExtra("needbind", getIntent().getStringExtra("needbind"));
+                i.putExtra("binddate", getIntent().getStringExtra("binddate"));
+                i.putExtra("pppid", getIntent().getStringExtra("pppid"));
                 startActivity(i);
             default:
                 break;
