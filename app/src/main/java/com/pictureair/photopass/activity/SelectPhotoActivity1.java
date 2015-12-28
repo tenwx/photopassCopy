@@ -209,15 +209,19 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
             photoInfo.showMask = 0;
             if (isBuy) {
                 if (photoInfo.isPayed == 1) {
-                    PictureAirLog.v(TAG, "photoInfo.isPayed");
                     list.add(photoInfo);
+                }
+            } else {
+                //数码照片--是则获取未购买的图片 礼物--获取全部
+                if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                    if (photoInfo.isPayed == 0) {
+                        list.add(photoInfo);
+                    }
+                } else {
+                    list.addAll(myApplication.photoPassPicList);
                 }
             }
         }
-        if (!isBuy) {
-            list.addAll(myApplication.photoPassPicList);
-        }
-
         return list;
     }
 
@@ -392,7 +396,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.BOTTOM, 0, 0);
         popupWindow.setOutsideTouchable(false);
-        TextView tv1 = (TextView)popView.findViewById(R.id.tv_video_popup1);
+        TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
         tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
         btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
