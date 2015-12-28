@@ -189,6 +189,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
+				case 9999: //加载网络图片。
+					mainBitmap = imageLoader.loadImageSync(photoURL);
+					mainImage.setImageBitmap(mainBitmap);
+					if (dialog.isShowing()) {
+						dialog.dismiss();
+					}
+					break;
 				case LOAD_IMAGE_FINISH:
 					if (dialog.isShowing()) {
 						dialog.dismiss();
@@ -884,17 +891,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			loadImage(file.toString());
 		}else{
 			//如果sd卡不存在，判断是否在缓存种。
-			System.out.println("file not exists");
-			// 获取在缓存中的文件的名字
-			final File dirfile = new File(this.getCacheDir() + "/"
-					+ photoInfo.photoId);
-			System.out.println("dirfile = " + dirfile.toString());
-			if (dirfile.exists()) {// 5、如果缓存存在，则从缓存中获取图片信息
-				System.out.println("cache exists");
-				loadImage(dirfile.toString());
-			}else{
+//			System.out.println("file not exists");
+//			// 获取在缓存中的文件的名字
+//			final File dirfile = new File(this.getCacheDir() + "/"
+//					+ photoInfo.photoId);
+//			System.out.println("dirfile = " + dirfile.toString());
+//			if (dirfile.exists()) {// 5、如果缓存存在，则从缓存中获取图片信息
+//				System.out.println("cache exists");
+//				Log.e(TAG,"缓存存在");
+//				loadImage(dirfile.toString());
+//			}else{
+//				 Log.e(TAG,"缓存不存在");
+				 handler.sendEmptyMessage(9999); //加载网络图片。
 				//如果缓存不存在，从网上获取。 因为是从前面的页面跳转过来，所以图片都会存在缓存或者sd卡。所以没有必要从网上获取。
-			}
+
+//			}
 		}
 	}
 
