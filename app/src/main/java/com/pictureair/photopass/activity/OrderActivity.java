@@ -104,20 +104,20 @@ public class OrderActivity extends BaseActivity {
                         JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
                         orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
                         cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
-                        PictureAirLog.v(TAG, "child size = " + cartItemInfo.size());
+                        PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
 
                         OrderProductInfo orderProductInfo = new OrderProductInfo();
                         orderProductInfo.setOrderTime(orderInfo.orderTime);
                         orderProductInfo.setCartItemInfos(cartItemInfo);
+                        PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
 
                         if (orderInfo.orderStatus == 1) {//1等待买家付款
                             if (orderIds != null && orderIds.size() > 0) {
                                 for (String orderId : orderIds) {
                                     //判断orderId是否相同，且状态是否为1（未付款）
-                                    if (orderId == orderInfo.orderId) {
+                                    if (orderId.equals(orderInfo.orderId)) {
                                         orderInfo.orderStatus = 6;
-                                    } else {
-                                        pictureAirDbManager.removePaymentOrderIdDB(orderId);
+                                        break;
                                     }
                                 }
                             }
@@ -273,6 +273,7 @@ public class OrderActivity extends BaseActivity {
             @Override
             public void run() {
                 orderIds = pictureAirDbManager.searchPaymentOrderIdDB();
+                PictureAirLog.v(TAG, "getLocalPaymentOrder orderIds:" + orderIds.size());
             }
         });
     }
