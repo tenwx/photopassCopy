@@ -25,10 +25,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.List;
 
-
-/**
- * Class wraps URLs to adapter, then it instantiates {@link ru.truba.touchgallery.TouchView.UrlTouchImageView} objects to paging up through them.
- */
 public class UrlPagerAdapter extends BasePagerAdapter {
 
     public UrlPagerAdapter(Context context, List<PhotoInfo> resources) {
@@ -47,7 +43,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
             System.out.println();
             PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
-            iv.setUrl(mResources.get(position).photoThumbnail_1024, mResources.get(position).photoId);
+            iv.setUrl(mResources.get(position).photoThumbnail_1024);
         } else if (mResources.get(position).onLine == 0) {
 
             PictureAirLog.v("instantiateItem", "local photo : " + position + position);

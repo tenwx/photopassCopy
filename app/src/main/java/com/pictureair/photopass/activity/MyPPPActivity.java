@@ -527,34 +527,31 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         if (data.getStringExtra("result").equals("pppOK")) {//ppp绑定成功，需要重新获取ppp信息
             GetPPPList();
         } else if (data.getStringExtra("result").equals("failed")) {//扫描失败
-            PictureAirLog.v(TAG, "------>" + data.getStringExtra("errorType"));
-            if (data.getStringExtra("errorType").equals("incomplete")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("invalidCode")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("errQueryUser")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("PPHasBind")) {
-                if (requestCode == PPP_CODE) {
-                    errorMessage = getString(R.string.not_ppp_card);
-                } else {
-                    errorMessage = getString(R.string.select_pp_hasUpgraded);
-                }
-            } else if (data.getStringExtra("errorType").equals("errQueryPPP")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("noPaidForPPP")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("invalidPPP")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("errQueryPhoto")) {
-                errorMessage = getString(R.string.select_bind_pp_faile);
-            } else if (data.getStringExtra("errorType").equals("PPPHasBind")) {
-                if (requestCode == PP_CODE) {
-                    errorMessage = getString(R.string.not_pp_card);
-                } else {
-                    errorMessage = getString(R.string.select_bind_pp_faile);
-                }
+            int id = data.getIntExtra("errorType", 0);
+            PictureAirLog.v(TAG, "------>" + id);
+            switch (id){
+                case R.string.http_error_code_6055:
+                    if (requestCode == PPP_CODE) {
+                        errorMessage = getString(R.string.not_ppp_card);
+                    } else {
+                        errorMessage = getString(R.string.select_pp_hasUpgraded);
+                    }
+                    break;
+
+                case R.string.http_error_code_6057:
+                    if (requestCode == PP_CODE) {
+                        errorMessage = getString(R.string.not_pp_card);
+                    } else {
+                        errorMessage = getString(R.string.select_bind_pp_faile);
+                    }
+                    break;
+
+                default:
+                    errorMessage = getString(id);
+                    break;
+
             }
+
             customdialog = new CustomDialog.Builder(MyPPPActivity.this)
                     .setMessage(errorMessage)
                     .setNegativeButton(null, new DialogOnClickListener(false, null, false))

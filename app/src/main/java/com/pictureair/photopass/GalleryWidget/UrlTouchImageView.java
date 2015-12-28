@@ -20,7 +20,6 @@ package com.pictureair.photopass.GalleryWidget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -30,29 +29,17 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
-import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.NoSuchPaddingException;
-
-import cz.msebera.android.httpclient.Header;
 
 
 public class UrlTouchImageView extends RelativeLayout {
@@ -139,74 +126,31 @@ public class UrlTouchImageView extends RelativeLayout {
      * 设置图片的url
      *
      * @param imageUrl 网络图片路径
-     * @param photoId  photoId
      */
-    public void setUrl(String imageUrl, String photoId) {
-        /**
-         * 一个三级缓存的操纵
-         * 1.判断文件是否已经存在于sd卡中
-         * 2.判断文件是否在缓存中
-         * 3.从网络获取，获取的途中，需要将文件存放于缓存中
-         */
+    public void setUrl(String imageUrl) {
         //1.获取需要显示文件的文件名
         String fileString = ScreenUtil.getReallyFileName(imageUrl);
         //2、判断文件是否存在sd卡中
         File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
         if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
             PictureAirLog.out("file in sd card");
-//			final File file2 = file;
-            //使用imageloader加载图片
-            imageLoader.loadImage("file://" + file.toString(), new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view,
-                                              Bitmap loadedImage) {
-                    // TODO Auto-generated method stub
-                    super.onLoadingComplete(imageUri, view, loadedImage);
-                    bitmap = loadedImage;
-                    handler.sendEmptyMessage(LOAD_FILE_DONE);
-
-                }
-            });
-//			new Thread(){
-//				public void run() {
-//					
-//					bitmap = BitmapFactory.decodeFile(file2.toString());
-//				};
-//			}.start();
-
-
-        } else {//4、如果SD卡不存在，判断是否在缓存中
-            PictureAirLog.out("file not in sd card");
-            dirfile = new File(mContext.getCacheDir() + "/" + photoId);
-            if (dirfile.exists()) {//5、如果缓存存在，则从缓存中获取图片信息
-                PictureAirLog.out("file in cache");
-                new Thread(){
-                    public void run() {
-                        byte[] arg2 = null;
-                        try {
-                            arg2 = AESKeyHelper.decrypt(dirfile.toString(), Common.AES_ENCRYPTION_KEY);
-                        } catch (InvalidKeyException | NoSuchAlgorithmException
-                                | NoSuchPaddingException | IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        if (arg2.length != 0){
-                            Options options = new Options();
-                            options.inSampleSize = 2;//缩小为原来的1/2
-                            bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length, options);
-                        } else {
-                            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_failed);
-                        }
-                        handler.sendEmptyMessage(LOAD_FILE_DONE);
-                    }
-                }.start();
-
-            } else {//6.如果缓存不存在，从网络获取图片信息，
-                PictureAirLog.out("file not in cache and load from network");
-                //				new ImageLoadTask().execute(imageUrl);
-                loadImage(imageUrl);
-            }
+            imageUrl = "file://" + file.toString();
+        } else {
+            PictureAirLog.out("need load from network");
         }
+        //使用imageloader加载图片
+        imageLoader.loadImage(imageUrl, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view,
+                                          Bitmap loadedImage) {
+                // TODO Auto-generated method stub
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                bitmap = loadedImage;
+                handler.sendEmptyMessage(LOAD_FILE_DONE);
+
+            }
+        });
+
     }
 
 
@@ -214,67 +158,6 @@ public class UrlTouchImageView extends RelativeLayout {
         mImageView.setScaleType(scaleType);
     }
 
-    private void loadImage(String url) {
-        // TODO Auto-generated method stub
-
-        HttpUtil.get(url, new BinaryHttpResponseHandler() {
-            @Override
-            public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                //7.将网络获取的图片信息存放到缓存
-                BufferedOutputStream stream = null;
-                try {
-                    System.out.println(dirfile.toString());
-                    FileOutputStream fsStream = new FileOutputStream(dirfile);
-                    stream = new BufferedOutputStream(fsStream);
-                    stream.write(arg2);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (stream != null) {
-                            stream.flush();
-                            stream.close();
-                        }
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    System.out.println("done");
-                }
-
-                if (bitmap != null) {
-                    mImageView.setScaleType(ScaleType.MATRIX);
-                    mImageView.setImageBitmap(bitmap);
-                } else {
-                    mImageView.setScaleType(ScaleType.CENTER);
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
-                    mImageView.setImageBitmap(bitmap);
-                }
-                mImageView.setVisibility(VISIBLE);
-                progressImageView.setVisibility(GONE);
-            }
-
-            @Override
-            public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-                System.out.println(arg3.toString());
-                mImageView.setScaleType(ScaleType.CENTER);
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
-                mImageView.setImageBitmap(bitmap);
-                mImageView.setVisibility(VISIBLE);
-                progressImageView.setVisibility(GONE);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                super.onProgress(bytesWritten, totalSize);
-                progressImageView.setImageResource(getImageResource(bytesWritten * 100 / totalSize));
-            }
-
-        });
-    }
 
     /**
      * 设置本地图片的路径

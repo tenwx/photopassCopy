@@ -50,7 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Timer;
 
 public class PaymentOrderActivity extends BaseActivity implements
         OnClickListener {
@@ -109,10 +108,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     private PictureAirDbManager pictureAirDbManager;
     public static org.json.JSONObject resultJsonObject;
-    private static boolean PAYMENT_SUCCESS = false;//是否收到支付完成推送
-    private int count = 0;
     private CustomProgressDialog customProgressDialog;
-    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -425,31 +421,32 @@ public class PaymentOrderActivity extends BaseActivity implements
      */
     public void satrtTimer() {
         PictureAirLog.v(TAG, "satrtTimer ");
-        new CountDownTimer(5000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                PictureAirLog.v(TAG, "onFinish ");
-                if (resultJsonObject == null) {
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
-                    PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
-                    pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-                    SuccessAfterPayment();
-                    Intent intent = new Intent();
-                    intent.setClass(PaymentOrderActivity.this, MainTabActivity.class);
-                    intent.putExtra("flag", "payment_pending");
-                    startActivity(intent);
-                }
-            }
-        }.start();
-
+        if (countDownTimer != null) {
+            countDownTimer.start();
+        }
     }
+
+    CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {//支付超时或者失败
+            PictureAirLog.v(TAG, "onFinish ");
+            if (resultJsonObject == null) {
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
+                pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+
+                SuccessAfterPayment();
+                finish();
+            }
+        }
+    };
 
 
     /**
@@ -540,6 +537,11 @@ public class PaymentOrderActivity extends BaseActivity implements
                 startActivity(intent);
             }
         }
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        finish();
     }
 
 
@@ -795,6 +797,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                 Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                 startActivity(intent2);
                 CancelInPayment();
+                finish();
                 break;
             default:
                 break;
@@ -809,5 +812,6 @@ public class PaymentOrderActivity extends BaseActivity implements
         Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
         startActivity(intent2);
         CancelInPayment();
+        finish();
     }
 }

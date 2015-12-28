@@ -508,7 +508,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
             //		 预览图片宽 180-7-7 = 166
             //		 预览图片高 120-7-7 = 106
             bannerView_Makegift.changeimagepath(photoList, productURL, previewViewWidth, previewViewHeight, 180, 120, 7, 7, 166, 106, 0, 0, 0, "4R Print");//设置bannerview的图片
-        } else if (productName.equals(Common.GOOD_NAME_6R) || productName.equals(Common.GOOD_NAME_COOK) || productName.equals(Common.GOOD_NAME_TSHIRT)) {
+        } else if (productName.equals(Common.GOOD_NAME_6R) || productName.equals(Common.GOOD_NAME_COOK)) {
             //5.6r相框，商品宽 240
             //		 商品高 180
             //       左边留白 10
