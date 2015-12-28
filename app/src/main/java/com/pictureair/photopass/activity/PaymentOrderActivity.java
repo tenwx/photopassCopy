@@ -399,13 +399,13 @@ public class PaymentOrderActivity extends BaseActivity implements
                     CancelInPayment();
                     break;
                 case RQF_SUCCESS:
-                    PictureAirLog.v(TAG, "RQF_SUCCESS");
+                    PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
                     //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
                     customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            satrtTimer();
+                            startTimer();
                             getData();
                         }
                     });
@@ -419,7 +419,7 @@ public class PaymentOrderActivity extends BaseActivity implements
     /**
      * 获取推送消息，跳转相应界面
      */
-    public void satrtTimer() {
+    public void startTimer() {
         PictureAirLog.v(TAG, "satrtTimer ");
         if (countDownTimer != null) {
             countDownTimer.start();
