@@ -407,6 +407,7 @@ public class CameraActivity extends BaseActivity implements OnClickListener,
 		handler.removeCallbacks(runnable2);
 		handler.removeCallbacks(runnable3);
 		handler.removeCallbacks(runnable4);
+		handler.removeCallbacks(runnable9);
 		if (mycamera != null) {
 			mycamera.stopPreview();
 			mycamera.release();
