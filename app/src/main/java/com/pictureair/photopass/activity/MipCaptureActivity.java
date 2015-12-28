@@ -16,8 +16,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -239,9 +237,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
         } catch (RuntimeException e) {
             newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
             Intent intent = new Intent();
-            intent.putExtra("needCallBack", false);
             intent.setClass(this, InputCodeActivity.class);
-            startActivity(intent);
             finish();
             return;
         }
@@ -342,8 +338,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
             case R.id.topRightView:
                 //跳转到输入  code 的界面。
                 Intent i = new Intent(MipCaptureActivity.this, InputCodeActivity.class);
-                i.putExtra("needCallBack", true);
-                startActivityForResult(i, MANUAL_INPUT_CODE);
+                startActivity(i);
             default:
                 break;
         }

@@ -524,6 +524,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         if (resultCode != RESULT_OK) {
             return;
         }
+        PictureAirLog.out("myppp----->" + data.getStringExtra("result"));
         if (data.getStringExtra("result").equals("pppOK")) {//ppp绑定成功，需要重新获取ppp信息
             GetPPPList();
         } else if (data.getStringExtra("result").equals("failed")) {//扫描失败

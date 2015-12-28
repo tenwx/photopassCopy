@@ -1161,6 +1161,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             for (int j = 0; j < photoPassPictureList.size(); j++) {//遍历list，查找locationid一样的内容
                 PictureAirLog.out("遍历地址");
                 PhotoItemInfo p = photoPassPictureList.get(j);
+                if (p.locationId == null) {//此item为视频，直接跳过
+                    continue;
+                }
                 if (info.locationId.equals(p.locationId) || p.locationIds.contains(info.locationId)) {//如果locationId和photo的locationid一样
                     PictureAirLog.out("location一样");
                     findLocation = true;

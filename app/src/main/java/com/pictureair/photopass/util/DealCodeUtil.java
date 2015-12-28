@@ -130,12 +130,15 @@ public class DealCodeUtil {
 
 				case API1.ADD_PPP_CODE_TO_USER_SUCCESS://绑定ppp成功
 					Bundle bundle3 = new Bundle();
+					PictureAirLog.out("add ppp code to user success--->" + dealWay);
 					if (dealWay != null) {//从ppp进入
 						bundle3.putInt("status", 5);
 						bundle3.putString("result", "pppOK");
+						PictureAirLog.out("scan ppp ok 555");
 						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
 					}else {
 						bundle3.putInt("status", 3);
+						PictureAirLog.out("scan ppp ok 333");
 						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
 					}
 					break;
@@ -178,15 +181,15 @@ public class DealCodeUtil {
 				pps.add(code);
 
 				API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null),pps, bindData, pppId, handler2);
-				System.out.println("return");
+				PictureAirLog.out("return");
 				return;
 			}else {//其他界面过来的话，需要绑定到user
-				System.out.println("pp");
+				PictureAirLog.out("pp");
 				params.put(Common.CUSTOMERID, code);
 				urlString = Common.BASE_URL_TEST+Common.ADD_CODE_TO_USER;
 			}
 		}else {
-			System.out.println("ppp");
+			PictureAirLog.out("ppp");
 			params.put(Common.PPPCode, code);
 			urlString = Common.BASE_URL_TEST+Common.BIND_PPP_TO_USER;
 		}

@@ -509,6 +509,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.out("add scan code success---->" + type);
                 if ("ppp".equals(type)) {
                     handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS).sendToTarget();
                 } else if ("pp".equals(type)) {

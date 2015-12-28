@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -81,6 +80,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 							editor.commit();
 						} else if (bundle.getInt("status") == 5){
 							intent2.putExtra("result", bundle.getString("result"));
+							PictureAirLog.out("scan ppp success and start back");
 							setResult(RESULT_OK, intent2);
 						}
 					}
@@ -177,9 +177,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		super.TopViewClick(view);
 		switch (view.getId()) {
 			case R.id.topLeftView:
-				if (getIntent().getBooleanExtra("needCallBack", false)) {
-					setResult(RESULT_CANCELED);
-				}
 				finish();
 				break;
 			default:

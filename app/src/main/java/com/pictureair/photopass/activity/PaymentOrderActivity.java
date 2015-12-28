@@ -468,23 +468,16 @@ public class PaymentOrderActivity extends BaseActivity implements
      */
     public void dealData(org.json.JSONObject resultJsonObject) {
         PictureAirLog.v(TAG, "dealData()");
-        // fasd;
+        Intent intent;
         if (resultJsonObject.has("pppCode")) {// ppp
             // product
             PictureAirLog.v(TAG, "----------------->buy ppp");
-            SharedPreferences.Editor editor = sPreferences.edit();
-            editor.putBoolean(Common.NEED_FRESH, true);
-            editor.commit();
+
             myApplication.setNeedRefreshPPPList(true);
-            Intent intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
+            intent = new Intent(PaymentOrderActivity.this, MyPPPActivity.class);
             API1.PPPlist.clear();
-            if (customProgressDialog.isShowing()) {
-                customProgressDialog.dismiss();
-            }
-            SuccessAfterPayment();
-            startActivity(intent);
+
         } else {
-            Intent intent;
             // 以下两种情况，进入图片清晰页面
             PictureAirLog.v(TAG, "get refresh view after buy blur photo---->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             // 以下三种情况要回到清晰图片页面
@@ -517,26 +510,22 @@ public class PaymentOrderActivity extends BaseActivity implements
                 } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
                     myApplication.setRefreshViewAfterBuyBlurPhoto("");
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
-                SuccessAfterPayment();
-                SharedPreferences.Editor editor = sPreferences.edit();
-                editor.putBoolean(Common.NEED_FRESH, true);
-                editor.commit();
-                startActivity(intent);
+
             } else {
                 // 回到订单页面
                 PictureAirLog.v(TAG, "----------------->回到订单页面");
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
                 intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                 intent.putExtra("flag", "two");
-                SuccessAfterPayment();
-                startActivity(intent);
             }
         }
+        SharedPreferences.Editor editor = sPreferences.edit();
+        editor.putBoolean(Common.NEED_FRESH, true);
+        editor.commit();
+        if (customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
+        SuccessAfterPayment();
+        startActivity(intent);
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
