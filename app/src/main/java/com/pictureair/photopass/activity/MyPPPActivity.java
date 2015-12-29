@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
@@ -27,12 +26,14 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.entity.BaseBusEvent;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.ScanInfoEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
@@ -54,21 +55,19 @@ import java.util.Collections;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * 显示用户所有的PP+或是对应某个PP而言可使用的PP+
  */
 public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "MyPPPActivity";
-    private final static int PPP_CODE = 1;
-    private final static int PP_CODE = 2;
 
     private ImageView setting;
     private ListView listPPP;
     private ImageView back;
-    private ImageView optionImageView;
     private Button text_instruction;
-    private TextView optoinTextView;
 
     //    private BannerView_PPPIntroduce nopppLayout;
     private LinearLayout nopppLayout;
@@ -113,7 +112,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 case 888://扫描
                     intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
                     intent.putExtra("type", "ppp");//只扫描ppp
-                    startActivityForResult(intent, PPP_CODE);
+                    startActivity(intent);
                     if (pppPop.isShowing()) {
                         pppPop.dismiss();
                     }
@@ -362,14 +361,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (MyApplication.getInstance().getNeedRefreshPPPList()) {
-            GetPPPList();
-        }
-    }
-
 
     //获取ppp数据
     private void GetPPPList() {
@@ -516,68 +507,68 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        // 判断扫描返回的结果
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        PictureAirLog.out("myppp----->" + data.getStringExtra("result"));
-        if (data.getStringExtra("result").equals("pppOK")) {//ppp绑定成功，需要重新获取ppp信息
-            GetPPPList();
-        } else if (data.getStringExtra("result").equals("failed")) {//扫描失败
-            int id = data.getIntExtra("errorType", 0);
-            PictureAirLog.v(TAG, "------>" + id);
-            switch (id){
-                case R.string.http_error_code_6055:
-                    if (requestCode == PPP_CODE) {
+
+    @Subscribe
+    public void onUserEvent(BaseBusEvent baseBusEvent) {
+        if (baseBusEvent instanceof ScanInfoEvent) {
+            ScanInfoEvent scanInfoEvent = (ScanInfoEvent) baseBusEvent;
+            String result = scanInfoEvent.getResult();
+            PictureAirLog.out("myppp----->" + result);
+            if (result.equals("pppOK")) {//ppp绑定成功，需要重新获取ppp信息
+                GetPPPList();
+            } else if (result.equals("failed")) {//扫描失败
+                int id = scanInfoEvent.getErrorType();
+                PictureAirLog.v(TAG, "------>" + id);
+                switch (id) {
+                    case R.string.http_error_code_6055:
                         errorMessage = getString(R.string.not_ppp_card);
-                    } else {
-                        errorMessage = getString(R.string.select_pp_hasUpgraded);
-                    }
-                    break;
+                        break;
 
-                case R.string.http_error_code_6057:
-                    if (requestCode == PP_CODE) {
-                        errorMessage = getString(R.string.not_pp_card);
-                    } else {
-                        errorMessage = getString(R.string.select_bind_pp_faile);
-                    }
-                    break;
+                    default:
+                        errorMessage = getString(id);
+                        break;
 
-                default:
-                    errorMessage = getString(id);
-                    break;
+                }
 
+                customdialog = new CustomDialog.Builder(MyPPPActivity.this)
+                        .setMessage(errorMessage)
+                        .setNegativeButton(null, new DialogOnClickListener(false, null, false))
+                        .setPositiveButton(getResources().getString(R.string.dialog_ok1), new DialogOnClickListener(false, null, false))
+                        .setCancelable(false)
+                        .create();
+                customdialog.show();
+            } else if (result.equals("notSame")) {//卡片类型不一致
+                //初始化dialog
+                customdialog = new CustomDialog.Builder(MyPPPActivity.this)
+                        .setMessage(getString(R.string.not_ppp_card))
+                        .setNegativeButton(null, new DialogOnClickListener(false, null, false))
+                        .setPositiveButton(getResources().getString(R.string.dialog_ok1), new DialogOnClickListener(false, null, false))
+                        .setCancelable(false)
+                        .create();
+                customdialog.show();
+            } else {//返回pp码，弹框，询问是否绑定
+
+                customdialog = new CustomDialog.Builder(MyPPPActivity.this)
+                        .setMessage(getString(R.string.bind_pp_now))
+                        .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogOnClickListener(true, result, scanInfoEvent.isHasBind()))
+                        .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogOnClickListener(true, result, scanInfoEvent.isHasBind()))
+                        .setCancelable(false)
+                        .create();
+                customdialog.show();
             }
+            EventBus.getDefault().removeStickyEvent(scanInfoEvent);
+        }
+    }
 
-            customdialog = new CustomDialog.Builder(MyPPPActivity.this)
-                    .setMessage(errorMessage)
-                    .setNegativeButton(null, new DialogOnClickListener(false, null, false))
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok1), new DialogOnClickListener(false, null, false))
-                    .setCancelable(false)
-                    .create();
-            customdialog.show();
-        } else if (data.getStringExtra("result").equals("notSame")) {//卡片类型不一致
-            //初始化dialog
-            customdialog = new CustomDialog.Builder(MyPPPActivity.this)
-                    .setMessage((requestCode == PP_CODE) ? getString(R.string.not_pp_card) : getString(R.string.not_ppp_card))
-                    .setNegativeButton(null, new DialogOnClickListener(false, null, false))
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok1), new DialogOnClickListener(false, null, false))
-                    .setCancelable(false)
-                    .create();
-            customdialog.show();
-        } else {//返回pp码，弹框，询问是否绑定
 
-            customdialog = new CustomDialog.Builder(MyPPPActivity.this)
-                    .setMessage(getString(R.string.bind_pp_now))
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogOnClickListener(true, data.getStringExtra("result"), data.getBooleanExtra("hasBind", false)))
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogOnClickListener(true, data.getStringExtra("result"), data.getBooleanExtra("hasBind", false)))
-                    .setCancelable(false)
-                    .create();
-            customdialog.show();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MyApplication.getInstance().getNeedRefreshPPPList()) {
+            GetPPPList();
+        }
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
         }
     }
 
@@ -585,6 +576,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     //对话框监听类

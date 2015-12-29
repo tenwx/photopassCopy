@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -23,6 +24,8 @@ import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 手动输入条码的页面
@@ -45,13 +48,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 					if (dialog.isShowing()) {
 						dialog.dismiss();
 					}
-//					if (msg.obj != null) {//从ppp页面过来，需要返回
-//						Intent intent2 = new Intent();
-//						intent2.putExtra("result", "failed");
-//						intent2.putExtra("errorType", Integer.valueOf(msg.obj.toString()));
-//						setResult(RESULT_OK, intent2);
-//					}
-//					finish();
 					break;
 
 				case DealCodeUtil.DEAL_CODE_SUCCESS:
@@ -63,12 +59,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 						Intent intent2 = new Intent();
 						Bundle bundle = (Bundle) msg.obj;
 						if (bundle.getInt("status") == 1) {
-							intent2.putExtra("result", bundle.getString("result"));
-							setResult(RESULT_OK, intent2);
+							EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
 						} else if (bundle.getInt("status") == 2) {//将pp码返回
-							intent2.putExtra("result", bundle.getString("result"));
-							intent2.putExtra("hasBind", bundle.getBoolean("hasBind"));
-							setResult(RESULT_OK, intent2);
+							EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), bundle.getBoolean("hasBind")));
 						} else if (bundle.getInt("status") == 3) {
 							intent2.setClass(InputCodeActivity.this, MyPPPActivity.class);
 							API1.PPPlist.clear();
@@ -79,9 +72,8 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 							editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
 							editor.commit();
 						} else if (bundle.getInt("status") == 5){
-							intent2.putExtra("result", bundle.getString("result"));
+							EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
 							PictureAirLog.out("scan ppp success and start back");
-							setResult(RESULT_OK, intent2);
 						}
 					}
 					AppManager.getInstance().killActivity(MipCaptureActivity.class);
