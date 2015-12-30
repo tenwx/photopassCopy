@@ -718,7 +718,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             photoInfo = photolist.get(currentPosition);
         }
         //更新收藏图标
-        if (photoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(photoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), photoInfo.photoPathOrURL)) {
+        if (photoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
             photoInfo.isLove = 1;
             loveImageButton.setImageResource(R.drawable.discover_like);
         } else {
@@ -1008,12 +1008,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (photoInfo.isLove == 1) {
                     Log.d(TAG, "cancel love");
-                    pictureAirDbManager.setPictureLove(photoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), photoInfo.photoPathOrURL, false);
+                    pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), false);
                     photoInfo.isLove = 0;
                     loveImageButton.setImageResource(R.drawable.discover_no_like);
                 } else {
                     Log.d(TAG, "add love");
-                    pictureAirDbManager.setPictureLove(photoInfo.photoId, sharedPreferences.getString(Common.USERINFO_ID, ""), photoInfo.photoPathOrURL, true);
+                    pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), true);
                     photoInfo.isLove = 1;
                     loveImageButton.setImageResource(R.drawable.discover_like);
                 }

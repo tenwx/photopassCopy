@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.StoryRefreshOnClickEvent;
 import com.pictureair.photopass.fragment.FragmentPageCamera;
 import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
@@ -31,6 +32,8 @@ import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.BadgeView;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
+
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -187,7 +190,7 @@ public class MainTabActivity extends BaseFragmentActivity {
                     System.out.println("photo tab on click");
                     if (mTabHost.getCurrentTab() == 0) {//获取最新数据
                         PictureAirLog.d(TAG, "need refresh");
-                        FragmentPageStory.doRefresh();
+                        EventBus.getDefault().postSticky(new StoryRefreshOnClickEvent(true));
                     } else {
                         PictureAirLog.d(TAG, "need not refresh");
                     }

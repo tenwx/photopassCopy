@@ -42,25 +42,26 @@ public class PictureAirDbManager {
     /**
      * 收藏或者取消收藏图片
      *
-     * @param photoId   网络图片的id
+     * @param photoInfo   网络图片的id
      * @param userId
-     * @param photoPath 本地的图片路径
      * @param setLove   是收藏还是取消收藏操作
      */
-    public void setPictureLove(String photoId, String userId, String photoPath, boolean setLove) {
-        if (photoId == null) {
-            photoId = "";
-        }
-        if (photoPath == null) {
-            photoPath = "";
-        }
+    public void setPictureLove(PhotoInfo photoInfo, String userId, boolean setLove) {
         try {
             database = photoInfoDBHelper.getWritableDatabase();
             if (setLove) {//添加收藏
                 Log.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
-                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?)", new String[]{photoId, userId, photoPath});
+                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
+                        photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
+                        photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
+                                photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
+                        photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
+                                photoInfo.videoWidth + "", photoInfo.videoHeight + ""});
             } else {//取消收藏
-                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and photoPath = ?", new String[]{photoId, userId, photoPath});
+                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
+                        new String[]{(photoInfo.photoId != null) ? photoInfo.photoId : "", userId,
+                                (photoInfo.photoPathOrURL != null) ? photoInfo.photoPathOrURL : ""});
             }
 
         } catch (Exception e) {
@@ -74,23 +75,17 @@ public class PictureAirDbManager {
     /**
      * 检查图片是否为收藏图片
      *
-     * @param photoId
+     * @param photoInfo
      * @param userId
-     * @param photoPath
      */
-    public boolean checkLovePhoto(String photoId, String userId, String photoPath) {
+    public boolean checkLovePhoto(PhotoInfo photoInfo, String userId) {
         boolean result = false;
-        if (photoId == null) {
-            photoId = "";
-        }
-        if (photoPath == null) {
-            photoPath = "";
-        }
         Cursor cursor = null;
         try {
             database = photoInfoDBHelper.getWritableDatabase();
-            cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and photoPath = ?",
-                    new String[]{photoId, userId, photoPath});
+            cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
+                    new String[]{(photoInfo.photoId != null) ? photoInfo.photoId : "", userId,
+                            (photoInfo.photoPathOrURL != null) ? photoInfo.photoPathOrURL : ""});
             result = (cursor.getCount() > 0) ? true : false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,8 +139,9 @@ public class PictureAirDbManager {
                     if (photoInfo.photoPathOrURL == null) {
                         photoInfo.photoPathOrURL = "";
                     }
-                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and photoPath = ?",
-                            new String[]{photoInfo.photoId, userId, photoInfo.photoPathOrURL});
+                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
+                            new String[]{(photoInfo.photoId != null) ? photoInfo.photoId : "", userId,
+                                    (photoInfo.photoPathOrURL != null) ? photoInfo.photoPathOrURL : ""});
                     if (cursor.getCount() > 0) {//是收藏的图片
                         photoInfo.isLove = 1;
                     } else {//不是收藏图片
@@ -168,6 +164,30 @@ public class PictureAirDbManager {
                 database.close();
             }
         }
+        return resultArrayList;
+    }
+
+
+    public ArrayList<PhotoItemInfo> getFavoritePhotoInfoListFromDB(String userId){
+        ArrayList<PhotoItemInfo> resultArrayList = new ArrayList<>();
+        database = photoInfoDBHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = database.rawQuery("selec * from " + Common.FAVORITE_INFO_TABLE + " where userId = ?", new String[]{userId});
+            while (cursor.moveToNext()) {
+
+            }
+
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            if (database != null)
+                database.close();
+        }
+
         return resultArrayList;
     }
 
