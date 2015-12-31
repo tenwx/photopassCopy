@@ -88,7 +88,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "videoHeight integer)");
 
         /**
-         * 创建图片收藏表，用来记录已收藏的信息，字段和图片表基本一样
+         * 创建图片收藏表，用来记录已收藏的信息
          * 目前退出登录都会重新写photo表，并且本地图片没有存放到photo表，所以暂时需要重新开表记录收藏图片，以后修改了photo表的逻辑之后，这两张表可以合并
          * _id
          * userId
@@ -110,6 +110,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          * fileSize  文件的大小
          * videoWidth 视频宽
          * videoHeight 视频高
+         * isOnLine 本地还是网络图片
          */
         db.execSQL("create table if not exists " + Common.FAVORITE_INFO_TABLE +
                 "(_id integer primary key autoincrement, " +
@@ -131,7 +132,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "isVideo integer, " +
                 "fileSize integer, " +
                 "videoWidth integer, " +
-                "videoHeight integer)");
+                "videoHeight integer, " +
+                "isOnLine integer)");
 
 
         /**

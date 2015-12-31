@@ -180,9 +180,11 @@ public class PaymentOrderActivity extends BaseActivity implements
             orderInfo = getIntent().getParcelableExtra("deliveryInfo");
             orderid = orderInfo.orderId;
             // 此处信息，获取比较麻烦，暂时写死
-            nameString = "PictureAir";
             priceString = orderInfo.orderTotalPrice + "";
-            introductString = "Made by PictureAir";
+//            nameString = "PictureAir";
+//            introductString = "Made by PictureAir";
+            nameString = getIntent().getStringExtra("name");// 获取name
+            introductString = getIntent().getStringExtra("introduce");// 获取介绍信息
             PictureAirLog.v(TAG, " orderid： " + orderid + "priceString: " + priceString);
         }
 

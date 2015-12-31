@@ -83,6 +83,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private static final int SORT_COMPLETED_REFRESH = 224;
     private static final int DEAL_ALL_VIDEO_DATA_DONE = 888;
     private static final int DEAL_REFRESH_VIDEO_DATA_DONE = 999;
+    private static final int DEAL_FAVORITE_DATA_SUCCESS = 1000;
 
     private static String TAG = "FragmentPageStory";
 
@@ -115,7 +116,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private static MyApplication app;
     private ArrayList<PhotoItemInfo> photoPassPictureList;
     private ArrayList<PhotoItemInfo> magicPicList;
-    private ArrayList<PhotoItemInfo> favouritePictureList;
 
     private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
@@ -199,7 +199,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         photoPassPictureList.clear();
                         app.allPicList.clear();
                         app.boughtPicList.clear();
-                        favouritePictureList.clear();
                         try {
                             getData();
                         } catch (ParseException e) {
@@ -286,6 +285,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     getVideoInfoDone = true;
                     PictureAirLog.out("deal refresh video done");
                     getRefreshDataFinish();
+                    break;
+
+                case DEAL_FAVORITE_DATA_SUCCESS://处理收藏图片成功
+                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
                     break;
 
                 case SORT_COMPLETED_REFRESH:
@@ -559,7 +562,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         pictureAirDbManager = new PictureAirDbManager(getActivity());
         sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         photoPassPictureList = new ArrayList<>();
-        favouritePictureList = new ArrayList<>();
         magicPicList = new ArrayList<>();
 
         allPhotoList = new ArrayList<>();
@@ -622,14 +624,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 pictureAirPhotoList.clear();
                 magicPhotoList.clear();
                 boughtPhotoList.clear();
-                favouritePhotoList.clear();
+//                favouritePhotoList.clear();
 
 
                 allPhotoList.addAll(AppUtil.startSortForPinnedListView(app.allPicList));
                 pictureAirPhotoList.addAll(AppUtil.startSortForPinnedListView(photoPassPictureList));
                 magicPhotoList.addAll(AppUtil.startSortForPinnedListView(magicPicList));
                 boughtPhotoList.addAll(AppUtil.startSortForPinnedListView(app.boughtPicList));
-                favouritePhotoList.addAll(AppUtil.startSortForPinnedListView(favouritePictureList));
+//                favouritePhotoList.addAll(AppUtil.startSortForPinnedListView(favouritePictureList));
 
                 if (isAll) {
                     handler.sendEmptyMessage(SORT_COMPLETED_ALL);
@@ -887,10 +889,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         }
         if (sharedPreferences.getBoolean(Common.NEED_FRESH, false)) {
             System.out.println("need refresh");
+            app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             Editor editor = sharedPreferences.edit();
             editor.putBoolean(Common.NEED_FRESH, false);
             editor.commit();
-            dialog.show();
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
             API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, null);//获取全部图片
             API1.getVideoList(null, handler);//获取全部视频信息
             if (MainTabActivity.maintabbadgeView.isShown()) {
@@ -898,11 +903,28 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             }
         }
         if (!app.scanMagicFinish) {
-            dialog.show();
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
             scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
             scanPhotosThread.start();
         } else {
             Collections.sort(app.magicPicList);
+        }
+
+        if (app.needScanFavoritePhotos) {//需要扫描收藏图片
+            app.needScanFavoritePhotos = false;
+            favouritePhotoList.clear();
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""))));
+                    handler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
+
+                }
+            }.start();
         }
         super.onResume();
     }
@@ -1043,10 +1065,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     app.allPicList.addAll(photoPassPictureList);
                     app.allPicList.addAll(magicPicList);
                     Collections.sort(app.allPicList);//对all进行排序
-                    ArrayList<PhotoItemInfo> originalPhotoList = new ArrayList<>();
-                    originalPhotoList.addAll(app.allPicList);
-                    favouritePictureList.addAll(pictureAirDbManager.checkLovePhotos(originalPhotoList, sharedPreferences.getString(Common.USERINFO_ID, "")));
-                    System.out.println("location is ready");
+                    favouritePhotoList.clear();
+                    favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""))));
+                    PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
                     handler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
@@ -1375,6 +1397,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     /**
      * 检测story按钮的点击事件，点击了执行刷新操作
+     *
      * @param baseBusEvent
      */
     @Subscribe
@@ -1384,7 +1407,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             if (storyRefreshOnClickEvent.isStoryTabClick()) {//通知页面开始刷新
                 if (noPhotoView.isShown()) {
                     PictureAirLog.out("do refresh when noPhotoView is showing");
-                    if (!swipeRefreshLayout.isRefreshing()){
+                    if (!swipeRefreshLayout.isRefreshing()) {
                         noPhotoViewStateRefresh = true;
                         swipeRefreshLayout.setEnabled(true);
                         swipeRefreshLayout.setRefreshing(true);

@@ -167,6 +167,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 Intent intent = new Intent(this, PaymentOrderActivity.class);
                 intent.putExtra("flag", "order");
                 intent.putExtra("deliveryInfo", orderInfo);
+                String orderName;
+                String orderIntroduce;
+                if (orderDetailArrayList.size() > 1){//>1
+                    orderName = getString(R.string.multi_goods);
+                    orderIntroduce = getString(R.string.multi_goods);
+                } else {//1
+                    orderName = orderDetailArrayList.get(0).cart_productName;
+                    orderIntroduce = orderDetailArrayList.get(0).cart_productIntroduce;
+                }
+                intent.putExtra("name", orderName);
+                intent.putExtra("introduce", orderIntroduce);
                 startActivity(intent);
                 finish();
                 break;

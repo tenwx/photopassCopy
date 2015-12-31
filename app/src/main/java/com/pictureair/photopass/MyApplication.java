@@ -52,6 +52,7 @@ public class MyApplication extends Application {
     // private boolean locationIsRunning = false;//当前定位是否在运行之中
     private boolean needRefreshPPPList = false;// 记录是否需要更新ppp列表
     public boolean scanMagicFinish = false;// 记录是否已经扫面过magic相册
+    public boolean needScanFavoritePhotos = false;//记录是否需要扫描收藏图片
     private String languageType;// 记录app选择的语言
     public int fragmentStoryLastSelectedTab = 0;// 记录story页面viewpager上次的页面序号
 

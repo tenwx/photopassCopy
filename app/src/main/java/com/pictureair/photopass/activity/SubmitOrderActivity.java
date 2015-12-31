@@ -120,9 +120,17 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         editor.commit();
 
                         Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
-                        intent2.putExtra("name", "PictureAir");
+                        String orderName, orderIntroduce;
+                        if (list.size() == 1) {
+                            orderName = list.get(0).getProductName();
+                            orderIntroduce = list.get(0).getDescription();
+                        } else {
+                            orderName = getString(R.string.multi_goods);
+                            orderIntroduce = getString(R.string.multi_goods);
+                        }
+                        intent2.putExtra("name", orderName);
                         intent2.putExtra("price", totalpriceTextView.getText().toString());
-                        intent2.putExtra("introduce", "Made by PictureAir");
+                        intent2.putExtra("introduce", orderIntroduce);
                         intent2.putExtra("orderId", orderId);
 //                        intent2.putExtra("addressType", needAddressGood);
                         SubmitOrderActivity.this.startActivity(intent2);
@@ -380,9 +388,18 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     }
                 } else {
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
-                    intent2.putExtra("name", "PictureAir");
                     intent2.putExtra("price", totalpriceTextView.getText().toString());
-                    intent2.putExtra("introduce", "Made by PictureAir");
+                    String orderName, orderIntroduce;
+                    if (list.size() == 1) {
+                        orderName = list.get(0).getProductName();
+                        orderIntroduce = list.get(0).getDescription();
+                    } else {
+                        orderName = getString(R.string.multi_goods);
+                        orderIntroduce = getString(R.string.multi_goods);
+                    }
+
+                    intent2.putExtra("name", orderName);
+                    intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
 //                    intent2.putExtra("addressType", needAddressGood);
                     SubmitOrderActivity.this.startActivity(intent2);

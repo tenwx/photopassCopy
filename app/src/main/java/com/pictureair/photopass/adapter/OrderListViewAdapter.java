@@ -258,8 +258,20 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             switch (type) {
                 case 1://1等待买家付款
                     intent = new Intent(context, PaymentOrderActivity.class);
+
                     intent.putExtra("flag", "order");
                     intent.putExtra("deliveryInfo", grouplist.get(position));
+                    //childlist
+                    String orderName, orderIntroduce;
+                    if (childlist.size() == 1) {
+                        orderName = childlist.get(position).getCartItemInfos().get(0).cart_productName;
+                        orderIntroduce = childlist.get(position).getCartItemInfos().get(0).cart_productIntroduce;
+                    } else {
+                        orderName = context.getString(R.string.multi_goods);
+                        orderIntroduce = context.getString(R.string.multi_goods);
+                    }
+                    intent.putExtra("name", orderName);
+                    intent.putExtra("introduce", orderIntroduce);
                     context.startActivity(intent);
                     break;
 

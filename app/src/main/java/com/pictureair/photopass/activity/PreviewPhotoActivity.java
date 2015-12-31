@@ -1017,6 +1017,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photoInfo.isLove = 1;
                     loveImageButton.setImageResource(R.drawable.discover_like);
                 }
+                myApplication.needScanFavoritePhotos = true;
                 break;
 
             case R.id.preview_edit://编辑
