@@ -64,6 +64,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     //申明实例类
     private List<GoodsInfo1> allGoodsList;//全部商品
     private ShopGoodListViewAdapter shopGoodListViewAdapter;
+    private int i;
 
     //申明其他
     private SharedPreferences sharedPreferences;

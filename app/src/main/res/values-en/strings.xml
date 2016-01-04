@@ -600,4 +600,5 @@
     <string name="no_activated">nonactivated</string>
     <string name="activated">activated</string>
     <string name="expired_on">effective time:</string>
+    <string name="delivery_info">Delivery Info</string>
 </resources>

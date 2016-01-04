@@ -177,6 +177,10 @@ public class API1 {
 
     public static final int MODIFY_PWD_SUCCESS = 5101;
     public static final int MODIFY_PWD_FAILED = 5100;
+
+    public static final int ADD_CODE_TO_USER_FAILED = 5110;
+    public static final int ADD_CODE_TO_USER_SUCCESS = 5111;
+
     //我的模块 end
 
 
@@ -311,7 +315,7 @@ public class API1 {
      * @param fileName
      */
     public static void downloadHeadFile(String downloadUrl, final String folderPath, final String fileName) {
-        HttpUtil1.asynDownloadBinaryData(downloadUrl, new HttpCallback() {
+        HttpUtil1.asyncDownloadBinaryData(downloadUrl, new HttpCallback() {
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);
@@ -845,6 +849,31 @@ public class API1 {
         });
 
     }
+
+    /**
+     * 绑定PP卡到用户
+     */
+    public static void addCodeToUser(String ppCode,final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.CUSTOMERID, ppCode);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(ADD_PP_CODE_TO_USER_SUCCESS);
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADD_CODE_TO_USER_FAILED,status,0).sendToTarget();
+
+            }
+        });
+    }
+
 
     /**
      * 扫描PPP并绑定用户
@@ -1401,7 +1430,7 @@ public class API1 {
      * @param handler
      */
     public static void downloadAPK(String downloadURL, final CustomProgressBarPop customProgressBarPop, final String version, final Handler handler) {
-        HttpUtil1.asynDownloadBinaryData(downloadURL, new HttpCallback() {
+        HttpUtil1.asyncDownloadBinaryData(downloadURL, new HttpCallback() {
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);
@@ -1435,13 +1464,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "socket 链接成功");
+                PictureAirLog.v(TAG, "noticeSocketConnect 链接成功");
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "socket 链接失败,状态码：" + status);
+                PictureAirLog.v(TAG, "noticeSocketConnect 链接失败,状态码：" + status);
             }
         });
     }
@@ -1458,7 +1487,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "退出应用 socket 断开成功");
+                PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开成功");
                 handler.sendEmptyMessage(SOCKET_DISCONNECT_SUCCESS);
             }
 
@@ -1466,7 +1495,7 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.sendEmptyMessage(SOCKET_DISCONNECT_FAILED);
-                PictureAirLog.e(TAG, "退出应用 socket 断开失败,状态码：" + status);
+                PictureAirLog.v(TAG, "noticeSocketDisConnect 退出应用 socket 断开失败,状态码：" + status);
             }
         });
     }
@@ -1485,13 +1514,13 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "收到推送 清空服务器消息成功");
+                PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息成功");
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "收到推送 清空服务器消息失败,状态码：" + status);
+                PictureAirLog.v(TAG, "clearSocketCachePhotoCount 收到推送 清空服务器消息失败,状态码：" + status);
             }
         });
     }

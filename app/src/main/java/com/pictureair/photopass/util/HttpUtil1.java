@@ -39,7 +39,6 @@ public class HttpUtil1 {
             asyncHttpClient.setResponseTimeout(20 * 1000);//设置响应超时时间
             asyncHttpClient.setThreadPool(threadPool);//设置线程池，方便线程管理，重用
         }
-
     }
 
     /**
@@ -65,7 +64,16 @@ public class HttpUtil1 {
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        switch (httpBaseJson.getStatus()) {
+                            case 6035://Current certification has expired, please login again
+                            case 6034://please login
+                                AppExitUtil.getInstance().AppReLogin();
+                                break;
+                            default:
+                                httpCallback.onFailure(httpBaseJson.getStatus());
+                                break;
+                        }
+
                     }
                 }
 
@@ -121,7 +129,15 @@ public class HttpUtil1 {
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        switch (httpBaseJson.getStatus()) {
+                            case 6035://Current certification has expired, please login again
+                            case 6034://please login
+                                AppExitUtil.getInstance().AppReLogin();
+                                break;
+                            default:
+                                httpCallback.onFailure(httpBaseJson.getStatus());
+                                break;
+                        }
                     }
                 }
 
@@ -179,7 +195,15 @@ public class HttpUtil1 {
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        switch (httpBaseJson.getStatus()) {
+                            case 6035://Current certification has expired, please login again
+                            case 6034://please login
+                                AppExitUtil.getInstance().AppReLogin();
+                                break;
+                            default:
+                                httpCallback.onFailure(httpBaseJson.getStatus());
+                                break;
+                        }
                     }
                 }
             }
@@ -238,7 +262,15 @@ public class HttpUtil1 {
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        switch (httpBaseJson.getStatus()) {
+                            case 6035://Current certification has expired, please login again
+                            case 6034://please login
+                                AppExitUtil.getInstance().AppReLogin();
+                                break;
+                            default:
+                                httpCallback.onFailure(httpBaseJson.getStatus());
+                                break;
+                        }
                     }
                 }
 
@@ -295,7 +327,15 @@ public class HttpUtil1 {
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        switch (httpBaseJson.getStatus()) {
+                            case 6035://Current certification has expired, please login again
+                            case 6034://please login
+                                AppExitUtil.getInstance().AppReLogin();
+                                break;
+                            default:
+                                httpCallback.onFailure(httpBaseJson.getStatus());
+                                break;
+                        }
                     }
                 }
 
@@ -352,7 +392,15 @@ public class HttpUtil1 {
                         httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
                     } else {
                         //失败返回错误码
-                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        switch (httpBaseJson.getStatus()) {
+                            case 6035://Current certification has expired, please login again
+                            case 6034://please login
+                                AppExitUtil.getInstance().AppReLogin();
+                                break;
+                            default:
+                                httpCallback.onFailure(httpBaseJson.getStatus());
+                                break;
+                        }
                     }
                 }
 
@@ -390,8 +438,8 @@ public class HttpUtil1 {
      * @param url          请求url
      * @param httpCallback 请求回调
      */
-    public static void asynDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asynDownloadBinaryData url: " + url);
+    public static void asyncDownloadBinaryData(String url, final HttpCallback httpCallback) {
+        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
         asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
@@ -429,9 +477,9 @@ public class HttpUtil1 {
      * @param params       请求参数
      * @param httpCallback 请求回调 - byte
      */
-    public static void asynDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asynDownloadBinaryData url: " + url);
-        asyncHttpClient.post(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
+    public static void asyncDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
+        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
+        asyncHttpClient.get(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
                 super.onStart();

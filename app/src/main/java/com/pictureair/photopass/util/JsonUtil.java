@@ -254,71 +254,17 @@ public class JsonUtil {
 
         e.putString(Common.USERINFO_ACCOUNT, account);
 
-        String headUrl = null;
+        String headUrl;
         if (obj.containsKey("avatarUrl")) {
             System.out.println("");
             headUrl = obj.getString("avatarUrl");
             e.putString(Common.USERINFO_HEADPHOTO, headUrl);
         }
-//        if (headUrl != null) {
-        // 更新头像图片
-//            headUrl = Common.PHOTO_URL + headUrl;
-//            System.out.println("get head image");
-//            HttpUtil1.asynDownloadBinaryData(headUrl, new HttpCallback() {
-//                @Override
-//                public void onSuccess(byte[] binaryData) {
-//                    super.onSuccess(binaryData);
-//                    try {
-//                        System.out.println("get head image success--------");
-//                        File userFile = new File(Common.USER_PATH);
-//                        if (!userFile.exists()) {
-//                            userFile.mkdirs();
-//                        }
-//                        File headPhoto = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
-//                        headPhoto.createNewFile();
-//                        FileOutputStream fos = new FileOutputStream(headPhoto);
-//                        fos.write(binaryData);
-//                        fos.close();
-//                    } catch (FileNotFoundException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//            });
-//        }
-        String bgUrl = null;
+        String bgUrl;
         if (obj.containsKey("coverHeaderImage")) {
             bgUrl = obj.getString("coverHeaderImage");
             e.putString(Common.USERINFO_BGPHOTO, bgUrl);
         }
-//        if (bgUrl != null) {
-//            // 更新背景图片
-//            bgUrl = Common.PHOTO_URL + bgUrl;
-//
-//            HttpUtil1.asynDownloadBinaryData(bgUrl, new HttpCallback() {
-//                @Override
-//                public void onSuccess(byte[] binaryData) {
-//                    super.onSuccess(binaryData);
-//                    try {
-//                        File bgPhoto = new File(Common.USER_PATH + Common.BGPHOTO_PAHT);
-//                        bgPhoto.createNewFile();
-//                        FileOutputStream fos = new FileOutputStream(bgPhoto);
-//                        fos.write(binaryData);
-//                        fos.close();
-//                    } catch (FileNotFoundException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//        }
         e.commit();
     }
 

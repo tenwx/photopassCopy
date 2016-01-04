@@ -30,7 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
@@ -50,7 +49,8 @@ import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
+import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -71,8 +71,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.crypto.NoSuchPaddingException;
-
-import cz.msebera.android.httpclient.Header;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -680,27 +678,27 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             }
         } else {//如果文件不存在，下载文件到缓存
             PictureAirLog.v(TAG, "file is not exist");
-            HttpUtil.get(loadPhotoInfo.photoThumbnail_1024, new BinaryHttpResponseHandler() {
-
+            HttpUtil1.asyncDownloadBinaryData(loadPhotoInfo.photoThumbnail_1024, new HttpCallback() {
                 @Override
-                public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
+                public void onSuccess(byte[] binaryData) {
+                    super.onSuccess(binaryData);
                     try {
-                        AESKeyHelper.encrypt(arg2, dirFile.toString(), Common.AES_ENCRYPTION_KEY);
+                        AESKeyHelper.encrypt(binaryData, dirFile.toString(), Common.AES_ENCRYPTION_KEY);
                     } catch (InvalidKeyException
                             | NoSuchAlgorithmException
                             | NoSuchPaddingException | IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                    bitmap2 = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
                     mHandler.sendEmptyMessage(0);
                 }
 
                 @Override
-                public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-                    // TODO Auto-generated method stub
-                    PictureAirLog.v(TAG, arg3.toString());
+                public void onFailure(int status) {
+                    super.onFailure(status);
                     mHandler.sendEmptyMessage(0);
+
                 }
             });
         }

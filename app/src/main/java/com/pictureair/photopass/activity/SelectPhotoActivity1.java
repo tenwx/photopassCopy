@@ -212,6 +212,9 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                     list.add(photoInfo);
                 }
             } else {
+                if (goodsInfo == null) {
+                    return list;
+                }
                 //数码照片--是则获取未购买的图片 礼物--获取全部
                 if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
                     if (photoInfo.isPayed == 0) {

@@ -3,9 +3,7 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,11 +14,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
-import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.service.NotificationService;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -40,54 +34,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout rlGprsWifiDoenload, rlWifiOnlyDownload, rlAutoUpdate;
 
     // 用于显示的 按钮。
-    private PictureAirDbManager pictureAirDbManager;
     private SharedPreferences sharedPreferences;
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case API1.LOGOUT_FAILED:
-                case API1.LOGOUT_SUCCESS:
-                    SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-                    Editor editor = sp.edit();
-                    editor.clear();
-                    editor.commit();
-
-                    ACache.get(SettingActivity.this).remove(Common.TOP_GOODS);
-                    ACache.get(SettingActivity.this).remove(Common.ALL_GOODS);
-                    ACache.get(SettingActivity.this).remove(Common.BANNER_GOODS);
-                    ACache.get(SettingActivity.this).remove(Common.PPP_GOOD);
-
-                    application.photoPassPicList.clear();
-                    application.setPushPhotoCount(0);
-                    application.scanMagicFinish = false;
-                    application.fragmentStoryLastSelectedTab = 0;
-                    pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);
-
-                    MyApplication.clearTokenId();
-
-                    //取消通知
-                    Intent intent = new Intent(SettingActivity.this, NotificationService.class);
-                    intent.putExtra("status", "disconnect");
-                    startService(intent);
-
-                    Intent i = new Intent(SettingActivity.this, LoginActivity.class);
-                    finish();
-                    startActivity(i);
-
-                    AppManager.getInstance().AppExit(SettingActivity.this);
-                    break;
-                case API1.SOCKET_DISCONNECT_FAILED:
-                case API1.SOCKET_DISCONNECT_SUCCESS:
-                    API1.Logout(handler);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        ;
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +83,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         ibWifiOnlyDownload.setOnClickListener(this);
         ibAutoUpdate.setOnClickListener(this);
 
-        pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 Context.MODE_PRIVATE);
@@ -159,7 +105,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                         // logout 之后，清空上个用户的数据。
                         application.setLast_tab(0);   // 设置 进入 app为主页
                         //断开推送
-                        API1.noticeSocketDisConnect(handler);
+                        AppExitUtil.getInstance().AppLogout();
                     }
 
                     @Override

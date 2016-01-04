@@ -13,14 +13,14 @@ import android.os.IBinder;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.Base64;
-import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
+import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -30,8 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 /**
  * 下载网络图片服务类
@@ -194,33 +192,19 @@ public class DownloadService extends Service {
             RequestParams params = new RequestParams();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
             params.put(Common.PHOTOIDS, photoId);
-            HttpUtil.get(downloadURL, params, new BinaryHttpResponseHandler(new String[]{"application/json; charset=utf-8", "video/mp4", "audio/x-mpegurl", "image/png", "image/jpeg"}) {
-
+            HttpUtil1.asyncDownloadBinaryData(downloadURL, params, new HttpCallback() {
                 @Override
-                public void onStart() {
-                    // TODO Auto-generated method stub
-                    super.onStart();
-                    PictureAirLog.v("asynDownloadFile", " onStart");
+                public void onSuccess(byte[] binaryData) {
+                    super.onSuccess(binaryData);
+                    PictureAirLog.v("asynDownloadFile onSuccess", "binaryData size: " + binaryData.length);
+                    saveFile(file, binaryData);
                 }
 
                 @Override
-                public void onSuccess(int arg0, Header[] arg1, byte[] arg2) {
-                    // TODO Auto-generated method stub
-                    saveFile(file, arg2);
-                    PictureAirLog.v("asynDownloadFile onSuccess", "binaryData size: " + arg2.length);
-                }
-
-                @Override
-                public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
-                    // TODO Auto-generated method stub
-                    PictureAirLog.v("asynDownloadFile", " onFailure status :" + arg0);
-                    for (Header header : arg1) {
-                        PictureAirLog.v("onFailure", header.getName() + " / " + header.getValue());
-                    }
-                    PictureAirLog.v("asynDownloadFile", " onFailure arg3 :" + arg3);
-
+                public void onFailure(int status) {
+                    super.onFailure(status);
+                    PictureAirLog.v("asynDownloadFile", " onFailure status :" + status);
                     ++failed_num;
-                    //						sendMsg(file);
                     downloadList.remove(0);
                     handler.sendEmptyMessage(START_DOWNLOAD);
                 }

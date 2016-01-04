@@ -153,47 +153,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     itemInfo.photoPathOrURL = photoUrlString;
                     PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
                     updatephotolist.set(0, itemInfo);
-                    //创建jsonobject对象
-                    final int position = msg.arg1;
-//                    com.alibaba.fastjson.JSONObject cartItem = JsonUtil.CreateModifyCartItemJsonObject(updatephotolist, list.get(position / 10), list.get(position / 10).getQty());
-//                    PictureAirLog.v(TAG,cartItem.toString());
-                    RequestParams params = new RequestParams();
-                    params.put(Common.USER_ID, sharedPreferences.getString(Common.USERINFO_ID, ""));
-//                    params.put(Common.ITEM, cartItem);
-//                    HttpUtil.post(Common.BASE_URL + Common.MODIFY_CART, params, new JsonHttpResponseHandler() {
-//
-//                        @Override
-//                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                            // TODO Auto-generated method stub
-//                            super.onSuccess(statusCode, headers, response);
-//                            PictureAirLog.v(TAG,"modify cart with change photot ==" + response);
-//                            if (response.containsKey("message")) {//添加失败
-//                                newToast.setTextAndShow(R.string.uploadphotofailed, Common.TOAST_SHORT_TIME);
-//                            } else {//添加成功
-//                                changephoto(position, updatephotolist);
-//                            }
-//                            if (customProgressBarPop.isShowing()) {
-//                                customProgressBarPop.dismiss();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onProgress(long bytesWritten, long totalSize) {
-//                            super.onProgress(bytesWritten, totalSize);
-//                            customProgressBarPop.setProgress(bytesWritten, totalSize);
-//                        }
-//
-//                        ;
-//
-//                        @Override
-//                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                            super.onFailure(statusCode, headers, throwable, errorResponse);
-//                            newToast.setTextAndShow(R.string.uploadphotofailed, Common.TOAST_SHORT_TIME);
-//                            if (customProgressBarPop.isShowing()) {
-//                                customProgressBarPop.dismiss();
-//                            }
-//                        }
-//                    });
                     break;
 
                 default:
