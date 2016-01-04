@@ -60,135 +60,21 @@
         android:layout_below="@id/story_title"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="invisible">
 
-        <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/story_tab_all"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/story_tab_all"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_10" />
-
-        <ImageView
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/pp_gray" />
-
-        <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/story_tab_photopass"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/story_tab_photopass"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_10" />
-
-        <ImageView
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/pp_gray" />
-
-        <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/story_tab_magic"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:text="@string/story_tab_magic"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_10" />
-
-        <ImageView
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/pp_gray" />
-
-        <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/story_tab_bought"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:text="@string/story_tab_bought"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_10" />
-
-        <ImageView
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/pp_gray" />
-
-        <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/story_tab_favourite"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:text="@string/story_tab_favorite"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_10" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/story_cursor_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/story_lead_bar"
-        android:background="@color/pp_light_gray_background"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/story_cursor"
+        <com.pictureair.photopass.adapter.viewpagerindicator.TabPageIndicator
+            android:id="@+id/indicator"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:background="@color/pp_blue" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_weight="1"
-            android:background="@color/transparent" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_weight="1"
-            android:background="@color/transparent" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_weight="1"
-            android:background="@color/transparent" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_weight="1"
-            android:background="@color/transparent" />
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/story_viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/story_cursor_layout"
+        android:layout_below="@id/story_lead_bar"
         android:layout_gravity="center"
         android:background="@color/white"
         android:flipInterval="10"
