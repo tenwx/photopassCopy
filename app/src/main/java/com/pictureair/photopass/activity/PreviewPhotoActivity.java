@@ -108,25 +108,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private RelativeLayout titleBar;
     private LinearLayout toolsBar, indexBar;
-    //	private String userId;
     private static final String TAG = "PreviewPhotoActivity";
 
     private int shareType = 0;
 
-    private TextView textView;
 
     //图片显示框架
     private ArrayList<PhotoInfo> photolist;
     private ArrayList<PhotoInfo> targetphotolist;
     private int currentPosition;//记录当前预览照片的索引值
-    //	private int flag;
 
-    //图片布局宽高
-    public static int fraWidth;
-    public static int fraHeight;
 
     private boolean isEdited = false;
-    //	private boolean
 
     //底部切换索引按钮
     private ImageView lastPhotoImageView;
@@ -147,7 +140,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private RelativeLayout photoFraRelativeLayout;
     private RelativeLayout blurFraRelativeLayout;
-    //	private ImageView back;// 图片显示区域
     private float scaleH;// 图片缩放后的宽
     private float scaleW;// 图片缩放后的高
     private int marginTop = 0;//图片上端与屏幕顶部的距离
@@ -169,8 +161,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private SimpleDateFormat simpleDateFormat;
     private CartItemInfoJson cartItemInfoJson;//存放意见购买后的购物信息
 
-    //	private MyApplication application;
-
     /**
      * 照片已购买情况下
      */
@@ -182,11 +172,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private int mNetWorkType;  //当前网络的状态
     private CustomDialog customdialog; //  对话框
 
-    //	private PointF startPoint = new PointF();
-    //	private Matrix currentMatrix = new Matrix();
-
-    //	private float startDis;
-    //	private PointF midPoint;
 
     /**
      * sizeW、sizeH 截图比例 r 圆圈的半径
@@ -212,14 +197,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     int x1;
     int y1;
 
-    int xx;
-    int yy;
 
     private Handler handler = new Handler() {
         @SuppressLint("NewApi")
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case 1://移动的时候
                     sendEmptyMessageDelayed(6, 500);
                     x = msg.arg1 - r;
                     y = (int) (msg.arg2 - r - ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) + scaleH);
@@ -295,7 +278,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     image02.setImageBitmap(bitmap3);
                     out = false;
                     break;
-                case 2:
+                case 2://取消移动的时候
                     PictureAirLog.v(TAG, "------->2");
                     //				if (image02 != null) {
                     //					PictureAirLog.v(TAG,"image2 not null and set null");
@@ -314,7 +297,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         PictureAirLog.v(TAG, "bitmap3 recycle-------->");
                     }
                     break;
-                case 3:
+                case 3://双击放大
                     x1 = msg.arg1 - sizeW / 2;
                     y1 = msg.arg2 - sizeH / 2;
                     PictureAirLog.v(TAG, "current xy = " + x1 + "+" + y1);
@@ -345,7 +328,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         flag = false;
                     }
                     break;
-                case 4:
+                case 4://返回的时候初始化
                     image01.setImageBitmap(bitmap1);
                     flag = false;
                     out = false;
@@ -448,7 +431,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     startActivity(intent1);
                     break;
 
-                case 6:
+                case 6://计算双击方法事件
                     if (count > 0) {
                         count = 0;
                     }
@@ -472,13 +455,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         public void onPageSelected(int arg0) {
                             //初始化每张图片的love图标
                             PictureAirLog.v(TAG, "----------------------->initing...4");
-                            //				PictureAirLog.v(TAG,"viewPager pageSelected--------->"+ arg0 + "____" + mViewPager.getCurrentItem()+"____"+currentPosition);
                             currentPosition = arg0;
-                            //				PictureAirLog.v(TAG,"viewPager pageSelected--------->"+ arg0 + "____" + mViewPager.getCurrentItem()+"____"+currentPosition);
-
-                            //				if (fasdflag) {
-                            //					updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
-                            //				}
                         }
 
                         @Override
@@ -794,21 +771,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
             marginTop = location[1];
             PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
-            //			if(w/h > scaleW/scaleH){
-            if (w > h) {//进入横屏模式
-                bitmap2 = UtilOfDraw.rotaingImageView(90, bitmap2);
-                w = bitmap2.getWidth();
-                h = bitmap2.getHeight();
-                //			Toast.makeText(this, "进入横屏模式", 0).show();
-                //			newToast.setTextAndShow("Into landscape mode", Common.TOAST_SHORT_TIME);
-                PictureAirLog.v(TAG, "landscape+" + w + "+" + h);
-                scaleH = photoFraRelativeLayout.getHeight();
-                scaleW = scaleH * w / (float) h;
-                if (scaleW > ScreenUtil.getScreenWidth(this)) {
-                    scaleW = ScreenUtil.getScreenWidth(this);
-                    scaleH = scaleW * h / (float) w;
-                }
-            }
             float sw = 0f;
             if (h / (float) w > scaleH / (float) scaleW) {//左右留白
                 sw = scaleH / (float) h;
@@ -829,15 +791,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 image01.setImageBitmap(bitmap1);
                 PictureAirLog.v(TAG, "---------->" + image01.getWidth() + "_____" + image01.getHeight());
             }
-            //			else {
-            //				image01.setImageBitmap(bitmap2);
-            //				image01.setScaleType(ImageView.ScaleType.MATRIX);
-            //				matrix.setScale(rl.getWidth() / bitmap2.getWidth(), rl.getHeight() / bitmap2.getHeight());
-            //				image01.setImageMatrix(matrix);
-            //			}
             image01.setVisibility(View.VISIBLE);
-            yy = (photoFraRelativeLayout.getHeight() - bitmap2.getHeight()) / 2;
-            xx = (photoFraRelativeLayout.getWidth() - bitmap2.getWidth()) / 2;
 
         } else {
             touchtoclean.setText(R.string.failed);
@@ -874,17 +828,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         PictureAirLog.v(TAG, "-------->down");
                         downX = event.getX();
                         downY = event.getY();
-
-                        //					if (downY < marginTop || downY > scaleH + marginTop) {
-                        //						PictureAirLog.v(TAG,"out of photo range");
-                        ////						PictureAirLog.v(TAG,"up");
-                        ////						Message msg = handler.obtainMessage();
-                        ////						msg.what = 2;
-                        ////						touchtoclean.setVisibility(View.VISIBLE);
-                        ////						handler.sendMessage(msg);
-                        //						return super.onTouchEvent(event);
-                        //					}
-
 
                         count++;
                         touchtoclean.setVisibility(View.INVISIBLE);
@@ -960,7 +903,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //如果resultBitmap已经存在，则不需要重新创建一个bitmap
         if (resultBitmap == null)
             //创建一个新的bitmap，三个参数依次是宽，高，config
-            resultBitmap = Bitmap.createBitmap(b.getWidth(), b.getHeight(), Bitmap.Config.ARGB_8888);
+            resultBitmap = Bitmap.createBitmap(b.getWidth(), b.getHeight(), Config.ARGB_8888);
         int w = bm.getWidth();//获取mask蒙板的宽
         int h = bm.getHeight();//获取高
         float sw = (float) b.getWidth() / w;
@@ -1344,7 +1287,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             if (sharePop.isShowing()) {
                 sharePop.dismiss();
             }
-            if (mViewPager != null){
+            if (mViewPager != null) {
                 mViewPager.setBackgroundColor(Color.BLACK);
             }
             blurFraRelativeLayout.setBackgroundColor(Color.BLACK);
@@ -1353,19 +1296,26 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             titleBar.setVisibility(View.GONE);
             toolsBar.setVisibility(View.GONE);
             indexBar.setVisibility(View.GONE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
             PictureAirLog.out("portrait----->");
 
             titleBar.setVisibility(View.VISIBLE);
             toolsBar.setVisibility(View.VISIBLE);
             indexBar.setVisibility(View.VISIBLE);
-            if (mViewPager != null){
+            if (mViewPager != null) {
                 mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
             }
             blurFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
             photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-            image01.setBackgroundResource(R.drawable.ic_stub);
+            image01.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+
+        if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
+            resizeBlurImage();
+        }
+
         if (dia.isShowing()) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
             layoutParams.width = ScreenUtil.getScreenWidth(this);
@@ -1374,62 +1324,50 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onConfigurationChanged(newConfig);
     }
 
-    //判断网络类型  并做操作。
-    public void downLoadPhotos() {
-        mNetWorkType = AppUtil.getNetWorkType(getApplicationContext());
-        if (mNetWorkType == AppUtil.NETWORKTYPE_MOBILE) {
-            //如果是手机流量 ，弹出对话狂
-            customdialog = new CustomDialog.Builder(PreviewPhotoActivity.this)
-                    .setMessage(getResources().getString(R.string.dialog_download_message))
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // TODO Auto-generated method stub
-                            customdialog.dismiss();
-                        }
-                    })
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // TODO Auto-generated method stub
-                            ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
-                            list.add(photolist.get(mViewPager.getCurrentItem()));
-                            Intent intent = new Intent(PreviewPhotoActivity.this, DownloadService.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelableArrayList("photos", list);
-                            intent.putExtras(bundle);
-                            startService(intent);
-                            customdialog.dismiss();
-                        }
-                    })
-                    .setCancelable(false)
-                    .create();
-            customdialog.show();
-        } else if (mNetWorkType == AppUtil.NETWORKTYPE_WIFI) {
-            //如果是 wifi ，直接下载
-//			ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
-//			list.add(photolist.get(mViewPager.getCurrentItem()));
-//			Intent intent = new Intent(this, DownloadService.class);
-//			Bundle bundle = new Bundle();
-//			bundle.putParcelableArrayList("photos", list);
-//			intent.putExtras(bundle);
-//			startService(intent);
-            downloadPic();
-
-//			private void downloadPic() {
-//				ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
-//				list.add(photolist.get(mViewPager.getCurrentItem()));
-//				Intent intent = new Intent(PreviewPhotoActivity.this,
-//						DownloadService.class);
-//				Bundle bundle = new Bundle();
-//				bundle.putParcelableArrayList("photos", list);
-//				intent.putExtras(bundle);
-//				startService(intent);
-//			}
-        } else {
-            // 网络不可用
+    /**
+     * 根据照片的购买情况确定布局和显示模式
+     */
+    private void resizeBlurImage() {
+        PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
+        int w = bitmap2.getWidth();
+        int h = bitmap2.getHeight();
+        PictureAirLog.v(TAG, "bitmap2 width, height" + w + "?" + h);
+        scaleW = ScreenUtil.getScreenWidth(this);
+        scaleH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
+        if (scaleH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
+            scaleH = ScreenUtil.getScreenHeight(this);
         }
+        PictureAirLog.v(TAG, "screen width, height" + scaleW + "?" + ScreenUtil.getScreenHeight(this));
+        PictureAirLog.v(TAG, "scale width, height" + scaleW + "?" + scaleH);
+        float sw = 0f;
+//        if (landscape) {//横屏
+//
+//        } else {//竖屏
+            if (h / (float) w > scaleH / (float) scaleW) {//左右留白
+                sw = scaleH / (float) h;
+            } else {//上下留白
+                sw = scaleW / (float) w;
+            }
+//        }
+
+        matrix = new Matrix();
+        matrix.postScale(sw, sw);
+        bitmap2 = Bitmap.createBitmap(bitmap2, 0, 0, w, h, matrix, true);
+        PictureAirLog.v(TAG, "bitmap2--->" + bitmap2.getWidth() + "----" + bitmap2.getHeight());
+        sizeW = (int) (scaleW / 2);
+        sizeH = (int) (scaleH / 2);
+        PictureAirLog.v(TAG, "size---->" + sizeW + "___" + sizeH);
+
+        bitmap1 = UtilOfDraw.blur(bitmap2);//添加模糊度
+        PictureAirLog.v(TAG, "bitmap1 = " + bitmap1.getWidth() + "_" + bitmap1.getHeight());
+        image01.setImageBitmap(bitmap1);
+//        ViewGroup.LayoutParams params = image01.getLayoutParams();
+//        params.width = 1080;
+//        params.height = 810;
+//        image01.setLayoutParams(params);
+//        image01.setBackgroundColor(Color.BLUE);
+        PictureAirLog.v(TAG, "---------->" + image01.getWidth() + "_____" + image01.getHeight());
     }
 
     //判断 照片是否购买，并弹出相应的tips
