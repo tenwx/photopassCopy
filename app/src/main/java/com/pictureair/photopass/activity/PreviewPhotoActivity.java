@@ -6,9 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -102,6 +105,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private PictureAirDbManager pictureAirDbManager;
     private PhotoInfo photoInfo;
     private SharedPreferences sharedPreferences;
+
+    private RelativeLayout titleBar;
+    private LinearLayout toolsBar, indexBar;
     //	private String userId;
     private static final String TAG = "PreviewPhotoActivity";
 
@@ -583,6 +589,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         touchtoclean = (TextView) findViewById(R.id.textview_blur);
         blurFraRelativeLayout = (RelativeLayout) findViewById(R.id.blur_photo_relativelayout);
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.fra_layout);
+
+        titleBar = (RelativeLayout) findViewById(R.id.preview_titlebar);
+        toolsBar = (LinearLayout) findViewById(R.id.toolsbar);
+        indexBar = (LinearLayout) findViewById(R.id.index_bar);
 
         image02 = (ImageView) findViewById(R.id.img02);
         dia = new Dialog(this, R.style.dialogTans);
@@ -1324,6 +1334,44 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 //			myApplication.setIsBuyingPhotoInfo(null);
         }
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            PictureAirLog.out("landscape----->");
+
+            if (sharePop.isShowing()) {
+                sharePop.dismiss();
+            }
+            if (mViewPager != null){
+                mViewPager.setBackgroundColor(Color.BLACK);
+            }
+            blurFraRelativeLayout.setBackgroundColor(Color.BLACK);
+            photoFraRelativeLayout.setBackgroundColor(Color.BLACK);
+            image01.setBackgroundColor(Color.BLACK);
+            titleBar.setVisibility(View.GONE);
+            toolsBar.setVisibility(View.GONE);
+            indexBar.setVisibility(View.GONE);
+        } else {
+            PictureAirLog.out("portrait----->");
+
+            titleBar.setVisibility(View.VISIBLE);
+            toolsBar.setVisibility(View.VISIBLE);
+            indexBar.setVisibility(View.VISIBLE);
+            if (mViewPager != null){
+                mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+            }
+            blurFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+            photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+            image01.setBackgroundResource(R.drawable.ic_stub);
+        }
+        if (dia.isShowing()) {
+            WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
+            layoutParams.width = ScreenUtil.getScreenWidth(this);
+            dia.getWindow().setAttributes(layoutParams);
+        }
+        super.onConfigurationChanged(newConfig);
     }
 
     //判断网络类型  并做操作。
