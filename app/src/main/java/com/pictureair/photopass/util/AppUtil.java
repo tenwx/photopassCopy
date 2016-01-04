@@ -842,6 +842,59 @@ public class AppUtil {
     }
 
     /**
+     * 按照地点快速排序
+     * @param list
+     * @return
+     */
+    public static ArrayList<PhotoInfo> insterSortFavouritePhotos(ArrayList<PhotoInfo> list){
+        PictureAirLog.d("inster sort", list.size() + "");
+        ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
+        boolean findPosition = false;
+        for (int i = 0; i < list.size(); i ++) {
+            if (resultArrayList.size() > 1){//从第三个开始插入
+                for (int j = 0; j < resultArrayList.size() - 1; j ++){//循环已排序好的列表
+                    if (resultArrayList.get(j).locationName.equals(list.get(i).locationName) &&
+                            !resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
+                            resultArrayList.get(j).shootTime.equals(list.get(i).shootTime) &&
+                            !resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)){
+                        findPosition = true;
+                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
+                        resultArrayList.add(j, list.get(i));
+                        break;
+                    }
+                }
+
+                if (findPosition) {//找到
+                    findPosition = false;
+                } else {//没有找到，直接放在后面
+                    if (resultArrayList.get(i - 1).shootTime.equals(list.get(i).shootTime) &&
+                            resultArrayList.get(i - 1).locationName.equals(list.get(i).locationName)) {
+                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
+                    } else {
+                        list.get(i).sectionId = resultArrayList.get(i - 1).sectionId + 1;
+                    }
+                    resultArrayList.add(list.get(i));
+                }
+
+            } else {//小于3个的时候
+                if (i == 0) {
+                    list.get(i).sectionId = 0;
+                } else if (i == 1) {
+                    if (resultArrayList.get(0).locationName.equals(list.get(i).locationName)) {
+                        list.get(i).sectionId = resultArrayList.get(0).sectionId;
+                    } else {
+                        list.get(i).sectionId = resultArrayList.get(0).sectionId + 1;
+                    }
+                }
+                resultArrayList.add(list.get(i));
+            }
+        }
+        PictureAirLog.d("inster sort", resultArrayList.size() + "");
+        return  resultArrayList;
+    }
+
+
+    /**
      * 获取视频的缩略图
      *
      * @param url

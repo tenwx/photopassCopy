@@ -42,25 +42,32 @@ public class PictureAirDbManager {
     /**
      * 收藏或者取消收藏图片
      *
-     * @param photoId   网络图片的id
+     * @param photoInfo   网络图片的id
      * @param userId
-     * @param photoPath 本地的图片路径
      * @param setLove   是收藏还是取消收藏操作
      */
-    public void setPictureLove(String photoId, String userId, String photoPath, boolean setLove) {
-        if (photoId == null) {
-            photoId = "";
-        }
-        if (photoPath == null) {
-            photoPath = "";
-        }
+    public void setPictureLove(PhotoInfo photoInfo, String userId, boolean setLove) {
         try {
             database = photoInfoDBHelper.getWritableDatabase();
             if (setLove) {//添加收藏
                 Log.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
-                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?)", new String[]{photoId, userId, photoPath});
+                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
+                        photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
+                        photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
+                                photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
+                        photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
+                                photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + ""});
             } else {//取消收藏
-                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and photoPath = ?", new String[]{photoId, userId, photoPath});
+
+                if (photoInfo.onLine == 1) {
+                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
+                            new String[]{photoInfo.photoId, userId, photoInfo.photoPathOrURL});
+                } else {
+                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where userId = ? and originalUrl = ?",
+                            new String[]{userId, photoInfo.photoPathOrURL});
+                }
+
             }
 
         } catch (Exception e) {
@@ -74,23 +81,25 @@ public class PictureAirDbManager {
     /**
      * 检查图片是否为收藏图片
      *
-     * @param photoId
+     * @param photoInfo
      * @param userId
-     * @param photoPath
      */
-    public boolean checkLovePhoto(String photoId, String userId, String photoPath) {
+    public boolean checkLovePhoto(PhotoInfo photoInfo, String userId) {
         boolean result = false;
-        if (photoId == null) {
-            photoId = "";
-        }
-        if (photoPath == null) {
-            photoPath = "";
-        }
         Cursor cursor = null;
         try {
             database = photoInfoDBHelper.getWritableDatabase();
-            cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and photoPath = ?",
-                    new String[]{photoId, userId, photoPath});
+            if (photoInfo.onLine == 1) {
+
+                cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
+                                " where photoId = ? and userId = ? and originalUrl = ?",
+                        new String[]{photoInfo.photoId, userId, photoInfo.photoPathOrURL});
+            } else {
+                cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
+                                " where userId = ? and originalUrl = ?",
+                        new String[]{userId, photoInfo.photoPathOrURL});
+
+            }
             result = (cursor.getCount() > 0) ? true : false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,8 +153,9 @@ public class PictureAirDbManager {
                     if (photoInfo.photoPathOrURL == null) {
                         photoInfo.photoPathOrURL = "";
                     }
-                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and photoPath = ?",
-                            new String[]{photoInfo.photoId, userId, photoInfo.photoPathOrURL});
+                    cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and userId = ? and originalUrl = ?",
+                            new String[]{(photoInfo.photoId != null) ? photoInfo.photoId : "", userId,
+                                    (photoInfo.photoPathOrURL != null) ? photoInfo.photoPathOrURL : ""});
                     if (cursor.getCount() > 0) {//是收藏的图片
                         photoInfo.isLove = 1;
                     } else {//不是收藏图片
@@ -168,6 +178,56 @@ public class PictureAirDbManager {
                 database.close();
             }
         }
+        return resultArrayList;
+    }
+
+
+    /**
+     * 通过userId获取降序排列的已收藏图片列表
+     * @param userId
+     * @return
+     */
+    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId){
+        ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            database = photoInfoDBHelper.getReadableDatabase();
+            cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where userId = ? order by shootOn desc", new String[]{userId});
+            PhotoInfo photoInfo;
+            while (cursor.moveToNext()) {
+                photoInfo = new PhotoInfo();
+                photoInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
+                photoInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
+                photoInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
+                photoInfo.photoPathOrURL = cursor.getString(cursor.getColumnIndex("originalUrl"));
+                photoInfo.photoThumbnail = cursor.getString(cursor.getColumnIndex("previewUrl"));
+                photoInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
+                photoInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
+                photoInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
+                photoInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
+                photoInfo.isLove = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isLove")));
+                photoInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
+                photoInfo.locationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                photoInfo.locationCountry = cursor.getString(cursor.getColumnIndex("locationCountry"));
+                photoInfo.shareURL = cursor.getString(cursor.getColumnIndex("shareURL"));
+                photoInfo.isVideo = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isVideo")));
+                photoInfo.fileSize = Integer.valueOf(cursor.getString(cursor.getColumnIndex("fileSize")));
+                photoInfo.videoWidth = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoWidth")));
+                photoInfo.videoHeight = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoHeight")));
+                photoInfo.onLine = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isOnLine")));
+                resultArrayList.add(photoInfo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+            if (database != null)
+                database.close();
+        }
+
         return resultArrayList;
     }
 

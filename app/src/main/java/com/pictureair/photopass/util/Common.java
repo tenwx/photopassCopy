@@ -9,17 +9,30 @@ public class Common {
     public static final String APP_NAME = "appName";
     public static final String APP_KEY = "photoPass";
     public static final String APP_SECRET = "pictureworks";
-    public static String APPLICATION_NAME = "photoPass";// app英文名字
+    public static final String APPLICATION_NAME = "photoPass";// app英文名字
     public static final String SHARE_APP_NAME = "PhotoPass";
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
-    public static String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
+    public static final String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
     public static final String SMS_APPKEY = "d082b4315aed"; // SMSS，公司的账号
     public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
 
-
+    /**
+     * 49演示服务器
+     */
     public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
-
     public static final String PHOTO_URL = "http://192.168.8.82:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
+    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+
+    /**
+     * 8.3测试服务器
+     * */
+//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
+//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+
+
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
     public static final String GET_ALL_LOCATIONS_OF_ALBUM_GROUP = "/park/getLocationsOfAlbumGroup";//获得location信息
@@ -87,7 +100,7 @@ public class Common {
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp
     public static final String BIND_PP_TO_PPP_BY_PHOTOID = "/p/bindPPToPPPByPhotoId";//通过photoid将pp绑定到ppp
     public static final String GET_NEW_PHOTO_COUNT = "/p/getNewPhotoCount";// 获取用户照片是否更新
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
+
     public static final String HIDE_PPS = "/user/hidePPs";//隐藏PP
     public static final String GET_PP_BY_DATE = "/user/getNeedUpgradePPsByDate";
     public static final String BIND_PPS_DATE_TO_PPP = "/ppp/bindPPsAndBindDatesToPPP";//将pp绑定到ppp   多了时间。
@@ -229,7 +242,7 @@ public class Common {
 
     //其他字段
     //	public static final String PHOTOPASSPLUS = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
-    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+
     //	public static final String BARCODEURL = "http://192.168.8.3:3001/downloadApp.html?";
 
     //app的SharePreferences

@@ -88,29 +88,53 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "videoHeight integer)");
 
         /**
-         * 创建图片favorite表
+         * 创建图片收藏表，用来记录已收藏的信息
+         * 目前退出登录都会重新写photo表，并且本地图片没有存放到photo表，所以暂时需要重新开表记录收藏图片，以后修改了photo表的逻辑之后，这两张表可以合并
          * _id
-         * photoId 网络照片ID
-         * userId 用户ID
-         * photoPath 本地照片路径
+         * userId
+         * photoId
+         * photoCode ppCode 图片所属pp码
+         * shootTime 拍摄时间
+         * originalUrl 原图
+         * previewUrl 128缩略图
+         * previewUrl_512 512缩略图
+         * previewUrl_1024 1024缩略图
+         * locationId 地点id
+         * shootOn 拍摄时间
+         * isLove 是否收藏，目前没有用到
+         * isPay 是否已经付费
+         * locationName 地点名称
+         * locationCountry 国家地点
+         * shareURL  分享URL
+         * isVideo   是否是视频
+         * fileSize  文件的大小
+         * videoWidth 视频宽
+         * videoHeight 视频高
+         * isOnLine 本地还是网络图片
          */
         db.execSQL("create table if not exists " + Common.FAVORITE_INFO_TABLE +
                 "(_id integer primary key autoincrement, " +
-                "photoId varchar(30), " +
                 "userId varchar(30), " +
-                "photoPath varchar(100))");
+                "photoId varchar(30), " +
+                "photoCode varchar(180), " +
+                "shootTime varchar(12), " +
+                "originalUrl varchar(100), " +
+                "previewUrl varchar(100), " +
+                "previewUrl_512 varchar(100), " +
+                "previewUrl_1024 varchar(100)," +
+                "locationId varchar(10), " +
+                "shootOn varchar(30), " +
+                "isLove integer, " +
+                "isPay integer, " +
+                "locationName varchar(100), " +
+                "locationCountry varchar(100), " +
+                "shareURL varchar(100), " +
+                "isVideo integer, " +
+                "fileSize integer, " +
+                "videoWidth integer, " +
+                "videoHeight integer, " +
+                "isOnLine integer)");
 
-//		/**
-//		 * 创建photopass表，有记录所有的photopass信息
-//		 * _id
-//		 * photopass
-//		 * userId
-//		 * bindDate 
-//		 * picCount
-//		 * deleteState 记录是否被本地删除过，Y删除过和N么有删除过
-//		 */
-//		db.execSQL("create table if not exists "+Common.PHOTOPASS_CODE_INFO_TABLE+"(_id integer primary key autoincrement, photopass varchar(20), " +
-//				"userId varchar(30), bindDate varchar(30), picCount varchar(4), deleteState varchar(1))");
 
         /**
          * 创建firststart表，记录所有页面第一次进入的记录
