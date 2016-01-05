@@ -52,7 +52,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return CONTENT[position % CONTENT.length].toUpperCase();
+		return CONTENT[position % CONTENT.length];
 	}
 
 	@Override

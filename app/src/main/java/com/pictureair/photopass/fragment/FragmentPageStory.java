@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,7 @@ import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
-import com.pictureair.photopass.adapter.viewpagerindicator.TabPageIndicator;
+import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BaseBusEvent;
@@ -669,7 +668,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 indicator.setVisibility(View.VISIBLE);
                 storyViewPager.setVisibility(View.VISIBLE);
                 storyViewPager.setOffscreenPageLimit(2);
-                storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
+//                storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
 //                setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
                 EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
                 EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
@@ -691,20 +690,20 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         }
     }
 
-    //选项卡点击事件监听
-    private class viewPagerOnClickListener implements OnClickListener {
-        private int index = 0;
-
-        public viewPagerOnClickListener(int i) {
-            index = i;
-        }
-
-        @Override
-        public void onClick(View v) {
-            storyViewPager.setCurrentItem(index);
-        }
-
-    }
+//    //选项卡点击事件监听
+//    private class viewPagerOnClickListener implements OnClickListener {
+//        private int index = 0;
+//
+//        public viewPagerOnClickListener(int i) {
+//            index = i;
+//        }
+//
+//        @Override
+//        public void onClick(View v) {
+//            storyViewPager.setCurrentItem(index);
+//        }
+//
+//    }
 
 //    private void setTitleBarTextColor(int index) {
 //        switch (index) {

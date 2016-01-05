@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pictureair.photopass.adapter.viewpagerindicator;
+package com.pictureair.photopass.widget.viewpagerindicator;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -30,9 +31,13 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomTextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This widget implements the dynamic action bar tab behavior that can change
@@ -59,17 +64,35 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     private Runnable mTabSelector;
 
+    /**
+     * 更新选择器中tab的颜色 并改变viewpager的选项
+     */
+    private void updateSelectTabTextViewColors(int index) {
+        setCurrentItem(index);
+        if (null != tabViews && tabViews.size() > 0) {
+            for (int i = 0; i < tabViews.size(); i++) {
+                if (tabViews.get(index) == tabViews.get(i)) {
+                    tabViews.get(i).setTextColor(getResources().getColor(R.color.pp_blue));
+                } else {
+                    tabViews.get(i).setTextColor(getResources().getColor(R.color.pp_gray));
+                }
+            }
+        }
+    }
+
     private final OnClickListener mTabClickListener = new OnClickListener() {
         public void onClick(View view) {
             TabView tabView = (TabView) view;
             final int oldSelected = mViewPager.getCurrentItem();
             final int newSelected = tabView.getIndex();
-            mViewPager.setCurrentItem(newSelected);
+//            mViewPager.setCurrentItem(newSelected);
+            updateSelectTabTextViewColors(newSelected);
             if (oldSelected == newSelected && mTabReselectedListener != null) {
                 mTabReselectedListener.onTabReselected(newSelected);
             }
         }
     };
+
 
     private final IcsLinearLayout mTabLayout;
 
@@ -77,13 +100,15 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     private OnPageChangeListener mListener;
 
     private int mMaxTabWidth;
-    private int mSelectedTabIndex;
+    private int mSelectedTabIndex = MyApplication.getInstance().fragmentStoryLastSelectedTab;//记录滑动tab当前的索引
 
     private OnTabReselectedListener mTabReselectedListener;
 
     public TabPageIndicator(Context context) {
         this(context, null);
     }
+
+    private List<TabView> tabViews = new ArrayList<>();
 
     public TabPageIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -120,8 +145,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         final int newWidth = getMeasuredWidth();
 
         if (lockedExpanded && oldWidth != newWidth) {
-            // Recenter the tab display if we're at a new (scrollable) size.
-            setCurrentItem(mSelectedTabIndex);
+            PictureAirLog.e(TAG, "onMeasure :" + mSelectedTabIndex);
+            updateSelectTabTextViewColors(mSelectedTabIndex);
+//            setCurrentItem(mSelectedTabIndex);
+
         }
     }
 
@@ -144,7 +171,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mTabSelector != null) {
-            // Re-post the selector we saved
             post(mTabSelector);
         }
     }
@@ -163,7 +189,8 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         tabView.setFocusable(true);
         tabView.setOnClickListener(mTabClickListener);
         tabView.setText(text);
-
+        PictureAirLog.e(TAG, "addTab");
+        tabViews.add(tabView);
         if (iconResId != 0) {
             tabView.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
         }
@@ -175,27 +202,34 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public void onPageScrollStateChanged(int arg0) {
         if (mListener != null) {
             mListener.onPageScrollStateChanged(arg0);
+            PictureAirLog.e(TAG, "====onPageScrollStateChanged===" + arg0);
         }
+        PictureAirLog.e(TAG, "====onPageScrollStateChanged===" + arg0);
+
     }
 
     @Override
     public void onPageScrolled(int arg0, float arg1, int arg2) {
         if (mListener != null) {
             mListener.onPageScrolled(arg0, arg1, arg2);
+            PictureAirLog.e(TAG, "====onPageScrolled===" + arg0);
         }
+        PictureAirLog.e(TAG, "====onPageScrolled===" + arg0);
+
     }
 
     @Override
     public void onPageSelected(int arg0) {
-        setCurrentItem(arg0);
         if (mListener != null) {
             mListener.onPageSelected(arg0);
+            PictureAirLog.e(TAG, "====onPageSelected 1===" + arg0);
         }
+        PictureAirLog.e(TAG, "====onPageSelected 2===" + arg0);
+        updateSelectTabTextViewColors(arg0);
     }
 
     @Override
     public void setViewPager(ViewPager view) {
-        PictureAirLog.e(TAG, "setViewPager：" + view.getId());
         if (mViewPager == view) {
             return;
         }
@@ -230,26 +264,30 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             }
             addTab(i, title, iconResId);
         }
-        if (mSelectedTabIndex > count) {
-            mSelectedTabIndex = count - 1;
-        }
-        setCurrentItem(mSelectedTabIndex);
+//        if (mSelectedTabIndex > count) {
+//            mSelectedTabIndex = count - 1;
+//        }
+        updateSelectTabTextViewColors(mSelectedTabIndex);
+//        setCurrentItem(mSelectedTabIndex);
         requestLayout();
     }
 
     @Override
     public void setViewPager(ViewPager view, int initialPosition) {
         setViewPager(view);
-        setCurrentItem(initialPosition);
+        updateSelectTabTextViewColors(mSelectedTabIndex);
+//        setCurrentItem(mSelectedTabIndex);
     }
 
     @Override
     public void setCurrentItem(int item) {
+        PictureAirLog.e(TAG, "setCurrentItem :" + item);
         if (mViewPager == null) {
             throw new IllegalStateException("ViewPager has not been bound.");
         }
         mSelectedTabIndex = item;
         mViewPager.setCurrentItem(item);
+        MyApplication.getInstance().fragmentStoryLastSelectedTab = item;
 
         final int tabCount = mTabLayout.getChildCount();
         for (int i = 0; i < tabCount; i++) {
@@ -265,6 +303,8 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     @Override
     public void setOnPageChangeListener(OnPageChangeListener listener) {
         mListener = listener;
+        PictureAirLog.e(TAG, "====setOnPageChangeListener===");
+
     }
 
     private class TabView extends CustomTextView {
@@ -289,13 +329,22 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             }
         }
 
-        @SuppressLint("ResourceAsColor")
         private void init() {
-            setTextSize(12);
+            setTextSize(10);
+            setTextColor(getResources().getColor(R.color.pp_gray));
         }
 
         public int getIndex() {
             return mIndex;
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            Paint paint = new Paint();
+            paint.setColor(getResources().getColor(R.color.pp_gray));
+            canvas.drawLine(canvas.getWidth() - 1, 30, canvas.getWidth() - 1, canvas.getHeight() - 30, paint);
+            canvas.save();
+            super.onDraw(canvas);
         }
     }
 }

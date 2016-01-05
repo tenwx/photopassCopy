@@ -62,7 +62,7 @@
         android:orientation="horizontal"
         android:visibility="invisible">
 
-        <com.pictureair.photopass.adapter.viewpagerindicator.TabPageIndicator
+        <com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
