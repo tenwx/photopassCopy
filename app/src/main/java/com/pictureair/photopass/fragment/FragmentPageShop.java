@@ -39,6 +39,7 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,74 +71,95 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private SharedPreferences sharedPreferences;
     private MyToast newToast;
 
-    private Handler mHandler = new Handler() {
+
+    private final Handler fragmentPageShopHandler = new FragmentPageShopHandler(this);
+
+    private static class FragmentPageShopHandler extends Handler{
+        private final WeakReference<FragmentPageShop> mActivity;
+
+        public FragmentPageShopHandler(FragmentPageShop activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.GET_GOODS_SUCCESS://成功获取商品
-                    customProgressDialog.dismiss();
-                    allGoodsList.clear();
-                    PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                        allGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                        noNetWorkOrNoCountView.setVisibility(View.GONE);
-                        //更新界面
-                        shopGoodListViewAdapter.refresh(allGoodsList);
-                        //将数据保存到缓存中
-                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
-                        }
-                    }
-
-                    //获取收货地址列表
-                    String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
-                    if (addressByACache == null || addressByACache.equals("")) {
-                        API1.getOutlets(mHandler);
-                    }
-                    break;
-
-                case API1.GET_GOODS_FAILED://获取商品失败
-                    //显示重新加载界面
-                    customProgressDialog.dismiss();
-                    showNetWorkView();
-                    break;
-
-                case API1.GET_OUTLET_ID_SUCCESS:
-                    //获取自提地址成功
-                    customProgressDialog.dismiss();
-                    AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
-                    if (addressJson != null && addressJson.getOutlets().size() > 0) {
-                        //存入缓存
-                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
-                        }
-                    }
-                    break;
-
-                case API1.GET_OUTLET_ID_FAILED:
-                    //获取自提地址失败
-                    customProgressDialog.dismiss();
-                    break;
-
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                    //重新加载购物车数据
-                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
-                        newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                        return;
-                    }
-                    PictureAirLog.v(TAG, "onclick with reload");
-                    customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                    //重新加载数据
-                    initData();
-                    break;
-
-                default:
-                    break;
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
             }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.GET_GOODS_SUCCESS://成功获取商品
+                customProgressDialog.dismiss();
+                allGoodsList.clear();
+                PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
+                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                    allGoodsList = goodsInfoJson.getGoods();
+                    PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                    noNetWorkOrNoCountView.setVisibility(View.GONE);
+                    //更新界面
+                    shopGoodListViewAdapter.refresh(allGoodsList);
+                    //将数据保存到缓存中
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                    }
+                }
+
+                //获取收货地址列表
+                String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
+                if (addressByACache == null || addressByACache.equals("")) {
+                    API1.getOutlets(fragmentPageShopHandler);
+                }
+                break;
+
+            case API1.GET_GOODS_FAILED://获取商品失败
+                //显示重新加载界面
+                customProgressDialog.dismiss();
+                showNetWorkView();
+                break;
+
+            case API1.GET_OUTLET_ID_SUCCESS:
+                //获取自提地址成功
+                customProgressDialog.dismiss();
+                AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
+                if (addressJson != null && addressJson.getOutlets().size() > 0) {
+                    //存入缓存
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                    }
+                }
+                break;
+
+            case API1.GET_OUTLET_ID_FAILED:
+                //获取自提地址失败
+                customProgressDialog.dismiss();
+                break;
+
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+                //重新加载购物车数据
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                PictureAirLog.v(TAG, "onclick with reload");
+                customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+                //重新加载数据
+                initData();
+                break;
+
+            default:
+                break;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -200,11 +222,11 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         //从缓层中获取数据
         String goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
         if (goodsByACache != null && !goodsByACache.equals("")) {
-            mHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+            fragmentPageShopHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
         } else {
             //从网络获取商品,先检查网络
             if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(mHandler);
+                API1.getGoods(fragmentPageShopHandler);
             } else {
                 showNetWorkView();
             }
@@ -218,7 +240,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     public void showNetWorkView() {
         customProgressDialog.dismiss();
         noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-        noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
+        noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageShopHandler, true);
     }
 
     @Override
@@ -248,5 +270,11 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         } else {
             cartCountTextView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentPageShopHandler.removeCallbacksAndMessages(null);
     }
 }

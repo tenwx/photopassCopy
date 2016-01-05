@@ -55,6 +55,7 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,18 +99,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     //申明控件
     private ImageView more;
     private ImageView scanLayout;
-    private static LinearLayout noPhotoView;
+    private LinearLayout noPhotoView;
     private RelativeLayout scanRelativeLayout;
     private static CustomProgressDialog dialog;// 加载等待
     private static ViewPager storyViewPager;
     private LinearLayout storyNoPpToScanLinearLayout;
     private ImageView storyNoPpScanImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
-    private static SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private CustomDialog customdialog; //  对话框
 
     //申明类
-    private static MyApplication app;
+    private MyApplication app;
     private ArrayList<PhotoItemInfo> photoPassPictureList;
     private ArrayList<PhotoItemInfo> magicPicList;
 
@@ -117,9 +118,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private List<Fragment> fragments;
     private FragmentAdapter fragmentAdapter;
-    public static Context context;
+    public Context context;
     private SimpleDateFormat sdf;
-    private static SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private MyToast myToast;
     private PhotoInfo selectPhotoItemInfo;
     private ScanPhotosThread scanPhotosThread;
@@ -132,249 +133,266 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private TabPageIndicator indicator;
 
     //申明handler消息回调机制
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.GET_ALL_PHOTOS_BY_CONDITIONS_FAILED://获取全部照片失败
-                    getPhotoInfoDone = true;
-                    if (getPhotoInfoDone && getVideoInfoDone) {
-                        finishLoad(true);
-                    }
-                    break;
 
-                case API1.GET_ALL_VIDEO_LIST_FAILED://获取全部视频失败
-                    getVideoInfoDone = true;
-                    if (getPhotoInfoDone && getVideoInfoDone) {
-                        finishLoad(true);
-                    }
-                    break;
+    private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
 
-                case API1.GET_ALL_LOCATION_FAILED://获取地址信息失败
-                    finishLoad(true);
-                    break;
+    private static class FragmentPageStoryHandler extends Handler{
+        private final WeakReference<FragmentPageStory> mActivity;
 
-                case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
-                    PictureAirLog.d(TAG, "---------->get location success" + msg.obj.toString());
-                    try {
-                        JSONObject response = JSONObject.parseObject(msg.obj.toString());
-                        JSONArray resultArray = response.getJSONArray("locations");
-                        for (int i = 0; i < resultArray.size(); i++) {
-                            JSONObject object = resultArray.getJSONObject(i);
-                            DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                            locationList.add(locationInfo);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
-                    if (app.photoPassPicList == null) {
-                        app.photoPassPicList = new ArrayList<>();
-                    }
-                    app.photoPassPicList.clear();
-                    if (app.photoPassVideoList == null) {
-                        app.photoPassVideoList = new ArrayList<>();
-                    }
-                    app.photoPassVideoList.clear();
-
-                    if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
-                        PictureAirLog.d(TAG, "---------> load data from databases");
-                        loadDataFromDataBase();
-
-                        //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
-                        if (settingUtil.isFirstPP10(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-                            //第一次 PP数量到 10 。
-                            API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
-                        }
-                    }
-                    if (app.photoPassPicList.size() == 0 || needfresh) {
-                        //数据为0，需要从网上下载
-                        System.out.println("photolist size = 0");
-                        //判断是否之前有成功获取过
-                        API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, null);//获取全部图片
-                        API1.getVideoList(null, handler);//获取全部视频信息
-                    } else {
-                        PictureAirLog.out("photolist size = " + app.photoPassPicList.size());
-                        //有数据，直接显示
-                        photoPassPictureList.clear();
-                        app.allPicList.clear();
-                        app.boughtPicList.clear();
-                        try {
-                            getData();
-                        } catch (ParseException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-
-                case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED://获取刷新失败
-                    PictureAirLog.out("get photo refresh failed------>");
-                    getPhotoInfoDone = true;
-                    if (getPhotoInfoDone && getVideoInfoDone) {
-                        finishLoad(false);
-                    }
-                    break;
-
-                case API1.GET_REFRESH_VIDEO_LIST_FAILED://获取刷新失败
-                    PictureAirLog.out("get video refresh failed------>");
-                    getVideoInfoDone = true;
-                    if (getPhotoInfoDone && getVideoInfoDone) {
-                        finishLoad(false);
-                    }
-                    break;
-
-                case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
-
-                    PictureAirLog.d(TAG, "--------->get photo success");
-                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, false);
-                    break;
-
-                case API1.GET_ALL_VIDEO_LIST_SUCCESS://获取视频成功
-
-                    PictureAirLog.d(TAG, "--->get video success");
-                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, true);
-                    break;
-
-                case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS://获取刷新的推送图片
-//                    app.setPushPhotoCount(0);
-                    PictureAirLog.d(TAG, "deal refresh photos-------");
-                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, false);
-                    break;
-
-                case API1.GET_REFRESH_VIDEO_LIST_SUCCESS://获取刷新的视频成功
-                    PictureAirLog.d(TAG, "--->get refresh video success");
-                    saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, true);
-                    break;
-
-                case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
-                    PictureAirLog.d(TAG, "scan local photos success");
-                    dealLocalRefreshedData();
-                    break;
-
-                case REFRESH://开始刷新
-                    PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
-                    API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
-                    API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), handler);//获取全部视频信息
-                    break;
-
-                case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
-                    app.setPushPhotoCount(0);//清空推送消息的数量
-                    getPhotoInfoDone = true;
-                    getDataFinish();
-                    break;
-
-                case DEAL_ALL_VIDEO_DATA_DONE://处理全部视频成功
-                    app.setPushViedoCount(0);
-                    getVideoInfoDone = true;
-                    getDataFinish();
-                    break;
-
-                case DEAL_REFRESH_PHOTO_DATA_DONE://处理刷新照片成功
-                    app.setPushPhotoCount(0);
-                    getPhotoInfoDone = true;
-                    PictureAirLog.d(TAG, "deal refresh photos done");
-                    Editor editor = sharedPreferences.edit();// 获取编辑器
-                    editor.putInt("photoCount", 0);
-                    editor.commit();// 提交修改
-                    getRefreshDataFinish();
-                    break;
-
-                case DEAL_REFRESH_VIDEO_DATA_DONE://处理刷新视频成功
-                    app.setPushViedoCount(0);
-                    getVideoInfoDone = true;
-                    PictureAirLog.out("deal refresh video done");
-                    getRefreshDataFinish();
-                    break;
-
-                case DEAL_FAVORITE_DATA_SUCCESS://处理收藏图片成功
-                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
-                    break;
-
-                case SORT_COMPLETED_REFRESH:
-
-
-                    if (noPhotoViewStateRefresh) {//无图页的刷新
-                        showViewPager();
-                        noPhotoViewStateRefresh = false;
-                        if (swipeRefreshLayout.isRefreshing()) {
-                            swipeRefreshLayout.setEnabled(false);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    } else {//有图片页的刷新
-                        EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
-                        EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
-                        EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
-                        EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
-                        EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
-                    }
-                    break;
-
-                case LOAD_COMPLETED:
-                    sortData(true);
-                    break;
-
-                case SORT_COMPLETED_ALL:
-                    scanMagicPhotoNeedCallBack = true;
-                    fragments = new ArrayList<>();
-                    fragments.clear();
-
-                    showViewPager();
-                    noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
-//                    Animation animation = new TranslateAnimation(0, screenWidth / 5 * app.fragmentStoryLastSelectedTab, 0, 0);
-//                    animation.setFillAfter(true);
-//                    animation.setDuration(300);
-//                    cursorImageView.startAnimation(animation);
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    break;
-
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                    //重新加载购物车数据
-                    System.out.println("onclick with reload");
-                    dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                    if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
-                        API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), handler);//获取所有的location
-                    } else {//地址获取成功，但是照片获取失败
-                        Message message = handler.obtainMessage();
-                        message.what = API1.GET_ALL_LOCATION_SUCCESS;
-                        message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-                        handler.sendMessage(message);
-                    }
-                    break;
-
-                case API1.GET_PPP_SUCCESS:
-                    if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0) {
-                        new CustomDialog(context, R.string.pp_first_up10_msg, R.string.pp_first_up10_no_msg, R.string.pp_first_up10_yes_msg, new CustomDialog.MyDialogInterface() {
-
-                            @Override
-                            public void yes() {
-                                // TODO Auto-generated method stub // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
-                                Intent intent = new Intent();
-                                intent.setClass(getActivity(),
-                                        MyPPPActivity.class);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void no() {
-                                // TODO Auto-generated method stub // 考虑下：不做操作
-
-                            }
-                        });
-                        settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                    } else if (API1.PPPlist.size() > 0) {
-                        settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+        public FragmentPageStoryHandler(FragmentPageStory activity){
+            mActivity = new WeakReference<>(activity);
         }
 
-        ;
-    };
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.GET_ALL_PHOTOS_BY_CONDITIONS_FAILED://获取全部照片失败
+                getPhotoInfoDone = true;
+                if (getPhotoInfoDone && getVideoInfoDone) {
+                    finishLoad(true);
+                }
+                break;
+
+            case API1.GET_ALL_VIDEO_LIST_FAILED://获取全部视频失败
+                getVideoInfoDone = true;
+                if (getPhotoInfoDone && getVideoInfoDone) {
+                    finishLoad(true);
+                }
+                break;
+
+            case API1.GET_ALL_LOCATION_FAILED://获取地址信息失败
+                finishLoad(true);
+                break;
+
+            case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
+                PictureAirLog.d(TAG, "---------->get location success" + msg.obj.toString());
+                try {
+                    JSONObject response = JSONObject.parseObject(msg.obj.toString());
+                    JSONArray resultArray = response.getJSONArray("locations");
+                    for (int i = 0; i < resultArray.size(); i++) {
+                        JSONObject object = resultArray.getJSONObject(i);
+                        DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
+                        locationList.add(locationInfo);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
+                if (app.photoPassPicList == null) {
+                    app.photoPassPicList = new ArrayList<>();
+                }
+                app.photoPassPicList.clear();
+                if (app.photoPassVideoList == null) {
+                    app.photoPassVideoList = new ArrayList<>();
+                }
+                app.photoPassVideoList.clear();
+
+                if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
+                    PictureAirLog.d(TAG, "---------> load data from databases");
+                    loadDataFromDataBase();
+
+                    //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
+                    if (settingUtil.isFirstPP10(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                        //第一次 PP数量到 10 。
+                        API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler);
+                    }
+                }
+                if (app.photoPassPicList.size() == 0 || needfresh) {
+                    //数据为0，需要从网上下载
+                    System.out.println("photolist size = 0");
+                    //判断是否之前有成功获取过
+                    API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
+                    API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
+                } else {
+                    PictureAirLog.out("photolist size = " + app.photoPassPicList.size());
+                    //有数据，直接显示
+                    photoPassPictureList.clear();
+                    app.allPicList.clear();
+                    app.boughtPicList.clear();
+                    try {
+                        getData();
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED://获取刷新失败
+                PictureAirLog.out("get photo refresh failed------>");
+                getPhotoInfoDone = true;
+                if (getPhotoInfoDone && getVideoInfoDone) {
+                    finishLoad(false);
+                }
+                break;
+
+            case API1.GET_REFRESH_VIDEO_LIST_FAILED://获取刷新失败
+                PictureAirLog.out("get video refresh failed------>");
+                getVideoInfoDone = true;
+                if (getPhotoInfoDone && getVideoInfoDone) {
+                    finishLoad(false);
+                }
+                break;
+
+            case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
+
+                PictureAirLog.d(TAG, "--------->get photo success");
+                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, false);
+                break;
+
+            case API1.GET_ALL_VIDEO_LIST_SUCCESS://获取视频成功
+
+                PictureAirLog.d(TAG, "--->get video success");
+                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, true);
+                break;
+
+            case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS://获取刷新的推送图片
+//                    app.setPushPhotoCount(0);
+                PictureAirLog.d(TAG, "deal refresh photos-------");
+                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, false);
+                break;
+
+            case API1.GET_REFRESH_VIDEO_LIST_SUCCESS://获取刷新的视频成功
+                PictureAirLog.d(TAG, "--->get refresh video success");
+                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, true);
+                break;
+
+            case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
+                PictureAirLog.d(TAG, "scan local photos success");
+                dealLocalRefreshedData();
+                break;
+
+            case REFRESH://开始刷新
+                PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
+                API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
+                API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取全部视频信息
+                break;
+
+            case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
+                app.setPushPhotoCount(0);//清空推送消息的数量
+                getPhotoInfoDone = true;
+                getDataFinish();
+                break;
+
+            case DEAL_ALL_VIDEO_DATA_DONE://处理全部视频成功
+                app.setPushViedoCount(0);
+                getVideoInfoDone = true;
+                getDataFinish();
+                break;
+
+            case DEAL_REFRESH_PHOTO_DATA_DONE://处理刷新照片成功
+                app.setPushPhotoCount(0);
+                getPhotoInfoDone = true;
+                PictureAirLog.d(TAG, "deal refresh photos done");
+                Editor editor = sharedPreferences.edit();// 获取编辑器
+                editor.putInt("photoCount", 0);
+                editor.commit();// 提交修改
+                getRefreshDataFinish();
+                break;
+
+            case DEAL_REFRESH_VIDEO_DATA_DONE://处理刷新视频成功
+                app.setPushViedoCount(0);
+                getVideoInfoDone = true;
+                PictureAirLog.out("deal refresh video done");
+                getRefreshDataFinish();
+                break;
+
+            case DEAL_FAVORITE_DATA_SUCCESS://处理收藏图片成功
+                EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
+                break;
+
+            case SORT_COMPLETED_REFRESH:
+
+
+                if (noPhotoViewStateRefresh) {//无图页的刷新
+                    showViewPager();
+                    noPhotoViewStateRefresh = false;
+                    if (swipeRefreshLayout.isRefreshing()) {
+                        swipeRefreshLayout.setEnabled(false);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                } else {//有图片页的刷新
+                    EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
+                    EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
+                    EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
+                    EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
+                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
+                }
+                break;
+
+            case LOAD_COMPLETED:
+                sortData(true);
+                break;
+
+            case SORT_COMPLETED_ALL:
+                scanMagicPhotoNeedCallBack = true;
+                fragments = new ArrayList<>();
+                fragments.clear();
+
+                showViewPager();
+                noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                break;
+
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+                //重新加载购物车数据
+                System.out.println("onclick with reload");
+                dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+                if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
+                    API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
+                } else {//地址获取成功，但是照片获取失败
+                    Message message = fragmentPageStoryHandler.obtainMessage();
+                    message.what = API1.GET_ALL_LOCATION_SUCCESS;
+                    message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+                    fragmentPageStoryHandler.sendMessage(message);
+                }
+                break;
+
+            case API1.GET_PPP_SUCCESS:
+                if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0) {
+                    new CustomDialog(context, R.string.pp_first_up10_msg, R.string.pp_first_up10_no_msg, R.string.pp_first_up10_yes_msg, new CustomDialog.MyDialogInterface() {
+
+                        @Override
+                        public void yes() {
+                            // TODO Auto-generated method stub // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(),
+                                    MyPPPActivity.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void no() {
+                            // TODO Auto-generated method stub // 考虑下：不做操作
+
+                        }
+                    });
+                    settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                } else if (API1.PPPlist.size() > 0) {
+                    settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
     /**
      * 全部处理完成之后会调用
@@ -394,7 +412,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
             EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.STOP_REFRESH));
         }
-        noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
+        noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
     }
 
     /**
@@ -431,7 +449,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             } else {
                 System.out.println("nomore");
                 myToast.setTextAndShow(R.string.nomore, Common.TOAST_SHORT_TIME);
-                handler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
+                fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
             }
             if (dialog.isShowing()) {
                 dialog.dismiss();
@@ -514,10 +532,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
                         //通知已经处理完毕
                         if (isAll) {
-                            handler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
+                            fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
 
                         } else {
-                            handler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
+                            fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
                         }
                     }
                 }
@@ -585,12 +603,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         isLoading = true;
         //获取地点信息
         if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
-            API1.getLocationInfo(getActivity(), app.getTokenId(), handler);//获取所有的location
+            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageStoryHandler);//获取所有的location
         } else {
-            Message message = handler.obtainMessage();
+            Message message = fragmentPageStoryHandler.obtainMessage();
             message.what = API1.GET_ALL_LOCATION_SUCCESS;
             message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-            handler.sendMessage(message);
+            fragmentPageStoryHandler.sendMessage(message);
         }
         return view;
     }
@@ -618,9 +636,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 //                favouritePhotoList.addAll(AppUtil.startSortForPinnedListView(favouritePictureList));
 
                 if (isAll) {
-                    handler.sendEmptyMessage(SORT_COMPLETED_ALL);
+                    fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_ALL);
                 } else {
-                    handler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
+                    fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
                 }
             }
         }.start();
@@ -657,11 +675,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 //显示有pp的情况
                 storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
 
-                fragments.add(StoryFragment.getInstance(allPhotoList, app.magicPicList, 0, handler));
-                fragments.add(StoryFragment.getInstance(pictureAirPhotoList, app.magicPicList, 1, handler));
-                fragments.add(StoryFragment.getInstance(magicPhotoList, app.magicPicList, 2, handler));
-                fragments.add(StoryFragment.getInstance(boughtPhotoList, app.magicPicList, 3, handler));
-                fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, handler));
+                fragments.add(StoryFragment.getInstance(allPhotoList, app.magicPicList, 0, fragmentPageStoryHandler));
+                fragments.add(StoryFragment.getInstance(pictureAirPhotoList, app.magicPicList, 1, fragmentPageStoryHandler));
+                fragments.add(StoryFragment.getInstance(magicPhotoList, app.magicPicList, 2, fragmentPageStoryHandler));
+                fragments.add(StoryFragment.getInstance(boughtPhotoList, app.magicPicList, 3, fragmentPageStoryHandler));
+                fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, fragmentPageStoryHandler));
                 fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
                 storyViewPager.setAdapter(fragmentAdapter);
 
@@ -768,7 +786,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 app.scanMagicFinish = true;
             }
             if (needCallBck) {//是刷新数据操作，需要通知adatper更新数据
-                handler.sendEmptyMessage(REFRESH_LOCAL_PHOTOS);
+                fragmentPageStoryHandler.sendEmptyMessage(REFRESH_LOCAL_PHOTOS);
             }
         }
     }
@@ -850,8 +868,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             if (!dialog.isShowing()) {
                 dialog.show();
             }
-            API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler, null);//获取全部图片
-            API1.getVideoList(null, handler);//获取全部视频信息
+            API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
+            API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
             if (MainTabActivity.maintabbadgeView.isShown()) {
                 MainTabActivity.maintabbadgeView.hide();
             }
@@ -875,7 +893,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     super.run();
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
                             pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""))));
-                    handler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
+                    fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
 
                 }
             }.start();
@@ -895,6 +913,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        fragmentPageStoryHandler.removeCallbacksAndMessages(null);
     }
 
     /**
@@ -1023,7 +1042,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
                             pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""))));
                     PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
-                    handler.sendEmptyMessage(LOAD_COMPLETED);
+                    fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -1048,7 +1067,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             app.allPicList.addAll(magicPicList);
             Collections.sort(app.allPicList);//对all进行排序
             System.out.println("location is ready");
-            handler.sendEmptyMessage(LOAD_COMPLETED);
+            fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1365,9 +1384,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         noPhotoViewStateRefresh = true;
                         swipeRefreshLayout.setEnabled(true);
                         swipeRefreshLayout.setRefreshing(true);
-                        Message message = handler.obtainMessage();
+                        Message message = fragmentPageStoryHandler.obtainMessage();
                         message.what = REFRESH;
-                        handler.sendMessage(message);
+                        fragmentPageStoryHandler.sendMessage(message);
                     }
                 } else {
                     PictureAirLog.out("do refresh when noPhotoView is not showing");

@@ -160,7 +160,9 @@ public class MainTabActivity extends BaseFragmentActivity {
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
         if (application.getPushPhotoCount() > 0) {//显示红点
-            MainTabActivity.maintabbadgeView.show();
+            if (MainTabActivity.maintabbadgeView != null && !MainTabActivity.maintabbadgeView.isShown()) {
+                MainTabActivity.maintabbadgeView.show();
+            }
             application.setPushPhotoCount(0);
         }
 

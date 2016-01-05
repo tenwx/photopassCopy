@@ -44,6 +44,7 @@ import com.pictureair.photopass.widget.VideoPlayerView;
 import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
@@ -72,9 +73,9 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private VideoPlayerView videoPlayerView = null;
 
     private int playedTime;// 最小化 保存播放时间
-    private static int screenWidth = 0;
-    private static int screenHeight = 0;
-    private static int controlHeight = 0;
+    private int screenWidth = 0;
+    private int screenHeight = 0;
+    private int controlHeight = 0;
     private final static int TIME = 3000;
     private boolean isControllerShow = true;
     private boolean isPaused = false;
@@ -97,75 +98,92 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private boolean isPlayFinash = false;//是否播放完毕
 
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SharePop.TWITTER:
-                    shareType = msg.what;
-                    break;
+    private final Handler videoPlayerHandler = new VideoPlayerHandler(this);
 
-                case NOT_NETWORK:
-                    tvLoding.setText(R.string.no_network);
-                    break;
-            }
+
+    private static class VideoPlayerHandler extends Handler{
+        private final WeakReference<VideoPlayerActivity> mActivity;
+
+        public VideoPlayerHandler(VideoPlayerActivity activity){
+            mActivity = new WeakReference<>(activity);
         }
-    };
 
-    private Handler myHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-
-                case PROGRESS_CHANGED:// 进度改变
-
-                    int i = videoPlayerView.getCurrentPosition();
-                    seekBar.setProgress(i);
-                    if (isOnline) {
-                        int j = videoPlayerView.getBufferPercentage();
-                        seekBar.setSecondaryProgress(j * seekBar.getMax() / 100);
-                    } else {
-                        seekBar.setSecondaryProgress(0);
-                    }
-
-                    i /= 1000;
-                    int minute = i / 60;
-                    int hour = minute / 60;
-                    int second = i % 60;
-                    minute %= 60;
-                    // playedTextView.setText(String.format("%02d:%02d:%02d", hour,
-                    // minute, second));
-
-                    playedTextView.setText(String.format("%02d:%02d", minute,
-                            second));
-                    sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
-                    break;
-                case HIDE_CONTROLER:
-                    hideController();
-                    break;
-
-                case UPDATE_UI:
-                    Configuration cf = context.getResources().getConfiguration();
-                    int ori = cf.orientation;
-                    if (ori == cf.ORIENTATION_LANDSCAPE) {
-                        crossScreen();
-                    } else if (ori == cf.ORIENTATION_PORTRAIT) {
-                        verticalScreen();
-                    }
-
-                    //更新收藏图标
-                    if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-                        videoInfo.isLove = 1;
-                        ivIsLove.setImageResource(R.drawable.discover_like);
-                    } else {
-                        videoInfo.isLove = 0;
-                        ivIsLove.setImageResource(R.drawable.discover_no_like);
-                    }
-                    break;
-            }
             super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case SharePop.TWITTER:
+                shareType = msg.what;
+                break;
+
+            case NOT_NETWORK:
+                tvLoding.setText(R.string.no_network);
+                break;
+
+            case PROGRESS_CHANGED:// 进度改变
+
+                int i = videoPlayerView.getCurrentPosition();
+                seekBar.setProgress(i);
+                if (isOnline) {
+                    int j = videoPlayerView.getBufferPercentage();
+                    seekBar.setSecondaryProgress(j * seekBar.getMax() / 100);
+                } else {
+                    seekBar.setSecondaryProgress(0);
+                }
+
+                i /= 1000;
+                int minute = i / 60;
+                int hour = minute / 60;
+                int second = i % 60;
+                minute %= 60;
+                // playedTextView.setText(String.format("%02d:%02d:%02d", hour,
+                // minute, second));
+
+                playedTextView.setText(String.format("%02d:%02d", minute,
+                        second));
+                videoPlayerHandler.sendEmptyMessageDelayed(PROGRESS_CHANGED, 100);
+                break;
+            case HIDE_CONTROLER:
+                hideController();
+                break;
+
+            case UPDATE_UI:
+                Configuration cf = context.getResources().getConfiguration();
+                int ori = cf.orientation;
+                if (ori == cf.ORIENTATION_LANDSCAPE) {
+                    crossScreen();
+                } else if (ori == cf.ORIENTATION_PORTRAIT) {
+                    verticalScreen();
+                }
+
+                //更新收藏图标
+                if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                    videoInfo.isLove = 1;
+                    ivIsLove.setImageResource(R.drawable.discover_like);
+                } else {
+                    videoInfo.isLove = 0;
+                    ivIsLove.setImageResource(R.drawable.discover_no_like);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -188,7 +206,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             startVideo();
         } else {
             if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
-                handler.sendEmptyMessage(NOT_NETWORK);
+                videoPlayerHandler.sendEmptyMessage(NOT_NETWORK);
             } else {
                 startVideo();// 开始播放视频
             }
@@ -231,7 +249,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         btnPlayOrStop.setImageResource(R.drawable.play);
         btnPlayOrStop.setAlpha(0xBB);
         btnPlayOrStop.setVisibility(View.GONE);
-        myHandler.sendEmptyMessage(UPDATE_UI);
+        videoPlayerHandler.sendEmptyMessage(UPDATE_UI);
         hideController();
     }
 
@@ -305,7 +323,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 //                btnPlayOrStop.setImageResource(R.drawable.pause);
                 btnPlayOrStop.setImageResource(0);
                 hideControllerDelay();
-                myHandler.sendEmptyMessage(PROGRESS_CHANGED);
+                videoPlayerHandler.sendEmptyMessage(PROGRESS_CHANGED);
             }
         });
 
@@ -348,14 +366,14 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             public void onStartTrackingTouch(SeekBar arg0) {
                 PictureAirLog.e(TAG, "===> onStartTrackingTouch");
 
-                myHandler.removeMessages(HIDE_CONTROLER);
+                videoPlayerHandler.removeMessages(HIDE_CONTROLER);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 PictureAirLog.e(TAG, "===> onStopTrackingTouch");
 
-                myHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
+                videoPlayerHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
             }
         });
     }
@@ -423,12 +441,13 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     @Override
     protected void onDestroy() {
-        myHandler.removeMessages(PROGRESS_CHANGED);
-        myHandler.removeMessages(HIDE_CONTROLER);
+        videoPlayerHandler.removeMessages(PROGRESS_CHANGED);
+        videoPlayerHandler.removeMessages(HIDE_CONTROLER);
 
         if (videoPlayerView.isPlaying()) {
             videoPlayerView.stopPlayback();
         }
+        videoPlayerHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -443,7 +462,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void hideControllerDelay() {
-        myHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
+        videoPlayerHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
     }
 
     private void hideController() {
@@ -460,7 +479,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void cancelDelayHide() {
-        myHandler.removeMessages(HIDE_CONTROLER);
+        videoPlayerHandler.removeMessages(HIDE_CONTROLER);
     }
 
     private final static int SCREEN_FULL = 0;
@@ -584,7 +603,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
         switch (v.getId()) {
             case R.id.ll_share:
-                sharePop.setshareinfo(null, videoInfo.shareURL, "online", videoInfo.photoId, SharePop.SHARE_VIDEO_TYOE, handler);
+                sharePop.setshareinfo(null, videoInfo.shareURL, "online", videoInfo.photoId, SharePop.SHARE_VIDEO_TYOE, videoPlayerHandler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.ll_download:

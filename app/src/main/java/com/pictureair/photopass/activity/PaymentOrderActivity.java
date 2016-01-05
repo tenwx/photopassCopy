@@ -43,6 +43,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -247,7 +248,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                         } else if (TextUtils.equals(resultStatus, "6002")) {// 网络连接出错
                             msg.what = RQF_ERROR;
                         }
-                        mHandler.sendMessage(msg);
+                        paymentOrderHandler.sendMessage(msg);
                     }
                 }.start();
 
@@ -258,7 +259,7 @@ public class PaymentOrderActivity extends BaseActivity implements
             }
         } else if (1 == payType) {
             PictureAirLog.v(TAG, "yl");
-            mHandler.sendEmptyMessage(RQF_SUCCESS);
+            paymentOrderHandler.sendEmptyMessage(RQF_SUCCESS);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
 
@@ -382,41 +383,61 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     }
 
-    Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            // Result result = new Result((String) msg.obj);
-            // PictureAirLog.v(TAG,(String) msg.obj);
-            // sbmtButton.setEnabled(true);
-            switch (msg.what) {
-                case RQF_ERROR:
-                    PictureAirLog.v(TAG, "RQF_ERROR");
-                    Intent intent1 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                    startActivity(intent1);
-                    ErrorInPayment();
-                    break;
-                case RQF_CANCEL:
-                    PictureAirLog.v(TAG, "RQF_CANCEL");
-                    Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                    startActivity(intent2);
-                    CancelInPayment();
-                    break;
-                case RQF_SUCCESS:
-                    PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
-                    //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
-                    customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            startTimer();
-                            getData();
-                        }
-                    });
-                    break;
-                default:
-                    break;
-            }
+    private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
+
+
+    private static class PaymentOrderHandler extends Handler{
+        private final WeakReference<PaymentOrderActivity> mActivity;
+
+        public PaymentOrderHandler(PaymentOrderActivity activity){
+            mActivity = new WeakReference<>(activity);
         }
-    };
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case RQF_ERROR:
+                PictureAirLog.v(TAG, "RQF_ERROR");
+                Intent intent1 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                startActivity(intent1);
+                ErrorInPayment();
+                break;
+            case RQF_CANCEL:
+                PictureAirLog.v(TAG, "RQF_CANCEL");
+                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                startActivity(intent2);
+                CancelInPayment();
+                break;
+            case RQF_SUCCESS:
+                PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
+                //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
+                customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
+                paymentOrderHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startTimer();
+                        getData();
+                    }
+                });
+                break;
+            default:
+                break;
+        }
+    }
+
 
     /**
      * 获取推送消息，跳转相应界面
@@ -540,6 +561,7 @@ public class PaymentOrderActivity extends BaseActivity implements
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        paymentOrderHandler.removeCallbacksAndMessages(null);
     }
 
     // 生成签名参数
