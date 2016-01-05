@@ -29,7 +29,7 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter
 {
 	private LayoutInflater mInflater;	 
 	private ArrayList<PhotoInfo> arrayList;
-	private static int requestwidth;
+	private int requestwidth;
 	private Context  c;
 	private final static String TAG = "ViewPhotoGridViewAdapter";
 	//构造函数

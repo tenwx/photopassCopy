@@ -3,7 +3,6 @@ package com.pictureair.photopass.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +25,8 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
+import java.lang.ref.WeakReference;
+
 /**
  * 个人信息页面
  */
@@ -43,92 +44,111 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
     private CustomProgressDialog dialog;
 
-    private Handler handler = new Handler() {
+    private final Handler profileHandler = new ProfileHandler(this);
+
+
+    private static class ProfileHandler extends Handler{
+        private final WeakReference<ProfileActivity> mActivity;
+
+        public ProfileHandler(ProfileActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
-                    if (!isNetWorkConnect(MyApplication.getInstance())) {
-                        newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-                        return;
-                    }
-                    Bundle bundle = (Bundle) msg.obj;
-                    birthdayString = bundle.getString("year") + "-" + bundle.getString("month") + "-" + bundle.getString("day");
-                    dialog = CustomProgressDialog.show(ProfileActivity.this,
-                            getString(R.string.connecting), false, null);
-                    API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), birthdayString,
-                            sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""),
-                            "", API1.UPDATE_PROFILE_BIRTHDAY, handler);
-                    break;
-
-                case R.id.item_gender:
-                    if (!isNetWorkConnect(MyApplication.getInstance())) {
-                        newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-                        return;
-                    }
-                    dialog = CustomProgressDialog.show(ProfileActivity.this,
-                            getString(R.string.connecting), false, null);
-                    API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
-                            sp.getString(Common.USERINFO_BIRTHDAY, ""), genderString,
-                            sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_GENDER, handler);
-                    break;
-
-
-                case API1.UPDATE_PROFILE_FAILED:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.UPDATE_PROFILE_SUCCESS:
-                    switch (msg.arg1) {
-                        case API1.UPDATE_PROFILE_NAME:
-                            tvNickName.setText(nickNameString);
-                            tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
-                            break;
-
-                        case API1.UPDATE_PROFILE_GENDER:
-                            if (genderString.equals("male")) {
-                                tvGender.setText(R.string.male);
-                            } else if (genderString.equals("female")) {
-                                tvGender.setText(R.string.female);
-                            }
-                            tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
-                            break;
-
-                        case API1.UPDATE_PROFILE_BIRTHDAY:
-                            PictureAirLog.out("birthday--->" + birthdayString);
-                            tvBirthday.setText(birthdayString);
-                            tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
-                            break;
-
-                        case API1.UPDATE_PROFILE_COUNTRY:
-                            countryTv.setText(countryString);
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    Editor e = sp.edit();
-                    e.putString(Common.USERINFO_BIRTHDAY, birthdayString);
-                    e.putString(Common.USERINFO_NICKNAME, nickNameString);
-                    e.putString(Common.USERINFO_COUNTRY, countryString);
-                    e.putString(Common.USERINFO_GENDER, genderString);
-                    e.commit();
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    break;
-
-                default:
-                    break;
-            }
             super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
+                if (!isNetWorkConnect(MyApplication.getInstance())) {
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                Bundle bundle = (Bundle) msg.obj;
+                birthdayString = bundle.getString("year") + "-" + bundle.getString("month") + "-" + bundle.getString("day");
+                dialog = CustomProgressDialog.show(ProfileActivity.this,
+                        getString(R.string.connecting), false, null);
+                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), birthdayString,
+                        sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""),
+                        "", API1.UPDATE_PROFILE_BIRTHDAY, profileHandler);
+                break;
+
+            case R.id.item_gender:
+                if (!isNetWorkConnect(MyApplication.getInstance())) {
+                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                dialog = CustomProgressDialog.show(ProfileActivity.this,
+                        getString(R.string.connecting), false, null);
+                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
+                        sp.getString(Common.USERINFO_BIRTHDAY, ""), genderString,
+                        sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_GENDER, profileHandler);
+                break;
+
+
+            case API1.UPDATE_PROFILE_FAILED:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.UPDATE_PROFILE_SUCCESS:
+                switch (msg.arg1) {
+                    case API1.UPDATE_PROFILE_NAME:
+                        tvNickName.setText(nickNameString);
+                        tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
+                        break;
+
+                    case API1.UPDATE_PROFILE_GENDER:
+                        if (genderString.equals("male")) {
+                            tvGender.setText(R.string.male);
+                        } else if (genderString.equals("female")) {
+                            tvGender.setText(R.string.female);
+                        }
+                        tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
+                        break;
+
+                    case API1.UPDATE_PROFILE_BIRTHDAY:
+                        PictureAirLog.out("birthday--->" + birthdayString);
+                        tvBirthday.setText(birthdayString);
+                        tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
+                        break;
+
+                    case API1.UPDATE_PROFILE_COUNTRY:
+                        countryTv.setText(countryString);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                SharedPreferences.Editor e = sp.edit();
+                e.putString(Common.USERINFO_BIRTHDAY, birthdayString);
+                e.putString(Common.USERINFO_NICKNAME, nickNameString);
+                e.putString(Common.USERINFO_COUNTRY, countryString);
+                e.putString(Common.USERINFO_GENDER, genderString);
+                e.commit();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +219,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onClick(View v) {
         Intent intent = null;
-        Message msg = handler.obtainMessage();
+        Message msg = profileHandler.obtainMessage();
         switch (v.getId()) {
             case R.id.item_nickname:
                 intent = new Intent(ProfileActivity.this, UpdateUserinfoActivity.class);
@@ -218,7 +238,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
             case R.id.item_birth:
                 // 弹出出生年月日
                 if (selectDateWeidget == null) {
-                    selectDateWeidget = new SelectDateWeidget(this, bd, handler);
+                    selectDateWeidget = new SelectDateWeidget(this, bd, profileHandler);
                     selectDateWeidget.showPopupWindow();
                 } else {
                     selectDateWeidget.showPopupWindow();
@@ -247,7 +267,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 msg.what = R.id.item_gender;
                 genderString = "male";
                 mySexDialog.dismiss();
-                handler.sendMessage(msg);
+                profileHandler.sendMessage(msg);
                 break;
 
             case R.id.isSelectFemale:
@@ -256,7 +276,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 msg.what = R.id.item_gender;
                 genderString = "female";
                 mySexDialog.dismiss();
-                handler.sendMessage(msg);
+                profileHandler.sendMessage(msg);
                 break;
 
             default:
@@ -280,7 +300,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                         getString(R.string.connecting), false, null);
                 API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), nickNameString,
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-                        sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, handler);
+                        sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);
                 break;
 
             case 222://修改国家
@@ -295,7 +315,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                         .getCountryByCountryCode(countryString, this);
                 API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-                        countryString, "", API1.UPDATE_PROFILE_COUNTRY, handler);
+                        countryString, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
                 break;
             default:
                 break;
@@ -342,5 +362,11 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        profileHandler.removeCallbacksAndMessages(null);
     }
 }

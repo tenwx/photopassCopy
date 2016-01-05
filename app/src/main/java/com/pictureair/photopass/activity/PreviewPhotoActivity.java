@@ -65,6 +65,7 @@ import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -169,6 +170,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int MODE_MOVE = 222;
     private static final int MODE_UP = 333;
 
+    private static final int LOAD_FROM_LOCAL = 444;
+    private static final int LOAD_FROM_NETWORK = 555;
+
     private int mNetWorkType;  //当前网络的状态
     private CustomDialog customdialog; //  对话框
 
@@ -198,335 +202,346 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     int y1;
 
 
-    private Handler handler = new Handler() {
-        @SuppressLint("NewApi")
+    private final Handler previewPhotoHandler = new PreviewPhotoHandler(this);
+
+
+    private static class PreviewPhotoHandler extends Handler{
+        private final WeakReference<PreviewPhotoActivity> mActivity;
+
+        public PreviewPhotoHandler(PreviewPhotoActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1://移动的时候
-                    sendEmptyMessageDelayed(6, 500);
-                    x = msg.arg1 - r;
-                    y = (int) (msg.arg2 - r - ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) + scaleH);
-                    if (x > bitmap2.getWidth() - 2 * r) {
-                        x = bitmap2.getWidth() - 2 * r;
-                        x1 += 50;
-                        out = true;
-                    }
-                    if (x < 0) {
-                        x = 0;
-                        x1 -= 50;
-                        out = true;
-                    }
-                    if (y > bitmap2.getHeight() - 2 * r) {
-                        y = bitmap2.getHeight() - 2 * r;
-                        y1 += 50;
-                        out = true;
-                    }
-                    if (y < 0) {
-                        y = 0;
-                        y1 -= 50;
-                        out = true;
-                    }
-                    if (x1 < 0) {
-                        x1 = 0;
-                    }
-                    if (x1 > bitmap2.getWidth() - sizeW) {
-                        x1 = bitmap2.getWidth() - sizeW;
-                    }
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
 
-                    if (y1 < 0) {
-                        y1 = 0;
-                    }
-                    if (y1 > bitmap2.getHeight() - sizeH) {
-                        y1 = bitmap2.getHeight() - sizeH;
-                    }
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case 1://移动的时候
+                previewPhotoHandler.sendEmptyMessageDelayed(6, 500);
+                x = msg.arg1 - r;
+                y = (int) (msg.arg2 - r - ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) + scaleH);
+                if (x > bitmap2.getWidth() - 2 * r) {
+                    x = bitmap2.getWidth() - 2 * r;
+                    x1 += 50;
+                    out = true;
+                }
+                if (x < 0) {
+                    x = 0;
+                    x1 -= 50;
+                    out = true;
+                }
+                if (y > bitmap2.getHeight() - 2 * r) {
+                    y = bitmap2.getHeight() - 2 * r;
+                    y1 += 50;
+                    out = true;
+                }
+                if (y < 0) {
+                    y = 0;
+                    y1 -= 50;
+                    out = true;
+                }
+                if (x1 < 0) {
+                    x1 = 0;
+                }
+                if (x1 > bitmap2.getWidth() - sizeW) {
+                    x1 = bitmap2.getWidth() - sizeW;
+                }
 
-                    /***********之后加的*****************/
-                    if (x1 > bitmap1.getWidth() - sizeW) {
-                        x1 = bitmap1.getWidth() - sizeW;
-                    }
-                    if (y1 > bitmap1.getHeight() - sizeH) {
-                        y1 = bitmap1.getHeight() - sizeH;
-                    }
-                    /**********之后加的***************/
+                if (y1 < 0) {
+                    y1 = 0;
+                }
+                if (y1 > bitmap2.getHeight() - sizeH) {
+                    y1 = bitmap2.getHeight() - sizeH;
+                }
+
+                /***********之后加的*****************/
+                if (x1 > bitmap1.getWidth() - sizeW) {
+                    x1 = bitmap1.getWidth() - sizeW;
+                }
+                if (y1 > bitmap1.getHeight() - sizeH) {
+                    y1 = bitmap1.getHeight() - sizeH;
+                }
+                /**********之后加的***************/
 
 
-                    if (flag == true) {
-                        if (out == true) {
-                            //						PictureAirLog.v(TAG,x1+"_"+y1+"_"+sizeW+"+"+sizeH+bitmap1.getWidth()+"__"+bitmap1.getHeight()+"+"+bitmap2.getWidth()+"__"+bitmap2.getHeight());
+                if (flag == true) {
+                    if (out == true) {
+                        //						PictureAirLog.v(TAG,x1+"_"+y1+"_"+sizeW+"+"+sizeH+bitmap1.getWidth()+"__"+bitmap1.getHeight()+"+"+bitmap2.getWidth()+"__"+bitmap2.getHeight());
 
-                            bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, sizeW, sizeH);
-                            bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, sizeW, sizeH);
-                            Matrix m = new Matrix();
-                            m.postScale((float) scaleW / bitmap4.getWidth(), (float) scaleH / bitmap4.getHeight());
-                            bitmap4 = Bitmap.createBitmap(bitmap4, 0, 0, bitmap4.getWidth(), bitmap4.getHeight(), m, true);
-                            bitmap5 = Bitmap.createBitmap(bitmap5, 0, 0, bitmap5.getWidth(), bitmap5.getHeight(), m, true);
-                        }
-                        image01.setImageBitmap(bitmap4);
-                        bitmap3 = Bitmap.createBitmap(bitmap5, x, y, 2 * r, 2 * r);
-                        bitmap3 = Mask(bitmap3);
-                        bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
-                    } else {
-                        bitmap3 = Bitmap.createBitmap(bitmap2, x, y, 2 * r, 2 * r);
-                        bitmap3 = Mask(bitmap3);
-                        bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
-                    }
-                    if (!image02.isShown()) {
-                        image02.setVisibility(View.VISIBLE);
-                    }
-                    image02.setX(x);
-                    image02.setY(y);
-                    image02.setImageBitmap(bitmap3);
-                    out = false;
-                    break;
-                case 2://取消移动的时候
-                    PictureAirLog.v(TAG, "------->2");
-                    //				if (image02 != null) {
-                    //					PictureAirLog.v(TAG,"image2 not null and set null");
-                    //					image02.setImageBitmap(null);
-                    //				}
-                    if (image02.isShown()) {
-                        PictureAirLog.v(TAG, "image2 is shown");
-                        image02.setVisibility(View.GONE);
-                    } else {
-                        PictureAirLog.v(TAG, "image2 is not shown");
-                    }
-
-                    if (null != bitmap3) {
-                        bitmap3.recycle();
-                        bitmap3 = null;
-                        PictureAirLog.v(TAG, "bitmap3 recycle-------->");
-                    }
-                    break;
-                case 3://双击放大
-                    x1 = msg.arg1 - sizeW / 2;
-                    y1 = msg.arg2 - sizeH / 2;
-                    PictureAirLog.v(TAG, "current xy = " + x1 + "+" + y1);
-                    if (x1 < 0) {
-                        x1 = 0;
-                    }
-                    if (x1 > bitmap1.getWidth() - sizeW) {
-                        x1 = bitmap1.getWidth() - sizeW;
-                    }
-                    if (y1 < 0) {
-                        y1 = 0;
-                    }
-                    if (y1 > bitmap1.getHeight() - sizeH) {
-                        y1 = bitmap1.getHeight() - sizeH;
-                    }
-                    PictureAirLog.v(TAG, "after currnet xy = " + x1 + "_" + y1);
-                    if (flag == false) {
                         bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, sizeW, sizeH);
                         bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, sizeW, sizeH);
                         Matrix m = new Matrix();
                         m.postScale((float) scaleW / bitmap4.getWidth(), (float) scaleH / bitmap4.getHeight());
                         bitmap4 = Bitmap.createBitmap(bitmap4, 0, 0, bitmap4.getWidth(), bitmap4.getHeight(), m, true);
                         bitmap5 = Bitmap.createBitmap(bitmap5, 0, 0, bitmap5.getWidth(), bitmap5.getHeight(), m, true);
-                        image01.setImageBitmap(bitmap4);
-                        flag = true;
-                    } else {
-                        image01.setImageBitmap(bitmap1);
-                        flag = false;
                     }
-                    break;
-                case 4://返回的时候初始化
+                    image01.setImageBitmap(bitmap4);
+                    bitmap3 = Bitmap.createBitmap(bitmap5, x, y, 2 * r, 2 * r);
+                    bitmap3 = Mask(bitmap3);
+                    bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
+                } else {
+                    bitmap3 = Bitmap.createBitmap(bitmap2, x, y, 2 * r, 2 * r);
+                    bitmap3 = Mask(bitmap3);
+                    bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
+                }
+                if (!image02.isShown()) {
+                    image02.setVisibility(View.VISIBLE);
+                }
+                image02.setX(x);
+                image02.setY(y);
+                image02.setImageBitmap(bitmap3);
+                out = false;
+                break;
+            case 2://取消移动的时候
+                PictureAirLog.v(TAG, "------->2");
+                //				if (image02 != null) {
+                //					PictureAirLog.v(TAG,"image2 not null and set null");
+                //					image02.setImageBitmap(null);
+                //				}
+                if (image02.isShown()) {
+                    PictureAirLog.v(TAG, "image2 is shown");
+                    image02.setVisibility(View.GONE);
+                } else {
+                    PictureAirLog.v(TAG, "image2 is not shown");
+                }
+
+                if (null != bitmap3) {
+                    bitmap3.recycle();
+                    bitmap3 = null;
+                    PictureAirLog.v(TAG, "bitmap3 recycle-------->");
+                }
+                break;
+            case 3://双击放大
+                x1 = msg.arg1 - sizeW / 2;
+                y1 = msg.arg2 - sizeH / 2;
+                PictureAirLog.v(TAG, "current xy = " + x1 + "+" + y1);
+                if (x1 < 0) {
+                    x1 = 0;
+                }
+                if (x1 > bitmap1.getWidth() - sizeW) {
+                    x1 = bitmap1.getWidth() - sizeW;
+                }
+                if (y1 < 0) {
+                    y1 = 0;
+                }
+                if (y1 > bitmap1.getHeight() - sizeH) {
+                    y1 = bitmap1.getHeight() - sizeH;
+                }
+                PictureAirLog.v(TAG, "after currnet xy = " + x1 + "_" + y1);
+                if (flag == false) {
+                    bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, sizeW, sizeH);
+                    bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, sizeW, sizeH);
+                    Matrix m = new Matrix();
+                    m.postScale((float) scaleW / bitmap4.getWidth(), (float) scaleH / bitmap4.getHeight());
+                    bitmap4 = Bitmap.createBitmap(bitmap4, 0, 0, bitmap4.getWidth(), bitmap4.getHeight(), m, true);
+                    bitmap5 = Bitmap.createBitmap(bitmap5, 0, 0, bitmap5.getWidth(), bitmap5.getHeight(), m, true);
+                    image01.setImageBitmap(bitmap4);
+                    flag = true;
+                } else {
                     image01.setImageBitmap(bitmap1);
                     flag = false;
-                    out = false;
-                    break;
+                }
+                break;
+            case 4://返回的时候初始化
+                image01.setImageBitmap(bitmap1);
+                flag = false;
+                out = false;
+                break;
 
-                case SharePop.TWITTER:
-                    shareType = msg.what;
-                    break;
+            case SharePop.TWITTER:
+                shareType = msg.what;
+                break;
 
 
-                case API1.BUY_PHOTO_SUCCESS:
-                    progressDialog.dismiss();
-                    cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
-                    PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
-                    //将当前购买的照片信息存放到application中
-                    myApplication.setIsBuyingPhotoInfo(photolist, currentPosition);
-                    if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
-                    } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
-                    } else {
-                        myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
-                    }
-                    List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
-                    Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                    ArrayList<CartItemInfo1> orderinfo = new ArrayList<>();
-                    CartItemInfo1 cartItemInfo = cartItemInfo1List.get(0);
-                    cartItemInfo.setCartProductType(2);
-                    orderinfo.add(cartItemInfo);
-                    Editor editor = sharedPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                    editor.commit();
-                    intent.putExtra("orderinfo", orderinfo);
-                    startActivity(intent);
-                    break;
-                case API1.BUY_PHOTO_FAILED:
-                    //购买失败
-                    progressDialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+            case API1.BUY_PHOTO_SUCCESS:
+                progressDialog.dismiss();
+                cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
+                //将当前购买的照片信息存放到application中
+                myApplication.setIsBuyingPhotoInfo(photolist, currentPosition);
+                if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
+                } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
+                } else {
+                    myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
+                }
+                List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
+                Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
+                ArrayList<CartItemInfo1> orderinfo = new ArrayList<>();
+                CartItemInfo1 cartItemInfo = cartItemInfo1List.get(0);
+                cartItemInfo.setCartProductType(2);
+                orderinfo.add(cartItemInfo);
+                Editor editor = sharedPreferences.edit();
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
+                editor.commit();
+                intent.putExtra("orderinfo", orderinfo);
+                startActivity(intent);
+                break;
+            case API1.BUY_PHOTO_FAILED:
+                //购买失败
+                progressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
-                    break;
-                case API1.GET_GOODS_SUCCESS:
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                        allGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                        //获取PP+
-                        for (GoodsInfo1 goodsInfo : allGoodsList) {
-                            if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                                pppGoodsInfo = goodsInfo;
-                                //封装购物车宣传图
-                                photoUrls = new String[goodsInfo.getPictures().size()];
-                                for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                    photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
-                                }
-                                break;
+                break;
+            case API1.GET_GOODS_SUCCESS:
+                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                    allGoodsList = goodsInfoJson.getGoods();
+                    PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                    //获取PP+
+                    for (GoodsInfo1 goodsInfo : allGoodsList) {
+                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                            pppGoodsInfo = goodsInfo;
+                            //封装购物车宣传图
+                            photoUrls = new String[goodsInfo.getPictures().size()];
+                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
                             }
-                        }
-                        API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, handler);
-                        //将数据保存到缓存中
-                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                            break;
                         }
                     }
-                    break;
-                case API1.GET_GOODS_FAILED:
-                    progressDialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.ADD_TO_CART_FAILED:
-                    progressDialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                    break;
-
-                case API1.ADD_TO_CART_SUCCESS:
-                    progressDialog.dismiss();
-                    JSONObject jsonObject = (JSONObject) msg.obj;
-                    editor = sharedPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                    editor.commit();
-                    String cartId = jsonObject.getString("cartId");
-
-                    //生成订单
-                    Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                    ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                    CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
-                    cartItemInfo1.setCartId(cartId);
-                    cartItemInfo1.setProductName(pppGoodsInfo.getName());
-                    cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
-                    cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
-                    cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
-                    cartItemInfo1.setQty(1);
-                    cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
-                    cartItemInfo1.setPictures(photoUrls);
-                    cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
-                    cartItemInfo1.setCartProductType(3);
-
-                    orderinfoArrayList.add(cartItemInfo1);
-                    intent1.putExtra("orderinfo", orderinfoArrayList);
-                    startActivity(intent1);
-                    break;
-
-                case 6://计算双击方法事件
-                    if (count > 0) {
-                        count = 0;
+                    API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, previewPhotoHandler);
+                    //将数据保存到缓存中
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
                     }
-                    break;
+                }
+                break;
+            case API1.GET_GOODS_FAILED:
+                progressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
 
-                case 7://操作比较耗时，会影响oncreate绘制
-                    mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
-                    UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
-                    mViewPager.setOffscreenPageLimit(2);
-                    mViewPager.setAdapter(pagerAdapter);
-                    mViewPager.setCurrentItem(currentPosition, true);
-                    //初始化底部索引按钮
-                    updateIndexTools(true);
+            case API1.ADD_TO_CART_FAILED:
+                progressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
-                    PictureAirLog.v(TAG, "----------------------->initing...3");
-                    r = (int) (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
+                break;
 
-                    mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+            case API1.ADD_TO_CART_SUCCESS:
+                progressDialog.dismiss();
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                editor = sharedPreferences.edit();
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
+                editor.commit();
+                String cartId = jsonObject.getString("cartId");
 
-                        @Override
-                        public void onPageSelected(int arg0) {
-                            //初始化每张图片的love图标
-                            PictureAirLog.v(TAG, "----------------------->initing...4");
-                            currentPosition = arg0;
+                //生成订单
+                Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
+                ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
+                cartItemInfo1.setCartId(cartId);
+                cartItemInfo1.setProductName(pppGoodsInfo.getName());
+                cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
+                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
+                cartItemInfo1.setQty(1);
+                cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
+                cartItemInfo1.setPictures(photoUrls);
+                cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
+                cartItemInfo1.setCartProductType(3);
+
+                orderinfoArrayList.add(cartItemInfo1);
+                intent1.putExtra("orderinfo", orderinfoArrayList);
+                startActivity(intent1);
+                break;
+
+            case 6://计算双击方法事件
+                if (count > 0) {
+                    count = 0;
+                }
+                break;
+
+            case 7://操作比较耗时，会影响oncreate绘制
+                mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
+                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
+                mViewPager.setOffscreenPageLimit(2);
+                mViewPager.setAdapter(pagerAdapter);
+                mViewPager.setCurrentItem(currentPosition, true);
+                //初始化底部索引按钮
+                updateIndexTools(true);
+
+                PictureAirLog.v(TAG, "----------------------->initing...3");
+                r = (int) (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
+
+                mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+                    @Override
+                    public void onPageSelected(int arg0) {
+                        //初始化每张图片的love图标
+                        PictureAirLog.v(TAG, "----------------------->initing...4");
+                        currentPosition = arg0;
+                    }
+
+                    @Override
+                    public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int arg0) {
+                        // TODO Auto-generated method stub
+                        //				PictureAirLog.v(TAG,"--------onPageScrollStateChanged-------"+arg0);
+                        PictureAirLog.v(TAG, "----------------------->initing...5");
+                        if (arg0 == 0) {//结束滑动
+                            //					PictureAirLog.v(TAG,"--------scroll end-------");
+                            updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
                         }
+                    }
+                });
 
-                        @Override
-                        public void onPageScrolled(int arg0, float arg1, int arg2) {
+                PictureAirLog.v(TAG, "----------------------->initing...6");
+                judgeBuyOnePhoto();
+                break;
 
-                        }
+            case LOAD_FROM_NETWORK:
+                //添加模糊
+                if (null != bitmap2) {
+                    PictureAirLog.v(TAG, "bitmap 2 not null");
+                    progressDialog.dismiss();
+                    initBlur();
+                } else {
+                    PictureAirLog.v(TAG, "bitmap2 null-->");
+                    progressDialog.dismiss();
+                    loadFailed = true;
+                    newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                    initBlur();
+                }
+                break;
 
-                        @Override
-                        public void onPageScrollStateChanged(int arg0) {
-                            // TODO Auto-generated method stub
-                            //				PictureAirLog.v(TAG,"--------onPageScrollStateChanged-------"+arg0);
-                            PictureAirLog.v(TAG, "----------------------->initing...5");
-                            if (arg0 == 0) {//结束滑动
-                                //					PictureAirLog.v(TAG,"--------scroll end-------");
-                                updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
-                            }
-                        }
-                    });
+            case LOAD_FROM_LOCAL:
+                byte[] arg2 = null;
+                try {
+                    arg2 = AESKeyHelper.decrypt(dirFile.toString(), Common.AES_ENCRYPTION_KEY);
+                } catch (InvalidKeyException | NoSuchAlgorithmException
+                        | NoSuchPaddingException | IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                if (null != bitmap2) {
+                    progressDialog.dismiss();
+                    initBlur();
+                }
+                break;
 
-                    PictureAirLog.v(TAG, "----------------------->initing...6");
-                    judgeBuyOnePhoto();
-                    break;
-                default:
-                    break;
-            }
-
-            // System.gc();
-            super.handleMessage(msg);
+            default:
+                break;
         }
-    };
+    }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    //添加模糊
-                    if (null != bitmap2) {
-                        PictureAirLog.v(TAG, "bitmap 2 not null");
-                        progressDialog.dismiss();
-                        initBlur();
-                    } else {
-                        PictureAirLog.v(TAG, "bitmap2 null-->");
-                        progressDialog.dismiss();
-                        loadFailed = true;
-                        newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                        initBlur();
-                    }
-                    break;
-                case 1:
-                    byte[] arg2 = null;
-                    try {
-                        arg2 = AESKeyHelper.decrypt(dirFile.toString(), Common.AES_ENCRYPTION_KEY);
-                    } catch (InvalidKeyException | NoSuchAlgorithmException
-                            | NoSuchPaddingException | IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                    if (null != bitmap2) {
-                        progressDialog.dismiss();
-                        initBlur();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+
 
 
     @Override
@@ -633,7 +648,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
         PictureAirLog.v(TAG, "original is " + photolist.get(currentPosition).photoPathOrURL);
         PictureAirLog.v(TAG, "----------------------->initing...2");
-        handler.sendEmptyMessage(7);
+        previewPhotoHandler.sendEmptyMessage(7);
 
     }
 
@@ -657,13 +672,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     @Override
                     public void onGlobalLayout() {
                         photoFraRelativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        mHandler.sendEmptyMessage(1);
+                        previewPhotoHandler.sendEmptyMessage(LOAD_FROM_LOCAL);
                     }
                 });
 
             } else {
 
-                mHandler.sendEmptyMessage(1);
+                previewPhotoHandler.sendEmptyMessage(LOAD_FROM_LOCAL);
             }
         } else {//如果文件不存在，下载文件到缓存
             PictureAirLog.v(TAG, "file is not exist");
@@ -680,14 +695,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         e.printStackTrace();
                     }
                     bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                    mHandler.sendEmptyMessage(0);
+                    previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
                 }
 
                 @Override
                 public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
                     // TODO Auto-generated method stub
                     PictureAirLog.v(TAG, arg3.toString());
-                    mHandler.sendEmptyMessage(0);
+                    previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
                 }
             });
         }
@@ -809,15 +824,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         PictureAirLog.v(TAG, "out of photo range");
                         //				PictureAirLog.v(TAG,"up");
                         //				fads；
-                        Message msg = handler.obtainMessage();
+                        Message msg = previewPhotoHandler.obtainMessage();
                         msg.what = 2;
                         touchtoclean.setVisibility(View.VISIBLE);
-                        handler.sendMessage(msg);
+                        previewPhotoHandler.sendMessage(msg);
                         return super.onTouchEvent(event);
                     }
                 }
 
-                Message msg = handler.obtainMessage();
+                Message msg = previewPhotoHandler.obtainMessage();
                 msg.arg1 = (int) event.getX();
                 msg.arg2 = (int) event.getY();
 
@@ -871,7 +886,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         touchtoclean.setVisibility(View.VISIBLE);
                         break;
                 }
-                handler.sendMessage(msg);
+                previewPhotoHandler.sendMessage(msg);
 
             }
         }
@@ -881,7 +896,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     @Override
     public void onBackPressed() {
         if (flag == true && photoInfo.isPayed == 0) {
-            handler.sendEmptyMessage(4);
+            previewPhotoHandler.sendEmptyMessage(4);
         } else {
             PreviewPhotoActivity.this.finish();
         }
@@ -1003,14 +1018,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, handler);
+                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
                     } else {//编辑前
                         //判断图片是本地还是网路图片
                         if (photoInfo.onLine == 1) {//网络图片
                             sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL,
-                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE, handler);
+                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
                         } else {
-                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, handler);
+                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
                         }
 
                     }
@@ -1111,7 +1126,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                API1.buyPhoto(photoInfo.photoId, handler);
+                API1.buyPhoto(photoInfo.photoId, previewPhotoHandler);
                 dia.dismiss();
                 break;
 
@@ -1161,11 +1176,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //从缓层中获取数据
         String goodsByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS);
         if (goodsByACache != null && !goodsByACache.equals("")) {
-            handler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+            previewPhotoHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
         } else {
             //从网络获取商品,先检查网络
             if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(handler);
+                API1.getGoods(previewPhotoHandler);
             } else {
                 //提醒检查网络
                 newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
@@ -1253,7 +1268,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         //如果手指在上面的时候，如果同时休眠，在唤醒之后，页面上有个清晰圈
         //需要通知handler释放清晰圈
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
-            handler.sendEmptyMessage(2);
+            previewPhotoHandler.sendEmptyMessage(2);
         }
     }
 
@@ -1276,6 +1291,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             myApplication.clearIsBuyingPhotoList();
 //			myApplication.setIsBuyingPhotoInfo(null);
         }
+        previewPhotoHandler.removeCallbacksAndMessages(null);
 
     }
 

@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /**
  * 头像选取
@@ -48,59 +49,78 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     private MyToast myToast;
     private File headPhoto;
 
-    private Handler handler = new Handler() {
+    private final Handler setHeadPhotoHandler = new SetHeadPhotoHandler(this);
 
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case API1.UPDATE_USER_IMAGE_SUCCESS:
-                    JSONObject jsonObject = (JSONObject) msg.obj;
-                    String imageUrl = jsonObject.getString("imageUrl");
-                    Editor e = sp.edit();
-                    e.putString(Common.USERINFO_HEADPHOTO, imageUrl);
-                    e.apply();
 
-                    //上传成功之后，需要将临时的头像文件的名字改为正常的名字
-                    File oldFile = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
-                    if (oldFile.exists()) {//如果之前的文件存在
-                        //先删除之前的文件
-                        oldFile.delete();
-                        //修改现在的文件名字
-                        if (headPhoto.exists()) {
-                            headPhoto.renameTo(oldFile);
-                        }
-                    } else {
-                        //文件不存在，则重新创建文件夹
-                        try {
-                            oldFile.createNewFile();
-                            headPhoto.renameTo(oldFile);
+    private static class SetHeadPhotoHandler extends Handler{
+        private final WeakReference<SetHeadPhotoAct> mActivity;
 
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-
-                    clearImageCache(imageUrl);//清除之前的缓存
-                    dialog.dismiss();
-                    myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
-                    finish();
-                    break;
-
-                case API1.UPDATE_USER_IMAGE_FAILED:
-                    //删除头像的临时文件
-                    dialog.dismiss();
-                    if (headPhoto.exists()) {
-                        headPhoto.delete();
-                    }
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    finish();
-                    break;
-                default:
-                    break;
-            }
+        public SetHeadPhotoHandler(SetHeadPhotoAct activity){
+            mActivity = new WeakReference<>(activity);
         }
 
-        ;
-    };
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.UPDATE_USER_IMAGE_SUCCESS:
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                String imageUrl = jsonObject.getString("imageUrl");
+                Editor e = sp.edit();
+                e.putString(Common.USERINFO_HEADPHOTO, imageUrl);
+                e.apply();
+
+                //上传成功之后，需要将临时的头像文件的名字改为正常的名字
+                File oldFile = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
+                if (oldFile.exists()) {//如果之前的文件存在
+                    //先删除之前的文件
+                    oldFile.delete();
+                    //修改现在的文件名字
+                    if (headPhoto.exists()) {
+                        headPhoto.renameTo(oldFile);
+                    }
+                } else {
+                    //文件不存在，则重新创建文件夹
+                    try {
+                        oldFile.createNewFile();
+                        headPhoto.renameTo(oldFile);
+
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+
+                clearImageCache(imageUrl);//清除之前的缓存
+                dialog.dismiss();
+                myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
+                finish();
+                break;
+
+            case API1.UPDATE_USER_IMAGE_FAILED:
+                //删除头像的临时文件
+                dialog.dismiss();
+                if (headPhoto.exists()) {
+                    headPhoto.delete();
+                }
+                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +197,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                         params.put(Common.USERINFO_TOKENID, tokenId);
                         params.put("updateType", "avatar");
                         params.put("file", headPhoto);
-                        API1.updateUserImage(params, handler, 0, dialog);
+                        API1.updateUserImage(params, setHeadPhotoHandler, 0, dialog);
                     } catch (FileNotFoundException ee) {
                         // TODO Auto-generated catch block
                         ee.printStackTrace();
@@ -208,5 +228,11 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
             Uri originalUri = data.getData(); // 获得图片的uri
             mClipImageLayout.setImage(originalUri);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        setHeadPhotoHandler.removeCallbacksAndMessages(null);
     }
 }
