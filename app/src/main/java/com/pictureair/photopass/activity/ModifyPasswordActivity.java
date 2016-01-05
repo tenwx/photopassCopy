@@ -20,6 +20,8 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
+import java.lang.ref.WeakReference;
+
 import cn.smssdk.gui.EditTextWithClear;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
@@ -31,34 +33,54 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
     private ImageButton radio;
     private CustomProgressDialog dialog;
 
-    private Handler mHandler = new Handler() {
+    private final Handler modifyPasswordHandler = new ModifyPasswordHandler(this);
+
+
+    private static class ModifyPasswordHandler extends Handler{
+        private final WeakReference<ModifyPasswordActivity> mActivity;
+
+        public ModifyPasswordHandler(ModifyPasswordActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-
-                case API1.MODIFY_PWD_SUCCESS:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    newToast.setTextAndShow(R.string.modify_password_success,
-                            Common.TOAST_SHORT_TIME);
-                    ModifyPasswordActivity.this.finish();
-                    break;
-
-                case API1.MODIFY_PWD_FAILED:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
-                default:
-                    break;
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
             }
-
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+
+            case API1.MODIFY_PWD_SUCCESS:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                newToast.setTextAndShow(R.string.modify_password_success,
+                        Common.TOAST_SHORT_TIME);
+                ModifyPasswordActivity.this.finish();
+                break;
+
+            case API1.MODIFY_PWD_FAILED:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
 
     @Override
@@ -110,7 +132,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
                             dialog = CustomProgressDialog.show(
                                     ModifyPasswordActivity.this,
                                     getString(R.string.connecting), false, null);
-                            API1.modifyPwd(oldPassword.getText().toString(), newPassword.getText().toString(), mHandler);
+                            API1.modifyPwd(oldPassword.getText().toString(), newPassword.getText().toString(), modifyPasswordHandler);
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
@@ -183,5 +205,9 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        modifyPasswordHandler.removeCallbacksAndMessages(null);
+    }
 }

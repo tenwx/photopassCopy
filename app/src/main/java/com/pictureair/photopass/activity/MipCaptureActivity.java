@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -10,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -32,6 +32,7 @@ import com.pictureair.photopass.zxing.decoding.InactivityTimer;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Vector;
 
 import de.greenrobot.event.EventBus;
@@ -62,55 +63,75 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
     private CustomProgressDialog dialog;
     private DealCodeUtil dealCodeUtil;
 
-    private Handler handler2 = new Handler() {
-        public void handleMessage(android.os.Message msg) {
 
-            switch (msg.what) {
-                case DealCodeUtil.DEAL_CODE_FAILED:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    if (msg.obj != null) {//从ppp页面过来，需要返回
-                        EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false));
-                    }
-                    finish();
-                    break;
+    private final Handler mipCaptureHandler = new MipCaptureHandler(this);
 
-                case DealCodeUtil.DEAL_CODE_SUCCESS:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
 
-                    if (msg.obj != null) {//从ppp过来
-                        Bundle bundle = (Bundle) msg.obj;
-                        if (bundle.getInt("status") == 1) {
-                            EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
-                        } else if (bundle.getInt("status") == 2) {//将pp码返回
-                            EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), bundle.getBoolean("hasBind")));
-                        } else if (bundle.getInt("status") == 3) {
-                            Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
-                            API1.PPPlist.clear();
-                            startActivity(intent2);
-                        } else if (bundle.getInt("status") == 4) {
-                            Editor editor = sp.edit();
-                            editor.putBoolean(Common.NEED_FRESH, true);
-                            editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
-                            editor.commit();
-                        } else if (bundle.getInt("status") == 5) {
-                            EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
-                        }
-                    }
+    private static class MipCaptureHandler extends Handler{
+        private final WeakReference<MipCaptureActivity> mActivity;
 
-                    finish();
-                    break;
-
-                default:
-                    break;
-            }
+        public MipCaptureHandler(MipCaptureActivity activity){
+            mActivity = new WeakReference<>(activity);
         }
 
-        ;
-    };
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case DealCodeUtil.DEAL_CODE_FAILED:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                if (msg.obj != null) {//从ppp页面过来，需要返回
+                    EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false));
+                }
+                finish();
+                break;
+
+            case DealCodeUtil.DEAL_CODE_SUCCESS:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+
+                if (msg.obj != null) {//从ppp过来
+                    Bundle bundle = (Bundle) msg.obj;
+                    if (bundle.getInt("status") == 1) {
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
+                    } else if (bundle.getInt("status") == 2) {//将pp码返回
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), bundle.getBoolean("hasBind")));
+                    } else if (bundle.getInt("status") == 3) {
+                        Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
+                        API1.PPPlist.clear();
+                        startActivity(intent2);
+                    } else if (bundle.getInt("status") == 4) {
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putBoolean(Common.NEED_FRESH, true);
+                        editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
+                        editor.commit();
+                    } else if (bundle.getInt("status") == 5) {
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
+                    }
+                }
+
+                finish();
+                break;
+
+            default:
+                break;
+        }
+    }
 
     /**
      * Called when the activity is first created.
@@ -130,7 +151,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
         setTopRightValueAndShow(R.drawable.manual_input,true);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
-        dealCodeUtil = new DealCodeUtil(this, getIntent(), handler2);
+        dealCodeUtil = new DealCodeUtil(this, getIntent(), mipCaptureHandler);
     }
 
     @Override
@@ -183,6 +204,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
             mediaPlayer.release();
         }
         mediaPlayer = null;
+        mipCaptureHandler.removeCallbacksAndMessages(null);
     }
 
     /**

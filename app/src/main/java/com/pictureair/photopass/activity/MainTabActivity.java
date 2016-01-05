@@ -2,10 +2,12 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -29,6 +31,8 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.view.CoverManager;
+import com.pictureair.photopass.view.WaterDrop;
 import com.pictureair.photopass.widget.BadgeView;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
@@ -43,6 +47,7 @@ import de.greenrobot.event.EventBus;
 public class MainTabActivity extends BaseFragmentActivity {
     public static MainTabActivity instances;
     private LinearLayout linearLayout;
+    private WaterDrop waterDrop;
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     // 定义一个布局
@@ -108,6 +113,9 @@ public class MainTabActivity extends BaseFragmentActivity {
         int count = fragmentArray.length;
         loadFragment(count);//加载tab
 
+        CoverManager.getInstance().init(this);
+        CoverManager.getInstance().setMaxDragDistance(150);
+        CoverManager.getInstance().setExplosionTime(150);
     }
 
     /**
@@ -152,7 +160,9 @@ public class MainTabActivity extends BaseFragmentActivity {
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
         if (application.getPushPhotoCount() > 0) {//显示红点
-            MainTabActivity.maintabbadgeView.show();
+            if (MainTabActivity.maintabbadgeView != null && !MainTabActivity.maintabbadgeView.isShown()) {
+                MainTabActivity.maintabbadgeView.show();
+            }
             application.setPushPhotoCount(0);
         }
 
@@ -224,6 +234,8 @@ public class MainTabActivity extends BaseFragmentActivity {
      */
     private View getTabItemView(int index) {
         View view = layoutInflater.inflate(R.layout.tab_item_view, null);
+        waterDrop = (WaterDrop) view.findViewById(R.id.waterdrop);
+        expandViewTouchDelegate(waterDrop, 40, 40, 40, 40);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
         imageView.setImageResource(mImageViewArray[index]);
         LayoutParams layoutParams = imageView.getLayoutParams();
@@ -241,12 +253,46 @@ public class MainTabActivity extends BaseFragmentActivity {
             textView.setVisibility(View.GONE);
         }
         if (index == 0) {//添加badgeview
-            maintabbadgeView = new BadgeView(getApplicationContext(), imageView);
-            maintabbadgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-            maintabbadgeView.setTextSize(1);
-            maintabbadgeView.setBackgroundResource(R.drawable.notificaitonpoint);
+//            maintabbadgeView = new BadgeView(getApplicationContext(), imageView);
+//            maintabbadgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+//            maintabbadgeView.setTextSize(1);
+//            maintabbadgeView.setBackgroundResource(R.drawable.notificaitonpoint);
+            waterDrop.setVisibility(View.VISIBLE);
         }
         return view;
+    }
+
+    /**
+     * 扩大View的触摸和点击响应范围,最大不超过其父View范围
+     *
+     * @param view
+     * @param top
+     * @param bottom
+     * @param left
+     * @param right
+     */
+    public static void expandViewTouchDelegate(final View view, final int top,
+                                               final int bottom, final int left, final int right) {
+
+        ((View) view.getParent()).post(new Runnable() {
+            @Override
+            public void run() {
+                Rect bounds = new Rect();
+                view.setEnabled(true);
+                view.getHitRect(bounds);
+
+                bounds.top -= top;
+                bounds.bottom += bottom;
+                bounds.left -= left;
+                bounds.right += right;
+
+                TouchDelegate touchDelegate = new TouchDelegate(bounds, view);
+
+                if (View.class.isInstance(view.getParent())) {
+                    ((View) view.getParent()).setTouchDelegate(touchDelegate);
+                }
+            }
+        });
     }
 
     //双击退出app

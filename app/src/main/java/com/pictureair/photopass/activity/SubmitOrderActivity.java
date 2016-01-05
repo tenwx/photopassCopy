@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,6 +39,7 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,103 +73,123 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private AddressAdapter addressAdapter;
     private int curPositon = -1;//记录选择的地址
 
+    private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
-    private Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case CHANGE_PHOTO:
-                    selectPhoto(msg.arg1);
-                    break;
-                case API1.GET_OUTLET_ID_SUCCESS:
-                    //获取自提地址成功
-                    AddressJson addressJson = JsonTools.parseObject(msg.obj.toString(), AddressJson.class);
-                    if (addressJson != null && addressJson.getOutlets().size() > 0) {
-                        //更新地址信息View
-                        if (addressList != null) {
-                            addressList.clear();
-                        }
-                        addressList = addressJson.getOutlets();
-                        addressAdapter.refresh(addressList);
-                        fixListViewHeight(transportListView);
-                        //存入缓存
-                        if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
-                        }
-                    }
-                    break;
 
-                case API1.GET_OUTLET_ID_FAILED:
-                    //获取自提地址失败
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+    private static class SubmitOrderHandler extends Handler{
+        private final WeakReference<SubmitOrderActivity> mActivity;
 
-                    break;
-
-                case API1.ADD_ORDER_SUCCESS:
-                    PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
-                    JSONObject jsonObject = (JSONObject) msg.obj;
-                    orderId = jsonObject.getString("orderId");
-                    customProgressDialog.dismiss();
-                    if (orderId != null && !orderId.isEmpty()) {
-                        //一旦成功，购物车已经被服务器删除，此处需要修改购物车数量
-                        int count = 0;
-                        for (int i = 0; i < list.size(); i++) {
-                            count += list.get(i).getQty();
-                        }
-                        Editor editor = sharedPreferences.edit();
-                        editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
-                        editor.commit();
-
-                        Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
-                        String orderName, orderIntroduce;
-                        if (list.size() == 1) {
-                            orderName = list.get(0).getProductName();
-                            orderIntroduce = list.get(0).getDescription();
-                        } else {
-                            orderName = getString(R.string.multi_goods);
-                            orderIntroduce = getString(R.string.multi_goods);
-                        }
-                        intent2.putExtra("name", orderName);
-                        intent2.putExtra("price", totalpriceTextView.getText().toString());
-                        intent2.putExtra("introduce", orderIntroduce);
-                        intent2.putExtra("orderId", orderId);
-//                        intent2.putExtra("addressType", needAddressGood);
-                        SubmitOrderActivity.this.startActivity(intent2);
-                    }
-
-                    break;
-
-                case API1.ADD_ORDER_FAILED:
-                    PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
-                    customProgressDialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.UPLOAD_PHOTO_FAILED:
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.UPLOAD_PHOTO_SUCCESS:
-                    PictureAirLog.v(TAG, "UPLOAD_PHOTO_SUCCESS " + msg.obj.toString());
-                    JSONObject result = (JSONObject) msg.obj;
-                    String photoUrlString = null;
-                    String photoIdString = null;
-                    photoUrlString = result.getString("photoUrl");
-                    photoIdString = result.getString("photoId");
-                    PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
-                    PhotoInfo itemInfo = updatephotolist.get(0);
-                    itemInfo.photoId = photoIdString;
-                    itemInfo.photoPathOrURL = photoUrlString;
-                    PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
-                    updatephotolist.set(0, itemInfo);
-                    break;
-
-                default:
-                    break;
-            }
+        public SubmitOrderHandler(SubmitOrderActivity activity){
+            mActivity = new WeakReference<>(activity);
         }
 
-        ;
-    };
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case CHANGE_PHOTO:
+                selectPhoto(msg.arg1);
+                break;
+            case API1.GET_OUTLET_ID_SUCCESS:
+                //获取自提地址成功
+                AddressJson addressJson = JsonTools.parseObject(msg.obj.toString(), AddressJson.class);
+                if (addressJson != null && addressJson.getOutlets().size() > 0) {
+                    //更新地址信息View
+                    if (addressList != null) {
+                        addressList.clear();
+                    }
+                    addressList = addressJson.getOutlets();
+                    addressAdapter.refresh(addressList);
+                    fixListViewHeight(transportListView);
+                    //存入缓存
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                    }
+                }
+                break;
+
+            case API1.GET_OUTLET_ID_FAILED:
+                //获取自提地址失败
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
+                break;
+
+            case API1.ADD_ORDER_SUCCESS:
+                PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                orderId = jsonObject.getString("orderId");
+                customProgressDialog.dismiss();
+                if (orderId != null && !orderId.isEmpty()) {
+                    //一旦成功，购物车已经被服务器删除，此处需要修改购物车数量
+                    int count = 0;
+                    for (int i = 0; i < list.size(); i++) {
+                        count += list.get(i).getQty();
+                    }
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
+                    editor.commit();
+
+                    Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
+                    String orderName, orderIntroduce;
+                    if (list.size() == 1) {
+                        orderName = list.get(0).getProductName();
+                        orderIntroduce = list.get(0).getDescription();
+                    } else {
+                        orderName = getString(R.string.multi_goods);
+                        orderIntroduce = getString(R.string.multi_goods);
+                    }
+                    intent2.putExtra("name", orderName);
+                    intent2.putExtra("price", totalpriceTextView.getText().toString());
+                    intent2.putExtra("introduce", orderIntroduce);
+                    intent2.putExtra("orderId", orderId);
+//                        intent2.putExtra("addressType", needAddressGood);
+                    SubmitOrderActivity.this.startActivity(intent2);
+                }
+
+                break;
+
+            case API1.ADD_ORDER_FAILED:
+                PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
+                customProgressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.UPLOAD_PHOTO_FAILED:
+                newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.UPLOAD_PHOTO_SUCCESS:
+                PictureAirLog.v(TAG, "UPLOAD_PHOTO_SUCCESS " + msg.obj.toString());
+                JSONObject result = (JSONObject) msg.obj;
+                String photoUrlString = null;
+                String photoIdString = null;
+                photoUrlString = result.getString("photoUrl");
+                photoIdString = result.getString("photoId");
+                PictureAirLog.v(TAG, photoUrlString + "_" + photoIdString);
+                PhotoInfo itemInfo = updatephotolist.get(0);
+                itemInfo.photoId = photoIdString;
+                itemInfo.photoPathOrURL = photoUrlString;
+                PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
+                updatephotolist.set(0, itemInfo);
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +215,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
         list = (ArrayList<CartItemInfo1>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
-        submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), mHandler);
+        submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
 //        infoListView.addHeaderView(new XListViewHeader(this));
         infoListView.setAdapter(submitorderAdapter);
         infoListView.setHeaderDividersEnabled(false);
@@ -241,9 +261,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     public void getAddress() {
         String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
         if (addressByACache != null && !addressByACache.equals("")) {
-            mHandler.obtainMessage(API1.GET_OUTLET_ID_SUCCESS, addressByACache).sendToTarget();
+            submitOrderHandler.obtainMessage(API1.GET_OUTLET_ID_SUCCESS, addressByACache).sendToTarget();
         } else {
-            API1.getOutlets(mHandler);
+            API1.getOutlets(submitOrderHandler);
         }
     }
 
@@ -338,12 +358,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", mHandler);
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", submitOrderHandler);
                         }
                     } else {
                         //PP+/数码商品不需要地址
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                        API1.addOrder(cartItemIds, 3, "", "", mHandler);
+                        API1.addOrder(cartItemIds, 3, "", "", submitOrderHandler);
                     }
                 } else {
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
@@ -386,11 +406,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 JSONObject object = new JSONObject();
                 object.put("photoUrl", updatephotolist.get(0).photoThumbnail_512);
                 object.put("photoId", updatephotolist.get(0).photoId);
-                Message msg = mHandler.obtainMessage();
+                Message msg = submitOrderHandler.obtainMessage();
                 msg.what = API1.UPLOAD_PHOTO_SUCCESS;
                 msg.arg1 = requestCode;
                 msg.obj = object;
-                mHandler.sendMessage(msg);
+                submitOrderHandler.sendMessage(msg);
 //				dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
                 customProgressBarPop.show(0);
             } else {
@@ -402,7 +422,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 try {
                     params.put("file", new File(photourl), "application/octet-stream");
                     params.put(Common.USERINFO_TOKENID, tokenId);
-                    API1.SetPhoto(params, mHandler, requestCode, customProgressBarPop);
+                    API1.SetPhoto(params, submitOrderHandler, requestCode, customProgressBarPop);
 //					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
                     customProgressBarPop.show(0);
                 } catch (FileNotFoundException e) {
@@ -422,5 +442,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        submitOrderHandler.removeCallbacksAndMessages(null);
     }
 }

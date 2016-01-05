@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,6 +22,8 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
+
+import java.lang.ref.WeakReference;
 
 import cn.smssdk.gui.EditTextWithClear;
 
@@ -64,30 +65,50 @@ public class OtherRegisterActivity extends BaseActivity implements
         }
     };
 
-    // 消息机制
-    private Handler handler = new Handler() {
+
+    private final Handler otherRegisterHandler = new OtherRegisterHandler(this);
+
+
+    private static class OtherRegisterHandler extends Handler{
+        private final WeakReference<OtherRegisterActivity> mActivity;
+
+        public OtherRegisterHandler(OtherRegisterActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
-                    Bundle bundle = (Bundle) msg.obj;
-                    mYear_Str = bundle.getString("year");
-                    mMonth_Str = bundle.getString("month");
-                    mDay_Str = bundle.getString("day");
-                    etYear.setText(mYear_Str);
-                    etMonth.setText(mMonth_Str);
-                    etDay.setText(mDay_Str);
-                    birthday = mYear_Str + "-" + mMonth_Str + "-" + mDay_Str;
-                    System.out.println("birthday " + birthday);
-                    break;
-
-
-                default:
-                    break;
+            if (mActivity.get() == null) {
+                return;
             }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
+                Bundle bundle = (Bundle) msg.obj;
+                mYear_Str = bundle.getString("year");
+                mMonth_Str = bundle.getString("month");
+                mDay_Str = bundle.getString("day");
+                etYear.setText(mYear_Str);
+                etMonth.setText(mMonth_Str);
+                etDay.setText(mDay_Str);
+                birthday = mYear_Str + "-" + mMonth_Str + "-" + mDay_Str;
+                System.out.println("birthday " + birthday);
+                break;
+
+
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,7 +257,7 @@ public class OtherRegisterActivity extends BaseActivity implements
 
                 // 弹出出生年月日
                 if (selectDateWeidget == null) {
-                    selectDateWeidget = new SelectDateWeidget(this, ll_brith, handler);
+                    selectDateWeidget = new SelectDateWeidget(this, ll_brith, otherRegisterHandler);
                     selectDateWeidget.showPopupWindow();
                 } else {
                     selectDateWeidget.showPopupWindow();
@@ -264,6 +285,7 @@ public class OtherRegisterActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        otherRegisterHandler.removeCallbacksAndMessages(null);
     }
 
     @Override

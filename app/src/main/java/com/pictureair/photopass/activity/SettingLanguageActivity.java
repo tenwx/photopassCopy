@@ -29,8 +29,8 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private ImageView chineseSeleted;
     private ImageView englishSeleted;
 
-    private static String oldLanguage = "";
-    private static String currentLanguage = "";   // en表示英语，ch表示简体中文。
+    private String oldLanguage = "";
+    private String currentLanguage = "";   // en表示英语，ch表示简体中文。
     private SharedPreferences sharedPreferences;
 
     @Override

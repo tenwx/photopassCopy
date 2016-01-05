@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +34,7 @@ import de.greenrobot.event.EventBus;
  * */
 public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	private Button ok;
-	private EditText input;
+	private EditText input1,input2,input3,input4;
 	private SharedPreferences sp;
 	private MyToast newToast;
 
@@ -101,26 +103,91 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 	private void initview(){
 		sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		ok = (Button) findViewById(R.id.sure);
-		input = (EditText) findViewById(R.id.input);
+		input1 = (EditText) findViewById(R.id.input1);
+		input2 = (EditText) findViewById(R.id.input2);
+		input3 = (EditText) findViewById(R.id.input3);
+		input4 = (EditText) findViewById(R.id.input4);
 		ok.setOnClickListener(this);
-		setTopLeftValueAndShow(R.drawable.back_white,true);
+		setTopLeftValueAndShow(R.drawable.back_white, true);
 		setTopTitleShow(R.string.manual);
-		input.setOnEditorActionListener(new OnEditorActionListener() {
+
+		input1.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				// TODO Auto-generated method stub
-				if (actionId == EditorInfo.IME_ACTION_GO) {
-
-					hideInputMethodManager(v);
-					System.out.println("done");
-					ok.performClick();
-
-					return true;
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				if (arg0.length() > 3) {
+					input2.requestFocus();
 				}
-				return false;
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+										  int arg3) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
 			}
 		});
+
+		input2.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				if (arg0.length() > 3) {
+					input3.requestFocus();
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+										  int arg3) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+			}
+		});
+
+		input3.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				if(arg0.length() > 3)
+				{
+					input4.requestFocus();
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+										  int arg3) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+			}
+		});
+
+
+
+
+//		input1.setOnEditorActionListener(new OnEditorActionListener() {
+//
+//			@Override
+//			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//				// TODO Auto-generated method stub
+//				if (actionId == EditorInfo.IME_ACTION_GO) {
+//
+//					hideInputMethodManager(v);
+//					System.out.println("done");
+//					ok.performClick();
+//
+//					return true;
+//				}
+//				return false;
+//			}
+//		});
 
 		dealCodeUtil = new DealCodeUtil(this, getIntent(), handler2);
 
@@ -144,19 +211,19 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.sure:
-			if ("".equals(input.getText().toString())) {
+			if ("".equals(input1.getText().toString())) {
 				//				Toast.makeText(InputCodeAct.this, R.string.nocontext, Common.TOAST_SHORT_TIME).show();
 				newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
-			}else if (input.getText().toString().trim().length() != 16) {//长度不一致
+			}else if (input1.getText().toString().trim().length() != 16) {//长度不一致
 
 				newToast.setTextAndShow(R.string.wrong_length, Common.TOAST_SHORT_TIME);
 			}else {
 				//如果有键盘显示，把键盘取消掉
 				hideInputMethodManager(v);
 				dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-				PictureAirLog.out("code is --->" + input.getText().toString());
+				PictureAirLog.out("code is --->" + input1.getText().toString());
 //				dealCodeUtil.startDealCode("DPPPRU6CC7M5J6MM");
-				dealCodeUtil.startDealCode(input.getText().toString().trim().toUpperCase());
+				dealCodeUtil.startDealCode(input1.getText().toString().trim().toUpperCase());
 			}
 			break;
 		default:

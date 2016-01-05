@@ -57,6 +57,7 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,199 +115,220 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
     private final static String TAG = "MakegiftAct";
 
-    private Handler handler = new Handler() {
+    private final Handler makeGiftHandler = new MakeGiftHandler(this);
+
+
+    private static class MakeGiftHandler extends Handler{
+        private final WeakReference<MakegiftActivity> mActivity;
+
+        public MakeGiftHandler(MakegiftActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case API1.GET_GOODS_SUCCESS://成功获取商品
-                    allList.clear();
-                    PictureAirLog.v(TAG, "GET_GOODS_SUCCESS---->" + msg.obj.toString());
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                        originalGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG, "goods size: " + allList.size());
-                    }
-
-                    for (int i = 0; i < originalGoodsList.size(); i++) {
-                        if (!Common.GOOD_NAME_PPP.equals(originalGoodsList.get(i).getName()) &&
-                                !Common.GOOD_NAME_SINGLE_DIGITAL.equals(originalGoodsList.get(i).getName())) {
-                            allList.add(originalGoodsList.get(i));
-                        }
-                    }
-
-                    goodsInfo = allList.get(0);
-
-                    priceTextView.setText(allList.get(0).getPrice() + "");
-                    introduceTextView.setText(allList.get(0).getDescription());
-                    Message message = handler.obtainMessage();
-                    message.what = WAIT_DRAW_FINISH;
-                    handler.sendMessageDelayed(message, 500);
-
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    //将数据保存到缓存中
-                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
-                    }
-
-                    break;
-
-                case API1.GET_GOODS_FAILED://获取商品失败
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.UPLOAD_PHOTO_SUCCESS:
-                    System.out.println(msg.obj.toString() + "uploadphotosuccess");
-                    if (!"start".equals(msg.obj.toString())) {//说明是调用接口之后返回的数据，需要更新photoId和photoURL
-                        JSONObject result = JSONObject.parseObject(msg.obj.toString());
-                        String photoUrlString = null;
-                        String photoIdString = null;
-                        try {
-                            photoUrlString = result.getString("photoUrl");
-                            photoIdString = result.getString("photoId");
-                            System.out.println(photoUrlString + "_" + photoIdString);
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-                        PhotoInfo info = photoList.get(upload_index - 1);
-                        info.isUploaded = 1;
-                        info.photoId = photoIdString;
-                        info.photoPathOrURL = photoUrlString;
-                        photoList.set(upload_index - 1, info);
-                    }
-                    if (upload_index < photoList.size()) {
-                        if (photoList.get(upload_index).onLine == 0) {//需要将图片上传
-                            if (photoList.get(upload_index).isUploaded == 1) {//已经上传过了
-                                System.out.println("has already uploaded");
-                                PhotoInfo selectPhotoItemInfo = photoList.get(upload_index);
-                                selectPhotoItemInfo.photoId = photoList.get(upload_index).photoId;
-                                selectPhotoItemInfo.photoPathOrURL = photoList.get(upload_index).photoPathOrURL;
-                                photoList.set(upload_index, selectPhotoItemInfo);
-                                handler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
-                            } else {//还没有上传
-                                System.out.println("not uploaded, starting upload");
-                                String photourl = photoList.get(upload_index).photoPathOrURL;
-                                System.out.println("上传的图片URL" + photourl);
-                                // 需要上传选择的图片
-                                RequestParams params = new RequestParams();
-                                try {
-                                    params.put("file", new File(photourl), "application/octet-stream");
-                                    params.put(Common.USERINFO_TOKENID, tokenId);
-                                    System.out.println(tokenId + "tokenid");
-                                    API1.SetPhoto(params, handler, upload_index, progressBarPop);
-                                } catch (FileNotFoundException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                            }
-                        } else {//服务器上获取的图片，只需要将photoid获取就行
-                            PhotoInfo info = photoList.get(upload_index);
-                            info.photoId = photoList.get(upload_index).photoId;
-                            info.photoPathOrURL = photoList.get(upload_index).photoThumbnail_512;
-                            photoList.set(upload_index, info);
-                            handler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
-                        }
-                        upload_index++;
-                    } else {//开始加入购物车
-                        upload_index = 0;
-                        //编辑传入照片的信息
-                        JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
-                        for (int i = 0; i < photoList.size(); i++) {
-                            JSONObject photoid = new JSONObject();
-                            photoid.put("photoId", photoList.get(i).photoId);
-                            embedPhotos.add(photoid);
-                        }
-                        PictureAirLog.v(TAG, embedPhotos.toString());
-                        PictureAirLog.out(embedPhotos.toString());
-                        API1.addToCart(goodsInfo.getGoodsKey(), 1, false, embedPhotos, handler);
-                    }
-                    break;
-
-                case API1.ADD_TO_CART_FAILED:
-                case API1.UPLOAD_PHOTO_FAILED:
-                    if (progressBarPop.isShowing()) {
-                        progressBarPop.dismiss();
-                    }
-                    upload_index = 0;
-                    newToast.setTextAndShow(R.string.upload_failed, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case WAIT_DRAW_FINISH:
-                    //此处，如果数据已经返回，但是控件还没有画好的话，会显示不出来。需要做判断
-                    if (previewViewWidth != 0 && previewViewHeight != 0) {//onCreate已经执行完，显示图片
-                        System.out.println("--------->ok");
-                        setProductImage(goodsInfo.getName(), (goodsInfo.getPictures().size() > 0) ? goodsInfo.getPictures().get(0).getUrl() : "");
-                    } else {//onCreate还没执行完，需要等待
-                        System.out.println("---------->not ok, waiting.....");
-                        handler.sendMessageDelayed(msg, 500);
-                    }
-                    break;
-
-                case API1.ADD_TO_CART_SUCCESS:
-                    if (progressBarPop.isShowing()) {
-                        progressBarPop.dismiss();
-                    }
-                    JSONObject addcart = JSONObject.parseObject(msg.obj.toString());
-                    PictureAirLog.v(TAG, "addtocart==" + addcart);
-                    editor = sp.edit();
-                    editor.putInt(Common.CART_COUNT, sp.getInt(Common.CART_COUNT, 0) + 1);
-                    editor.commit();
-                    String itemidString = addcart.getString("cartId");
-                    if (isbuynow) {//获取订单信息，传送到下一界面
-                        Intent intent = new Intent(MakegiftActivity.this, SubmitOrderActivity.class);
-                        ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                        CartItemInfo1 cartItemInfo = new CartItemInfo1();
-                        cartItemInfo.setProductName(goodsInfo.getName());
-                        cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
-                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
-                        cartItemInfo.setEntityType(goodsInfo.getEntityType());
-                        cartItemInfo.setCartProductType(1);
-                        photoListAfterUpload.clear();
-                        for (int i = 0; i < photoList.size(); i++) {
-                            CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
-                            cartPhotosInfo.setPhotoUrl(photoList.get(i).photoPathOrURL);
-                            cartPhotosInfo.setPhotoId(photoList.get(i).photoId);
-                            photoListAfterUpload.add(cartPhotosInfo);
-                        }
-
-                        cartItemInfo.setEmbedPhotos(photoListAfterUpload);
-                        cartItemInfo.setDescription(goodsInfo.getDescription());
-                        cartItemInfo.setQty(1);
-                        cartItemInfo.setCartId(itemidString);//会返回此数据
-                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
-                        if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
-                            String[] cartProductImageUrl = new String[goodsInfo.getPictures().size()];
-                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                cartProductImageUrl[i] = goodsInfo.getPictures().get(i).getUrl();
-                            }
-                            cartItemInfo.setPictures(cartProductImageUrl);
-                        }
-                        cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
-                        orderinfoArrayList.add(cartItemInfo);
-                        intent.putExtra("orderinfo", orderinfoArrayList);
-                        intent.putExtra("activity", "previewproduct");
-                        MakegiftActivity.this.startActivity(intent);
-                    } else {
-                        buyImg = new ImageView(MakegiftActivity.this);// buyImg是动画的图片
-                        buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
-                        setAnim(buyImg);// 开始执行动画
-                    }
-                    break;
-
-
-                default:
-                    break;
-
+            if (mActivity.get() == null) {
+                return;
             }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.GET_GOODS_SUCCESS://成功获取商品
+                allList.clear();
+                PictureAirLog.v(TAG, "GET_GOODS_SUCCESS---->" + msg.obj.toString());
+                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                    originalGoodsList = goodsInfoJson.getGoods();
+                    PictureAirLog.v(TAG, "goods size: " + allList.size());
+                }
+
+                for (int i = 0; i < originalGoodsList.size(); i++) {
+                    if (!Common.GOOD_NAME_PPP.equals(originalGoodsList.get(i).getName()) &&
+                            !Common.GOOD_NAME_SINGLE_DIGITAL.equals(originalGoodsList.get(i).getName())) {
+                        allList.add(originalGoodsList.get(i));
+                    }
+                }
+
+                goodsInfo = allList.get(0);
+
+                priceTextView.setText(allList.get(0).getPrice() + "");
+                introduceTextView.setText(allList.get(0).getDescription());
+                Message message = makeGiftHandler.obtainMessage();
+                message.what = WAIT_DRAW_FINISH;
+                makeGiftHandler.sendMessageDelayed(message, 500);
+
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                //将数据保存到缓存中
+                if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                    ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                }
+
+                break;
+
+            case API1.GET_GOODS_FAILED://获取商品失败
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.UPLOAD_PHOTO_SUCCESS:
+                System.out.println(msg.obj.toString() + "uploadphotosuccess");
+                if (!"start".equals(msg.obj.toString())) {//说明是调用接口之后返回的数据，需要更新photoId和photoURL
+                    JSONObject result = JSONObject.parseObject(msg.obj.toString());
+                    String photoUrlString = null;
+                    String photoIdString = null;
+                    try {
+                        photoUrlString = result.getString("photoUrl");
+                        photoIdString = result.getString("photoId");
+                        System.out.println(photoUrlString + "_" + photoIdString);
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    PhotoInfo info = photoList.get(upload_index - 1);
+                    info.isUploaded = 1;
+                    info.photoId = photoIdString;
+                    info.photoPathOrURL = photoUrlString;
+                    photoList.set(upload_index - 1, info);
+                }
+                if (upload_index < photoList.size()) {
+                    if (photoList.get(upload_index).onLine == 0) {//需要将图片上传
+                        if (photoList.get(upload_index).isUploaded == 1) {//已经上传过了
+                            System.out.println("has already uploaded");
+                            PhotoInfo selectPhotoItemInfo = photoList.get(upload_index);
+                            selectPhotoItemInfo.photoId = photoList.get(upload_index).photoId;
+                            selectPhotoItemInfo.photoPathOrURL = photoList.get(upload_index).photoPathOrURL;
+                            photoList.set(upload_index, selectPhotoItemInfo);
+                            makeGiftHandler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
+                        } else {//还没有上传
+                            System.out.println("not uploaded, starting upload");
+                            String photourl = photoList.get(upload_index).photoPathOrURL;
+                            System.out.println("上传的图片URL" + photourl);
+                            // 需要上传选择的图片
+                            RequestParams params = new RequestParams();
+                            try {
+                                params.put("file", new File(photourl), "application/octet-stream");
+                                params.put(Common.USERINFO_TOKENID, tokenId);
+                                System.out.println(tokenId + "tokenid");
+                                API1.SetPhoto(params, makeGiftHandler, upload_index, progressBarPop);
+                            } catch (FileNotFoundException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {//服务器上获取的图片，只需要将photoid获取就行
+                        PhotoInfo info = photoList.get(upload_index);
+                        info.photoId = photoList.get(upload_index).photoId;
+                        info.photoPathOrURL = photoList.get(upload_index).photoThumbnail_512;
+                        photoList.set(upload_index, info);
+                        makeGiftHandler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
+                    }
+                    upload_index++;
+                } else {//开始加入购物车
+                    upload_index = 0;
+                    //编辑传入照片的信息
+                    JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
+                    for (int i = 0; i < photoList.size(); i++) {
+                        JSONObject photoid = new JSONObject();
+                        photoid.put("photoId", photoList.get(i).photoId);
+                        embedPhotos.add(photoid);
+                    }
+                    PictureAirLog.v(TAG, embedPhotos.toString());
+                    PictureAirLog.out(embedPhotos.toString());
+                    API1.addToCart(goodsInfo.getGoodsKey(), 1, false, embedPhotos, makeGiftHandler);
+                }
+                break;
+
+            case API1.ADD_TO_CART_FAILED:
+            case API1.UPLOAD_PHOTO_FAILED:
+                if (progressBarPop.isShowing()) {
+                    progressBarPop.dismiss();
+                }
+                upload_index = 0;
+                newToast.setTextAndShow(R.string.upload_failed, Common.TOAST_SHORT_TIME);
+                break;
+
+            case WAIT_DRAW_FINISH:
+                //此处，如果数据已经返回，但是控件还没有画好的话，会显示不出来。需要做判断
+                if (previewViewWidth != 0 && previewViewHeight != 0) {//onCreate已经执行完，显示图片
+                    System.out.println("--------->ok");
+                    setProductImage(goodsInfo.getName(), (goodsInfo.getPictures().size() > 0) ? goodsInfo.getPictures().get(0).getUrl() : "");
+                } else {//onCreate还没执行完，需要等待
+                    System.out.println("---------->not ok, waiting.....");
+                    makeGiftHandler.sendMessageDelayed(msg, 500);
+                }
+                break;
+
+            case API1.ADD_TO_CART_SUCCESS:
+                if (progressBarPop.isShowing()) {
+                    progressBarPop.dismiss();
+                }
+                JSONObject addcart = JSONObject.parseObject(msg.obj.toString());
+                PictureAirLog.v(TAG, "addtocart==" + addcart);
+                editor = sp.edit();
+                editor.putInt(Common.CART_COUNT, sp.getInt(Common.CART_COUNT, 0) + 1);
+                editor.commit();
+                String itemidString = addcart.getString("cartId");
+                if (isbuynow) {//获取订单信息，传送到下一界面
+                    Intent intent = new Intent(MakegiftActivity.this, SubmitOrderActivity.class);
+                    ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
+                    CartItemInfo1 cartItemInfo = new CartItemInfo1();
+                    cartItemInfo.setProductName(goodsInfo.getName());
+                    cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
+                    cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                    cartItemInfo.setEntityType(goodsInfo.getEntityType());
+                    cartItemInfo.setCartProductType(1);
+                    photoListAfterUpload.clear();
+                    for (int i = 0; i < photoList.size(); i++) {
+                        CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
+                        cartPhotosInfo.setPhotoUrl(photoList.get(i).photoPathOrURL);
+                        cartPhotosInfo.setPhotoId(photoList.get(i).photoId);
+                        photoListAfterUpload.add(cartPhotosInfo);
+                    }
+
+                    cartItemInfo.setEmbedPhotos(photoListAfterUpload);
+                    cartItemInfo.setDescription(goodsInfo.getDescription());
+                    cartItemInfo.setQty(1);
+                    cartItemInfo.setCartId(itemidString);//会返回此数据
+                    cartItemInfo.setStoreId(goodsInfo.getStoreId());
+                    if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
+                        String[] cartProductImageUrl = new String[goodsInfo.getPictures().size()];
+                        for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                            cartProductImageUrl[i] = goodsInfo.getPictures().get(i).getUrl();
+                        }
+                        cartItemInfo.setPictures(cartProductImageUrl);
+                    }
+                    cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
+                    orderinfoArrayList.add(cartItemInfo);
+                    intent.putExtra("orderinfo", orderinfoArrayList);
+                    intent.putExtra("activity", "previewproduct");
+                    MakegiftActivity.this.startActivity(intent);
+                } else {
+                    buyImg = new ImageView(MakegiftActivity.this);// buyImg是动画的图片
+                    buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
+                    setAnim(buyImg);// 开始执行动画
+                }
+                break;
+
+
+            default:
+                break;
+
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,12 +373,12 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         //从缓层中获取数据
         String goodsByACache = ACache.get(this).getAsString(Common.ALL_GOODS);
         if (goodsByACache == null ||  goodsByACache.equals("")) {
-            API1.getGoods(handler);
+            API1.getGoods(makeGiftHandler);
         } else {
-            Message message = handler.obtainMessage();
+            Message message = makeGiftHandler.obtainMessage();
             message.what = API1.GET_GOODS_SUCCESS;
             message.obj = goodsByACache;
-            handler.sendMessage(message);
+            makeGiftHandler.sendMessage(message);
         }
         recordcount = sp.getInt(Common.CART_COUNT, 0);
         if (recordcount <= 0) {
@@ -592,11 +614,11 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 if (null != sp.getString(Common.USERINFO_ID, null)) {
-                    Message message = handler.obtainMessage();
+                    Message message = makeGiftHandler.obtainMessage();
                     message.what = API1.UPLOAD_PHOTO_SUCCESS;
                     isbuynow = true;//buy now
                     message.obj = "start";
-                    handler.sendMessage(message);
+                    makeGiftHandler.sendMessage(message);
                     progressBarPop.show(0);
                 } else {
                     intent = new Intent(this, LoginActivity.class);
@@ -610,11 +632,11 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 if (null != sp.getString(Common.USERINFO_ID, null)) {
-                    Message message = handler.obtainMessage();
+                    Message message = makeGiftHandler.obtainMessage();
                     message.what = API1.UPLOAD_PHOTO_SUCCESS;
                     isbuynow = false;//add to cart
                     message.obj = "start";
-                    handler.sendMessage(message);
+                    makeGiftHandler.sendMessage(message);
                     progressBarPop.show(0);
                 } else {
                     intent = new Intent(this, LoginActivity.class);
@@ -783,5 +805,11 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     protected void onPause() {
         super.onPause();
         gonePopupwindow();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        makeGiftHandler.removeCallbacksAndMessages(null);
     }
 }
