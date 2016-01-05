@@ -19,8 +19,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
@@ -38,7 +36,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.HttpUtil;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -54,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -92,6 +88,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private List<GoodsInfo1> allGoodsList;//全部商品
     private GoodsInfo1 pppGoodsInfo;
     private String[] photoUrls;
+    private String PPCode;
 
     private final Handler myPPPHandler = new MyPPPHandler(this);
 
@@ -124,7 +121,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 //购买PP+，先获取商品 然后进入订单界面
                 dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
-                API1.getGoods(myPPPHandler);
+                getGoods();
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();
                 }
@@ -300,6 +297,21 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 orderinfoArrayList.add(cartItemInfo1);
                 intent1.putExtra("orderinfo", orderinfoArrayList);
                 startActivity(intent1);
+                break;
+
+            case API1.ADD_CODE_TO_USER_SUCCESS:
+                //绑定成功
+                dialog.dismiss();
+                JSONArray pps = new JSONArray();
+                pps.add(PPCode);
+                API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
+
+                break;
+            case API1.ADD_CODE_TO_USER_FAILED:
+                //绑定失败
+                dialog.dismiss();
+                newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+
                 break;
 
             default:
@@ -500,7 +512,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
                 getGoods();
-                //API1.getGoods(mHandler);
                 break;
 
             default:
@@ -606,12 +617,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private class DialogOnClickListener implements DialogInterface.OnClickListener {
 
         private boolean needBind;
-        private String PPCode;
         private boolean needBindToUser;
 
         public DialogOnClickListener(boolean needBind, String ppCode, boolean needBindToUser) {
             this.needBind = needBind;
-            this.PPCode = ppCode;
+            PPCode = ppCode;
             this.needBindToUser = needBindToUser;
         }
 
@@ -632,31 +642,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                             API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
                         } else {
                             //没有被绑定，则先绑到user，再绑到ppp
-                            RequestParams params = new RequestParams();
-                            params.put(Common.USERINFO_TOKENID, sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
-                            params.put(Common.CUSTOMERID, PPCode);
-                            HttpUtil.get(Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER, params, new JsonHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                    // TODO Auto-generated method stub
-                                    super.onSuccess(statusCode, headers, response);
-                                    if (statusCode == 200) {
-                                        //绑定成功
-                                        JSONArray pps = new JSONArray();
-                                        pps.add(PPCode);
-                                        API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                    // TODO Auto-generated method stub
-                                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                                    //绑定失败
-                                    dialog.dismiss();
-                                    newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                                }
-                            });
+                            API1.addCodeToUser(PPCode, myPPPHandler);
                         }
                     }
                     break;

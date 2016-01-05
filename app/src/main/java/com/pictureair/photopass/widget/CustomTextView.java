@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import cn.smssdk.gui.CustomFontManager;
@@ -20,7 +21,15 @@ public class CustomTextView extends TextView {
 
     public CustomTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
+    }
 
+    public CustomTextView(Context context,AttributeSet attrs,int i) {
+        super(context, attrs, i);
+        init(context);
+    }
+
+    private void init(Context context) {
         if (CustomFontManager.IS_CUSOTM_FONT) {
             Typeface typeface;
             if (null == MyApplication.getInstance().typeface) {
@@ -32,6 +41,5 @@ public class CustomTextView extends TextView {
             }
             setTypeface(typeface);
         }
-
     }
 }

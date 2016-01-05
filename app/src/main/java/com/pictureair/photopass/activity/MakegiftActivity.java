@@ -370,12 +370,14 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
         allList = new ArrayList<>();
         originalGoodsList = new ArrayList<>();
-        if (ACache.get(this).getAsString(Common.ALL_GOODS) == null) {
+        //从缓层中获取数据
+        String goodsByACache = ACache.get(this).getAsString(Common.ALL_GOODS);
+        if (goodsByACache == null ||  goodsByACache.equals("")) {
             API1.getGoods(makeGiftHandler);
         } else {
             Message message = makeGiftHandler.obtainMessage();
             message.what = API1.GET_GOODS_SUCCESS;
-            message.obj = ACache.get(this).getAsString(Common.ALL_GOODS);
+            message.obj = goodsByACache;
             makeGiftHandler.sendMessage(message);
         }
         recordcount = sp.getInt(Common.CART_COUNT, 0);

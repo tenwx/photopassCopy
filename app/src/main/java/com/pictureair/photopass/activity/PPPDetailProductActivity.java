@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -357,6 +358,9 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.gravity = Gravity.CENTER;
+
+
         animLayout.setLayoutParams(lp);
         animLayout.setBackgroundResource(android.R.color.transparent);
         rootView.addView(animLayout);

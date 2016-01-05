@@ -17,12 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -34,6 +31,7 @@ import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
+import com.pictureair.photopass.adapter.viewpagerindicator.TabPageIndicator;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BaseBusEvent;
@@ -103,11 +101,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private ImageView scanLayout;
     private LinearLayout noPhotoView;
     private RelativeLayout scanRelativeLayout;
-    private CustomProgressDialog dialog;// 加载等待
-    private ImageView cursorImageView;
-    private TextView storyTabAllTextView, storyTabPhotopassTextView, storyTabMagicTextView, storyTabBoughtTextView, storyTabFavoriteTextView;
-    private ViewPager storyViewPager;
-    private LinearLayout storyNoPpToScanLinearLayout, storyLeadBarLinearLayout, storyCursorLinearLayout;
+    private static CustomProgressDialog dialog;// 加载等待
+    private static ViewPager storyViewPager;
+    private LinearLayout storyNoPpToScanLinearLayout;
     private ImageView storyNoPpScanImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -133,6 +129,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private boolean getVideoInfoDone = false;
 
     private SettingUtil settingUtil;
+    private LinearLayout storyLeadBarLinearLayout;
+    private TabPageIndicator indicator;
+
     //申明handler消息回调机制
 
     private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
@@ -345,10 +344,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
                 showViewPager();
                 noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
-                Animation animation = new TranslateAnimation(0, screenWidth / 5 * app.fragmentStoryLastSelectedTab, 0, 0);
-                animation.setFillAfter(true);
-                animation.setDuration(300);
-                cursorImageView.startAnimation(animation);
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
@@ -562,20 +557,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         scanLayout = (ImageView) view.findViewById(R.id.story_scan);
         storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
         storyLeadBarLinearLayout = (LinearLayout) view.findViewById(R.id.story_lead_bar);
-        storyCursorLinearLayout = (LinearLayout) view.findViewById(R.id.story_cursor_layout);
         storyNoPpScanImageView = (ImageView) view.findViewById(R.id.story_no_pp_scan);
-        storyTabAllTextView = (TextView) view.findViewById(R.id.story_tab_all);
-        storyTabPhotopassTextView = (TextView) view.findViewById(R.id.story_tab_photopass);
-        storyTabMagicTextView = (TextView) view.findViewById(R.id.story_tab_magic);
-        storyTabBoughtTextView = (TextView) view.findViewById(R.id.story_tab_bought);
-        storyTabFavoriteTextView = (TextView) view.findViewById(R.id.story_tab_favourite);
-        cursorImageView = (ImageView) view.findViewById(R.id.story_cursor);
         storyViewPager = (ViewPager) view.findViewById(R.id.story_viewPager);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
         noPhotoView = (LinearLayout) view.findViewById(R.id.no_photo_view_relativelayout);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
+
+        indicator = (TabPageIndicator)view.findViewById(R.id.indicator);
 
         //初始化控件
         context = getActivity();
@@ -591,19 +581,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         magicPhotoList = new ArrayList<>();
         boughtPhotoList = new ArrayList<>();
         favouritePhotoList = new ArrayList<>();
-        //绑定监听
-        storyTabAllTextView.setOnClickListener(new viewPagerOnClickListener(0));
-        storyTabPhotopassTextView.setOnClickListener(new viewPagerOnClickListener(1));
-        storyTabMagicTextView.setOnClickListener(new viewPagerOnClickListener(2));
-        storyTabBoughtTextView.setOnClickListener(new viewPagerOnClickListener(3));
-        storyTabFavoriteTextView.setOnClickListener(new viewPagerOnClickListener(4));
         storyNoPpScanImageView.setOnClickListener(this);
-
-
         scanLayout.setOnClickListener(this);
         scanRelativeLayout.setOnClickListener(this);
         more.setOnClickListener(this);
-
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
         myToast = new MyToast(getActivity());
@@ -648,7 +629,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 boughtPhotoList.clear();
 //                favouritePhotoList.clear();
 
-
                 allPhotoList.addAll(AppUtil.startSortForPinnedListView(app.allPicList));
                 pictureAirPhotoList.addAll(AppUtil.startSortForPinnedListView(photoPassPictureList));
                 magicPhotoList.addAll(AppUtil.startSortForPinnedListView(magicPicList));
@@ -677,13 +657,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             PictureAirLog.out("viewpager---->has not scan pp");
             //显示没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
-
             noPhotoView.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.GONE);
 
             //需要设置为不可见，不然会报空指针异常
             storyLeadBarLinearLayout.setVisibility(View.INVISIBLE);
-            storyCursorLinearLayout.setVisibility(View.INVISIBLE);
             storyViewPager.setVisibility(View.INVISIBLE);
         } else {//有扫描过
 
@@ -696,8 +674,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 swipeRefreshLayout.setVisibility(View.GONE);
                 //显示有pp的情况
                 storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
-                storyCursorLinearLayout.setVisibility(View.VISIBLE);
-                storyViewPager.setVisibility(View.VISIBLE);
 
                 fragments.add(StoryFragment.getInstance(allPhotoList, app.magicPicList, 0, fragmentPageStoryHandler));
                 fragments.add(StoryFragment.getInstance(pictureAirPhotoList, app.magicPicList, 1, fragmentPageStoryHandler));
@@ -706,17 +682,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, fragmentPageStoryHandler));
                 fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
                 storyViewPager.setAdapter(fragmentAdapter);
+
+                indicator.setViewPager(storyViewPager);
+                indicator.setVisibility(View.VISIBLE);
+                storyViewPager.setVisibility(View.VISIBLE);
                 storyViewPager.setOffscreenPageLimit(2);
-                storyViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
                 storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
-                setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
+//                setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
                 EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
                 EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
                 EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
                 EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
                 EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
-
-
             } else {//没有图片
                 PictureAirLog.out("viewpager---->no photos");
                 storyNoPpToScanLinearLayout.setVisibility(View.GONE);
@@ -727,7 +704,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
                 //需要设置为不可见，不然会报空指针异常
                 storyLeadBarLinearLayout.setVisibility(View.INVISIBLE);
-                storyCursorLinearLayout.setVisibility(View.INVISIBLE);
                 storyViewPager.setVisibility(View.INVISIBLE);
             }
         }
@@ -748,75 +724,49 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     }
 
-    /**
-     * 页卡切换监听
-     */
-    private class MyOnPageChangeListener implements OnPageChangeListener {
-
-        @Override
-        public void onPageSelected(int arg0) {
-            System.out.println(arg0 + " selected-----------");
-            Animation animation = new TranslateAnimation(screenWidth / 5 * app.fragmentStoryLastSelectedTab, screenWidth / 5 * arg0, 0, 0);
-            app.fragmentStoryLastSelectedTab = arg0;
-            setTitleBarTextColor(arg0);
-            animation.setFillAfter(true);
-            animation.setDuration(300);
-            cursorImageView.startAnimation(animation);
-
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
-    }
-
-    private void setTitleBarTextColor(int index) {
-        switch (index) {
-            case 0:
-                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 1:
-                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 2:
-                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 3:
-                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                break;
-
-            case 4:
-                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-                break;
-        }
-    }
+//    private void setTitleBarTextColor(int index) {
+//        switch (index) {
+//            case 0:
+////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+//                break;
+//
+//            case 1:
+////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+//                break;
+//
+//            case 2:
+////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+//                break;
+//
+//            case 3:
+////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+//                break;
+//
+//            case 4:
+////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
+////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
+//                break;
+//        }
+//    }
 
     //扫描图片线程类
     private class ScanPhotosThread extends Thread {
