@@ -83,7 +83,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
     private LocationUtil locationUtil;
 
     //申明变量
-    private static String TAG = "FragmentPageDiscover";
+    private static final String TAG = "FragmentPageDiscover";
     private static final int CHANGE_LOCATION = 111;
     private static final int STOP_LOCATION = 222;
     private static final int FINISH_LOADING = 333;

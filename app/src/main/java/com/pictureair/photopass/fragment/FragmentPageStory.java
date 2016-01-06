@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,7 +83,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private static final int DEAL_REFRESH_VIDEO_DATA_DONE = 999;
     private static final int DEAL_FAVORITE_DATA_SUCCESS = 1000;
 
-    private static String TAG = "FragmentPageStory";
+    private static final String TAG = "FragmentPageStory";
 
     //申明变量
     private int refreshDataCount = 0;//记录刷新数据的数量
@@ -101,13 +100,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private ImageView scanLayout;
     private LinearLayout noPhotoView;
     private RelativeLayout scanRelativeLayout;
-    private static CustomProgressDialog dialog;// 加载等待
-    private static ViewPager storyViewPager;
+    private CustomProgressDialog dialog;// 加载等待
+    private ViewPager storyViewPager;
     private LinearLayout storyNoPpToScanLinearLayout;
     private ImageView storyNoPpScanImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private CustomDialog customdialog; //  对话框
 
     //申明类
     private MyApplication app;
@@ -118,7 +116,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private List<Fragment> fragments;
     private FragmentAdapter fragmentAdapter;
-    public Context context;
+    private Context context;
     private SimpleDateFormat sdf;
     private SharedPreferences sharedPreferences;
     private MyToast myToast;

@@ -10,7 +10,6 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -24,7 +23,7 @@ import com.pictureair.photopass.widget.MyToast;
 
 import cn.smssdk.gui.EditTextWithClear;
 
-public class OtherLoginActivity extends BaseActivity implements OnClickListener, LoginCallBack {
+public class OtherLoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
 	private static final String TAG = "OtherLoginActivity";
 	// 申明控件
 	private Button sign, login;

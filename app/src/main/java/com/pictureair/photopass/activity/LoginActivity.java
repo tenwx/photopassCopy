@@ -40,7 +40,7 @@ import cn.smssdk.gui.RegisterPage;
  * 3.全部获取之后，需要确认之前有扫描过pp或者ppp，如果有，则自动绑定
  */
 
-public class LoginActivity extends BaseActivity implements OnClickListener, LoginCallBack{
+public class LoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     private static final String TAG = "LoginActivity";
     // 申明控件
     private RelativeLayout parentRelativeLayout;
