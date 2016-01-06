@@ -2,10 +2,12 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -29,9 +31,11 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.BadgeView;
+import com.pictureair.photopass.view.CoverManager;
+import com.pictureair.photopass.view.WaterDrop;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.view.DropCover.OnDragCompeteListener;
 
 import de.greenrobot.event.EventBus;
 
@@ -40,8 +44,9 @@ import de.greenrobot.event.EventBus;
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  */
-public class MainTabActivity extends BaseFragmentActivity {
+public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener{
     private LinearLayout linearLayout;
+    public static WaterDrop maintabbadgeView;
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     // 定义一个布局
@@ -55,7 +60,6 @@ public class MainTabActivity extends BaseFragmentActivity {
     //记录退出的时候的两次点击的间隔时间
     private long exitTime = 0;
 
-    public static BadgeView maintabbadgeView;
     private MyToast newToast;
 
     public static boolean changeToShopTab = false;
@@ -105,6 +109,9 @@ public class MainTabActivity extends BaseFragmentActivity {
         loadFragment(count);//加载tab
         application.setIsStoryTab(true);
 
+        CoverManager.getInstance().init(this);
+        CoverManager.getInstance().setMaxDragDistance(300);
+        CoverManager.getInstance().setExplosionTime(100);
     }
 
     /**
@@ -146,9 +153,7 @@ public class MainTabActivity extends BaseFragmentActivity {
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
         if (application.getPushPhotoCount() > 0) {//显示红点
-            if (MainTabActivity.maintabbadgeView != null && !MainTabActivity.maintabbadgeView.isShown()) {
-                MainTabActivity.maintabbadgeView.show();
-            }
+            MainTabActivity.maintabbadgeView.setVisibility(View.VISIBLE);
             application.setPushPhotoCount(0);
         }
 
@@ -170,6 +175,7 @@ public class MainTabActivity extends BaseFragmentActivity {
         super.onDestroy();
         clearCache();
     }
+
 
     //tab按钮的点击监听
     private class TabOnClick implements OnClickListener {
@@ -238,12 +244,49 @@ public class MainTabActivity extends BaseFragmentActivity {
             textView.setVisibility(View.GONE);
         }
         if (index == 0) {//添加badgeview
-            maintabbadgeView = new BadgeView(getApplicationContext(), imageView);
-            maintabbadgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-            maintabbadgeView.setTextSize(1);
-            maintabbadgeView.setBackgroundResource(R.drawable.notificaitonpoint);
+//            maintabbadgeView = new BadgeView(getApplicationContext(), imageView);
+//            maintabbadgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+//            maintabbadgeView.setTextSize(1);
+//            maintabbadgeView.setBackgroundResource(R.drawable.notificaitonpoint);
+            maintabbadgeView = (WaterDrop) view.findViewById(R.id.waterdrop);
+            maintabbadgeView.setOnDragCompeteListener(this);
+            expandViewTouchDelegate(maintabbadgeView, 40, 40, 40, 40);
+//            maintabbadgeView.setVisibility(View.VISIBLE);
         }
         return view;
+    }
+
+    /**
+     * 扩大View的触摸和点击响应范围,最大不超过其父View范围
+     *
+     * @param view
+     * @param top
+     * @param bottom
+     * @param left
+     * @param right
+     */
+    public static void expandViewTouchDelegate(final View view, final int top,
+                                               final int bottom, final int left, final int right) {
+
+        ((View) view.getParent()).post(new Runnable() {
+            @Override
+            public void run() {
+                Rect bounds = new Rect();
+                view.setEnabled(true);
+                view.getHitRect(bounds);
+
+                bounds.top -= top;
+                bounds.bottom += bottom;
+                bounds.left -= left;
+                bounds.right += right;
+
+                TouchDelegate touchDelegate = new TouchDelegate(bounds, view);
+
+                if (View.class.isInstance(view.getParent())) {
+                    ((View) view.getParent()).setTouchDelegate(touchDelegate);
+                }
+            }
+        });
     }
 
     //双击退出app
@@ -270,5 +313,12 @@ public class MainTabActivity extends BaseFragmentActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onDrag() {
+        //小红点的拖拽消失，消失之后的消息回调，暂时此处不需要做任何的操作
+        PictureAirLog.out("waterDrop dismiss in MainTabActivity");
+        maintabbadgeView.setVisibility(View.GONE);
     }
 }

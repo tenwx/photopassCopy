@@ -64,6 +64,7 @@
             android:name=".activity.MainTabActivity"
             android:theme="@style/Theme.PageIndicatorDefaults"
             android:configChanges="keyboard|orientation"
+            android:hardwareAccelerated="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity

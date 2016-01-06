@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
+import android.view.View;
 
 import com.pictureair.photopass.activity.MainTabActivity;
 
@@ -13,7 +14,7 @@ public class UpdateUiRecriver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
 		// TODO 更新UI
-		MainTabActivity.maintabbadgeView.show();
+		MainTabActivity.maintabbadgeView.setVisibility(View.VISIBLE);
 
 		//获得震动服务
 		vibrator = (Vibrator)arg0.getSystemService(Context.VIBRATOR_SERVICE); 
