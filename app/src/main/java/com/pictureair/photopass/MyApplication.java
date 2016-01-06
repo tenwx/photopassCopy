@@ -69,9 +69,12 @@ public class MyApplication extends Application {
 
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
     public final static boolean DEBUG = true;
-    private String upgradedPhotosMessage; // 接收升级或者购买单张照片时服务器传过来的值。
+
+    private boolean needRefreshOldPhotos;//不同设备之间同步，是否需要刷新之前未购买的图片
     public Typeface typeface;//设置默认字体用
     public Typeface typefaceBold;//设置粗字体用
+
+    private boolean isStoryTab = true;//记录是否是处于storyTab
 
 
     @Override
@@ -144,46 +147,6 @@ public class MyApplication extends Application {
         return null;
     }
 
-    // public void InitLocation() {
-    // SDKInitializer.initialize(getApplicationContext());
-    // mLocationClient = new LocationClient(getApplicationContext());
-    // LocationClientOption option = new LocationClientOption();
-    // mLocationClient.registerLocationListener(new BDLocationListener() {
-    // @Override
-    // // TODO Auto-generated method stub
-    // public void onReceiveLocation(BDLocation location) {
-    // if (location == null) {
-    // return;
-    // }
-    // mLocation = location;
-    // Log.d("百度定位", location.getLongitude()+"+++++++"+location.getLatitude());
-    // /**
-    // * 61 ： GPS定位结果 62 ： 扫描整合定位依据失败。此时定位结果无效。 63 ：
-    // * 网络异常，没有成功向服务器发起请求。此时定位结果无效。 65 ： 定位缓存的结果。 66 ：
-    // * 离线定位结果。通过requestOfflineLocaiton调用时对应的返回结果 67 ：
-    // * 离线定位失败。通过requestOfflineLocaiton调用时对应的返回结果 68 ：
-    // * 网络连接失败时，查找本地离线定位时对应的返回结果 161： 表示网络定位结果 162~167： 服务端定位失败
-    // * 502：key参数错误 505：key不存在或者非法 601：key服务被开发者自己禁用 602：key mcode不匹配
-    // * 501～700：key验证失败
-    // */
-    // }
-    // });
-    // option.setLocationMode(LocationMode.Hight_Accuracy); // 高精度定位
-    // option.setCoorType("bd09ll");
-    // option.setScanSpan(2000);
-    // option.setOpenGps(true);
-    // option.setProdName("PhotoPass");
-    // option.setNeedDeviceDirect(false); // 不需要方向
-    // option.setIsNeedAddress(true);
-    // mLocationClient.setLocOption(option);
-    // // mLocationClient.start();
-    // // if (mLocationClient.isStarted()) {
-    // // System.out.println("请求定位");
-    // // mLocationClient.requestLocation();
-    // // }else {
-    // // System.out.println("不请求定位");
-    // // }
-    // }
 
     /**
      * 初始化imageLoader
@@ -485,6 +448,21 @@ public class MyApplication extends Application {
         this.photoIsPaid = photoIsPaid;
     }
 
+    /**
+     * 获取是否处于storyTab页面
+     * @return
+     */
+    public boolean isStoryTab() {
+        return isStoryTab;
+    }
+
+    /**
+     * 设置是否处于storyTab页面
+     * @param isStoryTab
+     */
+    public void setIsStoryTab(boolean isStoryTab) {
+        this.isStoryTab = isStoryTab;
+    }
 
     /**
      * 获取视频推送的数量
@@ -504,19 +482,20 @@ public class MyApplication extends Application {
         this.pushViedoCount = pushViedoCount;
     }
 
-    public String getUpgradedPhotosMessage() {
-        return upgradedPhotosMessage;
+    /**
+     * 得到时候需要刷新原有的数据
+     * @return
+     */
+    public boolean isNeedRefreshOldPhotos() {
+        return needRefreshOldPhotos;
     }
 
     /**
-     * 购买照片或者升级PP+后，设置服务器传过来的值。通过该值判断。
-     * 升级PP+后的值：{"c":{"customerId":"DPPPTV9BH3U4Z2WS","shootDate":"2015-12-18"}}
-     * 购买照片过后的返回值：{"c":{"id":"*******"}  具体需要测试后才知道。
-     *
-     * @param upgradedPhotosMessage
+     * 设置是否需要刷新原有的数据
+     * @param needRefreshOldPhotos
      */
-    public void setUpgradedPhotosMessage(String upgradedPhotosMessage) {
-        this.upgradedPhotosMessage = upgradedPhotosMessage;
+    public void setNeedRefreshOldPhotos(boolean needRefreshOldPhotos) {
+        this.needRefreshOldPhotos = needRefreshOldPhotos;
     }
 
     /**

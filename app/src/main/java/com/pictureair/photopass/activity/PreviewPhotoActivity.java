@@ -693,13 +693,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         e.printStackTrace();
                     }
                     bitmap2 = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
-                    previewPhotoHandler.sendEmptyMessage(0);
+                    previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
                 }
 
                 @Override
                 public void onFailure(int status) {
                     super.onFailure(status);
-                    previewPhotoHandler.sendEmptyMessage(0);
+                    previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
 
                 }
             });

@@ -41,7 +41,6 @@ import de.greenrobot.event.EventBus;
  * 通过扫描或者登录之后会来到此页面
  */
 public class MainTabActivity extends BaseFragmentActivity {
-    public static MainTabActivity instances;
     private LinearLayout linearLayout;
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
@@ -57,8 +56,6 @@ public class MainTabActivity extends BaseFragmentActivity {
     private long exitTime = 0;
 
     public static BadgeView maintabbadgeView;
-    //上次的tab页面，用来判断点击camera之后回到那个tab
-    private int last_tab = 0;
     private MyToast newToast;
 
     public static boolean changeToShopTab = false;
@@ -75,7 +72,6 @@ public class MainTabActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         application = (MyApplication) getApplication();
-        instances = this;
         initView();
     }
 
@@ -107,6 +103,7 @@ public class MainTabActivity extends BaseFragmentActivity {
         // 得到fragment的个数
         int count = fragmentArray.length;
         loadFragment(count);//加载tab
+        application.setIsStoryTab(true);
 
     }
 
@@ -138,10 +135,7 @@ public class MainTabActivity extends BaseFragmentActivity {
             PictureAirLog.out("skip to shop tab");
             mTabHost.setCurrentTab(3);
             changeToShopTab = false;
-        } else {
-            PictureAirLog.out("skip to last tab");
-            //设置成为上次的tab页面
-            mTabHost.setCurrentTab(last_tab);
+            application.setIsStoryTab(false);
         }
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
             mTabHost.clearAllTabs();
@@ -197,13 +191,14 @@ public class MainTabActivity extends BaseFragmentActivity {
                         PictureAirLog.d(TAG, "need not refresh");
                     }
                     mTabHost.setCurrentTab(0);
-                    last_tab = 0;
+                    application.setIsStoryTab(true);
                     break;
 
                 case 2:
                     System.out.println("camera tab on click");
                     Common.TAB_HEIGHT = mTabHost.getHeight();
                     mTabHost.setCurrentTab(2);
+                    application.setIsStoryTab(false);
                     break;
 
                 case 1:
@@ -211,7 +206,7 @@ public class MainTabActivity extends BaseFragmentActivity {
                 case 4:
                     System.out.println(currentTab + " tab on click");
                     mTabHost.setCurrentTab(currentTab);
-                    last_tab = currentTab;
+                    application.setIsStoryTab(false);
                     break;
 
                 default:

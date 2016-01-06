@@ -37,6 +37,7 @@ import com.pictureair.photopass.entity.BaseBusEvent;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.entity.SocketEvent;
 import com.pictureair.photopass.entity.StoryFragmentEvent;
 import com.pictureair.photopass.entity.StoryRefreshEvent;
 import com.pictureair.photopass.entity.StoryRefreshOnClickEvent;
@@ -82,6 +83,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private static final int DEAL_ALL_VIDEO_DATA_DONE = 888;
     private static final int DEAL_REFRESH_VIDEO_DATA_DONE = 999;
     private static final int DEAL_FAVORITE_DATA_SUCCESS = 1000;
+    private static final int SYNC_BOUGHT_PHOTOS = 1001;
 
     private static final String TAG = "FragmentPageStory";
 
@@ -125,6 +127,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private PictureAirDbManager pictureAirDbManager;
     private boolean getPhotoInfoDone = false;
     private boolean getVideoInfoDone = false;
+
+    /**
+     * 同步已经购买的照片
+     */
+    private boolean syncBoughtPhotos = false;
 
     private SettingUtil settingUtil;
     private LinearLayout storyLeadBarLinearLayout;
@@ -336,12 +343,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case SORT_COMPLETED_ALL:
-                scanMagicPhotoNeedCallBack = true;
-                fragments = new ArrayList<>();
-                fragments.clear();
+                if (syncBoughtPhotos){//同步购买照片操作
+                    syncBoughtPhotos = false;
+                    EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
+                    EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
+                    EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
+                    EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
+                    EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
+                } else {
+                    scanMagicPhotoNeedCallBack = true;
+                    fragments = new ArrayList<>();
+                    fragments.clear();
 
-                showViewPager();
-                noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
+                    showViewPager();
+                    noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
+                }
+
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
@@ -383,6 +400,30 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
                 } else if (API1.PPPlist.size() > 0) {
                     settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                }
+                break;
+
+            case SYNC_BOUGHT_PHOTOS://同步已购买图片
+                /**
+                 * 1.重新从数据库获取一遍数据
+                 * 2.更新页面
+                 */
+                dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+                syncBoughtPhotos = true;
+
+                app.photoPassPicList.clear();
+                app.photoPassVideoList.clear();
+
+                loadDataFromDataBase();
+
+                photoPassPictureList.clear();
+                app.allPicList.clear();
+                app.boughtPicList.clear();
+                try {
+                    getData();
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
                 break;
 
@@ -1393,6 +1434,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 }
                 EventBus.getDefault().removeStickyEvent(storyRefreshOnClickEvent);
             }
+        }
+        if (baseBusEvent instanceof SocketEvent) {
+            SocketEvent socketEvent = (SocketEvent) baseBusEvent;
+            if (!noPhotoView.isShown()) {
+               fragmentPageStoryHandler.obtainMessage(SYNC_BOUGHT_PHOTOS).sendToTarget();
+            }
+
+            //刷新列表
+            EventBus.getDefault().removeStickyEvent(socketEvent);
         }
     }
 
