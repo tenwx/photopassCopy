@@ -61,6 +61,9 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	private String currentId; // 当前的id
 	private String currentCode; // 当前的代码
 	private EventHandler handler;// 事件处理
+
+
+	
 	// 选择后的国家和区号
 	private String countryCode = "86";
 	private String countryC = "China";
