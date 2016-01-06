@@ -151,7 +151,7 @@ public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
 
     public void init(float x, float y) {
         mBaseX = x + mDest.getWidth() / 2f;
-        mBaseY = y - mDest.getWidth() / 2f;
+        mBaseY = y + mDest.getWidth() / 2f - mStatusBarHeight;
         mTargetX = x;
         mTargetY = y - mStatusBarHeight;
 

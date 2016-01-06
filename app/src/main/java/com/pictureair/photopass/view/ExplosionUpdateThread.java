@@ -34,6 +34,6 @@ public class ExplosionUpdateThread extends Thread {
             }
         }
 
-//        mDropCover.clearViews();
+        mDropCover.clearViews();
     }
 }

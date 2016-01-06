@@ -22,6 +22,7 @@ public class WaterDrop extends RelativeLayout {
     private TextView mTextView;
     private DropCover.OnDragCompeteListener mOnDragCompeteListener;
     private boolean mHolderEventFlag;
+    private boolean startDrag = false;
 
     public WaterDrop(Context context) {
         super(context);
@@ -76,20 +77,22 @@ public class WaterDrop extends RelativeLayout {
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
             mHolderEventFlag = !CoverManager.getInstance().isRunning();
-            if (mHolderEventFlag) {
+            if (mHolderEventFlag && isShown()) {
+                startDrag = true;
                 if (parent != null)
                     parent.requestDisallowInterceptTouchEvent(true);
                 CoverManager.getInstance().start(this, event.getRawX(), event.getRawY(), mOnDragCompeteListener);
             }
             break;
         case MotionEvent.ACTION_MOVE:
-            if (mHolderEventFlag) {
+            if (mHolderEventFlag && startDrag) {
                 CoverManager.getInstance().update(event.getRawX(), event.getRawY());
             }
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:
-            if (mHolderEventFlag) {
+            if (mHolderEventFlag && startDrag) {
+                startDrag = false;
                 if (parent != null)
                     parent.requestDisallowInterceptTouchEvent(false);
                 CoverManager.getInstance().finish(this, event.getRawX(), event.getRawY());

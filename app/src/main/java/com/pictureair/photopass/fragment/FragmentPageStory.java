@@ -454,7 +454,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 dialog.dismiss();
             }
             if (MainTabActivity.maintabbadgeView.isShown()) {
-                MainTabActivity.maintabbadgeView.hide();
+                MainTabActivity.maintabbadgeView.setVisibility(View.GONE);
             }
         }
     }
@@ -870,7 +870,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
             API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
             if (MainTabActivity.maintabbadgeView.isShown()) {
-                MainTabActivity.maintabbadgeView.hide();
+                MainTabActivity.maintabbadgeView.setVisibility(View.GONE);
             }
         }
         if (!app.scanMagicFinish) {
