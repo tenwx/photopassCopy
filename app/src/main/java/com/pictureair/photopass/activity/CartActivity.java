@@ -215,7 +215,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 //需要删除页面，保证只剩下mainTab页面，
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                 //同时将mainTab切换到shop Tab
-                MainTabActivity.changeToShopTab = true;
+                ((MyApplication)getApplication()).setChangeToShopTab(true);
 
                 break;
 

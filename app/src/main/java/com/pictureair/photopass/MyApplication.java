@@ -33,8 +33,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * ImageLoader的配置 百度定位的配置 全局数据的共享
  */
 public class MyApplication extends Application {
-    // public LocationClient mLocationClient;
-    // public BDLocation mLocation;
     private static MyApplication instance;
     private static SharedPreferences userInfosharedPreferences;
     private static String tokenId;
@@ -53,6 +51,11 @@ public class MyApplication extends Application {
     private boolean needRefreshPPPList = false;// 记录是否需要更新ppp列表
     public boolean scanMagicFinish = false;// 记录是否已经扫面过magic相册
     public boolean needScanFavoritePhotos = false;//记录是否需要扫描收藏图片
+
+    /**
+     * 是否切换到shop页面
+     */
+    private boolean changeToShopTab = false;
     private String languageType;// 记录app选择的语言
     public int fragmentStoryLastSelectedTab = 0;// 记录story页面viewpager上次的页面序号
 
@@ -496,6 +499,22 @@ public class MyApplication extends Application {
      */
     public void setNeedRefreshOldPhotos(boolean needRefreshOldPhotos) {
         this.needRefreshOldPhotos = needRefreshOldPhotos;
+    }
+
+    /**
+     * 得到是否切换到shop
+     * @return
+     */
+    public boolean isChangeToShopTab() {
+        return changeToShopTab;
+    }
+
+    /**
+     * 设置是否切换到shop
+     * @param changeToShopTab
+     */
+    public void setChangeToShopTab(boolean changeToShopTab) {
+        this.changeToShopTab = changeToShopTab;
     }
 
     /**

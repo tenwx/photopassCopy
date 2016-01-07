@@ -163,17 +163,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 			etPhoneNum.setText("");
 			etPhoneNum.addTextChangedListener(this);// 添加文本改变的监听事件
 			etPhoneNum.requestFocus();// 点击tab键或enter键焦点自动进入下一个输入框
-			// 当输入值的时候，显示清空图标
-			// if (etPhoneNum.getText().length() > 0) {
-			// btnNext.setEnabled(true);// 如果为不能点击，变灰setEnabled(false)
-			// // resId = getIdRes(activity, "iv_clear");
-			// // ivClear = (ImageView) activity.findViewById(resId);// 找到清除图标
-			// // ivClear.setVisibility(View.VISIBLE);// 显示它
-			// resId = getBitmapRes(activity, "smssdk_btn_enable");
-			// // if (resId > 0) {
-			// // btnNext.setBackgroundResource(resId);
-			// // }
-			// }
 
 			tv_otherRegistered = (TextView) activity.findViewById(getIdRes(
 					activity, "tv_otherRegistered"));
@@ -220,23 +209,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
 			llBack.setOnClickListener(this);
 			btnNext.setOnClickListener(this);
-			// ivClear.setOnClickListener(this);
 			viewCountry.setOnClickListener(this);// 选择国家的按钮
-
-			// smsReceiver = new SMSReceiver(new SMSSDK.VerifyCodeReadListener()
-			// {
-			// @Override
-			// public void onReadVerifyCode(final String verifyCode) {
-			// runOnUIThread(new Runnable() {
-			// @Override
-			// public void run() {
-			// etIdentifyNum.setText(verifyCode);
-			// }
-			// });
-			// }
-			// });
-			// activity.registerReceiver(smsReceiver, new IntentFilter(
-			// "android.provider.Telephony.SMS_RECEIVED"));
 
 			handler = new EventHandler() {
 				@SuppressWarnings("unchecked")
@@ -283,8 +256,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 									String des = object.optString("detail");
 									if (!TextUtils.isEmpty(des)) {
 										myToast.setTextAndShow(des, 100);
-										// Toast.makeText(activity, des,
-										// Toast.LENGTH_SHORT).show();
 										return;
 									}
 								} catch (Exception e) {
@@ -295,8 +266,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 										"smssdk_network_error");
 								if (resId > 0) {
 									myToast.setTextAndShow(resId, 100);
-									// Toast.makeText(activity, resId,
-									// Toast.LENGTH_SHORT).show();
 								}
 							}
 						}
@@ -367,23 +336,11 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	 * @param isAvailable
 	 */
 	public void setNextBtnAvailable(boolean isAvailable) {
-//		int bgId;
-//		int colorId;
 		if (isAvailable) {
-//			bgId = getBitmapRes(activity, "button_green");
-//			colorId = Color.WHITE;
 			btnSubmit.setEnabled(true);
-
 		} else {
-//			bgId = getBitmapRes(activity, "button_gray");
-//			colorId = activity.getResources().getColor(R.color.gray3);
 			btnSubmit.setEnabled(false);
 		}
-//		if (bgId > 0) {
-//			btnNext.setBackgroundResource(bgId);
-//		}
-//		btnNext.setTextColor(colorId);
-
 	}
 
 	/**
@@ -392,22 +349,11 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	 * @param isAvailable
 	 */
 	public void setSubmitAvailable(boolean isAvailable) {
-//		int bgId;
-//		int colorId;
 		if (isAvailable) {
-//			bgId = getBitmapRes(activity, "button_blue");
-//			colorId = Color.WHITE;
 			btnSubmit.setEnabled(true);
 		} else {
-//			bgId = getBitmapRes(activity, "button_gray");
-//			colorId = activity.getResources().getColor(R.color.gray3);
 			btnSubmit.setEnabled(false);
 		}
-//		if (bgId > 0) {
-//			btnSubmit.setBackgroundResource(bgId);
-//		}
-//		btnSubmit.setTextColor(colorId);
-
 	}
 
 	/**
@@ -688,19 +634,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 							res.put("res", true);
 							res.put("phone", phone);
 							res.put("pwd", pwd);
-							// 再需要获取密码
-							// 验证码校验返回
-//							HashMap<String, Object> phoneMap = (HashMap<String, Object>) res
-//									.get("phone");
-//							phoneMap.put("pwd", pwd);
-							// 32；
-							// int resId = getStringRes(activity,
-							// "smssdk_your_ccount_is_verified");
-							// if (resId > 0) {
-							// myToast.setTextAndShow(resId, 100);
-							// // Toast.makeText(activity, resId,
-							// // Toast.LENGTH_SHORT).show();
-							// }
 
 							if (callback != null) {
 								callback.afterEvent(
@@ -708,7 +641,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 										SMSSDK.RESULT_COMPLETE, res);
 							}
 							System.out.println("验证成功");
-							// -------------------------------------------------------------------完成回调－－－－－－－－－－－－－－-----
 							finish();
 						} else {
 							((Throwable) data).printStackTrace();
@@ -717,8 +649,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 									"smssdk_virificaition_code_wrong");
 							if (resId > 0) {
 								myToast.setTextAndShow(resId, 100);
-								// Toast.makeText(activity, resId,
-								// Toast.LENGTH_SHORT).show();
 							}
 						}
 					} else {
@@ -728,9 +658,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 						int resId = getStringRes(activity, "smssdk_pwd_no");
 						if (resId > 0) {
 							myToast.setTextAndShow(resId, 100);
-							// Toast.makeText(activity, resId,
-							// Toast.LENGTH_SHORT)
-							// .show();
 						}
 					}
 
@@ -739,8 +666,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 					int resId = getStringRes(activity, "smssdk_pwd_is_empty");
 					if (resId > 0) {
 						myToast.setTextAndShow(resId, 100);
-						// Toast.makeText(activity, resId, Toast.LENGTH_SHORT)
-						// .show();
 					}
 				}
 
@@ -760,26 +685,13 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 						btnNext.setText(resId);
 					}
 
-//					resId = getBitmapRes(activity, "button_green");
-//					if (resId > 0) {
-//						btnNext.setBackgroundResource(resId);
-//					}
-
 					btnNext.setEnabled(true);
 
 					time = RETRY_INTERVAL;// time30秒
 				} else {
 					int resId = getStringRes(activity, "smssdk_receive_msg");// 倒计时
-					// n
-					// 秒
 					if (resId > 0) {
 						String unReceive = getContext().getString(resId, time);
-
-//						resId = getBitmapRes(activity, "button_gray");
-//						if (resId > 0) {
-//							btnNext.setBackgroundResource(resId);
-//						}
-
 						btnNext.setText(Html.fromHtml(unReceive));
 					}
 					btnNext.setEnabled(false);
@@ -828,13 +740,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 	 * 点击发送验证码过后 检查电话号码
 	 */
 	private void checkPhoneNum(String phone, String code) {
-		System.out.println("phone:" + phone + ",code:" + code);
 		// 如果手机号的开头有“＋”号，就删除掉
 		if (code.startsWith("+")) {
 			code = code.substring(1);
 		}
-		System.out.println("phone:" + phone + ",code:" + code);
-
 		// 如果手机号为空，就提示手机号不能为空
 		if (TextUtils.isEmpty(phone)) {
 			int resId = getStringRes(activity, "smssdk_write_mobile_phone");
@@ -855,8 +764,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 			resId = getStringRes(activity, "smssdk_write_right_mobile_phone");
 			if (resId > 0) {
 				myToast.setTextAndShow(resId, 100);
-				// Toast.makeText(getContext(), resId,
-				// Toast.LENGTH_SHORT).show();
 			}
 			return;
 		}
@@ -964,9 +871,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 					currentCode = country[1];
 					tvCountryNum.setText("+" + currentCode);
 					tvCountry.setText(country[0]);
-					// bass自定义的国家列表
-					// tvCountry.setText("" + country);
-					// tvCountryNum.setText("" + countryCode);
 				}
 			}
 		}

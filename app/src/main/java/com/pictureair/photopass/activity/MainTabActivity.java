@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.StoryRefreshOnClickEvent;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.RedPointControlEvent;
+import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
 import com.pictureair.photopass.fragment.FragmentPageCamera;
 import com.pictureair.photopass.fragment.FragmentPageDiscover;
 import com.pictureair.photopass.fragment.FragmentPageMe;
@@ -38,6 +40,7 @@ import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
 
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 
 /**
@@ -46,7 +49,7 @@ import de.greenrobot.event.EventBus;
  */
 public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener {
     private LinearLayout linearLayout;
-    public static WaterDrop maintabbadgeView;
+    private WaterDrop waterDropView;
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     // 定义一个布局
@@ -61,8 +64,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private long exitTime = 0;
 
     private MyToast newToast;
-
-    public static boolean changeToShopTab = false;
 
     private MyApplication application;
     private SharedPreferences sharedPreferences;
@@ -136,13 +137,17 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // TODO Auto-generated method stub
         super.onResume();
 
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
         PictureAirLog.out("maintab ==== resume");
         Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
         this.startService(intent1);
-        if (changeToShopTab) {
+        if (application.isChangeToShopTab()) {
             PictureAirLog.out("skip to shop tab");
             mTabHost.setCurrentTab(3);
-            changeToShopTab = false;
+            application.setChangeToShopTab(false);
             application.setIsStoryTab(false);
         }
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
@@ -155,7 +160,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
         if (application.getPushPhotoCount() > 0) {//显示红点
-            MainTabActivity.maintabbadgeView.setVisibility(View.VISIBLE);
+            waterDropView.setVisibility(View.VISIBLE);
             application.setPushPhotoCount(0);
         }
 
@@ -176,6 +181,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // TODO Auto-generated method stub
         super.onDestroy();
         clearCache();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
 
@@ -246,14 +254,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             textView.setVisibility(View.GONE);
         }
         if (index == 0) {//添加badgeview
-//            maintabbadgeView = new BadgeView(getApplicationContext(), imageView);
-//            maintabbadgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-//            maintabbadgeView.setTextSize(1);
-//            maintabbadgeView.setBackgroundResource(R.drawable.notificaitonpoint);
-            maintabbadgeView = (WaterDrop) view.findViewById(R.id.waterdrop);
-            maintabbadgeView.setOnDragCompeteListener(this);
-            expandViewTouchDelegate(maintabbadgeView, 40, 40, 40, 40);
-//            maintabbadgeView.setVisibility(View.VISIBLE);
+            waterDropView = (WaterDrop) view.findViewById(R.id.waterdrop);
+            waterDropView.setOnDragCompeteListener(this);
+            expandViewTouchDelegate(waterDropView, 40, 40, 40, 40);
         }
         return view;
     }
@@ -267,8 +270,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      * @param left
      * @param right
      */
-    public static void expandViewTouchDelegate(final View view, final int top,
-                                               final int bottom, final int left, final int right) {
+    private void expandViewTouchDelegate(final View view, final int top,
+                                         final int bottom, final int left, final int right) {
 
         ((View) view.getParent()).post(new Runnable() {
             @Override
@@ -321,6 +324,29 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     public void onDrag() {
         //小红点的拖拽消失，消失之后的消息回调，暂时此处不需要做任何的操作
         PictureAirLog.out("waterDrop dismiss in MainTabActivity");
-        maintabbadgeView.setVisibility(View.GONE);
+        waterDropView.setVisibility(View.GONE);
+    }
+
+
+    /**
+     * 检测dropView显示消失事件
+     *
+     * @param baseBusEvent
+     */
+    @Subscribe
+    public void onUserEvent(BaseBusEvent baseBusEvent) {
+        if (baseBusEvent instanceof RedPointControlEvent) {
+            PictureAirLog.out("control the badgeView----->");
+            RedPointControlEvent redPointControlEvent = (RedPointControlEvent) baseBusEvent;
+            if (redPointControlEvent.isShowRedPoint()) {//显示红点
+                waterDropView.setVisibility(View.VISIBLE);
+            } else {//消失红点
+                if (waterDropView.isShown()) {
+                    waterDropView.setVisibility(View.GONE);
+                }
+            }
+            //刷新列表
+            EventBus.getDefault().removeStickyEvent(redPointControlEvent);
+        }
     }
 }

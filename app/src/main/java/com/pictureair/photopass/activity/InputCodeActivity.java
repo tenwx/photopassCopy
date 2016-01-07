@@ -2,24 +2,19 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.ScanInfoEvent;
+import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
@@ -40,8 +35,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
     private EditText input1, input2, input3, input4;
     private SharedPreferences sp;
     private MyToast newToast;
-    private String inputValue1,inputValue2,inputValue3,inputValue4;
-
+    private String inputValue1, inputValue2, inputValue3, inputValue4;
     private DealCodeUtil dealCodeUtil;
 
     private CustomProgressDialog dialog;
@@ -131,17 +125,25 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
         input3 = (EditText) findViewById(R.id.input3);
         input4 = (EditText) findViewById(R.id.input4);
 
-
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.manual);
+
+        input1.setEnabled(true);
+        input2.setEnabled(false);
+        input3.setEnabled(false);
+        input4.setEnabled(false);
 
         input1.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 if (arg0.length() > 3) {
+                    input2.setEnabled(true);
                     input2.requestFocus();
+                    input1.setEnabled(false);
+                    input3.setEnabled(false);
+                    input4.setEnabled(false);
                 }
             }
 
@@ -152,7 +154,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void afterTextChanged(Editable arg0) {
-
             }
         });
 
@@ -161,9 +162,17 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 if (arg0.length() > 3) {
+                    input3.setEnabled(true);
                     input3.requestFocus();
-                }else if (arg0.length() == 0){
+                    input1.setEnabled(false);
+                    input2.setEnabled(false);
+                    input4.setEnabled(false);
+                } else if (arg0.length() == 0) {
+                    input1.setEnabled(true);
                     input1.requestFocus();
+                    input2.setEnabled(false);
+                    input3.setEnabled(false);
+                    input4.setEnabled(false);
                 }
             }
 
@@ -184,9 +193,17 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 if (arg0.length() > 3) {
+                    input4.setEnabled(true);
                     input4.requestFocus();
-                }else if (arg0.length() == 0){
+                    input1.setEnabled(false);
+                    input2.setEnabled(false);
+                    input3.setEnabled(false);
+                } else if (arg0.length() == 0) {
+                    input2.setEnabled(true);
                     input2.requestFocus();
+                    input1.setEnabled(false);
+                    input3.setEnabled(false);
+                    input4.setEnabled(false);
                 }
             }
 
@@ -205,7 +222,11 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 if (arg0.length() == 0) {
+                    input3.setEnabled(true);
                     input3.requestFocus();
+                    input1.setEnabled(false);
+                    input2.setEnabled(false);
+                    input4.setEnabled(false);
                 }
             }
 
@@ -259,16 +280,16 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.sure:
-                inputValue1=input1.getText().toString();
-                inputValue2=input2.getText().toString();
-                inputValue3=input3.getText().toString();
-                inputValue4=input4.getText().toString();
+                inputValue1 = input1.getText().toString();
+                inputValue2 = input2.getText().toString();
+                inputValue3 = input3.getText().toString();
+                inputValue4 = input4.getText().toString();
 
-                if ("".equals(inputValue1+inputValue2+inputValue3+inputValue4)) {
+                if ("".equals(inputValue1 + inputValue2 + inputValue3 + inputValue4)) {
                     //				Toast.makeText(InputCodeAct.this, R.string.nocontext, Common.TOAST_SHORT_TIME).show();
                     newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
-                } else if (inputValue1.trim().length()+inputValue2.trim().length()+inputValue3.trim().length()+inputValue4.trim().length() != 16) {//长度不一致
-                    PictureAirLog.out("=======> length"+(inputValue1.trim().length()+inputValue2.trim().length()+inputValue3.trim().length()+inputValue4.trim().length()));
+                } else if (inputValue1.trim().length() + inputValue2.trim().length() + inputValue3.trim().length() + inputValue4.trim().length() != 16) {//长度不一致
+                    PictureAirLog.out("=======> length" + (inputValue1.trim().length() + inputValue2.trim().length() + inputValue3.trim().length() + inputValue4.trim().length()));
                     newToast.setTextAndShow(R.string.wrong_length, Common.TOAST_SHORT_TIME);
                 } else {
                     //如果有键盘显示，把键盘取消掉
@@ -276,7 +297,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                     dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                     PictureAirLog.out("code is --->" + input1.getText().toString());
 //				dealCodeUtil.startDealCode("DPPPRU6CC7M5J6MM");
-                    dealCodeUtil.startDealCode(inputValue1.trim().toUpperCase()+inputValue2.trim().toUpperCase()+inputValue3.trim().toUpperCase()+inputValue4.trim().toUpperCase());
+                    dealCodeUtil.startDealCode(inputValue1.trim().toUpperCase() + inputValue2.trim().toUpperCase() + inputValue3.trim().toUpperCase() + inputValue4.trim().toUpperCase());
                 }
                 break;
             default:

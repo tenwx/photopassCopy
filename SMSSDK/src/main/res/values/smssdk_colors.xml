@@ -3,26 +3,15 @@
     <drawable name="smssdk_dialog_btn_nor">#00000000</drawable>
     <drawable name="smssdk_dialog_btn_pre">#ff282a2b</drawable>
     
-	<color name="smssdk_white">#ffffffff</color>
 	<color name="smssdk_gray_press">#fff2f2f2</color>
-	<color name="smssdk_transparent">#00000000</color>
-	<color name="smssdk_lv_tv_color">#ff353535</color>
-	<color name="smssdk_lv_title_color">#ff999999</color>
-	<color name="smssdk_lv_item_selector">#f7fcff</color>
-	<color name="smssdk_lv_item_divider">#ffd9d9da</color>
+	<color name="smssdk_lv_tv_color">#455560</color>
 	<color name="smssdk_black">#ff000000</color>
 	<color name="smssdk_gray">#ff898989</color>
-	<color name="blue">#00AEEF</color>
 	<color name="gray">#455560</color><!-- 深色字体 -->
-	<color name="green">#78AC2B</color>
 	<color name="gray_light3">#c1c1c1</color>
-	<color name="gray2">#8E8E8E</color><!-- 浅色字体 -->
-   	<color name="gray3">#828282</color><!-- 中间颜色字体 -->
-    <color name="gray_light">#EEEEEE</color>
     <color name="gray_light2">#ECEBEB</color>
 	<color name="transparent">#00000000</color>
 	<color name="white">#FFFFFF</color>
-
 	<!-- 蓝色，比如顶部title栏的背景色、字体的颜色-->
 	<color name="pp_blue">#1994d7</color>
 	<!-- 深蓝，比如深色的字体颜色-->
@@ -35,10 +24,4 @@
 	<color name="pp_light_gray_normal">#e9eef1</color>
 	<!-- 淡浅灰，比如注册按钮点击颜色-->
 	<color name="pp_light_gray_press">#a1afc0</color>
-	<!-- 橙色，比如价格-->
-	<color name="pp_orange">#ff4605</color>
-	<!-- 紫色，比如编辑页面的字体颜色-->
-	<color name="pp_purple">#5f23c4</color>
-	<!-- 绿色-->
-	<color name="pp_green">#8cc63e</color>
 </resources>
