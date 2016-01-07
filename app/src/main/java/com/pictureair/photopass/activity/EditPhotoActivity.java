@@ -29,7 +29,6 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -40,7 +39,6 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.adapter.FontAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.BitmapUtils;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
@@ -70,12 +68,11 @@ import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.LocationUtil.LocationNotification;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.FontEditDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
-import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,13 +94,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private TextView edit_accessory,titleTextView,preview_save,edit_filter,edit_text,edit_frame;//饰品按钮，标题，保存,滤镜按钮, 文字按钮,边框按钮
 	private ImageButton btn_onedit_save,btn_cancel,btn_forward;//保存，返回，前进
 	private LinearLayout edittoolsbar,font_bar; // 工具条 和 底部的 旋转 bar
-	private RelativeLayout titleBarRelativeLayout;
 
 	private HorizontalListView top_HorizontalListView;  //显示饰品的滑动条
-	private FontEditDialog fontEditdialog; //填写字体的dialog
 
 	private CustomProgressDialog dialog;
-	private MyToast myToast;
 
 	//适配器
 	private EditActivityAdapter eidtAdapter; //通用的适配器
@@ -111,17 +105,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private PhotoInfo photoInfo;
 	private String photoURL;
 
-//	private String ssss;
-
-	private FontAdapter fontAdapter;
 
 	private LoadImageTask mLoadImageTask;
 
 	private int imageWidth, imageHeight;// 展示图片控件 宽 高
 	//
-//	private List<String> stickerPathList = new ArrayList<String>();// 饰品图片路径列表
 	private List<String> filterPathList = new ArrayList<String>(); //滤镜图片的路径列表
-	//	private List<String> framePathList = new ArrayList<String>(); //相框的缩略图路径。
 
 	private ArrayList<FrameOrStikerInfo> frameInfos = new ArrayList<FrameOrStikerInfo>(); //保存 高清边框的集合。
 	private ArrayList<FrameOrStikerInfo> frameFromDBInfos;//来自数据库的数据
@@ -130,7 +119,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private ArrayList<DiscoverLocationItemInfo> locationItemInfos;
 
 	public final String STICKERPATH = "sticker";
-	public final String FILTERPATH = "";
 
 	private File nameFile; //保存文件的目录
 	private File tempFile; //保存文件的临时目录
@@ -148,7 +136,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private Bitmap newImage; // 滤镜处理过的bitmap
 
 	private int editType = 0; //编辑 类型的类别。 0 默认值，1，代表边框，2，代表 滤镜， 3 ，代表饰品，4 代表字体。
-	private long time = 0;
 
 	//有关 文字
 	private TextView tvLeft90,tvRight90;  //设置字体，设置颜色
@@ -170,8 +157,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private boolean loadingFrame = false;
 
-	private int textWidth;
-
 	//绘制 真是图片显示区域。 控制 饰品 与文字拖动范围
 	public static float leftTopX;
 	public static float leftTopY;
@@ -183,62 +168,75 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	// 旋转图片组件
 
-	private Handler handler = new Handler(){
+	private final Handler editPhotoHandler = new EditPhotoHandler(this);
+
+	private static class EditPhotoHandler extends Handler{
+		private final WeakReference<EditPhotoActivity> mActivity;
+
+		public EditPhotoHandler(EditPhotoActivity activity){
+			mActivity = new WeakReference<>(activity);
+		}
 
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			switch (msg.what) {
-				case 9999: //加载网络图片。
-					mainBitmap = imageLoader.loadImageSync(photoURL);
-					mainImage.setImageBitmap(mainBitmap);
-					if (dialog.isShowing()) {
-						dialog.dismiss();
-					}
-					break;
-				case LOAD_IMAGE_FINISH:
-					if (dialog.isShowing()) {
-						dialog.dismiss();
-					}
-					break;
+			super.handleMessage(msg);
+			if (mActivity.get() == null) {
+				return;
+			}
+			mActivity.get().dealHandler(msg);
+		}
+	}
 
-				case INIT_DATA_FINISHED:
-					if (dialog.isShowing()) {
-						dialog.dismiss();
-					}
-					//开始从网络获取最新数据
-					API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), handler);
-					break;
 
-				case 0000:
-					break;
+	/**
+	 * 处理Message
+	 * @param msg
+	 */
+	private void dealHandler(Message msg) {
+		switch (msg.what) {
+			case 9999: //加载网络图片。
+				mainBitmap = imageLoader.loadImageSync(photoURL);
+				mainImage.setImageBitmap(mainBitmap);
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+				break;
+			case LOAD_IMAGE_FINISH:
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+				break;
 
-				case 3333:
-					fontEditdialog.dismiss();
-					break;
+			case INIT_DATA_FINISHED:
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+				//开始从网络获取最新数据
+				API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
+				break;
 
-				case 1111:
-					// 判断 如果图片是 4:3 就不要去裁减。
-					if ((float)mainBitmap.getWidth()/mainBitmap.getHeight() == (float)4/3 || (float)mainBitmap.getWidth()/mainBitmap.getHeight() == (float)3/4) {
+			case 1111:
+				// 判断 如果图片是 4:3 就不要去裁减。
+				if ((float) mainBitmap.getWidth() / mainBitmap.getHeight() == (float) 4 / 3 || (float) mainBitmap.getWidth() / mainBitmap.getHeight() == (float) 3 / 4) {
 
-					}else{
-						changeMainBitmap(EditPhotoUtil.cropBitmap(mainBitmap, 4, 3));
-					}
+				} else {
+					changeMainBitmap(EditPhotoUtil.cropBitmap(mainBitmap, 4, 3));
+				}
 
-					btn_onedit_save.setVisibility(View.VISIBLE);
-					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
-					editType = 1;
-					curFramePosition = msg.arg1;
-					loadframe(curFramePosition);
-					break;
+				btn_onedit_save.setVisibility(View.VISIBLE);
+				dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
+				editType = 1;
+				curFramePosition = msg.arg1;
+				loadframe(curFramePosition);
+				break;
 
-				case API1.GET_LAST_CONTENT_SUCCESS://获取更新包成功
-					Log.d(TAG, "get lastest info success" + msg.obj);
-					try {
-						com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString()) ;
-						if (resultJsonObject.containsKey("assets")) {
+			case API1.GET_LAST_CONTENT_SUCCESS://获取更新包成功
+				Log.d(TAG, "get lastest info success" + msg.obj);
+				try {
+					com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
+					if (resultJsonObject.containsKey("assets")) {
 
-							pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
+						pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
 
 //						if (assetsObject.has("frames")) {
 //							JSONArray framesArray = assetsObject.getJSONArray("frames");
@@ -259,54 +257,50 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //							}
 //						}
 
-						}
-
-						if (resultJsonObject.containsKey("time")) {
-							Log.d(TAG, "lastest time is "+ resultJsonObject.getString("time"));
-							Editor editor = appPreferences.edit();
-							editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
-							editor.commit();
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
 					}
 
-					//写入数据库之后，再从数据库拿数据
-					frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
-					for (int i = 0; i < frameFromDBInfos.size(); i++) {
-						if (frameFromDBInfos.get(i).locationId.equals("common")) {//通用边框
-							frameInfos.add(frameFromDBInfos.get(i));
-						}
+					if (resultJsonObject.containsKey("time")) {
+						Log.d(TAG, "lastest time is " + resultJsonObject.getString("time"));
+						Editor editor = appPreferences.edit();
+						editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
+						editor.commit();
 					}
-					//从数据库获取饰品信息
-					stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
-					for (int j = 0; j < stickerFromDBInfos.size(); j++) {
-						if (stickerFromDBInfos.get(j).locationId.equals("common")) {//通用饰品
-							stikerInfos.add(stickerFromDBInfos.get(j));
-						}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				//写入数据库之后，再从数据库拿数据
+				frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
+				for (int i = 0; i < frameFromDBInfos.size(); i++) {
+					if (frameFromDBInfos.get(i).locationId.equals("common")) {//通用边框
+						frameInfos.add(frameFromDBInfos.get(i));
 					}
-//				frameInfos.addAll(frameFromDBInfos);
+				}
+				//从数据库获取饰品信息
+				stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
+				for (int j = 0; j < stickerFromDBInfos.size(); j++) {
+					if (stickerFromDBInfos.get(j).locationId.equals("common")) {//通用饰品
+						stikerInfos.add(stickerFromDBInfos.get(j));
+					}
+				}
 
-					break;
+				break;
 
-				case API1.GET_LAST_CONTENT_FAILED://获取更新包失败
+			case API1.GET_LAST_CONTENT_FAILED://获取更新包失败
 
-					break;
+				break;
 
-				default:
-					break;
-			}
-			super.handleMessage(msg);
+			default:
+				break;
 		}
+	}
 
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_photo);
 
-		textWidth = ScreenUtil.getScreenWidth(this)/2;
 		initView();
 		dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
 		new Thread() {
@@ -321,7 +315,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 
 	private void initView(){
-		myToast = new MyToast(this);
 		locationUtil = new LocationUtil(this);
 		locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
 		mainImage = (ImageView) findViewById(R.id.main_image);
@@ -330,7 +323,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		fontView = (FontView) findViewById(R.id.font_panel);
 
 		frameImageView = (ImageView) findViewById(R.id.framephoto_imageView1); // 相框
-		titleBarRelativeLayout = (RelativeLayout)findViewById(R.id.preview_titlebar);
 
 		back = (ImageView) findViewById(R.id.edit_return);
 		edit_accessory = (TextView) findViewById(R.id.edit_accessory);
@@ -555,7 +547,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				titleTextView.setText(R.string.frames);
 				onEditStates();
-				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, handler);
+				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, editPhotoHandler);
 				top_HorizontalListView.setAdapter(eidtAdapter);
 				top_HorizontalListView.setOnItemClickListener(null);
 //			top_HorizontalListView
@@ -580,7 +572,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			case R.id.edit_filter:
 				onEditStates();
 				titleTextView.setText(R.string.magicbrush);
-				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this, mainBitmap, filterPathList, 2, new ArrayList<FrameOrStikerInfo>(), handler);
+				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this, mainBitmap, filterPathList, 2, new ArrayList<FrameOrStikerInfo>(), editPhotoHandler);
 				top_HorizontalListView.setAdapter(eidtAdapter);
 				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -638,7 +630,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				//饰品编辑
 				onEditStates();
 				titleTextView.setText(R.string.decoration);
-				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),3, stikerInfos, handler);
+				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),3, stikerInfos, editPhotoHandler);
 				top_HorizontalListView.setAdapter(eidtAdapter);
 				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -868,7 +860,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				mainImage.setImageBitmap(mainBitmap);
 			}
 			Log.e("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
-			handler.sendEmptyMessage(INIT_DATA_FINISHED);
+			editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
 			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
 	}
@@ -902,7 +894,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //				loadImage(dirfile.toString());
 //			}else{
 //				 Log.e(TAG,"缓存不存在");
-				 handler.sendEmptyMessage(9999); //加载网络图片。
+			editPhotoHandler.sendEmptyMessage(9999); //加载网络图片。
 				//如果缓存不存在，从网上获取。 因为是从前面的页面跳转过来，所以图片都会存在缓存或者sd卡。所以没有必要从网上获取。
 
 //			}
@@ -1216,14 +1208,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		public void onLoadingFailed(String imageUri, View view,
 									FailReason failReason) {
 			// TODO Auto-generated method stub
-			handler.sendEmptyMessage(LOAD_IMAGE_FINISH);
+			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 		}
 
 		@Override
 		public void onLoadingComplete(String imageUri, View view,
 									  Bitmap loadedImage) {
 			// TODO Auto-generated method stub
-			handler.sendEmptyMessage(LOAD_IMAGE_FINISH);
+			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 
 		}
 
@@ -1231,7 +1223,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		public void onLoadingCancelled(String imageUri, View view) {
 			// TODO Auto-generated method stub
 
-			handler.sendEmptyMessage(LOAD_IMAGE_FINISH);
+			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 		}
 
 	}
@@ -1272,6 +1264,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap.recycle();
 			mainBitmap = null;
 		}
+		editPhotoHandler.removeCallbacksAndMessages(null);
 	}
 
 

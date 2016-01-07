@@ -32,6 +32,7 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +72,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 	private int shareType = 0;
 
 	private final static int DELETEFILE = 12;
+	private final static int SELECT_PHOTO = 10;
 //	private final static int PROGRESSDIALOG = 0x112;
 
 	private ScanPhotosThread scanPhotosThread;
@@ -137,25 +139,94 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 
 	}
 
-	//处理viewpager传递过来的数据
-	private Handler mHandler = new Handler(){
-		public void handleMessage(android.os.Message msg) {
+	private final Handler viewPhotoHandler = new ViewPhotoHandler(this);
 
-			Bundle bundle = msg.getData();
-			switch (bundle.getInt("flag")) {
-			case 10://取消选中的时候
-				deletefromlist(bundle);
+
+	private static class ViewPhotoHandler extends Handler{
+		private final WeakReference<ViewPhotoActivity> mActivity;
+
+		public ViewPhotoHandler(ViewPhotoActivity activity){
+			mActivity = new WeakReference<>(activity);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			if (mActivity.get() == null) {
+				return;
+			}
+			mActivity.get().dealHandler(msg);
+		}
+	}
+
+	/**
+	 * 处理Message
+	 * @param msg
+	 */
+	private void dealHandler(Message msg) {
+		switch (msg.what) {
+			case SharePop.TWITTER:
+				shareType = msg.what;
 				break;
 
-			case 11://选中的时候，首先判断list的长度，其次判断之前有没有选中过，如果选中过，则不做任何操作，没有选中过，则选中
-				addtolist(bundle);
+			case DELETEFILE:
+//				deleteFileDialog.setProgress(msg.arg1);
+				// 如果没有图片，就显示  没有照片的布局
+				if (magicArrayList.size() == 0) {
+					noPhotoLayout.setVisibility(View.VISIBLE);
+					// 如果全部图片都已经删除，退出编辑模式。
+					editImageButton.setVisibility(View.VISIBLE);
+//					cancel.setVisibility(View.GONE);
+					rtLayout.setVisibility(View.VISIBLE);
+
+					selectllLayout.setVisibility(View.GONE);
+					selectAll.setText(R.string.all);
+					rtLayout.setVisibility(View.VISIBLE);
+//					}
+				}
+
+				customProgressBarPop.setProgress(msg.arg1, photoURLlist.size());
+				if (msg.arg1 == photoURLlist.size()) {
+					photoURLlist.clear();
+					currentProgress = 0;
+					viewPhotoGridViewAdapter.notifyDataSetChanged();
+					customProgressBarPop.dismiss();
+//					deleteFileDialog.dismiss();
+//					removeDialog(msg.arg2);//删除对应ID的dialog
+					selectShare.setEnabled(false);
+					selectDelete.setEnabled(false);
+					selectMakeGift.setEnabled(false);
+					myApplication.scanMagicFinish = false;
+				}
 				break;
-				
+
+			case 133:
+				viewPhotoGridViewAdapter.notifyDataSetChanged();
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
+				//照片为空的话，显示无图的布局。
+				if (magicArrayList.size() == 0) {
+					noPhotoLayout.setVisibility(View.VISIBLE);
+				}
+				break;
+
+			case SELECT_PHOTO:
+				Bundle bundle = msg.getData();
+				if (bundle.getInt("flag") == 10) {//取消选中的时候
+					deletefromlist(bundle);
+
+				} else if (bundle.getInt("flag") == 11) {
+					//选中的时候，首先判断list的长度，其次判断之前有没有选中过，如果选中过，则不做任何操作，没有选中过，则选中
+					addtolist(bundle);
+				}
+				break;
+
 			default:
 				break;
-			}
-		};
-	};
+		}
+	}
+
 
 
 	//获取Magic的照片
@@ -320,13 +391,13 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					if (photoURLlist.get(0).isPayed == 0) {//未购买
 						newToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
 					}else {
-						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online", photoURLlist.get(0).photoId, SharePop.SHARE_PHOTO_TYPE, mhHandler);
+						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL, "online", photoURLlist.get(0).photoId, SharePop.SHARE_PHOTO_TYPE, viewPhotoHandler);
 						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 					}
 
 				}else {
 					PictureAirLog.v(TAG, "本地图片");
-					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, mhHandler);
+					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, viewPhotoHandler);
 					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}else {//选择超过1张
@@ -384,7 +455,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			//预览模式，需要预先加载本地的magic的图片
 			ScanPhotos(magicArrayList, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC);
 			Collections.sort(magicArrayList);
-			mhHandler.sendEmptyMessage(133);
+			viewPhotoHandler.sendEmptyMessage(133);
 		}
 	}
 
@@ -400,7 +471,7 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 //			}else {
 				if (magicArrayList.get(position).isChecked == 1) {//通过判断check的标记来确定是否响应选择事件还是预览事件
 					PictureAirLog.v(TAG, "select" + position);
-					Message msg = mHandler.obtainMessage();
+					Message msg = viewPhotoHandler.obtainMessage();
 					int visiblePos = myGridView.getFirstVisiblePosition();
 					//选择事件
 					PhotoInfo info = magicArrayList.get(position);
@@ -418,7 +489,8 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 					bundle.putString("pathOrUrl", info.photoPathOrURL);
 					bundle.putInt("position", position);
 					msg.setData(bundle);
-					mHandler.sendMessage(msg);
+					msg.what = SELECT_PHOTO;
+					viewPhotoHandler.sendMessage(msg);
 					magicArrayList.set(position, info);
 				}else {
 					//预览事件
@@ -438,62 +510,6 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 
-	Handler mhHandler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			switch (msg.what) {
-				case SharePop.TWITTER:
-					shareType = msg.what;
-					break;
-
-			case DELETEFILE:
-//				deleteFileDialog.setProgress(msg.arg1);
-				// 如果没有图片，就显示  没有照片的布局
-				if (magicArrayList.size() == 0) {
-					noPhotoLayout.setVisibility(View.VISIBLE);
-					// 如果全部图片都已经删除，退出编辑模式。
-					editImageButton.setVisibility(View.VISIBLE);
-//					cancel.setVisibility(View.GONE);
-					rtLayout.setVisibility(View.VISIBLE);
-
-					selectllLayout.setVisibility(View.GONE);
-					selectAll.setText(R.string.all);
-					rtLayout.setVisibility(View.VISIBLE);
-//					}
-				}
-
-				customProgressBarPop.setProgress(msg.arg1, photoURLlist.size());
-				if (msg.arg1 == photoURLlist.size()) {
-					photoURLlist.clear();
-					currentProgress = 0;
-					viewPhotoGridViewAdapter.notifyDataSetChanged();
-					customProgressBarPop.dismiss();
-//					deleteFileDialog.dismiss();
-//					removeDialog(msg.arg2);//删除对应ID的dialog
-					selectShare.setEnabled(false);
-					selectDelete.setEnabled(false);
-					selectMakeGift.setEnabled(false);
-					myApplication.scanMagicFinish = false;
-				}
-				break;
-
-			case 133:
-				viewPhotoGridViewAdapter.notifyDataSetChanged();
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
-				//照片为空的话，显示无图的布局。
-				if (magicArrayList.size() == 0) {
-					noPhotoLayout.setVisibility(View.VISIBLE);
-				}
-				break;
-
-			default:
-				break;
-			}
-		}
-	};
 
 
 	//从list中删除，首先遍历整个list，如果找到目标，则将resultstring设为true，如果找到目标，则将目标删除。
@@ -651,12 +667,12 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 				PictureAirLog.v(TAG, "the file has been deleted");
 			}
 			currentProgress++;
-			message = mhHandler.obtainMessage();
+			message = viewPhotoHandler.obtainMessage();
 			message.what = DELETEFILE;
 			message.arg1 = currentProgress;
 //			message.arg2 = id;
 			message.obj = photoURLlist.get(i).photoPathOrURL;
-			mhHandler.sendMessage(message);
+			viewPhotoHandler.sendMessage(message);
 		}
 		PictureAirLog.v(TAG, "notify");
 		PictureAirLog.v(TAG, "cleared");
@@ -679,5 +695,9 @@ public class ViewPhotoActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		viewPhotoHandler.removeCallbacksAndMessages(null);
+	}
 }

@@ -48,6 +48,7 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
+import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,130 +100,152 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
     private boolean showTab = false;
     private int id = 0;
 
-    //声明handler消息回调机制
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case API1.GET_ALL_LOCATION_FAILED:
-                case API1.GET_FAVORITE_LOCATION_FAILED:
-                    noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-                    noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, handler, true);
-                    discoverListView.setVisibility(View.GONE);
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(getActivity(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    break;
 
-                case API1.GET_ALL_LOCATION_SUCCESS:
-                    //获取全部的location
-                    PictureAirLog.d(TAG, "get location success============" + msg.obj);
-                    try {
-                        JSONObject response = JSONObject.parseObject(msg.obj.toString());
-                        JSONArray resultArray = response.getJSONArray("locations");
-                        for (int i = 0; i < resultArray.size(); i++) {
-                            JSONObject object = resultArray.getJSONObject(i);
-                            DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                            locationList.add(locationInfo);
-                        }
-                        locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
-                    }
-                    API1.getFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), handler);
-                    break;
+    private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
 
-                //获取收藏地址成功
-                case API1.GET_FAVORITE_LOCATION_SUCCESS:
-                    PictureAirLog.d(TAG, "get favorite success");
-                    try {
-                        JSONObject favoriteJsonObject = JSONObject.parseObject(msg.obj.toString());
-                        JSONArray jsonArray = favoriteJsonObject.getJSONArray("favoriteLocations");
-                        for (int i = 0; i < jsonArray.size(); i++) {
-                            favoriteList.add(jsonArray.getString(i));
-                        }
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+    private static class FragmentPageDiscoverHandler extends Handler{
+        private final WeakReference<FragmentPageDiscover> mActivity;
+
+        public FragmentPageDiscoverHandler(FragmentPageDiscover activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.GET_ALL_LOCATION_FAILED:
+            case API1.GET_FAVORITE_LOCATION_FAILED:
+                noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+                noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageDiscoverHandler, true);
+                discoverListView.setVisibility(View.GONE);
+                myToast.setTextAndShow(ReflectionUtil.getStringId(getActivity(), msg.arg1), Common.TOAST_SHORT_TIME);
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                break;
+
+            case API1.GET_ALL_LOCATION_SUCCESS:
+                //获取全部的location
+                PictureAirLog.d(TAG, "get location success============" + msg.obj);
+                try {
+                    JSONObject response = JSONObject.parseObject(msg.obj.toString());
+                    JSONArray resultArray = response.getJSONArray("locations");
+                    for (int i = 0; i < resultArray.size(); i++) {
+                        JSONObject object = resultArray.getJSONObject(i);
+                        DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
+                        locationList.add(locationInfo);
                     }
-                    //设置location的isLove属性
-                    for (int i = 0; i < favoriteList.size(); i++) {
-                        for (int j = 0; j < locationList.size(); j++) {
-                            if (favoriteList.get(i).equals(locationList.get(j).locationId)) {
-                                locationList.get(j).islove = 1;
-                                break;
+                    locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+                API1.getFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageDiscoverHandler);
+                break;
+
+            //获取收藏地址成功
+            case API1.GET_FAVORITE_LOCATION_SUCCESS:
+                PictureAirLog.d(TAG, "get favorite success");
+                try {
+                    JSONObject favoriteJsonObject = JSONObject.parseObject(msg.obj.toString());
+                    JSONArray jsonArray = favoriteJsonObject.getJSONArray("favoriteLocations");
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        favoriteList.add(jsonArray.getString(i));
+                    }
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                //设置location的isLove属性
+                for (int i = 0; i < favoriteList.size(); i++) {
+                    for (int j = 0; j < locationList.size(); j++) {
+                        if (favoriteList.get(i).equals(locationList.get(j).locationId)) {
+                            locationList.get(j).islove = 1;
+                            break;
+                        }
+                    }
+                }
+
+                //开启线程等待第一次定位的结束，如果结束了，就显示出来
+                new Thread() {
+                    public void run() {
+                        while (!isLoading) {
+                            if (locationUtil.locationChanged) {
+                                Looper.prepare();
+                                isLoading = true;
+                                Log.d(TAG, "location is ready");
+                                discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
+                                discoverLocationAdapter.setUpdateCallback(FragmentPageDiscover.this);
+                                fragmentPageDiscoverHandler.sendEmptyMessage(FINISH_LOADING);
                             }
                         }
                     }
 
-                    //开启线程等待第一次定位的结束，如果结束了，就显示出来
-                    new Thread() {
-                        public void run() {
-                            while (!isLoading) {
-                                if (locationUtil.locationChanged) {
-                                    Looper.prepare();
-                                    isLoading = true;
-                                    Log.d(TAG, "location is ready");
-                                    discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), handler, locationUtil.mapLocation, rotate_degree);
-                                    discoverLocationAdapter.setUpdateCallback(FragmentPageDiscover.this);
-                                    handler.sendEmptyMessage(FINISH_LOADING);
-                                }
-                            }
-                        }
+                    ;
+                }.start();
+                break;
 
-                        ;
-                    }.start();
-                    break;
+            //加载完毕之后
+            case FINISH_LOADING:
+                discoverListView.setVisibility(View.VISIBLE);
+                noNetWorkOrNoCountView.setVisibility(View.GONE);
+                discoverListView.setAdapter(discoverLocationAdapter);
+                discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                break;
 
-                //加载完毕之后
-                case FINISH_LOADING:
-                    discoverListView.setVisibility(View.VISIBLE);
-                    noNetWorkOrNoCountView.setVisibility(View.GONE);
-                    discoverListView.setAdapter(discoverLocationAdapter);
-                    discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    break;
-
-                //定位的时候
-                case CHANGE_LOCATION:
-                    info = locationList.get(msg.arg1);
-                    LocationItem item = (LocationItem) msg.obj;
-                    final double lat_a = info.latitude;// 纬度,目标地点不会变化
-                    final double lng_a = info.longitude;// 经度
-                    double lat_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLatitude() : 0;//获取当前app经纬度
-                    double lng_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLongitude() : 0;
-                    double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
+            //定位的时候
+            case CHANGE_LOCATION:
+                info = locationList.get(msg.arg1);
+                LocationItem item = (LocationItem) msg.obj;
+                final double lat_a = info.latitude;// 纬度,目标地点不会变化
+                final double lng_a = info.longitude;// 经度
+                double lat_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLatitude() : 0;//获取当前app经纬度
+                double lng_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLongitude() : 0;
+                double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
 //				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
-                    // 距离
-                    item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
-                    double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
-                    // 角度
-                    item.locationLeadImageView.setRotation((float) d - rotate_degree);
-                    break;
+                // 距离
+                item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
+                double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
+                // 角度
+                item.locationLeadImageView.setRotation((float) d - rotate_degree);
+                break;
 
-                //停止定位
-                case STOP_LOCATION:
-                    LocationItem item2 = (LocationItem) msg.obj;
-                    item2.locationLeadImageView.setImageResource(R.drawable.direction_icon);
-                    break;
+            //停止定位
+            case STOP_LOCATION:
+                LocationItem item2 = (LocationItem) msg.obj;
+                item2.locationLeadImageView.setImageResource(R.drawable.direction_icon);
+                break;
 
-                case DiscoverLocationAdapter.MAGICSHOOT:
-                    PictureAirLog.d(TAG, "magic shoot on click");
-                    break;
+            case DiscoverLocationAdapter.MAGICSHOOT:
+                PictureAirLog.d(TAG, "magic shoot on click");
+                break;
 
-                case DiscoverLocationAdapter.STOPLOCATION:
-                    locationStart = false;
-                    break;
+            case DiscoverLocationAdapter.STOPLOCATION:
+                locationStart = false;
+                break;
 
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                    //重新加载购物车数据
-                    System.out.println("onclick with reload");
-                    locationList.clear();
-                    favoriteList.clear();
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+                //重新加载购物车数据
+                System.out.println("onclick with reload");
+                locationList.clear();
+                favoriteList.clear();
 //				dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                    API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), handler);//获取所有的location
+                API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
 //				if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
 //					API1.getLocationInfo(getActivity(),handler);//获取所有的location
 //				}else {//地址获取成功，但是照片获取失败
@@ -231,25 +254,23 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
 //					message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
 //					handler.sendMessage(message);
 //				}
-                    break;
+                break;
 
-                //收藏地点失败
-                case API1.EDIT_FAVORITE_LOCATION_FAILED:
-                    id = ReflectionUtil.getStringId(getActivity(), msg.arg1);
-                    myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                    break;
+            //收藏地点失败
+            case API1.EDIT_FAVORITE_LOCATION_FAILED:
+                id = ReflectionUtil.getStringId(getActivity(), msg.arg1);
+                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+                break;
 
-                case API1.EDIT_FAVORITE_LOCATION_SUCCESS:
-                    discoverLocationAdapter.updateIsLove(msg.arg1);
-                    break;
+            case API1.EDIT_FAVORITE_LOCATION_SUCCESS:
+                discoverLocationAdapter.updateIsLove(msg.arg1);
+                break;
 
-                default:
-                    break;
-            }
+            default:
+                break;
         }
+    }
 
-        ;
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -310,12 +331,12 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
     //获取地点数据
     private void getLocationData() {
         if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
-            API1.getLocationInfo(getActivity(), app.getTokenId(), handler);//获取所有的location
+            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
         } else {
-            Message message = handler.obtainMessage();
+            Message message = fragmentPageDiscoverHandler.obtainMessage();
             message.what = API1.GET_ALL_LOCATION_SUCCESS;
             message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-            handler.sendMessage(message);
+            fragmentPageDiscoverHandler.sendMessage(message);
         }
     }
 
@@ -349,6 +370,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
         Log.d(TAG, "ondestroy===========");
         locationStart = false;
         isLoading = false;
+        fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
         super.onDestroyView();
     }
 
@@ -450,7 +472,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
                 msg.obj = item;
                 msg.arg1 = position;
                 msg.what = CHANGE_LOCATION;
-                handler.sendMessage(msg);
+                fragmentPageDiscoverHandler.sendMessage(msg);
             }
         }
     }
@@ -533,7 +555,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
                 msg.arg1 = position;
                 msg.what = STOP_LOCATION;
 
-                handler.sendMessage(msg);
+                fragmentPageDiscoverHandler.sendMessage(msg);
                 activateLocationCount--;
                 if (activateLocationCount == 0) {//取消定位
                     sensorManager.unregisterListener(mySensorEventListener);//不使用的时候，取消监听
