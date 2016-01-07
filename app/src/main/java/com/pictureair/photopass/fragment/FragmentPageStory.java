@@ -377,7 +377,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载数据
                 System.out.println("onclick with reload");
-                dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+                if (!dialog.isShowing()){
+                    dialog.show();
+                }
                 if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
                     API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
                 } else {//地址获取成功，但是照片获取失败
@@ -418,7 +420,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                  * 1.重新从数据库获取一遍数据
                  * 2.更新页面
                  */
-                dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+                if (!dialog.isShowing()){
+                    dialog.show();
+                }
                 syncBoughtPhotos = true;
 
                 app.photoPassPicList.clear();
