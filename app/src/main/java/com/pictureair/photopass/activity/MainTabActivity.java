@@ -75,6 +75,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PictureAirLog.out(TAG + "==== onCreate");
         setContentView(R.layout.activity_main);
         application = (MyApplication) getApplication();
         initView();
@@ -150,6 +151,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             application.setIsStoryTab(false);
         }
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+            PictureAirLog.out("maintab ==== currentLanguage");
             mTabHost.clearAllTabs();
             mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
             loadFragment(fragmentArray.length);

@@ -13,10 +13,12 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.Locale;
 
 public class SettingLanguageActivity extends BaseActivity implements OnClickListener {
+    private static final String TAG = "SettingLanguageActivity";
     private Configuration config;
     private DisplayMetrics dm;
 
@@ -36,6 +38,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PictureAirLog.v(TAG, "onCreate");
         setContentView(R.layout.activity_setting_language);
         initView();
     }
@@ -102,7 +105,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        initView();
     }
 
     @Override
@@ -127,8 +129,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                 localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
                 localEditor.commit();
                 //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
-
-
                 finish();
                 break;
             case R.id.language_chinese:

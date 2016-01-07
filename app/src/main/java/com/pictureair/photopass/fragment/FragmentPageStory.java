@@ -148,10 +148,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
 
-    private static class FragmentPageStoryHandler extends Handler{
+    private static class FragmentPageStoryHandler extends Handler {
         private final WeakReference<FragmentPageStory> mActivity;
 
-        public FragmentPageStoryHandler(FragmentPageStory activity){
+        public FragmentPageStoryHandler(FragmentPageStory activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -167,6 +167,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -350,7 +351,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case SORT_COMPLETED_ALL:
-                if (syncBoughtPhotos){//同步购买照片操作
+                if (syncBoughtPhotos) {//同步购买照片操作
                     syncBoughtPhotos = false;
                     EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
                     EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
@@ -613,7 +614,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
 
-        indicator = (TabPageIndicator)view.findViewById(R.id.indicator);
+        indicator = (TabPageIndicator) view.findViewById(R.id.indicator);
 
         //初始化控件
         context = getActivity();
@@ -904,7 +905,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     @Override
     public void onResume() {
-        System.out.println("on resume-----------");
+        PictureAirLog.out(TAG + "  ==onResume");
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -934,7 +935,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         if (app.needScanFavoritePhotos) {//需要扫描收藏图片
             app.needScanFavoritePhotos = false;
             favouritePhotoList.clear();
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     super.run();
@@ -960,6 +961,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
         fragmentPageStoryHandler.removeCallbacksAndMessages(null);
     }
 
@@ -1446,7 +1450,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         if (baseBusEvent instanceof SocketEvent) {
             SocketEvent socketEvent = (SocketEvent) baseBusEvent;
             if (!noPhotoView.isShown()) {
-               fragmentPageStoryHandler.obtainMessage(SYNC_BOUGHT_PHOTOS).sendToTarget();
+                fragmentPageStoryHandler.obtainMessage(SYNC_BOUGHT_PHOTOS).sendToTarget();
             }
 
             //刷新列表

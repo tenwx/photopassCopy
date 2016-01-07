@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pictureair.photopass">
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -62,10 +63,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MainTabActivity"
-            android:theme="@style/Theme.PageIndicatorDefaults"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PageIndicatorDefaults" />
         <activity
             android:name=".activity.EditStoryAlbumActivity"
             android:configChanges="keyboard|orientation"
@@ -88,7 +89,7 @@
             android:name=".activity.CameraActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.DetailProductActivity"
             android:configChanges="keyboard|orientation"
@@ -213,7 +214,7 @@
             android:name=".activity.MipCaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <!-- alipay sdk begin -->
         <activity
@@ -221,12 +222,12 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind"></activity>
+            android:screenOrientation="behind" />
 
         <!-- Disney Video start -->
         <activity
@@ -246,7 +247,7 @@
         <activity
             android:name=".wxpay.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
 
         <receiver android:name=".wxpay.AppRegister">
             <intent-filter>
@@ -368,7 +369,7 @@
         <!-- 更新内容 -->
         <receiver android:name=".receiver.UpdateUiRecriver">
             <intent-filter android:priority="500">
-                <action android:name="com.receiver.UpdateUiRecriver"></action>
+                <action android:name="com.receiver.UpdateUiRecriver" />
             </intent-filter>
         </receiver>
 
