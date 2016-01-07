@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -70,6 +72,9 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private PopupWindow popupWindow;
     private CustomProgressDialog customProgressDialog;
     private Context context;
+    //底部view
+    private LinearLayout llDisneyVideoFoot,llShopPhoto;
+    private TextView tvSelectPhotoOk;
 
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
@@ -147,25 +152,33 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         //初始化资源
         newToast = new MyToast(this);
         myApplication = (MyApplication) getApplication();
+        //初始化控件
+        okButton = (TextView) findViewById(R.id.button1);
+        rtLayout = (ImageView) findViewById(R.id.rlrt);
+        gridView = (GridView) findViewById(R.id.gridView_all);
+        gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         //空照片介绍页面
         llNullPhoto = (LinearLayout) findViewById(R.id.ll_null_photo);
         btnGoToSelectPhoto = (Button) findViewById(R.id.btn_goto_select);
         btnGoToSelectPhoto.setTypeface(MyApplication.getInstance().getFontBold());
         tvHead = (TextView) findViewById(R.id.tv_head);
         noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
-        //初始化控件
-        okButton = (TextView) findViewById(R.id.button1);
-        rtLayout = (ImageView) findViewById(R.id.rlrt);
-        gridView = (GridView) findViewById(R.id.gridView_all);
+        initDisneySelectPhotoFootView();
 
         //绑定监听
         rtLayout.setOnClickListener(this);
         okButton.setOnClickListener(this);
         btnGoToSelectPhoto.setOnClickListener(this);
 
-        //更新标题
+        /*
+         * 更新标题
+         * 迪士尼视频页面的选择照片底部有3个Icon
+         */
         if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
             tvHead.setText(getResources().getString(R.string.story_tab_bought));
+            llDisneyVideoFoot.setVisibility(View.VISIBLE);
+            tvSelectPhotoOk.setVisibility(View.VISIBLE);
+            moveOkButtonLocation();
             isBuy = true;
         }
 
@@ -210,6 +223,27 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         //获取可选图片总数
         okButton.setVisibility(View.VISIBLE);
         okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
+    }
+
+    /**
+     * 如果是迪士尼视频进入到本页面（那么okButton在底部显示）
+     */
+    private void moveOkButtonLocation() {
+        int width = ScreenUtil.getScreenWidth(context);
+        int height = ScreenUtil.getScreenHeight(context);
+        okButton.layout(20,20,20,20);
+    }
+
+    /**
+     * 初始化视频制作选择照片的底部view
+     */
+    private void initDisneySelectPhotoFootView() {
+        llDisneyVideoFoot = (LinearLayout)findViewById(R.id.ll_disney_video_foot);
+        llShopPhoto = (LinearLayout)findViewById(R.id.ll_shop_photo);
+        tvSelectPhotoOk = (TextView)findViewById(R.id.tv_select_photo_ok);
+        llShopPhoto.setOnClickListener(this);
+        tvSelectPhotoOk.setVisibility(View.GONE);
+//        tvSelectPhotoOk.setOnClickListener(this);
     }
 
 
@@ -326,6 +360,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 finish();
                 break;
 
+            case R.id.ll_shop_photo:
             case R.id.btn_goto_select:
                 //删除所有aty，只剩下mainTab页面，
                 //将mainTab切换到shop Tab

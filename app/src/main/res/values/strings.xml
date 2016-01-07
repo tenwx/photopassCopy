@@ -538,6 +538,7 @@
     <string name="neednotdownload_video">此视频已经存在</string>
     <!-- Disney video 引导页介绍，暂时没有中文，先用英文代替-->
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
+    <string name="disney_video_selectphoto_model">选择模式</string>
     <!-- Disney video End-->
 
     <string name="auto_sync">自动更新</string>

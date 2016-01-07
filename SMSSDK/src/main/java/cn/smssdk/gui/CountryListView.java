@@ -79,7 +79,6 @@ public class CountryListView extends RelativeLayout implements OnTouchListener {
             tvScroll.setBackgroundResource(resId);
         }
         tvScroll.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 48);
-//		tvScroll.setTypeface(Typeface.DEFAULT);
         tvScroll.setTypeface(typeface);
         tvScroll.setVisibility(GONE);
         tvScroll.setGravity(Gravity.CENTER);

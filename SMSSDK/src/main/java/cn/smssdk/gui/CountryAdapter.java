@@ -55,11 +55,6 @@ public class CountryAdapter extends GroupAdapter {
         sEngine.setIndex(countries);
     }
 
-    /**
-     * 搜索
-     *
-     * @param token
-     */
     public void search(String token) {
         ArrayList<String> res = sEngine.match(token);
         boolean isEmptyToken = false;
@@ -89,23 +84,6 @@ public class CountryAdapter extends GroupAdapter {
             }
         }
 
-//		boolean isEmptyToken = TextUtils.isEmpty(token);
-//
-//		titles = new ArrayList<String>();
-//		countries = new ArrayList<ArrayList<String[]>>();
-//		for (Entry<Character, ArrayList<String[]>> ent : rawData.entrySet()) {
-//			ArrayList<String[]> cl = ent.getValue();
-//			ArrayList<String[]> list = new ArrayList<String[]>();
-//			for (String[] paire : cl) {
-//				if (isEmptyToken || paire[0].contains(token)) {
-//					list.add(paire);
-//				}
-//			}
-//			if (list.size() > 0) {
-//				titles.add(String.valueOf(ent.getKey()));
-//				countries.add(list);
-//			}
-//		}
     }
 
     public int getGroupCount() {
