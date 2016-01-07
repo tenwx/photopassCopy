@@ -64,6 +64,7 @@
             android:name=".activity.MainTabActivity"
             android:theme="@style/Theme.PageIndicatorDefaults"
             android:configChanges="keyboard|orientation"
+            android:hardwareAccelerated="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
@@ -204,10 +205,6 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity
-            android:name=".activity.AnswerActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ModifyPasswordActivity"
             android:configChanges="keyboard|orientation"

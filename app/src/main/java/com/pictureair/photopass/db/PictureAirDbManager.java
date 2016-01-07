@@ -551,6 +551,24 @@ public class PictureAirDbManager {
     }
 
     /**
+     * 更新指定照片的购买状态
+     * @param ppCode pp码
+     * @param shootDate 绑定时间
+     */
+    public void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate) {
+        try {
+            database = photoInfoDBHelper.getWritableDatabase();
+            database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode = ? and shootTime = ?", new String[]{ppCode, shootDate});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (database != null) {
+                database.close();
+            }
+        }
+    }
+
+    /**
      * 检查是不是第一次
      *
      * @param activity

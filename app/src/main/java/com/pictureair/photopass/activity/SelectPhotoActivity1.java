@@ -37,6 +37,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -75,30 +76,59 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private LinearLayout llDisneyVideoFoot,llShopPhoto;
     private TextView tvSelectPhotoOk;
 
-    private Handler handler = new Handler() {
+    private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
+
+
+    private static class SelectPhotoHandler extends Handler{
+        private final WeakReference<SelectPhotoActivity1> mActivity;
+
+        public SelectPhotoHandler(SelectPhotoActivity1 activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (null != customProgressDialog && customProgressDialog.isShowing()) {
-                customProgressDialog.dismiss();
+            if (mActivity.get() == null) {
+                return;
             }
-            switch (msg.what) {
-                case API1.UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS:
-                    // 发送成功
-                    initPopWindow();
-                    break;
-
-                case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED:
-                    // 处理失败，数据错误
-//                    initPopWindow();
-                    newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)), Common.TOAST_SHORT_TIME);
-                    PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
-                    break;
-                default:
-                    break;
-            }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case 111:
+                okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
+                break;
+
+            case API1.UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS:
+                // 发送成功
+                if (null != customProgressDialog && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                initPopWindow();
+                break;
+
+            case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED:
+                // 处理失败，数据错误
+//                    initPopWindow();
+                if (null != customProgressDialog && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)), Common.TOAST_SHORT_TIME);
+                PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -217,19 +247,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     }
 
 
-    //处理viewpager传递过来的数据
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 111:
-                    okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
-                    break;
 
-                default:
-                    break;
-            }
-        }
-    };
 
     /**
      * 将photoItemInfo的列表转成photoInfo的列表
@@ -247,6 +265,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 }
             } else {
                 if (goodsInfo == null) {
+                    PictureAirLog.v(TAG, "goodsInfo == null");
                     return list;
                 }
                 //数码照片--是则获取未购买的图片 礼物--获取全部
@@ -255,7 +274,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         list.add(photoInfo);
                     }
                 } else {
-                    list.addAll(myApplication.photoPassPicList);
+                    list.add(photoInfo);
                 }
             }
         }
@@ -286,7 +305,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
             //获取对应相册中的SelectPhotoItemInfo对象
             info = photoPassArrayList.get(position);
             viewPhotoGridViewAdapter = photoPassAdapter;
-            Message msg = mHandler.obtainMessage();
+            Message msg = selectPhotoHandler.obtainMessage();
             //获取已经选择的照片数量
             selectedCount = photoURLlist.size();
             //判断数量
@@ -322,7 +341,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 }
                 msg.what = 111;
                 msg.arg1 = selectedCount;
-                mHandler.sendMessage(msg);//通知主UI更改信息
+                selectPhotoHandler.sendMessage(msg);//通知主UI更改信息
             } else {
                 newToast.setTextAndShow(String.format(getString(R.string.limit_photos), photocount), Common.TOAST_SHORT_TIME);
             }
@@ -400,8 +419,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                             }
                         }
                         PictureAirLog.i(TAG, "photos===>" + photos.toString());
-                        API1.uploadPhotoMakeVideo(photos.toString(), handler);
-//            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
+                        API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
                     }
                 }
                 break;
@@ -445,4 +463,9 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         popupWindow.update();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        selectPhotoHandler.removeCallbacksAndMessages(null);
+    }
 }

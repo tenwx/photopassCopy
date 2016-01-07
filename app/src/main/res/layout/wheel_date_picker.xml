@@ -3,11 +3,11 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="0dp" >
+    android:padding="0dp">
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="@dimen/pp_height_1"
         android:layout_gravity="center_vertical"
         android:background="@color/pp_gray" />
 
@@ -17,23 +17,22 @@
         android:background="@color/white"
 
         android:orientation="horizontal"
-        android:padding="0dp" >
+        android:padding="0dp">
 
         <Button
             android:id="@+id/btn_c_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingBottom="@dimen/pp_padding_16"
-            android:paddingTop="16dp"
-            android:textColor="@color/pp_gray"
             android:background="@color/white"
-            android:text="@string/cancel1" 
-            android:textSize="@dimen/text_size_16">
-        </Button>
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_16"
+            android:text="@string/cancel1"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
 
         <View
-            android:layout_width="1px"
+            android:layout_width="@dimen/pp_height_1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="0dp"
@@ -43,26 +42,25 @@
             android:id="@+id/btn_s_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/pp_padding_16"
-            android:paddingTop="16dp"
             android:layout_weight="1"
             android:background="@drawable/button_white"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_margin_16"
             android:text="@string/ok"
             android:textColor="@color/pp_blue"
-            android:textSize="@dimen/text_size_16">
-        </Button>
+            android:textSize="@dimen/text_size_16" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="@dimen/pp_height_1"
         android:background="@color/pp_gray" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:background="@color/white"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <com.pictureair.photopass.widget.wheelview.WheelView
@@ -70,8 +68,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/white"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/white" />
 
 
         <com.pictureair.photopass.widget.wheelview.WheelView
@@ -79,16 +77,16 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/white"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/white" />
 
         <com.pictureair.photopass.widget.wheelview.WheelView
             android:id="@+id/day"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/white"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@color/white" />
     </LinearLayout>
 
 </LinearLayout>

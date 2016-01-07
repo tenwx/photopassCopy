@@ -30,7 +30,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.UpdateCallback;
 import com.pictureair.photopass.adapter.DiscoverLocationAdapter;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
@@ -40,7 +39,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
-import com.pictureair.photopass.util.LocationUtil.LocationNotification;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -58,7 +56,8 @@ import java.util.HashMap;
  *
  * @author bauer_bao
  */
-public class FragmentPageDiscover extends BaseFragment implements UpdateCallback, OnClickListener, LocationNotification {
+public class FragmentPageDiscover extends BaseFragment implements DiscoverLocationAdapter.OnUpdateLocationListener,
+        OnClickListener, LocationUtil.OnLocationNotificationListener {
 
     //声明控件
     private LinearLayout discoverPopularityLinearLayout, discoverDistanceLinearLayout, discoverSelectionLinearLayout, discoverCollectionLinearLayout, discoverTopLinearLayout;
@@ -83,7 +82,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
     private LocationUtil locationUtil;
 
     //申明变量
-    private static String TAG = "FragmentPageDiscover";
+    private static final String TAG = "FragmentPageDiscover";
     private static final int CHANGE_LOCATION = 111;
     private static final int STOP_LOCATION = 222;
     private static final int FINISH_LOADING = 333;
@@ -187,7 +186,7 @@ public class FragmentPageDiscover extends BaseFragment implements UpdateCallback
                                 isLoading = true;
                                 Log.d(TAG, "location is ready");
                                 discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
-                                discoverLocationAdapter.setUpdateCallback(FragmentPageDiscover.this);
+                                discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
                                 fragmentPageDiscoverHandler.sendEmptyMessage(FINISH_LOADING);
                             }
                         }

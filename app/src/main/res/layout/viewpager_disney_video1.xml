@@ -8,10 +8,10 @@
         android:id="@+id/tv_video1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="@dimen/pp_margin_100"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
         android:layout_weight="1"
-        android:layout_marginBottom="100dp"
         android:gravity="center"
         android:text="@string/disney_video_introduces"
         android:textColor="@color/pp_blue"
@@ -27,12 +27,12 @@
             android:id="@+id/btn_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/pp_margin_16"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/start"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_middle_size" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
 </LinearLayout>

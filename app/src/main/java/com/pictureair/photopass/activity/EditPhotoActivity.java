@@ -65,7 +65,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
-import com.pictureair.photopass.util.LocationUtil.LocationNotification;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
@@ -80,7 +79,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
-public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationNotification{
+public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener {
 	//视图
 	public StickerView mStickerView;// 贴图层View
 	public FontView fontView; //文字view

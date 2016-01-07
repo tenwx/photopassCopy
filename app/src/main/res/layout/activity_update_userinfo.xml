@@ -35,7 +35,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/pp_height_1dp"
             android:layout_below="@+id/et_userinfo_text"
             android:layout_marginTop="@dimen/pp_padding_8"
             android:background="@color/pp_blue" />

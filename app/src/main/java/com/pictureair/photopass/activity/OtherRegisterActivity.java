@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference;
 import cn.smssdk.gui.EditTextWithClear;
 
 public class OtherRegisterActivity extends BaseActivity implements
-        OnClickListener, LoginCallBack{
+        OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     // 声明控件
     private EditTextWithClear etEmail, etPwd, etPwd2, etName;
     private TextView etYear, etMonth, etDay, etCounry;

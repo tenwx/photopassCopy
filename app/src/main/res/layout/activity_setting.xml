@@ -34,7 +34,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:layout_marginTop="@dimen/pp_margin_16"
                     android:background="@color/line_color" />
 
@@ -65,7 +65,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color" />
 
                 <TextView
@@ -83,7 +83,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color" />
 
                 <RelativeLayout
@@ -114,7 +114,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:layout_marginLeft="@dimen/pp_margin_32"
                     android:background="@color/line_color" />
 
@@ -147,7 +147,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color" />
 
                 <TextView
@@ -164,7 +164,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color" />
 
                 <RelativeLayout
@@ -196,7 +196,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color" />
 
                 <TextView
@@ -213,7 +213,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color" />
             </LinearLayout>
         </ScrollView>

@@ -18,6 +18,8 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
+import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.entity.SocketEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -27,6 +29,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
+import de.greenrobot.event.EventBus;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
@@ -45,6 +48,8 @@ public class NotificationService extends android.app.Service {
 
     private boolean isConnected = false;
     private String sendType;
+
+    private PictureAirDbManager pictureAirDbManager;
 
     private Handler handler = new Handler() {
 
@@ -95,6 +100,7 @@ public class NotificationService extends android.app.Service {
         Log.e("＝＝＝＝＝＝＝＝＝＝＝", "onStartCommand");
         preferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         userId = preferences.getString(Common.USERINFO_ID, null);
+        pictureAirDbManager = new PictureAirDbManager(this);
 //		editor = preferences.edit();
         if (intent != null && intent.getStringExtra("status") != null) {//断开连接
             if ("disconnect".equals(intent.getStringExtra("status"))) {
@@ -119,7 +125,7 @@ public class NotificationService extends android.app.Service {
         }
         return START_STICKY;
         /*
-		* START_STICKY：如果service进程被kill掉，保留service的状态为开始状态，但不保留递送的intent对象。
+        * START_STICKY：如果service进程被kill掉，保留service的状态为开始状态，但不保留递送的intent对象。
 		* 随后系统会尝试重新创建service，由于服务状态为开始状态，所以创建服务后一定会调用onStartCommand(Intent,int,int)方法。如果在此期间没有任何启动命令被传递到service，那么参数Intent将为null。
 		* START_NOT_STICKY：“非粘性的”。使用这个返回值时，如果在执行完onStartCommand后，服务被异常kill掉，系统不会自动重启该服务。
 		* START_REDELIVER_INTENT：重传Intent。使用这个返回值时，如果在执行完onStartCommand后，服务被异常kill掉，系统会自动重启该服务，并将Intent的值传入。
@@ -264,7 +270,7 @@ public class NotificationService extends android.app.Service {
                                     notification.defaults = Notification.DEFAULT_ALL;
                                     Intent intent = new Intent(
                                             getApplicationContext(),
-                                            com.pictureair.photopass.activity.MainTabActivity.class);
+                                            MainTabActivity.class);
                                     PendingIntent pendingIntent = PendingIntent
                                             .getActivity(
                                                     getApplicationContext(), 0,
@@ -281,14 +287,42 @@ public class NotificationService extends android.app.Service {
                             }
 
 
-                            // 解决问题：购买照片与升级PP＋,同一用户不同设备不同步的问题。
-                            // 升级PP＋与购买照片后发送的事件，记录下来，并且保存在application中。
+                            /**
+                             *  解决问题：购买照片与升级PP＋,同一用户不同设备不同步的问题。
+                             *  升级PP＋与购买照片后发送的事件，记录下来，并且保存在application中。
+                             *  升级PP+后的值：{"c":{"customerId":"DPPPTV9BH3U4Z2WS","shootDate":"2015-12-18"}}
+                             *  购买照片过后的返回值：{"c":{"id":"*******"}
+                             */
                             if (event.toString().equals("upgradedPhotos")) {
                                 sendType = "upgradedPhoto";
                                 handler.sendEmptyMessage(3333);
                                 JSONObject message = (JSONObject) arg2[0];
                                 PictureAirLog.e("推送", "收到推送：" + message.toString());
-                                application.setUpgradedPhotosMessage(message.toString());
+                                int socketType = -1;
+                                String ppCode = null, shootDate = null, photoId = null;
+                                //1.更新数据库
+                                try {
+                                    JSONObject updateJsonObject = message.getJSONObject("c");
+                                    if (updateJsonObject.has("customerId")) {//ppp升级pp
+                                        socketType = SocketEvent.SOCKET_PHOTOPASS;
+                                        ppCode = updateJsonObject.getString("customerId");
+                                        shootDate = updateJsonObject.getString("shootDate");
+                                        pictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate);
+                                    } else if (updateJsonObject.has("id")) {//照片购买
+                                        socketType = SocketEvent.SOCKET_PHOTO;
+                                        photoId = updateJsonObject.getString("id");
+                                        pictureAirDbManager.updatePhotoBought(photoId);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                //2.如果处于story页面，则更新数据，并且刷新列表；如果不是处于story页面，则设置更新变量
+                                if (isTopActivity() && application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
+                                    EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
+                                } else {//如果不是处于story页面，则设置更新变量
+                                    application.setNeedRefreshOldPhotos(true);
+                                }
                             }
 
                             //下单推送

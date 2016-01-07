@@ -19,7 +19,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_margin_16"
             android:paddingRight="@dimen/pp_padding_10"
             android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
@@ -42,8 +42,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_margin_10"
+            android:paddingRight="@dimen/pp_margin_16"
             android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:visibility="gone"
@@ -55,13 +55,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/pp_margin_16"
             android:text="@string/pp_ok"
             android:background="@drawable/button_white"
             android:textColor="@color/gray"
-            android:padding="5dp"
+            android:padding="@dimen/pp_padding_5"
             android:visibility="gone"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <ListView
@@ -71,7 +71,7 @@
         android:layout_below="@id/head"
         android:scrollbars="none"
         android:divider="@color/gray_light"
-        android:dividerHeight="5dp" />
+        android:dividerHeight="@dimen/pp_height_5" />
     
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork_view"

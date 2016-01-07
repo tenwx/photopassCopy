@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/nationalListSelection_tV01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="@dimen/pp_padding_16"
         android:textColor="@color/pp_gray"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_size_16" />
 
 </LinearLayout>

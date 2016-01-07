@@ -96,7 +96,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		if (dpp.expiredOn.equals("")){ // 如果有效期为空。就不显示，如果不为空，就显示。
 			holder.tvExpired.setText("");
 		}else{
-			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + AppUtil.GTMToLocal(dpp.expiredOn));
+			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + AppUtil.GTMToLocal(dpp.expiredOn).substring(0,10));
+
 		}
 
 		//初始化ppp三个格子

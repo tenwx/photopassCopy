@@ -1,4 +1,4 @@
-package com.pictureair.photopass.activity;
+package com.pictureair.photopass.util;
 
 import android.content.Context;
 import android.os.Looper;
@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppManager;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 

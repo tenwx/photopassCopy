@@ -59,7 +59,6 @@ public class PaymentOrderActivity extends BaseActivity implements
     private String priceString;
     private String introductString;
 
-    private RelativeLayout pickupLayout;
     private RelativeLayout zfbLayout;
     private RelativeLayout ylLayout;
     private RelativeLayout paypalLayout;
@@ -69,9 +68,6 @@ public class PaymentOrderActivity extends BaseActivity implements
     private ImageView yhkButton;
     private ImageView paypalButton;
     private ImageView wechatButton;
-
-    private TextView pickupTextView;
-    // private TextView addressTextView;
 
     private static final int RQF_SUCCESS = 1;
 
@@ -134,11 +130,6 @@ public class PaymentOrderActivity extends BaseActivity implements
         ylLayout = (RelativeLayout) findViewById(R.id.yl);
         paypalLayout = (RelativeLayout) findViewById(R.id.paypal);
         wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
-        // 运送方式选择
-        pickupLayout = (RelativeLayout) findViewById(R.id.pickup);
-        pickupTextView = (TextView) findViewById(R.id.textView4);
-        // addressTextView = (TextView)findViewById(R.id.addressTextView);
-
         pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
 
     }

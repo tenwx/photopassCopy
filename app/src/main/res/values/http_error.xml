@@ -196,7 +196,7 @@
     <string name="http_error_code_5039">数字必须为非负整数！</string>
     <string name="http_error_code_5040">无效分享内容！</string>
     <string name="http_error_code_5041">分享回调失败！</string>
-    <string name="http_error_code_5042">订单图片合成失败失败！</string>
+    <string name="http_error_code_5042">订单图片合成失败！</string>
     <string name="http_error_code_5043">订单图片不存在！</string>
 
 </resources>

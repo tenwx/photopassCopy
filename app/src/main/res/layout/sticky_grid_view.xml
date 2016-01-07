@@ -2,21 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:paddingBottom="5dp">
-    
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/pp_padding_5">
+
     <ImageView
         android:id="@+id/sticky_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/play_video_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
         android:layout_centerInParent="true"
-        android:src="@drawable/play"/>
+        android:scaleType="centerInside"
+        android:src="@drawable/play" />
 
 </RelativeLayout>

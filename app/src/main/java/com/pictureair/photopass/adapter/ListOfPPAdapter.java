@@ -157,8 +157,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             } else {
                 holder.deleteMyPP.setVisibility(View.GONE);
             }
-
-
             holder.deleteMyPP.setOnClickListener(new PhotoPassManagerOnClickListener(position, 0, true));//删除图片
             holder.image1.setOnClickListener(new PhotoPassManagerOnClickListener(position, 0, false));
             holder.image2.setOnClickListener(new PhotoPassManagerOnClickListener(position, 1, false));

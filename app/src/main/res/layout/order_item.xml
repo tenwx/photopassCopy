@@ -31,7 +31,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/order_status"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/pp_margin_16"
             android:layout_toRightOf="@id/or_states"
             android:gravity="center"
             android:text="未付款"
@@ -84,7 +84,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:text="@string/order_no"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <TextView
@@ -115,7 +115,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:text="@string/orderprice"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <TextView
@@ -169,7 +169,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/order_time"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <TextView
@@ -204,7 +204,7 @@
         android:paddingRight="@dimen/pp_margin_16"
         android:paddingTop="@dimen/pp_padding_8"
         android:text="@string/order_detail"
-        android:textColor="@color/pp_gray"
+        android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_small_size" />
 
 </LinearLayout>
