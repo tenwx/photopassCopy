@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/cartProductImageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/pp_height_60"
+            android:layout_height="@dimen/pp_height_60"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/pp_margin_5"
             android:layout_toRightOf="@id/cartSelectImageView"
@@ -41,14 +41,14 @@
             android:gravity="center_vertical"
             android:lines="2"
             android:textColor="@color/gray"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
 
         <LinearLayout
             android:id="@+id/cartEditBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/pp_margin_10"
             android:layout_toRightOf="@id/cartProductImageView"
             android:orientation="horizontal">
 
@@ -67,7 +67,7 @@
                 android:background="@drawable/edit_bg"
                 android:gravity="center"
                 android:textColor="@color/pp_gray"
-                android:textSize="15sp"></TextView>
+                android:textSize="@dimen/text_size_16" />
 
             <com.pictureair.photopass.widget.ListViewImageView
                 android:id="@+id/cartAddImageView"
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="2dp"
+            android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/cartPrice"
             android:textColor="@color/gray"
             android:textSize="@dimen/text_small_size" />
@@ -115,8 +115,8 @@
             android:id="@+id/cartPhotoGridLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_8"
             android:layout_marginRight="@dimen/pp_margin_16"
+            android:layout_marginTop="@dimen/pp_margin_8"
             android:background="@drawable/bg_border_stroke"
             android:columnCount="4"
             android:orientation="horizontal"
@@ -125,7 +125,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/pp_height_1"
             android:layout_below="@+id/cartPhotoGridLayout"
             android:layout_marginTop="@dimen/pp_margin_16"
             android:background="@color/pp_light_gray_normal" />

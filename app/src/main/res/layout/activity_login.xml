@@ -29,9 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/top"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
         android:orientation="vertical">
 
 
@@ -39,7 +38,7 @@
             android:id="@+id/rl_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/pp_margin_20"
             android:paddingBottom="@dimen/pp_padding_16">
 
             <TextView
@@ -56,7 +55,7 @@
                 android:id="@+id/tv_country"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="10dip"
+                android:layout_marginRight="@dimen/pp_margin_10"
                 android:layout_weight="1"
                 android:gravity="right|bottom"
                 android:text="@string/china"
@@ -66,23 +65,22 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="@dimen/pp_height_1"
             android:background="@color/pp_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/pp_margin_16"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/pp_padding_16"
-            android:paddingRight="5dp">
+            android:paddingBottom="@dimen/pp_margin_16"
+            android:paddingRight="@dimen/pp_margin_5">
 
             <TextView
                 android:id="@+id/tv_country_num"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-
                 android:gravity="center"
                 android:text="+86"
                 android:textColor="@color/pp_gray"
@@ -99,7 +97,7 @@
                 android:hint="@string/smssdk_write_mobile_phone"
                 android:imeOptions="actionNext"
                 android:inputType="phone"
-                android:paddingLeft="5dp"
+                android:paddingLeft="@dimen/pp_padding_5"
                 android:textColor="@color/pp_gray"
                 android:textColorHint="@color/pp_gray"
                 android:textSize="@dimen/text_size_16" />
@@ -107,7 +105,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="@dimen/pp_height_1"
             android:background="@color/pp_blue" />
 
 
@@ -115,7 +113,7 @@
             android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/pp_margin_16"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="@string/pwd"
@@ -123,7 +121,7 @@
             android:inputType="textPassword"
             android:paddingBottom="@dimen/pp_padding_16"
             android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="5dp"
+            android:paddingRight="@dimen/pp_padding_5"
             android:textColor="@color/pp_gray"
             android:textColorHint="@color/pp_gray"
             android:textSize="@dimen/text_size_16" />
@@ -131,7 +129,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="@dimen/pp_height_1"
             android:background="@color/pp_blue" />
 
         <TextView
@@ -139,8 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/pp_margin_10"
             android:text="@string/forgot"
             android:textColor="@color/gray"
             android:textSize="@dimen/text_size_16"
@@ -150,9 +147,9 @@
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="@dimen/pp_margin_32"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/login"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/text_size_16" />
@@ -161,9 +158,9 @@
             android:id="@+id/sign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/pp_margin_16"
             android:background="@drawable/button_sign_shape_and_selector"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/sign"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
@@ -173,8 +170,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:padding="10dp"
+            android:layout_marginTop="@dimen/pp_margin_40"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/otherLogin"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_12" />

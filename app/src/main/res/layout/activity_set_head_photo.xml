@@ -23,7 +23,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_margin_16"
             android:paddingRight="@dimen/pp_padding_10"
             android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"

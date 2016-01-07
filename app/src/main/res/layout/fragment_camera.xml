@@ -3,31 +3,31 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/gray_light"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3" >
+        android:layout_weight="3">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
             android:layout_alignParentBottom="true"
+            android:adjustViewBounds="true"
             android:src="@drawable/launching_camera" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/pp_margin_40"
+            android:layout_marginRight="@dimen/pp_margin_64"
             android:text="@string/launching_camera"
             android:textColor="@color/gray3"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <View

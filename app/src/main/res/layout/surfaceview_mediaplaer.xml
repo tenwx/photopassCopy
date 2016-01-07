@@ -21,8 +21,8 @@
 
     <ImageButton
         android:id="@+id/btn_play_or_stop"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/pp_height_80"
+        android:layout_height="@dimen/pp_height_80"
         android:layout_centerInParent="true"
         android:background="@color/transparent"
         android:clickable="false"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="@dimen/pp_margin_20"
             android:text="00:00"
             android:textColor="@color/white"
             android:textSize="@dimen/text_small_size" />
@@ -51,7 +51,7 @@
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="@dimen/pp_height_30"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:padding="10dip"
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="@dimen/pp_margin_20"
             android:text="00:00"
             android:textColor="@color/white"
             android:textSize="@dimen/text_small_size" />

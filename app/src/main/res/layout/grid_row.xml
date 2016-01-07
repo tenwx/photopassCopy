@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/imageItem"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/pp_height_80"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop" />
@@ -24,12 +24,12 @@
 
     <ImageView
         android:id="@+id/imageView_Select"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/pp_height_40"
+        android:layout_height="@dimen/pp_height_40"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/sel1"
         android:scaleType="centerInside"
+        android:src="@drawable/sel1"
         android:visibility="invisible" />
 
 </RelativeLayout>

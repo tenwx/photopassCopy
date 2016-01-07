@@ -41,7 +41,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/pp_height_1"
         android:layout_marginTop="@dimen/pp_margin_10"
         android:background="@color/pp_blue" />
 

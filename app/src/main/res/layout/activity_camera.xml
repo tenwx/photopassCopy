@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white" >
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/previewview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" >
+        android:layout_centerInParent="true">
 
         <SurfaceView
             android:id="@+id/surfaceView1"
@@ -26,8 +26,8 @@
 
         <View
             android:id="@+id/view_focus"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/pp_width_80"
+            android:layout_height="@dimen/pp_width_80"
             android:layout_centerInParent="true"
             android:background="@null" />
 
@@ -38,11 +38,11 @@
             android:layout_centerInParent="true"
             android:text="3"
             android:textColor="#ffffff"
-            android:textSize="60sp"
+            android:textSize="@dimen/text_size_60"
             android:visibility="invisible" />
 
     </RelativeLayout>
-    
+
     <!-- bottombar  start -->
 
     <RelativeLayout
@@ -50,15 +50,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:background="@color/gray_light" >
+        android:background="@color/gray_light">
 
         <com.pictureair.photopass.widget.RotateView
             android:id="@+id/button2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/pp_width_40"
+            android:layout_height="@dimen/pp_width_40"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="@dimen/pp_margin_20"
             android:scaleType="centerInside" />
 
         <ImageButton
@@ -77,11 +77,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="@dimen/pp_margin_20"
             android:background="@color/transparent"
-            android:padding="5dp"
-            android:visibility="gone"
-            android:src="@drawable/magic_btn" />
+            android:padding="@dimen/pp_padding_5"
+            android:src="@drawable/magic_btn"
+            android:visibility="gone" />
     </RelativeLayout>
     <!-- bottombar  end -->
 
@@ -92,7 +92,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/previewview"
         android:background="@color/black"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <com.pictureair.photopass.widget.RotateView
             android:id="@+id/camera_return"
@@ -119,7 +119,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <com.pictureair.photopass.widget.RotateView
                 android:id="@+id/imageButton_time"
@@ -136,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/pp_margin_10"
                 android:layout_toRightOf="@id/imageButton_time"
                 android:text="0&apos;S"
                 android:textColor="@color/white"

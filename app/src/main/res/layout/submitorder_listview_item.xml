@@ -10,13 +10,13 @@
         android:id="@+id/submitOrderRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+        android:paddingLeft="@dimen/pp_padding_16"
+        android:paddingRight="@dimen/pp_padding_16">
 
         <ImageView
             android:id="@+id/imageView_pd"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/pp_height_60"
+            android:layout_height="@dimen/pp_height_60"
             android:layout_centerVertical="true"
             android:background="@color/pp_light_gray_normal"
             android:src="@drawable/ic_stub" />
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/pp_margin_10"
             android:layout_toRightOf="@id/imageView_pd"
             android:ellipsize="end"
             android:lines="1"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="3dp"
+            android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/textView_pr"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_12" />
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/imageView_pd"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="@dimen/pp_margin_5"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_12" />
 
@@ -84,11 +84,11 @@
         android:columnCount="4"
         android:orientation="horizontal"
         android:padding="@dimen/pp_padding_10"
-        android:useDefaultMargins="true"></GridLayout>
+        android:useDefaultMargins="true"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/pp_height_1"
         android:layout_marginBottom="@dimen/pp_margin_8"
         android:layout_marginLeft="@dimen/pp_margin_16"
         android:layout_marginTop="@dimen/pp_margin_8"

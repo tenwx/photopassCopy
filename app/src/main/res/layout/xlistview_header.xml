@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/xlistview_header_content"
         android:layout_width="fill_parent"
-        android:layout_height="60dp" >
+        android:layout_height="@dimen/pp_height_60" >
 
         <LinearLayout
             android:id="@+id/xlistview_header_text"
@@ -26,7 +26,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp" >
+                android:layout_marginTop="@dimen/pp_margin_5" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -48,16 +48,16 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/xlistview_header_text"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="-35dp"
+            android:layout_marginLeft="@dimen/pp_margin_35_"
             android:src="@drawable/indicator_arrow" />
 
         <ProgressBar
             android:id="@+id/xlistview_header_progressbar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/pp_height_30"
+            android:layout_height="@dimen/pp_height_30"
             android:layout_alignLeft="@id/xlistview_header_text"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="-40dp"
+            android:layout_marginLeft="@dimen/pp_margin_40_"
             android:visibility="invisible" />
     </RelativeLayout>
 </LinearLayout>

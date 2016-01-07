@@ -3,14 +3,14 @@
     android:id="@+id/edit_relativelayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pictureair.photopass.activity.EditPhotoActivity" >
+    tools:context="com.pictureair.photopass.activity.EditPhotoActivity">
 
     <RelativeLayout
         android:id="@+id/preview_titlebar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
-        android:background="@color/pp_blue" >
+        android:background="@color/pp_blue">
 
         <ImageView
             android:id="@+id/edit_return"
@@ -48,29 +48,18 @@
             android:src="@drawable/back_white"
             android:visibility="gone" />
 
-        <!--
-              <Button
-            android:id="@+id/btn_left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="返回"
-            />
-        -->
-
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal" >
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:paddingRight="@dimen/pp_padding_10"
-                android:padding="10dp"
+                android:padding="@dimen/pp_padding_13"
                 android:scaleType="centerInside"
                 android:src="@drawable/cancel1" />
 
@@ -79,8 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:paddingLeft="@dimen/pp_padding_10"
-                android:padding="10dp"
+                android:padding="@dimen/pp_padding_13"
                 android:scaleType="centerInside"
                 android:src="@drawable/forward1" />
         </LinearLayout>
@@ -91,11 +79,11 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:padding="10dp"
-            android:text="@string/save"
             android:gravity="center"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/save"
             android:textColor="#ffffff"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
 
         <ImageButton
@@ -105,13 +93,10 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
-            android:paddingLeft="8dp"
-            android:paddingRight="@dimen/pp_margin_16"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:padding="@dimen/pp_padding_10"
             android:scaleType="centerInside"
             android:src="@drawable/preview_save"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -120,47 +105,46 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/edittoolsbar"
         android:layout_below="@id/preview_titlebar"
-        android:background="@color/transparent" >
-  
-       <!--  <com.pictureAir.editPhoto.ImageViewTouch
+        android:background="@color/transparent">
+
+        <!--  <com.pictureAir.editPhoto.ImageViewTouch
+             android:id="@+id/main_image"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:background="@color/gray_light2"
+             android:layout_centerInParent="true"
+             />  -->
+        <ImageView
             android:id="@+id/main_image"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/gray_light2"
             android:layout_centerInParent="true"
-            />  -->
-                 <ImageView
-            android:id="@+id/main_image"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@color/gray_light2"
-            android:layout_centerInParent="true"
-            />  
-         
-         <com.pictureair.photopass.editPhoto.StickerView
+            android:background="@color/gray_light2" />
+
+        <com.pictureair.photopass.editPhoto.StickerView
             android:id="@+id/sticker_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
             android:visibility="gone" />
-         
-         <!-- 字体 view -->
-         <com.pictureair.photopass.editPhoto.FontView
+
+        <!-- 字体 view -->
+        <com.pictureair.photopass.editPhoto.FontView
             android:id="@+id/font_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
             android:visibility="invisible" />
-         
 
-     <!--    <ImageView
-            android:id="@+id/previewphoto_imageView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/gray_light2"
-            android:src="@drawable/ic_stub" />  -->
 
-      <!-- 相框 -->
+        <!--    <ImageView
+               android:id="@+id/previewphoto_imageView1"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@color/gray_light2"
+               android:src="@drawable/ic_stub" />  -->
+
+        <!-- 相框 -->
         <ImageView
             android:id="@+id/framephoto_imageView1"
             android:layout_width="match_parent"
@@ -176,11 +160,10 @@
             android:layout_alignParentBottom="true"
             android:background="@color/gray_cover"
             android:listSelector="@color/transparent"
-            android:paddingBottom="10dp"
-            android:visibility="gone"
-            android:paddingTop="10dp"
-            android:scrollbars="none" >
-        </GridView>
+            android:paddingBottom="@dimen/pp_padding_10"
+            android:paddingTop="@dimen/pp_padding_10"
+            android:scrollbars="none"
+            android:visibility="gone"></GridView>
 
         <GridView
             android:id="@+id/colorList"
@@ -189,11 +172,10 @@
             android:layout_alignParentBottom="true"
             android:background="@color/gray_cover"
             android:listSelector="@color/transparent"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:visibility="gone"
-            android:scrollbars="none" >
-        </GridView>
+            android:paddingBottom="@dimen/pp_padding_10"
+            android:paddingTop="@dimen/pp_padding_10"
+            android:scrollbars="none"
+            android:visibility="gone"></GridView>
 
         <EditText
             android:id="@+id/fontEditText"
@@ -204,10 +186,10 @@
             android:background="@drawable/button_translate_with_blue_line"
             android:gravity="center"
             android:hint="@string/add_text"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_18"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -219,7 +201,7 @@
         android:background="@color/white"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/pp_margin_16"
-        android:paddingTop="@dimen/pp_margin_16" >
+        android:paddingTop="@dimen/pp_margin_16">
 
         <TextView
             android:id="@+id/edit_frame"
@@ -277,12 +259,12 @@
     <com.pictureair.photopass.widget.HorizontalListView
         android:id="@+id/horizontalListView"
         android:layout_width="fill_parent"
-        android:layout_height="116dp"
-        android:paddingBottom="@dimen/pp_margin_16"
-        android:paddingTop="@dimen/pp_margin_16"
+        android:layout_height="@dimen/pp_height_116"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:cacheColorHint="@color/transparent"
+        android:paddingBottom="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_margin_16"
         android:visibility="gone" />
 
     <LinearLayout
@@ -293,20 +275,20 @@
         android:layout_alignTop="@+id/edittoolsbar"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/tv_left90"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:drawablePadding="@dimen/pp_padding_5"
                 android:drawableTop="@drawable/edit_add_font_button"
-                android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="@string/rotate_left"
                 android:textColor="@drawable/textview_selector_onclick"
@@ -316,15 +298,15 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/tv_right90"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:drawablePadding="@dimen/pp_padding_5"
                 android:drawableTop="@drawable/edit_add_color_button"
-                android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="@string/rotate_right"
                 android:textColor="@drawable/textview_selector_onclick"

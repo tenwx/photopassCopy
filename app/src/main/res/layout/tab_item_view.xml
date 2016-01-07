@@ -3,9 +3,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/pp_padding_4"
+    android:paddingTop="@dimen/pp_padding_4">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -17,14 +17,13 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:focusable="false"
-            android:scaleType="centerInside" >
-        </ImageView>
+            android:scaleType="centerInside" />
 
         <com.pictureair.photopass.view.WaterDrop
             android:id="@+id/waterdrop"
+            android:layout_width="@dimen/pp_height_10"
+            android:layout_height="@dimen/pp_height_10"
             android:layout_alignRight="@+id/imageview"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -34,7 +33,6 @@
         android:layout_height="wrap_content"
         android:gravity="top|center_horizontal"
         android:textColor="@drawable/tab_selector_onclick"
-        android:textSize="@dimen/text_small_size" >
-    </TextView>
+        android:textSize="@dimen/text_small_size" />
 
 </LinearLayout>

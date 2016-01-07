@@ -10,9 +10,9 @@
         android:id="@+id/tv_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:layout_marginRight="64dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginLeft="@dimen/pp_margin_64"
+        android:layout_marginRight="@dimen/pp_margin_64"
+        android:layout_marginTop="@dimen/pp_margin_64"
         android:text="@string/disney_video_about_null_photo_note"
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size_16" />
@@ -21,11 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_1"
-        android:layout_marginLeft="64dp"
-        android:layout_marginRight="64dp"
+        android:layout_marginLeft="@dimen/pp_margin_64"
+        android:layout_marginRight="@dimen/pp_margin_64"
         android:layout_marginTop="@dimen/pp_margin_32"
         android:text="@string/disney_video_about_null_photo_note2"
-
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size_16" />
 
@@ -41,12 +40,12 @@
             android:id="@+id/btn_goto_select"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/pp_margin_16"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/disney_video_go_to_select_photo"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_middle_size" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
 </RelativeLayout>
