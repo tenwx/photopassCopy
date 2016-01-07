@@ -86,11 +86,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.CameraActivity"
-            android:configChanges="keyboard|orientation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.DetailProductActivity"
             android:configChanges="keyboard|orientation"
             android:launchMode="singleTask"
@@ -141,10 +136,6 @@
             android:name=".activity.PreviewPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
-        <activity
-            android:name=".activity.ViewPhotoActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.EditPhotoActivity"
             android:configChanges="keyboard|orientation"
