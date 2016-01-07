@@ -29,6 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/preview_love"
+            android:layout_toRightOf="@id/button1_shop_rt"
+            android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
 
@@ -74,7 +78,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/ic_stub" />
+                android:adjustViewBounds="true"
+                android:background="@color/pp_light_gray_background" />
 
             <ImageView
                 android:id="@+id/img02"

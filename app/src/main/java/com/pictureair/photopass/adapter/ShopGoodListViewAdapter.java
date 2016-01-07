@@ -41,7 +41,7 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         goodList = list;
         layoutInflater = LayoutInflater.from(c);
         this.currency = currency;
-        width = ScreenUtil.getScreenWidth(c) - ScreenUtil.dip2px(c, 10);
+        width = ScreenUtil.getScreenWidth(c) - ScreenUtil.dip2px(c, 16);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_discover_loading)
                 .showImageOnFail(R.drawable.ic_discover_failed)
@@ -94,9 +94,10 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-//        LayoutParams layoutParams = viewHolder.goodImageView.getLayoutParams();
-//        layoutParams.width = width;
-//        layoutParams.height = width / 2;
+        ViewGroup.LayoutParams layoutParams = viewHolder.goodImageView.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = width / 2;
+        viewHolder.goodImageView.setLayoutParams(layoutParams);
         GoodsInfo1 goodsInfo1 = goodList.get(position);
         if (goodsInfo1 == null) {
             PictureAirLog.v(TAG, "getView goodInfo == null");

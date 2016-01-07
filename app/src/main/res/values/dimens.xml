@@ -74,5 +74,6 @@
     <dimen name="pp_margin_90_">-90dp</dimen>
     <dimen name="pp_margin_10_">-10dp</dimen>
     <dimen name="pp_margin_5_">-5dp</dimen>
+    <dimen name="pp_margin_60">60dp</dimen>
 
 </resources>

@@ -7,13 +7,25 @@
     android:paddingBottom="@dimen/pp_padding_4"
     android:paddingTop="@dimen/pp_padding_4">
 
-    <ImageView
-        android:id="@+id/imageview"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:focusable="false"
-        android:scaleType="centerInside" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:focusable="false"
+            android:scaleType="centerInside" />
+
+        <com.pictureair.photopass.view.WaterDrop
+            android:id="@+id/waterdrop"
+            android:layout_width="@dimen/pp_height_10"
+            android:layout_height="@dimen/pp_height_10"
+            android:layout_alignRight="@+id/imageview"
+            android:visibility="gone" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/textview"

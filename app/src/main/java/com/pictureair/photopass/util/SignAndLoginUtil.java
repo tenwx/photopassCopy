@@ -10,7 +10,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.LoginCallBack;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -31,7 +30,7 @@ public class SignAndLoginUtil {
     private MyToast myToast;
     private Context context;
     private CustomProgressDialog customProgressDialog;
-    private LoginCallBack loginCallBack;
+    private OnLoginSuccessListener onLoginSuccessListener;
     /**
      * 注册
      */
@@ -46,7 +45,7 @@ public class SignAndLoginUtil {
     private int id = 0;
 
     public SignAndLoginUtil(Context c, String account, String pwdStr, boolean isSign, boolean needModifyInfo,
-                            String name, String birthday, String gender, String country, LoginCallBack loginCallBack) {
+                            String name, String birthday, String gender, String country, OnLoginSuccessListener onLoginSuccessListener) {
         this.context = c;
         this.account = account;
         this.pwd = pwdStr;
@@ -56,7 +55,7 @@ public class SignAndLoginUtil {
         this.gender = gender;
         this.country = country;
         this.needModifyInfo = needModifyInfo;
-        this.loginCallBack = loginCallBack;
+        this.onLoginSuccessListener = onLoginSuccessListener;
         PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
         start();
     }
@@ -244,7 +243,7 @@ public class SignAndLoginUtil {
         if (customProgressDialog.isShowing()) {
             customProgressDialog.dismiss();
         }
-        loginCallBack.loginSuccess();
+        onLoginSuccessListener.loginSuccess();
     }
 
     /**
@@ -262,6 +261,10 @@ public class SignAndLoginUtil {
             PictureAirLog.v(TAG, "has tokenid");
             handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
         }
+    }
+
+    public interface OnLoginSuccessListener {
+        void loginSuccess();
     }
 
 }

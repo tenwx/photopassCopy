@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +36,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -65,28 +67,50 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
     //申明变量
     private int recordcount = 0; //记录数据库中有几条记录
 
-    private Handler mhandler = new Handler() {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case API1.ADD_TO_CART_SUCCESS:
-                    editor = sharedPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                    editor.commit();
-                    buyImg = new ImageView(DetailProductActivity.this);// buyImg是动画的图片
-                    buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
-                    setAnim(buyImg);
-                    break;
 
-                case API1.ADD_TO_CART_FAILED:
-                    myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
+    private final Handler detailProductHandler = new DetailProductHandler(this);
 
-                default:
-                    break;
-            }
+
+    private static class DetailProductHandler extends Handler{
+        private final WeakReference<DetailProductActivity> mActivity;
+
+        public DetailProductHandler(DetailProductActivity activity){
+            mActivity = new WeakReference<>(activity);
         }
-    };
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case API1.ADD_TO_CART_SUCCESS:
+                editor = sharedPreferences.edit();
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
+                editor.commit();
+                buyImg = new ImageView(DetailProductActivity.this);// buyImg是动画的图片
+                buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
+                setAnim(buyImg);
+                break;
+
+            case API1.ADD_TO_CART_FAILED:
+                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,7 +270,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
      */
     private void addtocart() {
         //编辑传入照片的信息
-        API1.addToCart(goodsInfo.getGoodsKey(), 1, false, null, mhandler);
+        API1.addToCart(goodsInfo.getGoodsKey(), 1, false, null, detailProductHandler);
     }
 
     private void setAnim(final View v) {
@@ -360,4 +384,9 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         return view;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        detailProductHandler.removeCallbacksAndMessages(null);
+    }
 }

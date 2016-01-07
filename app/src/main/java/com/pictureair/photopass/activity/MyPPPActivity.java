@@ -3,7 +3,6 @@ package com.pictureair.photopass.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -45,6 +44,9 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,215 +90,235 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private String[] photoUrls;
     private String PPCode;
 
-    private Handler mHandler = new Handler() {
+    private final Handler myPPPHandler = new MyPPPHandler(this);
+
+
+    private static class MyPPPHandler extends Handler{
+        private final WeakReference<MyPPPActivity> mActivity;
+
+        public MyPPPHandler(MyPPPActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            Intent intent;
-            switch (msg.what) {
-                case 999://购买PPP
-                    //购买PP+，先获取商品 然后进入订单界面
-                    dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
-                    //获取商品（以后从缓存中取）
-                    getGoods();
-                    if (pppPop.isShowing()) {
-                        pppPop.dismiss();
-                    }
-                    break;
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
 
-                case 888://扫描
-                    intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
-                    intent.putExtra("type", "ppp");//只扫描ppp
-                    startActivity(intent);
-                    if (pppPop.isShowing()) {
-                        pppPop.dismiss();
-                    }
-                    break;
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        Intent intent;
+        switch (msg.what) {
+            case 999://购买PPP
+                //购买PP+，先获取商品 然后进入订单界面
+                dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
+                //获取商品（以后从缓存中取）
+                getGoods();
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
 
-                case 1:
-                    dialog.dismiss();
-                    listPPP.setVisibility(View.VISIBLE);
-                    PictureAirLog.v(TAG, "list=========" + list1.size());
-                    listPPPAdapter = new ListOfPPPAdapter(list1, MyPPPActivity.this);
-                    listPPP.setAdapter(listPPPAdapter);
-                    break;
+            case 888://扫描
+                intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
+                intent.putExtra("type", "ppp");//只扫描ppp
+                startActivity(intent);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
 
-                case API1.GET_PPP_SUCCESS://成功获取ppp信息
-                    if (API1.PPPlist.size() == 0) {
-                        listPPP.setVisibility(View.GONE);
-                        nopppLayout.setVisibility(View.VISIBLE);
-                        text_instruction.setVisibility(View.VISIBLE);
+            case 1:
+                dialog.dismiss();
+                listPPP.setVisibility(View.VISIBLE);
+                PictureAirLog.v(TAG, "list=========" + list1.size());
+                listPPPAdapter = new ListOfPPPAdapter(list1, MyPPPActivity.this);
+                listPPP.setAdapter(listPPPAdapter);
+                break;
 
-                    } else {
-                        Editor editor = sharedPreferences.edit();
-                        editor.putInt(Common.PPP_COUNT, API1.PPPlist.size());
-                        editor.commit();
-                        for (int i = 0; i < API1.PPPlist.size(); i++) {
+            case API1.GET_PPP_SUCCESS://成功获取ppp信息
+                if (API1.PPPlist.size() == 0) {
+                    listPPP.setVisibility(View.GONE);
+                    nopppLayout.setVisibility(View.VISIBLE);
+                    text_instruction.setVisibility(View.VISIBLE);
+
+                } else {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt(Common.PPP_COUNT, API1.PPPlist.size());
+                    editor.commit();
+                    for (int i = 0; i < API1.PPPlist.size(); i++) {
 //						PPPinfo dayOfPPP = new PPPinfo();
-                            PPPinfo ppPinfo = API1.PPPlist.get(i);
+                        PPPinfo ppPinfo = API1.PPPlist.get(i);
 //						dayOfPPP.time = ppPinfo.ownOn;
 //						dayOfPPP.pppId = ppPinfo.PPPCode;
 //						dayOfPPP.amount = ppPinfo.capacity;
-                            //判断是否有可用的ppp
+                        //判断是否有可用的ppp
 //						dayOfPPP.usedNumber = ppPinfo.bindInfo.size();
-                            if (!hasOtherAvailablePPP) {
-                                if (ppPinfo.bindInfo.size() < ppPinfo.capacity) {// 有空位的ppp
-                                    hasOtherAvailablePPP = true;
-                                }
+                        if (!hasOtherAvailablePPP) {
+                            if (ppPinfo.bindInfo.size() < ppPinfo.capacity) {// 有空位的ppp
+                                hasOtherAvailablePPP = true;
                             }
-                            // 需要对ppp进行排序
-                            list1.add(ppPinfo);
-                            PictureAirLog.v(TAG, "the ppp code ====>"
-                                    + ppPinfo.PPPCode);
                         }
-                        Collections.sort(list1);
-                        PictureAirLog.v(TAG, "list-=--=" + list1.size());
-                        listPPP.setVisibility(View.VISIBLE);
-                        nopppLayout.setVisibility(View.GONE);
-                        text_instruction.setVisibility(View.GONE);
-                        listPPPAdapter = new ListOfPPPAdapter(list1, MyPPPActivity.this);
-                        listPPP.setAdapter(listPPPAdapter);
+                        // 需要对ppp进行排序
+                        list1.add(ppPinfo);
+                        PictureAirLog.v(TAG, "the ppp code ====>"
+                                + ppPinfo.PPPCode);
                     }
-                    netWorkOrNoCountView.setVisibility(View.GONE);
-                    MyApplication.getInstance().setNeedRefreshPPPList(false);
-                    dialog.dismiss();
-                    break;
-
-                case API1.BIND_PP_FAILURE://获取失败
-                    if (msg.obj != null && msg.obj.toString().equals("PPHasUpgraded")) {
-                        PictureAirLog.v(TAG, "PP has upgraded");
-                        newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
-                    } else {
-                        newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    }
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    break;
-
-                case API1.GET_PPP_FAILED:
-                    if (msg.obj != null && msg.obj.toString().equals("PPHasUpgraded")) {
-                        PictureAirLog.v(TAG, "PP has upgraded");
-                        newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
-                    }
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                    netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, mHandler, true);
-                    listPPP.setVisibility(View.INVISIBLE);
+                    Collections.sort(list1);
+                    PictureAirLog.v(TAG, "list-=--=" + list1.size());
+                    listPPP.setVisibility(View.VISIBLE);
                     nopppLayout.setVisibility(View.GONE);
                     text_instruction.setVisibility(View.GONE);
-                    break;
+                    listPPPAdapter = new ListOfPPPAdapter(list1, MyPPPActivity.this);
+                    listPPP.setAdapter(listPPPAdapter);
+                }
+                netWorkOrNoCountView.setVisibility(View.GONE);
+                MyApplication.getInstance().setNeedRefreshPPPList(false);
+                dialog.dismiss();
+                break;
 
-
-                case API1.BIND_PP_SUCCESS://绑定成功
-                    Editor editor = sharedPreferences.edit();
-                    editor.putBoolean(Common.NEED_FRESH, true);
-                    editor.commit();
-                    list1.clear();
-                    hasOtherAvailablePPP = false;
-                    API1.PPPlist.clear();
-                    getData();
-                    break;
-
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                    //重新加载购物车数据
-                    GetPPPList();
-                    break;
-                case API1.GET_PPS_BY_PPP_AND_DATE_SUCCESS:
-                    PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_SUCCESS");
-                    intent = new Intent(MyPPPActivity.this, MyPPActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("ppp", ppp);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                    break;
-                case API1.GET_PPS_BY_PPP_AND_DATE_FAILED:
-                    PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_FAILED");
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.GET_GOODS_SUCCESS:
-                    GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                    if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
-                        allGoodsList = goodsInfoJson.getGoods();
-                        PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
-                    }
-                    //获取PP+
-                    for (GoodsInfo1 goodsInfo : allGoodsList) {
-                        if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
-                            pppGoodsInfo = goodsInfo;
-                            //封装购物车宣传图
-                            photoUrls = new String[goodsInfo.getPictures().size()];
-                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
-                            }
-                            break;
-                        }
-                    }
-                    API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, mHandler);
-                    break;
-                case API1.GET_GOODS_FAILED:
-                    dialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                    break;
-
-                case API1.ADD_TO_CART_FAILED:
-                    dialog.dismiss();
-                    newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
-                    break;
-
-                case API1.ADD_TO_CART_SUCCESS:
-                    dialog.dismiss();
-                    com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) msg.obj;
-                    editor = sharedPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                    editor.commit();
-                    String cartId = jsonObject.getString("cartId");
-
-                    //生成订单
-                    Intent intent1 = new Intent(MyPPPActivity.this, SubmitOrderActivity.class);
-                    ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                    CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
-                    cartItemInfo1.setCartId(cartId);
-                    cartItemInfo1.setProductName(pppGoodsInfo.getName());
-                    cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
-                    cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
-                    cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
-                    cartItemInfo1.setQty(1);
-                    cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
-                    cartItemInfo1.setPictures(photoUrls);
-                    cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
-                    cartItemInfo1.setCartProductType(3);
-
-                    orderinfoArrayList.add(cartItemInfo1);
-                    intent1.putExtra("orderinfo", orderinfoArrayList);
-                    startActivity(intent1);
-                    break;
-
-                case API1.ADD_CODE_TO_USER_SUCCESS:
-                    //绑定成功
-                    dialog.dismiss();
-                    JSONArray pps = new JSONArray();
-                    pps.add(PPCode);
-                    API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, mHandler);
-
-                    break;
-                case API1.ADD_CODE_TO_USER_FAILED:
-                    //绑定失败
-                    dialog.dismiss();
+            case API1.BIND_PP_FAILURE://获取失败
+                if (msg.obj != null && msg.obj.toString().equals("PPHasUpgraded")) {
+                    PictureAirLog.v(TAG, "PP has upgraded");
+                    newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+                } else {
                     newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                }
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                break;
 
-                    break;
+            case API1.GET_PPP_FAILED:
+                if (msg.obj != null && msg.obj.toString().equals("PPHasUpgraded")) {
+                    PictureAirLog.v(TAG, "PP has upgraded");
+                    newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
+                }
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPPHandler, true);
+                listPPP.setVisibility(View.INVISIBLE);
+                nopppLayout.setVisibility(View.GONE);
+                text_instruction.setVisibility(View.GONE);
+                break;
 
-                default:
-                    break;
-            }
-            super.handleMessage(msg);
+
+            case API1.BIND_PP_SUCCESS://绑定成功
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Common.NEED_FRESH, true);
+                editor.commit();
+                list1.clear();
+                hasOtherAvailablePPP = false;
+                API1.PPPlist.clear();
+                getData();
+                break;
+
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+                //重新加载购物车数据
+                GetPPPList();
+                break;
+            case API1.GET_PPS_BY_PPP_AND_DATE_SUCCESS:
+                PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_SUCCESS");
+                intent = new Intent(MyPPPActivity.this, MyPPActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("ppp", ppp);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case API1.GET_PPS_BY_PPP_AND_DATE_FAILED:
+                PictureAirLog.e(TAG, "GET_PPS_BY_PPP_AND_DATE_FAILED");
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.GET_GOODS_SUCCESS:
+                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                    allGoodsList = goodsInfoJson.getGoods();
+                    PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                }
+                //获取PP+
+                for (GoodsInfo1 goodsInfo : allGoodsList) {
+                    if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                        pppGoodsInfo = goodsInfo;
+                        //封装购物车宣传图
+                        photoUrls = new String[goodsInfo.getPictures().size()];
+                        for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
+                            photoUrls[i] = goodsInfo.getPictures().get(i).getUrl();
+                        }
+                        break;
+                    }
+                }
+                API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, myPPPHandler);
+                break;
+            case API1.GET_GOODS_FAILED:
+                dialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            case API1.ADD_TO_CART_FAILED:
+                dialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
+                break;
+
+            case API1.ADD_TO_CART_SUCCESS:
+                dialog.dismiss();
+                com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) msg.obj;
+                editor = sharedPreferences.edit();
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
+                editor.commit();
+                String cartId = jsonObject.getString("cartId");
+
+                //生成订单
+                Intent intent1 = new Intent(MyPPPActivity.this, SubmitOrderActivity.class);
+                ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
+                cartItemInfo1.setCartId(cartId);
+                cartItemInfo1.setProductName(pppGoodsInfo.getName());
+                cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
+                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
+                cartItemInfo1.setQty(1);
+                cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
+                cartItemInfo1.setPictures(photoUrls);
+                cartItemInfo1.setPrice(pppGoodsInfo.getPrice());
+                cartItemInfo1.setCartProductType(3);
+
+                orderinfoArrayList.add(cartItemInfo1);
+                intent1.putExtra("orderinfo", orderinfoArrayList);
+                startActivity(intent1);
+                break;
+
+            case API1.ADD_CODE_TO_USER_SUCCESS:
+                //绑定成功
+                dialog.dismiss();
+                JSONArray pps = new JSONArray();
+                pps.add(PPCode);
+                API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
+
+                break;
+            case API1.ADD_CODE_TO_USER_FAILED:
+                //绑定失败
+                dialog.dismiss();
+                newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+
+                break;
+
+            default:
+                break;
         }
-    };
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,7 +329,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
-        pppPop = new PPPPop(this, mHandler);
+        pppPop = new PPPPop(this, myPPPHandler);
         //初始化
         newToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
@@ -339,7 +361,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 if (list1.get(position).bindInfo.size() < list1.get(position).capacity) {
                     PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
                     ppp = list1.get(position);
-                    API1.getPPsByPPPAndDate(ppp.PPPCode, mHandler);
+                    API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
                 } else {
                     //用完了的PPP  弹出窗口提示
                     customdialog = new CustomDialog.Builder(MyPPPActivity.this).setMessage(getResources().getString(R.string.buy_ppp_tips))
@@ -403,7 +425,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private void getData() {
         if (API1.PPPlist.size() == 0) {//没有数据，需要重新获取
             PictureAirLog.v(TAG, "ppp = 0");
-            API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), mHandler);
+            API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), myPPPHandler);
         } else {//有数据
             PictureAirLog.v(TAG, "ppp != 0");
             for (int i = 0; i < API1.PPPlist.size(); i++) {
@@ -447,7 +469,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 list1.add(ppPinfo);
             }
             Collections.sort(list1);
-            mHandler.obtainMessage(1);
+            myPPPHandler.obtainMessage(1);
             MyApplication.getInstance().setNeedRefreshPPPList(false);
         }
     }
@@ -509,11 +531,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         //从缓层中获取数据
         String goodsByACache = ACache.get(MyPPPActivity.this).getAsString(Common.ALL_GOODS);
         if (goodsByACache != null && !goodsByACache.equals("")) {
-            mHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+            myPPPHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
         } else {
             //从网络获取商品,先检查网络
             if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
-                API1.getGoods(mHandler);
+                API1.getGoods(myPPPHandler);
             } else {
                 newToast.setTextAndShow(R.string.http_error_code_401, Toast.LENGTH_SHORT);
             }
@@ -593,6 +615,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        myPPPHandler.removeCallbacksAndMessages(null);
     }
 
     //对话框监听类
@@ -621,10 +644,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                             //已经被绑定了，所以直接绑定ppp
                             JSONArray pps = new JSONArray();
                             pps.add(PPCode);
-                            API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, mHandler);
+                            API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
                         } else {
                             //没有被绑定，则先绑到user，再绑到ppp
-                            API1.addCodeToUser(PPCode, mHandler);
+                            API1.addCodeToUser(PPCode, myPPPHandler);
                         }
                     }
                     break;

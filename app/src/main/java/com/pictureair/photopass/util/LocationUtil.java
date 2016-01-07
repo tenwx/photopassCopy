@@ -33,16 +33,16 @@ public class LocationUtil implements AMapLocationListener{
 	 * 判断是否成功获取定位信息
 	 */
 	public boolean locationChanged = false;
-	private LocationNotification locationNotification;
+	private OnLocationNotificationListener onLocationNotificationListener;
 
 	public LocationUtil(Context context){
 		this.context = context;
 		initLocation();
 	}
 
-	public void setLocationItemInfos(ArrayList<DiscoverLocationItemInfo> locationItemInfos, LocationNotification locationNotification) {
+	public void setLocationItemInfos(ArrayList<DiscoverLocationItemInfo> locationItemInfos, OnLocationNotificationListener onLocationNotificationListener) {
 		this.locationItemInfos = locationItemInfos;
-		this.locationNotification = locationNotification;
+		this.onLocationNotificationListener = onLocationNotificationListener;
 	}
 
 	private void initLocation() {
@@ -119,13 +119,13 @@ public class LocationUtil implements AMapLocationListener{
 
 	}
 
-	public interface LocationNotification{
+	public interface OnLocationNotificationListener{
 		/**
 		 * 进入和离开的函数
 		 * @param locationIds location集合
 		 * @param in 是否进入
 		 */
-		public void inOrOutPlace(String locationIds, boolean in);
+		void inOrOutPlace(String locationIds, boolean in);
 	}
 	
 //	//进入或者离开通知区域
@@ -154,7 +154,7 @@ public class LocationUtil implements AMapLocationListener{
 							locationItemInfos.get(currentNotificationPosition).latitude, 
 							mapLocation.getLongitude(), mapLocation.getLatitude()) > radius) {//超过半径，离开后需要继续扫描其他地点，判断是否进入了其他区域
 						currentNotificationPosition = -1;
-						locationNotification.inOrOutPlace(locationItemInfos.get(currentNotificationPosition).locationIds, false);
+						onLocationNotificationListener.inOrOutPlace(locationItemInfos.get(currentNotificationPosition).locationIds, false);
 						Log.d(TAG, "out of location notification");
 					}else {//说明还在当前区域中，无需做任何操作
 						Log.d(TAG, "still in location notification");
@@ -171,7 +171,7 @@ public class LocationUtil implements AMapLocationListener{
 					}else {//进入通知区域后，其他区域不需要再计算，这样的问题，有可能有重叠区域无法准确判断
 						Log.d(TAG, "in location notification");
 						currentNotificationPosition = i;
-						locationNotification.inOrOutPlace(locationItemInfos.get(currentNotificationPosition).locationIds, true);
+						onLocationNotificationListener.inOrOutPlace(locationItemInfos.get(currentNotificationPosition).locationIds, true);
 						break;
 					}
 				}

@@ -27,7 +27,6 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.UpdateCallback;
 import com.pictureair.photopass.blur.UtilOfDraw;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
@@ -55,7 +54,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 	//距离和方向
 	private AMapLocation mLocation;
 	private float x = 0;// x轴的旋转角度
-	private UpdateCallback updateCallback;
+	private OnUpdateLocationListener onUpdateLocationListener;
 	private int screenWidth = 0;
 	
 	public static final int MAGICSHOOT = 101;
@@ -107,12 +106,12 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 		this.list = list;
 	}
 
-	public UpdateCallback getUpdateCallback() {
-		return updateCallback;
+	public OnUpdateLocationListener getOnUpdateLocationListener() {
+		return onUpdateLocationListener;
 	}
 
-	public void setUpdateCallback(UpdateCallback updateCallback) {
-		this.updateCallback = updateCallback;
+	public void setOnUpdateLocationListener(OnUpdateLocationListener onUpdateLocationListener) {
+		this.onUpdateLocationListener = onUpdateLocationListener;
 	}
 
 	public float getX() {
@@ -220,11 +219,11 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 			
 			@Override
 			public void onClick(View arg0) {
-				if (null != updateCallback) {
+				if (null != onUpdateLocationListener) {
 					if (activatedLocationMap.get(nPosition+"") == null || activatedLocationMap.get(nPosition+"") == 0) {//开启定位服务
 						activatedLocationMap.put(nPosition+"", 1);
 						Log.d(TAG, "start location = 1");
-						updateCallback.startLocation(nPosition, view);
+						onUpdateLocationListener.startLocation(nPosition, view);
 					}else {
 						
 						Log.d(TAG, "stop location");
@@ -348,5 +347,9 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 		}
 	}
 
-	
+	public interface OnUpdateLocationListener{
+		//开始定位函数，由继承类去实现
+		void startLocation(int position, View view);
+	}
+
 }

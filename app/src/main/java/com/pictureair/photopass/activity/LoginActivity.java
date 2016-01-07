@@ -27,6 +27,7 @@ import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
@@ -39,7 +40,7 @@ import cn.smssdk.gui.RegisterPage;
  * 3.全部获取之后，需要确认之前有扫描过pp或者ppp，如果有，则自动绑定
  */
 
-public class LoginActivity extends BaseActivity implements OnClickListener, LoginCallBack{
+public class LoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     private static final String TAG = "LoginActivity";
     // 申明控件
     private RelativeLayout parentRelativeLayout;
@@ -63,31 +64,52 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
     private RegisterPage registerPage;
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
 
-    private Handler handler = new Handler() {
+
+    private final Handler loginHandler = new LoginHandler(this);
+
+
+    private static class LoginHandler extends Handler{
+        private final WeakReference<LoginActivity> mActivity;
+
+        public LoginHandler(LoginActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case START_OTHER_REGISTER_ACTIVITY:
-                    // 其他注册的按钮//
-                    PictureAirLog.v(TAG, "other way on click----------");
-                    startActivity(new Intent(LoginActivity.this,
-                            OtherRegisterActivity.class));
-                    break;
-
-                case START_NATIONAL_LIST_SELECTION_ACTIVITY:
-                    // 传递2，说明是从注册页面跳转到国家列表界面，传递3为 此activity跳转到国家列表界面
-                    Intent intent2 = new Intent();
-                    intent2.setClass(LoginActivity.this,
-                            NationalListSelectionActivity.class);
-                    intent2.putExtra("key", 2);
-                    startActivity(intent2);
-                    break;
-                default:
-                    break;
+            if (mActivity.get() == null) {
+                return;
             }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case START_OTHER_REGISTER_ACTIVITY:
+                // 其他注册的按钮//
+                PictureAirLog.v(TAG, "other way on click----------");
+                startActivity(new Intent(LoginActivity.this,
+                        OtherRegisterActivity.class));
+                break;
+
+            case START_NATIONAL_LIST_SELECTION_ACTIVITY:
+                // 传递2，说明是从注册页面跳转到国家列表界面，传递3为 此activity跳转到国家列表界面
+                Intent intent2 = new Intent();
+                intent2.setClass(LoginActivity.this,
+                        NationalListSelectionActivity.class);
+                intent2.putExtra("key", 2);
+                startActivity(intent2);
+                break;
+            default:
+                break;
+        }
+    }
 
     /**
      * 点击键盘之外，隐藏键盘
@@ -272,7 +294,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
      * 第三方短信验证方法
      */
     private void sendSMS(final int type) {
-        registerPage = new RegisterPage(type, handler);
+        registerPage = new RegisterPage(type, loginHandler);
 
         registerPage.setRegisterCallback(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
@@ -342,6 +364,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Logi
             PictureAirLog.v(TAG, "logout onDestroy, need finish registerPage");
             registerPage.finish();
         }
+        loginHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
