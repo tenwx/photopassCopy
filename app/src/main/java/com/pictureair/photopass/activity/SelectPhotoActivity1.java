@@ -329,7 +329,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 //删除所有aty，只剩下mainTab页面，
                 //将mainTab切换到shop Tab
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
-                MainTabActivity.changeToShopTab = true;
+                myApplication.setChangeToShopTab(true);
                 break;
 
             case R.id.rlrt://返回按钮

@@ -59,6 +59,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private MyToast myToast;
+    private MyApplication application;
 
     private Handler handler = new Handler() {
         @Override
@@ -89,7 +90,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                     //需要删除页面，保证只剩下mainTab页面，
                     AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                     //同时将mainTab切换到shop Tab
-                    MainTabActivity.changeToShopTab = true;
+                    application.setChangeToShopTab(true);
                     break;
             }
         }
@@ -98,7 +99,8 @@ public class OrderViewPagerAdapter extends PagerAdapter {
     public OrderViewPagerAdapter(Context context, List<View> list, ArrayList<OrderInfo> orderInfos1,
                                  ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
                                  List<OrderProductInfo> orderChildlist1, List<OrderProductInfo> orderChildlist2,
-                                 List<OrderProductInfo> orderChildlist3, String currency) {
+                                 List<OrderProductInfo> orderChildlist3, String currency,
+                                 MyApplication application) {
         this.listViews = list;
         this.paymentOrderList = OrderDateSort(orderInfos1);
         this.deliveryOrderList = OrderDateSort(orderInfos2);
@@ -109,6 +111,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         this.deliveryChildlist = OrderProductDateSort(orderChildlist2);
         this.allChildlist = OrderProductDateSort(orderChildlist3);
         this.myToast = new MyToast(context);
+        this.application = application;
     }
 
 

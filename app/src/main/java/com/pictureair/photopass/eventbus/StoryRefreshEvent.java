@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.photopass.eventbus;
 
 /**
  * Created by bauer_bao on 15/12/26.

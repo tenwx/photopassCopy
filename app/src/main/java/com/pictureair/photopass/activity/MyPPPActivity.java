@@ -23,14 +23,14 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
-import com.pictureair.photopass.entity.BaseBusEvent;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.ScanInfoEvent;
+import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
@@ -43,8 +43,6 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
-
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -26,21 +26,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
-import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.BaseBusEvent;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.entity.SocketEvent;
-import com.pictureair.photopass.entity.StoryFragmentEvent;
-import com.pictureair.photopass.entity.StoryRefreshEvent;
-import com.pictureair.photopass.entity.StoryRefreshOnClickEvent;
+import com.pictureair.photopass.eventbus.RedPointControlEvent;
+import com.pictureair.photopass.eventbus.SocketEvent;
+import com.pictureair.photopass.eventbus.StoryFragmentEvent;
+import com.pictureair.photopass.eventbus.StoryRefreshEvent;
+import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -53,6 +52,7 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -493,9 +493,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            if (MainTabActivity.maintabbadgeView.isShown()) {
-                MainTabActivity.maintabbadgeView.setVisibility(View.GONE);
-            }
+            EventBus.getDefault().postSticky(new RedPointControlEvent(false));
         }
     }
 
@@ -909,9 +907,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             }
             API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
             API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
-            if (MainTabActivity.maintabbadgeView.isShown()) {
-                MainTabActivity.maintabbadgeView.setVisibility(View.GONE);
-            }
+            EventBus.getDefault().postSticky(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {
             if (!dialog.isShowing()) {
@@ -1432,8 +1428,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.START_REFRESH));
 
                 }
-                EventBus.getDefault().removeStickyEvent(storyRefreshOnClickEvent);
             }
+            EventBus.getDefault().removeStickyEvent(storyRefreshOnClickEvent);
         }
         if (baseBusEvent instanceof SocketEvent) {
             SocketEvent socketEvent = (SocketEvent) baseBusEvent;

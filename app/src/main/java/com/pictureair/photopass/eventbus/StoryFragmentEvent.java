@@ -1,8 +1,11 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.photopass.eventbus;
+
+import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 
 import java.util.ArrayList;
 
-public class StoryFragmentEvent implements BaseBusEvent{
+public class StoryFragmentEvent implements BaseBusEvent {
 
 	private ArrayList<PhotoInfo> photoInfos = new ArrayList<>();
 	private ArrayList<PhotoInfo> targetInfos = new ArrayList<>();

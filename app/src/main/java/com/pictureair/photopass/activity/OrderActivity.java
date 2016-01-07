@@ -160,7 +160,8 @@ public class OrderActivity extends BaseActivity {
                 }
 
                 orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
-                        paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+                        paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
+                        sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication)getApplication()));
                 viewPager.setAdapter(orderAdapter);
                 viewPager.setCurrentItem(0);
                 orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
@@ -201,7 +202,7 @@ public class OrderActivity extends BaseActivity {
                 //需要删除页面，保证只剩下mainTab页面，
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                 //同时将mainTab切换到shop Tab
-                MainTabActivity.changeToShopTab = true;
+                ((MyApplication)getApplication()).setChangeToShopTab(true);
 
                 break;
 
