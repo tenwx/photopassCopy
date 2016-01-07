@@ -32,10 +32,10 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.view.CoverManager;
+import com.pictureair.photopass.view.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.view.WaterDrop;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.view.DropCover.OnDragCompeteListener;
 
 import de.greenrobot.event.EventBus;
 
@@ -44,7 +44,7 @@ import de.greenrobot.event.EventBus;
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  */
-public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener{
+public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener {
     private LinearLayout linearLayout;
     public static WaterDrop maintabbadgeView;
     // 定义FragmentTabHost对象
@@ -74,6 +74,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PictureAirLog.out(TAG + "==== onCreate");
         setContentView(R.layout.activity_main);
         application = (MyApplication) getApplication();
         initView();
@@ -145,6 +146,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             application.setIsStoryTab(false);
         }
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+            PictureAirLog.out("maintab ==== currentLanguage");
             mTabHost.clearAllTabs();
             mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
             loadFragment(fragmentArray.length);

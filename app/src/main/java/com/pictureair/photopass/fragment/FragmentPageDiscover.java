@@ -349,6 +349,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public void onResume() {
+        PictureAirLog.out(TAG+ "  ==onResume");
         isLoading = false;
         locationStart = true;
         startService();
@@ -371,6 +372,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         isLoading = false;
         fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
         super.onDestroyView();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     //顶部导航栏的点击事件类
