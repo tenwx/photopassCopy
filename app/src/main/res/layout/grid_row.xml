@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linear_grid_item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="5dp">
 
     <ImageView
         android:id="@+id/imageItem"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:paddingTop="5dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop" />
@@ -29,8 +29,8 @@
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/sel1"
         android:scaleType="centerInside"
+        android:src="@drawable/sel1"
         android:visibility="invisible" />
 
 </RelativeLayout>
