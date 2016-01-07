@@ -34,19 +34,21 @@ public class DisneyVideoTool {
      * 2、已购买的照片< 3张照片：无照片页面  （底部三个icon）
      */
     public static void getIsOneGoToDisneyVideoPage(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        PictureAirDbManager pictureAirDbManager = new PictureAirDbManager(context);
-        if (pictureAirDbManager.checkFirstTimeStartActivity(
-                IS_ONE_GO_TO_DISNEY_VIDEO,
-                sharedPreferences.getString(Common.USERINFO_ID, ""))) {// 第一次进入
-            Intent intent = new Intent();
-            intent.setClass(context, IsOneGoToVideoActivity.class);
-            context.startActivity(intent);
-        } else {// 第二次进入
+        //取消下面注释，添加引导页
+//        SharedPreferences sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+//        PictureAirDbManager pictureAirDbManager = new PictureAirDbManager(context);
+//        if (pictureAirDbManager.checkFirstTimeStartActivity(
+//                IS_ONE_GO_TO_DISNEY_VIDEO,
+//                sharedPreferences.getString(Common.USERINFO_ID, ""))) {// 第一次进入
+//            Intent intent = new Intent();
+//            intent.setClass(context, IsOneGoToVideoActivity.class);
+//            context.startActivity(intent);
+//        } else {
+// 第二次进入
             getIsEditImageGoToVideo(context);
             //测试进入播放视频
 //            TestGoToVideo(context);
-        }
+//        }
     }
 
     /**

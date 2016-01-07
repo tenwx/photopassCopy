@@ -74,7 +74,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private Context context;
     //底部view
     private LinearLayout llDisneyVideoFoot,llShopPhoto;
-    private TextView tvSelectPhotoOk;
+
+    private boolean isDisneyVideo = false;
 
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
@@ -153,7 +154,6 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         newToast = new MyToast(this);
         myApplication = (MyApplication) getApplication();
         //初始化控件
-        okButton = (TextView) findViewById(R.id.button1);
         rtLayout = (ImageView) findViewById(R.id.rlrt);
         gridView = (GridView) findViewById(R.id.gridView_all);
         gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
@@ -163,24 +163,24 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         btnGoToSelectPhoto.setTypeface(MyApplication.getInstance().getFontBold());
         tvHead = (TextView) findViewById(R.id.tv_head);
         noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
-        initDisneySelectPhotoFootView();
-
-        //绑定监听
-        rtLayout.setOnClickListener(this);
-        okButton.setOnClickListener(this);
-        btnGoToSelectPhoto.setOnClickListener(this);
+        okButton = (TextView) findViewById(R.id.button1);
 
         /*
          * 更新标题
          * 迪士尼视频页面的选择照片底部有3个Icon
          */
         if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
+            isDisneyVideo = true;
             tvHead.setText(getResources().getString(R.string.story_tab_bought));
+            initDisneySelectPhotoFootView();
             llDisneyVideoFoot.setVisibility(View.VISIBLE);
-            tvSelectPhotoOk.setVisibility(View.VISIBLE);
-            moveOkButtonLocation();
             isBuy = true;
         }
+
+        //绑定监听
+        rtLayout.setOnClickListener(this);
+        okButton.setOnClickListener(this);
+        btnGoToSelectPhoto.setOnClickListener(this);
 
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
@@ -226,24 +226,15 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     }
 
     /**
-     * 如果是迪士尼视频进入到本页面（那么okButton在底部显示）
-     */
-    private void moveOkButtonLocation() {
-        int width = ScreenUtil.getScreenWidth(context);
-        int height = ScreenUtil.getScreenHeight(context);
-        okButton.layout(20,20,20,20);
-    }
-
-    /**
      * 初始化视频制作选择照片的底部view
      */
     private void initDisneySelectPhotoFootView() {
         llDisneyVideoFoot = (LinearLayout)findViewById(R.id.ll_disney_video_foot);
         llShopPhoto = (LinearLayout)findViewById(R.id.ll_shop_photo);
-        tvSelectPhotoOk = (TextView)findViewById(R.id.tv_select_photo_ok);
+        okButton.setVisibility(View.GONE);
+        okButton = null;
+        okButton = (TextView)findViewById(R.id.tv_select_photo_ok);
         llShopPhoto.setOnClickListener(this);
-        tvSelectPhotoOk.setVisibility(View.GONE);
-//        tvSelectPhotoOk.setOnClickListener(this);
     }
 
 
@@ -372,6 +363,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 finish();
                 break;
 
+            case R.id.tv_select_photo_ok:
             case R.id.button1://选择确定按钮
                 if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
@@ -432,6 +424,9 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         if (photoURLlist.size() == photocount) {
             okButton.setEnabled(true);
             okButton.setTextColor(getResources().getColor(R.color.white));
+            if (isDisneyVideo){
+                okButton.setTextColor(getResources().getColor(R.color.pp_blue));
+            }
         } else {
             okButton.setEnabled(false);
             okButton.setTextColor(getResources().getColor(R.color.gray_light5));
@@ -444,22 +439,21 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         View popView = inflater.inflate(R.layout.popupwindow_disney_video_select_photo, null);
         popupWindow = new PopupWindow(popView,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
+                WindowManager.LayoutParams.MATCH_PARENT);
         popupWindow.setFocusable(true);
         ColorDrawable dw = new ColorDrawable(getResources().getColor(R.color.transparent));
         popupWindow.setBackgroundDrawable(dw);
         //设置popwindow出现和消失动画
         popupWindow.setAnimationStyle(R.style.from_center_anim);
-        popupWindow.showAtLocation(okButton, Gravity.BOTTOM, 0, 0);
+        popupWindow.showAtLocation(okButton, Gravity.CENTER, 0, 0);
         popupWindow.setOutsideTouchable(false);
         TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
         tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
         btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
-        View view = (View) popView.findViewById(R.id.view_mask);
+        LinearLayout view = (LinearLayout) popView.findViewById(R.id.view_mask);
         view.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
-//        popupWindow.showAtLocation(gridView, Gravity.BOTTOM, 100, 100);
         popupWindow.update();
     }
 
