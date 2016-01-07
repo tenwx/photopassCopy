@@ -62,7 +62,7 @@
                 <com.pictureair.photopass.widget.DashedLineView
                     android:paddingBottom="@dimen/pp_margin_8"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/pp_height_1dp"
                     android:background="@color/white" />
 
                 <com.pictureair.photopass.widget.NoScrollListView
@@ -120,7 +120,7 @@
 
                 <com.pictureair.photopass.widget.DashedLineView
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/pp_height_1dp"
                     android:background="@color/white" />
 
                 <RelativeLayout
@@ -149,7 +149,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
                         android:textSize="@dimen/text_size_12" />
@@ -269,7 +268,7 @@
 
                 <com.pictureair.photopass.widget.DashedLineView
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/pp_height_1dp"
                     android:background="@color/white" />
 
                 <RelativeLayout

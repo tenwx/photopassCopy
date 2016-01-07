@@ -326,6 +326,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         text_instruction.setOnClickListener(this);
 
         nopppLayout.setVisibility(View.INVISIBLE);
+        text_instruction.setVisibility(View.GONE);
         listPPP.setVisibility(View.GONE);
 //		optionImageView.setOnClickListener(this);
 //		optoinTextView.setOnClickListener(this);
@@ -355,9 +356,13 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                                 @Override
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     // TODO Auto-generated method stub
-                                    Intent intent = new Intent(MyPPPActivity.this, PPPDetailProductActivity.class);
-                                    startActivity(intent);
+//                                    Intent intent = new Intent(MyPPPActivity.this, PPPDetailProductActivity.class);
+//                                    startActivity(intent);
+                                    //获取商品（以后从缓存中取）
                                     customdialog.dismiss();
+                                    dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
+                                    getGoods();
+
                                 }
                             })
                             .setCancelable(false)

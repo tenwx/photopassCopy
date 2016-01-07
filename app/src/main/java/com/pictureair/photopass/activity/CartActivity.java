@@ -17,13 +17,13 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CartInfoAdapter;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
@@ -37,8 +37,6 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.XListViewHeader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -599,7 +597,14 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     //选择照片
     private void selectPhoto(int requestCode) {
+        if (cartInfoList == null || cartInfoList.size() <= 0) {
+            return;
+        }
         Intent intent = new Intent(CartActivity.this, SelectPhotoActivity1.class);
+        GoodsInfo1 goodsInfo1 = new GoodsInfo1();
+        goodsInfo1.setName(cartInfoList.get(requestCode / 10).getProductName());
+        goodsInfo1.setEmbedPhotosCount(cartInfoList.get(requestCode / 10).getEmbedPhotosCount());
+        intent.putExtra("goodsInfo", goodsInfo1);
         intent.putExtra("activity", "cartactivity");
         startActivityForResult(intent, requestCode);
     }
@@ -609,36 +614,41 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 20) {//先要上传图片，上传完之后调用修改cart的api，如果返回ok，则刷新界面
             updatephotolist = data.getParcelableArrayListExtra("photopath");
-            PictureAirLog.v(TAG, "onActivityResult photoPathOrURL: " + updatephotolist.get(0).photoPathOrURL);
+            if (updatephotolist == null || updatephotolist.size() <= 0) {
+                return;
+            }
             PictureAirLog.v(TAG, "onActivityResult requestCode: " + requestCode);
-            PhotoInfo info = updatephotolist.get(0);
-            if (info.onLine == 1) {//如果是选择的PP的照片
-                JSONArray jsonArray = new JSONArray();
-                JSONObject object = new JSONObject();
-                object.put("photoId", updatephotolist.get(0).photoId);
-                jsonArray.add(object);
-
-                Message msg = handler.obtainMessage();
-                msg.what = API1.UPLOAD_PHOTO_SUCCESS;
-                msg.arg1 = requestCode;
-                msg.obj = jsonArray;
-                handler.sendMessage(msg);
-                dialog.show(0);
-            } else {
-                String photourl = updatephotolist.get(0).photoPathOrURL;
-                // 需要上传选择的图片
-                RequestParams params = new RequestParams();
-                String tokenId = sPreferences.getString(Common.USERINFO_TOKENID, null);
-                try {
-                    params.put("file", new File(photourl), "application/octet-stream");
-                    params.put(Common.USERINFO_TOKENID, tokenId);
-                    API1.SetPhoto(params, handler, requestCode, dialog);
-                    dialog.show(0);
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+            PictureAirLog.v(TAG, "onActivityResult photoPathOrURL size : " + updatephotolist.size());
+            JSONArray jsonArray = new JSONArray();
+            for (PhotoInfo info : updatephotolist) {
+                if (info.onLine == 1) {//如果是选择的PP的照片
+                    JSONObject object = new JSONObject();
+                    object.put("photoId", info.photoId);
+                    jsonArray.add(object);
+                } else {
+                    //目前合成图片均为pp上的图片
+//                    String photourl = updatephotolist.get(0).photoPathOrURL;
+//                    // 需要上传选择的图片
+//                    RequestParams params = new RequestParams();
+//                    String tokenId = sPreferences.getString(Common.USERINFO_TOKENID, null);
+//                    try {
+//                        params.put("file", new File(photourl), "application/octet-stream");
+//                        params.put(Common.USERINFO_TOKENID, tokenId);
+//                        API1.SetPhoto(params, handler, requestCode, dialog);
+//                        dialog.show(0);
+//                    } catch (FileNotFoundException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
                 }
             }
+
+            Message msg = handler.obtainMessage();
+            msg.what = API1.UPLOAD_PHOTO_SUCCESS;
+            msg.arg1 = requestCode;
+            msg.obj = jsonArray;
+            handler.sendMessage(msg);
+            dialog.show(0);
         }
     }
 
@@ -653,21 +663,17 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private void changephoto(int position, ArrayList<PhotoInfo> photoList) {
         PictureAirLog.v(TAG, "并替换对应的图片");
         PictureAirLog.v(TAG, "update url: " + photoList.get(0).photoPathOrURL);
-        List<CartPhotosInfo1> oriphoto = cartInfoList.get(position / 10).getEmbedPhotos();//获取指定购物车的图片集合
-        PictureAirLog.v(TAG, "update oriphoto size: " + oriphoto.size());
-        //构建购物车图片对象
-        CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
-        cartPhotosInfo.setPhotoUrl(photoList.get(0).photoPathOrURL);
-        cartPhotosInfo.setPhotoId(photoList.get(0).photoId);
-        //判断是否为空 空添加、否则替换
-        if (oriphoto == null || oriphoto.size() == 0) {
-            oriphoto.add(position % 10, cartPhotosInfo);
-        } else {
-            oriphoto.set(position % 10, cartPhotosInfo);
+        List<CartPhotosInfo1> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
+        for (PhotoInfo photoInfo : photoList) {
+            //构建购物车图片对象
+            CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
+            cartPhotosInfo.setPhotoUrl(photoInfo.photoPathOrURL);
+            cartPhotosInfo.setPhotoId(photoInfo.photoId);
+            oriphoto.add(cartPhotosInfo);
         }
+
         //获取指定购物车项
         CartItemInfo1 map = cartInfoList.get(position / 10);
-        PictureAirLog.v(TAG, "cur url: " + map.getEmbedPhotos().get(position % 10).getPhotoUrl());
         map.setEmbedPhotos(oriphoto);
         map.setHasPhoto(true);
         //替换指定item

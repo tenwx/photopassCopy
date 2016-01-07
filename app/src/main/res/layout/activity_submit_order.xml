@@ -8,11 +8,7 @@
 
     <include
         android:id="@+id/head"
-        layout="@layout/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_alignParentTop="true"></include>
-
+        layout="@layout/top_bar" />
 
     <ListView
         android:id="@+id/listView_submitorder"
@@ -38,10 +34,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/pp_margin_16"
             android:text="@string/all_goods"
             android:textColor="@color/gray"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/button2_submit"
@@ -49,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@color/blue"
-            android:padding="15dp"
+            android:padding="@dimen/pp_padding_16"
             android:text="@string/checkout"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
@@ -60,11 +56,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="@dimen/pp_margin_16"
             android:layout_toLeftOf="@id/button2_submit"
             android:text="30.00"
             android:textColor="@color/pp_orange"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
 
         <TextView
             android:id="@+id/textView_currency"
@@ -72,11 +68,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
+            android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/submitorder_textView3"
             android:text="$"
             android:textColor="@color/pp_orange"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
 
         <TextView
             android:id="@+id/submitorder_textView2"
@@ -84,11 +80,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="2dp"
+            android:layout_marginRight="@dimen/pp_margin_5"
             android:layout_toLeftOf="@id/textView_currency"
             android:text="@string/totalprice"
             android:textColor="@color/gray"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 
 </RelativeLayout>

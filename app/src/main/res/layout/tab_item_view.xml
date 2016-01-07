@@ -3,18 +3,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/pp_padding_4"
+    android:paddingTop="@dimen/pp_padding_4">
 
     <ImageView
         android:id="@+id/imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerInside"
         android:adjustViewBounds="true"
-        android:focusable="false">
-    </ImageView>
+        android:focusable="false"
+        android:scaleType="centerInside" />
 
     <TextView
         android:id="@+id/textview"
@@ -22,7 +21,6 @@
         android:layout_height="wrap_content"
         android:gravity="top|center_horizontal"
         android:textColor="@drawable/tab_selector_onclick"
-        android:textSize="@dimen/text_small_size" >
-    </TextView>
+        android:textSize="@dimen/text_small_size" />
 
 </LinearLayout>

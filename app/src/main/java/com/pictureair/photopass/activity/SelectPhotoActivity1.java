@@ -213,6 +213,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 }
             } else {
                 if (goodsInfo == null) {
+                    PictureAirLog.v(TAG, "goodsInfo == null");
                     return list;
                 }
                 //数码照片--是则获取未购买的图片 礼物--获取全部
@@ -221,7 +222,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         list.add(photoInfo);
                     }
                 } else {
-                    list.addAll(myApplication.photoPassPicList);
+                    list.add(photoInfo);
                 }
             }
         }
@@ -366,7 +367,6 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         }
                         PictureAirLog.i(TAG, "photos===>" + photos.toString());
                         API1.uploadPhotoMakeVideo(photos.toString(), handler);
-//            Toast.makeText(context, "userid:" + userid + "\n" + "选择：" + listPhoto.size() + "张。测试:发送到服务器", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;

@@ -11,15 +11,18 @@
         android:layout_height="@dimen/pp_top_bar_height"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/blue" >
+        android:background="@color/pp_blue" >
 
         <ImageView
             android:id="@+id/sign_back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_margin_16"
+            android:paddingRight="@dimen/pp_padding_10"
+            android:paddingTop="@dimen/pp_padding_13"
             android:background="@color/transparent"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
@@ -32,7 +35,7 @@
             android:background="@color/transparent"
             android:text="@string/forget_pwd"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -47,58 +50,59 @@
         android:layout_marginTop="60dp"
         android:orientation="vertical" >
 
-        <EditText
+        <cn.smssdk.gui.EditTextWithClear
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_white_with_line"
             android:enabled="false"
-            android:padding="10dp"
-            android:paddingLeft="20dp"
+            android:padding="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_padding_16"
             android:textColor="@color/gray"
             android:textColorHint="@color/hint"
-            android:textSize="18sp" />
+            android:hint="@string/username"
+            android:textSize="@dimen/text_size_12" />
 
-        <EditText
+        <cn.smssdk.gui.EditTextWithClear
             android:id="@+id/pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="@dimen/pp_margin_16"
             android:background="@drawable/button_white_with_line"
             android:hint="@string/pwd"
             android:inputType="textPassword"
-            android:padding="10dp"
-            android:paddingLeft="20dp"
+            android:padding="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_margin_16"
             android:textColor="@color/gray"
             android:textColorHint="@color/hint"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_12" />
 
-        <EditText
+        <cn.smssdk.gui.EditTextWithClear
             android:id="@+id/pwd_again"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="@dimen/pp_padding_16"
             android:background="@drawable/button_white_with_line"
             android:hint="@string/pwd_again"
             android:inputType="textPassword"
-            android:padding="10dp"
-            android:paddingLeft="20dp"
+            android:padding="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_padding_16"
             android:textColor="@color/gray"
             android:textColorHint="@color/hint"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_12" />
 
         <Button
             android:id="@+id/sure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="45dp"
-            android:background="@drawable/button_blue"
-            android:padding="10dp"
+            android:layout_marginTop="@dimen/pp_margin_32"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/submit"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_size_16" />
+
+
     </LinearLayout>
 
 </RelativeLayout>

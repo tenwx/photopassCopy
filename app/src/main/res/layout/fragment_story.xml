@@ -16,10 +16,10 @@
             android:id="@+id/storyScanRelativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingBottom="8dp"
+            android:paddingBottom="@dimen/pp_padding_8"
             android:paddingLeft="@dimen/pp_margin_16"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp">
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_padding_8">
 
             <ImageView
                 android:id="@+id/story_scan"
@@ -45,10 +45,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="8dp"
-            android:paddingLeft="8dp"
+            android:paddingBottom="@dimen/pp_padding_8"
+            android:paddingLeft="@dimen/pp_padding_8"
             android:paddingRight="@dimen/pp_margin_16"
-            android:paddingTop="8dp"
+            android:paddingTop="@dimen/pp_padding_8"
             android:src="@drawable/story_video" />
     </RelativeLayout>
 
@@ -56,7 +56,7 @@
     <LinearLayout
         android:id="@+id/story_lead_bar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/pp_height_40"
         android:layout_below="@id/story_title"
         android:background="@color/white"
         android:orientation="horizontal"
@@ -73,10 +73,10 @@
             android:textSize="@dimen/text_size_10" />
 
         <ImageView
-            android:layout_width="1px"
+            android:layout_width="@dimen/pp_height_1"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_10"
             android:background="@color/pp_gray" />
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -90,10 +90,10 @@
             android:textSize="@dimen/text_size_10" />
 
         <ImageView
-            android:layout_width="1px"
+            android:layout_width="@dimen/pp_height_1"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_10"
             android:background="@color/pp_gray" />
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -107,10 +107,10 @@
             android:textSize="@dimen/text_size_10" />
 
         <ImageView
-            android:layout_width="1px"
+            android:layout_width="@dimen/pp_height_1"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_10"
             android:background="@color/pp_gray" />
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -124,10 +124,10 @@
             android:textSize="@dimen/text_size_10" />
 
         <ImageView
-            android:layout_width="1px"
+            android:layout_width="@dimen/pp_height_1"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_10"
             android:background="@color/pp_gray" />
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -153,33 +153,33 @@
         <ImageView
             android:id="@+id/story_cursor"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_height="@dimen/pp_height_2"
+            android:layout_marginLeft="@dimen/pp_margin_5"
+            android:layout_marginRight="@dimen/pp_height_5"
             android:layout_weight="1"
             android:background="@color/pp_blue" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/pp_height_2"
             android:layout_weight="1"
             android:background="@color/transparent" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/pp_height_2"
             android:layout_weight="1"
             android:background="@color/transparent" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/pp_height_2"
             android:layout_weight="1"
             android:background="@color/transparent" />
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/pp_height_2"
             android:layout_weight="1"
             android:background="@color/transparent" />
     </LinearLayout>
@@ -201,7 +201,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/story_title"
         android:orientation="vertical"
-        android:paddingBottom="60dp"
+        android:paddingBottom="@dimen/pp_margin_64"
         android:visibility="gone">
 
         <ImageView
@@ -214,7 +214,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/pp_margin_20"
             android:gravity="center"
             android:text="@string/storypage_no_photo"
             android:textColor="@color/pp_dark_blue"
@@ -232,7 +232,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/pp_margin_30"
             android:layout_weight="1"
             android:text="@string/story_scan"
             android:textColor="@color/pp_blue"
@@ -241,8 +241,8 @@
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/pp_margin_20"
+            android:layout_marginRight="@dimen/pp_margin_20"
             android:gravity="center"
             android:text="@string/story_no_pp"
             android:textColor="@color/pp_blue"
@@ -270,9 +270,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="40dp"
+            android:paddingLeft="@dimen/pp_margin_30"
+            android:paddingRight="@dimen/pp_margin_30"
+            android:paddingTop="@dimen/pp_margin_40"
             android:visibility="gone">
 
             <ImageView
@@ -284,10 +284,10 @@
             <com.pictureair.photopass.widget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/pp_margin_10"
                 android:text="@string/story_no_photo"
                 android:textColor="@color/gray"
-                android:textSize="15sp" />
+                android:textSize="@dimen/text_size_16" />
 
             <ImageView
                 android:layout_width="wrap_content"

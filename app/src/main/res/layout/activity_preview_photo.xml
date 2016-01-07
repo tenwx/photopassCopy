@@ -88,10 +88,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="@dimen/pp_margin_32"
             android:text="@string/touchtoclean"
             android:textColor="@color/white"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -103,8 +103,8 @@
         android:background="@color/pp_light_gray_background"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp" >
+        android:paddingBottom="@dimen/pp_padding_5"
+        android:paddingTop="@dimen/pp_padding_5" >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -116,10 +116,10 @@
                 android:id="@+id/index_last"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:paddingRight="25dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
+                android:paddingLeft="@dimen/pp_padding_16"
+                android:paddingRight="@dimen/pp_padding_20"
+                android:paddingTop="@dimen/pp_padding_5"
+                android:paddingBottom="@dimen/pp_padding_5"
                 android:src="@drawable/index_last" />
 
             <TextView
@@ -128,16 +128,16 @@
                 android:layout_height="wrap_content"
                 android:text="@string/photo_index"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="15sp" />
+                android:textSize="@dimen/text_size_16" />
 
             <ImageView
                 android:id="@+id/index_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="25dp"
-                android:paddingRight="15dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
+                android:paddingLeft="@dimen/pp_padding_20"
+                android:paddingRight="@dimen/pp_padding_16"
+                android:paddingTop="@dimen/pp_padding_5"
+                android:paddingBottom="@dimen/pp_padding_5"
                 android:src="@drawable/index_next" />
         </LinearLayout>
 
@@ -145,7 +145,6 @@
             android:id="@+id/index_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="111"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_small_size" />
     </LinearLayout>
@@ -212,7 +211,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/blur_mask"
         android:orientation="vertical"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/pp_margin_10"
         android:visibility="gone" >
 
         <Button
@@ -221,18 +220,18 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/blur_mask_bg2"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="@dimen/pp_margin_32"
             android:layout_weight="1"
             android:background="@drawable/button_orange"
             android:gravity="center"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_padding_20"
+            android:paddingRight="@dimen/pp_padding_20"
+            android:paddingTop="@dimen/pp_padding_10"
             android:text="@string/know"
             android:visibility="invisible"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_size_20" />
 
         <LinearLayout
             android:id="@+id/blur_mask_bg1"
@@ -294,8 +293,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/blur_mask_bg4"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="-90dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginBottom="@dimen/pp_margin_90_"
+            android:layout_marginTop="@dimen/pp_margin_64"
             android:adjustViewBounds="true"
             android:src="@drawable/blur_bg_image" />
 
@@ -304,7 +303,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/pp_margin_20"
             android:adjustViewBounds="true"
             android:src="@drawable/blur_bg_fingure" />
 
@@ -313,14 +312,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/blur_mask_bg4"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="@dimen/pp_margin_10"
+            android:layout_marginRight="@dimen/pp_margin_10"
             android:visibility="invisible"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/pp_margin_20"
             android:layout_toRightOf="@+id/blur_mask_bg4"
             android:text="@string/like_and_buy"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
 </RelativeLayout>

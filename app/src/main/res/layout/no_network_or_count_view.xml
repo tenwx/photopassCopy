@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light" >
+    android:background="@color/gray_light">
 
     <TextView
         android:id="@+id/resultTextView"
@@ -12,7 +12,7 @@
         android:gravity="center"
         android:text=""
         android:textColor="@color/gray"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_size_16" />
 
     <TextView
         android:id="@+id/resultTipTextView"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/resultTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/pp_margin_5"
         android:gravity="center"
         android:text=""
         android:textColor="@color/gray2"
@@ -32,15 +32,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/resultTipTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/pp_margin_20"
         android:background="@drawable/button_translate_with_gray_line"
-        android:paddingBottom="10dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="@dimen/pp_padding_10"
+        android:paddingLeft="@dimen/pp_margin_30"
+        android:paddingRight="@dimen/pp_margin_30"
+        android:paddingTop="@dimen/pp_padding_10"
         android:text=""
         android:textColor="@color/gray"
-        android:textSize="15sp" />
+        android:textSize="@dimen/text_size_16" />
 
     <ImageView
         android:id="@+id/statusImageView"
@@ -48,6 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/resultTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="@dimen/pp_padding_10" />
 
 </RelativeLayout>

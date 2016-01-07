@@ -19,7 +19,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_margin_16"
             android:paddingRight="@dimen/pp_padding_10"
             android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
@@ -42,7 +42,7 @@
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_13"
             android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="@dimen/pp_padding_10"
+            android:paddingRight="@dimen/pp_margin_16"
             android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/add_righttop" />
@@ -57,12 +57,13 @@
 
     <LinearLayout
         android:id="@+id/nopppinfo"
-        android:layout_margin="20dp"
+        android:background="@color/pp_light_gray_background"
+        android:padding="@dimen/pp_padding_20"
         android:layout_below="@id/head"
         android:layout_above="@+id/text_instruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
 
@@ -74,6 +75,7 @@
 
 
         <TextView
+            android:layout_marginTop="@dimen/pp_margin_20"
             android:layout_weight="1"
             android:text="@string/instruction"
             android:layout_width="wrap_content"
@@ -91,7 +93,7 @@
 
     <Button
         android:id="@+id/text_instruction"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/pp_margin_16"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -109,7 +111,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/head"
         android:divider="@color/gray_light"
-        android:dividerHeight="3dp"
+        android:dividerHeight="@dimen/pp_height_5"
         android:scrollbars="none"
         android:visibility="gone" />
 

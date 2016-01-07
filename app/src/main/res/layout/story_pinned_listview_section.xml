@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
+    android:paddingTop="@dimen/pp_padding_20"
+    android:paddingBottom="@dimen/pp_padding_20"
     android:paddingLeft="@dimen/pp_margin_16"
     android:paddingRight="@dimen/pp_margin_16">
 

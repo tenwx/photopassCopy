@@ -17,9 +17,9 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_12"
         android:textColor="@color/white"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="@dimen/pp_margin_5"
         android:layout_toRightOf="@id/img"
-        android:layout_marginBottom="-5dp"
+        android:layout_marginBottom="@dimen/pp_margin_5_"
         android:layout_alignBottom="@id/img"/>
 
 </RelativeLayout>

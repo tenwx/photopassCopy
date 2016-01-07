@@ -50,10 +50,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="14dp"
-            android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="22dp"
-            android:paddingTop="14dp"
+            android:paddingBottom="@dimen/pp_padding_13"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_padding_13"
             android:scaleType="centerInside"
             android:src="@drawable/cart" />
 
@@ -62,13 +62,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_2"
             android:background="@drawable/bg1"
             android:gravity="center"
-            android:padding="1dp"
-            android:text="0"
-            android:textColor="#ffffff"
+            android:padding="@dimen/pp_padding_1"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_small_size" />
 
         <ImageView
@@ -89,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="@dimen/pp_margin_5"
             android:layout_toLeftOf="@id/button_cart"
             android:scaleType="fitCenter"
             android:src="@drawable/addphoto"
@@ -112,19 +111,20 @@
             <com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct
                 android:id="@+id/bannerview_makegift_detail"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="@dimen/pp_height_300"
                 android:padding="@dimen/pp_padding_20" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp">
+                android:layout_margin="@dimen/pp_margin_5">
 
                 <RelativeLayout
                     android:id="@+id/product_detail2"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="@dimen/pp_margin_20"
+                    android:layout_marginBottom="@dimen/pp_margin_20">
 
                     <TextView
                         android:id="@+id/textview_productprice"
@@ -132,38 +132,38 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="13dp"
+                        android:layout_marginLeft="@dimen/pp_margin_5"
+                        android:layout_marginTop="@dimen/pp_margin_13"
                         android:layout_toRightOf="@+id/textView2"
-                        android:textColor="#e84320"
-                        android:textSize="15sp" />
+                        android:textColor="@color/pp_orange"
+                        android:textSize="@dimen/text_size_16" />
 
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="@dimen/pp_margin_10"
+                        android:layout_marginLeft="@dimen/pp_margin_22"
+                        android:layout_marginTop="@dimen/pp_margin_13"
                         android:textColor="@color/gray"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/text_size_16" />
 
                     <TextView
                         android:id="@+id/product_detail"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/textview_productprice"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="@dimen/pp_margin_5"
+                        android:layout_marginRight="@dimen/pp_margin_5"
+                        android:layout_marginTop="@dimen/pp_margin_20"
                         android:background="@drawable/button_white"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:paddingTop="10dp"
-                        android:textColor="#455560"
-                        android:textSize="15sp" />
+                        android:paddingBottom="@dimen/pp_padding_10"
+                        android:paddingLeft="@dimen/pp_padding_20"
+                        android:paddingRight="@dimen/pp_padding_20"
+                        android:paddingTop="@dimen/pp_padding_10"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -184,7 +184,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/buy_good2"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/pp_margin_16" />
@@ -196,7 +196,7 @@
             android:layout_marginTop="@dimen/pp_margin_16"
             android:layout_weight="1"
             android:background="@drawable/button_sign_shape_and_selector"
-            android:padding="10dp"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/add_to_cart"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/pp_margin_16" />
