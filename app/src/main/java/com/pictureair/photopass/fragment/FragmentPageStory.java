@@ -90,7 +90,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     //申明变量
     private int refreshDataCount = 0;//记录刷新数据的数量
     private int refreshVideoDataCount = 0;//记录刷新
+    /**
+     * 是否需要重新拉取数据
+     */
     private boolean needfresh = false;
+    /**
+     * 从sp中读取的值，如果是true，就要保存起来，一旦失败，就要把这个值给needfresh
+     */
+    private boolean sharedNeedFresh = false;
     private int screenWidth;
     private boolean isLoading = false;
     private boolean scanMagicPhotoNeedCallBack;//记录是否需要重新扫描本地照片
@@ -357,6 +364,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
                     showViewPager();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
+                    if (sharedNeedFresh) {
+                        sharedNeedFresh = false;
+                    }
                 }
 
                 if (dialog.isShowing()) {
@@ -365,7 +375,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                //重新加载购物车数据
+                //重新加载数据
                 System.out.println("onclick with reload");
                 dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
                 if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
@@ -446,12 +456,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         if (setVisibile) {
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
+            if (sharedNeedFresh) {
+                needfresh = sharedNeedFresh;
+            }
+            noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
 
         } else {//刷新失败
             myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
             EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.STOP_REFRESH));
         }
-        noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageStoryHandler, true);
     }
 
     /**
@@ -540,31 +553,25 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 } else {
                     app.photoPassPicList.clear();
                 }
-            } else {//刷新最新照片，获取刷新数据的数量
-
-                if (isVideo) {
-                    refreshVideoDataCount = responseArray.size();
-                    PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
-                } else {
-                    refreshDataCount = responseArray.size();
-                    PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
-
-                }
-
             }
             new Thread() {
                 public void run() {
                     synchronized (this) {
+                        ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
                         if (isVideo) {
-//                            if (refreshVideoDataCount > 0) {
                             PictureAirLog.out("-----------------> start insert video data into database");
-                            app.photoPassVideoList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, true));
-//                            }
+                            if (!isAll) {
+                                refreshVideoDataCount = resultPhotoList.size();
+                                PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
+                            }
+                            app.photoPassVideoList.addAll(resultPhotoList);
                         } else {
-//                            if (refreshDataCount > 0) {
                             PictureAirLog.out("-----------------> start insert photo data into database");
-                            app.photoPassPicList.addAll(pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false));
-//                            }
+                            if (!isAll) {
+                                refreshDataCount = resultPhotoList.size();
+                                PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
+                            }
+                            app.photoPassPicList.addAll(resultPhotoList);
                         }
 
                         //通知已经处理完毕
@@ -630,6 +637,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
         needfresh = sharedPreferences.getBoolean(Common.NEED_FRESH, false);
+        sharedNeedFresh = needfresh;
         if (needfresh) {//如果一开始就需要全部刷新，
             Editor editor = sharedPreferences.edit();
             editor.putBoolean(Common.NEED_FRESH, false);
