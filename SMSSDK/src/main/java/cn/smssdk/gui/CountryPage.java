@@ -35,7 +35,6 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
 	private HashMap<String, String> countryRules;
 	private EventHandler handler;
 	private CountryListView listView;
-	private EditText etSearch;
 	private Dialog pd;
 
 	public void setCountryId(String id) {
@@ -126,23 +125,10 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
 		if (resId > 0) {
 			activity.findViewById(resId).setOnClickListener(this);
 		}
-		resId = getIdRes(activity, "ivSearch");
-		if (resId > 0) {
-			activity.findViewById(resId).setOnClickListener(this);
-		}
-		resId = getIdRes(activity, "iv_clear");
-		if (resId > 0) {
-			activity.findViewById(resId).setOnClickListener(this);
-		}
 		resId = getIdRes(activity, "clCountry");
 		if (resId > 0) {
 			listView = (CountryListView) activity.findViewById(resId);
 			listView.setOnItemClickListener(this);
-		}
-		resId = getIdRes(activity, "et_put_identify");
-		if (resId > 0) {
-			etSearch = (EditText) activity.findViewById(resId);
-			etSearch.addTextChangedListener(this);
 		}
 	}
 
@@ -182,20 +168,8 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
 	public void onClick(View v) {
 		int id = v.getId();
 		int id_ll_back = getIdRes(activity, "ll_back");
-		int id_ivSearch = getIdRes(activity, "ivSearch");
-		int id_iv_clear = getIdRes(activity, "iv_clear");
 		if (id == id_ll_back) {
 			finish();
-		} else if (id == id_ivSearch) {
-			// 搜索
-			int id_llTitle = getIdRes(activity, "llTitle");
-			activity.findViewById(id_llTitle).setVisibility(View.GONE);
-			int id_llSearch = getIdRes(activity, "llSearch");
-			activity.findViewById(id_llSearch).setVisibility(View.VISIBLE);
-			etSearch.getText().clear();
-			etSearch.requestFocus();
-		} else if (id == id_iv_clear) {
-			etSearch.getText().clear();
 		}
 	}
 
@@ -208,7 +182,6 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
 				activity.findViewById(resId).setVisibility(View.GONE);
 				resId = getIdRes(activity, "llTitle");
 				activity.findViewById(resId).setVisibility(View.VISIBLE);
-				etSearch.setText("");
 				return true;
 			}
 		} catch (Exception e) {
@@ -220,7 +193,6 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
 	public boolean onFinish() {
 		// 销毁监听接口
 		SMSSDK.unregisterEventHandler(handler);
-		//start activity for result
 		HashMap<String, Object> res = new HashMap<String, Object>();
 		res.put("id", id);
 		res.put("rules", countryRules);

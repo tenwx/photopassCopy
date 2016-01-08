@@ -19,7 +19,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.SocketEvent;
+import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;

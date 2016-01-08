@@ -635,16 +635,19 @@ public class PictureAirDbManager {
      * 将照片插入到photoPassInfo表中
      *
      * @param responseArray
+     * @param isVideo 是否是视频信息
+     * @param isAll 是否是刷新信息
      */
-    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isVideo) {
+    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isVideo, boolean isAll) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
         if (responseArray.size() == 0) {
             return resultArrayList;
         }
         database = photoInfoDBHelper.getWritableDatabase();
         database.beginTransaction();
-        for (int i = 0; i < responseArray.size(); i++) {
-            try {
+        Cursor cursor = null;
+        try {
+            for (int i = 0; i < responseArray.size(); i++) {
                 JSONObject object = responseArray.getJSONObject(i);
                 PhotoInfo photo = isVideo ? JsonUtil.getVideoInfo(object) : JsonUtil.getPhoto(object);
                 if (!isVideo) {
@@ -652,6 +655,16 @@ public class PictureAirDbManager {
                         continue;
                     }
                 }
+
+                if (!isAll) {
+                    //1.先查询数据库是否有新的数据，如果有，则忽略信息
+                    //2.如果没有，则插入
+                    cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.photoId});
+                    if (cursor.getCount() > 0) {//说明存在此数据
+                        continue;
+                    }
+                }
+
                 resultArrayList.add(photo);
                 //将数据插入到数据库
                 database.execSQL("insert into " + Common.PHOTOPASS_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
@@ -660,8 +673,12 @@ public class PictureAirDbManager {
                         photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
                         photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
                         photo.videoWidth + "", photo.videoHeight + ""});
-            } catch (JSONException e1) {
-                e1.printStackTrace();
+            }
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
         }
         database.setTransactionSuccessful();

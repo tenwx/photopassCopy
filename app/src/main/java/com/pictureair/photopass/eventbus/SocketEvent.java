@@ -1,4 +1,6 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.photopass.eventbus;
+
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 
 /**
  * Created by bauer_bao on 16/1/6.

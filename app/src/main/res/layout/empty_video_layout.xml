@@ -29,11 +29,13 @@
         android:textSize="@dimen/text_size_16" />
 
 
+    <!-- 隐藏去挑选的按钮 -->
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:background="@color/white">
 
         <Button

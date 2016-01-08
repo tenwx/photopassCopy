@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,10 +17,9 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
-
-import java.lang.ref.WeakReference;
 
 /**
  * 用户功能设置
@@ -33,12 +31,16 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     private Button logout;
     private TextView tvSettingLanguage;
     private MyApplication application;
+    private ImageView backBtn;
 
     private ImageButton ibGprWifiDownload, ibWifiOnlyDownload, ibAutoUpdate; // ico
     private RelativeLayout rlGprsWifiDoenload, rlWifiOnlyDownload, rlAutoUpdate;
 
     // 用于显示的 按钮。
     private SharedPreferences sharedPreferences;
+    private SharedPreferences appSharedPreferences;
+    private String currentLanguage;
+    private static final String TAG = "SettingActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +53,16 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        onCreate(null);
+        if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
+            PictureAirLog.v(TAG, "onResume onCreate(null)");
+            onCreate(null);
+        }
     }
 
     private void initView() {
-        setTopLeftValueAndShow(R.drawable.back_white, true);
-        setTopTitleShow(R.string.setting);
         logout = (Button) findViewById(R.id.logout);
         feedback = (RelativeLayout) findViewById(R.id.sub_opinions);
-//        back = (ImageView) findViewById(R.id.back);
+        backBtn = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
         application = (MyApplication) getApplication();
 
@@ -78,7 +81,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
         logout.setOnClickListener(this);
         feedback.setOnClickListener(this);
-//        back.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
         tvSettingLanguage.setOnClickListener(this);
         rlGprsWifiDoenload.setOnClickListener(this);
         rlWifiOnlyDownload.setOnClickListener(this);
@@ -88,8 +91,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         ibAutoUpdate.setOnClickListener(this);
 
         settingUtil = new SettingUtil(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
-                Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, "");
         judgeSettingStatus();
     }
 
@@ -97,9 +101,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-//            case R.id.back:
-//                finish();
-//                break;
+            case R.id.back:
+                finish();
+                break;
 
             case R.id.logout:
                 new CustomDialog(SettingActivity.this, R.string.comfirm_logout, R.string.button_cancel, R.string.button_ok, new CustomDialog.MyDialogInterface() {

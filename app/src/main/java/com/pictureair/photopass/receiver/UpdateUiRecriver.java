@@ -4,17 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
-import android.view.View;
 
-import com.pictureair.photopass.activity.MainTabActivity;
+import com.pictureair.photopass.eventbus.RedPointControlEvent;
+
+import de.greenrobot.event.EventBus;
 
 public class UpdateUiRecriver extends BroadcastReceiver{
 
-	Vibrator vibrator;
+	private Vibrator vibrator;
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
 		// TODO 更新UI
-		MainTabActivity.maintabbadgeView.setVisibility(View.VISIBLE);
+		EventBus.getDefault().postSticky(new RedPointControlEvent(true));
 
 		//获得震动服务
 		vibrator = (Vibrator)arg0.getSystemService(Context.VIBRATOR_SERVICE); 

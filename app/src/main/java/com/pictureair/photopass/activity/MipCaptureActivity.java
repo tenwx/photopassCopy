@@ -20,7 +20,7 @@ import android.view.View;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.ScanInfoEvent;
+import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
