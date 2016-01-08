@@ -525,10 +525,11 @@
     <string name="login_failed">登录失败</string>
 
     <!-- Disney video start-->
-    <string name="disney_video_about_null_photo_note">您暂时还没有任何已购买的乐拍通照片，所以还不能开启“我的迪士尼故事”，请尽快购买您喜欢的乐拍通照片吧！</string>
+    <string name="disney_video_about_null_photo_note">您还不能制作“我的迪士尼故事”，快去购买一些乐拍通照片吧！</string>
     <string name="disney_video_about_null_photo_note2">    去记忆屋看看喜欢的东西，把照片买下吧！去挑选</string>
-    <string name="disney_video_go_to_select_photo">去挑选</string>
-    <string name="disney_video_edit_photo">制作（0/3）</string>
+    <string name="disney_video_go_to_select_photo">买照片</string>
+    <string name="disney_video_edit_photo">开始制作(%1$d/%2$d)</string>
+    <string name="disney_video_edit_photo_null">开始制作(0/3)</string>
     <string name="disney_video_select_photo_less_than3">照片不能小于3张</string>
     <string name="my_disney_story">我的迪士尼故事</string>
     <string name="magic_in_the_making">视频制作中...</string>
@@ -539,6 +540,7 @@
     <!-- Disney video 引导页介绍，暂时没有中文，先用英文代替-->
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="disney_video_selectphoto_model">选择模式</string>
+
     <!-- Disney video End-->
 
     <string name="auto_sync">自动更新</string>

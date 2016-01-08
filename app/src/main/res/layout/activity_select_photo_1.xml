@@ -143,13 +143,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="16dp">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:drawableTop="@drawable/button_share_selector"
+                android:drawableTop="@drawable/button_select_model"
                 android:gravity="center"
                 android:text="@string/disney_video_selectphoto_model"
                 android:textColor="@drawable/textview_selector_onclick"
@@ -162,7 +162,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="16dp"></LinearLayout>
+            android:padding="10dp"></LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_shop_photo"
@@ -170,16 +170,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="16dp">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:drawableTop="@drawable/button_share_selector"
+                android:drawableTop="@drawable/buy_photo"
                 android:gravity="center"
                 android:text="@string/disney_video_go_to_select_photo"
-                android:textColor="@drawable/textview_selector_onclick"
+                android:textColor="@color/pp_purple"
                 android:textSize="@dimen/text_size_12" />
 
         </LinearLayout>
@@ -191,10 +191,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:drawableTop="@drawable/icon_camera_sel"
+        android:layout_marginBottom="@dimen/pp_margin_10"
+        android:drawableTop="@drawable/icon_disneyvideo_ok"
         android:gravity="center"
-        android:text="@string/selected"
+        android:text="@string/disney_video_edit_photo_null"
         android:textColor="@color/gray_light5"
         android:textSize="@dimen/text_size_12"
         android:visibility="gone" />

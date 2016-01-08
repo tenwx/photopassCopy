@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -104,7 +106,12 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case 111:
-                okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
+                if (isDisneyVideo) {
+                    okButton.setText(String.format(getString(R.string.disney_video_edit_photo), msg.arg1, photocount));//更新button
+                } else {
+                    okButton.setText(String.format(getString(R.string.hasselectedphoto), msg.arg1, photocount));//更新button
+                }
+
                 break;
 
             case API1.UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS:
@@ -172,6 +179,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
             isDisneyVideo = true;
             tvHead.setText(getResources().getString(R.string.story_tab_bought));
+            rtLayout.setImageResource(R.drawable.back_white_disney_video);
             initDisneySelectPhotoFootView();
             llDisneyVideoFoot.setVisibility(View.VISIBLE);
             isBuy = true;
@@ -189,13 +197,12 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
         //判断是否有照片
         if (isBuy) {
-            if (photoPassArrayList != null && photoPassArrayList.size() > 0) {
+            if (photoPassArrayList != null && photoPassArrayList.size() > 2) {
                 llNullPhoto.setVisibility(View.GONE);
                 gridView.setVisibility(View.VISIBLE);
             } else {
                 gridView.setVisibility(View.GONE);
                 llNullPhoto.setVisibility(View.VISIBLE);
-                okButton.setVisibility(View.GONE);
                 okButton.setEnabled(false);
                 return;
             }
@@ -206,8 +213,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
             } else {
                 gridView.setVisibility(View.GONE);
                 noPhotoRelativeLayout.setVisibility(View.VISIBLE);
-                okButton.setVisibility(View.GONE);
-                okButton.setEnabled(false);
+                goneOkButton();
                 return;
             }
         }
@@ -222,11 +228,17 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         }
         //获取可选图片总数
         okButton.setVisibility(View.VISIBLE);
-        okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
+
+        if (isDisneyVideo) {
+            okButton.setText(String.format(getString(R.string.disney_video_edit_photo), 0, photocount));
+        } else {
+            okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
+        }
     }
 
     /**
      * 初始化视频制作选择照片的底部view
+     * okButton回收之前是右上角的文本
      */
     private void initDisneySelectPhotoFootView() {
         llDisneyVideoFoot = (LinearLayout)findViewById(R.id.ll_disney_video_foot);
@@ -234,9 +246,17 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         okButton.setVisibility(View.GONE);
         okButton = null;
         okButton = (TextView)findViewById(R.id.tv_select_photo_ok);
+        okButton.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
     }
 
+    /**
+     * 隐藏OkButton
+     */
+    private void goneOkButton(){
+        okButton.setVisibility(View.GONE);
+        okButton.setEnabled(false);
+    }
 
 
 
@@ -340,15 +360,24 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         }
     }
 
+    /**
+     * 点击popwindow确认
+     *
+     */
+    private void popupwindowSubmit(){
+        popupWindow.dismiss();
+        okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
+        photoPassAdapter.startSelectPhoto(1, 0);
+        photoURLlist.clear();
+        isEnabled();
+    }
 
     @Override
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
-            case R.id.view_mask:
-            case R.id.btn_submit:
-                popupWindow.dismiss();
-                finish();
+            case R.id.btn_submit://点击弹窗后，不退出activity。照片总数清零，button清0
+                popupwindowSubmit();
                 break;
 
             case R.id.ll_shop_photo:
@@ -424,12 +453,18 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         if (photoURLlist.size() == photocount) {
             okButton.setEnabled(true);
             okButton.setTextColor(getResources().getColor(R.color.white));
-            if (isDisneyVideo){
-                okButton.setTextColor(getResources().getColor(R.color.pp_blue));
+            if (isDisneyVideo){//
+                Drawable drawable= getResources().getDrawable(R.drawable.icon_disneyvideo_ok_sel);
+                okButton.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+                okButton.setTextColor(getResources().getColor(R.color.pp_purple));
             }
         } else {
             okButton.setEnabled(false);
             okButton.setTextColor(getResources().getColor(R.color.gray_light5));
+            if (isDisneyVideo){
+                Drawable drawable= getResources().getDrawable(R.drawable.icon_disneyvideo_ok);
+                okButton.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+            }
         }
     }
 
@@ -441,20 +476,30 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT);
         popupWindow.setFocusable(true);
-        ColorDrawable dw = new ColorDrawable(getResources().getColor(R.color.transparent));
-        popupWindow.setBackgroundDrawable(dw);
+
+        ColorDrawable cd = new ColorDrawable(0x000000);
+        popupWindow.setBackgroundDrawable(cd);
         //设置popwindow出现和消失动画
         popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.CENTER, 0, 0);
-        popupWindow.setOutsideTouchable(false);
         TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
+        LinearLayout llContent = (LinearLayout) popView.findViewById(R.id.ll_content);
         tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
         btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
-        LinearLayout view = (LinearLayout) popView.findViewById(R.id.view_mask);
-        view.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         popupWindow.update();
+
+        llContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (popupWindow.isShowing()){
+                    popupwindowSubmit();
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
