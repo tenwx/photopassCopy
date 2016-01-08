@@ -15,16 +15,16 @@
         android:layout_below="@id/head"
         android:layout_marginTop="@dimen/pp_height_60"
         android:orientation="horizontal"
-        android:padding="@dimen/pp_padding_16">
+        android:padding="@dimen/pp_padding_10">
 
         <EditText
             android:id="@+id/input1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:ems="5"
-            android:gravity="center_vertical"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
             android:imeOptions="actionGo"
             android:singleLine="true"
             android:textColor="@color/pp_gray"
@@ -34,7 +34,6 @@
         <View
             android:layout_width="@dimen/pp_height_10"
             android:layout_height="@dimen/pp_height_1dp"
-            android:layout_marginRight="@dimen/pp_margin_20"
             android:layout_gravity="center_vertical"
             android:background="@color/pp_dark_blue" />
 
@@ -43,9 +42,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:ems="5"
-            android:gravity="center_vertical"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
             android:imeOptions="actionGo"
             android:singleLine="true"
             android:textColor="@color/pp_gray"
@@ -56,7 +55,6 @@
             android:layout_width="@dimen/pp_height_10"
             android:layout_height="@dimen/pp_height_1dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/pp_margin_20"
             android:background="@color/pp_dark_blue" />
 
         <EditText
@@ -64,9 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:ems="5"
-            android:gravity="center_vertical"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
             android:imeOptions="actionGo"
             android:singleLine="true"
             android:textColor="@color/pp_gray"
@@ -77,7 +75,6 @@
             android:layout_width="@dimen/pp_height_10"
             android:layout_height="@dimen/pp_height_1dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/pp_margin_20"
             android:background="@color/pp_dark_blue" />
 
         <EditText
@@ -85,9 +82,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
+            android:background="@drawable/shape"
             android:ems="4"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:imeOptions="actionGo"
             android:maxLength="4"
             android:singleLine="true"
@@ -97,14 +94,14 @@
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/input_line"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1"
-        android:layout_below="@id/layout_input"
-        android:layout_marginLeft="@dimen/pp_margin_16"
-        android:layout_marginRight="@dimen/pp_margin_16"
-        android:background="@color/pp_blue" />
+    <!--<View-->
+        <!--android:id="@+id/input_line"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/pp_height_1"-->
+        <!--android:layout_below="@id/layout_input"-->
+        <!--android:layout_marginLeft="@dimen/pp_margin_10"-->
+        <!--android:layout_marginRight="@dimen/pp_margin_10"-->
+        <!--android:background="@color/pp_blue" />-->
 
     <Button
         android:id="@+id/sure"
