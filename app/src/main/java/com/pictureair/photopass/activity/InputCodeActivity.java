@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -138,22 +141,40 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                PictureAirLog.out("========== input1 onTextChanged " + arg0.length());
                 if (arg0.length() > 3) {
                     input2.setEnabled(true);
                     input2.requestFocus();
-                    input1.setEnabled(false);
+                    input1.setEnabled(true);
+                    input3.setEnabled(true);
+                    input4.setEnabled(true);
+                }else if (arg0.length() == 0){
+                    input1.setEnabled(true);
+                    input2.setEnabled(false);
                     input3.setEnabled(false);
                     input4.setEnabled(false);
+                }
+
+                if (arg0.length() == 5){ // input1 中输入第5个字符，就让第5个字符  移动到input2 中
+                    String text1= input1.getText().toString();
+                    PictureAirLog.e("", "====:" + text1);
+                    input1.setText(text1.substring(0, 4));
+                    input2.setText(String.valueOf(text1.charAt(4)));
+                    input2.setEnabled(true);
+                    input2.requestFocus();
+                    input2.setSelection(input2.getText().toString().length());
                 }
             }
 
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
+                PictureAirLog.out("========== input1 before " + arg0.length());
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
+                    PictureAirLog.out("========== input1 after " + input1.getText().toString().length());
             }
         });
 
@@ -161,30 +182,42 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                PictureAirLog.out("========== input2 onTextChanged " + arg0.length());
                 if (arg0.length() > 3) {
                     input3.setEnabled(true);
                     input3.requestFocus();
-                    input1.setEnabled(false);
-                    input2.setEnabled(false);
-                    input4.setEnabled(false);
+                    input1.setEnabled(true);
+                    input2.setEnabled(true);
+                    input4.setEnabled(true);
                 } else if (arg0.length() == 0) {
                     input1.setEnabled(true);
                     input1.requestFocus();
-                    input2.setEnabled(false);
-                    input3.setEnabled(false);
-                    input4.setEnabled(false);
+                    input2.setEnabled(true);
+                    input3.setEnabled(true);
+                    input4.setEnabled(true);
+                    input1.setSelection(input1.getText().toString().length());
+                }
+
+                if (arg0.length() == 5){ // input2 中输入第5个字符，就让第5个字符  移动到input3 中
+                    String text2= input2.getText().toString();
+                    PictureAirLog.e("", "====:" + text2);
+                    input2.setText(text2.substring(0, 4));
+                    input3.setText(String.valueOf(text2.charAt(4)));
+                    input3.setEnabled(true);
+                    input3.requestFocus();
+                    input3.setSelection(input3.getText().toString().length());
                 }
             }
 
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
-
+                PictureAirLog.out("========== input2  before " + arg0.length());
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-
+                PictureAirLog.out("========== input2  after " + input2.getText().toString().length());
             }
         });
 
@@ -195,15 +228,25 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                 if (arg0.length() > 3) {
                     input4.setEnabled(true);
                     input4.requestFocus();
-                    input1.setEnabled(false);
-                    input2.setEnabled(false);
-                    input3.setEnabled(false);
+                    input1.setEnabled(true);
+                    input2.setEnabled(true);
+                    input3.setEnabled(true);
                 } else if (arg0.length() == 0) {
                     input2.setEnabled(true);
                     input2.requestFocus();
-                    input1.setEnabled(false);
-                    input3.setEnabled(false);
-                    input4.setEnabled(false);
+                    input1.setEnabled(true);
+                    input3.setEnabled(true);
+                    input4.setEnabled(true);
+                    input2.setSelection(input2.getText().toString().length());
+                }
+                if (arg0.length() == 5){ // input3 中输入第5个字符，就让第5个字符  移动到input4 中
+                    String text3= input3.getText().toString();
+                    PictureAirLog.e("", "====:" + text3);
+                    input3.setText(text3.substring(0, 4));
+                    input4.setText(String.valueOf(text3.charAt(4)));
+                    input4.setEnabled(true);
+                    input4.requestFocus();
+                    input4.setSelection(input4.getText().toString().length());
                 }
             }
 
@@ -224,9 +267,10 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                 if (arg0.length() == 0) {
                     input3.setEnabled(true);
                     input3.requestFocus();
-                    input1.setEnabled(false);
-                    input2.setEnabled(false);
-                    input4.setEnabled(false);
+                    input1.setEnabled(true);
+                    input2.setEnabled(true);
+                    input4.setEnabled(true);
+                    input3.setSelection(input3.getText().toString().length());
                 }
             }
 

@@ -1,6 +1,5 @@
 package com.pictureair.photopass.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.CameraActivity;
 import com.pictureair.photopass.util.PictureAirLog;
 
 /**
@@ -19,8 +17,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 public class FragmentPageCamera extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Intent intent = new Intent(getActivity(), CameraActivity.class);
-        FragmentPageCamera.this.startActivity(intent);
         return inflater.inflate(R.layout.fragment_camera, null);
     }
 
