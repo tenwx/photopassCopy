@@ -53,6 +53,11 @@ public class MyApplication extends Application {
     public boolean needScanFavoritePhotos = false;//记录是否需要扫描收藏图片
 
     /**
+     * 用来判断是否成功获取了有广告图的地点
+     */
+    private boolean getADLocationSuccess = false;
+
+    /**
      * 是否切换到shop页面
      */
     private boolean changeToShopTab = false;
@@ -515,6 +520,22 @@ public class MyApplication extends Application {
      */
     public void setChangeToShopTab(boolean changeToShopTab) {
         this.changeToShopTab = changeToShopTab;
+    }
+
+    /**
+     * 获取是否成功拿到广告地点信息
+     * @return
+     */
+    public boolean isGetADLocationSuccess() {
+        return getADLocationSuccess;
+    }
+
+    /**
+     * 设置是否成功拿到广告地点信息
+     * @param getADLocationSuccess
+     */
+    public void setGetADLocationSuccess(boolean getADLocationSuccess) {
+        this.getADLocationSuccess = getADLocationSuccess;
     }
 
     /**

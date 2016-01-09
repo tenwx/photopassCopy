@@ -65,6 +65,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private MyToast newToast;
 
+    //上次的tab页面，用来判断点击视频之后回到那个tab
+    private int last_tab = 0;
+
     private MyApplication application;
     private SharedPreferences sharedPreferences;
     private CheckUpdateManager checkUpdateManager;
@@ -87,6 +90,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         ACache.get(this).remove(Common.ALL_GOODS);
         ACache.get(this).remove(Common.BANNER_GOODS);
         ACache.get(this).remove(Common.PPP_GOOD);
+        ACache.get(this).remove(Common.LOCATION_INFO);
+        ACache.get(this).remove(Common.ACACHE_ADDRESS);
     }
 
     /**
@@ -149,6 +154,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             mTabHost.setCurrentTab(3);
             application.setChangeToShopTab(false);
             application.setIsStoryTab(false);
+        } else {
+            PictureAirLog.out("skip to last tab");
+            //设置成为上次的tab页面
+            mTabHost.setCurrentTab(last_tab);
+            if (last_tab == 0) {
+                application.setIsStoryTab(true);
+            }
         }
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
             PictureAirLog.out("maintab ==== currentLanguage");
@@ -207,6 +219,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                         PictureAirLog.d(TAG, "need not refresh");
                     }
                     mTabHost.setCurrentTab(0);
+                    last_tab = 0;
                     application.setIsStoryTab(true);
                     break;
 
@@ -222,6 +235,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 case 4:
                     System.out.println(currentTab + " tab on click");
                     mTabHost.setCurrentTab(currentTab);
+                    last_tab = currentTab;
                     application.setIsStoryTab(false);
                     break;
 

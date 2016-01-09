@@ -172,6 +172,17 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
+            case API1.GET_AD_LOCATIONS_SUCCESS://获取广告地点成功
+                PictureAirLog.out("ad location---->" + msg.obj.toString());
+                /**
+                 * 1.存入数据库
+                 * 2.在application中记录结果
+                 */
+                JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
+                pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"));
+                app.setGetADLocationSuccess(true);
+                break;
+
             case API1.GET_ALL_PHOTOS_BY_CONDITIONS_FAILED://获取全部照片失败
                 getPhotoInfoDone = true;
                 if (getPhotoInfoDone && getVideoInfoDone) {
@@ -660,6 +671,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
             fragmentPageStoryHandler.sendMessage(message);
         }
+
+        //没有成功获取广告信息
+        if (!app.isGetADLocationSuccess()) {
+            PictureAirLog.out("start get ad location");
+            API1.getADLocations(fragmentPageStoryHandler);
+        } else {
+            PictureAirLog.out("ad location has got already");
+        }
         return view;
     }
 
@@ -759,64 +778,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         }
     }
 
-//    //选项卡点击事件监听
-//    private class viewPagerOnClickListener implements OnClickListener {
-//        private int index = 0;
-//
-//        public viewPagerOnClickListener(int i) {
-//            index = i;
-//        }
-//
-//        @Override
-//        public void onClick(View v) {
-//            storyViewPager.setCurrentItem(index);
-//        }
-//
-//    }
-
-//    private void setTitleBarTextColor(int index) {
-//        switch (index) {
-//            case 0:
-////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-//                break;
-//
-//            case 1:
-////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-//                break;
-//
-//            case 2:
-////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-//                break;
-//
-//            case 3:
-////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-//                break;
-//
-//            case 4:
-////                storyTabAllTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabPhotopassTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabMagicTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabBoughtTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_dark_blue));
-////                storyTabFavoriteTextView.setTextColor(getActivity().getResources().getColor(R.color.pp_blue));
-//                break;
-//        }
-//    }
 
     //扫描图片线程类
     private class ScanPhotosThread extends Thread {
@@ -1016,8 +977,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         photoItemInfo.locationId = locationList.get(i).locationId;
                         photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
                         photoItemInfo.shootTime = info.shootTime;
-                        photoItemInfo.place = locationList.get(i).place;
-                        info.locationName = locationList.get(i).place;
+                        if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+                            photoItemInfo.place = locationList.get(i).placeCHName;
+                            info.locationName = locationList.get(i).placeCHName;
+
+                        } else {
+                            photoItemInfo.place = locationList.get(i).placeENName;
+                            info.locationName = locationList.get(i).placeENName;
+
+                        }
                         photoItemInfo.list.add(info);
                         photoItemInfo.placeUrl = locationList.get(i).placeUrl;
                         photoItemInfo.latitude = locationList.get(i).latitude;
@@ -1154,8 +1122,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = info.locationId;
                 photoItemInfo.shootTime = info.shootTime;
-                photoItemInfo.place = locationList.get(position).place;
-                info.locationName = locationList.get(position).place;
+                if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+                    photoItemInfo.place = locationList.get(position).placeCHName;
+                    info.locationName = locationList.get(position).placeCHName;
+
+                } else {
+                    photoItemInfo.place = locationList.get(position).placeENName;
+                    info.locationName = locationList.get(position).placeENName;
+
+                }
                 photoItemInfo.list.add(info);
                 photoItemInfo.placeUrl = locationList.get(position).placeUrl;
                 photoItemInfo.latitude = locationList.get(position).latitude;
@@ -1319,8 +1294,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         itemInfo.locationId = locationList.get(k).locationId;
                         itemInfo.locationIds = locationList.get(k).locationIds.toString();
                         itemInfo.shootTime = info.shootTime;
-                        itemInfo.place = locationList.get(k).place;
-                        info.locationName = locationList.get(k).place;
+                        if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+                            itemInfo.place = locationList.get(k).placeCHName;
+                            info.locationName = locationList.get(k).placeCHName;
+
+                        } else {
+                            itemInfo.place = locationList.get(k).placeENName;
+                            info.locationName = locationList.get(k).placeENName;
+
+                        }
                         itemInfo.list.add(info);
                         itemInfo.placeUrl = locationList.get(k).placeUrl;
                         itemInfo.latitude = locationList.get(k).latitude;

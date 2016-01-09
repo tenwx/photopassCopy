@@ -84,7 +84,6 @@ import javax.crypto.NoSuchPaddingException;
 @SuppressLint({"FloatMath", "NewApi"})
 public class PreviewPhotoActivity extends BaseActivity implements OnClickListener {
     private SettingUtil settingUtil;
-    private String s;
     //工具条
     private TextView editButton;
     private TextView shareButton;
@@ -125,6 +124,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private ImageView nextPhotoImageView;
     private TextView currentPhotoIndexTextView;
     private TextView currentPhotoInfoTextView;
+    private TextView currentPhotoADTextView;
 
     private CustomProgressDialog progressDialog;// 等待加载视图
     private Bitmap bitmap1 = null;// 原图的模糊图
@@ -534,6 +534,22 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
+            case API1.GET_AD_LOCATIONS_SUCCESS:
+                PictureAirLog.out("ad location---->" + msg.obj.toString());
+                /**
+                 * 1.存入数据库
+                 * 2.在application中记录结果
+                 */
+                JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
+                currentPhotoADTextView.setText(pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
+                        photoInfo.locationId, MyApplication.getInstance().getLanguageType()));
+                myApplication.setGetADLocationSuccess(true);
+                break;
+
+            case API1.GET_AD_LOCATIONS_FAILED:
+                currentPhotoADTextView.setVisibility(View.GONE);
+                break;
+
             default:
                 break;
         }
@@ -572,6 +588,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         nextPhotoImageView = (ImageView) findViewById(R.id.index_next);
         currentPhotoInfoTextView = (TextView) findViewById(R.id.index_time);
         currentPhotoIndexTextView = (TextView) findViewById(R.id.current_index);
+        currentPhotoADTextView = (TextView) findViewById(R.id.preview_photo_ad_intro_tv);
 
         image01 = (ImageView) findViewById(R.id.img01);
         leadView = (RelativeLayout) findViewById(R.id.blur_lead_view);
@@ -752,6 +769,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
             touchtoclean.setVisibility(View.VISIBLE);
             blurFraRelativeLayout.setVisibility(View.VISIBLE);
+            currentPhotoADTextView.setVisibility(View.GONE);
             //			mViewPager.setVisibility(View.GONE);
             loadPhotoPassPhoto(photoInfo, isOnCreate);
             if (!isFirst) {
@@ -763,6 +781,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     isFirst = true;
                 }
             }
+        } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
+            currentPhotoADTextView.setVisibility(View.VISIBLE);
+            if (myApplication.isGetADLocationSuccess()) {
+                //从数据库中查找
+                currentPhotoADTextView.setText(pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType()));
+            } else {
+                //从网络获取
+                API1.getADLocations(previewPhotoHandler);
+            }
+        } else {
+            currentPhotoADTextView.setVisibility(View.GONE);
         }
         lastPhotoImageView.setEnabled(true);
         nextPhotoImageView.setEnabled(true);

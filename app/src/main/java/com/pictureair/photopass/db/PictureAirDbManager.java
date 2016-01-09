@@ -785,30 +785,37 @@ public class PictureAirDbManager {
      */
     private void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException {
         FrameOrStikerInfo frameInfo = null;
-        if (jsonArray.size() > 0) {
-            Log.d(TAG, "frames or sticker length is " + jsonArray.size());
-            //开始解析数据，并且将数据写入数据库
-            for (int i = 0; i < jsonArray.size(); i++) {
-                //解析json
-                if (isFrame) {
-                    frameInfo = JsonUtil.getFrameInfo(jsonArray.getJSONObject(i));
+        database = photoInfoDBHelper.getReadableDatabase();
+        try {
+            if (jsonArray.size() > 0) {
+                Log.d(TAG, "frames or sticker length is " + jsonArray.size());
+                //开始解析数据，并且将数据写入数据库
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    //解析json
+                    if (isFrame) {
+                        frameInfo = JsonUtil.getFrameInfo(jsonArray.getJSONObject(i));
 
-                } else {
-                    frameInfo = JsonUtil.getStickerInfo(jsonArray.getJSONObject(i));
+                    } else {
+                        frameInfo = JsonUtil.getStickerInfo(jsonArray.getJSONObject(i));
+                    }
+                    //插入数据
+                    if (frameInfo.isActive == 1) {
+                        database.execSQL("insert into " + Common.FRAME_STICKER_TABLES + " values(null,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+                                frameInfo.frameName, frameInfo.frameOriginalPathLandscape, frameInfo.frameOriginalPathPortrait, frameInfo.frameThumbnailPathLandscape400
+                                , frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPathH160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "",
+                                frameInfo.isDownload + "", frameInfo.fileSize + "", isFrame ? "1" : "0"});//测试代码，需要修改。
+                    } else {//如果为0，说明需要修改以前的数据状态
+                        //根据边框或者饰品名字修改使用状态
+                        database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isActive = 0 where frameName = ? and fileType = ?", new String[]{frameInfo.frameName, isFrame ? "1" : "0"});
+                    }
                 }
-                //插入数据
-                if (frameInfo.isActive == 1) {
-                    database.execSQL("insert into " + Common.FRAME_STICKER_TABLES + " values(null,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
-                            frameInfo.frameName, frameInfo.frameOriginalPathLandscape, frameInfo.frameOriginalPathPortrait, frameInfo.frameThumbnailPathLandscape400
-                            , frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPathH160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "",
-                            frameInfo.isDownload + "", frameInfo.fileSize + "", isFrame ? "1" : "0"});//测试代码，需要修改。
-                } else {//如果为0，说明需要修改以前的数据状态
-                    //根据边框或者饰品名字修改使用状态
-                    database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isActive = 0 where frameName = ? and fileType = ?", new String[]{frameInfo.frameName, isFrame ? "1" : "0"});
-                }
+            } else {
+                Log.d(TAG, "has no any frames or stickers");
             }
-        } else {
-            Log.d(TAG, "has no any frames or stickers");
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            database.close();
         }
     }
 
@@ -881,12 +888,24 @@ public class PictureAirDbManager {
      */
     public List<String> searchPaymentOrderIdDB() {
         List<String> orderIds = new ArrayList<>();
-        database = photoInfoDBHelper.getReadableDatabase();
-        Cursor cursor = database.query(Common.PAYMENT_ORDER, null, null, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                orderIds.add(cursor.getString(cursor.getColumnIndex("orderId")));
-            } while (cursor.moveToNext());
+        Cursor cursor = null;
+        try {
+            database = photoInfoDBHelper.getReadableDatabase();
+            cursor = database.query(Common.PAYMENT_ORDER, null, null, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    orderIds.add(cursor.getString(cursor.getColumnIndex("orderId")));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (database != null) {
+                database.close();
+            }
         }
         return orderIds;
     }
@@ -906,6 +925,115 @@ public class PictureAirDbManager {
             }
         }
 
+    }
+
+    /**
+     * 插入广告地点信息
+     * 1.先清除广告数据
+     * 2.再插入广告数据
+     * @param jsonArray
+     */
+    public void insertADLocations(JSONArray jsonArray){
+        try {
+            database = photoInfoDBHelper.getWritableDatabase();
+            database.execSQL("delete from " + Common.AD_LOCATION);
+            database.beginTransaction();
+            JSONObject jsonObject;
+            String locationId, adCH, adEN;
+            JSONObject adJsonObject;
+            for (int i = 0; i < jsonArray.size(); i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+                locationId = jsonObject.getString("locationId");
+                adJsonObject = jsonObject.getJSONObject("adWords");
+                adCH = adJsonObject.getString("CN");
+                adEN = adJsonObject.getString("EN");
+                database.execSQL("insert into " + Common.AD_LOCATION + " values(null,?,?,?)",
+                        new String[]{locationId, adCH, adEN});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.setTransactionSuccessful();
+            database.endTransaction();
+            if (database != null) {
+                database.close();
+            }
+        }
+    }
+
+    /**
+     * 插入广告地点信息
+     * 1.先清除广告数据
+     * 2.再插入广告数据
+     * @param jsonArray
+     */
+    public String insertADLocations(JSONArray jsonArray, String photoLocationId, String language){
+        String result = "";
+        try {
+            database = photoInfoDBHelper.getWritableDatabase();
+            database.execSQL("delete from " + Common.AD_LOCATION);
+            database.beginTransaction();
+            JSONObject jsonObject;
+            String locationId, adCH, adEN;
+            JSONObject adJsonObject;
+            for (int i = 0; i < jsonArray.size(); i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+                locationId = jsonObject.getString("locationId");
+                adJsonObject = jsonObject.getJSONObject("adWords");
+                adCH = adJsonObject.getString("CN");
+                adEN = adJsonObject.getString("EN");
+                database.execSQL("insert into " + Common.AD_LOCATION + " values(null,?,?,?)",
+                        new String[]{locationId, adCH, adEN});
+                if (photoLocationId.equals(locationId)) {
+                    if (language.equals(Common.SIMPLE_CHINESE)){
+                        result = adCH;
+                    } else {
+                        result = adEN;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.setTransactionSuccessful();
+            database.endTransaction();
+            if (database != null) {
+                database.close();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 根据locationId获取广告信息
+     * @param locationId
+     * @param language
+     * @return
+     */
+    public String getADByLocationId(String locationId, String language){
+        String ad = null;
+        Cursor cursor = null;
+        try {
+            database = photoInfoDBHelper.getReadableDatabase();
+            cursor = database.rawQuery("select * from " + Common.AD_LOCATION + " where locationId = ?", new String[]{locationId});
+            if (cursor.moveToFirst()){
+                if (language.equals(Common.SIMPLE_CHINESE)) {
+                    ad = cursor.getString(cursor.getColumnIndex("descriptionCH"));
+                } else {
+                    ad = cursor.getString(cursor.getColumnIndex("descriptionEN"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (database != null) {
+                database.close();
+            }
+        }
+        return ad;
     }
 
 }
