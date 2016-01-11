@@ -29,6 +29,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MipCaptureActivity;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.view.ViewfinderResultPointCallback;
 
@@ -76,6 +77,7 @@ public final class CaptureActivityHandler extends Handler {
         break;
       case R.id.restart_preview:
         Log.d(TAG, "Got restart preview message");
+        PictureAirLog.e("", "restart_preview");
         restartPreviewAndDecode();
         break;
       case R.id.decode_succeeded:
@@ -104,6 +106,11 @@ public final class CaptureActivityHandler extends Handler {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         activity.startActivity(intent);
+        break;
+      case R.id.decode_ocr_succeeded:
+        //跳转页面。
+        Bundle b = message.getData();
+        activity.handleDecodeOCR(b.getString("text"));
         break;
     }
   }

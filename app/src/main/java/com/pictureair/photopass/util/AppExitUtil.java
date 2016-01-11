@@ -3,11 +3,17 @@ package com.pictureair.photopass.util;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Message;
+import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
+import com.pictureair.photopass.widget.MyToast;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by milo on 15/12/29.
@@ -18,17 +24,32 @@ import com.pictureair.photopass.service.NotificationService;
 public class AppExitUtil {
     private static AppExitUtil appExitUtil;
     private static PictureAirDbManager pictureAirDbManager;
+    public static boolean isAppExit = false;//防止程序一直logout
+    private static MyToast newToast;
+    private MyHandler myHandler = new MyHandler(MyApplication.getInstance());
 
     public static AppExitUtil getInstance() {
         if (appExitUtil == null) {
             appExitUtil = new AppExitUtil();
             pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+            newToast = new MyToast(MyApplication.getInstance());
         }
         return appExitUtil;
     }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+    public class MyHandler extends Handler {
+        WeakReference<MyApplication> myApplication;
+
+        MyHandler(MyApplication application) {
+            myApplication = new WeakReference<>(application);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (myApplication == null) {
+                return;
+            }
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
@@ -60,28 +81,29 @@ public class AppExitUtil {
                     Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     MyApplication.getInstance().startActivity(i);
+                    isAppExit = false;
 
                     AppManager.getInstance().AppExit(MyApplication.getInstance());
                     break;
                 case API1.SOCKET_DISCONNECT_FAILED:
                 case API1.SOCKET_DISCONNECT_SUCCESS:
-                    API1.Logout(handler);
+                    API1.Logout(myHandler);
                     break;
 
                 default:
                     break;
             }
         }
-
-        ;
-    };
+    }
 
     /**
      * App重新登录
      */
     public void AppReLogin() {
         //断开推送
-        API1.noticeSocketDisConnect(handler);
+        newToast.setTextAndShow(R.string.please_relogin, Toast.LENGTH_SHORT);
+        isAppExit = true;
+        API1.noticeSocketDisConnect(myHandler);
     }
 
     /**
@@ -89,6 +111,7 @@ public class AppExitUtil {
      */
     public void AppLogout() {
         //断开推送
-        API1.noticeSocketDisConnect(handler);
+        isAppExit = true;
+        API1.noticeSocketDisConnect(myHandler);
     }
 }

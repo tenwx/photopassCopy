@@ -67,7 +67,11 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                AppExitUtil.getInstance().AppReLogin();
+                                if (AppExitUtil.isAppExit){
+                                    httpCallback.onFailure(httpBaseJson.getStatus());
+                                }else {
+                                    AppExitUtil.getInstance().AppReLogin();
+                                }
                                 break;
                             default:
                                 httpCallback.onFailure(httpBaseJson.getStatus());
@@ -132,7 +136,11 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                AppExitUtil.getInstance().AppReLogin();
+                                if (AppExitUtil.isAppExit){
+                                    httpCallback.onFailure(httpBaseJson.getStatus());
+                                }else {
+                                    AppExitUtil.getInstance().AppReLogin();
+                                }
                                 break;
                             default:
                                 httpCallback.onFailure(httpBaseJson.getStatus());
@@ -198,7 +206,11 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                AppExitUtil.getInstance().AppReLogin();
+                                if (AppExitUtil.isAppExit){
+                                    httpCallback.onFailure(httpBaseJson.getStatus());
+                                }else {
+                                    AppExitUtil.getInstance().AppReLogin();
+                                }
                                 break;
                             default:
                                 httpCallback.onFailure(httpBaseJson.getStatus());
@@ -265,7 +277,11 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                AppExitUtil.getInstance().AppReLogin();
+                                if (AppExitUtil.isAppExit){
+                                    httpCallback.onFailure(httpBaseJson.getStatus());
+                                }else {
+                                    AppExitUtil.getInstance().AppReLogin();
+                                }
                                 break;
                             default:
                                 httpCallback.onFailure(httpBaseJson.getStatus());
@@ -330,7 +346,11 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                AppExitUtil.getInstance().AppReLogin();
+                                if (AppExitUtil.isAppExit){
+                                    httpCallback.onFailure(httpBaseJson.getStatus());
+                                }else {
+                                    AppExitUtil.getInstance().AppReLogin();
+                                }
                                 break;
                             default:
                                 httpCallback.onFailure(httpBaseJson.getStatus());
@@ -395,7 +415,11 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                AppExitUtil.getInstance().AppReLogin();
+                                if (AppExitUtil.isAppExit){
+                                    httpCallback.onFailure(httpBaseJson.getStatus());
+                                }else {
+                                    AppExitUtil.getInstance().AppReLogin();
+                                }
                                 break;
                             default:
                                 httpCallback.onFailure(httpBaseJson.getStatus());

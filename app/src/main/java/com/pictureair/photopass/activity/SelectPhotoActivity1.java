@@ -15,6 +15,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -23,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
@@ -78,7 +81,9 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private CustomProgressDialog customProgressDialog;
     private Context context;
     //底部view
-    private LinearLayout llDisneyVideoFoot,llShopPhoto;
+    private LinearLayout llDisneyVideoFoot, llShopPhoto;
+    private TextView tvBubble;
+    private Animation shakeBubble;
 
     private boolean isDisneyVideo = false;
 
@@ -87,10 +92,10 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
 
-    private static class SelectPhotoHandler extends Handler{
+    private static class SelectPhotoHandler extends Handler {
         private final WeakReference<SelectPhotoActivity1> mActivity;
 
-        public SelectPhotoHandler(SelectPhotoActivity1 activity){
+        public SelectPhotoHandler(SelectPhotoActivity1 activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -106,6 +111,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -124,6 +130,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 if (null != customProgressDialog && customProgressDialog.isShowing()) {
                     customProgressDialog.dismiss();
                 }
+                clearData();
                 initPopWindow();
                 break;
 
@@ -215,12 +222,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
          * 迪士尼视频页面的选择照片底部有3个Icon
          */
         if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
+            isBuy = true;
             isDisneyVideo = true;
             tvHead.setText(getResources().getString(R.string.story_tab_bought));
             rtLayout.setImageResource(R.drawable.back_white_disney_video);
             initDisneySelectPhotoFootView();
-            llDisneyVideoFoot.setVisibility(View.VISIBLE);
-            isBuy = true;
         }
 
         //绑定监听
@@ -283,23 +289,64 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
      * okButton回收之前是右上角的文本
      */
     private void initDisneySelectPhotoFootView() {
-        llDisneyVideoFoot = (LinearLayout)findViewById(R.id.ll_disney_video_foot);
-        llShopPhoto = (LinearLayout)findViewById(R.id.ll_shop_photo);
+        tvBubble = (TextView)findViewById(R.id.tv_bubble);
+        llDisneyVideoFoot = (LinearLayout) findViewById(R.id.ll_disney_video_foot);
+        llShopPhoto = (LinearLayout) findViewById(R.id.ll_shop_photo);
+        tvBubble.setText(String.format(getString(R.string.disney_video_bubble),  photocount));//更新最多选多少张
         okButton.setVisibility(View.GONE);
         okButton = null;
-        okButton = (TextView)findViewById(R.id.tv_select_photo_ok);
+        okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
+        llDisneyVideoFoot.setVisibility(View.VISIBLE);
+        tvBubble.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
+        bubbleStart();
     }
+
+    /**
+     * 开始气泡
+     */
+    private void bubbleStart(){
+        shakeBubble = AnimationUtils.loadAnimation(context, R.anim.shake_y);
+        tvBubble.startAnimation(shakeBubble);
+        bubbleAnimationListener();
+    }
+
+    /**
+     * 监听气泡
+     */
+    private void bubbleAnimationListener(){
+        shakeBubble.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tvBubble.clearAnimation();
+                shakeBubble.cancel();
+                tvBubble.setVisibility(View.GONE);
+            }
+
+
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+
 
     /**
      * 隐藏OkButton
      */
-    private void goneOkButton(){
+    private void goneOkButton() {
         okButton.setVisibility(View.GONE);
         okButton.setEnabled(false);
     }
-
 
 
     /**
@@ -386,7 +433,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                     if (selectedCount < photocount) {
                         info.isSelected = 1;
                         info.showMask = 1;
-                        PictureAirLog.v(TAG, "没点过，选中");
+                        PictureAirLog.v(TAG, "没点过，选中 url: " + info.photoPathOrURL);
                         selectedCount++;
                         int visiblePos = gridView.getFirstVisiblePosition();
                         viewPhotoGridViewAdapter.refreshView(position, gridView.getChildAt(position - visiblePos), 1);
@@ -411,10 +458,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
     /**
      * 点击popwindow确认
-     *
      */
-    private void popupwindowSubmit(){
-        popupWindow.dismiss();
+    private void clearData() {
         okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
         photoPassAdapter.startSelectPhoto(1, 0);
         photoURLlist.clear();
@@ -426,7 +471,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         Intent intent;
         switch (v.getId()) {
             case R.id.btn_submit://点击弹窗后，不退出activity。照片总数清零，button清0
-                popupwindowSubmit();
+                popupWindow.dismiss();
                 break;
 
             case R.id.ll_shop_photo:
@@ -510,17 +555,17 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         if (photoURLlist.size() == photocount) {
             okButton.setEnabled(true);
             okButton.setTextColor(getResources().getColor(R.color.white));
-            if (isDisneyVideo){//
-                Drawable drawable= getResources().getDrawable(R.drawable.icon_disneyvideo_ok_sel);
-                okButton.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+            if (isDisneyVideo) {//
+                Drawable drawable = getResources().getDrawable(R.drawable.icon_disneyvideo_ok_sel);
+                okButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
                 okButton.setTextColor(getResources().getColor(R.color.pp_purple));
             }
         } else {
             okButton.setEnabled(false);
             okButton.setTextColor(getResources().getColor(R.color.gray_light5));
-            if (isDisneyVideo){
-                Drawable drawable= getResources().getDrawable(R.drawable.icon_disneyvideo_ok);
-                okButton.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+            if (isDisneyVideo) {
+                Drawable drawable = getResources().getDrawable(R.drawable.icon_disneyvideo_ok);
+                okButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
             }
         }
     }
@@ -531,31 +576,31 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         View popView = inflater.inflate(R.layout.popupwindow_disney_video_select_photo, null);
         popupWindow = new PopupWindow(popView,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT);
+                WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
-
         ColorDrawable cd = new ColorDrawable(0x000000);
         popupWindow.setBackgroundDrawable(cd);
+        popupWindow.setOutsideTouchable(true);
         //设置popwindow出现和消失动画
         popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.CENTER, 0, 0);
         TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
-        LinearLayout llContent = (LinearLayout) popView.findViewById(R.id.ll_content);
+//        LinearLayout llContent = (LinearLayout) popView.findViewById(R.id.ll_content);
         tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
         btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
         btnSubmit.setOnClickListener(this);
         popupWindow.update();
 
-        llContent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (popupWindow.isShowing()){
-                    popupwindowSubmit();
-                }
-                return false;
-            }
-        });
+//        llContent.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (popupWindow.isShowing()){
+//                    clearData();
+//                }
+//                return false;
+//            }
+//        });
 
     }
 

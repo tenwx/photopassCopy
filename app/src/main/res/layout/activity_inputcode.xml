@@ -8,21 +8,33 @@
         android:id="@+id/head"
         layout="@layout/top_bar" />
 
+    <TextView
+        android:id="@+id/tv_confirm_hint"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_margin="@dimen/pp_margin_20"
+        android:layout_below="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_ppp_code_text_hint"
+        android:textColor="@color/pp_gray"
+        android:textSize="@dimen/text_size_16"/>
+
     <LinearLayout
         android:id="@+id/layout_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/head"
-        android:layout_marginTop="@dimen/pp_height_60"
+        android:layout_below="@id/tv_confirm_hint"
         android:orientation="horizontal"
         android:padding="@dimen/pp_padding_10">
+
 
         <EditText
             android:id="@+id/input1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape"
+            android:background="@drawable/button_input_shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -42,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape"
+            android:background="@drawable/button_input_shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -62,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape"
+            android:background="@drawable/button_input_shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -82,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape"
+            android:background="@drawable/button_input_shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -117,7 +129,17 @@
         android:textColor="@drawable/textview_selector_blue_white"
         android:textSize="@dimen/text_size_16" />
 
+    <ImageView
+        android:id="@+id/iv_show_result"
+        android:layout_below="@+id/layout_input"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/pp_padding_10"
+        android:paddingRight="@dimen/pp_padding_10"/>
+
     <TextView
+        android:id="@+id/tv_manul_input_intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sure"
@@ -125,5 +147,41 @@
         android:text="@string/manul_input_intro"
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_16" />
+
+
+
+    <LinearLayout
+        android:id="@+id/lv_buttom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="@dimen/pp_margin_16" >
+
+        <Button
+            android:id="@+id/btn_confirm_scan_ppp_code"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:text="@string/ok"
+            android:textSize="@dimen/pp_margin_16" />
+
+        <Button
+            android:id="@+id/btn_re_scan_ppp_code"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_sign_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/re_scan"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/pp_margin_16" />
+    </LinearLayout>
+
 
 </RelativeLayout>

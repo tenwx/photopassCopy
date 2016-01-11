@@ -4,26 +4,35 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
+import com.pictureair.photopass.util.OCRUtils;
+import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
@@ -31,7 +40,11 @@ import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Vector;
 
@@ -42,8 +55,8 @@ import de.greenrobot.event.EventBus;
  *
  * @author Talon
  */
-public class MipCaptureActivity extends BaseActivity implements Callback {
-
+public class MipCaptureActivity extends BaseActivity implements Callback,View.OnClickListener{
+    public static Bitmap tempBitmap = null;
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
     private boolean hasSurface;
@@ -62,9 +75,43 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
 
     private CustomProgressDialog dialog;
     private DealCodeUtil dealCodeUtil;
-
-
     private final Handler mipCaptureHandler = new MipCaptureHandler(this);
+
+    private TextView tvScanQRCode ,tvScanPPPCode; //扫描QR码 和 PP+号码的按钮
+    public static int scanType = 1; //扫描方式。1，代表Qr码扫描。2，代表PP+卡扫描。  默认进来是扫描QR码
+    private ViewfinderView viewfinder_view; // QR码 扫描的矩形
+    private TextView tvScanQRcodeTips;// QR码的提示字体。
+    private RelativeLayout rlMask,rlLight; //蒙版, 高亮部分
+    // 点击响应方法
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.tv_scan_qr_code:
+                scanType = 1;
+                viewfinder_view.setVisibility(View.VISIBLE);
+                tvScanQRcodeTips.setVisibility(View.VISIBLE);
+                rlMask.setVisibility(View.GONE);
+
+                tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
+                tvScanQRCode.setTextColor(getResources().getColor(R.color.blue));
+
+                tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_nor), null, null);
+                tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
+                break;
+            case R.id.tv_scan_ppp_code:
+                scanType = 2;
+                rlMask.setVisibility(View.VISIBLE);
+                viewfinder_view.setVisibility(View.GONE);
+                tvScanQRcodeTips.setVisibility(View.GONE);
+
+                tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_sel), null, null);
+                tvScanPPPCode.setTextColor(getResources().getColor(R.color.blue));
+
+                tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_nor), null, null);
+                tvScanQRCode.setTextColor(getResources().getColor(R.color.white));
+                break;
+        }
+    }
 
 
     private static class MipCaptureHandler extends Handler{
@@ -141,6 +188,20 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
         System.out.println("-----------create");
+
+        File tessdata = new File(OCRUtils.getSDPath() + java.io.File.separator+"tessdata"); //创建文件夹。
+        if (!tessdata.exists()){
+            tessdata.mkdirs();
+        }
+        // 移动OCR 需要的data 到SD卡上。
+        if (!(new File(OCRUtils.getSDPath() + java.io.File.separator+"tessdata/eng.traineddata")).exists()){
+            try {
+                copyDataToSD(OCRUtils.getSDPath() + java.io.File.separator+"tessdata/eng.traineddata");
+            }catch (Exception e){
+
+            }
+        }
+
         newToast = new MyToast(this);
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
@@ -152,6 +213,21 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), mipCaptureHandler);
+
+        //OCR 识别需要用到的组件。
+        viewfinder_view = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        tvScanQRcodeTips = (TextView) findViewById(R.id.tv_scan_qr_code_tips);
+        tvScanQRCode = (TextView) findViewById(R.id.tv_scan_qr_code);
+        tvScanPPPCode = (TextView) findViewById(R.id.tv_scan_ppp_code);
+        tvScanQRCode.setOnClickListener(this);
+        tvScanPPPCode.setOnClickListener(this);
+
+        rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
+        rlLight = (RelativeLayout) findViewById(R.id.rl_light);
+
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(ScreenUtil.getScreenWidth(this)/3*2, (ScreenUtil.getScreenWidth(this)/3*2*85/54));
+        rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        rlLight.setLayoutParams(rlp);
     }
 
     @Override
@@ -356,5 +432,41 @@ public class MipCaptureActivity extends BaseActivity implements Callback {
             default:
                 break;
         }
+    }
+
+    /**
+     * 处理OCR 结果返回。
+     */
+    public void handleDecodeOCR(String text){
+        if (text != null){ //跳转到确认的界面。
+            Intent intent = new Intent();
+            intent.putExtra("text",text);
+            intent.setClass(this, InputCodeActivity.class);
+            startActivity(intent);
+//            this.finish();
+        }
+    }
+
+
+    /**
+     * 复制文件 到 SD 卡中
+     * @param strOutFileName
+     * @throws IOException
+     */
+    private void copyDataToSD(String strOutFileName) throws IOException
+    {
+        InputStream myInput;
+        OutputStream myOutput = new FileOutputStream(strOutFileName);
+        myInput = this.getAssets().open("ocrdata/eng.traineddata");
+        byte[] buffer = new byte[1024];
+        int length = myInput.read(buffer);
+        while(length > 0)
+        {
+            myOutput.write(buffer, 0, length);
+            length = myInput.read(buffer);
+        }
+        myOutput.flush();
+        myInput.close();
+        myOutput.close();
     }
 }

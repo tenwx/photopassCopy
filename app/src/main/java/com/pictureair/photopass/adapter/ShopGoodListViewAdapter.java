@@ -112,7 +112,7 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         viewHolder.goodNameAlias.setText(goodsInfo1.getNameAlias());
         viewHolder.goodPrice.setText(goodsInfo1.getPrice() + "");
         viewHolder.goodCurrency.setText(currency);
-        viewHolder.goodDetailIntroduce.setText(goodsInfo1.getDescription());
+        viewHolder.goodDetailIntroduce.setText(goodsInfo1.getCopywriter());
         ImageAware imageAware = new ImageViewAware(viewHolder.goodImageView, false);
         if (goodsInfo1.getPictures() != null && goodsInfo1.getPictures().size() > 0) {
             if (viewHolder.goodImageView.getTag() == null || !viewHolder.goodImageView.getTag().equals(goodsInfo1.getPictures().get(0).getUrl())) {

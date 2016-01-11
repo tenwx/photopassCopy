@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pictureair.photopass">
+    package="com.pictureair.photopass" >
 
     <supports-screens
         android:anyDensity="true"
@@ -44,12 +44,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@android:style/Theme.Black.NoTitleBar">
+        android:theme="@android:style/Theme.Black.NoTitleBar" >
         <activity
             android:name=".activity.StartActivity"
             android:configChanges="keyboard|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -84,7 +84,6 @@
             android:name=".activity.ProfileActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.DetailProductActivity"
             android:configChanges="keyboard|orientation"
@@ -113,7 +112,7 @@
         <activity
             android:name=".activity.PaymentOrderActivity"
             android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -135,7 +134,6 @@
         <activity
             android:name=".activity.PreviewPhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
-
         <activity
             android:name=".activity.EditPhotoActivity"
             android:configChanges="keyboard|orientation"
@@ -207,6 +205,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+
         <!-- alipay sdk begin -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -240,7 +239,7 @@
             android:exported="true"
             android:launchMode="singleTop" />
 
-        <receiver android:name=".wxpay.AppRegister">
+        <receiver android:name=".wxpay.AppRegister" >
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
@@ -260,7 +259,7 @@
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustResize">
+            android:windowSoftInputMode="stateHidden|adjustResize" >
 
             <!--
             	AuthorizeAdapter表示一个继承自cn.sharesdk.framework.authorize.AuthorizeAdapter
@@ -304,7 +303,7 @@
 
         <service
             android:name=".service.DownloadService"
-            android:enabled="true">
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="download.service.action" />
             </intent-filter>
@@ -322,7 +321,7 @@
 
 
         <!-- 调用新浪客户端分享，需要注册的回调activity -->
-        <activity android:name="cn.sharesdk.sina.weibo.SinaActivity">
+        <activity android:name="cn.sharesdk.sina.weibo.SinaActivity" >
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
 
@@ -336,20 +335,21 @@
 
         <!-- notification 服务 -->
         <!-- 开启notification的服务 -->
-        <service android:name=".service.NotificationService"></service>
+        <service android:name=".service.NotificationService" />
 
         <!-- notification里面的  广播接受 -->
-        <!--<receiver android:name="com.pictureAir.receiver.AlertManagerRecriver" >-->
-        <!--<intent-filter android:priority="500" >-->
-        <!--<action android:name="com.receiver.AlertManagerRecriver" >-->
-        <!--</action>-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- <receiver android:name="com.pictureAir.receiver.AlertManagerRecriver" > -->
+        <!-- <intent-filter android:priority="500" > -->
+        <!-- <action android:name="com.receiver.AlertManagerRecriver" > -->
+        <!-- </action> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+
 
         <!-- 开机自启 -->
         <receiver
             android:name=".receiver.BootReceiver"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -358,20 +358,21 @@
         </receiver>
 
         <!-- 更新内容 -->
-        <receiver android:name=".receiver.UpdateUiRecriver">
-            <intent-filter android:priority="500">
+        <receiver android:name=".receiver.UpdateUiRecriver" >
+            <intent-filter android:priority="500" >
                 <action android:name="com.receiver.UpdateUiRecriver" />
             </intent-filter>
         </receiver>
 
         <!-- 广播 不需要在 配置文件中注册，否则无法取消。 -->
-        <receiver android:name=".receiver.NetBroadCastReciver">
+        <receiver android:name=".receiver.NetBroadCastReciver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
