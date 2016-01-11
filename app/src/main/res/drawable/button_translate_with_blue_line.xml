@@ -5,7 +5,7 @@
 
     <stroke
         android:dashGap="0dp"
-        android:width="1dp"
-        android:color="@color/blue" />
+        android:width="@dimen/pp_height_1dp"
+        android:color="@color/pp_blue" />
 
 </shape>

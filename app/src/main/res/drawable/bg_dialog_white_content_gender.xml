@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <solid android:color="@color/white" />
 
@@ -8,8 +8,8 @@
     <corners
         android:bottomLeftRadius="0px"
         android:bottomRightRadius="0px"
-        android:topLeftRadius="10px"
-        android:topRightRadius="10px" />
+        android:topLeftRadius="@dimen/pp_radius_10_px"
+        android:topRightRadius="@dimen/pp_radius_10_px" />
     <!--
 gradient   对应颜色渐变。 startcolor、endcolor就不多说了。 android:angle 是指从哪个角度开始变。
 solid      填充。

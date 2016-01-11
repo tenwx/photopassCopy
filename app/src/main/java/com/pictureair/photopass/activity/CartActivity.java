@@ -215,7 +215,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 //需要删除页面，保证只剩下mainTab页面，
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                 //同时将mainTab切换到shop Tab
-                ((MyApplication)getApplication()).setChangeToShopTab(true);
+                ((MyApplication) getApplication()).setChangeToShopTab(true);
 
                 break;
 
@@ -627,6 +627,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             PictureAirLog.v(TAG, "onActivityResult photoPathOrURL size : " + updatephotolist.size());
             JSONArray jsonArray = new JSONArray();
             for (PhotoInfo info : updatephotolist) {
+                PictureAirLog.v(TAG, "onActivityResult info url: " + info.photoThumbnail);
                 if (info.onLine == 1) {//如果是选择的PP的照片
                     JSONObject object = new JSONObject();
                     object.put("photoId", info.photoId);
@@ -668,12 +669,12 @@ public class CartActivity extends BaseActivity implements OnClickListener {
      */
     private void changephoto(int position, ArrayList<PhotoInfo> photoList) {
         PictureAirLog.v(TAG, "并替换对应的图片");
-        PictureAirLog.v(TAG, "update url: " + photoList.get(0).photoPathOrURL);
         List<CartPhotosInfo1> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
         for (PhotoInfo photoInfo : photoList) {
             //构建购物车图片对象
+            PictureAirLog.v(TAG, "update url: " + photoInfo.photoPathOrURL);
             CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
-            cartPhotosInfo.setPhotoUrl(photoInfo.photoPathOrURL);
+            cartPhotosInfo.setPhotoUrl(photoInfo.photoThumbnail);//缩略图
             cartPhotosInfo.setPhotoId(photoInfo.photoId);
             oriphoto.add(cartPhotosInfo);
         }
