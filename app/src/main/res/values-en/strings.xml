@@ -610,4 +610,6 @@
     <string name="scan_ppp_code">PhotoPass+</string>
     <string name="confirm_ppp_code_title">乐拍通一卡通</string>
     <string name="confirm_ppp_code_text_hint">请核对乐拍通一卡通号后进行确认\n如卡号有误，请返回重拍</string>
+
+    <string name="re_scan">Rescan</string>
 </resources>

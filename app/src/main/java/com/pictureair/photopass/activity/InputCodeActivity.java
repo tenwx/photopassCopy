@@ -15,6 +15,9 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
@@ -34,6 +37,12 @@ import de.greenrobot.event.EventBus;
  * 手动输入条码的页面
  */
 public class InputCodeActivity extends BaseActivity implements OnClickListener {
+    private String[] resultList;
+    private TextView tvConfirmHint,tvManulInputIntro;
+    private ImageView ivShowResult;
+    private Button btnConfirmScanPppCode , btnReScanPppCode;
+    private LinearLayout lvButtom;
+
     private Button ok;
     private EditText input1, input2, input3, input4;
     private SharedPreferences sp;
@@ -118,11 +127,22 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
         setContentView(R.layout.activity_inputcode);
         newToast = new MyToast(this);
         initview();
+
     }
 
     private void initview() {
+        tvManulInputIntro = (TextView) findViewById(R.id.tv_manul_input_intro);
+        tvConfirmHint = (TextView) findViewById(R.id.tv_confirm_hint);
+        ivShowResult = (ImageView) findViewById(R.id.iv_show_result);
+        btnConfirmScanPppCode = (Button) findViewById(R.id.btn_confirm_scan_ppp_code);
+        btnConfirmScanPppCode.setOnClickListener(this);
+        btnReScanPppCode = (Button) findViewById(R.id.btn_re_scan_ppp_code);
+        btnReScanPppCode.setOnClickListener(this);
+        lvButtom = (LinearLayout) findViewById(R.id.lv_buttom);
+
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         ok = (Button) findViewById(R.id.sure);
+
         input1 = (EditText) findViewById(R.id.input1);
         input2 = (EditText) findViewById(R.id.input2);
         input3 = (EditText) findViewById(R.id.input3);
@@ -130,13 +150,37 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
 
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
-        setTopTitleShow(R.string.manual);
 
-        input1.setEnabled(true);
-        input2.setEnabled(false);
-        input3.setEnabled(false);
-        input4.setEnabled(false);
 
+        if (getIntent().getStringExtra("text") == null) {
+            lvButtom.setVisibility(View.GONE);
+            btnConfirmScanPppCode.setVisibility(View.GONE);
+            btnReScanPppCode.setVisibility(View.GONE);
+
+            tvManulInputIntro.setVisibility(View.VISIBLE);
+            ivShowResult.setVisibility(View.GONE);
+            ok.setVisibility(View.VISIBLE);
+            tvConfirmHint.setVisibility(View.INVISIBLE);
+            setTopTitleShow(R.string.manual);
+            input1.setEnabled(true);
+            input2.setEnabled(false);
+            input3.setEnabled(false);
+            input4.setEnabled(false);
+        } else {
+            tvManulInputIntro.setVisibility(View.GONE);
+            ivShowResult.setVisibility(View.VISIBLE);
+            ivShowResult.setImageBitmap(MipCaptureActivity.tempBitmap);
+            MipCaptureActivity.tempBitmap = null;
+
+            ok.setVisibility(View.GONE);
+            tvConfirmHint.setVisibility(View.VISIBLE);
+            setTopTitleShow(R.string.confirm_ppp_code_title);
+            resultList = getIntent().getStringExtra("text").split("-");
+            input1.setText(resultList[0]);
+            input2.setText(resultList[1]);
+            input3.setText(resultList[2]);
+            input4.setText(resultList[3]);
+        }
 //        input1.setOnFocusChangeListener(this);
 //        input2.setOnFocusChangeListener(this);
 //        input3.setOnFocusChangeListener(this);
@@ -365,6 +409,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
+            case R.id.btn_confirm_scan_ppp_code:
             case R.id.sure:
                 inputValue1 = input1.getText().toString();
                 inputValue2 = input2.getText().toString();
@@ -385,6 +430,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
 //				dealCodeUtil.startDealCode("DPPPRU6CC7M5J6MM");
                     dealCodeUtil.startDealCode(inputValue1.trim().toUpperCase() + inputValue2.trim().toUpperCase() + inputValue3.trim().toUpperCase() + inputValue4.trim().toUpperCase());
                 }
+                break;
+            case R.id.btn_re_scan_ppp_code:
+                this.finish();
                 break;
             default:
                 break;

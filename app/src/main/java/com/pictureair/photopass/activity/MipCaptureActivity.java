@@ -424,7 +424,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         if (text != null){ //跳转到确认的界面。
             Intent intent = new Intent();
             intent.putExtra("text",text);
-            intent.setClass(this, ConfirmActivity.class);
+            intent.setClass(this, InputCodeActivity.class);
             startActivity(intent);
 //            this.finish();
         }
