@@ -42,7 +42,7 @@ public class PictureAirDbManager {
     /**
      * 收藏或者取消收藏图片
      *
-     * @param photoInfo   网络图片的id
+     * @param photoInfo 网络图片的id
      * @param userId
      * @param setLove   是收藏还是取消收藏操作
      */
@@ -53,10 +53,10 @@ public class PictureAirDbManager {
                 Log.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
                 database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
-                        photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
-                        photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
+                                photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
+                                photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
                                 photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
-                        photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
+                                photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
                                 photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + ""});
             } else {//取消收藏
 
@@ -184,10 +184,11 @@ public class PictureAirDbManager {
 
     /**
      * 通过userId获取降序排列的已收藏图片列表
+     *
      * @param userId
      * @return
      */
-    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId){
+    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         Cursor cursor = null;
         try {
@@ -552,7 +553,8 @@ public class PictureAirDbManager {
 
     /**
      * 更新指定照片的购买状态
-     * @param ppCode pp码
+     *
+     * @param ppCode    pp码
      * @param shootDate 绑定时间
      */
     public void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate) {
@@ -635,8 +637,8 @@ public class PictureAirDbManager {
      * 将照片插入到photoPassInfo表中
      *
      * @param responseArray
-     * @param isVideo 是否是视频信息
-     * @param isAll 是否是刷新信息
+     * @param isVideo       是否是视频信息
+     * @param isAll         是否是刷新信息
      */
     public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isVideo, boolean isAll) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
@@ -881,12 +883,24 @@ public class PictureAirDbManager {
      */
     public List<String> searchPaymentOrderIdDB() {
         List<String> orderIds = new ArrayList<>();
-        database = photoInfoDBHelper.getReadableDatabase();
-        Cursor cursor = database.query(Common.PAYMENT_ORDER, null, null, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                orderIds.add(cursor.getString(cursor.getColumnIndex("orderId")));
-            } while (cursor.moveToNext());
+        Cursor cursor = null;
+        try {
+            database = photoInfoDBHelper.getReadableDatabase();
+            cursor = database.query(Common.PAYMENT_ORDER, null, null, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    orderIds.add(cursor.getString(cursor.getColumnIndex("orderId")));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (database != null) {
+                database.close();
+            }
         }
         return orderIds;
     }

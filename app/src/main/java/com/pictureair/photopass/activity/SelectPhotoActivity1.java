@@ -33,7 +33,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -317,7 +316,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                     if (selectedCount < photocount) {
                         info.isSelected = 1;
                         info.showMask = 1;
-                        PictureAirLog.v(TAG, "没点过，选中");
+                        PictureAirLog.v(TAG, "没点过，选中 url: " + info.photoPathOrURL);
                         selectedCount++;
                         int visiblePos = gridView.getFirstVisiblePosition();
                         viewPhotoGridViewAdapter.refreshView(position, gridView.getChildAt(position - visiblePos), 1);

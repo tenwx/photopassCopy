@@ -603,4 +603,5 @@
     <string name="expired_on">effective time:</string>
     <string name="delivery_info">Delivery Info</string>
     <string name="multi_goods">PhotoPass multiple goods</string>
+    <string name="please_relogin">please login again</string>
 </resources>
