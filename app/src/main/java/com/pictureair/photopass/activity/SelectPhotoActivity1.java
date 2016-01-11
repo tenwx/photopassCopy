@@ -75,17 +75,17 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private CustomProgressDialog customProgressDialog;
     private Context context;
     //底部view
-    private LinearLayout llDisneyVideoFoot,llShopPhoto;
+    private LinearLayout llDisneyVideoFoot, llShopPhoto;
 
     private boolean isDisneyVideo = false;
 
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
 
-    private static class SelectPhotoHandler extends Handler{
+    private static class SelectPhotoHandler extends Handler {
         private final WeakReference<SelectPhotoActivity1> mActivity;
 
-        public SelectPhotoHandler(SelectPhotoActivity1 activity){
+        public SelectPhotoHandler(SelectPhotoActivity1 activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -101,6 +101,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -119,6 +120,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 if (null != customProgressDialog && customProgressDialog.isShowing()) {
                     customProgressDialog.dismiss();
                 }
+                clearData();
                 initPopWindow();
                 break;
 
@@ -241,11 +243,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
      * okButton回收之前是右上角的文本
      */
     private void initDisneySelectPhotoFootView() {
-        llDisneyVideoFoot = (LinearLayout)findViewById(R.id.ll_disney_video_foot);
-        llShopPhoto = (LinearLayout)findViewById(R.id.ll_shop_photo);
+        llDisneyVideoFoot = (LinearLayout) findViewById(R.id.ll_disney_video_foot);
+        llShopPhoto = (LinearLayout) findViewById(R.id.ll_shop_photo);
         okButton.setVisibility(View.GONE);
         okButton = null;
-        okButton = (TextView)findViewById(R.id.tv_select_photo_ok);
+        okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
     }
@@ -253,11 +255,10 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     /**
      * 隐藏OkButton
      */
-    private void goneOkButton(){
+    private void goneOkButton() {
         okButton.setVisibility(View.GONE);
         okButton.setEnabled(false);
     }
-
 
 
     /**
@@ -362,10 +363,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
     /**
      * 点击popwindow确认
-     *
      */
-    private void popupwindowSubmit(){
-        popupWindow.dismiss();
+    private void clearData() {
         okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
         photoPassAdapter.startSelectPhoto(1, 0);
         photoURLlist.clear();
@@ -377,7 +376,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         Intent intent;
         switch (v.getId()) {
             case R.id.btn_submit://点击弹窗后，不退出activity。照片总数清零，button清0
-                popupwindowSubmit();
+                popupWindow.dismiss();
                 break;
 
             case R.id.ll_shop_photo:
@@ -453,17 +452,17 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         if (photoURLlist.size() == photocount) {
             okButton.setEnabled(true);
             okButton.setTextColor(getResources().getColor(R.color.white));
-            if (isDisneyVideo){//
-                Drawable drawable= getResources().getDrawable(R.drawable.icon_disneyvideo_ok_sel);
-                okButton.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+            if (isDisneyVideo) {//
+                Drawable drawable = getResources().getDrawable(R.drawable.icon_disneyvideo_ok_sel);
+                okButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
                 okButton.setTextColor(getResources().getColor(R.color.pp_purple));
             }
         } else {
             okButton.setEnabled(false);
             okButton.setTextColor(getResources().getColor(R.color.gray_light5));
-            if (isDisneyVideo){
-                Drawable drawable= getResources().getDrawable(R.drawable.icon_disneyvideo_ok);
-                okButton.setCompoundDrawablesWithIntrinsicBounds(null,drawable,null,null);
+            if (isDisneyVideo) {
+                Drawable drawable = getResources().getDrawable(R.drawable.icon_disneyvideo_ok);
+                okButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
             }
         }
     }
@@ -474,31 +473,31 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         View popView = inflater.inflate(R.layout.popupwindow_disney_video_select_photo, null);
         popupWindow = new PopupWindow(popView,
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT);
+                WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
-
         ColorDrawable cd = new ColorDrawable(0x000000);
         popupWindow.setBackgroundDrawable(cd);
+        popupWindow.setOutsideTouchable(true);
         //设置popwindow出现和消失动画
         popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.CENTER, 0, 0);
         TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
-        LinearLayout llContent = (LinearLayout) popView.findViewById(R.id.ll_content);
+//        LinearLayout llContent = (LinearLayout) popView.findViewById(R.id.ll_content);
         tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
         btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
         btnSubmit.setOnClickListener(this);
         popupWindow.update();
 
-        llContent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (popupWindow.isShowing()){
-                    popupwindowSubmit();
-                }
-                return false;
-            }
-        });
+//        llContent.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (popupWindow.isShowing()){
+//                    clearData();
+//                }
+//                return false;
+//            }
+//        });
 
     }
 
