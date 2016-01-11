@@ -1,10 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.pictureair.photopass.activity.ComfirmActivity">
+    android:layout_height="match_parent"
+    android:background="@color/pp_light_gray_background"
+    tools:context="com.pictureair.photopass.activity.ConfirmActivity">
+
+
+    <include
+        android:id="@+id/head"
+        layout="@layout/top_bar"/>
+
+    <TextView
+        android:id="@+id/tv_confirm_hint"
+        android:gravity="center"
+        android:layout_margin="@dimen/pp_margin_20"
+        android:layout_below="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_ppp_code_text_hint"
+        android:textColor="@color/pp_gray"
+        android:textSize="@dimen/text_size_16"/>
+
+    <LinearLayout
+        android:id="@+id/layout_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/head"
+        android:layout_marginTop="@dimen/pp_height_60"
+        android:orientation="horizontal"
+        android:padding="@dimen/pp_padding_10">
+
+        <EditText
+            android:id="@+id/input1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
+            android:imeOptions="actionGo"
+            android:singleLine="true"
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_10"
+            android:layout_height="@dimen/pp_height_1dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/pp_dark_blue" />
+
+        <EditText
+            android:id="@+id/input2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
+            android:imeOptions="actionGo"
+            android:singleLine="true"
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_10"
+            android:layout_height="@dimen/pp_height_1dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/pp_dark_blue" />
+
+        <EditText
+            android:id="@+id/input3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
+            android:imeOptions="actionGo"
+            android:singleLine="true"
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_10"
+            android:layout_height="@dimen/pp_height_1dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/pp_dark_blue" />
+
+        <EditText
+            android:id="@+id/input4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape"
+            android:ems="4"
+            android:gravity="center"
+            android:imeOptions="actionGo"
+            android:maxLength="4"
+            android:singleLine="true"
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_show_result"
+        android:layout_below="@+id/tv_confirm_hint"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="@dimen/pp_padding_10"/>
+
 
 </RelativeLayout>

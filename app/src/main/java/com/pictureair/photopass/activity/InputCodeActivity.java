@@ -137,6 +137,12 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
         input3.setEnabled(false);
         input4.setEnabled(false);
 
+//        input1.setOnFocusChangeListener(this);
+//        input2.setOnFocusChangeListener(this);
+//        input3.setOnFocusChangeListener(this);
+//        input4.setOnFocusChangeListener(this);
+
+
         input1.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -174,7 +180,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                    PictureAirLog.out("========== input1 after " + input1.getText().toString().length());
+                PictureAirLog.out("========== input1 after " + input1.getText().toString().length());
             }
         });
 
@@ -285,6 +291,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
         });
 
 
+
 //		input1.setOnEditorActionListener(new OnEditorActionListener() {
 //
 //			@Override
@@ -305,6 +312,41 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
         dealCodeUtil = new DealCodeUtil(this, getIntent(), inputCodeHandler);
 
     }
+
+//    @Override
+//    public void onFocusChange(View v, boolean b) {
+//        switch (v.getId()) {
+//            case R.id.input1:
+//                if (input1.getText().toString().length() > 3) {
+//                    input2.setEnabled(true);
+//                    input2.requestFocus();
+//                    input1.setEnabled(true);
+//                    input3.setEnabled(true);
+//                    input4.setEnabled(true);
+//                }else if (input1.getText().toString().length() == 0){
+//                    input1.setEnabled(true);
+//                    input2.setEnabled(false);
+//                    input3.setEnabled(false);
+//                    input4.setEnabled(false);
+//                }
+//                if (input1.getText().toString().length() == 5){ // input1 中输入第5个字符，就让第5个字符  移动到input2 中
+//                    String text1= input1.getText().toString();
+//                    PictureAirLog.e("", "====:" + text1);
+//                    input1.setText(text1.substring(0, 4));
+//                    input2.setText(String.valueOf(text1.charAt(4)));
+//                    input2.setEnabled(true);
+//                    input2.requestFocus();
+//                    input2.setSelection(input2.getText().toString().length());
+//                }
+//                break;
+//            case R.id.input2:
+//                break;
+//            case R.id.input3:
+//                break;
+//            case R.id.input4:
+//                break;
+//        }
+//    }
 
     private void hideInputMethodManager(View v) {
         // TODO Auto-generated method stub

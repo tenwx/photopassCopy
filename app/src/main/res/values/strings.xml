@@ -613,4 +613,13 @@
     <string name="please_wait">正在拍照，请稍后</string>
     <string name="multi_goods">乐拍通多项商品</string>
 
+
+    <string name="scan_qr_code">二维码</string>
+    <string name="scan_ppp_code">乐拍通+</string>
+    <string name="confirm_ppp_code_title">乐拍通一卡通</string>
+
+    <string name="confirm_ppp_code_text_hint">请核对乐拍通一卡通号后进行确认\n\n如卡号有误，请返回重拍</string>
+
+
+
 </resources>

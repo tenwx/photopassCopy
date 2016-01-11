@@ -16,44 +16,54 @@
 
 package com.pictureair.photopass.zxing.camera;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.pictureair.photopass.activity.MipCaptureActivity;
+import com.pictureair.photopass.editPhoto.EditPhotoUtil;
+import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ScreenUtil;
+
+import java.io.ByteArrayOutputStream;
+
+
 final class PreviewCallback implements Camera.PreviewCallback {
+    private static final String TAG = PreviewCallback.class.getSimpleName();
 
-  private static final String TAG = PreviewCallback.class.getSimpleName();
+    private final CameraConfigurationManager configManager;
+    private final boolean useOneShotPreviewCallback;
+    private Handler previewHandler;
+    private int previewMessage;
 
-  private final CameraConfigurationManager configManager;
-  private final boolean useOneShotPreviewCallback;
-  private Handler previewHandler;
-  private int previewMessage;
-
-  PreviewCallback(CameraConfigurationManager configManager, boolean useOneShotPreviewCallback) {
-    this.configManager = configManager;
-    this.useOneShotPreviewCallback = useOneShotPreviewCallback;
-  }
-
-  void setHandler(Handler previewHandler, int previewMessage) {
-    this.previewHandler = previewHandler;
-    this.previewMessage = previewMessage;
-  }
-
-  public void onPreviewFrame(byte[] data, Camera camera) {
-    Point cameraResolution = configManager.getCameraResolution();
-    if (!useOneShotPreviewCallback) {
-      camera.setPreviewCallback(null);
+    PreviewCallback(CameraConfigurationManager configManager, boolean useOneShotPreviewCallback) {
+        this.configManager = configManager;
+        this.useOneShotPreviewCallback = useOneShotPreviewCallback;
     }
-    if (previewHandler != null) {
-      Message message = previewHandler.obtainMessage(previewMessage, cameraResolution.x,
-          cameraResolution.y, data);
-      message.sendToTarget();
-      previewHandler = null;
-    } else {
-      Log.d(TAG, "Got preview callback, but no handler for it");
-    }
-  }
 
+    void setHandler(Handler previewHandler, int previewMessage) {
+        this.previewHandler = previewHandler;
+        this.previewMessage = previewMessage;
+    }
+
+    public void onPreviewFrame(byte[] data, Camera camera) {
+        Point cameraResolution = configManager.getCameraResolution();
+        if (!useOneShotPreviewCallback) {
+            camera.setPreviewCallback(null);
+        }
+        if (previewHandler != null) {
+            Message message = previewHandler.obtainMessage(previewMessage, cameraResolution.x, cameraResolution.y, data);
+            message.sendToTarget();
+            previewHandler = null;
+        } else {
+            Log.d(TAG, "Got preview callback, but no handler for it");
+        }
+    }
 }
