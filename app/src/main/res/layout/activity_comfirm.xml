@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pp_light_gray_background">
+    android:background="@color/pp_light_gray_background"
+    tools:context="com.pictureair.photopass.activity.ConfirmActivity">
+
 
     <include
         android:id="@+id/head"
-        layout="@layout/top_bar" />
+        layout="@layout/top_bar"/>
 
     <TextView
         android:id="@+id/tv_confirm_hint"
         android:gravity="center"
-        android:visibility="invisible"
         android:layout_margin="@dimen/pp_margin_20"
         android:layout_below="@+id/head"
         android:layout_width="match_parent"
@@ -24,17 +25,17 @@
         android:id="@+id/layout_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_confirm_hint"
+        android:layout_below="@id/head"
+        android:layout_marginTop="@dimen/pp_height_60"
         android:orientation="horizontal"
         android:padding="@dimen/pp_padding_10">
-
 
         <EditText
             android:id="@+id/input1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/button_input_shape"
+            android:background="@drawable/shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/button_input_shape"
+            android:background="@drawable/shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -74,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/button_input_shape"
+            android:background="@drawable/shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -94,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/button_input_shape"
+            android:background="@drawable/shape"
             android:ems="4"
             android:gravity="center"
             android:imeOptions="actionGo"
@@ -106,82 +107,12 @@
 
     </LinearLayout>
 
-    <!--<View-->
-        <!--android:id="@+id/input_line"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/pp_height_1"-->
-        <!--android:layout_below="@id/layout_input"-->
-        <!--android:layout_marginLeft="@dimen/pp_margin_10"-->
-        <!--android:layout_marginRight="@dimen/pp_margin_10"-->
-        <!--android:background="@color/pp_blue" />-->
-
-    <Button
-        android:id="@+id/sure"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_input"
-        android:layout_marginLeft="@dimen/pp_margin_20"
-        android:layout_marginRight="@dimen/pp_margin_20"
-        android:layout_marginTop="@dimen/pp_margin_40"
-        android:background="@drawable/button_blue_shape_and_selector"
-        android:padding="@dimen/pp_padding_10"
-        android:text="@string/ok"
-        android:textColor="@drawable/textview_selector_blue_white"
-        android:textSize="@dimen/text_size_16" />
-
     <ImageView
         android:id="@+id/iv_show_result"
-        android:layout_below="@+id/layout_input"
+        android:layout_below="@+id/tv_confirm_hint"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:paddingLeft="@dimen/pp_padding_10"
-        android:paddingRight="@dimen/pp_padding_10"/>
-
-    <TextView
-        android:id="@+id/tv_manul_input_intro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sure"
-        android:padding="@dimen/pp_margin_40"
-        android:text="@string/manul_input_intro"
-        android:textColor="@color/pp_blue"
-        android:textSize="@dimen/text_size_16" />
-
-
-    <LinearLayout
-        android:id="@+id/lv_buttom"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/pp_padding_20"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        >
-
-        <Button
-            android:id="@+id/btn_confirm_scan_ppp_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
-            android:text="@string/ok"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-        <Button
-            android:id="@+id/btn_re_scan_ppp_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_20"
-            android:background="@drawable/button_gray_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
-            android:text="@string/re_scan"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-
-    </LinearLayout>
+        android:padding="@dimen/pp_padding_10"/>
 
 
 </RelativeLayout>

@@ -6,25 +6,24 @@
     android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/tv_1"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/iv_disney_null_photo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pp_margin_64"
-        android:layout_marginRight="@dimen/pp_margin_64"
-        android:layout_marginTop="@dimen/pp_margin_64"
-        android:text="@string/disney_video_about_null_photo_note"
-        android:textColor="@color/gray"
-        android:textSize="@dimen/text_size_16" />
+        android:layout_marginTop="@dimen/pp_margin_100"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_disney_null_photo"/>
+
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_1"
+        android:layout_below="@+id/iv_disney_null_photo"
         android:layout_marginLeft="@dimen/pp_margin_64"
+        android:layout_marginTop="@dimen/pp_margin_20"
         android:layout_marginRight="@dimen/pp_margin_64"
-        android:layout_marginTop="@dimen/pp_margin_32"
-        android:text="@string/disney_video_about_null_photo_note2"
+        android:text="@string/disney_video_about_null_photo_note"
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size_16" />
 

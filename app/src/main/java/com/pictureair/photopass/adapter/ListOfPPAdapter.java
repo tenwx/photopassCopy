@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
@@ -437,8 +438,15 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                         photoItemInfo.locationId = locationList.get(i).locationId;
                         photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
                         photoItemInfo.shootTime = info.shootTime;
-                        photoItemInfo.place = locationList.get(i).place;
-                        info.locationName = locationList.get(i).place;
+                        if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+                            photoItemInfo.place = locationList.get(i).placeCHName;
+                            info.locationName = locationList.get(i).placeCHName;
+
+                        } else {
+                            photoItemInfo.place = locationList.get(i).placeENName;
+                            info.locationName = locationList.get(i).placeENName;
+
+                        }
                         photoItemInfo.list.add(info);
                         photoItemInfo.placeUrl = locationList.get(i).placeUrl;
                         photoItemInfo.latitude = locationList.get(i).latitude;

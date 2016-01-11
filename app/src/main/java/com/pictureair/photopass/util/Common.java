@@ -112,6 +112,7 @@ public class Common {
     public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
+    public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
 
 
     //user的SharedPreferences    以及   接口参数
@@ -228,6 +229,7 @@ public class Common {
     public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
     public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
+    public static final String AD_LOCATION = "ad_location";
 
 
     //相册名称字段

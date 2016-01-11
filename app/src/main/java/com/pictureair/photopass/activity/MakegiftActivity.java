@@ -152,7 +152,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
                 for (int i = 0; i < originalGoodsList.size(); i++) {
                     if (!Common.GOOD_NAME_PPP.equals(originalGoodsList.get(i).getName()) &&
-                            !Common.GOOD_NAME_SINGLE_DIGITAL.equals(originalGoodsList.get(i).getName())) {
+                            !Common.GOOD_NAME_SINGLE_DIGITAL.equals(originalGoodsList.get(i).getName()) &&
+                            originalGoodsList.get(i).getEmbedPhotosCount() == 1) {
                         allList.add(originalGoodsList.get(i));
                     }
                 }

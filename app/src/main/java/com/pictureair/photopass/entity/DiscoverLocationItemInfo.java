@@ -11,8 +11,10 @@ import android.os.Parcelable;
 public class DiscoverLocationItemInfo implements Parcelable{
 	public String locationId;//地点ID
 	public String locationIds;//小地点的ID
-	public String place;//地点名称
-	public String placeDetailIntroduce;//地点介绍
+	public String placeENName;//地点英文名称
+	public String placeCHName;//地点中文名称
+	public String placeDetailENIntroduce;//地点介绍：英文
+	public String placeDetailCHIntroduce;//地点介绍：中文
 	public String placeUrl;//地点图片url
 	public String popularity;//人气
 	public int islove;//地点是否收藏,0：未收藏；1：收藏
@@ -40,8 +42,10 @@ public class DiscoverLocationItemInfo implements Parcelable{
 	private DiscoverLocationItemInfo(Parcel source) {
 		locationId = source.readString();
 		locationIds = source.readString();
-		place = source.readString();
-		placeDetailIntroduce = source.readString();
+		placeENName = source.readString();
+		placeCHName = source.readString();
+		placeDetailENIntroduce = source.readString();
+		placeDetailCHIntroduce = source.readString();
 		placeUrl = source.readString();
 		popularity = source.readString();
 		islove = source.readInt();
@@ -59,8 +63,10 @@ public class DiscoverLocationItemInfo implements Parcelable{
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(locationId);
 		dest.writeString(locationIds);
-		dest.writeString(place);
-		dest.writeString(placeDetailIntroduce);
+		dest.writeString(placeENName);
+		dest.writeString(placeCHName);
+		dest.writeString(placeDetailENIntroduce);
+		dest.writeString(placeDetailCHIntroduce);
 		dest.writeString(placeUrl);
 		dest.writeString(popularity);
 		dest.writeInt(islove);
