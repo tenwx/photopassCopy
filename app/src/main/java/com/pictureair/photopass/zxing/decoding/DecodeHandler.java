@@ -192,7 +192,6 @@ final class DecodeHandler extends Handler {
       Message message = activity.getHandler().obtainMessage();
       message.what = R.id.decode_ocr_succeeded;
       Bundle b = new Bundle();
-      b.putByteArray("data",data);
       b.putString("text", text);
       message.setData(b);
       message.sendToTarget();

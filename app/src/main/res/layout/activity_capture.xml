@@ -22,6 +22,7 @@
 
         <TextView
             android:id="@+id/tv_scan_qr_code_tips"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -38,7 +39,7 @@
         android:layout_below="@+id/head"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/ppp_cover">
+        >
 
         <!-- 蒙版中的高亮界面 -->
         <RelativeLayout
@@ -46,9 +47,50 @@
             android:layout_centerInParent="true"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:background="@color/white_alpha_90">
+            android:background="@color/transparent">
+
+            <com.pictureair.photopass.widget.RotateableTextView
+                android:id="@+id/tv_center_hint"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_16"
+                android:text="@string/textview_center_hint"/>
 
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_bottom"
+            android:layout_below="@+id/rl_light"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ppp_cover"/>
+
+        <ImageView
+            android:id="@+id/iv_top"
+            android:layout_above="@+id/rl_light"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ppp_cover"/>
+
+
+        <ImageView
+            android:layout_toRightOf="@+id/rl_light"
+            android:layout_below="@+id/iv_top"
+            android:layout_above="@+id/iv_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ppp_cover"/>
+
+        <ImageView
+            android:layout_toLeftOf="@+id/rl_light"
+            android:layout_below="@+id/iv_top"
+            android:layout_above="@+id/iv_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ppp_cover"/>
 
     </RelativeLayout>
 
@@ -85,5 +127,7 @@
             android:textSize="@dimen/text_size_16"
             android:padding="@dimen/pp_margin_10"/>
     </LinearLayout>
+
+
 
 </RelativeLayout>

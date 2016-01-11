@@ -344,7 +344,7 @@
     <string name="original_price">Original price:</string>
     <string name="pick_up_address">Self-collect： </string>
     <string name="disney_address"> Carefree Corner</string>
-    <string name="scan_intro">Please Scan your Park Ticket / PhotoPass Card QR code to get your photos.</string>
+    <string name="scan_intro">Please Scan your Park Ticket PhotoPass Card QR code to get your photos</string>
     <string name="manul_input_intro">Please input your 16-digit number on the back of your park ticket / PhotoPass card.</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
@@ -609,8 +609,8 @@
 
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">PhotoPass+</string>
-    <string name="confirm_ppp_code_title">乐拍通一卡通</string>
-    <string name="confirm_ppp_code_text_hint">请核对乐拍通一卡通号后进行确认\n如卡号有误，请返回重拍</string>
-
+    <string name="confirm_ppp_code_title">PhotoPass+</string>
+    <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
     <string name="re_scan">Rescan</string>
+    <string name="textview_center_hint">Please put PhotoPass+ card back in this area.Try to align edges</string>
 </resources>

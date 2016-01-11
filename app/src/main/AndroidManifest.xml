@@ -373,8 +373,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.ConfirmActivity" >
-        </activity>
     </application>
 
 </manifest>
