@@ -113,6 +113,7 @@ public class Common {
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
+    public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
 
 
     //user的SharedPreferences    以及   接口参数
@@ -175,14 +176,14 @@ public class Common {
     public static final String ADDRESS_INFO = "addressInfo";
     public static final String NEW_ADDRESS_INFO = "newAddressInfo";
     public static final String DEFAULT_CURRENCY = "¥";
-    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/user/";
+    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/user/";
     public static final String HEADPHOTO_PATH = "headphoto";
     public static final String BGPHOTO_PAHT = "bgphoto";
-    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/";
-    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/app/";
-    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/download/";
-    //	public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/download/frames/";
-    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/temppic/";
+    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/";
+    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/app/";
+    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/download/";
+    //	public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/download/frames/";
+    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/temppic/";
     public static final int TOAST_SHORT_TIME = 100;
     //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";
     public static final String PHOTOPASS_DESCRPITION = "This picture made by PictureAir";
@@ -207,6 +208,8 @@ public class Common {
     public static final String SHARE_CONTENT = "shareContent";//分享的短链接或者长链接
     public static final String SHARE_ID = "shareId";
     public static final String SHARE_PLATFORM = "platform";
+    public static final String EPPP = "ePPP";
+    public static final String EPPP_IDS = "ids";
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";
@@ -240,7 +243,7 @@ public class Common {
 
     //图片保存文件夹名字字段
     public static final String ALBUM_FILE_PICTURE_NAME = "photopass";
-    public static final String ALBUM_FILE_DOWLOAD_NAME = "/photopass/download";
+    public static final String ALBUM_FILE_DOWLOAD_NAME = "/Disney PhotoPass/download";
 
     //其他字段
     //	public static final String PHOTOPASSPLUS = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
@@ -337,7 +340,7 @@ public class Common {
 
     // 分享参数
     public static final int PREVIEW_SHARE = 203;
-    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/share/";
+    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/share/";
 
 
     // 保存设置。

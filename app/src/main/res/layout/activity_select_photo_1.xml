@@ -59,7 +59,6 @@
             android:id="@+id/gridView_all"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layout1"
             android:background="@color/gray_light"
             android:gravity="center"
             android:horizontalSpacing="5dp"
@@ -72,59 +71,65 @@
             android:id="@+id/ll_null_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layout1"
             android:visibility="gone">
 
             <include layout="@layout/empty_video_layout" />
         </LinearLayout>
     </RelativeLayout>
 
+
     <RelativeLayout
         android:id="@+id/no_photo_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout1"
-        android:background="@color/gray_light"
+        android:background="@color/pp_light_gray_background"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/no_photo_textView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/pp_margin_16"
-            android:gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/no_photo_in_airpass"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_middle_size" />
+            android:layout_centerInParent="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/no_photo_textView"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/no_photo_img"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/no_photo_textView"
-                android:layout_gravity="bottom"
-                android:layout_weight="3"
-                android:adjustViewBounds="true"
-                android:src="@drawable/no_photos_img" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_weight="2" />
 
-            <View
-                android:layout_width="0dp"
+                <ImageView
+                    android:id="@+id/no_photo_iv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/no_photo_textView"
+                    android:layout_weight="3"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/no_photos_img" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_weight="2" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/no_photo_textView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
-        </LinearLayout>
+                android:layout_below="@id/no_photo_img"
+                android:layout_marginTop="@dimen/pp_margin_16"
+                android:gravity="center"
+                android:paddingLeft="@dimen/pp_padding_20"
+                android:paddingRight="@dimen/pp_padding_20"
+                android:text="@string/no_photo_in_airpass"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_16" />
+        </RelativeLayout>
     </RelativeLayout>
 
 

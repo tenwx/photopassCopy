@@ -140,6 +140,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.deleteMyPP.setVisibility(View.GONE);
             childClickListener = new OnItemChildClickListener(position);
             holder.img_no_check = (ImageView) convertView.findViewById(R.id.img);
+            holder.img_no_check.setVisibility(View.VISIBLE);
             holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
             //初始化选中与否
             if (arrayList.get(position).isSelected == 0) {//未选中

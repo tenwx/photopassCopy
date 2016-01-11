@@ -154,6 +154,7 @@
     <string name="delete">Delete</string>
     <string name="photopass">PhotoPass</string>
     <string name="photopassplus">PhotoPass+</string>
+    <string name="experiencephotopassplus">Experience PhotoPass+</string>
     <string name="getitnow">Get it now</string>
     <string name="mylocation">My location</string>
     <string name="myfavourite">My favourite</string>
@@ -601,7 +602,12 @@
 
     <string name="no_activated">nonactivated</string>
     <string name="activated">activated</string>
+    <string name="ppp_has_used">has used</string>
+    <string name="ppp_has_expired">has expired</string>
     <string name="expired_on">effective time:</string>
     <string name="delivery_info">Delivery Info</string>
     <string name="multi_goods">PhotoPass multiple goods</string>
+    <string name="blur_intro">If you like to save this wonderful moment forever, you should own this photo, and you will make this trip more meaningful.</string>
+    <string name="no_photo_update">You haven\'t photos to upgrade!</string>
+    <string name="select_pp_wrong_date">Only choose continuous three days PhotoPass</string>
 </resources>

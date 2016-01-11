@@ -1,14 +1,14 @@
 package com.pictureair.photopass.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 
@@ -21,7 +21,10 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 	
 	public String pp1,pp2,pp3;//ppp对应三个pp的号码
 	public String expiredOn; //PPP的有效期。
-	
+	public String pppCardBg;//卡片背景图片
+	public int expericePPP;//体验卡,0:不是  1：是
+	public int expired;//1：过期，0：未过期
+
 	public static final Parcelable.Creator<PPPinfo> CREATOR = new Creator<PPPinfo>() {
 		
 		@Override
@@ -60,6 +63,9 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		pp2 = source.readString();
 		pp3 = source.readString();
 		expiredOn = source.readString();
+		pppCardBg = source.readString();
+		expericePPP = source.readInt();
+		expired = source.readInt();
 	}
 	@Override
 	public int describeContents() {
@@ -89,7 +95,10 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		dest.writeString(pp3);
 
 		dest.writeString(expiredOn);
-		
+		dest.writeString(pppCardBg);
+		dest.writeInt(expericePPP);
+		dest.writeInt(expired);
+
 	}
 	@Override
 	public int compareTo(PPPinfo another) {

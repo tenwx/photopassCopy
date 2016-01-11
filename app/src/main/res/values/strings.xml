@@ -154,7 +154,8 @@
     <string name="hint_address">输入详细地址</string>
     <string name="delete">删除</string>
     <string name="photopass">乐拍通</string>
-    <string name="photopassplus">PhotoPass+</string>
+    <string name="photopassplus">乐拍通一卡通</string>
+    <string name="experiencephotopassplus">乐拍通一卡通体验卡</string>
     <string name="getitnow">现在就去购买乐拍通+</string>
     <string name="mylocation">我的地址</string>
     <string name="myfavourite">我的最爱</string>
@@ -591,11 +592,13 @@
     <string name="self_collect">自提</string>
     <string name="preferential">优惠:</string>
     <string name="select_address">请选择自提地址</string>
-    <string name="about_tips">我迪故事里, 有您更精彩</string>
+    <string name="about_tips">我的故事里, 有你更精彩!</string>
 
     <string name="instruction">Instruction...</string>
     <string name="no_activated">未激活</string>
     <string name="activated">已激活</string>
+    <string name="ppp_has_used">已用完</string>
+    <string name="ppp_has_expired">已过期</string>
     <string name="expired_on">有效时间:</string>
     <string name="country">国家</string>
     <string name="account">账户</string>
@@ -612,5 +615,9 @@
 
     <string name="please_wait">正在拍照，请稍后</string>
     <string name="multi_goods">乐拍通多项商品</string>
+
+    <string name="blur_intro">如果您想把这一刻的美妙回忆保存并延续下去，那您需要拥有这张照片，您会发现这一次的旅程将更有意义！</string>
+    <string name="no_photo_update">您还没有可升级的照片!</string>
+    <string name="select_pp_wrong_date">只能选择连续三天的乐拍通卡</string>
 
 </resources>
