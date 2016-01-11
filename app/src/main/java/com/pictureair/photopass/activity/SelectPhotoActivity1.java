@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -22,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -76,6 +79,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private Context context;
     //底部view
     private LinearLayout llDisneyVideoFoot, llShopPhoto;
+    private TextView tvBubble;
+    private Animation shakeBubble;
 
     private boolean isDisneyVideo = false;
 
@@ -179,12 +184,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
          * 迪士尼视频页面的选择照片底部有3个Icon
          */
         if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
+            isBuy = true;
             isDisneyVideo = true;
             tvHead.setText(getResources().getString(R.string.story_tab_bought));
             rtLayout.setImageResource(R.drawable.back_white_disney_video);
             initDisneySelectPhotoFootView();
-            llDisneyVideoFoot.setVisibility(View.VISIBLE);
-            isBuy = true;
         }
 
         //绑定监听
@@ -243,14 +247,56 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
      * okButton回收之前是右上角的文本
      */
     private void initDisneySelectPhotoFootView() {
+        tvBubble = (TextView)findViewById(R.id.tv_bubble);
         llDisneyVideoFoot = (LinearLayout) findViewById(R.id.ll_disney_video_foot);
         llShopPhoto = (LinearLayout) findViewById(R.id.ll_shop_photo);
+        tvBubble.setText(String.format(getString(R.string.disney_video_bubble),  photocount));//更新最多选多少张
         okButton.setVisibility(View.GONE);
         okButton = null;
         okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
+        llDisneyVideoFoot.setVisibility(View.VISIBLE);
+        tvBubble.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
+        bubbleStart();
     }
+
+    /**
+     * 开始气泡
+     */
+    private void bubbleStart(){
+        shakeBubble = AnimationUtils.loadAnimation(context, R.anim.shake_y);
+        tvBubble.startAnimation(shakeBubble);
+        bubbleAnimationListener();
+    }
+
+    /**
+     * 监听气泡
+     */
+    private void bubbleAnimationListener(){
+        shakeBubble.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tvBubble.clearAnimation();
+                shakeBubble.cancel();
+                tvBubble.setVisibility(View.GONE);
+            }
+
+
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+
 
     /**
      * 隐藏OkButton

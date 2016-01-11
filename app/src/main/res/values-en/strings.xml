@@ -534,6 +534,7 @@
     <string name="neednotdownload_video">Video exist</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="disney_video_selectphoto_model">选择模式</string>
+    <string name="disney_video_bubble">只能选择%1$d张哦</string>
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
     <string name="auto_sync">Auto Sync</string>
