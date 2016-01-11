@@ -193,11 +193,28 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "fileSize integer, " +
                 "fileType integer)");
 
+
+        /**
+         * 订单支付结果
+         * userId
+         * orderId
+         */
         db.execSQL("create table if not exists " + Common.PAYMENT_ORDER
                 + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "userId varchar(255), " +
                 "orderId varchar(255))");
 
+        /**
+         * 广告地点信息
+         * locationId 地点id
+         * descriptionCH 中文广告
+         * descriptionEN 英文广告
+         */
+        db.execSQL("create table if not exists " + Common.AD_LOCATION
+                + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "locationId varchar(255), " +
+                "descriptionCH text, " +
+                "descriptionEN text)");
     }
 
     //如果数据库的版本号不一致，会执行onUpgrade函数

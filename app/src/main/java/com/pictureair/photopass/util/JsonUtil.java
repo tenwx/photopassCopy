@@ -38,7 +38,12 @@ public class JsonUtil {
         DiscoverLocationItemInfo info = new DiscoverLocationItemInfo();
         info.locationId = object.getString("locationId");
         info.locationIds = object.getJSONArray("shootSpots").toString();
-        info.place = object.getString("location");
+        if (object.containsKey("location")) {
+            info.placeCHName = object.getString("location");
+        }
+        if (object.containsKey("location_EN")) {
+            info.placeENName = object.getString("location_EN");
+        }
         info.placeUrl = (Common.PHOTO_URL + object.getString("defaultPhoto")).trim();
         if (object.containsKey("GPS")) {
             JSONObject obj = (JSONObject) object.get("GPS");
@@ -53,7 +58,11 @@ public class JsonUtil {
 //			System.out.println("转换之后的坐标"+latLng.toString());
         }
         if (object.containsKey("description")) {
-            info.placeDetailIntroduce = object.getString("description");
+            info.placeDetailCHIntroduce = object.getString("description");
+        }
+
+        if (object.containsKey("description_EN")) {
+            info.placeDetailENIntroduce = object.getString("description_EN");
         }
         info.popularity = "popularity";
         info.islove = 0;

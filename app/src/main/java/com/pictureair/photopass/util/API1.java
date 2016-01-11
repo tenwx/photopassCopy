@@ -91,6 +91,9 @@ public class API1 {
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_FAILED = 2080;
     public static final int UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS = 2081;
 
+    public static final int GET_AD_LOCATIONS_FAILED = 2090;
+    public static final int GET_AD_LOCATIONS_SUCCESS = 2091;
+
     /**
      * 发现
      */
@@ -631,6 +634,27 @@ public class API1 {
         });
     }
 
+    /**
+     * 获取有广告的地点
+     * @param handler
+     */
+    public static void getADLocations(final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback(){
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_AD_LOCATIONS_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_AD_LOCATIONS_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
 
     /***************************************我的模块 start**************************************/
 

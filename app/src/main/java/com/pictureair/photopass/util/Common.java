@@ -19,18 +19,18 @@ public class Common {
     /**
      * 49演示服务器
      */
-    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
-    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
-    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+//    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
+//    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
+//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 
     /**
      * 8.3测试服务器
      * */
-//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
-//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
+    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 
 
     //接口
@@ -112,6 +112,7 @@ public class Common {
     public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
+    public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
 
 
     //user的SharedPreferences    以及   接口参数
@@ -228,6 +229,7 @@ public class Common {
     public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
     public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
+    public static final String AD_LOCATION = "ad_location";
 
 
     //相册名称字段
