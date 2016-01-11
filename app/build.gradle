@@ -63,4 +63,5 @@ dependencies {
     compile 'com.alibaba:fastjson:1.2.7'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile files('libs/calligraphy-1.1.0.jar')
+    compile files('libs/tess-two.tesseract3.01-leptonica1.68-LibJPEG6b.jar')
 }
