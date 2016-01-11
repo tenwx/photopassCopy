@@ -372,4 +372,7 @@ public class Common {
 
     // tips 需要的字段  end
 //    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
+
+    public static final String OCR_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/tessdata/";
+    public static final String OCR_DATA_PATH = Environment.getExternalStorageDirectory().getPath() + "/Disney PhotoPass/tessdata/eng.traineddata";
 }

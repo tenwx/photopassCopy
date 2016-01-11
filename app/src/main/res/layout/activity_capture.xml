@@ -49,7 +49,7 @@
             android:layout_height="200dp"
             android:background="@color/transparent">
 
-            <com.pictureair.photopass.widget.RotateableTextView
+            <TextView
                 android:id="@+id/tv_center_hint"
                 android:gravity="center"
                 android:layout_centerInParent="true"

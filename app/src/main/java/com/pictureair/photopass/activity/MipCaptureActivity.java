@@ -40,6 +40,8 @@ import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,6 +58,7 @@ import de.greenrobot.event.EventBus;
  * @author Talon
  */
 public class MipCaptureActivity extends BaseActivity implements Callback,View.OnClickListener{
+    private TextView tvCenterHint;
     public static Bitmap tempBitmap = null;
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
@@ -189,18 +192,21 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         setContentView(R.layout.activity_capture);
         System.out.println("-----------create");
 
-        File tessdata = new File(OCRUtils.getSDPath() + java.io.File.separator+"tessdata"); //创建文件夹。
+//        File tessdata = new File(OCRUtils.getSDPath() + java.io.File.separator+"tessdata"); //创建文件夹。
+        File tessdata = new File(Common.OCR_PATH); //创建文件夹。
         if (!tessdata.exists()){
             tessdata.mkdirs();
         }
         // 移动OCR 需要的data 到SD卡上。
-        if (!(new File(OCRUtils.getSDPath() + java.io.File.separator+"tessdata/eng.traineddata")).exists()){
+        if (!(new File(Common.OCR_DATA_PATH)).exists()){
             try {
-                copyDataToSD(OCRUtils.getSDPath() + java.io.File.separator+"tessdata/eng.traineddata");
+                copyDataToSD(Common.OCR_DATA_PATH);
             }catch (Exception e){
 
             }
         }
+        tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
+        tvCenterHint.setRotation(90);
 
         newToast = new MyToast(this);
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);

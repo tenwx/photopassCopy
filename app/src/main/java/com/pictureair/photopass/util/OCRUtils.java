@@ -19,15 +19,15 @@ public class OCRUtils {
      * 获取SD卡路径。
      * @return
      */
-    public static String getSDPath() {
-        File sdDir = null;
-        boolean sdCardExist = Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
-        if (sdCardExist) {
-            sdDir = Environment.getExternalStorageDirectory();
-        }
-        return sdDir.toString();
-    }
+//    public static String getSDPath() {
+//        File sdDir = null;
+//        boolean sdCardExist = Environment.getExternalStorageState().equals(
+//                android.os.Environment.MEDIA_MOUNTED);
+//        if (sdCardExist) {
+//            sdDir = Environment.getExternalStorageDirectory();
+//        }
+//        return sdDir.toString();
+//    }
 
     /**
      * 将识别结果 规范化，返回处理过的结果。
