@@ -188,17 +188,10 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                 break;
             case R.id.button_buy:
                 //选择照片
-                if (MyApplication.getTokenId() == null) {
-                    //判断是否登录
-                    intent = new Intent(DetailProductActivity.this, LoginActivity.class);
-                    intent.putExtra("activity", "detailproductactivity");
-                    DetailProductActivity.this.startActivity(intent);
-                } else {
-                    intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
-                    intent.putExtra("activity", "detailproductactivity");
-                    intent.putExtra("goodsInfo", goodsInfo);
-                    startActivity(intent);
-                }
+                intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
+                intent.putExtra("activity", "detailproductactivity");
+                intent.putExtra("goodsInfo", goodsInfo);
+                startActivity(intent);
                 break;
 
             case R.id.button_cart://加入购物车，会有动画效果

@@ -149,11 +149,18 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         PictureAirLog.out("maintab ==== resume");
         Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
         this.startService(intent1);
-        if (application.isChangeToShopTab()) {
+        if (application.getMainTabIndex() == 3) {
             PictureAirLog.out("skip to shop tab");
             mTabHost.setCurrentTab(3);
-            application.setChangeToShopTab(false);
+            application.setMainTabIndex(-1);
             application.setIsStoryTab(false);
+            last_tab = 3;
+        } else if (application.getMainTabIndex() == 0) {
+            PictureAirLog.out("skip to story tab");
+            mTabHost.setCurrentTab(0);
+            application.setMainTabIndex(-1);
+            application.setIsStoryTab(true);
+            last_tab = 0;
         } else {
             PictureAirLog.out("skip to last tab");
             //设置成为上次的tab页面

@@ -154,7 +154,8 @@
     <string name="hint_address">输入详细地址</string>
     <string name="delete">删除</string>
     <string name="photopass">乐拍通</string>
-    <string name="photopassplus">PhotoPass+</string>
+    <string name="photopassplus">乐拍通一卡通</string>
+    <string name="experiencephotopassplus">乐拍通一卡通体验卡</string>
     <string name="getitnow">现在就去购买乐拍通+</string>
     <string name="mylocation">我的地址</string>
     <string name="myfavourite">我的最爱</string>
@@ -345,7 +346,7 @@
     <string name="original_price">原价：</string>
     <string name="pick_up_address">自提地址：</string>
     <string name="disney_address">上海迪斯尼乐园美妙记忆屋</string>
-    <string name="scan_intro">请把您的乐拍通对准扫描中心, 扫一扫即可获得您的照片</string>
+    <string name="scan_intro">请扫描您的上海迪士尼主题乐园门票或者乐拍通卡上的二维码，更快获得你们的游玩照片。</string>
     <string name="manul_input_intro">请输入你的乐拍通卡背面16位数字条码信息，即可获得您的照片信息</string>
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
@@ -591,11 +592,13 @@
     <string name="self_collect">自提</string>
     <string name="preferential">优惠:</string>
     <string name="select_address">请选择自提地址</string>
-    <string name="about_tips">我迪故事里, 有您更精彩</string>
+    <string name="about_tips">奇妙时光, 完美定格</string>
 
     <string name="instruction">Instruction...</string>
     <string name="no_activated">未激活</string>
     <string name="activated">已激活</string>
+    <string name="ppp_has_used">已用完</string>
+    <string name="ppp_has_expired">已过期</string>
     <string name="expired_on">有效时间:</string>
     <string name="country">国家</string>
     <string name="account">账户</string>
@@ -612,6 +615,7 @@
 
     <string name="please_wait">正在拍照，请稍后</string>
     <string name="multi_goods">乐拍通多项商品</string>
+    <string name="please_relogin">请重新登录</string>
 
 
     <string name="scan_qr_code">二维码</string>
@@ -623,5 +627,12 @@
     <string name="reset_pwd">重置密码</string>
     <string name="send_emal">发送验证邮件</string>
     <string name="back_login_page">返回登录页面</string>
+
+    <string name="re_scan">重扫</string>
+    <string name="textview_center_hint">请将乐拍通＋卡背面置于此区域\n尝试对齐边缘</string>
+
+    <string name="blur_intro">如果您想把这一刻的美妙回忆保存并延续下去，那您需要拥有这张照片，您会发现这一次的旅程将更有意义！</string>
+    <string name="no_photo_update">您还没有可升级的照片!</string>
+    <string name="select_pp_wrong_date">只能选择连续三天的乐拍通卡</string>
 
 </resources>

@@ -58,9 +58,9 @@ public class MyApplication extends Application {
     private boolean getADLocationSuccess = false;
 
     /**
-     * 是否切换到shop页面
+     * 主页tab需要切换的索引值
      */
-    private boolean changeToShopTab = false;
+    private int mainTabIndex = 0;
     private String languageType;// 记录app选择的语言
     public int fragmentStoryLastSelectedTab = 0;// 记录story页面viewpager上次的页面序号
 
@@ -507,19 +507,19 @@ public class MyApplication extends Application {
     }
 
     /**
-     * 得到是否切换到shop
+     * 获取需要切换的值
      * @return
      */
-    public boolean isChangeToShopTab() {
-        return changeToShopTab;
+    public int getMainTabIndex() {
+        return mainTabIndex;
     }
 
     /**
-     * 设置是否切换到shop
-     * @param changeToShopTab
+     * 设置需要切换的值
+     * @param mainTabIndex
      */
-    public void setChangeToShopTab(boolean changeToShopTab) {
-        this.changeToShopTab = changeToShopTab;
+    public void setMainTabIndex(int mainTabIndex) {
+        this.mainTabIndex = mainTabIndex;
     }
 
     /**

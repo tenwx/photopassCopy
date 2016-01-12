@@ -19,18 +19,18 @@ public class Common {
     /**
      * 49演示服务器
      */
-    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
-    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
-    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+//    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
+//    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/webPayNotify";//alipay的异步通知URL
+//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 
     /**
      * 8.3测试服务器
      * */
-//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
-//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/webPayNotify";//alipay的异步通知URL
+    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 
 
     //接口
@@ -113,6 +113,7 @@ public class Common {
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
+    public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
 
 
     //user的SharedPreferences    以及   接口参数
@@ -175,14 +176,9 @@ public class Common {
     public static final String ADDRESS_INFO = "addressInfo";
     public static final String NEW_ADDRESS_INFO = "newAddressInfo";
     public static final String DEFAULT_CURRENCY = "¥";
-    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/user/";
     public static final String HEADPHOTO_PATH = "headphoto";
     public static final String BGPHOTO_PAHT = "bgphoto";
-    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/";
-    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/app/";
-    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/download/";
-    //	public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/download/frames/";
-    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/temppic/";
+
     public static final int TOAST_SHORT_TIME = 100;
     //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";
     public static final String PHOTOPASS_DESCRPITION = "This picture made by PictureAir";
@@ -207,6 +203,20 @@ public class Common {
     public static final String SHARE_CONTENT = "shareContent";//分享的短链接或者长链接
     public static final String SHARE_ID = "shareId";
     public static final String SHARE_PLATFORM = "platform";
+    public static final String EPPP = "ePPP";
+    public static final String EPPP_IDS = "ids";
+
+    //存放sdk的目录
+    public static final String ALBUM_FILE_DOWLOAD_NAME = "/ShangHai Disney PhotoPass/download";
+    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/user/";
+    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/";
+    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/app/";
+    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/download/";
+    public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/download/frames/";
+    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/temppic/";
+    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/share/";
+    public static final String OCR_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/tessdata/";
+    public static final String OCR_DATA_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/tessdata/eng.traineddata";
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";
@@ -240,7 +250,7 @@ public class Common {
 
     //图片保存文件夹名字字段
     public static final String ALBUM_FILE_PICTURE_NAME = "photopass";
-    public static final String ALBUM_FILE_DOWLOAD_NAME = "/photopass/download";
+
 
     //其他字段
     //	public static final String PHOTOPASSPLUS = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
@@ -337,7 +347,7 @@ public class Common {
 
     // 分享参数
     public static final int PREVIEW_SHARE = 203;
-    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/photopass/share/";
+
 
 
     // 保存设置。
@@ -350,13 +360,6 @@ public class Common {
     // 纪录 MainTab 中 tab 的高度。
     public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
 
-    //    public static final String DATA_VIDEO = "http://192.168.8.3:3006/test.mp4";// 测试的网络地址
-//    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.avi";// 测试的网络地址
-//    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/My%20Disney%20Story.mp4";// 测试的网络地址
-//        public static final String DATA_VIDEO = "http://42.159.243.135/otv/1/6/62/0a/00000000024/index.m3u8";
-    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
-
-
     //保存设置中的字段  start
     public static final String SETTING_ONLY_WIFI = "onlyWifi";  // 仅wifi的下载模式， 如果存在，是
     public static final String SETTING_AUTO_UPDATE = "autoUpdate"; // 自动更新，如果字段存在，是
@@ -367,6 +370,4 @@ public class Common {
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
 
-    // tips 需要的字段  end
-//    public static final String DATA_VIDEO = "http://192.168.8.5/tools/meteor/PWTC_480x480.mp4"; //480*480测试的网络地址
 }

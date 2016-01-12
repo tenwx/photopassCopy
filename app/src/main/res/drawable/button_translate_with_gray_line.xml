@@ -3,11 +3,11 @@
 
     <solid android:color="@color/transparent" />
 
-    <corners android:radius="5dp" />
+    <corners android:radius="@dimen/pp_radius_5" />
 
     <stroke
         android:dashGap="0dp"
-        android:width="1px"
-        android:color="@color/gray" />
+        android:width="@dimen/pp_height_1"
+        android:color="@color/pp_gray" />
 
 </shape>

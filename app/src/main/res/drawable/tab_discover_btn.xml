@@ -3,5 +3,5 @@
 
     <item android:drawable="@drawable/icon_discover_sel" android:state_pressed="true"/>
     <item android:drawable="@drawable/icon_discover_sel" android:state_selected="true"/>
-	<item android:drawable="@drawable/icon_discover_nor"></item>
+	<item android:drawable="@drawable/icon_discover_nor"/>
 </selector>

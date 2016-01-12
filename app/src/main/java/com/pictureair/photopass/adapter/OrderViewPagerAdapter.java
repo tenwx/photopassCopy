@@ -90,7 +90,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                     //需要删除页面，保证只剩下mainTab页面，
                     AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                     //同时将mainTab切换到shop Tab
-                    application.setChangeToShopTab(true);
+                    application.setMainTabIndex(3);
                     break;
             }
         }

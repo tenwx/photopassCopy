@@ -1,14 +1,16 @@
 package com.pictureair.photopass.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.pictureair.photopass.util.PictureAirLog;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 
@@ -21,7 +23,10 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 	
 	public String pp1,pp2,pp3;//ppp对应三个pp的号码
 	public String expiredOn; //PPP的有效期。
-	
+	public String pppCardBg;//卡片背景图片
+	public int expericePPP;//体验卡,0:不是  1：是
+	public int expired;//1：过期，0：未过期
+
 	public static final Parcelable.Creator<PPPinfo> CREATOR = new Creator<PPPinfo>() {
 		
 		@Override
@@ -60,6 +65,9 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		pp2 = source.readString();
 		pp3 = source.readString();
 		expiredOn = source.readString();
+		pppCardBg = source.readString();
+		expericePPP = source.readInt();
+		expired = source.readInt();
 	}
 	@Override
 	public int describeContents() {
@@ -89,40 +97,30 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		dest.writeString(pp3);
 
 		dest.writeString(expiredOn);
-		
+		dest.writeString(pppCardBg);
+		dest.writeInt(expericePPP);
+		dest.writeInt(expired);
+
 	}
 	@Override
 	public int compareTo(PPPinfo another) {
-		// TODO Auto-generated method stub
-		System.out.println("comparing-------------");
-		//排序主要原则，未用完---》新的---》已用完
+		/**
+		 * 已激活和未激活为一类，放在上面，按时间降序排列
+		 * 已用完和已过期为一类，放在下面，按时间降序排序
+		 */
+		PictureAirLog.out("comparing-------------");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		if (this.bindInfo.size() == this.capacity) {//已经用完，排在后面
-			if (this.bindInfo.size() > another.bindInfo.size()) {//比较上一个是否是已经用完的，如果没用完，返回-1
-				return 1;
-			}else {//如果已经用完，根据时间排序
+		if (this.expired == 1 || this.bindInfo.size() == this.capacity) {//已经用完，或者已经过期，排在后面
+			if (another.expired == 1 || another.bindInfo.size() == another.capacity) {//上一张已用完或者已过期
 				return compareTime(another, sdf);
+			} else {
+				return 1;
 			}
-		}else{//没有用完，排在前面
-			if (this.bindInfo.size() == 0) {//如果没用过
-				if (another.bindInfo.size() == another.capacity) {//如果前面的是已经用完了得，排在前面
-					return -1;
-				}else {
-					if (this.bindInfo.size() > another.bindInfo.size()) {//大于前面的值，排在前面
-						return compareTime(another, sdf);
-					}else {//小于等于前面的值，排在后面
-						return 1;
-					}
-					
-				}
-			}else {//用过
-				if (another.bindInfo.size() == another.capacity) {//如果前面的是已经用完了得，排在前面
-					return -1;
-				}else {
-					
-					return compareTime(another, sdf);
-				}
-				
+		} else {//未激活或者未用完
+			if (another.expired == 1 || another.bindInfo.size() == another.capacity) {//上一张已用完或者已过期
+				return -1;
+			} else {
+				return compareTime(another, sdf);
 			}
 		}
 	}

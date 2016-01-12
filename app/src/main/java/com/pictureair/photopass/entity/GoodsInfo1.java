@@ -13,6 +13,7 @@ public class GoodsInfo1 implements Serializable {
     private String storeId = "";//string,商城主键
     private String name = "";//string,商品名称
     private String nameAlias = "";//string,商品别名
+    private String copywriter = "";//string,商品文案
     private String description = "";//string,商品描述
     private int embedPhotosCount = 9;//int,商品合成所需图片数量
     private List<GoodInfoPictures> pictures = null;//商品图片信息
@@ -22,12 +23,13 @@ public class GoodsInfo1 implements Serializable {
     private int sequence = 0;//int,商品序号
     public String good_SVG_Info = "";//SVG信息
 
-    public GoodsInfo1(String goodsKey, String productId, String storeId, String name, String nameAlias, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info) {
+    public GoodsInfo1(String goodsKey, String productId, String storeId, String name, String nameAlias, String copywriter, String description, int embedPhotosCount, List<GoodInfoPictures> pictures, int entityType, EmbedPhotoConfig ssConfig, int price, int sequence, String good_SVG_Info) {
         this.goodsKey = goodsKey;
         this.productId = productId;
         this.storeId = storeId;
         this.name = name;
         this.nameAlias = nameAlias;
+        this.copywriter = copywriter;
         this.description = description;
         this.embedPhotosCount = embedPhotosCount;
         this.pictures = pictures;
@@ -79,6 +81,14 @@ public class GoodsInfo1 implements Serializable {
 
     public void setNameAlias(String nameAlias) {
         this.nameAlias = nameAlias;
+    }
+
+    public String getCopywriter() {
+        return copywriter;
+    }
+
+    public void setCopywriter(String copywriter) {
+        this.copywriter = copywriter;
     }
 
     public String getDescription() {

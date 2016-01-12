@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,8 +14,8 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-     <!-- NO SELECTED -->
-     <item android:state_focused="false" android:state_selected="false" android:state_pressed="false" android:drawable="@drawable/gray_line" />
-     <!-- SELECTED-->
-    <item android:state_focused="false" android:state_selected="true"  android:state_pressed="false" android:drawable="@drawable/vpi__tab_selected" />
+    <!-- NO SELECTED -->
+    <item android:drawable="@drawable/gray_line" android:state_focused="false" android:state_pressed="false" android:state_selected="false" />
+    <!-- SELECTED-->
+    <item android:drawable="@drawable/vpi__tab_selected" android:state_focused="false" android:state_pressed="false" android:state_selected="true" />
 </selector>
