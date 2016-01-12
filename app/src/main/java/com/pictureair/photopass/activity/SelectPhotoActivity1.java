@@ -11,11 +11,15 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -80,7 +84,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     //底部view
     private LinearLayout llDisneyVideoFoot, llShopPhoto;
     private TextView tvBubble;
-    private Animation shakeBubble;
+    private TranslateAnimation shakeBubble;
 
     private boolean isDisneyVideo = false;
 
@@ -256,6 +260,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
         llDisneyVideoFoot.setVisibility(View.VISIBLE);
+        tvBubble.setAlpha(0.9f);
         tvBubble.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
         bubbleStart();
@@ -265,7 +270,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
      * 开始气泡
      */
     private void bubbleStart(){
-        shakeBubble = AnimationUtils.loadAnimation(context, R.anim.shake_y);
+        shakeBubble = new TranslateAnimation(0, 0,10, 0);
+        shakeBubble.setDuration(5000);//设置动画持续时间
+        shakeBubble.setRepeatCount(Animation.INFINITE);//设置重复次数
+        shakeBubble.setInterpolator(new CycleInterpolator(5));
+        shakeBubble.setRepeatMode(Animation.REVERSE);
         tvBubble.startAnimation(shakeBubble);
         bubbleAnimationListener();
     }
@@ -297,6 +306,39 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     }
 
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (isShouldHideInput(tvBubble, event)) {
+                tvBubble.clearAnimation();
+                shakeBubble.cancel();
+                tvBubble.setVisibility(View.GONE);
+            }
+            return super.dispatchTouchEvent(event);
+        }
+        if (getWindow().superDispatchTouchEvent(event)) {
+            return true;
+        }
+        return onTouchEvent(event);
+    }
+
+    public boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof TextView)) {
+            int[] leftTop = { 0, 0 };
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 隐藏OkButton
@@ -552,4 +594,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         super.onDestroy();
         selectPhotoHandler.removeCallbacksAndMessages(null);
     }
+
 }
+
+

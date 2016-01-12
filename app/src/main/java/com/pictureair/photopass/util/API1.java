@@ -207,6 +207,10 @@ public class API1 {
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
 
+    //忘记密码
+    public static final int FIND_PWD_SUCCESS = 6051;
+    public static final int FIND_PWD_FAILED = 6050;
+
     /**
      * 发送设备ID获取tokenId
      *
@@ -1707,4 +1711,17 @@ public class API1 {
         });
     }
     /**************************************下载图片 End**************************************/
+
+
+    /**
+     * 忘记密码
+     * @param handler
+     * @param email
+     * @param pwd
+     * @param mobile
+     */
+    public static void findPwd(final Handler handler ,String email,String pwd,String mobile){
+        handler.obtainMessage(FIND_PWD_SUCCESS).sendToTarget();
+//        handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
+    }
 }

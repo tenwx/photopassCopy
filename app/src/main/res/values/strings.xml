@@ -620,6 +620,8 @@
 
     <string name="confirm_ppp_code_text_hint">请核对乐拍通一卡通号后进行确认\n\n如卡号有误，请返回重拍</string>
 
-
+    <string name="reset_pwd">重置密码</string>
+    <string name="send_emal">发送验证邮件</string>
+    <string name="back_login_page">返回登录页面</string>
 
 </resources>
