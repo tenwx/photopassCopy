@@ -19,15 +19,15 @@ public class OCRUtils {
      * 获取SD卡路径。
      * @return
      */
-    public static String getSDPath() {
-        File sdDir = null;
-        boolean sdCardExist = Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
-        if (sdCardExist) {
-            sdDir = Environment.getExternalStorageDirectory();
-        }
-        return sdDir.toString();
-    }
+//    public static String getSDPath() {
+//        File sdDir = null;
+//        boolean sdCardExist = Environment.getExternalStorageState().equals(
+//                android.os.Environment.MEDIA_MOUNTED);
+//        if (sdCardExist) {
+//            sdDir = Environment.getExternalStorageDirectory();
+//        }
+//        return sdDir.toString();
+//    }
 
     /**
      * 将识别结果 规范化，返回处理过的结果。
@@ -72,8 +72,8 @@ public class OCRUtils {
                 return false;
             }
         }
-        // 检查PP+生成算法规则。 //这里应该检查是否有三个 － 号。严格判断，防止程序崩溃。
-        if (codeStr.contains("-")) {
+        // 检查PP+生成算法规则。 //这里应该检查是否有三个 “－” 号。
+        if (String.valueOf(codeStr.charAt(4)).equals("-") && String.valueOf(codeStr.charAt(9)).equals("-") && String.valueOf(codeStr.charAt(14)).equals("-")) {
             String[] reStr = codeStr.split("-");
             String resultStr = "SHDP" + reStr[1] + reStr[2] + reStr[3].substring(0, reStr[3].length() - 1);
             if (strList[getCheckNum(resultStr)].equals(String.valueOf(reStr[3].charAt(3)))) {

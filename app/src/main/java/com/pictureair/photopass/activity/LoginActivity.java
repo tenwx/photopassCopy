@@ -213,6 +213,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.forgot://忘记密码
+                sendSMS(1);
+                break;
             case R.id.rl_country:
                 // NationalListSelectionActivity
                 PictureAirLog.v(TAG, "国家按钮");
@@ -295,20 +298,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
      */
     private void sendSMS(final int type) {
         registerPage = new RegisterPage(type, loginHandler);
-
         registerPage.setRegisterCallback(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
-                PictureAirLog.v(TAG, "type ---- >" + type + ",result--->"
-                        + result + "data-->" + data);
+                PictureAirLog.v(TAG, "type ---- >" + type + ",result--->"+ result + "data-->" + data);
                 // 解析注册结果
                 if (result == SMSSDK.RESULT_COMPLETE) {
-                    @SuppressWarnings("unchecked")
                     HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
-
                     String pwd = phoneMap.get("pwd").toString();
                     String phone = phoneMap.get("phone").toString();
                     // 把手机号发送到服务器判断账号是否存在，存在则跳转到重置密码页面
-                    PictureAirLog.v(TAG, "type -------->" + type);
                     if (type == 0) {
 						/*
 						 * 服务器返回手机号不存在，注册 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd
@@ -316,20 +314,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 						 */
                         PictureAirLog.v(TAG, "phone:" + phone);
                         PictureAirLog.v(TAG, "pwd:" + pwd);
-						/*
-						 * ＊＊＊＊交给SignAndLoginPhoneNumberService类来逻辑处理 注册 并 登录
-						 */
-                        // sendSign(phone, pwd);
                         new SignAndLoginUtil(LoginActivity.this, phone, pwd, true, false,
                                 null, null, null, null, LoginActivity.this);
 
                     } else if (type == 1) {
-                        // 服务器返回手机号存在，修改密码
-                        Intent intent = new Intent(LoginActivity.this,
-                                SignOrForgetActivity.class);
-                        intent.putExtra("phone", phone);
-                        intent.putExtra("type", type);
-                        startActivity(intent);
+                        // 忘记密码
+//                        请求API
+                        myToast.setTextAndShow("phone:"+phone+"\n"+"PWD:"+pwd,Common.TOAST_SHORT_TIME);
                     }
                 }
             }

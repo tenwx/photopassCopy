@@ -1,7 +1,7 @@
 <resources>
     <string name="smssdk_back">返回 </string>
     <string name="smssdk_regist">用户注册</string>
-    <string name="smssdk_forget">找回密码</string>
+    <string name="smssdk_forget">重置密码</string>
     <string name="smssdk_make_sure_country_mobile">请确认你的国家或地区并输入手机号码</string>
     <string name="smssdk_country">国家</string>
     <string name="smssdk_pwd_no">密码不一致</string>

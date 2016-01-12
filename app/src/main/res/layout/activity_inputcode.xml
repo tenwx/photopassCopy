@@ -152,38 +152,38 @@
         android:textSize="@dimen/text_size_16" />
 
 
+
     <LinearLayout
         android:id="@+id/lv_buttom"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/pp_padding_20"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:orientation="vertical"
         android:background="@color/white"
-        >
+        android:padding="@dimen/pp_margin_16" >
 
         <Button
             android:id="@+id/btn_confirm_scan_ppp_code"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:background="@drawable/button_blue_shape_and_selector"
             android:padding="@dimen/pp_padding_10"
-            android:text="@string/ok"
             android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
+            android:text="@string/ok"
+            android:textSize="@dimen/pp_margin_16" />
 
         <Button
             android:id="@+id/btn_re_scan_ppp_code"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_20"
-            android:background="@drawable/button_gray_shape_and_selector"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_sign_shape_and_selector"
             android:padding="@dimen/pp_padding_10"
             android:text="@string/re_scan"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_16" />
-
-
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/pp_margin_16" />
     </LinearLayout>
 
 

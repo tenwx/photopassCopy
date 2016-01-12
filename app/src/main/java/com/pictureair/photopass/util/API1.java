@@ -184,6 +184,9 @@ public class API1 {
     public static final int ADD_CODE_TO_USER_FAILED = 5110;
     public static final int ADD_CODE_TO_USER_SUCCESS = 5111;
 
+    public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
+    public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
+
     //我的模块 end
 
 
@@ -206,6 +209,10 @@ public class API1 {
     //下载
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
+
+    //忘记密码
+    public static final int FIND_PWD_SUCCESS = 6051;
+    public static final int FIND_PWD_FAILED = 6050;
 
     /**
      * 发送设备ID获取tokenId
@@ -892,7 +899,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                handler.obtainMessage(ADD_CODE_TO_USER_FAILED,status,0).sendToTarget();
+                handler.obtainMessage(ADD_CODE_TO_USER_FAILED, status, 0).sendToTarget();
 
             }
         });
@@ -970,6 +977,34 @@ public class API1 {
                 super.onFailure(status);
                 handler.obtainMessage(MODIFY_PWD_FAILED, status, 0).sendToTarget();
 
+            }
+        });
+    }
+
+    /**
+     * 使用体验卡绑定未购买的图片
+     * @param pppCode 体验卡卡号
+     * @param photoIds 绑定的图片
+     * @param handler
+     */
+    public static void useExperiencePPP(String pppCode, JSONArray photoIds, final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.EPPP, pppCode);
+        params.put(Common.EPPP_IDS, photoIds.toJSONString());
+        PictureAirLog.out("photo ids --->" + photoIds);
+        PictureAirLog.out("params--->" + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.USE_EXPERIENCE_PPP, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(ADD_PHOTO_TO_PPP_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADD_PHOTO_TO_PPP_FAILED, status, 0).sendToTarget();
             }
         });
     }
@@ -1707,4 +1742,17 @@ public class API1 {
         });
     }
     /**************************************下载图片 End**************************************/
+
+
+    /**
+     * 忘记密码
+     * @param handler
+     * @param email
+     * @param pwd
+     * @param mobile
+     */
+    public static void findPwd(final Handler handler ,String email,String pwd,String mobile){
+        handler.obtainMessage(FIND_PWD_SUCCESS).sendToTarget();
+//        handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
+    }
 }

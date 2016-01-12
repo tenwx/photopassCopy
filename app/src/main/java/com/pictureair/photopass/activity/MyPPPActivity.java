@@ -356,10 +356,18 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (list1.get(position).bindInfo.size() < list1.get(position).capacity) {
-                    PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
-                    ppp = list1.get(position);
-                    API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
+                if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
+                    if (list1.get(position).expericePPP == 1) {//体验卡
+                        Intent intent = new Intent(MyPPPActivity.this, SelectPhotoActivity1.class);
+                        intent.putExtra("activity", "mypppactivity");
+                        intent.putExtra("pppCode", list1.get(position).PPPCode);
+                        intent.putExtra("photoCount", 1);
+                        startActivity(intent);
+                    } else {
+                        PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
+                        ppp = list1.get(position);
+                        API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
+                    }
                 } else {
                     //用完了的PPP  弹出窗口提示
                     customdialog = new CustomDialog.Builder(MyPPPActivity.this).setMessage(getResources().getString(R.string.buy_ppp_tips))

@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -11,11 +12,15 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -26,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
@@ -38,7 +44,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -61,6 +66,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private GridView gridView;
     private ViewPhotoGridViewAdapter photoPassAdapter;
     private RelativeLayout noPhotoRelativeLayout;
+    private TextView noPhotoTextView;
+    private ImageView noPhotoImageView;
 
     private MyToast newToast;
     private MyApplication myApplication;
@@ -80,9 +87,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     //底部view
     private LinearLayout llDisneyVideoFoot, llShopPhoto;
     private TextView tvBubble;
-    private Animation shakeBubble;
+    private TranslateAnimation shakeBubble;
 
     private boolean isDisneyVideo = false;
+
+    private SharedPreferences sharedPreferences;
 
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
@@ -129,7 +138,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 initPopWindow();
                 break;
 
-            case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED:
+            case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED://制作视频失败
+            case API1.ADD_PHOTO_TO_PPP_FAILED://升级照片失败
                 // 处理失败，数据错误
 //                    initPopWindow();
                 if (null != customProgressDialog && customProgressDialog.isShowing()) {
@@ -137,6 +147,34 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 }
                 newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)), Common.TOAST_SHORT_TIME);
                 PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
+                break;
+
+            case API1.ADD_PHOTO_TO_PPP_SUCCESS://升级照片成功
+                PictureAirLog.out("add photo to ppp success");
+                if (null != customProgressDialog && customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                /**
+                 * 1.kill掉多余的activity
+                 * 2.跳转到图片清晰页面预览图片
+                 * 3.设置跳转到story标记
+                 */
+                // 找出购买的info，并且将购买属性改为1
+                photoURLlist.get(0).isPayed = 1;
+
+                Intent intent = new Intent(SelectPhotoActivity1.this, PreviewPhotoActivity.class);
+                intent.putExtra("activity", "selectphotoactivity");
+                intent.putExtra("position", 0);// 在那个相册中的位置
+                intent.putExtra("photoId", photoURLlist.get(0).photoId);
+                intent.putExtra("photos", photoURLlist);// 那个相册的全部图片路径
+                intent.putExtra("targetphotos", myApplication.magicPicList);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Common.NEED_FRESH, true);
+                editor.commit();
+                AppManager.getInstance().killActivity(MyPPPActivity.class);
+                myApplication.setMainTabIndex(0);
+                startActivity(intent);
+                finish();
                 break;
 
             default:
@@ -177,7 +215,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         btnGoToSelectPhoto.setTypeface(MyApplication.getInstance().getFontBold());
         tvHead = (TextView) findViewById(R.id.tv_head);
         noPhotoRelativeLayout = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
+        noPhotoTextView = (TextView) findViewById(R.id.no_photo_textView);
+        noPhotoImageView = (ImageView) findViewById(R.id.no_photo_iv);
         okButton = (TextView) findViewById(R.id.button1);
+
+        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 
         /*
          * 更新标题
@@ -198,7 +240,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
-        photoPassArrayList = transferPhotoItemInfoToPhotoInfo(isBuy);
+        photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
         PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
 
         //判断是否有照片
@@ -219,6 +261,10 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
             } else {
                 gridView.setVisibility(View.GONE);
                 noPhotoRelativeLayout.setVisibility(View.VISIBLE);
+                if (activity.equals("mypppactivity")){
+                    noPhotoTextView.setText(R.string.no_photo_update);
+                    noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
+                }
                 goneOkButton();
                 return;
             }
@@ -256,6 +302,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
         llDisneyVideoFoot.setVisibility(View.VISIBLE);
+        tvBubble.setAlpha(0.9f);
         tvBubble.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
         bubbleStart();
@@ -265,7 +312,11 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
      * 开始气泡
      */
     private void bubbleStart(){
-        shakeBubble = AnimationUtils.loadAnimation(context, R.anim.shake_y);
+        shakeBubble = new TranslateAnimation(0, 0,10, 0);
+        shakeBubble.setDuration(5000);//设置动画持续时间
+        shakeBubble.setRepeatCount(Animation.INFINITE);//设置重复次数
+        shakeBubble.setInterpolator(new CycleInterpolator(5));
+        shakeBubble.setRepeatMode(Animation.REVERSE);
         tvBubble.startAnimation(shakeBubble);
         bubbleAnimationListener();
     }
@@ -297,6 +348,39 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     }
 
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (isShouldHideInput(tvBubble, event)) {
+                tvBubble.clearAnimation();
+                shakeBubble.cancel();
+                tvBubble.setVisibility(View.GONE);
+            }
+            return super.dispatchTouchEvent(event);
+        }
+        if (getWindow().superDispatchTouchEvent(event)) {
+            return true;
+        }
+        return onTouchEvent(event);
+    }
+
+    public boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof TextView)) {
+            int[] leftTop = { 0, 0 };
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 隐藏OkButton
@@ -322,18 +406,25 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                     list.add(photoInfo);
                 }
             } else {
-                if (goodsInfo == null) {
-                    PictureAirLog.v(TAG, "goodsInfo == null");
-                    return list;
-                }
-                //数码照片--是则获取未购买的图片 礼物--获取全部
-                if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                if (activity.equals("mypppactivity")){//ppp体验卡选图使用未购买的图片
                     if (photoInfo.isPayed == 0) {
                         list.add(photoInfo);
                     }
                 } else {
-                    list.add(photoInfo);
+                    if (goodsInfo == null) {
+                        PictureAirLog.v(TAG, "goodsInfo == null");
+                        return list;
+                    }
+                    //数码照片--是则获取未购买的图片 礼物--获取全部
+                    if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                        if (photoInfo.isPayed == 0) {
+                            list.add(photoInfo);
+                        }
+                    } else {
+                        list.add(photoInfo);
+                    }
                 }
+
             }
         }
         return list;
@@ -384,7 +475,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                     if (selectedCount < photocount) {
                         info.isSelected = 1;
                         info.showMask = 1;
-                        PictureAirLog.v(TAG, "没点过，选中");
+                        PictureAirLog.v(TAG, "没点过，选中 url: " + info.photoPathOrURL);
                         selectedCount++;
                         int visiblePos = gridView.getFirstVisiblePosition();
                         viewPhotoGridViewAdapter.refreshView(position, gridView.getChildAt(position - visiblePos), 1);
@@ -430,7 +521,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 //删除所有aty，只剩下mainTab页面，
                 //将mainTab切换到shop Tab
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
-                myApplication.setChangeToShopTab(true);
+                myApplication.setMainTabIndex(3);
                 break;
 
             case R.id.rlrt://返回按钮
@@ -486,6 +577,14 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         }
                         PictureAirLog.i(TAG, "photos===>" + photos.toString());
                         API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
+                    } else if (activity.equals("mypppactivity")){
+                        //绑定图片到ppp
+                        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                        JSONArray photoIds = new JSONArray();
+                        for (int i = 0; i < photoURLlist.size(); i++) {
+                            photoIds.add(photoURLlist.get(i).photoId);
+                        }
+                        API1.useExperiencePPP(getIntent().getStringExtra("pppCode"), photoIds, selectPhotoHandler);
                     }
                 }
                 break;
@@ -552,4 +651,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         super.onDestroy();
         selectPhotoHandler.removeCallbacksAndMessages(null);
     }
+
 }
+
+

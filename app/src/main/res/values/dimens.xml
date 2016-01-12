@@ -75,5 +75,14 @@
     <dimen name="pp_margin_10_">-10dp</dimen>
     <dimen name="pp_margin_5_">-5dp</dimen>
     <dimen name="pp_margin_60">60dp</dimen>
+    <dimen name="pp_radius_5">5dp</dimen>
+    <dimen name="pp_radius_10">10dp</dimen>
+    <dimen name="pp_width_3">3dp</dimen>
+    <dimen name="pp_radius_10_px">10px</dimen>
+    <dimen name="pp_radius_3">3dp</dimen>
+    <dimen name="pp_radius_7">7dp</dimen>
+    <dimen name="pp_width_8">8dp</dimen>
+    <dimen name="pp_radius_1">1dp</dimen>
+    <dimen name="pp_radius_2">2dp</dimen>
 
 </resources>
