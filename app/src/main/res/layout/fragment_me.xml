@@ -104,7 +104,7 @@
                     android:layout_toRightOf="@+id/icon_me1"
                     android:gravity="center"
                     android:text="@string/mypage_myprofile"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
@@ -139,7 +139,7 @@
                     android:layout_toRightOf="@+id/icon_me2"
                     android:gravity="center"
                     android:text="@string/mypage_myorder"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
@@ -173,7 +173,7 @@
                     android:layout_toRightOf="@+id/icon_me3"
                     android:gravity="center"
                     android:text="@string/mypage_pp"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
@@ -207,7 +207,7 @@
                     android:layout_toRightOf="@+id/icon_me4"
                     android:gravity="center"
                     android:text="@string/mypage_ppp"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
@@ -241,7 +241,7 @@
                     android:layout_toRightOf="@+id/icon_me5"
                     android:gravity="center"
                     android:text="@string/mypage_help"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
@@ -276,7 +276,7 @@
                     android:layout_toRightOf="@+id/icon_me6"
                     android:gravity="center"
                     android:text="@string/mypage_setting"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
 
@@ -310,7 +310,7 @@
                     android:layout_toRightOf="@+id/icon_me7"
                     android:gravity="center"
                     android:text="@string/mypage_about"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_16" />
             </RelativeLayout>
         </LinearLayout>

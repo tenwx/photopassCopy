@@ -245,7 +245,7 @@ public class OrderActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.order_vPager);
         cursorImageView = (ImageView) findViewById(R.id.cursor);
 
-        paymentOrderTextView.setTextColor(getResources().getColor(R.color.blue));
+        paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
         deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
         allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
 
@@ -336,7 +336,7 @@ public class OrderActivity extends BaseActivity {
             orderAdapter.expandGropu(arg0);
             switch (arg0) {
                 case 0:
-                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.blue));
+                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                     deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
                     allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
 
@@ -344,14 +344,14 @@ public class OrderActivity extends BaseActivity {
 
                 case 1:
                     paymentOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.blue));
+                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                     allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
                     break;
 
                 case 2:
                     paymentOrderTextView.setTextColor(getResources().getColor(R.color.gray));
                     deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-                    allOrderTextView.setTextColor(getResources().getColor(R.color.blue));
+                    allOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                     break;
 
                 default:

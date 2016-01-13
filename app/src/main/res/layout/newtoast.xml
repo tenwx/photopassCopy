@@ -20,6 +20,6 @@
         android:paddingLeft="@dimen/pp_margin_30"
         android:paddingRight="@dimen/pp_margin_30"
         android:paddingTop="@dimen/pp_margin_40"
-        android:textColor="@color/blue"
+        android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_16" />
 </RelativeLayout>
