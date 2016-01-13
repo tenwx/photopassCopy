@@ -110,7 +110,7 @@ public final class CaptureActivityHandler extends Handler {
       case R.id.decode_ocr_succeeded:
         //跳转页面。
         Bundle b = message.getData();
-        activity.handleDecodeOCR((byte[]) b.getByteArray("data"),b.getString("text"));
+        activity.handleDecodeOCR(b.getString("text"));
         break;
     }
   }

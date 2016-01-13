@@ -10,6 +10,7 @@ import android.text.InputFilter;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -36,7 +37,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 手动输入条码的页面
  */
-public class InputCodeActivity extends BaseActivity implements OnClickListener {
+public class InputCodeActivity extends BaseActivity implements OnClickListener,View.OnKeyListener{
     private String[] resultList;
     private TextView tvConfirmHint,tvManulInputIntro;
     private ImageView ivShowResult;
@@ -162,10 +163,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
             ok.setVisibility(View.VISIBLE);
             tvConfirmHint.setVisibility(View.INVISIBLE);
             setTopTitleShow(R.string.manual);
-            input1.setEnabled(true);
-            input2.setEnabled(false);
-            input3.setEnabled(false);
-            input4.setEnabled(false);
         } else {
             tvManulInputIntro.setVisibility(View.GONE);
             ivShowResult.setVisibility(View.VISIBLE);
@@ -181,10 +178,10 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
             input3.setText(resultList[2]);
             input4.setText(resultList[3]);
         }
-//        input1.setOnFocusChangeListener(this);
-//        input2.setOnFocusChangeListener(this);
-//        input3.setOnFocusChangeListener(this);
-//        input4.setOnFocusChangeListener(this);
+
+        input2.setOnKeyListener(this);
+        input3.setOnKeyListener(this);
+        input4.setOnKeyListener(this);
 
 
         input1.addTextChangedListener(new TextWatcher() {
@@ -195,16 +192,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                 if (arg0.length() > 3) {
                     input2.setEnabled(true);
                     input2.requestFocus();
-                    input1.setEnabled(true);
-                    input3.setEnabled(true);
-                    input4.setEnabled(true);
-                }else if (arg0.length() == 0){
-                    input1.setEnabled(true);
-                    input2.setEnabled(false);
-                    input3.setEnabled(false);
-                    input4.setEnabled(false);
                 }
-
                 if (arg0.length() == 5){ // input1 中输入第5个字符，就让第5个字符  移动到input2 中
                     String text1= input1.getText().toString();
                     PictureAirLog.e("", "====:" + text1);
@@ -236,15 +224,10 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                 if (arg0.length() > 3) {
                     input3.setEnabled(true);
                     input3.requestFocus();
-                    input1.setEnabled(true);
-                    input2.setEnabled(true);
-                    input4.setEnabled(true);
+
                 } else if (arg0.length() == 0) {
                     input1.setEnabled(true);
                     input1.requestFocus();
-                    input2.setEnabled(true);
-                    input3.setEnabled(true);
-                    input4.setEnabled(true);
                     input1.setSelection(input1.getText().toString().length());
                 }
 
@@ -278,15 +261,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                 if (arg0.length() > 3) {
                     input4.setEnabled(true);
                     input4.requestFocus();
-                    input1.setEnabled(true);
-                    input2.setEnabled(true);
-                    input3.setEnabled(true);
                 } else if (arg0.length() == 0) {
                     input2.setEnabled(true);
                     input2.requestFocus();
-                    input1.setEnabled(true);
-                    input3.setEnabled(true);
-                    input4.setEnabled(true);
                     input2.setSelection(input2.getText().toString().length());
                 }
                 if (arg0.length() == 5){ // input3 中输入第5个字符，就让第5个字符  移动到input4 中
@@ -317,9 +294,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
                 if (arg0.length() == 0) {
                     input3.setEnabled(true);
                     input3.requestFocus();
-                    input1.setEnabled(true);
-                    input2.setEnabled(true);
-                    input4.setEnabled(true);
                     input3.setSelection(input3.getText().toString().length());
                 }
             }
@@ -334,63 +308,113 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener {
             }
         });
 
-
-
-//		input1.setOnEditorActionListener(new OnEditorActionListener() {
-//
-//			@Override
-//			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//				// TODO Auto-generated method stub
-//				if (actionId == EditorInfo.IME_ACTION_GO) {
-//
-//					hideInputMethodManager(v);
-//					System.out.println("done");
-//					ok.performClick();
-//
-//					return true;
-//				}
-//				return false;
-//			}
-//		});
-
         dealCodeUtil = new DealCodeUtil(this, getIntent(), inputCodeHandler);
 
     }
 
-//    @Override
-//    public void onFocusChange(View v, boolean b) {
-//        switch (v.getId()) {
-//            case R.id.input1:
-//                if (input1.getText().toString().length() > 3) {
-//                    input2.setEnabled(true);
-//                    input2.requestFocus();
-//                    input1.setEnabled(true);
-//                    input3.setEnabled(true);
-//                    input4.setEnabled(true);
-//                }else if (input1.getText().toString().length() == 0){
-//                    input1.setEnabled(true);
-//                    input2.setEnabled(false);
-//                    input3.setEnabled(false);
-//                    input4.setEnabled(false);
-//                }
-//                if (input1.getText().toString().length() == 5){ // input1 中输入第5个字符，就让第5个字符  移动到input2 中
-//                    String text1= input1.getText().toString();
-//                    PictureAirLog.e("", "====:" + text1);
-//                    input1.setText(text1.substring(0, 4));
-//                    input2.setText(String.valueOf(text1.charAt(4)));
-//                    input2.setEnabled(true);
-//                    input2.requestFocus();
-//                    input2.setSelection(input2.getText().toString().length());
-//                }
-//                break;
-//            case R.id.input2:
-//                break;
-//            case R.id.input3:
-//                break;
-//            case R.id.input4:
-//                break;
-//        }
-//    }
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+        PictureAirLog.out("============ keyCode" + keyCode);
+        if (keyCode == KeyEvent.KEYCODE_DEL){
+            PictureAirLog.out("============ input2.getText().toString().length()" + input2.getText().toString().length());
+            if (input2.getText().toString().length() == 0 && input2.requestFocus()){
+                input1.setEnabled(true);
+                input1.requestFocus();
+            }else if(input3.getText().toString().length() == 0 && input3.requestFocus()){
+                input2.setEnabled(true);
+                input2.requestFocus();
+            }else if(input4.getText().toString().length() == 0 && input4.requestFocus()){
+                input3.setEnabled(true);
+                input3.requestFocus();
+            }
+            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input3.requestFocus()){
+                input3.setEnabled(true);
+                input3.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input4.clearFocus();
+            }
+            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 &&  input4.getText().toString().length() > 0 && input4.requestFocus()){
+                input4.setEnabled(true);
+                input4.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+                if (input4.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 ){
+                    input3.setEnabled(true);
+                    input3.requestFocus();
+                    input1.clearFocus();
+                    input2.clearFocus();
+                    input4.clearFocus();
+                }
+            }
+            if(input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() == 0 && input4.requestFocus()){
+                input4.setEnabled(true);
+                input4.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+            }
+            if(input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input4.getText().toString().length() == 0 && input3.requestFocus()){
+                input3.setEnabled(true);
+                input3.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input4.clearFocus();
+            }
+            if(input1.getText().toString().length() > 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() >= 0 && input3.requestFocus()){
+                input3.setEnabled(true);
+                input3.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input4.clearFocus();
+            }
+            if(input1.getText().toString().length() > 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input4.requestFocus()){
+                input4.setEnabled(true);
+                input4.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+            }
+            if(input1.getText().toString().length() > 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input4.requestFocus()){
+                input4.setEnabled(true);
+                input4.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+            }
+            if(input1.getText().toString().length() > 0 && input2.getText().toString().length() > 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input4.requestFocus()){
+                input4.setEnabled(true);
+                input4.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+            }
+            if(input1.getText().toString().length() == 0 && input2.getText().toString().length() > 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input4.requestFocus()){
+                input4.setEnabled(true);
+                input4.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+            }
+            if(input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() == 0 && input3.requestFocus()){
+                input1.setEnabled(true);
+                input1.requestFocus();
+                input2.clearFocus();
+                input3.clearFocus();
+                input4.clearFocus();
+            }
+            if(input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input3.requestFocus()){
+                input3.setEnabled(true);
+                input3.requestFocus();
+                input1.clearFocus();
+                input2.clearFocus();
+                input4.clearFocus();
+            }
+
+        }
+        return false;
+    }
 
     private void hideInputMethodManager(View v) {
         // TODO Auto-generated method stub

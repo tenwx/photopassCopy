@@ -154,6 +154,7 @@
     <string name="delete">Delete</string>
     <string name="photopass">PhotoPass</string>
     <string name="photopassplus">PhotoPass+</string>
+    <string name="experiencephotopassplus">Experience PhotoPass+</string>
     <string name="getitnow">Get it now</string>
     <string name="mylocation">My location</string>
     <string name="myfavourite">My favourite</string>
@@ -344,7 +345,7 @@
     <string name="original_price">Original price:</string>
     <string name="pick_up_address">Self-collect： </string>
     <string name="disney_address"> Carefree Corner</string>
-    <string name="scan_intro">Please Scan your Park Ticket / PhotoPass Card QR code to get your photos.</string>
+    <string name="scan_intro">Please Scan your Park Ticket PhotoPass Card QR code to get your photos</string>
     <string name="manul_input_intro">Please input your 16-digit number on the back of your park ticket / PhotoPass card.</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
@@ -562,7 +563,7 @@
     <string name="self_collect">Self-collect</string>
     <string name="preferential">Preferential:</string>
     <string name="select_address">Please Select Address</string>
-    <string name="about_tips">我迪故事里, 有您更精彩</string>
+    <string name="about_tips">Capture You Magical Moments!</string>
     <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Nickname can not be empty</string>
@@ -602,15 +603,27 @@
 
     <string name="no_activated">nonactivated</string>
     <string name="activated">activated</string>
+    <string name="ppp_has_used">has used</string>
+    <string name="ppp_has_expired">has expired</string>
     <string name="expired_on">effective time:</string>
     <string name="delivery_info">Delivery Info</string>
     <string name="multi_goods">PhotoPass multiple goods</string>
+    <string name="blur_intro">If you like to save this wonderful moment forever, you should own this photo, and you will make this trip more meaningful.</string>
+    <string name="no_photo_update">You haven\'t photos to upgrade!</string>
+    <string name="select_pp_wrong_date">Only choose continuous three days PhotoPass</string>
     <string name="please_relogin">please login again</string>
 
     <string name="scan_qr_code">QR Code</string>
     <string name="scan_ppp_code">PhotoPass+</string>
-    <string name="confirm_ppp_code_title">乐拍通一卡通</string>
-    <string name="confirm_ppp_code_text_hint">请核对乐拍通一卡通号后进行确认\n如卡号有误，请返回重拍</string>
 
+    <string name="reset_pwd">Reset password</string>
+    <string name="send_emal">发送验证邮件</string>
+    <string name="back_login_page">返回登录页面</string>
+
+
+    <string name="confirm_ppp_code_title">PhotoPass+</string>
+    <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
     <string name="re_scan">Rescan</string>
+    <string name="textview_center_hint">Please put PhotoPass+ card back in this area.Try to align edges</string>
+
 </resources>

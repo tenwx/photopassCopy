@@ -39,6 +39,7 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OCRUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -192,7 +193,6 @@ final class DecodeHandler extends Handler {
       Message message = activity.getHandler().obtainMessage();
       message.what = R.id.decode_ocr_succeeded;
       Bundle b = new Bundle();
-      b.putByteArray("data",data);
       b.putString("text", text);
       message.setData(b);
       message.sendToTarget();
@@ -210,7 +210,7 @@ final class DecodeHandler extends Handler {
    */
   private String doOcr(Bitmap bitmap, String language) {
     TessBaseAPI baseApi = new TessBaseAPI();
-    baseApi.init(OCRUtils.getSDPath(), language);
+    baseApi.init(Common.PHOTO_SAVE_PATH, language);
     // 必须加此行，tess-two要求BMP必须为此配置
     bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
     baseApi.setImage(bitmap);

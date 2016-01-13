@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -35,6 +36,7 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.XListViewHeader;
 
 import java.lang.ref.WeakReference;
@@ -67,6 +69,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private String selectedPhotoId = null;//记录已经购买了的照片的photoId
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
+    private RelativeLayout noPhotoPassView;
     private CustomProgressDialog customProgressDialog;
 
     private TextView tvTitle;
@@ -78,6 +81,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private CustomProgressDialog dialog;
     private MyToast myToast;
     private SettingUtil settingUtil;
+
+    private PictureWorksDialog pictureWorksDialog;
 
 
     private final Handler myPPHandler = new MyPPHandler(this);
@@ -108,17 +113,24 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         switch (msg.what) {
             case UPDATE_UI:
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
+                PictureAirLog.out("pp code size --->" + showPPCodeList.size());
                 // 更新界面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
+                    PictureAirLog.out("has ppcode ");
                     if (!isDeletePhoto) {
                         delete.setVisibility(View.VISIBLE);
                     }
+                    listPP.setVisibility(View.VISIBLE);
+                    noPhotoPassView.setVisibility(View.GONE);
                     listPPAdapter.refresh(showPPCodeList);
                 } else {
-                    listPPAdapter.refresh(new ArrayList<PPinfo>());
+                    PictureAirLog.out("has not pp code");
+                    showPPCodeList.clear();
+                    listPPAdapter.refresh(showPPCodeList);
                     delete.setVisibility(View.GONE);
+                    listPP.setVisibility(View.INVISIBLE);
+                    noPhotoPassView.setVisibility(View.VISIBLE);
                 }
-
                 break;
 
             case API1.HIDE_PP_SUCCESS:
@@ -141,6 +153,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 PictureAirLog.e(TAG, "删除PP成功");
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
+
             case DELETE_PHOTO:
                 //更新界面
                 if (showPPCodeList != null && showPPCodeList.size() >= 0) {
@@ -201,12 +214,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    updateUI(UPDATE_UI);
-                    customProgressDialog.dismiss();
-                } else {
-                    System.out.println("pp size == 0");
                 }
-                listPP.setVisibility(View.VISIBLE);
+                customProgressDialog.dismiss();
+                updateUI(UPDATE_UI);
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 break;
 
@@ -215,6 +225,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 customProgressDialog.dismiss();
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPHandler, true);
+                noPhotoPassView.setVisibility(View.GONE);
                 listPP.setVisibility(View.INVISIBLE);
 
 
@@ -231,6 +242,11 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 if (showPPCodeList.size() == 0) {
                     ok.setEnabled(false);
+                    PictureAirLog.out("has not pp code");
+                    listPP.setVisibility(View.INVISIBLE);
+                    noPhotoPassView.setVisibility(View.VISIBLE);
+                } else {
+                    noPhotoPassView.setVisibility(View.GONE);
                 }
                 break;
             case 2:
@@ -341,7 +357,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         tvTitle = (TextView) findViewById(R.id.mypp);
         back = (ImageView) findViewById(R.id.back);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-
+        noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         pictureAirDbManager = new PictureAirDbManager(this);
         back.setOnClickListener(this);
     }
@@ -484,7 +500,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     System.out.println("->" + map.get(i));
                 }
                 JSONArray pps = new JSONArray();
-                tempPhotoLists = new ArrayList<PhotoInfo>();
+                tempPhotoLists = new ArrayList<>();
                 //			String binddate = null;
                 System.out.println("size=" + map.size());
                 for (int j = 0; j < showPPCodeList.size(); j++) {
@@ -505,11 +521,17 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         pps.add(jsonObject);
                     }
                 }
-                //			if (null == binddate) {
-                //			}else {
-                //			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.is_loading), false, true);
-                dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
-                API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+
+                if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
+                        pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
+                    pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
+                            getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
+                    pictureWorksDialog.show();
+                } else {
+                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+                    API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+
+                }
 
                 break;
             default:
@@ -548,8 +570,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(API1.PPlist, 2);
                 myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
             }
-
-            ;
         }.start();
     }
 

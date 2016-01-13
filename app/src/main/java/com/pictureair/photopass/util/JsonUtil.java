@@ -760,6 +760,22 @@ public class JsonUtil {
                     ppPinfo.days = ppplist.getIntValue("days");
                     ppPinfo.PPP_ID = ppplist.getString("_id");
                     ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10).toString();
+                    if (ppplist.containsKey("PPPType")) {
+                        if (ppplist.getString("PPPType").equals("5")){
+                            ppPinfo.expericePPP = 1;
+                        } else {
+                            ppPinfo.expericePPP = 0;
+                        }
+                    }
+
+                    if (ppplist.containsKey("cardBg")) {
+                        ppPinfo.pppCardBg = ppplist.getString("cardBg");
+                    }
+
+                    if (ppplist.containsKey("isExpired")) {
+                        ppPinfo.expired = ppplist.getBooleanValue("isExpired") ? 1 : 0;
+                    }
+
                     String str = ppplist.getString("bindInfo");
                     JSONArray bindInfos = JSON.parseArray(str);
                     for (int j = 0; j < bindInfos.size(); j++) {

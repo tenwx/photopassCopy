@@ -25,7 +25,7 @@
             android:background="@color/transparent"
             android:gravity="center"
             android:padding="@dimen/pp_margin_16"
-            android:text="@string/testing_intro"
+            android:text="@string/blur_intro"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
