@@ -404,12 +404,20 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener,V
                 input3.clearFocus();
                 input4.clearFocus();
             }
+
             if(input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input3.requestFocus()){
                 input3.setEnabled(true);
                 input3.requestFocus();
                 input1.clearFocus();
                 input2.clearFocus();
                 input4.clearFocus();
+                if(input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input4.requestFocus()){
+                    input4.setEnabled(true);
+                    input4.requestFocus();
+                    input1.clearFocus();
+                    input2.clearFocus();
+                    input3.clearFocus();
+                }
             }
 
         }
