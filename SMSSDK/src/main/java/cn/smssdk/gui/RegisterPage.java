@@ -13,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.Html;
@@ -473,6 +474,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             finish();
         } else if (id == id_rl_country) {
             // 自定义的国家列表
+//            myToast.setTextAndShow("currentId:"+currentId+"\n"+"",3000);
             CountryPage countryPage = new CountryPage();
             countryPage.setCountryId(currentId);// 当前的id
             countryPage.setCountryRuls(countryRules);// 国家号码的规则
@@ -866,7 +868,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 countryRules = (HashMap<String, String>) data.get("rules");
                 String[] country = SMSSDK.getCountry(currentId);
                 if (countryC != null) {
-
                     currentCode = country[1];
                     tvCountryNum.setText("+" + currentCode);
                     tvCountry.setText(country[0]);

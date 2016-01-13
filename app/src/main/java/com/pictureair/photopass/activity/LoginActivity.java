@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.EditTextWithClear;
 import cn.smssdk.gui.RegisterPage;
 
@@ -84,6 +85,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             mActivity.get().dealHandler(msg);
         }
     }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1){//国家
+                String[] countrys = (String[])msg.obj;
+                countryCode = countrys[1];
+                country = countrys[0];
+                tv_country.setText(country);
+                tv_country_num.setText("+" + countryCode);
+            }
+        }
+    };
 
     /**
      * 处理Message
@@ -217,12 +232,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 sendSMS(1);
                 break;
             case R.id.rl_country:
-                // NationalListSelectionActivity
-                PictureAirLog.v(TAG, "国家按钮");
-                Intent i = new Intent(LoginActivity.this,
-                        NationalListSelectionActivity.class);
-                i.putExtra("isCountrycode", "Login");
-                startActivityForResult(i, 0);
+
+//                // NationalListSelectionActivity
+//                PictureAirLog.v(TAG, "国家按钮");
+//                Intent i = new Intent(LoginActivity.this,
+//                        NationalListSelectionActivity.class);
+//                i.putExtra("isCountrycode", "Login");
+//                startActivityForResult(i, 0);
+
+                CountryPage countryPage = new CountryPage();
+                countryPage.setMHandler(handler);
+                countryPage.show(this,null);
                 break;
 
             case R.id.login:
@@ -338,15 +358,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 111) {
-            countryCode = data.getStringExtra("countryCode");
-            country = data.getStringExtra("country");
-            tv_country.setText(country);
-            tv_country_num.setText("+" + countryCode);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == 111) {
+//            countryCode = data.getStringExtra("countryCode");
+//            country = data.getStringExtra("country");
+//            tv_country.setText(country);
+//            tv_country_num.setText("+" + countryCode);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
@@ -356,6 +376,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             registerPage.finish();
         }
         loginHandler.removeCallbacksAndMessages(null);
+        if (null != handler){
+            handler.removeCallbacksAndMessages(null);
+        }
+
     }
 
     @Override

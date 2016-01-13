@@ -108,6 +108,8 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
         llContenHint = (LinearLayout) findViewById(R.id.ll_conten_hint);
         btnBackLoginPage = (CustomButtonFont) findViewById(R.id.btn_back_login);
 
+        btnSendEmail.setTypeface(MyApplication.getInstance().getFontBold());
+
         btnSendEmail.setOnClickListener(this);
         btnBackLoginPage.setOnClickListener(this);
 
