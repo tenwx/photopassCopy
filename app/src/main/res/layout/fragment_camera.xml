@@ -15,25 +15,35 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:adjustViewBounds="true"
+            android:padding="@dimen/pp_height_20"
             android:src="@drawable/launching_camera" />
 
-        <TextView
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/iv_mickey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/pp_margin_40"
-            android:layout_marginRight="@dimen/pp_margin_64"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/launching_camera_mickey"/>
+
+        <TextView
+            android:padding="@dimen/pp_height_10"
+            android:layout_toRightOf="@+id/iv_mickey"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/launching_camera"
             android:textColor="@color/gray3"
             android:textSize="@dimen/text_size_16" />
+
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="invisible" />
 
 </LinearLayout>
