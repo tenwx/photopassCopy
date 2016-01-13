@@ -57,7 +57,7 @@ public class StickerItem {
 
 	public StickerItem(Context context) {
 
-		helpBoxPaint.setColor(context.getResources().getColor(R.color.blue));
+		helpBoxPaint.setColor(context.getResources().getColor(R.color.pp_blue));
 		helpBoxPaint.setStyle(Style.STROKE);
 		helpBoxPaint.setAntiAlias(true);
 		helpBoxPaint.setStrokeWidth(4);

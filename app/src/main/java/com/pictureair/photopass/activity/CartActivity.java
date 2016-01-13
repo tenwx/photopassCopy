@@ -270,13 +270,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         if (cartItemInfoJson.getItems().size() == disSelectedCount) {//没有选中任何
                             paymentButton.setBackgroundResource(R.color.gray_light3);
                         } else {//选中
-                            paymentButton.setBackgroundResource(R.color.blue);
+                            paymentButton.setBackgroundResource(R.color.pp_blue);
                         }
                     }
                 } else {
                     cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
                     if (!isEdit) {
-                        paymentButton.setBackgroundResource(R.color.blue);
+                        paymentButton.setBackgroundResource(R.color.pp_blue);
                     } else {
                         paymentButton.setBackgroundResource(R.color.red);
                     }
@@ -537,7 +537,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     if (isEdit) {
                         paymentButton.setBackgroundResource(R.color.red);
                     } else {
-                        paymentButton.setBackgroundResource(R.color.blue);
+                        paymentButton.setBackgroundResource(R.color.pp_blue);
 
                     }
                     disSelectedCount = 0;
@@ -581,7 +581,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
         for (CartItemInfo1 cartItemInfo : cartInfoList) {
             if (cartItemInfo.getIsSelect()) {
-                paymentButton.setBackgroundResource(R.color.blue);
+                paymentButton.setBackgroundResource(R.color.pp_blue);
                 break;
             } else {
                 paymentButton.setBackgroundResource(R.color.gray_light3);

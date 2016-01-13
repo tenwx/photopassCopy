@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -25,13 +23,10 @@ import android.widget.TextView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
-import com.pictureair.photopass.util.OCRUtils;
-import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -96,7 +91,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 rlMask.setVisibility(View.GONE);
 
                 tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
-                tvScanQRCode.setTextColor(getResources().getColor(R.color.blue));
+                tvScanQRCode.setTextColor(getResources().getColor(R.color.pp_blue));
 
                 tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_nor), null, null);
                 tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
@@ -108,7 +103,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 tvScanQRcodeTips.setVisibility(View.GONE);
 
                 tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_sel), null, null);
-                tvScanPPPCode.setTextColor(getResources().getColor(R.color.blue));
+                tvScanPPPCode.setTextColor(getResources().getColor(R.color.pp_blue));
 
                 tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_nor), null, null);
                 tvScanQRCode.setTextColor(getResources().getColor(R.color.white));
