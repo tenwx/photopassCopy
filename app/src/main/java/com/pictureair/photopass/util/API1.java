@@ -138,6 +138,9 @@ public class API1 {
     public static final int DELETE_ORDER_FAILED = 4100;
     public static final int DELETE_ORDER_SUCCESS = 4101;
 
+    public static final int UNIONPAY_GET_TN_SUCCESS = 4111;
+    public static final int UNIONPAY_GET_TN_FAILED = 4110;
+
 
     //Shop模块 end
 
@@ -643,12 +646,13 @@ public class API1 {
 
     /**
      * 获取有广告的地点
+     *
      * @param handler
      */
-    public static void getADLocations(final Handler handler){
+    public static void getADLocations(final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback(){
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
@@ -884,7 +888,7 @@ public class API1 {
     /**
      * 绑定PP卡到用户
      */
-    public static void addCodeToUser(String ppCode,final Handler handler) {
+    public static void addCodeToUser(String ppCode, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.CUSTOMERID, ppCode);
@@ -983,11 +987,12 @@ public class API1 {
 
     /**
      * 使用体验卡绑定未购买的图片
-     * @param pppCode 体验卡卡号
+     *
+     * @param pppCode  体验卡卡号
      * @param photoIds 绑定的图片
      * @param handler
      */
-    public static void useExperiencePPP(String pppCode, JSONArray photoIds, final Handler handler){
+    public static void useExperiencePPP(String pppCode, JSONArray photoIds, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.EPPP, pppCode);
@@ -1746,13 +1751,36 @@ public class API1 {
 
     /**
      * 忘记密码
+     *
      * @param handler
      * @param email
      * @param pwd
      * @param mobile
      */
-    public static void findPwd(final Handler handler ,String email,String pwd,String mobile){
+    public static void findPwd(final Handler handler, String email, String pwd, String mobile) {
         handler.obtainMessage(FIND_PWD_SUCCESS).sendToTarget();
 //        handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
+    }
+
+
+    /**
+     * 获取unionpay的tn
+     *
+     * @param handler
+     */
+    public static void getUnionPayTN(final Handler handler){
+        HttpUtil1.asyncPost(Common.GET_UNIONPAY_TN , new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(UNIONPAY_GET_TN_FAILED, status, 0).sendToTarget();
+            }
+        });
     }
 }

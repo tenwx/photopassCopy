@@ -33,6 +33,7 @@ public class Common {
     public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
     public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
     public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
 
 
     //接口
