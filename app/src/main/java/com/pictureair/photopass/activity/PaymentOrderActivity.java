@@ -177,9 +177,9 @@ public class PaymentOrderActivity extends BaseActivity implements
 //            introductString = "Made by PictureAir";
             nameString = getIntent().getStringExtra("name");// 获取name
             introductString = getIntent().getStringExtra("introduce");// 获取介绍信息
-            PictureAirLog.v(TAG, " orderid： " + orderid + "priceString: " + priceString);
         }
-
+        nameString = AppUtil.ReplaceString(nameString);
+        PictureAirLog.v(TAG, "name: " + nameString + " orderid： " + orderid + "priceString: " + priceString);
 //		needAddress = getIntent().getBooleanExtra("addressType", false);
 //		if (!needAddress) {// 不需要地址
 //			// pickupTextView.setVisibility(View.GONE);
@@ -377,10 +377,10 @@ public class PaymentOrderActivity extends BaseActivity implements
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
 
-    private static class PaymentOrderHandler extends Handler{
+    private static class PaymentOrderHandler extends Handler {
         private final WeakReference<PaymentOrderActivity> mActivity;
 
-        public PaymentOrderHandler(PaymentOrderActivity activity){
+        public PaymentOrderHandler(PaymentOrderActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -396,6 +396,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {

@@ -86,10 +86,10 @@ public class OrderActivity extends BaseActivity {
     private final Handler orderActivityHandler = new OrderActivityHandler(this);
 
 
-    private static class OrderActivityHandler extends Handler{
+    private static class OrderActivityHandler extends Handler {
         private final WeakReference<OrderActivity> mActivity;
 
-        public OrderActivityHandler(OrderActivity activity){
+        public OrderActivityHandler(OrderActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -105,6 +105,7 @@ public class OrderActivity extends BaseActivity {
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -149,11 +150,21 @@ public class OrderActivity extends BaseActivity {
                         paymentOrderArrayList.add(orderInfo);
                         paymentOrderChildArrayList.add(orderProductInfo);
                     } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-                        deliveryOrderArrayList.add(orderInfo);
-                        deliveryOrderChildArrayList.add(orderProductInfo);
+//                        deliveryOrderArrayList.add(orderInfo);
+//                        deliveryOrderChildArrayList.add(orderProductInfo);
                     } else if (orderInfo.orderStatus == 4 || orderInfo.orderStatus == 5) {
-                        downOrderArrayList.add(orderInfo);
-                        downOrderChildArrayList.add(orderProductInfo);
+                        //暂时模拟数据
+                        if (orderInfo.deliveryMethod == 3) {
+                            //3为虚拟商品
+                            downOrderArrayList.add(orderInfo);
+                            downOrderChildArrayList.add(orderProductInfo);
+                        } else {
+                            //需要买家自提
+                            deliveryOrderArrayList.add(orderInfo);
+                            deliveryOrderChildArrayList.add(orderProductInfo);
+                        }
+
+
                     }
                     allOrderArrayList.add(orderInfo);
                     allOrderChildArrayList.add(orderProductInfo);
@@ -161,7 +172,7 @@ public class OrderActivity extends BaseActivity {
 
                 orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
                         paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
-                        sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication)getApplication()));
+                        sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
                 viewPager.setAdapter(orderAdapter);
                 viewPager.setCurrentItem(0);
                 orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
@@ -202,7 +213,7 @@ public class OrderActivity extends BaseActivity {
                 //需要删除页面，保证只剩下mainTab页面，
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                 //同时将mainTab切换到shop Tab
-                ((MyApplication)getApplication()).setMainTabIndex(3);
+                ((MyApplication) getApplication()).setMainTabIndex(3);
 
                 break;
 

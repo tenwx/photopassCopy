@@ -843,20 +843,21 @@ public class AppUtil {
 
     /**
      * 按照地点快速排序
+     *
      * @param list
      * @return
      */
-    public static ArrayList<PhotoInfo> insterSortFavouritePhotos(ArrayList<PhotoInfo> list){
+    public static ArrayList<PhotoInfo> insterSortFavouritePhotos(ArrayList<PhotoInfo> list) {
         PictureAirLog.d("inster sort", list.size() + "");
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         boolean findPosition = false;
-        for (int i = 0; i < list.size(); i ++) {
-            if (resultArrayList.size() > 1){//从第三个开始插入
-                for (int j = 0; j < resultArrayList.size() - 1; j ++){//循环已排序好的列表
+        for (int i = 0; i < list.size(); i++) {
+            if (resultArrayList.size() > 1) {//从第三个开始插入
+                for (int j = 0; j < resultArrayList.size() - 1; j++) {//循环已排序好的列表
                     if (resultArrayList.get(j).locationName.equals(list.get(i).locationName) &&
                             !resultArrayList.get(j + 1).locationName.equals(list.get(i).locationName) &&
                             resultArrayList.get(j).shootTime.equals(list.get(i).shootTime) &&
-                            !resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)){
+                            !resultArrayList.get(j + 1).shootTime.equals(list.get(i).shootTime)) {
                         findPosition = true;
                         list.get(i).sectionId = resultArrayList.get(i - 1).sectionId;
                         resultArrayList.add(j, list.get(i));
@@ -890,7 +891,7 @@ public class AppUtil {
             }
         }
         PictureAirLog.d("inster sort", resultArrayList.size() + "");
-        return  resultArrayList;
+        return resultArrayList;
     }
 
 
@@ -949,7 +950,6 @@ public class AppUtil {
     }
 
 
-
     /**
      * 字符串转日期
      *
@@ -969,6 +969,7 @@ public class AppUtil {
 
     /**
      * 获取两个日期之间的间隔天数
+     *
      * @return
      */
     public static int getGapCount(String startDate, String endDate) {
@@ -989,5 +990,29 @@ public class AppUtil {
         return (int) ((toCalendar.getTime().getTime() - fromCalendar.getTime().getTime()) / (1000 * 60 * 60 * 24));
     }
 
+    /**
+     * 清除转义字符
+     *
+     * @param sContent
+     * @return
+     */
+    public static String ReplaceString(String sContent) {
+        if (sContent == null) {
+            return sContent;
+        }
+        if (sContent.contains("\\")) {
+            sContent = sContent.replace("\\", "");
+        }
+        if (sContent.contains("\'")) {
+            sContent = sContent.replace("\'", "");
+        }
+        if (sContent.contains("\"")) {
+            sContent = sContent.replace("\"", "");
+        }
+        //去掉字符串的回车换行符
+//        sContent = sContent.replace(sContent, "[\n\r]", "");
+        sContent = sContent.trim();
+        return sContent;
 
+    }
 }

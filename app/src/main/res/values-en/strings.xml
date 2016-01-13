@@ -403,8 +403,9 @@
     <string name="payment_order_btn">Payment</string>
     <string name="delete_order_btn">Delete</string>
     <string name="order_unpaid">Unpaid</string>
-    <string name="order_paid">Completed</string>
+    <string name="order_paid">Paid</string>
     <string name="order_pending">Pending</string>
+    <string name="order_completed">Completed</string>
     <!-- 帮助页面 -->
     <string name="search_hint">Search</string>
     <!-- 扫一扫 -->
@@ -625,5 +626,6 @@
     <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
     <string name="re_scan">Rescan</string>
     <string name="textview_center_hint">Please put PhotoPass+ card back in this area.Try to align edges</string>
+
 
 </resources>
