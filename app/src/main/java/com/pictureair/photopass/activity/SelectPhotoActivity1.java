@@ -12,15 +12,12 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -29,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
@@ -67,7 +63,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private ViewPhotoGridViewAdapter photoPassAdapter;
     private RelativeLayout noPhotoRelativeLayout;
     private TextView noPhotoTextView;
-    private ImageView noPhotoImageView,ivDisneyNullPhoto;
+    private ImageView noPhotoImageView, ivDisneyNullPhoto;
 
     private MyToast newToast;
     private MyApplication myApplication;
@@ -86,7 +82,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private Context context;
     //底部view
     private LinearLayout llDisneyVideoFoot, llShopPhoto;
-    private TextView tvBubble,tvDisneyNullPhoto;
+    private TextView tvBubble, tvDisneyNullPhoto;
     private TranslateAnimation shakeBubble;
     private boolean isDisneyVideo = false;
     private SharedPreferences sharedPreferences;
@@ -265,7 +261,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
             } else {
                 gridView.setVisibility(View.GONE);
                 noPhotoRelativeLayout.setVisibility(View.VISIBLE);
-                if (activity.equals("mypppactivity")){
+                if (activity.equals("mypppactivity")) {
                     noPhotoTextView.setText(R.string.no_photo_update);
                     noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
                 }
@@ -297,17 +293,16 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
      * okButton回收之前是右上角的文本
      */
     private void initDisneySelectPhotoFootView() {
-        tvBubble = (TextView)findViewById(R.id.tv_bubble);
+        tvBubble = (TextView) findViewById(R.id.tv_bubble);
         llDisneyVideoFoot = (LinearLayout) findViewById(R.id.ll_disney_video_foot);
         llShopPhoto = (LinearLayout) findViewById(R.id.ll_shop_photo);
-        tvBubble.setText(String.format(getString(R.string.disney_video_bubble),  photocount));//更新最多选多少张
+        tvBubble.setText(String.format(getString(R.string.disney_video_bubble), photocount));//更新最多选多少张
         okButton.setVisibility(View.GONE);
         okButton = null;
         okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
         llDisneyVideoFoot.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
-
 
 
 //        tvBubble.setAlpha(0.9f);
@@ -318,8 +313,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     /**
      * 开始气泡
      */
-    private void bubbleStart(){
-        shakeBubble = new TranslateAnimation(0, 0,10, 0);
+    private void bubbleStart() {
+        shakeBubble = new TranslateAnimation(0, 0, 10, 0);
         shakeBubble.setDuration(5000);//设置动画持续时间
         shakeBubble.setRepeatCount(Animation.INFINITE);//设置重复次数
         shakeBubble.setInterpolator(new CycleInterpolator(5));
@@ -331,7 +326,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     /**
      * 监听气泡
      */
-    private void bubbleAnimationListener(){
+    private void bubbleAnimationListener() {
         shakeBubble.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -354,8 +349,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     /**
      * 隐藏气泡
      */
-    private void goneBubble(){
-        if (tvBubble.getVisibility() == View.VISIBLE && null != shakeBubble){
+    private void goneBubble() {
+        if (isDisneyVideo && tvBubble.getVisibility() == View.VISIBLE && null != shakeBubble) {
             tvBubble.clearAnimation();
             shakeBubble.cancel();
             tvBubble.setVisibility(View.GONE);
@@ -380,7 +375,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
     public boolean isShouldHideInput(View v, MotionEvent event) {
         if (v != null && (v instanceof TextView)) {
-            int[] leftTop = { 0, 0 };
+            int[] leftTop = {0, 0};
             v.getLocationInWindow(leftTop);
             int left = leftTop[0];
             int top = leftTop[1];
@@ -420,7 +415,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                     list.add(photoInfo);
                 }
             } else {
-                if (activity.equals("mypppactivity")){//ppp体验卡选图使用未购买的图片
+                if (activity.equals("mypppactivity")) {//ppp体验卡选图使用未购买的图片
                     if (photoInfo.isPayed == 0) {
                         list.add(photoInfo);
                     }
@@ -594,7 +589,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                         }
                         PictureAirLog.i(TAG, "photos===>" + photos.toString());
                         API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
-                    } else if (activity.equals("mypppactivity")){
+                    } else if (activity.equals("mypppactivity")) {
                         //绑定图片到ppp
                         customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
                         JSONArray photoIds = new JSONArray();

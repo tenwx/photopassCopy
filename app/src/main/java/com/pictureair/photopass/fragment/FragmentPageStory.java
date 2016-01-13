@@ -610,7 +610,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_story, null);
-
         //获取控件
         more = (ImageView) view.findViewById(R.id.story_more);
         scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
@@ -626,7 +625,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         swipeRefreshLayout.setEnabled(false);
 
         indicator = (TabPageIndicator) view.findViewById(R.id.indicator);
-
         //初始化控件
         context = getActivity();
         settingUtil = new SettingUtil(context);

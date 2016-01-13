@@ -342,9 +342,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         protected void onDraw(Canvas canvas) {
             if (!getText().toString().equals(getResources().getString(R.string.story_tab_favorite))) {
                 Paint paint = new Paint();
+                this.setLayerType(View.LAYER_TYPE_SOFTWARE, paint);//需要硬件加速
                 paint.setColor(getResources().getColor(R.color.pp_gray));
                 canvas.drawLine(canvas.getWidth() - 1, 30, canvas.getWidth() - 1, canvas.getHeight() - 30, paint);
                 canvas.save();
+
             }
             super.onDraw(canvas);
         }
