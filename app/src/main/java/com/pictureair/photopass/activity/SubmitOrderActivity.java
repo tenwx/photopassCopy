@@ -205,7 +205,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private void initView() {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 
-        setTopLeftValueAndShow(R.drawable.back_white,true);
+        setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.submitorder);
         totalpriceTextView = (TextView) findViewById(R.id.submitorder_textView3);
         currencyTextView = (TextView) findViewById(R.id.textView_currency);
@@ -217,10 +217,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
 //        infoListView.addHeaderView(new XListViewHeader(this));
-        infoListView.setAdapter(submitorderAdapter);
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);
         infoListView.addHeaderView(initHeaderAndFooterView(true, null));
+        infoListView.setAdapter(submitorderAdapter);
         if (list == null || list.size() < 0) {
             PictureAirLog.v(TAG, "initView list == null ");
             return;
