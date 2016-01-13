@@ -478,7 +478,7 @@
     <string name="order_detail_activity">Order detail</string>
     <string name="mobile_exist">Mobile exists</string>
     <string name="loading_percent">Is uploading %1$d</string>
-    <string name="launching_camera">Initiating camera...</string>
+    <string name="launching_camera">Hey, hurry up and get your photographer to take a picture of you!</string>
     <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass  mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="saving">Saving...</string>

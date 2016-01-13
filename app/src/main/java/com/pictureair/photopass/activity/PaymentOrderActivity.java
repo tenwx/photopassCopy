@@ -727,9 +727,9 @@ public class PaymentOrderActivity extends BaseActivity implements
                     .add(new BasicNameValuePair("mch_id", Constants.MCH_ID));// 商户号
             packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));// 随机字符串
             packageParams.add(new BasicNameValuePair("notify_url",
-                    "http://121.40.35.3/test"));// 通知地址:接收微信支付异步通知回调地址
+                    Common.WECHAT_NOTIFY));// 通知地址:接收微信支付异步通知回调地址
             packageParams.add(new BasicNameValuePair("out_trade_no",
-                    genOutTradNo()));// 商户订单号:商户系统内部的订单号,32个字符内、可包含字母
+                    orderid));// 商户订单号:商户系统内部的订单号,32个字符内、可包含字母
             packageParams.add(new BasicNameValuePair("spbill_create_ip",
                     "127.0.0.1"));// 终端IP:APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP
             packageParams.add(new BasicNameValuePair("total_fee", "1"));// 总金额只能为整数,单位是分

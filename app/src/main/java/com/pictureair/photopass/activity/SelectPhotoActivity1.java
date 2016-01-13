@@ -67,7 +67,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private ViewPhotoGridViewAdapter photoPassAdapter;
     private RelativeLayout noPhotoRelativeLayout;
     private TextView noPhotoTextView;
-    private ImageView noPhotoImageView;
+    private ImageView noPhotoImageView,ivDisneyNullPhoto;
 
     private MyToast newToast;
     private MyApplication myApplication;
@@ -86,13 +86,10 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
     private Context context;
     //底部view
     private LinearLayout llDisneyVideoFoot, llShopPhoto;
-    private TextView tvBubble;
+    private TextView tvBubble,tvDisneyNullPhoto;
     private TranslateAnimation shakeBubble;
-
     private boolean isDisneyVideo = false;
-
     private SharedPreferences sharedPreferences;
-
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
 
@@ -218,6 +215,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         noPhotoTextView = (TextView) findViewById(R.id.no_photo_textView);
         noPhotoImageView = (ImageView) findViewById(R.id.no_photo_iv);
         okButton = (TextView) findViewById(R.id.button1);
+        ivDisneyNullPhoto = (ImageView) findViewById(R.id.iv_disney_null_photo);
+        tvDisneyNullPhoto = (TextView) findViewById(R.id.tv_disney_null_photo);
 
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 
@@ -234,6 +233,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         }
 
         //绑定监听
+        tvDisneyNullPhoto.setOnClickListener(this);
+        ivDisneyNullPhoto.setOnClickListener(this);
         rtLayout.setOnClickListener(this);
         okButton.setOnClickListener(this);
         btnGoToSelectPhoto.setOnClickListener(this);
@@ -244,10 +245,13 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
 
         //判断是否有照片
-        if (isBuy) {
+        if (isBuy) {//disney video
             if (photoPassArrayList != null && photoPassArrayList.size() > 2) {
                 llNullPhoto.setVisibility(View.GONE);
                 gridView.setVisibility(View.VISIBLE);
+                tvBubble.setAlpha(0.9f);
+                tvBubble.setVisibility(View.VISIBLE);
+                bubbleStart();
             } else {
                 gridView.setVisibility(View.GONE);
                 llNullPhoto.setVisibility(View.VISIBLE);
@@ -302,10 +306,13 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
         okButton.setVisibility(View.VISIBLE);
         llDisneyVideoFoot.setVisibility(View.VISIBLE);
-        tvBubble.setAlpha(0.9f);
-        tvBubble.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
-        bubbleStart();
+
+
+
+//        tvBubble.setAlpha(0.9f);
+//        tvBubble.setVisibility(View.VISIBLE);
+//        bubbleStart();
     }
 
     /**
@@ -333,11 +340,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                tvBubble.clearAnimation();
-                shakeBubble.cancel();
-                tvBubble.setVisibility(View.GONE);
+                goneBubble();
             }
-
 
 
             @Override
@@ -347,14 +351,24 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
         });
     }
 
+    /**
+     * 隐藏气泡
+     */
+    private void goneBubble(){
+        if (tvBubble.getVisibility() == View.VISIBLE && null != shakeBubble){
+            tvBubble.clearAnimation();
+            shakeBubble.cancel();
+            tvBubble.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        boolean onTouchBubbleOut = false;//如果触摸气泡之外消失bubble，则设置为ture
+        if (event.getAction() == MotionEvent.ACTION_DOWN && onTouchBubbleOut) {
             if (isShouldHideInput(tvBubble, event)) {
-                tvBubble.clearAnimation();
-                shakeBubble.cancel();
-                tvBubble.setVisibility(View.GONE);
+                goneBubble();
             }
             return super.dispatchTouchEvent(event);
         }
@@ -451,6 +465,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            goneBubble();
             //获取对应相册中的SelectPhotoItemInfo对象
             info = photoPassArrayList.get(position);
             viewPhotoGridViewAdapter = photoPassAdapter;
@@ -516,6 +531,8 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 popupWindow.dismiss();
                 break;
 
+            case R.id.tv_disney_null_photo:
+            case R.id.iv_disney_null_photo:
             case R.id.ll_shop_photo:
             case R.id.btn_goto_select:
                 //删除所有aty，只剩下mainTab页面，

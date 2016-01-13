@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Dialog;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -23,194 +24,255 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.framework.FakeActivity;
 import cn.smssdk.gui.GroupListView.OnItemClickListener;
 
-/** 国家列表界面*/
+/**
+ * 国家列表界面
+ */
 public class CountryPage extends FakeActivity implements OnClickListener, TextWatcher, OnItemClickListener {
-	private String id;
-	// 国家号码规则
-	private HashMap<String, String> countryRules;
-	private EventHandler handler;
-	private CountryListView listView;
-	private Dialog pd;
+    private String id;
+    // 国家号码规则
+    private HashMap<String, String> countryRules;
+    private EventHandler handler;
+    private CountryListView listView;
+    private Dialog pd;
+    private Handler mHandler = null;
+    private boolean isSelectCountry = false;
 
-	public void setCountryId(String id) {
-		this.id = id;
-	}
+    public void setMHandler(Handler handler) {
+        this.mHandler = handler;
+    }
 
-	public void setCountryRuls(HashMap<String, String> countryRules) {
-		this.countryRules = countryRules;
-	}
+    public void setCountryId(String id) {
+        this.id = id;
+    }
 
-	public void onCreate() {
-		if (pd != null && pd.isShowing()) {
-			pd.dismiss();
-		}
-		pd = CommonDialog.ProgressDialog(activity);
-		if (pd != null) {
-			pd.show();
-		}
-		// 初始化搜索引擎
-		SearchEngine.prepare(activity, new Runnable() {
-			public void run() {
-				afterPrepare();
-			}
-		});
-	}
+    public void setCountryRuls(HashMap<String, String> countryRules) {
+        this.countryRules = countryRules;
+    }
 
-	private void afterPrepare() {
-		runOnUIThread(new Runnable() {
-			public void run() {
-				int resId = getLayoutRes(activity, "smssdk_country_list_page");
-				if (resId > 0) {
-					activity.setContentView(resId);
-				}
+    public void onCreate() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
+        pd = CommonDialog.ProgressDialog(activity);
+//        if (pd != null) {
+//            pd.show();
+//        }
+        // 初始化搜索引擎
+//		SearchEngine.prepare(activity, new Runnable() {
+//			public void run() {
+//				afterPrepare();
+//			}
+//		});
 
-				if (countryRules == null || countryRules.size() <= 0) {
-					handler = new EventHandler() {
-						@SuppressWarnings("unchecked")
-						public void afterEvent(int event, final int result, final Object data) {
-							if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
-								runOnUIThread(new Runnable() {
-									public void run() {
-										if (pd != null && pd.isShowing()) {
-											pd.dismiss();
-										}
 
-										if (result == SMSSDK.RESULT_COMPLETE) {
-											onCountryListGot((ArrayList<HashMap<String,Object>>) data);
-										} else {
-											((Throwable) data).printStackTrace();
-											int resId = getStringRes(activity, "smssdk_network_error");
-											if (resId > 0) {
-												Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
+        int resId = getLayoutRes(activity, "smssdk_country_list_page");
+        if (resId > 0) {
+            activity.setContentView(resId);
+        }
 
-											}
-											finish();
-										}
-									}
-								});
-							}
-						}
-					};
-					// 注册回调接口
-					SMSSDK.registerEventHandler(handler);
-					// 获取国家列表
-					SMSSDK.getSupportedCountries();
-				} else {
-					if (pd != null && pd.isShowing()) {
-						pd.dismiss();
-					}
-					initPage();
-				}
-			}
-		});
-	}
+        if (countryRules == null || countryRules.size() <= 0) {
+            handler = new EventHandler() {
+                @SuppressWarnings("unchecked")
+                public void afterEvent(int event, final int result, final Object data) {
+                    if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
+                        runOnUIThread(new Runnable() {
+                            public void run() {
+                                if (pd != null && pd.isShowing()) {
+                                    pd.dismiss();
+                                }
 
-	@Override
-	public void onResume(){
-	  	super.onResume();
-	}
+                                if (result == SMSSDK.RESULT_COMPLETE) {
+                                    onCountryListGot((ArrayList<HashMap<String, Object>>) data);
+                                } else {
+                                    ((Throwable) data).printStackTrace();
+                                    int resId = getStringRes(activity, "smssdk_network_error");
+                                    if (resId > 0) {
+                                        Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
 
-	@Override
-	public void onPause() {
-	   	super.onPause();
-	}
+                                    }
+                                    finish();
+                                }
+                            }
+                        });
+                    }
+                }
+            };
+            // 注册回调接口
+            SMSSDK.registerEventHandler(handler);
+            // 获取国家列表
+            SMSSDK.getSupportedCountries();
+        } else {
+            if (pd != null && pd.isShowing()) {
+                pd.dismiss();
+            }
+            initPage();
+        }
 
-	private void initPage() {
-		int resId = getIdRes(activity, "ll_back");
-		if (resId > 0) {
-			activity.findViewById(resId).setOnClickListener(this);
-		}
-		resId = getIdRes(activity, "clCountry");
-		if (resId > 0) {
-			listView = (CountryListView) activity.findViewById(resId);
-			listView.setOnItemClickListener(this);
-		}
-	}
+    }
 
-	private void onCountryListGot(ArrayList<HashMap<String, Object>> countries) {
-		// 解析国家列表
-		for (HashMap<String, Object> country : countries) {
-			String code = (String) country.get("zone");
-			String rule = (String) country.get("rule");
-			if (TextUtils.isEmpty(code) || TextUtils.isEmpty(rule)) {
-				continue;
-			}
+    private void afterPrepare() {
+        runOnUIThread(new Runnable() {
+            public void run() {
+                int resId = getLayoutRes(activity, "smssdk_country_list_page");
+                if (resId > 0) {
+                    activity.setContentView(resId);
+                }
 
-			if (countryRules == null) {
-				countryRules = new HashMap<String, String>();
-			}
-			countryRules.put(code, rule);
-		}
-		// 回归页面初始化操作
-		initPage();
-	}
+                if (countryRules == null || countryRules.size() <= 0) {
+                    handler = new EventHandler() {
+                        @SuppressWarnings("unchecked")
+                        public void afterEvent(int event, final int result, final Object data) {
+                            if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
+                                runOnUIThread(new Runnable() {
+                                    public void run() {
+                                        if (pd != null && pd.isShowing()) {
+                                            pd.dismiss();
+                                        }
 
-	public void onItemClick(GroupListView parent, View view, int group, int position) {
-		if(position >= 0){
-			String[] country = listView.getCountry(group, position);
-			if (countryRules != null && countryRules.containsKey(country[1])) {
-				id = country[2];
-				finish();
-			} else {
-				int resId = getStringRes(activity, "smssdk_country_not_support_currently");
-				if (resId > 0) {
-					Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
-				}
-			}
-		}
-	}
+                                        if (result == SMSSDK.RESULT_COMPLETE) {
+                                            onCountryListGot((ArrayList<HashMap<String, Object>>) data);
+                                        } else {
+                                            ((Throwable) data).printStackTrace();
+                                            int resId = getStringRes(activity, "smssdk_network_error");
+                                            if (resId > 0) {
+                                                Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
 
-	public void onClick(View v) {
-		int id = v.getId();
-		int id_ll_back = getIdRes(activity, "ll_back");
-		if (id == id_ll_back) {
-			finish();
-		}
-	}
+                                            }
+                                            finish();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    };
+                    // 注册回调接口
+                    SMSSDK.registerEventHandler(handler);
+                    // 获取国家列表
+                    SMSSDK.getSupportedCountries();
+                } else {
+                    if (pd != null && pd.isShowing()) {
+                        pd.dismiss();
+                    }
+                    initPage();
+                }
+            }
+        });
+    }
 
-	public boolean onKeyEvent(int keyCode, KeyEvent event) {
-		try {
-			int resId = getIdRes(activity, "llSearch");
-			if (keyCode == KeyEvent.KEYCODE_BACK
-					&& event.getAction() == KeyEvent.ACTION_DOWN
-					&& activity.findViewById(resId).getVisibility() == View.VISIBLE) {
-				activity.findViewById(resId).setVisibility(View.GONE);
-				resId = getIdRes(activity, "llTitle");
-				activity.findViewById(resId).setVisibility(View.VISIBLE);
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return super.onKeyEvent(keyCode, event);
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
-	public boolean onFinish() {
-		// 销毁监听接口
-		SMSSDK.unregisterEventHandler(handler);
-		HashMap<String, Object> res = new HashMap<String, Object>();
-		res.put("id", id);
-		res.put("rules", countryRules);
-		res.put("page", 1);
-		setResult(res);
-		return super.onFinish();
-	}
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    private void initPage() {
+        int resId = getIdRes(activity, "ll_back");
+        if (resId > 0) {
+            activity.findViewById(resId).setOnClickListener(this);
+        }
+        resId = getIdRes(activity, "clCountry");
+        if (resId > 0) {
+            listView = (CountryListView) activity.findViewById(resId);
+            listView.setOnItemClickListener(this);
+        }
+    }
 
-	}
+    private void onCountryListGot(ArrayList<HashMap<String, Object>> countries) {
+        // 解析国家列表
+        for (HashMap<String, Object> country : countries) {
+            String code = (String) country.get("zone");
+            String rule = (String) country.get("rule");
+            if (TextUtils.isEmpty(code) || TextUtils.isEmpty(rule)) {
+                continue;
+            }
 
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		listView.onSearch(s.toString().toLowerCase());
-	}
+            if (countryRules == null) {
+                countryRules = new HashMap<String, String>();
+            }
+            countryRules.put(code, rule);
+        }
+        // 回归页面初始化操作
+        initPage();
+    }
 
-	public void afterTextChanged(Editable s) {
+    public void onItemClick(GroupListView parent, View view, int group, int position) {
+        if (position >= 0) {
+            String[] country = listView.getCountry(group, position);
+            if (countryRules != null && countryRules.containsKey(country[1])) {
+                isSelectCountry = true;
+                id = country[2];
+                finish();
+            } else {
+                int resId = getStringRes(activity, "smssdk_country_not_support_currently");
+                if (resId > 0) {
+                    Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
 
-	}
+    public void onClick(View v) {
+        int id = v.getId();
+        int id_ll_back = getIdRes(activity, "ll_back");
+        if (id == id_ll_back) {
+            finish();
+        }
+    }
+
+    public boolean onKeyEvent(int keyCode, KeyEvent event) {
+        try {
+            int resId = getIdRes(activity, "llSearch");
+            if (keyCode == KeyEvent.KEYCODE_BACK
+                    && event.getAction() == KeyEvent.ACTION_DOWN
+                    && activity.findViewById(resId).getVisibility() == View.VISIBLE) {
+                activity.findViewById(resId).setVisibility(View.GONE);
+                resId = getIdRes(activity, "llTitle");
+                activity.findViewById(resId).setVisibility(View.VISIBLE);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.onKeyEvent(keyCode, event);
+    }
+
+    public boolean onFinish() {
+        // 销毁监听接口
+        if (null != mHandler && isSelectCountry) {//返回LoginActivity:countryId = country[1];countryStr = country[0];
+            String[] country = SMSSDK.getCountry(id);
+            mHandler.obtainMessage(1, country).sendToTarget();
+        } else {
+            SMSSDK.unregisterEventHandler(handler);
+            HashMap<String, Object> res = new HashMap<String, Object>();
+            res.put("id", id);
+            res.put("rules", countryRules);
+            res.put("page", 1);
+            setResult(res);
+        }
+        return super.onFinish();
+    }
+
+
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        listView.onSearch(s.toString().toLowerCase());
+    }
+
+    public void afterTextChanged(Editable s) {
+
+    }
 
 }
