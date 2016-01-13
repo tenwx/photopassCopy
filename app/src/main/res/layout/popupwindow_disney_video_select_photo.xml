@@ -11,19 +11,29 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/view_mask"
-        android:background="@color/white"
+        android:layout_marginLeft="@dimen/pp_margin_30"
+        android:layout_marginRight="@dimen/pp_margin_30"
+        android:background="@drawable/bg_dialog_white_corners"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_video_popup1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_marginBottom="@dimen/pp_margin_8"
+            android:layout_marginTop="@dimen/pp_margin_20"
             android:gravity="center_horizontal"
             android:text="@string/magic_in_the_making"
             android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/pp_margin_40"
+            android:layout_marginRight="@dimen/pp_margin_40"
+            android:background="@color/blur_mask"></View>
 
         <TextView
             android:layout_width="match_parent"
@@ -31,6 +41,7 @@
             android:layout_marginTop="@dimen/pp_margin_10"
             android:gravity="center_horizontal"
             android:text="@string/we_will_send_you_to"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_small_size" />
 
         <TextView
@@ -39,6 +50,7 @@
             android:layout_marginTop="@dimen/pp_margin_5"
             android:gravity="center_horizontal"
             android:text="@string/my_disney_story_once_it_is_ready"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_small_size" />
 
         <Button

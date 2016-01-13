@@ -533,7 +533,7 @@
     <string name="disney_video_edit_photo_null">开始制作(0/3)</string>
     <string name="disney_video_select_photo_less_than3">照片不能小于3张</string>
     <string name="my_disney_story">我的迪士尼故事</string>
-    <string name="magic_in_the_making">视频制作中...</string>
+    <string name="magic_in_the_making">制作中</string>
     <string name="we_will_send_you_to">我们会送你去</string>
     <string name="my_disney_story_once_it_is_ready">我的迪士尼故事一旦准备好了</string>
     <string name="start">开始</string>
