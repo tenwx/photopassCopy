@@ -658,7 +658,7 @@ public class WheelView extends View {
 		
 		//下横线
 		Paint paint2 = new Paint();
-		paint2.setColor(getResources().getColor(R.color.blue));
+		paint2.setColor(getResources().getColor(R.color.pp_blue));
 		// 设置线宽
 		paint2.setStrokeWidth((float) 2);
 		

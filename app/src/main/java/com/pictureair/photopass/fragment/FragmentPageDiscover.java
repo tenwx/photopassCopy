@@ -403,7 +403,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                popularityTextView.setTextColor(getResources().getColor(R.color.blue));
+                popularityTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                 distanceTextView.setTextColor(getResources().getColor(R.color.gray));
                 selectionTextView.setTextColor(getResources().getColor(R.color.gray));
                 collectionTextView.setTextColor(getResources().getColor(R.color.gray));
@@ -415,7 +415,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 popularityTextView.setTextColor(getResources().getColor(R.color.gray));
-                distanceTextView.setTextColor(getResources().getColor(R.color.blue));
+                distanceTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                 selectionTextView.setTextColor(getResources().getColor(R.color.gray));
                 collectionTextView.setTextColor(getResources().getColor(R.color.gray));
                 break;
@@ -427,7 +427,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 popularityTextView.setTextColor(getResources().getColor(R.color.gray));
                 distanceTextView.setTextColor(getResources().getColor(R.color.gray));
-                selectionTextView.setTextColor(getResources().getColor(R.color.blue));
+                selectionTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                 collectionTextView.setTextColor(getResources().getColor(R.color.gray));
                 break;
 
@@ -439,7 +439,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 popularityTextView.setTextColor(getResources().getColor(R.color.gray));
                 distanceTextView.setTextColor(getResources().getColor(R.color.gray));
                 selectionTextView.setTextColor(getResources().getColor(R.color.gray));
-                collectionTextView.setTextColor(getResources().getColor(R.color.blue));
+                collectionTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                 break;
 
             default:

@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/scan_qrcode_sel"
             android:text="@string/scan_qr_code"
-            android:textColor="@color/blue"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:padding="@dimen/pp_margin_10"/>
 
