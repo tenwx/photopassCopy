@@ -458,11 +458,15 @@ public class PictureAirDbManager {
      */
     public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList, int type) {
         ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
-        //获取需要显示的PP(去掉重复、隐藏的)
-        for (int j = 0; j < ppCodeList.size(); j++) {
-            if (j + 1 < ppCodeList.size() && ppCodeList.get(j).getPpCode().equals(ppCodeList.get(j + 1).getPpCode())) {
-                ppCodeList.remove(j);
+        //获取需要显示的PP(去掉重复、隐藏的) (new add 选择PP+界面直接解析)
+        if (type == 1){
+            for (int j = 0; j < ppCodeList.size(); j++) {
+                if (j + 1 < ppCodeList.size() && ppCodeList.get(j).getPpCode().equals(ppCodeList.get(j + 1).getPpCode())) {
+                    ppCodeList.remove(j);
+                }
             }
+        }else{
+
         }
         Cursor cursor = null;
         try {

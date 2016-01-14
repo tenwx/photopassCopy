@@ -130,6 +130,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.showCconutLayout = (RelativeLayout) convertView.findViewById(R.id.show_conut_layout);
             holder.photoCount = (TextView) convertView.findViewById(R.id.photo_count);
             holder.conerImageView = (ImageView) convertView.findViewById(R.id.my_pp_miqi);
+            holder.tvShootDate = (TextView) convertView.findViewById(R.id.tv_shoot_date);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -142,6 +143,8 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.img_no_check = (ImageView) convertView.findViewById(R.id.img);
             holder.img_no_check.setVisibility(View.VISIBLE);
             holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
+            holder.tvShootDate.setText(arrayList.get(position).getShootDate());
+            holder.tvShootDate.setVisibility(View.VISIBLE);
             //初始化选中与否
             if (arrayList.get(position).isSelected == 0) {//未选中
                 holder.img_no_check.setImageResource(R.drawable.nosele);
@@ -344,6 +347,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         TextView photoCount;
         ImageView conerImageView;
         LinearLayout itemLayout;
+        TextView tvShootDate;
     }
 
     /**
