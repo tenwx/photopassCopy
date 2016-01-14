@@ -37,6 +37,8 @@ import com.pictureair.photopass.wxpay.Util;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.unionpay.UPPayAssistEx;
+import com.unionpay.uppay.PayActivity;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -95,6 +97,11 @@ public class PaymentOrderActivity extends BaseActivity implements
     private boolean isPaying = false;
 
     private static final String TAG = "PaymentOrderActivity";
+
+    /*****************************************************************
+     * mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
+     *****************************************************************/
+    private final String mMode = "01";
 
     // -----------微信支付参数----------------//
     PayReq req;
@@ -177,9 +184,9 @@ public class PaymentOrderActivity extends BaseActivity implements
 //            introductString = "Made by PictureAir";
             nameString = getIntent().getStringExtra("name");// 获取name
             introductString = getIntent().getStringExtra("introduce");// 获取介绍信息
-            PictureAirLog.v(TAG, " orderid： " + orderid + "priceString: " + priceString);
         }
-
+        nameString = AppUtil.ReplaceString(nameString);
+        PictureAirLog.v(TAG, "name: " + nameString + " orderid： " + orderid + "priceString: " + priceString);
 //		needAddress = getIntent().getBooleanExtra("addressType", false);
 //		if (!needAddress) {// 不需要地址
 //			// pickupTextView.setVisibility(View.GONE);
@@ -250,7 +257,9 @@ public class PaymentOrderActivity extends BaseActivity implements
             }
         } else if (1 == payType) {
             PictureAirLog.v(TAG, "yl");
-            paymentOrderHandler.sendEmptyMessage(RQF_SUCCESS);
+            customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this,
+                    getString(R.string.please_wait), false, null);
+            API1.getUnionPayTN(paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
 
@@ -377,10 +386,10 @@ public class PaymentOrderActivity extends BaseActivity implements
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
 
-    private static class PaymentOrderHandler extends Handler{
+    private static class PaymentOrderHandler extends Handler {
         private final WeakReference<PaymentOrderActivity> mActivity;
 
-        public PaymentOrderHandler(PaymentOrderActivity activity){
+        public PaymentOrderHandler(PaymentOrderActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -396,6 +405,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -424,6 +434,26 @@ public class PaymentOrderActivity extends BaseActivity implements
                     }
                 });
                 break;
+
+            case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                if (msg.obj == null || ((String) msg.obj).length() == 0) {
+                    paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                } else {
+                    UPPayAssistEx.startPayByJAR(PaymentOrderActivity.this, PayActivity.class, null, null, msg.obj.toString(), mMode);
+                }
+                break;
+
+            case API1.UNIONPAY_GET_TN_FAILED://获取银联TN失败
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                newToast.setTextAndShow(R.string.http_error_code_401,Common.TOAST_SHORT_TIME);
+                paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                break;
+
             default:
                 break;
         }

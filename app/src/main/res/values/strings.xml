@@ -405,8 +405,9 @@
     <string name="payment_order_btn">付款</string>
     <string name="delete_order_btn">删除</string>
     <string name="order_unpaid">未付款</string>
-    <string name="order_paid">已完成</string>
+    <string name="order_paid">已付款</string>
     <string name="order_pending">处理中</string>
+    <string name="order_completed">已完成</string>
     <!-- 帮助页面 -->
     <string name="search_hint">遇到问题搜一搜</string>
     <!-- 扫一扫 -->

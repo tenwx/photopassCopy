@@ -136,11 +136,17 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             case 3:
             case 4://4交易成功，5交易关闭,订单冻结
             case 5:
+                if (grouplist.get(groupPosition).deliveryMethod == 3) {
+                    //3为虚拟类商品无须快递
+                    groupHolderView.orderStatesTextView.setText(R.string.order_completed);
+                } else {
+                    groupHolderView.orderStatesTextView.setText(R.string.order_paid);
+                }
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
                 groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.red));
                 groupHolderView.paymentButton.setText(R.string.delete_order_btn);
                 groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
-                groupHolderView.orderStatesTextView.setText(R.string.order_paid);
+
                 groupHolderView.paymentButton.setClickable(true);
                 break;
             case 6:

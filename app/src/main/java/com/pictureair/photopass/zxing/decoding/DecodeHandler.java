@@ -22,12 +22,10 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -38,7 +36,6 @@ import com.google.zxing.common.HybridBinarizer;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MipCaptureActivity;
-import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OCRUtils;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -186,7 +183,7 @@ final class DecodeHandler extends Handler {
     boolean flag = OCRUtils.checkCode(text);
     if (flag) { //扫描成功。截取矩形Bitmap
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
-      image.compressToJpeg(new Rect(a_x, a_y, a_x + recWidth, a_y + recHeight), 10, stream);
+      image.compressToJpeg(new Rect(a_x, a_y, a_x + recWidth, a_y + recHeight), 50, stream);
       Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
 
       MipCaptureActivity.tempBitmap = bmp;
