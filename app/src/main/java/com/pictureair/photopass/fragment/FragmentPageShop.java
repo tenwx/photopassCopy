@@ -109,13 +109,14 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     //更新界面
                     shopGoodListViewAdapter.refresh(allGoodsList);
                     //将数据保存到缓存中
-                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
                         ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
                     }
                 }
 
                 //获取收货地址列表
                 String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
+                PictureAirLog.v(TAG, "initData: addressByACache: " + addressByACache);
                 if (addressByACache == null || addressByACache.equals("")) {
                     API1.getOutlets(fragmentPageShopHandler);
                 }
@@ -133,7 +134,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
                 if (addressJson != null && addressJson.getOutlets().size() > 0) {
                     //存入缓存
-                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) != null && !ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
+                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
                         ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
                     }
                 }
@@ -221,6 +222,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     public void initData() {
         //从缓层中获取数据
         String goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
+        PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
         if (goodsByACache != null && !goodsByACache.equals("")) {
             fragmentPageShopHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
         } else {

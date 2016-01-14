@@ -257,6 +257,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                         break;
                     }
                 }
+                //将数据保存到缓存中
+                if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
+                    ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                }
                 API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, myPPPHandler);
                 break;
             case API1.GET_GOODS_FAILED:

@@ -20,11 +20,14 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
@@ -64,10 +67,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private String country = "";
     private RegisterPage registerPage;
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
-
+    private CustomProgressDialog customProgressDialog;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sp;
+    private String forGetphoto;
+    private String forGetPwd;
 
     private final Handler loginHandler = new LoginHandler(this);
-
 
     private static class LoginHandler extends Handler{
         private final WeakReference<LoginActivity> mActivity;
@@ -90,12 +96,41 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1){//国家
-                String[] countrys = (String[])msg.obj;
-                countryCode = countrys[1];
-                country = countrys[0];
-                tv_country.setText(country);
-                tv_country_num.setText("+" + countryCode);
+            if (null != customProgressDialog && customProgressDialog.isShowing()) {
+                customProgressDialog.dismiss();
+            }
+            switch (msg.what){
+                case 1://国家
+                    String[] countrys = (String[])msg.obj;
+                    countryCode = countrys[1];
+                    country = countrys[0];
+                    tv_country.setText(country);
+                    tv_country_num.setText("+" + countryCode);
+                    break;
+                case API1.FIND_PWD_FAILED:
+                    int id = 0 ;
+                    switch (msg.arg1) {
+                        case 6031://用户名不存在
+                            id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
+                            break;
+
+                        default:
+                            id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
+                            break;
+                    }
+                    if (customProgressDialog.isShowing()) {
+                        customProgressDialog.dismiss();
+                    }
+                    myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+                    break;
+                case API1.FIND_PWD_SUCCESS:
+                    new SignAndLoginUtil(LoginActivity.this, forGetphoto,
+                            forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
+                    break;
+
+                default:
+                    break;
+
             }
         }
     };
@@ -340,7 +375,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                     } else if (type == 1) {
                         // 忘记密码
 //                        请求API
-                        myToast.setTextAndShow("phone:"+phone+"\n"+"PWD:"+pwd,Common.TOAST_SHORT_TIME);
+                        customProgressDialog = CustomProgressDialog.show(LoginActivity.this, getString(R.string.is_loading), false, null);
+                        forGetphoto = phone;
+                        forGetPwd = pwd;
+                        API1.findPwd(handler, pwd, phone);
+//                        myToast.setTextAndShow("phone:"+phone+"\n"+"PWD:"+pwd,Common.TOAST_SHORT_TIME);
                     }
                 }
             }
@@ -358,16 +397,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == 111) {
-//            countryCode = data.getStringExtra("countryCode");
-//            country = data.getStringExtra("country");
-//            tv_country.setText(country);
-//            tv_country_num.setText("+" + countryCode);
-//        }
-//    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -377,7 +406,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         }
         loginHandler.removeCallbacksAndMessages(null);
         if (null != handler){
-            handler.removeCallbacksAndMessages(null);
+            handler.removeMessages(1);
         }
 
     }

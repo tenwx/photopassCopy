@@ -164,8 +164,10 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                     return;
                 }
 
-                customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-                API1.findPwd(mHandler, etEmailStr, null, null);
+                finish();
+                //邮箱的API还没做好
+//                customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+//                API1.findPwd(mHandler, etEmailStr, null, null);
                 break;
 
             default:
