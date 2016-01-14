@@ -1747,12 +1747,28 @@ public class API1 {
     /**
      * 忘记密码
      * @param handler
-     * @param email
      * @param pwd
      * @param mobile
      */
-    public static void findPwd(final Handler handler ,String email,String pwd,String mobile){
-        handler.obtainMessage(FIND_PWD_SUCCESS).sendToTarget();
-//        handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
+    public static void findPwd(final Handler handler,String pwd,String mobile){
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.NEW_PASSWORD, AppUtil.md5(pwd));
+        params.put(Common.USERINFO_USERNAME, mobile);
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(FIND_PWD_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
+
+            }
+        });
     }
 }

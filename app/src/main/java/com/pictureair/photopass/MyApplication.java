@@ -225,9 +225,6 @@ public class MyApplication extends Application {
      * @return
      */
     public static MyApplication getInstance() {
-        if (instance == null) {
-            instance = new MyApplication();
-        }
         return instance;
     }
 
