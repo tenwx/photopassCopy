@@ -63,7 +63,7 @@
     <string name="selected">Select(0/9)</string>
     <string name="all">Select All</string>
     <string name="disall">Disselect</string>
-    <string name="pictureair">PictureAir</string>
+    <string name="pictureair">PhotoPass</string>
     <string name="camera">Camera</string>
     <string name="me">Me</string>
     <string name="buy_now">Buy now</string>
@@ -480,7 +480,7 @@
     <string name="mobile_exist">Mobile exists</string>
     <string name="loading_percent">Is uploading %1$d</string>
     <string name="launching_camera">Hey, hurry up and get your photographer to take a picture of you!</string>
-    <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass  mobile app or website.</string>
+    <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass  mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="saving">Saving...</string>
     <string name="dealing">Dealing...</string>
@@ -493,16 +493,16 @@
     <string name="want_to_buy">Look around to buy something</string>
     <string name="to_add_good">Go shopping</string>
     <string name="dialog_download_message">Do you want to continue to download via GPRS?</string>
-    <string name="dialog_sync_message">Do you want to sync to download your Air album?</string>
+    <string name="dialog_sync_message">Do you want to sync to download your PhotoPass album?</string>
     <string name="dialog_sync_download">Open "WiFi Only" in Settings can save your cellular mobile data!</string>
-    <string name="dialog_intent_buy_ppp">Update your AirPass to get your all high-quality photos!</string>
+    <string name="dialog_intent_buy_ppp">Update your PhotoPass to get your all high-quality photos!</string>
     <string name="order_empty_buttonString">Look around to buy something</string>
     <string name="order_empty_resultString">No orders</string>
     <string name="select_pp_faile">Update failed, please check your network</string>
     <string name="select_bind_pp_faile">Update failed</string>
-    <string name="select_pp_hasUpgraded">AirPass has been updated</string>
+    <string name="select_pp_hasUpgraded">PhotoPass has been updated</string>
     <string name="no_favorite_photo">No favorite photos</string>
-    <string name="qq_zone_share">I would like to share my wonderful experience at PictureAir app with you.</string>
+    <string name="qq_zone_share">I would like to share my wonderful experience at PhotoPass app with you.</string>
     <string name="story_no_photo">Hi, look for your photographer to take photos.</string>
     <string name="app_crash">Application crash</string>
     <string name="camera_closed">Please agree camera permission in Settings</string>
@@ -626,6 +626,9 @@
     <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
     <string name="re_scan">Rescan</string>
     <string name="textview_center_hint">Please put PhotoPass+ card back in this area.Try to align edges</string>
+    <string name="disney_video_about_null_photo_note2">去记忆屋看看喜欢的东西，把照片买下吧！去挑选</string>
+    <string name="instruction">Instruction...</string>
+    <string name="title_update_qq">Update QQ</string>
 
 
 </resources>

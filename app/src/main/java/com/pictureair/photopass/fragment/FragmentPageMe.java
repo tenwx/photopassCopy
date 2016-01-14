@@ -33,7 +33,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 
 /**
  * 我的界面
- * 处理用户信息、订单、乐拍通、乐拍通+、设置、帮助、关于
+ * 处理用户信息、订单、乐拍通、乐拍通一卡通、设置、帮助、关于
  *
  * @author bauer_bao
  */
