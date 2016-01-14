@@ -18,6 +18,7 @@ package com.pictureair.photopass.zxing.camera;
 
 import java.io.IOException;
 
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import android.content.Context;
@@ -240,10 +241,12 @@ public final class CameraManager {
 //      rect.right = rect.right * cameraResolution.x / screenResolution.x;
 //      rect.top = rect.top * cameraResolution.y / screenResolution.y;
 //      rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
-      rect.left = rect.left * cameraResolution.y / screenResolution.x;
-      rect.right = rect.right * cameraResolution.y / screenResolution.x;
-      rect.top = rect.top * cameraResolution.x / screenResolution.y;
-      rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
+      PictureAirLog.e("","rect :"+rect.width() +"_height:"+rect.height());
+      int temp =  rect.width()/4;  // 为了 增加识别得范围。故增加区域
+      rect.left = rect.left * cameraResolution.y / screenResolution.x - temp;
+      rect.right = rect.right * cameraResolution.y / screenResolution.x + temp;
+      rect.top = rect.top * cameraResolution.x / screenResolution.y - temp;
+      rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y + temp;
       framingRectInPreview = rect;
     }
     return framingRectInPreview;
