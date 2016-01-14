@@ -31,8 +31,8 @@
 
         <EditText
             android:id="@+id/input1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/button_input_shape"
             android:ems="4"
@@ -51,8 +51,8 @@
 
         <EditText
             android:id="@+id/input2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/button_input_shape"
             android:ems="4"
@@ -71,8 +71,8 @@
 
         <EditText
             android:id="@+id/input3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/button_input_shape"
             android:ems="4"
@@ -91,8 +91,8 @@
 
         <EditText
             android:id="@+id/input4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_height_40"
             android:layout_weight="1"
             android:background="@drawable/button_input_shape"
             android:ems="4"
@@ -115,19 +115,7 @@
         <!--android:layout_marginRight="@dimen/pp_margin_10"-->
         <!--android:background="@color/pp_blue" />-->
 
-    <Button
-        android:id="@+id/sure"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_input"
-        android:layout_marginLeft="@dimen/pp_margin_20"
-        android:layout_marginRight="@dimen/pp_margin_20"
-        android:layout_marginTop="@dimen/pp_margin_40"
-        android:background="@drawable/button_blue_shape_and_selector"
-        android:padding="@dimen/pp_padding_10"
-        android:text="@string/ok"
-        android:textColor="@drawable/textview_selector_blue_white"
-        android:textSize="@dimen/text_size_16" />
+
 
     <ImageView
         android:id="@+id/iv_show_result"
@@ -142,13 +130,25 @@
         android:id="@+id/tv_manul_input_intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sure"
+        android:layout_below="@id/layout_input"
         android:padding="@dimen/pp_margin_40"
         android:text="@string/manul_input_intro"
         android:textColor="@color/pp_blue"
         android:textSize="@dimen/text_size_16" />
 
-
+    <Button
+        android:id="@+id/sure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/pp_margin_20"
+        android:layout_marginRight="@dimen/pp_margin_20"
+        android:background="@drawable/button_blue_shape_and_selector"
+        android:padding="@dimen/pp_padding_10"
+        android:layout_alignParentBottom="true"
+        android:text="@string/ok"
+        android:layout_marginBottom="@dimen/pp_margin_10"
+        android:textColor="@drawable/textview_selector_blue_white"
+        android:textSize="@dimen/text_size_16" />
 
     <LinearLayout
         android:id="@+id/lv_buttom"

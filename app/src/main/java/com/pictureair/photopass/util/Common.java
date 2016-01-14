@@ -62,6 +62,8 @@ public class Common {
     public static final String GET_PHOTO = "/p/getPhoto";// 根据照片Id获取相片信息
     public static final String ADD_COMMENT = "/p/addCpmment";// 评论照片
     public static final String SHARE_TO_SOCIAL = "/p/shareToSocial";// 分享照片
+    public static final String FORGET_PWD = "/user/forgotPwd";// 忘记密码（手机号）
+
 
     public static final String ADD_LIKE = "/p/addLike";// 照片点赞
     public static final String SAVE_PHOTO = "/p/savePhto";// 保存编辑后的照片
