@@ -34,17 +34,17 @@
     <string name="share_photo">我分享的照片</string>
     <string name="my_order">我的订单</string>
     <string name="order_history">历史订单</string>
-    <string name="my_pp">我的乐拍通</string>
-    <string name="my_ppp">我的乐拍通一卡通</string>
+    <string name="my_pp">乐拍通</string>
+    <string name="my_ppp">乐拍通一卡通</string>
     <string name="inputCode">输入序列号</string>
     <string name="auto">扫描</string>
     <string name="manual">手动输入</string>
     <string name="forget_pwd">忘记密码？</string>
     <string name="confirm">确认</string>
     <string name="back">返回</string>
-    <string name="view">View</string>
+    <string name="view">查看</string>
     <string name="filter">滤镜</string>
-    <string name="shop">商店</string>
+    <string name="shop">记忆屋</string>
     <string name="pp">乐拍通一卡通</string>
     <string name="gifts">礼物</string>
     <string name="like_it">热品促销</string>
@@ -62,7 +62,7 @@
     <string name="selected">选择(0/9)</string>
     <string name="all">所有</string>
     <string name="disall">取消</string>
-    <string name="pictureair">PhotoPass</string>
+    <string name="pictureair">乐拍通</string>
     <string name="camera">相机</string>
     <string name="me">我</string>
     <string name="buy_now">立刻购买</string>
@@ -85,11 +85,11 @@
     <string name="payways">支付方式</string>
     <string name="pay">支付</string>
     <string name="pmtprc">支付 价格：</string>
-    <string name="zfbzf">支付宝支付</string>
-    <string name="yhkzf">银联支付</string>
-    <string name="paypalzf">国际银行支付</string>
+    <string name="zfbzf">支付宝</string>
+    <string name="yhkzf">银联</string>
+    <string name="paypalzf">国际银行</string>
     <string name="zfbsm">推荐使用支付宝账号</string>
-    <string name="yhksm">支持银联卡支付</string>
+    <string name="yhksm">支持银联卡</string>
     <string name="at">\@</string>
     <string name="inputEmail">请输入你的邮箱</string>
     <string name="all_sel">全部</string>
@@ -124,7 +124,7 @@
     <string name="ppp_bottom_text">这个乐拍通可以升级和绑定乐拍通一卡通</string>
     <string name="pp_bottom_text">选择同一天的乐拍通</string>
     <string name="pp_ok">确定(%1$d/%2$d)</string>
-    <string name="makegift">周边</string>
+    <string name="makegift">礼物</string>
     <string name="addimage">增加照片</string>
     <string name="number">号码:</string>
     <string name="choosephoto">选择照片</string>
@@ -143,10 +143,10 @@
     <string name="city">区</string>
     <string name="ad">详细地址</string>
     <string name="district">县</string>
-    <string name="up_ppp_money">升级成乐拍通体验卡</string>
+    <string name="up_ppp_money">升级成为乐拍通一卡通</string>
 
     <string name="getphotos">扫描你的乐拍通</string>
-    <string name="up_ppp">升级乐拍通一卡通</string>
+    <string name="up_ppp">升级成为乐拍通一卡通</string>
 
     <string name="hint_name">输入你的姓名</string>
     <string name="hint_phone">输入你的手机号码</string>
@@ -161,7 +161,7 @@
     <string name="myfavourite">我的最爱</string>
     <string name="cancel1">取消</string>
     <string name="edittitle">点击编辑相册标题</string>
-    <string name="magicalbum">奇妙相册</string>
+    <string name="magicalbum">魔法相册</string>
     <string name="product">商品</string>
     <string name="delivery">已付款</string>
     <!--<string name="qq">QQ</string>-->
@@ -217,7 +217,7 @@
     <!--<string name="pw_is_inconsistency">密码不一致</string>-->
     <string name="upload_failed_retry">上传失败，再试一次</string>
     <string name="outofrange">超出范围</string>
-    <string name="no_space_in_ppp">乐拍通一卡通没有更多的空间</string>
+    <string name="no_space_in_ppp">亲，此乐拍通一卡通卡已经没有多余的权限！</string>
     <string name="add_address_success">增加地址成功!</string>
     <string name="modify_success">地址修改成功!</string>
     <string name="input_name">输入你的名字</string>
@@ -269,8 +269,8 @@
     <string name="download_pictures">下载图片</string>
     <string name="updata_pictures">同步更新相片</string>
     <string name="setting_language">语言切换</string>
-    <string name="gprs_download">4G/3G/GPRS 下载</string>
-    <string name="wifi_download">WiFi 下载</string>
+    <string name="gprs_download">4G/3G/WIFI 下载</string>
+    <string name="wifi_download">WIFI 下载</string>
     <string name="auto_download">Auto 下载</string>
     <string name="reloadphoto">请重新加载此照片</string>
     <string name="dialog_cancel">不用了，谢谢</string>
@@ -288,7 +288,7 @@
     <string name="has_ppp_intro">“乐拍通一卡通”已经绑定了1张乐拍通</string>
     <string name="no_ppp_intro">您可以选择绑定一张乐拍通</string>
     <string name="not_pp_card">这张不是乐拍通卡</string>
-    <string name="not_ppp_card">这张不是乐拍通一卡通卡</string>
+    <string name="not_ppp_card">这张不是乐拍通一卡通</string>
     <string name="bind_pp_now">您有一张乐拍通，是否现在就去绑定？</string>
     <string name="wrong_length">请检查你的乐拍通卡片</string>
     <string name="choose_one_pp">请选择一张乐拍通卡</string>
@@ -300,7 +300,7 @@
     <string name="also_buy_ppp">此处购买“乐拍通一卡通”服务</string>
     <string name="invalidecode">错误的条码</string>
     <string name="album_photopass">乐拍通</string>
-    <string name="album_magic">奇妙相册</string>
+    <string name="album_magic">魔法相册</string>
     <string name="album_download">已下载</string>
     <string name="album_other">其他</string>
     <string name="payment_ways">支付方式</string>
@@ -394,10 +394,10 @@
     <!-- 我的页面 -->
     <string name="mypage_message">信息</string>
     <string name="mypage_coupons">优惠券</string>
-    <string name="mypage_myprofile">我的信息</string>
+    <string name="mypage_myprofile">个人信息</string>
     <string name="mypage_myorder">我的订单</string>
-    <string name="mypage_pp">乐拍通卡</string>
-    <string name="mypage_ppp">乐拍通礼品卡</string>
+    <string name="mypage_pp">乐拍通</string>
+    <string name="mypage_ppp">乐拍通一卡通</string>
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>
@@ -412,7 +412,7 @@
     <string name="search_hint">遇到问题搜一搜</string>
     <!-- 扫一扫 -->
     <string name="auto_auto">扫一扫</string>
-    <string name="buy_ppp_tips">乐拍通礼品卡已经用完，是否去购买乐拍通礼品卡？</string>
+    <string name="buy_ppp_tips">乐拍通一卡通已经用完，是否去购买乐拍通一卡通？</string>
 
     <!-- 日期 -->
 
@@ -429,7 +429,7 @@
     <string name="answer">回答</string>
     <string name="advice">意见反馈（功能建议、系统问题）</string>
     <string name="download_tpye">下载方式</string>
-    <string name="g_download">4G/3G/Wifi下载</string>
+    <string name="g_download">4G/3G/WIFI下载</string>
     <string name="auto_update">自动更新</string>
     <string name="Chinese">简体中文</string>
     <string name="English">英语</string>
@@ -482,7 +482,7 @@
     <string name="mobile_exist">手机号已经存在</string>
     <string name="loading_percent">正在上传%1$d</string>
     <string name="launching_camera">嗨，赶快去找你的摄影师为你拍照吧！</string>
-    <string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass card  mobile app or website.</string>
+    <string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass card  mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="saving">正在保存...</string>
     <string name="dealing">正在处理...</string>
@@ -495,16 +495,16 @@
     <string name="want_to_buy">可以去看看有哪些想买的</string>
     <string name="to_add_good">去添加商品</string>
     <string name="dialog_download_message">正在使用流量，是否继续下载？</string>
-    <string name="dialog_sync_message">亲,您需要同步自动更新下载您的PhotoPass相册吗?</string>
+    <string name="dialog_sync_message">亲,您需要同步自动更新下载您的乐拍通相册吗?</string>
     <string name="dialog_sync_download">亲,当前非WIFI网络,设置 开启仅WIFI状态下同步照片,节省流量哦!</string>
-    <string name="dialog_intent_buy_ppp">亲,升级您的PhotoPass即可拥 有此卡内所有高清数码照片!</string>
+    <string name="dialog_intent_buy_ppp">亲,升级您的乐拍通即可拥有此卡内所有高清数码照片!</string>
     <string name="order_empty_buttonString">随便逛逛</string>
     <string name="order_empty_resultString">您还没相关的订单</string>
     <string name="select_pp_faile">绑定失败，请检查您当前的网络环境</string>
     <string name="select_bind_pp_faile">绑定失败</string>
-    <string name="select_pp_hasUpgraded">该PhotoPass已经被绑定</string>
+    <string name="select_pp_hasUpgraded">该乐拍通已经被绑定</string>
     <string name="no_favorite_photo">您还没有收藏，赶快去收藏吧！</string>
-    <string name="qq_zone_share">我愿和你分享每一刻在相集app的美妙体验！</string>
+    <string name="qq_zone_share">我愿和你分享每一刻在乐拍通app的美妙体验！</string>
     <string name="story_no_photo">嗨！赶快去找您的摄影师为您拍照吧！</string>
     <string name="app_crash">程序停止运行</string>
     <string name="camera_closed">请先在设置中打开相机权限</string>
@@ -534,9 +534,9 @@
     <string name="disney_video_edit_photo_null">开始制作(0/3)</string>
     <string name="disney_video_select_photo_less_than3">照片不能小于3张</string>
     <string name="my_disney_story">我的迪士尼故事</string>
-    <string name="magic_in_the_making">制作中</string>
-    <string name="we_will_send_you_to">我们会送你去</string>
-    <string name="my_disney_story_once_it_is_ready">我的迪士尼故事一旦准备好了</string>
+    <string name="magic_in_the_making">神奇的迪士尼故事正在制作中……</string>
+    <string name="we_will_send_you_to">我们将立即发送给您！</string>
+    <string name="my_disney_story_once_it_is_ready">当我的迪士尼故事制作完成后</string>
     <string name="start">开始</string>
     <string name="neednotdownload_video">此视频已经存在</string>
     <!-- Disney video 引导页介绍，暂时没有中文，先用英文代替-->
@@ -547,11 +547,11 @@
 
     <string name="auto_sync">自动更新</string>
     <string name="no_photo_in_airpass">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
-    <string name="no_photo_in_magiccam">没有照片, 赶快来使用相机吧!</string>
+    <string name="no_photo_in_magiccam">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
     <string name="no_photo_in_bought">没有照片,赶快来购买吧!</string>
     <string name="no_photo_in_favourite">没有照片,赶快去收藏吧!</string>
 
-    <string name="storypage_no_photo">没有图片在你的相册中</string>
+    <string name="storypage_no_photo">您的乐拍通相册中还没有游玩的照片哦！</string>
     <string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
  Proin sodales pulvinar tempor.</string>
 
@@ -573,21 +573,21 @@
     <string name="one_photo_download_no_msg2">停止下载</string>
     <string name="one_photo_download_yes_msg2">继续下载</string>
     <!--   推广PhotoPass＋流程  -->
-    <string name="pp_first_up10_msg">亲，升级您的PhotoPass+即可拥有此卡内所有高清数码照片！</string>
+    <string name="pp_first_up10_msg">亲，升级您的乐拍通一卡通即可拥有此卡内所有高清数码照片！</string>
     <string name="pp_first_up10_no_msg">考虑下</string>
     <string name="pp_first_up10_yes_msg">去升级</string>
     <!--   同步更新照片流程  -->
-    <string name="first_tips_syns_msg1">亲，您需要同步自动更新下载您的PhotoPass相册吗？</string>
+    <string name="first_tips_syns_msg1">亲，您需要同步自动更新下载您的乐拍通相册吗？</string>
     <string name="first_tips_syns_no_msg1">取消</string>
     <string name="first_tips_syns_yes_msg1">同步更新</string>
 
-    <string name="first_tips_syns_msg2">亲，您需要同步自动更新下载已购买的PhotoPass照片吗？</string>
+    <string name="first_tips_syns_msg2">亲，您需要同步自动更新下载已购买的乐拍通照片吗？</string>
     <string name="first_tips_syns_no_msg2">取消</string>
     <string name="first_tips_syns_yes_msg2">同步更新</string>
     <!--  tips End  -->
 
-    <string name="gprs_wifi_download">4G/3G/Wifi下载</string>
-    <string name="wifi_only_download">仅WiFi下载</string>
+    <string name="gprs_wifi_download">4G/3G/WIfI下载</string>
+    <string name="wifi_only_download">仅WIFI下载</string>
 
     <string name="comfirm_logout">确定退出?</string>
     <string name="self_collect">自提</string>
@@ -595,7 +595,7 @@
     <string name="select_address">请选择自提地址</string>
     <string name="about_tips">奇妙时光, 完美定格</string>
 
-    <string name="instruction">Instruction...</string>
+    <string name="instruction">只需购买乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
     <string name="no_activated">未激活</string>
     <string name="activated">已激活</string>
     <string name="ppp_has_used">已用完</string>
@@ -630,7 +630,7 @@
     <string name="back_login_page">返回登录页面</string>
 
     <string name="re_scan">重扫</string>
-    <string name="textview_center_hint">请将乐拍通一卡通背面置于此区域\n尝试对齐边缘</string>
+    <string name="textview_center_hint">请将乐拍通一卡通卡背面置于此区域\n尝试对齐边缘</string>
 
     <string name="blur_intro">如果您想把这一刻的美妙回忆保存并延续下去，那您需要拥有这张照片，您会发现这一次的旅程将更有意义！</string>
     <string name="no_photo_update">您还没有可升级的照片!</string>

@@ -213,16 +213,16 @@ public class Common {
     public static final String EPPP_IDS = "ids";
 
     //存放sdk的目录
-    public static final String ALBUM_FILE_DOWLOAD_NAME = "/ShangHai Disney PhotoPass/download";
-    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/user/";
-    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/";
-    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/app/";
-    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/download/";
-    public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/download/frames/";
-    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/temppic/";
-    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/share/";
-    public static final String OCR_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/tessdata/";
-    public static final String OCR_DATA_PATH = Environment.getExternalStorageDirectory().getPath() + "/ShangHai Disney PhotoPass/tessdata/eng.traineddata";
+    public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
+    public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/user/";
+    public static final String PHOTO_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/";
+    public static final String DOWNLOAD_APK_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/app/";
+    public static final String PHOTO_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/download/";
+    public static final String FRAME_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/download/frames/";
+    public static final String TEMPPIC_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/temppic/";
+    public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/share/";
+    public static final String OCR_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/tessdata/";
+    public static final String OCR_DATA_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/tessdata/eng.traineddata";
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";
