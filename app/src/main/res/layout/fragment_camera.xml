@@ -16,7 +16,7 @@
             android:layout_alignParentBottom="true"
             android:adjustViewBounds="true"
             android:padding="@dimen/pp_height_20"
-            android:src="@drawable/launching_camera" />
+            android:src="@drawable/story_no_photo" />
 
     </RelativeLayout>
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/launching_camera_mickey"/>
+            android:src="@drawable/story_no_photo_1"/>
 
         <TextView
             android:padding="@dimen/pp_height_10"

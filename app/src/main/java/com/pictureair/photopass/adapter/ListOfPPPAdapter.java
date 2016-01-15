@@ -127,8 +127,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + AppUtil.GTMToLocal(dpp.expiredOn).substring(0, 10));
 		}
 
-		//设置过期透明层
-		if (dpp.expired == 1 || dpp.bindInfo.size() == 3) {
+		//设置过期/已用完的透明层
+		if (dpp.expired == 1 || dpp.bindInfo.size() == dpp.capacity) {
 			holder.pppCardCenterCover.setVisibility(View.VISIBLE);
 		} else {
 			holder.pppCardCenterCover.setVisibility(View.GONE);

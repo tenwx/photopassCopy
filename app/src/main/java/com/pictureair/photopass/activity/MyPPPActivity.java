@@ -23,13 +23,12 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPPAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
@@ -72,7 +71,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     private ListOfPPPAdapter listPPPAdapter;
     private ArrayList<PPPinfo> list1;// 绑定了pp的pp+
-    private ArrayList<PPinfo> list3;// 对应pp+可以绑定的pp
     private SharedPreferences sharedPreferences;
 
     private boolean hasOtherAvailablePPP = false;//判断是否还有其他可用的ppp
@@ -344,7 +342,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
         listPPP = (ListView) findViewById(R.id.list_ppp);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-        list3 = new ArrayList<>();
         list1 = new ArrayList<>();
         //设置需要刷新PPPList
         MyApplication.getInstance().setNeedRefreshPPPList(true);
@@ -373,34 +370,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                         ppp = list1.get(position);
                         API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
                     }
-                } else {
-                    //用完了的PPP  弹出窗口提示
-                    customdialog = new CustomDialog.Builder(MyPPPActivity.this).setMessage(getResources().getString(R.string.buy_ppp_tips))
-                            .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    // TODO Auto-generated method stub
-                                    customdialog.dismiss();
-                                }
-                            })
-                            .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    // TODO Auto-generated method stub
-//                                    Intent intent = new Intent(MyPPPActivity.this, PPPDetailProductActivity.class);
-//                                    startActivity(intent);
-                                    //获取商品（以后从缓存中取）
-                                    customdialog.dismiss();
-                                    dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
-                                    getGoods();
-
-                                }
-                            })
-                            .setCancelable(false)
-                            .create();
-                    customdialog.show();
                 }
 
             }
