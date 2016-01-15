@@ -218,6 +218,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         if (0 != videoInfo.videoWidth || 0 != videoInfo.videoHeight) {
             this.videoWidth = videoInfo.videoWidth;
             this.videoHeight = videoInfo.videoHeight;
+
+            //TEST
+//            this.videoWidth = 1280;
+//            this.videoHeight = 720;
         }
         getIsOnline();//读取网络视频还是本地
         sharePop = new SharePop(context);
