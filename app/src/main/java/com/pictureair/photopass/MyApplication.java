@@ -76,7 +76,7 @@ public class MyApplication extends Application {
     // onCreate方法不建议写耗时的操作
 
     // 是否开启debug模式，如果为true，打印log，如果为false，不打印log
-    public final static boolean DEBUG = false;
+    public final static boolean DEBUG = true;
 
     private boolean needRefreshOldPhotos;//不同设备之间同步，是否需要刷新之前未购买的图片
     public Typeface typeface;//设置默认字体用
