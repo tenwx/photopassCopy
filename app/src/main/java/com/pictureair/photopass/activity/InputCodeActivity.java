@@ -179,10 +179,10 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener,V
             input4.setText(resultList[3]);
         }
 
+
         input2.setOnKeyListener(this);
         input3.setOnKeyListener(this);
         input4.setOnKeyListener(this);
-
 
         input1.addTextChangedListener(new TextWatcher() {
 
@@ -231,7 +231,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener,V
                     input1.setSelection(input1.getText().toString().length());
                 }
 
-                if (arg0.length() == 5){ // input2 中输入第5个字符，就让第5个字符  移动到input3 中
+                if (arg0.length() == 5) { // input2 中输入第5个字符，就让第5个字符  移动到input3 中
                     String text2= input2.getText().toString();
                     PictureAirLog.e("", "====:" + text2);
                     input2.setText(text2.substring(0, 4));
@@ -240,6 +240,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener,V
                     input3.requestFocus();
                     input3.setSelection(input3.getText().toString().length());
                 }
+
             }
 
             @Override
@@ -266,7 +267,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener,V
                     input2.requestFocus();
                     input2.setSelection(input2.getText().toString().length());
                 }
-                if (arg0.length() == 5){ // input3 中输入第5个字符，就让第5个字符  移动到input4 中
+                if (arg0.length() == 5) { // input3 中输入第5个字符，就让第5个字符  移动到input4 中
                     String text3= input3.getText().toString();
                     PictureAirLog.e("", "====:" + text3);
                     input3.setText(text3.substring(0, 4));
@@ -275,6 +276,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener,V
                     input4.requestFocus();
                     input4.setSelection(input4.getText().toString().length());
                 }
+
             }
 
             @Override
