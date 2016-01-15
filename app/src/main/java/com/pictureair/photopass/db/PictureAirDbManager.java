@@ -18,6 +18,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PinYin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -515,6 +516,9 @@ public class PictureAirDbManager {
                         selectPhotoItemInfos.add(sInfo);
                     } while (cursor.moveToNext());
 
+                }
+                if (type == 2){
+                    Collections.reverse(urlList);
                 }
                 PPinfo ppInfo1 = new PPinfo();
                 ppInfo1.setPpCode(ppInfo.getPpCode());
