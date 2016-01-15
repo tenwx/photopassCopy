@@ -58,6 +58,18 @@
                 android:src="@drawable/nosele"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/tv_shoot_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/img"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_12"
+                android:layout_marginRight="@dimen/pp_margin_2"
+                android:visibility="gone"
+               />
+
 
         </RelativeLayout>
 

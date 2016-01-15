@@ -126,6 +126,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case 888://扫描
+                ((MyApplication) getApplication()).setNeedRefreshPPPList(true);    // 跳转到扫描页面。然后需要重新加载PPP数据。
                 intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent);
@@ -610,7 +611,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (MyApplication.getInstance().getNeedRefreshPPPList()) {
+        if (MyApplication.getInstance().getNeedRefreshPPPList()) { //解决问题，从PPP页面扫描PP+成功之后不刷新的问题。
             GetPPPList();
         }
         if (!EventBus.getDefault().isRegistered(this)) {

@@ -135,7 +135,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             case API1.HIDE_PP_SUCCESS:
                 // 请求删除API成功
-                PictureAirLog.e(TAG, "删除PP成功");
                 JSONObject objectSuccess;
                 objectSuccess = JSONObject.parseObject(msg.obj.toString());
                 boolean result = objectSuccess.getBoolean("success");
@@ -150,7 +149,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             case API1.HIDE_PP_FAILED:
                 // 请求删除API失败
-                PictureAirLog.e(TAG, "删除PP成功");
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
@@ -163,6 +161,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             case API1.GET_PPS_SUCCESS:// 获取pp列表成功。 如果status等于 200 的时候
                 JSONObject ppsJsonObject = (JSONObject) msg.obj;
+                PictureAirLog.e("","ppsJsonObject:"+ppsJsonObject.toString());
                 if (ppsJsonObject.containsKey("PPList")) {
                     showPPCodeList.clear();
                     try {
@@ -209,7 +208,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                 showPPCodeList.add(ppCodeInfo);
                             }
                         }
-                        Collections.sort(showPPCodeList, new PPinfoSortUtil());
+//                        Collections.sort(showPPCodeList, new PPinfoSortUtil());  //取消排序，由服务器返回的结果为准。
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -567,7 +566,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private void getPhotoUrlFromDatabase() {
         new Thread() {
             public void run() {
+//                PictureAirLog.e("","API1.PPlist:"+API1.PPlist.size());
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(API1.PPlist, 2);
+//                PictureAirLog.e("","showPPCodeList.size():"+showPPCodeList.size());
                 myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
             }
         }.start();
@@ -577,7 +578,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     public boolean deleteAPI(int position) {
         RequestParams params = new RequestParams();
         String tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, "");
-        PictureAirLog.e(TAG, "tokenId:" + sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
+//        PictureAirLog.e(TAG, "tokenId:" + sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
         params.put("tokenId", tokenId);
         if (showPPCodeList == null || showPPCodeList.size() <= 0
                 || tokenId.equals("")) {
@@ -610,7 +611,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     //下载照片
     private void downloadPhotoList() {
-        Log.e("＝＝＝＝＝", "downloadPhotoList");
+//        Log.e("＝＝＝＝＝", "downloadPhotoList");
         if (tempPhotoLists.size() > 0) {
             for (int i = 0; i < tempPhotoLists.size(); i++) {
                 download(pictureAirDbManager.getPhotoUrlByPhotoIDAndShootOn(tempPhotoLists.get(i).photoId, tempPhotoLists.get(i).shootTime));
@@ -620,7 +621,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void download(ArrayList<PhotoInfo> arrayList) {
-        Log.e("=======", "arrayList.size()：" + arrayList.size());
+//        Log.e("=======", "arrayList.size()：" + arrayList.size());
         if (arrayList.size() > 0) {
             Intent intent = new Intent(MyPPActivity.this,
                     DownloadService.class);

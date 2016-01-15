@@ -630,7 +630,7 @@
     <string name="back_login_page">返回登录页面</string>
 
     <string name="re_scan">重扫</string>
-    <string name="textview_center_hint">请将乐拍通＋卡背面置于此区域\n尝试对齐边缘</string>
+    <string name="textview_center_hint">请将乐拍通一卡通背面置于此区域\n尝试对齐边缘</string>
 
     <string name="blur_intro">如果您想把这一刻的美妙回忆保存并延续下去，那您需要拥有这张照片，您会发现这一次的旅程将更有意义！</string>
     <string name="no_photo_update">您还没有可升级的照片!</string>
