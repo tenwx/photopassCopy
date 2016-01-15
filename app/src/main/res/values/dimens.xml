@@ -85,4 +85,7 @@
     <dimen name="pp_radius_1">1dp</dimen>
     <dimen name="pp_radius_2">2dp</dimen>
 
+    <dimen name="bottom_bar_65">65dp</dimen> <!-- 底部状态栏高度 -->
+    <dimen name="bottom_bar_padding_5">5dp</dimen>
+
 </resources>

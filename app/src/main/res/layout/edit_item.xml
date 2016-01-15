@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/pp_margin_16"
-    android:paddingTop="@dimen/pp_margin_16">
+    >
 
     <RelativeLayout
         android:id="@+id/edit_item"

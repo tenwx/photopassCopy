@@ -375,4 +375,6 @@ public class Common {
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
 
+    public static final int BOTTOM_BAR_HEIGHT = 65; // dp 单位
+
 }
