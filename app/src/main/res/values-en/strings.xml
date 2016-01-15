@@ -479,7 +479,7 @@
     <string name="order_detail_activity">Order detail</string>
     <string name="mobile_exist">Mobile exists</string>
     <string name="loading_percent">Is uploading %1$d</string>
-    <string name="launching_camera">Initiating camera...</string>
+    <string name="launching_camera">Hey, hurry up and get your photographer to take a picture of you!</string>
     <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="saving">Saving...</string>
@@ -536,7 +536,7 @@
     <string name="neednotdownload_video">Video exist</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="disney_video_selectphoto_model">Mode</string>
-    <string name="disney_video_bubble">You only can select %1$ photos!</string>
+    <string name="disney_video_bubble">You only can select %1$d photos!</string>
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
     <string name="auto_sync">Auto Sync</string>
