@@ -15,6 +15,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.activity.MainTabActivity;
+
 public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int EXPLOSION_SIZE = 200;
@@ -188,6 +191,7 @@ public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void clearViews() {
         if (getParent() != null) {
+//            this.setLayerType(View.LAYER_TYPE_NONE, null);
             CoverManager.getInstance().getWindowManager().removeView(this);
         }
     }

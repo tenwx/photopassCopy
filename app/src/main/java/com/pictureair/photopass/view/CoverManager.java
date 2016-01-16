@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -107,7 +108,7 @@ public class CoverManager {
      * please call it before animation start
      * 
      * Notice: the unit is frame.
-     * 
+     *
      * @param lifeTime
      */
     public void setExplosionTime(int lifeTime) {

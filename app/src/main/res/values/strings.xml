@@ -636,4 +636,6 @@
     <string name="no_photo_update">您还没有可升级的照片!</string>
     <string name="select_pp_wrong_date">只能选择连续三天的乐拍通卡</string>
 
+    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
+
 </resources>

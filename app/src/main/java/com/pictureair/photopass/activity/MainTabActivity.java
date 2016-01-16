@@ -11,6 +11,7 @@ import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost.TabSpec;
@@ -262,9 +263,9 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         imageView.setImageResource(mImageViewArray[index]);
         LayoutParams layoutParams = imageView.getLayoutParams();
         if (index != 2) {
-            layoutParams.width = ScreenUtil.dip2px(this, 25);
-        } else {
             layoutParams.width = ScreenUtil.dip2px(this, 40);
+        } else {
+            layoutParams.width = ScreenUtil.dip2px(this, 60);
 
         }
         layoutParams.height = layoutParams.width;
