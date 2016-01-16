@@ -29,7 +29,6 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PPinfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
@@ -41,7 +40,6 @@ import com.pictureair.photopass.widget.XListViewHeader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 /*

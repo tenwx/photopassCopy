@@ -342,7 +342,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
         // AppManager.getInstance().killActivity(BlurActivity.class);
-        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+        AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
@@ -359,7 +359,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
         // AppManager.getInstance().killActivity(BlurActivity.class);
-        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+        AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
@@ -375,7 +375,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
         // AppManager.getInstance().killActivity(BlurActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+        AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
         AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);

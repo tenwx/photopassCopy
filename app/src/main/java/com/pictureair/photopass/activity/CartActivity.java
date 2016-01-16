@@ -606,7 +606,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         if (cartInfoList == null || cartInfoList.size() <= 0) {
             return;
         }
-        Intent intent = new Intent(CartActivity.this, SelectPhotoActivity1.class);
+        Intent intent = new Intent(CartActivity.this, SelectPhotoActivity.class);
         GoodsInfo1 goodsInfo1 = new GoodsInfo1();
         goodsInfo1.setName(cartInfoList.get(requestCode / 10).getProductName());
         goodsInfo1.setEmbedPhotosCount(cartInfoList.get(requestCode / 10).getEmbedPhotosCount());

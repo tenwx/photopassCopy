@@ -9,7 +9,6 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -124,7 +123,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case 888://扫描
-                ((MyApplication) getApplication()).setNeedRefreshPPPList(true);    // 跳转到扫描页面。然后需要重新加载PPP数据。
                 intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent);
@@ -360,7 +358,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
                     if (list1.get(position).expericePPP == 1) {//体验卡
-                        Intent intent = new Intent(MyPPPActivity.this, SelectPhotoActivity1.class);
+                        Intent intent = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);
                         intent.putExtra("activity", "mypppactivity");
                         intent.putExtra("pppCode", list1.get(position).PPPCode);
                         intent.putExtra("photoCount", 1);
@@ -386,17 +384,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         hasOtherAvailablePPP = false;
         API1.PPPlist.clear();//清空之前的list，从网络中重新获取
         getData();
-    }
-
-    /**
-     * 设置window的透明度
-     *
-     * @param bgAlpha 0-1   透明---不透明
-     */
-    public void backgroundAlpha(float bgAlpha) {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = bgAlpha; //0.0-1.0
-        getWindow().setAttributes(lp);
     }
 
     /**

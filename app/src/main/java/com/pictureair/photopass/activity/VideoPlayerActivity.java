@@ -539,10 +539,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         getScreenSize();
         getDisplayMetrics();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            PictureAirLog.out("landscape----->");
             sharePop.dismiss();
             crossScreen();//横屏计算大小
 //			Toast.makeText(context, " 横屏", 100).show();
         } else {
+            PictureAirLog.out("portrait----->");
             verticalScreen();//竖屏计算大小
 //			Toast.makeText(context, " 竖屏", 100).show();
         }
@@ -730,75 +732,5 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         }
         return true;
     }
-
-    /*****************************************************************************************************************
-     * 全屏点触事件****
-     */
-//	private void myGestureDetectr() {
-//		mGestureDetector = new GestureDetector(new SimpleOnGestureListener() {
-//
-//			@Override
-//			public boolean onDoubleTap(MotionEvent e) {
-//				// 按两次
-//				if (isFullScreen) {
-//					setVideoScale(SCREEN_DEFAULT);
-//				} else {
-//					setVideoScale(SCREEN_FULL);
-//				}
-//				isFullScreen = !isFullScreen;
-//				Log.d(TAG, "onDoubleTap");
-//
-//				if (isControllerShow) {
-//					showController();
-//				}
-//				return true;
-//			}
-//
-//			@Override
-//			public boolean onSingleTapConfirmed(MotionEvent e) {
-//				// 单次处理
-//				if (!isControllerShow) {
-//					showController();
-//					hideControllerDelay();
-//				} else {
-//					cancelDelayHide();
-//					hideController();
-//				}
-//				return true;
-//			}
-//
-//			@Override
-//			public void onLongPress(MotionEvent e) {
-//				// 长按处理
-//				if (isPaused) {
-//					VideoPlayerView.start();
-//					btnPlayOrStop.setImageResource(R.drawable.pause);
-//					cancelDelayHide();
-//					hideControllerDelay();
-//				} else {
-//					VideoPlayerView.pause();
-//					btnPlayOrStop.setImageResource(R.drawable.play);
-//					cancelDelayHide();
-//					showController();
-//				}
-//				isPaused = !isPaused;
-//			}
-//		});
-//	}
-//
-//	@Override
-//	public boolean onTouchEvent(MotionEvent event) {
-//
-//		boolean result = mGestureDetector.onTouchEvent(event);
-//
-//		if (!result) {
-//			if (event.getAction() == MotionEvent.ACTION_UP) {
-//
-//			}
-//			result = super.onTouchEvent(event);
-//		}
-//		return result;
-//	}
-    /*****************************************************************************************************/
 
 }

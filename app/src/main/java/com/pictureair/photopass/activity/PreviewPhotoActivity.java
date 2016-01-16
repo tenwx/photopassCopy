@@ -119,6 +119,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean isEdited = false;
 
+    /**
+     * 是否是横屏模式
+     */
+    private boolean isLandscape = false;
+
     //底部切换索引按钮
     private ImageView lastPhotoImageView;
     private ImageView nextPhotoImageView;
@@ -180,7 +185,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      */
     private int sizeW = 0;
     private int sizeH = 0;
-    private int r = 0;
+    private int radius = 0;
 
     private RelativeLayout leadView;
     private Button knowImageView;
@@ -228,10 +233,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         switch (msg.what) {
             case 1://移动的时候
                 previewPhotoHandler.sendEmptyMessageDelayed(6, 500);
-                x = msg.arg1 - r;
-                y = (int) (msg.arg2 - r - ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) + scaleH);
-                if (x > bitmap2.getWidth() - 2 * r) {
-                    x = bitmap2.getWidth() - 2 * r;
+                x = msg.arg1 - radius;
+                y = (int) (msg.arg2 - radius - ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) + scaleH);
+                if (x > bitmap2.getWidth() - 2 * radius) {
+                    x = bitmap2.getWidth() - 2 * radius;
                     x1 += 50;
                     out = true;
                 }
@@ -240,8 +245,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     x1 -= 50;
                     out = true;
                 }
-                if (y > bitmap2.getHeight() - 2 * r) {
-                    y = bitmap2.getHeight() - 2 * r;
+                if (y > bitmap2.getHeight() - 2 * radius) {
+                    y = bitmap2.getHeight() - 2 * radius;
                     y1 += 50;
                     out = true;
                 }
@@ -286,11 +291,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         bitmap5 = Bitmap.createBitmap(bitmap5, 0, 0, bitmap5.getWidth(), bitmap5.getHeight(), m, true);
                     }
                     image01.setImageBitmap(bitmap4);
-                    bitmap3 = Bitmap.createBitmap(bitmap5, x, y, 2 * r, 2 * r);
+                    bitmap3 = Bitmap.createBitmap(bitmap5, x, y, 2 * radius, 2 * radius);
                     bitmap3 = Mask(bitmap3);
                     bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
                 } else {
-                    bitmap3 = Bitmap.createBitmap(bitmap2, x, y, 2 * r, 2 * r);
+                    PictureAirLog.out("bit2-->" + bitmap2.getHeight() + "y--" + y + ",x---" + x + ",r--" + radius);
+                    bitmap3 = Bitmap.createBitmap(bitmap2, x, y, 2 * radius, 2 * radius);
                     bitmap3 = Mask(bitmap3);
                     bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
                 }
@@ -471,7 +477,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 updateIndexTools(true);
 
                 PictureAirLog.v(TAG, "----------------------->initing...3");
-                r = (int) (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
 
                 mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
@@ -663,8 +668,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
         PictureAirLog.v(TAG, "original is " + photolist.get(currentPosition).photoPathOrURL);
         PictureAirLog.v(TAG, "----------------------->initing...2");
+        Configuration cf = getResources().getConfiguration();
+        int ori = cf.orientation;
+        if (ori == Configuration.ORIENTATION_LANDSCAPE) {
+            isLandscape = true;
+            landscapeOrientation();
+            radius = (ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) / 3);
+        } else {
+            radius = (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
+        }
         previewPhotoHandler.sendEmptyMessage(7);
-
     }
 
     /**
@@ -741,11 +754,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             loveImageButton.setImageResource(R.drawable.discover_no_like);
         }
+
+        //更新title地点名称
+        locationTextView.setText(photoInfo.locationName);
+
         //更新序列号
         currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
         currentPhotoInfoTextView.setText(photoInfo.shootOn);
-
-
         //更新上一张下一张按钮
         if (currentPosition == 0) {
             lastPhotoImageView.setVisibility(View.INVISIBLE);
@@ -758,10 +773,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             nextPhotoImageView.setVisibility(View.VISIBLE);
         }
+        lastPhotoImageView.setEnabled(true);
+        nextPhotoImageView.setEnabled(true);
 
-        //更新title地点名称
-        //		locationTextView.setText(getString(R.string.story_tab_magic));
-        locationTextView.setText(photoInfo.locationName);
         //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
             PictureAirLog.v(TAG, "need show blur view");
@@ -770,13 +784,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             touchtoclean.setVisibility(View.VISIBLE);
             blurFraRelativeLayout.setVisibility(View.VISIBLE);
             currentPhotoADTextView.setVisibility(View.GONE);
-            //			mViewPager.setVisibility(View.GONE);
             loadPhotoPassPhoto(photoInfo, isOnCreate);
             if (!isFirst) {
                 if (pictureAirDbManager.checkFirstTimeStartActivity("blurActivity", sharedPreferences.getString(Common.USERINFO_ID, ""))) {//第一次进入
                     PictureAirLog.v(TAG, "new user");
                     leadView.setVisibility(View.VISIBLE);
-//                    knowImageView.setOnClickListener(this);
                     leadView.setOnClickListener(this);
                     isFirst = true;
                 }
@@ -793,8 +805,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             currentPhotoADTextView.setVisibility(View.GONE);
         }
-        lastPhotoImageView.setEnabled(true);
-        nextPhotoImageView.setEnabled(true);
+
+        if (isLandscape) {//横屏模式
+            lastPhotoImageView.setVisibility(View.GONE);
+            nextPhotoImageView.setVisibility(View.GONE);
+            currentPhotoIndexTextView.setVisibility(View.GONE);
+            currentPhotoInfoTextView.setVisibility(View.GONE);
+            currentPhotoADTextView.setVisibility(View.GONE);
+        }
     }
 
 
@@ -867,7 +885,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                     case MotionEvent.ACTION_DOWN:
                         mode = MODE_DOWN;
-                        PictureAirLog.v(TAG, "-------->down");
+                        PictureAirLog.v(TAG, "-------->downY---" + event.getY());
                         downX = event.getX();
                         downY = event.getY();
 
@@ -1326,33 +1344,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     public void onConfigurationChanged(Configuration newConfig) {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             PictureAirLog.out("landscape----->");
-
-            if (sharePop.isShowing()) {
-                sharePop.dismiss();
-            }
-            if (mViewPager != null) {
-                mViewPager.setBackgroundColor(Color.BLACK);
-            }
-            blurFraRelativeLayout.setBackgroundColor(Color.BLACK);
-            photoFraRelativeLayout.setBackgroundColor(Color.BLACK);
-            image01.setBackgroundColor(Color.BLACK);
-            titleBar.setVisibility(View.GONE);
-            toolsBar.setVisibility(View.GONE);
-            indexBar.setVisibility(View.GONE);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            landscapeOrientation();
         } else {
             PictureAirLog.out("portrait----->");
-
-            titleBar.setVisibility(View.VISIBLE);
-            toolsBar.setVisibility(View.VISIBLE);
-            indexBar.setVisibility(View.VISIBLE);
-            if (mViewPager != null) {
-                mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-            }
-            blurFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-            photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-            image01.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            portraitOrientation();
         }
 
         if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
@@ -1367,6 +1362,40 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * 垂直模式
+     */
+    private void portraitOrientation(){
+        titleBar.setVisibility(View.VISIBLE);
+        toolsBar.setVisibility(View.VISIBLE);
+        indexBar.setVisibility(View.VISIBLE);
+        if (mViewPager != null) {
+            mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+        }
+        blurFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+        photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+        image01.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    /**
+     * 横屏模式
+     */
+    private void landscapeOrientation(){
+        if (sharePop.isShowing()) {
+            sharePop.dismiss();
+        }
+        if (mViewPager != null) {
+            mViewPager.setBackgroundColor(Color.BLACK);
+        }
+        blurFraRelativeLayout.setBackgroundColor(Color.BLACK);
+        photoFraRelativeLayout.setBackgroundColor(Color.BLACK);
+        image01.setBackgroundColor(Color.BLACK);
+        titleBar.setVisibility(View.GONE);
+        toolsBar.setVisibility(View.GONE);
+        indexBar.setVisibility(View.GONE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
 
     /**
      * 根据照片的购买情况确定布局和显示模式

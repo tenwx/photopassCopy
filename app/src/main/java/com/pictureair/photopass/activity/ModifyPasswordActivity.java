@@ -16,6 +16,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
@@ -160,16 +161,18 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
                 }
                 break;
             case R.id.modify_password_radio:
-
+                PictureAirLog.out("onclick");
                 if (isSele) {
+                    PictureAirLog.out("sele");
                     radio.setImageResource(R.drawable.sele);
-                    oldPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    newPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    isSele = false;
-                } else {
-                    radio.setImageResource(R.drawable.nosele);
                     oldPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     newPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    isSele = false;
+                } else {
+                    PictureAirLog.out("no sele");
+                    radio.setImageResource(R.drawable.nosele);
+                    oldPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    newPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     isSele = true;
                 }
 

@@ -335,7 +335,7 @@
     <string name="http_failed">Connect server failed, please check network</string>
     <string name="story_tab_all">All</string>
     <string name="story_tab_photopass">PhotoPass</string>
-    <string name="story_tab_magic">MagicCam</string>
+    <string name="story_tab_magic">Local</string>
     <string name="story_tab_bought">Purchased</string>
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / PhotoPass card to start associating your photos.</string>

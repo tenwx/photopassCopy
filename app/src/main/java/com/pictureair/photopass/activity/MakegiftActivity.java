@@ -647,7 +647,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
             case R.id.addimage://添加图片按钮
                 System.out.println("addimage");
-                intent = new Intent(this, SelectPhotoActivity1.class);
+                intent = new Intent(this, SelectPhotoActivity.class);
                 intent.putExtra("photopath", photoList);
                 intent.putExtra("activity", "makegiftactivity");
                 startActivityForResult(intent, 1);

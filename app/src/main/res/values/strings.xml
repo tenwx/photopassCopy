@@ -336,7 +336,7 @@
     <string name="http_failed">连接服务器失败，请检查网络</string>
     <string name="story_tab_all">全部相册</string>
     <string name="story_tab_photopass">乐拍通</string>
-    <string name="story_tab_magic">魔法相册</string>
+    <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">已收藏</string>
     <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者乐拍通卡上的二维码, 更快获得你们的游玩照片。</string>
