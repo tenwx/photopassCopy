@@ -182,13 +182,13 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "frameName varchar(40), " +
                 "originalPathLandscape varchar(100), " +
-                "originalPathPortrait varchar(100)" +
-                ", thumbnailPathLandscape400 varchar(100), " +
+                "originalPathPortrait varchar(100), " +
+                "thumbnailPathLandscape400 varchar(100), " +
                 "thumbnailPathPortrait400 varchar(100), " +
                 "thumbnailPath160 varchar(100), " +
                 "locationId varchar(20), " +
-                "isActive integer" +
-                ", onLine integer, " +
+                "isActive integer, " +
+                "onLine integer, " +
                 "isDownload integer, " +
                 "fileSize integer, " +
                 "fileType integer)");

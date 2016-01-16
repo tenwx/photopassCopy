@@ -791,7 +791,6 @@ public class PictureAirDbManager {
      */
     private void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException {
         FrameOrStikerInfo frameInfo = null;
-        database = photoInfoDBHelper.getReadableDatabase();
         try {
             if (jsonArray.size() > 0) {
                 Log.d(TAG, "frames or sticker length is " + jsonArray.size());
@@ -820,8 +819,6 @@ public class PictureAirDbManager {
             }
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            database.close();
         }
     }
 

@@ -1,7 +1,5 @@
 package com.pictureair.photopass.view;
 
-import java.lang.reflect.Field;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.view.View;
 import android.view.WindowManager;
+
+import java.lang.reflect.Field;
 
 public class CoverManager {
     private static CoverManager mCoverManager;
@@ -108,7 +108,7 @@ public class CoverManager {
      * 
      * Notice: the unit is frame.
      * 
-     * @param maxDistance
+     * @param lifeTime
      */
     public void setExplosionTime(int lifeTime) {
         Particle.setLifeTime(lifeTime);
