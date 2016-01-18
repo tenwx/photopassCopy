@@ -22,6 +22,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     private List<OrderProductInfo> childlist;//child信息
     private ArrayList<ImageView> gridlayoutList;
     private ImageLoader imageLoader;
+    private GroupHolderView groupHolderView;
+    private ChildHolderView hView;
 
     private int screenWight;
 
@@ -60,7 +63,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         // TODO Auto-generated method stub
-        System.out.println("getChildrenCount===" + groupPosition + "===child size==" + childlist.size() + ",group size = " + grouplist.size());
+        PictureAirLog.out("getChildrenCount===" + groupPosition + "===child size==" + childlist.size() + ",group size = " + grouplist.size());
         return childlist.get(groupPosition).getCartItemInfos().size();
     }
 
@@ -98,11 +101,10 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        GroupHolderView groupHolderView = null;
         // 布局混乱。每次都重新加载。
-        if (groupPosition != -1) {
-            convertView = null;
-        }
+//        if (groupPosition != -1) {
+//            convertView = null;
+//        }
         if (convertView == null) {
             groupHolderView = new GroupHolderView();
             convertView = mInflater.inflate(R.layout.order_item, null);
@@ -173,7 +175,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        ChildHolderView hView = null;
         gridlayoutList = new ArrayList<ImageView>();
         if (convertView == null) {
             hView = new ChildHolderView();

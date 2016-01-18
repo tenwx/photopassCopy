@@ -536,7 +536,7 @@
     <string name="neednotdownload_video">Video exist</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="disney_video_selectphoto_model">Mode</string>
-    <string name="disney_video_bubble">You only can select %1$ photos!</string>
+    <string name="disney_video_bubble">You only can select %1$d photos!</string>
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
 
     <string name="auto_sync">Auto Sync</string>
@@ -626,5 +626,6 @@
     <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
     <string name="re_scan">Rescan</string>
     <string name="textview_center_hint">Please place PhotoPass+ card back in this area.Try to align edges</string>
+    <string name="instruction">Only need to buy PhotoPass Plus, you can preview and download all the day through luckypai service to capture high-definition digital photos</string>
 
 </resources>
