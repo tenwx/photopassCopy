@@ -95,7 +95,7 @@
             android:layout_marginLeft="15dp"
             android:gravity="center"
             android:text="fsa"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
