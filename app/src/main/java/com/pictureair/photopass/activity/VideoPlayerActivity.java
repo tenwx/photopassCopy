@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -730,6 +731,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             videoInfo.isLove = 1;
             ivIsLove.setImageResource(R.drawable.discover_like);
         }
+        ((MyApplication) getApplication()).needScanFavoritePhotos = true;
         return true;
     }
 

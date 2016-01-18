@@ -423,6 +423,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                 }
                 break;
+
             case API1.GET_GOODS_FAILED:
                 progressDialog.dismiss();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
@@ -548,13 +549,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                  * 2.在application中记录结果
                  */
                 JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
-                currentPhotoADTextView.setText(pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
-                        photoInfo.locationId, MyApplication.getInstance().getLanguageType()));
+                String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
+                        photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+
+                if (!adString.equals("")) {
+                    currentPhotoADTextView.setVisibility(View.VISIBLE);
+                    currentPhotoADTextView.setText(adString);
+                }
                 myApplication.setGetADLocationSuccess(true);
                 break;
 
             case API1.GET_AD_LOCATIONS_FAILED:
-                currentPhotoADTextView.setVisibility(View.GONE);
                 break;
 
             default:
@@ -796,10 +801,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
             }
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
-            currentPhotoADTextView.setVisibility(View.VISIBLE);
+            currentPhotoADTextView.setVisibility(View.GONE);
             if (myApplication.isGetADLocationSuccess()) {
                 //从数据库中查找
-                currentPhotoADTextView.setText(pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType()));
+                String adString = pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+                if (!adString.equals("")) {
+                    currentPhotoADTextView.setVisibility(View.VISIBLE);
+                    currentPhotoADTextView.setText(adString);
+                }
             } else {
                 //从网络获取
                 API1.getADLocations(previewPhotoHandler);
@@ -809,11 +818,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
 
         if (isLandscape) {//横屏模式
-            lastPhotoImageView.setVisibility(View.GONE);
-            nextPhotoImageView.setVisibility(View.GONE);
-            currentPhotoIndexTextView.setVisibility(View.GONE);
-            currentPhotoInfoTextView.setVisibility(View.GONE);
-            currentPhotoADTextView.setVisibility(View.GONE);
+//            lastPhotoImageView.setVisibility(View.GONE);
+//            nextPhotoImageView.setVisibility(View.GONE);
+//            currentPhotoIndexTextView.setVisibility(View.GONE);
+//            currentPhotoInfoTextView.setVisibility(View.GONE);
+//            currentPhotoADTextView.setVisibility(View.GONE);
+            if (mViewPager != null) {
+                mViewPager.setBackgroundColor(Color.BLACK);
+            }
+            touchtoclean.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
         }
     }
 
@@ -1368,6 +1383,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      * 垂直模式
      */
     private void portraitOrientation(){
+        isLandscape = false;
         titleBar.setVisibility(View.VISIBLE);
         toolsBar.setVisibility(View.VISIBLE);
         indexBar.setVisibility(View.VISIBLE);
@@ -1378,12 +1394,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         image01.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
     }
 
     /**
      * 横屏模式
      */
     private void landscapeOrientation(){
+        isLandscape = true;
         if (sharePop.isShowing()) {
             sharePop.dismiss();
         }
@@ -1397,6 +1415,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         toolsBar.setVisibility(View.GONE);
         indexBar.setVisibility(View.GONE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        touchtoclean.setTextColor(getResources().getColor(R.color.white));
     }
 
     /**

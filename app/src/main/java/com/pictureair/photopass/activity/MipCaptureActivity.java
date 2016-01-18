@@ -35,8 +35,6 @@ import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -442,6 +440,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         if (text != null){ //跳转到确认的界面。
             Intent intent = new Intent();
             intent.putExtra("text",text);
+            intent.putExtra("type", getIntent().getStringExtra("type"));
             intent.setClass(this, InputCodeActivity.class);
             startActivity(intent);
 //            this.finish();

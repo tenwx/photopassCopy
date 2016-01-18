@@ -1018,7 +1018,7 @@ public class PictureAirDbManager {
      * @return
      */
     public String getADByLocationId(String locationId, String language){
-        String ad = null;
+        String ad = "";
         Cursor cursor = null;
         try {
             database = photoInfoDBHelper.getReadableDatabase();

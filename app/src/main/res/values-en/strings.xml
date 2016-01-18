@@ -474,7 +474,7 @@
     <string name="userNotExist">User not exist.</string>
     <string name="modify_password_empty_hint">Please enter a password.</string>
     <string name="show_password">Show password</string>
-    <string name="magic_location">Magic Camera</string>
+    <string name="magic_location">Local</string>
     <string name="video_location">My Disney Story</string>
     <string name="order_detail_activity">Order detail</string>
     <string name="mobile_exist">Mobile exists</string>
@@ -541,7 +541,7 @@
 
     <string name="auto_sync">Auto Sync</string>
     <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo ! </string>
-    <string name="no_photo_in_magiccam">Start to collect your photos into Camera now!</string>
+    <string name="no_photo_in_magiccam">Start to collect your photos into Local Album now!</string>
     <string name="no_photo_in_bought">Start to purchase your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
 

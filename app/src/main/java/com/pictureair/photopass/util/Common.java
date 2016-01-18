@@ -25,6 +25,7 @@ public class Common {
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL
 //    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+//    public final static boolean DEBUG = false;// 是否开启debug模式，如果为true，打印log，如果为false，不打印log
 
     /**
      * 8.3测试服务器
@@ -35,6 +36,7 @@ public class Common {
     public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
     public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
     public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
+    public final static boolean DEBUG = true;// 是否开启debug模式，如果为true，打印log，如果为false，不打印log
 
 
     //接口
