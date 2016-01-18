@@ -217,11 +217,6 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
         return super.onFinish();
     }
 
-//    public boolean finishPage(){
-//        return super.onFinish();
-//    }
-
-
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
     }

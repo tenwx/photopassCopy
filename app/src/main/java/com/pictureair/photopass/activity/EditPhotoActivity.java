@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -65,6 +66,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
@@ -305,7 +307,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		new Thread() {
 			public void run() {
 				//		    addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
-				initDate();
+				initData();
 			};
 		}.start();
 
@@ -357,7 +359,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		back.setOnClickListener(this);
 	}
 
-	private void initDate(){
+	private void initData(){
 		nameFile = new File(Common.PHOTO_SAVE_PATH);
 
 		if (!nameFile.isDirectory()) {
@@ -408,6 +410,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_3.png");
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_3.png");
 		frameInfos.add(frameInfo);
+
+		frameInfo = new FrameOrStikerInfo();
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_4t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_4t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_4.png");
+		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_4.png");
+		frameInfos.add(frameInfo);
+
+		frameInfo = new FrameOrStikerInfo();
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_5.png");
+		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_5.png");
+		frameInfos.add(frameInfo);
+
 
 		addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
 
@@ -493,14 +510,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						frameImageView.setVisibility(View.INVISIBLE);
 					}
 					//恢复到没有裁减的状态。
-					if (photoInfo.onLine == 1) {
-						//网络图片。
-						isOnlinePic = true;
-						loadOnlineImg(photoURL);
-					}else{
-						//本地图片
-						isOnlinePic = false;
-						loadImage(photoURL);
+					if (pathList.size() == 1){ //代表最初的图片。
+						if (photoInfo.onLine == 1) {
+							loadOnlineImg(photoURL);
+						}else{
+							loadImage(photoURL);
+						}
+					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+						loadImage(pathList.get(pathList.size() - 1));
 					}
 				}
 
@@ -522,19 +539,17 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 
 				//如果添加了字体  // 如果旋转了
-				if (editType == 4) { //暂时方法。
-					if (photoInfo.onLine == 1) {
-						//网络图片。
-						isOnlinePic = true;
-						loadOnlineImg(photoURL);
-					}else{
-						//本地图片
-						isOnlinePic = false;
-						loadImage(photoURL);
+				if (editType == 4) { // 恢复到原始状态。
+					if (pathList.size() == 1){ //代表最初的图片。
+						if (photoInfo.onLine == 1) {
+							loadOnlineImg(photoURL);
+						}else{
+							loadImage(photoURL);
+						}
+					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+						loadImage(pathList.get(pathList.size() - 1));
 					}
-//					pathList.add(photoURL);
 				}
-
 				exitEditStates(); // 推出编辑状态
 				break;
 
@@ -690,13 +705,30 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 
 				break;
-			case R.id.preview_save:
-				String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
-				EditPhotoUtil.copyFile(pathList.get(index), url);
-				scan(url);
-				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+			case R.id.preview_save: //真正的保存按钮。
+				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
+				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
+					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
+					dialog.show();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							EditPhotoUtil.saveBitmap(mainBitmap , url);
+							scan(url);
+							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+							Looper.prepare();
+							dialog.dismiss();
+							Looper.loop();
+						}
+					}).start();
+				}else{
+					EditPhotoUtil.copyFile(pathList.get(index), url);
+					scan(url);
+					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+				}
+
 				break;
-			case R.id.btn_forward:
+			case R.id.btn_forward: // 前进按钮。
 				if (index == -1) {
 					index = pathList.size() - 1;
 				}
@@ -707,7 +739,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				check();
 				break;
-			case R.id.btn_cancel:
+			case R.id.btn_cancel: //返回按钮。
 				if (index == -1) {
 					index = pathList.size() - 1;
 				}
@@ -827,7 +859,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 * @param filepath
 	 */
 	public void loadImage(String filepath) {
-		photoURL = filepath;
+//		photoURL = filepath;
 		if (mLoadImageTask != null) {
 			mLoadImageTask.cancel(true);
 		}

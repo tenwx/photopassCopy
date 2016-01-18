@@ -35,7 +35,6 @@ import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -185,9 +184,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
-        System.out.println("-----------create");
-
-//        File tessdata = new File(OCRUtils.getSDPath() + java.io.File.separator+"tessdata"); //创建文件夹。
+        scanType = 1; // 每次进入的时候 更改为扫描QR码的方式。
         File tessdata = new File(Common.OCR_PATH); //创建文件夹。
         if (!tessdata.exists()){
             tessdata.mkdirs();

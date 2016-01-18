@@ -142,9 +142,8 @@ public class EditPhotoUtil {
 	
 	/**
 	 * 保存Bitmap图片到指定文件
-	 * 
 	 * @param bm
-	 * @param name
+	 * @param filePath
 	 */
 	public static void saveBitmap(Bitmap bm, String filePath) {
 		File f = new File(filePath);
