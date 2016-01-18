@@ -168,12 +168,12 @@
     <LinearLayout
         android:id="@+id/toolsbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_bar_65"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/pp_margin_16"
-        android:paddingTop="@dimen/pp_margin_16" >
+        android:paddingBottom="@dimen/bottom_bar_padding_5"
+        android:paddingTop="@dimen/bottom_bar_padding_5" >
 
         <TextView
             android:id="@+id/preview_edit"

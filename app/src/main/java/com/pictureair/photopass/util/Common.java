@@ -19,22 +19,22 @@ public class Common {
     /**
      * 49演示服务器
      */
-    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
-    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL
-    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
-    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+//    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
+//    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
+//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 
     /**
      * 8.3测试服务器
      */
-//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
-//    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
 
 
     //接口
@@ -374,5 +374,7 @@ public class Common {
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
+
+    public static final int BOTTOM_BAR_HEIGHT = 65; // dp 单位
 
 }

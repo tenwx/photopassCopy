@@ -2,6 +2,7 @@ package com.pictureair.photopass.view;
 
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 /**
  * The thead will finish when you called setRunning(false) or Explosion ended.
@@ -33,7 +34,6 @@ public class ExplosionUpdateThread extends Thread {
                 mDropCover.update();
             }
         }
-
         mDropCover.clearViews();
     }
 }

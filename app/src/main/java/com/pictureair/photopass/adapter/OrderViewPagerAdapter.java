@@ -141,12 +141,14 @@ public class OrderViewPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(View container, int position, Object object) {
+//        PictureAirLog.v(TAG, "destroyItem: " + position);
         ((ViewPager) container).removeView(listViews.get(position));
     }
 
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
+//        PictureAirLog.v(TAG, "getCount: " + listViews.size());
         return listViews.size();
     }
 
@@ -154,6 +156,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(View container, int position) {
         NoNetWorkOrNoCountView netWorkOrNoCountView = (NoNetWorkOrNoCountView) listViews.get(position).findViewById(R.id.nonetwork);
+//        PictureAirLog.v(TAG, "instantiateItem position: " + position);
         switch (position) {
             case 0:
                 //未付款
@@ -164,10 +167,12 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 orderListView1.setOnGroupClickListener(new GroupOnClick(0));
                 orderListView1.setOnChildClickListener(new ChildOnClick(0));
 
-                if (paymentOrderList.size() == 0) {
+                if (paymentOrderList == null || paymentOrderList.size() == 0) {
                     orderListView1.setVisibility(View.GONE);
                     netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
                     netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                } else {
+                    expandGropu(position);
                 }
                 break;
 
@@ -179,10 +184,12 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 orderListView2.setAdapter(deliveryOrderAdapter);
                 orderListView2.setOnGroupClickListener(new GroupOnClick(1));
                 orderListView2.setOnChildClickListener(new ChildOnClick(1));
-                if (deliveryOrderList.size() == 0) {
+                if (deliveryOrderList == null || deliveryOrderList.size() == 0) {
                     orderListView2.setVisibility(View.GONE);
                     netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
                     netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                } else {
+                    expandGropu(position);
                 }
                 break;
 
@@ -195,10 +202,12 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                 orderListView3.setOnGroupClickListener(new GroupOnClick(2));
                 orderListView3.setOnChildClickListener(new ChildOnClick(2));
 
-                if (allOrderList.size() == 0) {
+                if (allOrderList == null || allOrderList.size() == 0) {
                     orderListView3.setVisibility(View.GONE);
                     netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
                     netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                } else {
+                    expandGropu(position);
                 }
                 break;
 
@@ -212,11 +221,13 @@ public class OrderViewPagerAdapter extends PagerAdapter {
     @Override
     public boolean isViewFromObject(View arg0, Object arg1) {
         // TODO Auto-generated method stub
+//        PictureAirLog.v(TAG, "isViewFromObject: " + "arg0：" + arg0 + "arg1：" + arg1);
         return arg0 == arg1;
     }
 
     //expandablelistview展开child项
     public void expandGropu(int current) {
+//        PictureAirLog.v(TAG, "expandGropu currency: " + current);
         switch (current) {
             case 0:
                 for (int i = 0; i < paymentOrderList.size(); i++) {
@@ -309,11 +320,11 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         context.startActivity(intent);
     }
 
-//	@Override
-//	public int getItemPosition(Object object) {
-//		// TODO Auto-generated method stub
-//		return POSITION_NONE;
-//	}
+    @Override
+    public int getItemPosition(Object object) {
+        // TODO Auto-generated method stub
+        return POSITION_NONE;
+    }
 
 
 }

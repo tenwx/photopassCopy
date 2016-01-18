@@ -113,16 +113,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 PictureAirLog.v(TAG, "GET_CART_SUCCESS");
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 customProgressDialog.dismiss();
+                int cartCount = 0;
                 if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
                     PictureAirLog.v(TAG, "GET_CART_SUCCESS cart size: " + cartItemInfoJson.getItems().size());
                     cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新底部计算条
                     cartInfoList.addAll(cartItemInfoJson.getItems());
-                    //更新购物车数量
-                    Editor editor = sPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, cartItemInfoJson.getTotalCount());
-                    editor.commit();
-
-                    totalTextView.setText((int) cartItemInfoJson.getTotalPrice() + "");
+                    cartCount = cartItemInfoJson.getTotalCount();
+                    totalTextView.setText(cartItemInfoJson.getTotalPrice() + "");
                     paymentButton.setVisibility(View.VISIBLE);
                     paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size()));
                     editTextView.setEnabled(true);
@@ -133,6 +130,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 } else {
                     ShowNoNetOrNoCountView();
                 }
+                //保存购物车数量
+                Editor cartEditor = sPreferences.edit();
+                cartEditor.putInt(Common.CART_COUNT, cartCount);
+                cartEditor.commit();
                 break;
 
             case API1.GET_CART_FAILED://请求失败
@@ -215,7 +216,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 //需要删除页面，保证只剩下mainTab页面，
                 AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                 //同时将mainTab切换到shop Tab
-                ((MyApplication)getApplication()).setMainTabIndex(3);
+                ((MyApplication) getApplication()).setMainTabIndex(3);
 
                 break;
 
@@ -606,7 +607,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         if (cartInfoList == null || cartInfoList.size() <= 0) {
             return;
         }
-        Intent intent = new Intent(CartActivity.this, SelectPhotoActivity1.class);
+        Intent intent = new Intent(CartActivity.this, SelectPhotoActivity.class);
         GoodsInfo1 goodsInfo1 = new GoodsInfo1();
         goodsInfo1.setName(cartInfoList.get(requestCode / 10).getProductName());
         goodsInfo1.setEmbedPhotosCount(cartInfoList.get(requestCode / 10).getEmbedPhotosCount());

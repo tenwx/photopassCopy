@@ -83,6 +83,8 @@ public class OrderActivity extends BaseActivity {
     private PictureAirDbManager pictureAirDbManager;
     private List<String> orderIds;
 
+    private int orderType = 0;//订单类型 异步回调使用
+
     private final Handler orderActivityHandler = new OrderActivityHandler(this);
 
 
@@ -166,16 +168,16 @@ public class OrderActivity extends BaseActivity {
 
 
                     }
-                    allOrderArrayList.add(orderInfo);
-                    allOrderChildArrayList.add(orderProductInfo);
+//                    allOrderArrayList.add(orderInfo);
+//                    allOrderChildArrayList.add(orderProductInfo);
                 }
 
                 orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
                         paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
                         sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
                 viewPager.setAdapter(orderAdapter);
-                viewPager.setCurrentItem(0);
-                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
+                viewPager.setCurrentItem(orderType);
+//                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
 
                 break;
 
@@ -228,6 +230,8 @@ public class OrderActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
+        orderType = getIntent().getIntExtra("orderType", 0);
+        PictureAirLog.v(TAG, "orderType： " + orderType);
         initView();
     }
 

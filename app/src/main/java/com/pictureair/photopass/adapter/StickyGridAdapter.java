@@ -13,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -22,7 +25,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
 import java.text.ParseException;
@@ -37,6 +39,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
     private LayoutInflater layoutInflater;
     private MyToast myToast;
     private CustomDialog customDialog;
+    private ImageLoader imageLoader;
     private static final int COLUMN_COUNT = 3;
 
     public StickyGridAdapter(Context context, ArrayList<PhotoInfo> list) {
@@ -44,6 +47,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         this.list = list;
         layoutInflater = LayoutInflater.from(context);
         myToast = new MyToast(context);
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -82,10 +86,11 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         params.height = params.width;
         mViewHolder.mImageView.setLayoutParams(params);
 
+        String photoUrl;
         if (list.get(position).onLine == 1) {
             if (list.get(position).isVideo == 1) {
                 PictureAirLog.out("load video--->" + list.get(position).photoPathOrURL);
-                UniversalImageLoadTool.loadImage(Common.PHOTO_URL + list.get(position).photoPathOrURL, mViewHolder.mImageView);
+                photoUrl = Common.PHOTO_URL + list.get(position).photoPathOrURL;
                 mViewHolder.videoImageView.setVisibility(View.VISIBLE);
                 LayoutParams params2 = mViewHolder.videoImageView.getLayoutParams();
                 params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);
@@ -94,16 +99,23 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             } else {
                 PictureAirLog.out("load online photo--->" + list.get(position).photoPathOrURL);
                 if (list.get(position).isPayed == 1) {
-                    UniversalImageLoadTool.loadImage(Common.PHOTO_URL + list.get(position).photoThumbnail_512, mViewHolder.mImageView);
+                    photoUrl = Common.PHOTO_URL + list.get(position).photoThumbnail_512;
                 } else {
-                    UniversalImageLoadTool.loadImage(list.get(position).photoThumbnail, mViewHolder.mImageView);
+                    photoUrl = list.get(position).photoThumbnail;
                 }
                 mViewHolder.videoImageView.setVisibility(View.GONE);
             }
         } else {
-            UniversalImageLoadTool.loadImage("file://" + list.get(position).photoPathOrURL, mViewHolder.mImageView);
+            photoUrl = "file://" + list.get(position).photoPathOrURL;
             mViewHolder.videoImageView.setVisibility(View.GONE);
         }
+
+        if (mViewHolder.mImageView.getTag() == null || !mViewHolder.mImageView.getTag().equals(photoUrl)) {//加载图片
+            ImageAware imageAware = new ImageViewAware(mViewHolder.mImageView, false);
+            imageLoader.displayImage(photoUrl, imageAware);
+            mViewHolder.mImageView.setTag(photoUrl);
+        }
+
         return convertView;
     }
 

@@ -113,6 +113,8 @@ public class PaymentOrderActivity extends BaseActivity implements
     private PictureAirDbManager pictureAirDbManager;
     public static org.json.JSONObject resultJsonObject;
     private CustomProgressDialog customProgressDialog;
+    private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
+    private String isBack = "0";//用于判断是否需要返回 0- 不返回 1-返回
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +186,11 @@ public class PaymentOrderActivity extends BaseActivity implements
 //            introductString = "Made by PictureAir";
             nameString = getIntent().getStringExtra("name");// 获取name
             introductString = getIntent().getStringExtra("introduce");// 获取介绍信息
+
         }
+        PictureAirLog.v(TAG, "isBack: " + getIntent().getStringExtra("isBack"));
+        productType = getIntent().getIntExtra("productType", 0);
+        isBack = getIntent().getStringExtra("isBack");
         nameString = AppUtil.ReplaceString(nameString);
         PictureAirLog.v(TAG, "name: " + nameString + " orderid： " + orderid + "priceString: " + priceString);
 //		needAddress = getIntent().getBooleanExtra("addressType", false);
@@ -342,7 +348,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
         // AppManager.getInstance().killActivity(BlurActivity.class);
-        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+        AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
@@ -353,16 +359,33 @@ public class PaymentOrderActivity extends BaseActivity implements
     private void CancelInPayment() {
         // TODO Auto-generated method stub
         // myApplication.setIsBuyingPhotoInfo(null);
+        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
         myApplication.clearIsBuyingPhotoList();
         myApplication.setRefreshViewAfterBuyBlurPhoto("");
-        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
-        AppManager.getInstance().killActivity(SubmitOrderActivity.class);
-        AppManager.getInstance().killActivity(PreviewProductActivity.class);
-        // AppManager.getInstance().killActivity(BlurActivity.class);
-        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
-        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-        AppManager.getInstance().killActivity(MakegiftActivity.class);
-        AppManager.getInstance().killActivity(DetailProductActivity.class);
+        if (isBack!= null && !isBack.isEmpty() && isBack.equals("1")) {
+            //返回到上一个界面
+            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+        } else {
+            //进入订单界面
+            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+            AppManager.getInstance().killActivity(PreviewProductActivity.class);
+            // AppManager.getInstance().killActivity(BlurActivity.class);
+            AppManager.getInstance().killActivity(SelectPhotoActivity.class);
+            AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+            AppManager.getInstance().killActivity(MakegiftActivity.class);
+
+            AppManager.getInstance().killActivity(DetailProductActivity.class);
+            Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+            startActivity(intent2);
+        }
+//        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
+//        AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+//        AppManager.getInstance().killActivity(PreviewProductActivity.class);
+//        // AppManager.getInstance().killActivity(BlurActivity.class);
+//        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+//        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+//        AppManager.getInstance().killActivity(MakegiftActivity.class);
+//        AppManager.getInstance().killActivity(DetailProductActivity.class);
 
         finish();
     }
@@ -375,7 +398,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
         // AppManager.getInstance().killActivity(BlurActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+        AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
         AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);
@@ -418,8 +441,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                 break;
             case RQF_CANCEL:
                 PictureAirLog.v(TAG, "RQF_CANCEL");
-                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                startActivity(intent2);
+                //从模糊照片单张购买、PP+购买 回到之前的预览界面
                 CancelInPayment();
                 break;
             case RQF_SUCCESS:
@@ -450,7 +472,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                 if (customProgressDialog.isShowing()) {
                     customProgressDialog.dismiss();
                 }
-                newToast.setTextAndShow(R.string.http_error_code_401,Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
                 break;
 
@@ -557,9 +579,9 @@ public class PaymentOrderActivity extends BaseActivity implements
 
             } else {
                 // 回到订单页面
-                PictureAirLog.v(TAG, "----------------->回到订单页面");
+                PictureAirLog.v(TAG, "----------------->回到订单页面 productType： " + productType);
                 intent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                intent.putExtra("flag", "two");
+                intent.putExtra("orderType", productType);
             }
         }
         SharedPreferences.Editor editor = sPreferences.edit();
@@ -828,10 +850,10 @@ public class PaymentOrderActivity extends BaseActivity implements
             case R.id.topLeftView:
                 //返回键
                 PictureAirLog.v(TAG, "TopViewClick topLeftView");
-                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-                startActivity(intent2);
+//                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+//                startActivity(intent2);
                 CancelInPayment();
-                finish();
+//                finish();
                 break;
             default:
                 break;
@@ -843,9 +865,9 @@ public class PaymentOrderActivity extends BaseActivity implements
         super.onBackPressed();
         //返回键
         PictureAirLog.v(TAG, "TopViewClick onBackPressed");
-        Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-        startActivity(intent2);
+//        Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+//        startActivity(intent2);
         CancelInPayment();
-        finish();
+//        finish();
     }
 }

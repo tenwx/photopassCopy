@@ -76,10 +76,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
 
-    private static class SubmitOrderHandler extends Handler{
+    private static class SubmitOrderHandler extends Handler {
         private final WeakReference<SubmitOrderActivity> mActivity;
 
-        public SubmitOrderHandler(SubmitOrderActivity activity){
+        public SubmitOrderHandler(SubmitOrderActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -95,6 +95,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -154,7 +155,18 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     intent2.putExtra("price", totalpriceTextView.getText().toString());
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
-//                        intent2.putExtra("addressType", needAddressGood);
+                    //传递商品类型，用于成功后返回订单
+                    if (deliveryType.contains("1")) {
+                        //实体商品
+                        intent2.putExtra("productType", 1);
+                        PictureAirLog.v(TAG, "productType: " + 1);
+                    } else {
+                        //虚拟商品
+                        intent2.putExtra("productType", 2);
+                        PictureAirLog.v(TAG, "productType: " + 2);
+                    }
+                    PictureAirLog.v(TAG, "isBack: " + getIntent().getStringExtra("isBack"));
+                    intent2.putExtra("isBack", getIntent().getStringExtra("isBack"));
                     SubmitOrderActivity.this.startActivity(intent2);
                 }
 
@@ -197,6 +209,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_submit_order);
+
         newToast = new MyToast(this);
         initView();
 
@@ -380,7 +393,17 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
-//                    intent2.putExtra("addressType", needAddressGood);
+                    //传递商品类型，用于成功后返回订单
+                    if (deliveryType.contains("1")) {
+                        //实体商品
+                        intent2.putExtra("productType", 1);
+                        PictureAirLog.v(TAG, "productType: " + 1);
+                    } else {
+                        //虚拟商品
+                        intent2.putExtra("productType", 2);
+                        PictureAirLog.v(TAG, "productType: " + 2);
+                    }
+
                     SubmitOrderActivity.this.startActivity(intent2);
                 }
                 break;
@@ -392,7 +415,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     //选择照片
     private void selectPhoto(int requestCode) {
-        Intent intent = new Intent(this, SelectPhotoActivity1.class);
+        Intent intent = new Intent(this, SelectPhotoActivity.class);
         intent.putExtra("activity", "cartactivity");
         startActivityForResult(intent, requestCode);
     }

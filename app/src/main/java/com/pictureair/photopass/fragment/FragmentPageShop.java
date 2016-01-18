@@ -278,5 +278,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         fragmentPageShopHandler.removeCallbacksAndMessages(null);
+        if (customProgressDialog != null && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
     }
 }

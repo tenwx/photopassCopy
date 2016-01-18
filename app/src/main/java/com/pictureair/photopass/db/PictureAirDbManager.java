@@ -18,6 +18,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PinYin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -516,6 +517,9 @@ public class PictureAirDbManager {
                     } while (cursor.moveToNext());
 
                 }
+                if (type == 2){
+                    Collections.reverse(urlList);
+                }
                 PPinfo ppInfo1 = new PPinfo();
                 ppInfo1.setPpCode(ppInfo.getPpCode());
                 ppInfo1.setShootDate(ppInfo.getShootDate());
@@ -791,7 +795,6 @@ public class PictureAirDbManager {
      */
     private void insertFrameAndSticker(JSONArray jsonArray, boolean isFrame) throws JSONException {
         FrameOrStikerInfo frameInfo = null;
-        database = photoInfoDBHelper.getReadableDatabase();
         try {
             if (jsonArray.size() > 0) {
                 Log.d(TAG, "frames or sticker length is " + jsonArray.size());
@@ -820,8 +823,6 @@ public class PictureAirDbManager {
             }
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            database.close();
         }
     }
 

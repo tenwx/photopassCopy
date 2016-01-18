@@ -15,6 +15,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.activity.MainTabActivity;
+
 public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int EXPLOSION_SIZE = 200;
@@ -188,6 +191,7 @@ public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
      */
     public void clearViews() {
         if (getParent() != null) {
+//            this.setLayerType(View.LAYER_TYPE_NONE, null);
             CoverManager.getInstance().getWindowManager().removeView(this);
         }
     }
@@ -208,7 +212,7 @@ public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
             getHolder().unlockCanvasAndPost(canvas);
         }
-        if (distance > mMaxDistance) {
+        if (distance > mMaxDistance) {//消失，并且开始消失动画
             if (mOnDragCompeteListener != null)
                 mOnDragCompeteListener.onDrag();
 
@@ -217,7 +221,7 @@ public class DropCover extends SurfaceView implements SurfaceHolder.Callback {
             mThread = new ExplosionUpdateThread(getHolder(), this);
             mThread.setRunning(true);
             mThread.start();
-        } else {
+        } else {//不消失，并且红点继续黏在原来的地方
             clearViews();
             target.setVisibility(View.VISIBLE);
         }
