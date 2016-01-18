@@ -60,60 +60,15 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
             pd.dismiss();
         }
         pd = CommonDialog.ProgressDialog(activity);
-//        if (pd != null) {
-//            pd.show();
-//        }
+        if (pd != null) {
+            pd.show();
+        }
         // 初始化搜索引擎
-//		SearchEngine.prepare(activity, new Runnable() {
-//			public void run() {
-//				afterPrepare();
-//			}
-//		});
-
-
-        int resId = getLayoutRes(activity, "smssdk_country_list_page");
-        if (resId > 0) {
-            activity.setContentView(resId);
-        }
-
-        if (countryRules == null || countryRules.size() <= 0) {
-            handler = new EventHandler() {
-                @SuppressWarnings("unchecked")
-                public void afterEvent(int event, final int result, final Object data) {
-                    if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
-                        runOnUIThread(new Runnable() {
-                            public void run() {
-                                if (pd != null && pd.isShowing()) {
-                                    pd.dismiss();
-                                }
-
-                                if (result == SMSSDK.RESULT_COMPLETE) {
-                                    onCountryListGot((ArrayList<HashMap<String, Object>>) data);
-                                } else {
-                                    ((Throwable) data).printStackTrace();
-                                    int resId = getStringRes(activity, "smssdk_network_error");
-                                    if (resId > 0) {
-                                        Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
-
-                                    }
-                                    finish();
-                                }
-                            }
-                        });
-                    }
-                }
-            };
-            // 注册回调接口
-            SMSSDK.registerEventHandler(handler);
-            // 获取国家列表
-            SMSSDK.getSupportedCountries();
-        } else {
-            if (pd != null && pd.isShowing()) {
-                pd.dismiss();
-            }
-            initPage();
-        }
-
+		SearchEngine.prepare(activity, new Runnable() {
+			public void run() {
+				afterPrepare();
+			}
+		});
     }
 
     private void afterPrepare() {
@@ -261,7 +216,6 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
         }
         return super.onFinish();
     }
-
 
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
