@@ -390,7 +390,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
                 editor.commit();
                 intent.putExtra("orderinfo", orderinfo);
-                intent.putExtra("isBack", "1");
+//                intent.putExtra("isBack", "1");//取消付款后是否回到当前页面
                 startActivity(intent);
                 break;
             case API1.BUY_PHOTO_FAILED:
@@ -459,7 +459,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 orderinfoArrayList.add(cartItemInfo1);
                 intent1.putExtra("orderinfo", orderinfoArrayList);
-                intent1.putExtra("isBack", "1");
+//                intent1.putExtra("isBack", "1");//取消付款后是否回到当前页面
                 startActivity(intent1);
                 break;
 
