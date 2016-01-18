@@ -119,7 +119,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新底部计算条
                     cartInfoList.addAll(cartItemInfoJson.getItems());
                     cartCount = cartItemInfoJson.getTotalCount();
-                    totalTextView.setText((int) cartItemInfoJson.getTotalPrice() + "");
+                    totalTextView.setText(cartItemInfoJson.getTotalPrice() + "");
                     paymentButton.setVisibility(View.VISIBLE);
                     paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size()));
                     editTextView.setEnabled(true);
@@ -130,10 +130,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 } else {
                     ShowNoNetOrNoCountView();
                 }
-
                 //保存购物车数量
                 Editor cartEditor = sPreferences.edit();
-                cartEditor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) - cartCount);
+                cartEditor.putInt(Common.CART_COUNT, cartCount);
                 cartEditor.commit();
                 break;
 
