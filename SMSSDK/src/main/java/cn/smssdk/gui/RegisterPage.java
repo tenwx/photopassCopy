@@ -84,9 +84,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     private int time = RETRY_INTERVAL;// 时间变量
     private EventHandler handlerIdentify;
     private EditTextWithClear etIdentifyNum, etPwd, etPwd2;// 验证码输入框,密码，再次输入密码
-    // private ImageView ivClear2;// 验证码 的 清除按钮
     private BroadcastReceiver smsReceiver;// 广播接收器
-    private int SHOWDIALOGTYPE = 1;// SHOWDIALOGTYPE
     private Button btnSubmit;// 提交按钮
 
     private MyToast myToast;
@@ -103,16 +101,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         this.type = type;
         handler2 = handler;
     }
-
-//    /**
-//     * 第一个参数区号／第二个参数国家
-//     */
-//    public RegisterPage(String code, String g, Handler handler, int type) {
-//        countryCode = code;
-//        countryC = g;
-//        handler2 = handler;
-//        this.type = type;
-//    }
 
     public void setRegisterCallback(EventHandler callback) {
         this.callback = callback;

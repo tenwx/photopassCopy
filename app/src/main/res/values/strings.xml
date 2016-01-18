@@ -336,7 +336,7 @@
     <string name="http_failed">连接服务器失败，请检查网络</string>
     <string name="story_tab_all">全部相册</string>
     <string name="story_tab_photopass">乐拍通</string>
-    <string name="story_tab_magic">魔法相册</string>
+    <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">已收藏</string>
     <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者乐拍通卡上的二维码, 更快获得你们的游玩照片。</string>
@@ -481,7 +481,7 @@
     <string name="order_detail_activity">订单详情</string>
     <string name="mobile_exist">手机号已经存在</string>
     <string name="loading_percent">正在上传%1$d</string>
-    <string name="launching_camera">相机启动中...</string>
+    <string name="launching_camera">嗨，赶快去找你的摄影师为你拍照吧！</string>
     <string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass card  mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="saving">正在保存...</string>
@@ -635,5 +635,7 @@
     <string name="blur_intro">如果您想把这一刻的美妙回忆保存并延续下去，那您需要拥有这张照片，您会发现这一次的旅程将更有意义！</string>
     <string name="no_photo_update">您还没有可升级的照片!</string>
     <string name="select_pp_wrong_date">只能选择连续三天的乐拍通卡</string>
+
+    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
 
 </resources>

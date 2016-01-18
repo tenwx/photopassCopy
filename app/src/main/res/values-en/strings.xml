@@ -335,7 +335,7 @@
     <string name="http_failed">Connect server failed, please check network</string>
     <string name="story_tab_all">All</string>
     <string name="story_tab_photopass">PhotoPass</string>
-    <string name="story_tab_magic">MagicCam</string>
+    <string name="story_tab_magic">Local</string>
     <string name="story_tab_bought">Purchased</string>
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / PhotoPass card to start associating your photos.</string>
@@ -479,7 +479,7 @@
     <string name="order_detail_activity">Order detail</string>
     <string name="mobile_exist">Mobile exists</string>
     <string name="loading_percent">Is uploading %1$d</string>
-    <string name="launching_camera">Initiating camera...</string>
+    <string name="launching_camera">Hey, hurry up and get your photographer to take a picture of you!</string>
     <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="saving">Saving...</string>

@@ -1,13 +1,11 @@
 package com.pictureair.photopass.view;
 
 
-import com.pictureair.photopass.view.DropCover.OnDragCompeteListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +14,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.pictureair.photopass.view.DropCover.OnDragCompeteListener;
 
 public class WaterDrop extends RelativeLayout {
     private Paint mPaint = new Paint();

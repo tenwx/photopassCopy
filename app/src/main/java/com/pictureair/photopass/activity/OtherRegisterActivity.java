@@ -25,6 +25,7 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.EditTextWithClear;
 
 public class OtherRegisterActivity extends BaseActivity implements
@@ -102,6 +103,13 @@ public class OtherRegisterActivity extends BaseActivity implements
                 etDay.setText(mDay_Str);
                 birthday = mYear_Str + "-" + mMonth_Str + "-" + mDay_Str;
                 System.out.println("birthday " + birthday);
+                break;
+
+            case 1://国家
+                String[] countrys = (String[])msg.obj;
+//                countryCode = countrys[1];
+                country = countrys[0];
+                etCounry.setText(country);// 国家名称
                 break;
 
 
@@ -198,9 +206,6 @@ public class OtherRegisterActivity extends BaseActivity implements
                 String pwd = etPwd.getText().toString();
                 String pwd2 = etPwd2.getText().toString();
                 String name = etName.getText().toString().trim();
-                // String year = etYear.getText().toString();
-                // String month = etMonth.getText().toString();
-                // String day = etDay.getText().toString();
                 country = etCounry.getText().toString();
 
                 if (email.isEmpty()) {
@@ -269,10 +274,9 @@ public class OtherRegisterActivity extends BaseActivity implements
                 break;
 
             case R.id.other_sign_country:
-                Intent intent = new Intent();
-                intent.setClass(this, NationalListSelectionActivity.class);
-                intent.putExtra("isCountrycode", "isCountryCode");
-                startActivityForResult(intent, 0);
+                CountryPage countryPage = new CountryPage();
+                countryPage.setMHandler(otherRegisterHandler);
+                countryPage.show(this,null);
                 break;
 
             default:
@@ -286,21 +290,6 @@ public class OtherRegisterActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         otherRegisterHandler.removeCallbacksAndMessages(null);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case 222://修改国家
-                PictureAirLog.out("country---->" + data.getStringExtra("country"));
-                etCounry.setText(data.getStringExtra("country"));// 国家名称
-                break;
-
-            default:
-                break;
-        }
     }
 
     @Override

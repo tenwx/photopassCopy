@@ -53,8 +53,8 @@ import java.util.ArrayList;
  * @author bauer_bao
  */
 
-public class SelectPhotoActivity1 extends BaseActivity implements OnClickListener {
-    private static final String TAG = "SelectPhotoActivity1";
+public class SelectPhotoActivity extends BaseActivity implements OnClickListener {
+    private static final String TAG = "SelectPhotoActivity";
     //申明控件
     private ImageView rtLayout;
     private Button btnGoToSelectPhoto;
@@ -90,9 +90,9 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
 
 
     private static class SelectPhotoHandler extends Handler {
-        private final WeakReference<SelectPhotoActivity1> mActivity;
+        private final WeakReference<SelectPhotoActivity> mActivity;
 
-        public SelectPhotoHandler(SelectPhotoActivity1 activity) {
+        public SelectPhotoHandler(SelectPhotoActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -155,7 +155,7 @@ public class SelectPhotoActivity1 extends BaseActivity implements OnClickListene
                 // 找出购买的info，并且将购买属性改为1
                 photoURLlist.get(0).isPayed = 1;
 
-                Intent intent = new Intent(SelectPhotoActivity1.this, PreviewPhotoActivity.class);
+                Intent intent = new Intent(SelectPhotoActivity.this, PreviewPhotoActivity.class);
                 intent.putExtra("activity", "selectphotoactivity");
                 intent.putExtra("position", 0);// 在那个相册中的位置
                 intent.putExtra("photoId", photoURLlist.get(0).photoId);

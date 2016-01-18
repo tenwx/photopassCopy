@@ -358,6 +358,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case LOAD_COMPLETED:
+                //没有成功获取广告信息
+                if (!app.isGetADLocationSuccess()) {
+                    PictureAirLog.out("start get ad location");
+                    API1.getADLocations(fragmentPageStoryHandler);
+                } else {
+                    PictureAirLog.out("ad location has got already");
+                }
+
                 sortData(true);
                 break;
 
@@ -670,13 +678,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             fragmentPageStoryHandler.sendMessage(message);
         }
 
-        //没有成功获取广告信息
-        if (!app.isGetADLocationSuccess()) {
-            PictureAirLog.out("start get ad location");
-            API1.getADLocations(fragmentPageStoryHandler);
-        } else {
-            PictureAirLog.out("ad location has got already");
-        }
         return view;
     }
 
@@ -717,51 +718,50 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
      * 控制控件的隐藏或者显示
      */
     private void showViewPager() {
-
-        //判断是否应该显示左上角红点
-
-        if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
-            PictureAirLog.out("viewpager---->has not scan pp");
-            //显示没有pp的情况
-            storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
+        if (app.allPicList != null && app.allPicList.size() > 0) {//有图片
+            PictureAirLog.out("viewpager---->has photos");
+            //隐藏没有pp的情况
+            storyNoPpToScanLinearLayout.setVisibility(View.GONE);
+            //隐藏空图的情况
             noPhotoView.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.GONE);
+            //显示有pp的情况
+            storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
 
-            //需要设置为不可见，不然会报空指针异常
-            storyLeadBarLinearLayout.setVisibility(View.INVISIBLE);
-            storyViewPager.setVisibility(View.INVISIBLE);
-        } else {//有扫描过
+            fragments.add(StoryFragment.getInstance(allPhotoList, app.magicPicList, 0, fragmentPageStoryHandler));
+            fragments.add(StoryFragment.getInstance(pictureAirPhotoList, app.magicPicList, 1, fragmentPageStoryHandler));
+            fragments.add(StoryFragment.getInstance(magicPhotoList, app.magicPicList, 2, fragmentPageStoryHandler));
+            fragments.add(StoryFragment.getInstance(boughtPhotoList, app.magicPicList, 3, fragmentPageStoryHandler));
+            fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, fragmentPageStoryHandler));
+            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
+            storyViewPager.setAdapter(fragmentAdapter);
 
-            if (app.allPicList != null && app.allPicList.size() > 0) {//有图片
-                PictureAirLog.out("viewpager---->has photos");
-                //隐藏没有pp的情况
-                storyNoPpToScanLinearLayout.setVisibility(View.GONE);
-                //隐藏空图的情况
-                noPhotoView.setVisibility(View.GONE);
-                swipeRefreshLayout.setVisibility(View.GONE);
-                //显示有pp的情况
-                storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
-
-                fragments.add(StoryFragment.getInstance(allPhotoList, app.magicPicList, 0, fragmentPageStoryHandler));
-                fragments.add(StoryFragment.getInstance(pictureAirPhotoList, app.magicPicList, 1, fragmentPageStoryHandler));
-                fragments.add(StoryFragment.getInstance(magicPhotoList, app.magicPicList, 2, fragmentPageStoryHandler));
-                fragments.add(StoryFragment.getInstance(boughtPhotoList, app.magicPicList, 3, fragmentPageStoryHandler));
-                fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, fragmentPageStoryHandler));
-                fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
-                storyViewPager.setAdapter(fragmentAdapter);
-
-                indicator.setViewPager(storyViewPager);
-                indicator.setVisibility(View.VISIBLE);
-                storyViewPager.setVisibility(View.VISIBLE);
-                storyViewPager.setOffscreenPageLimit(2);
+            indicator.setViewPager(storyViewPager);
+            indicator.setVisibility(View.VISIBLE);
+            storyViewPager.setVisibility(View.VISIBLE);
+            storyViewPager.setOffscreenPageLimit(2);
 //                storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
 //                setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
-                EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
-                EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
-                EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
-                EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
-                EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
-            } else {//没有图片
+            EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
+            EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
+            EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
+            EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
+            EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
+        } else {//没有图片
+
+            //判断是否应该显示左上角红点
+
+            if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
+                PictureAirLog.out("viewpager---->has not scan pp");
+                //显示没有pp的情况
+                storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
+                noPhotoView.setVisibility(View.GONE);
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
+
+                //需要设置为不可见，不然会报空指针异常
+                storyLeadBarLinearLayout.setVisibility(View.INVISIBLE);
+                storyViewPager.setVisibility(View.INVISIBLE);
+            } else {//有扫描过
                 PictureAirLog.out("viewpager---->no photos");
                 storyNoPpToScanLinearLayout.setVisibility(View.GONE);
 
@@ -1409,7 +1409,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         if (baseBusEvent instanceof StoryRefreshOnClickEvent) {
             StoryRefreshOnClickEvent storyRefreshOnClickEvent = (StoryRefreshOnClickEvent) baseBusEvent;
             if (storyRefreshOnClickEvent.isStoryTabClick()) {//通知页面开始刷新
-                if (noPhotoView.isShown()) {
+                if (noPhotoView.isShown() || storyNoPpToScanLinearLayout.isShown()) {
                     PictureAirLog.out("do refresh when noPhotoView is showing");
                     if (!swipeRefreshLayout.isRefreshing()) {
                         noPhotoViewStateRefresh = true;

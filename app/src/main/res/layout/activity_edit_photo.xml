@@ -196,22 +196,22 @@
     <LinearLayout
         android:id="@+id/edittoolsbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_bar_65"
         android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/pp_margin_16"
-        android:paddingTop="@dimen/pp_margin_16">
+        android:paddingBottom="@dimen/bottom_bar_padding_5"
+        android:paddingTop="@dimen/bottom_bar_padding_5">
 
         <TextView
             android:id="@+id/edit_frame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@color/transparent"
             android:drawableTop="@drawable/edit_photo_frame_button"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/frames"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_size_12" />
@@ -220,11 +220,10 @@
             android:id="@+id/edit_filter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@color/transparent"
             android:drawableTop="@drawable/edit_photo_filter_button"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/magicbrush"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_size_12" />
@@ -233,11 +232,10 @@
             android:id="@+id/edit_accessory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@color/transparent"
             android:drawableTop="@drawable/edit_photo_accessory_button"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/decoration"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_size_12" />
@@ -246,11 +244,10 @@
             android:id="@+id/edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@color/transparent"
             android:drawableTop="@drawable/edit_photo_text_button"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/rotate"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_size_12" />
@@ -259,12 +256,10 @@
     <com.pictureair.photopass.widget.HorizontalListView
         android:id="@+id/horizontalListView"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/pp_height_116"
+        android:layout_height="@dimen/bottom_bar_65"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:cacheColorHint="@color/transparent"
-        android:paddingBottom="@dimen/pp_margin_16"
-        android:paddingTop="@dimen/pp_margin_16"
         android:visibility="gone" />
 
     <LinearLayout

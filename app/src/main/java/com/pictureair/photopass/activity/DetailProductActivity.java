@@ -188,7 +188,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                 break;
             case R.id.button_buy:
                 //选择照片
-                intent = new Intent(DetailProductActivity.this, SelectPhotoActivity1.class);
+                intent = new Intent(DetailProductActivity.this, SelectPhotoActivity.class);
                 intent.putExtra("activity", "detailproductactivity");
                 intent.putExtra("goodsInfo", goodsInfo);
                 startActivity(intent);

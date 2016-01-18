@@ -140,8 +140,8 @@ public class EditActivityAdapter extends BaseAdapter {
         holderView.progressBar.setVisibility(View.INVISIBLE);
         if (editType == 2) {//滤镜
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
-            layoutParams.height = ScreenUtil.dip2px(mContext, 65);
-            layoutParams.width = ScreenUtil.dip2px(mContext, 65);
+            layoutParams.height = ScreenUtil.dip2px(mContext, 50);
+            layoutParams.width = ScreenUtil.dip2px(mContext, 50);
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
             ImageLoader.getInstance().displayImage("assets://" + stickerPathList.get(position), holderView.editImageview, options);
 
@@ -150,8 +150,8 @@ public class EditActivityAdapter extends BaseAdapter {
         }
         if (editType == 3) {//饰品
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
-            layoutParams.height = ScreenUtil.dip2px(mContext, 80);
-            layoutParams.width = ScreenUtil.dip2px(mContext, 80);
+            layoutParams.height = ScreenUtil.dip2px(mContext, 60);
+            layoutParams.width = ScreenUtil.dip2px(mContext, 60);
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
             if (frameInfos.get(position).onLine == 1) {//网络图片
 
