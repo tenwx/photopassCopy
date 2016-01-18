@@ -638,4 +638,7 @@
 
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
 
+    <string name="develop_version">调试版 </string>
+    <string name="testing_version">公测版 </string>
+
 </resources>

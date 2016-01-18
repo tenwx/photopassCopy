@@ -4,11 +4,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.Common;
 
 
 public class AboutActivity extends BaseActivity {
@@ -40,7 +39,13 @@ public class AboutActivity extends BaseActivity {
             PackageManager manager = this.getPackageManager();
             PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
             versionCode = info.versionCode + "";
-            versionName = info.versionName;
+            if (Common.DEBUG) {//研发版本
+                versionName = getString(R.string.develop_version) + Common.VERSION_CODE;
+            } else {//内测版本
+                versionName = getString(R.string.testing_version) + Common.VERSION_CODE;
+            }
+            //发布版本
+//            versionName = info.versionName;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -15,7 +15,7 @@ public class UpdateUiRecriver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
 		// TODO 更新UI
-		EventBus.getDefault().postSticky(new RedPointControlEvent(true));
+		EventBus.getDefault().post(new RedPointControlEvent(true));
 
 		//获得震动服务
 		vibrator = (Vibrator)arg0.getSystemService(Context.VIBRATOR_SERVICE); 
