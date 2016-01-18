@@ -155,6 +155,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:drawableTop="@drawable/button_select_model"
+                android:visibility="invisible"
                 android:gravity="center"
                 android:text="@string/disney_video_selectphoto_model"
                 android:textColor="@drawable/textview_selector_onclick"

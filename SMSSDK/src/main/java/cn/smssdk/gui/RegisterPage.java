@@ -834,8 +834,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             if (type == 0 ){//注册
                 onChangedEditTestiSempet();
             }else{
-                if (etPhoneNum.getText().toString().length() > 0 && etIdentifyNum.getText().toString().length() > 0) {
+                if (etPhoneNum.getText().toString().trim().length() > 0 && etIdentifyNum.getText().toString().trim().length() > 0) {
                     setSubmitAvailable(true);
+                }else{
+                    setSubmitAvailable(false);
                 }
             }
         }
