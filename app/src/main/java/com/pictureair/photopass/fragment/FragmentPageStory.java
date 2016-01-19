@@ -61,6 +61,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -121,7 +122,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private ArrayList<PhotoItemInfo> photoPassPictureList;
     private ArrayList<PhotoItemInfo> magicPicList;
 
-    private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList;
+    private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList, localPhotoList;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private List<Fragment> fragments;
     private FragmentAdapter fragmentAdapter;
@@ -530,7 +531,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            EventBus.getDefault().postSticky(new RedPointControlEvent(false));
+            EventBus.getDefault().post(new RedPointControlEvent(false));
         }
     }
 
@@ -740,7 +741,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             indicator.setVisibility(View.VISIBLE);
             storyViewPager.setVisibility(View.VISIBLE);
             storyViewPager.setOffscreenPageLimit(2);
-//                storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
+            storyViewPager.setCurrentItem(app.fragmentStoryLastSelectedTab);
 //                setTitleBarTextColor(app.fragmentStoryLastSelectedTab);
             EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
             EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
@@ -847,6 +848,61 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         }
     }
 
+    //检查更新本地照片
+    private void checkLocalPhotos(String filePath) {
+        File file = new File(filePath);
+        File[] files = file.listFiles();
+        Date date;
+        //判断是否为空
+        if (localPhotoList == null) {
+            localPhotoList = new ArrayList<>();
+        }
+        localPhotoList.clear();
+        PhotoInfo localPhotoInfo;
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
+                if (files[i].length() > 0) {//扫描到文件
+                    PictureAirLog.out("scan local photo");
+                    localPhotoInfo = new PhotoInfo();
+                    localPhotoInfo.photoPathOrURL = files[i].getPath();
+                    localPhotoInfo.lastModify = files[i].lastModified();
+                    date = new Date(localPhotoInfo.lastModify);
+                    localPhotoInfo.shootOn = sdf.format(date);
+                    localPhotoInfo.shootTime = localPhotoInfo.shootOn.substring(0, 10);
+                    localPhotoInfo.isChecked = 0;
+                    localPhotoInfo.isSelected = 0;
+                    localPhotoInfo.showMask = 0;
+                    localPhotoInfo.locationName = getString(R.string.magic_location);
+                    localPhotoInfo.isPayed = 1;
+                    localPhotoInfo.onLine = 0;
+                    localPhotoInfo.isVideo = 0;
+                    localPhotoList.add(localPhotoInfo);
+                }
+            }
+        }
+        PictureAirLog.out("rescan count--->" + localPhotoList.size() + ", old count--->" + app.magicPicList.size());
+        if (localPhotoList.size() != app.magicPicList.size()) {//发现数据不一致，需要更新
+            PictureAirLog.d(TAG, "local photos has update");
+            app.allPicList.removeAll(magicPicList);
+            magicPicList.clear();
+            app.magicPicList.clear();
+            app.magicPicList.addAll(localPhotoList);
+            Collections.sort(app.magicPicList);
+
+            Iterator<PhotoInfo> iterator = favouritePhotoList.iterator();
+            while (iterator.hasNext()) {
+                PhotoInfo info = iterator.next();
+                if (info.onLine == 0) {
+                    file = new File(info.photoPathOrURL);
+                    if (!file.exists()) {
+                        iterator.remove();
+                    }
+                }
+            }
+            fragmentPageStoryHandler.sendEmptyMessage(REFRESH_LOCAL_PHOTOS);
+        }
+    }
+
     /**
      * 检查数据库是否有数据
      */
@@ -879,16 +935,24 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             }
             API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
             API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
-            EventBus.getDefault().postSticky(new RedPointControlEvent(false));
+            EventBus.getDefault().post(new RedPointControlEvent(false));
         }
-        if (!app.scanMagicFinish) {
+        if (!app.scanMagicFinish) {//app内的正常流程
+            PictureAirLog.out("need scan local photos");
             if (!dialog.isShowing()) {
                 dialog.show();
             }
             scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
             scanPhotosThread.start();
-        } else {
-            Collections.sort(app.magicPicList);
+        } else {//检查本地文件夹，属于外部原因的检查
+            PictureAirLog.out("need check local photos");
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    checkLocalPhotos(Common.PHOTO_SAVE_PATH);
+                }
+            }.start();
         }
 
         if (app.needScanFavoritePhotos) {//需要扫描收藏图片

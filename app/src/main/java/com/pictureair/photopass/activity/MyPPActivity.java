@@ -499,11 +499,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 JSONArray pps = new JSONArray();
                 tempPhotoLists = new ArrayList<>();
                 //			String binddate = null;
-                System.out.println("size=" + map.size());
                 for (int j = 0; j < showPPCodeList.size(); j++) {
                     JSONObject jsonObject = new JSONObject();
                     if (null != map.get(j) && map.get(j)) {
-                        System.out.println(showPPCodeList.get(j).getPpCode());
                         try {
                             PhotoInfo photoInfo = new PhotoInfo();
                             jsonObject.put("code", showPPCodeList.get(j).getPpCode());

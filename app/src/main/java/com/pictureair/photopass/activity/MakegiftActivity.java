@@ -347,6 +347,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         currencytextview.setText(sp.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         priceTextView = (TextView) findViewById(R.id.textview_productprice);
         introduceTextView = (TextView) findViewById(R.id.product_detail);
+        introduceTextView.setTypeface(MyApplication.getInstance().getFontBold());
         addphotoButton = (ImageView) findViewById(R.id.addimage);
         addphotoButton.setOnClickListener(this);
         returnLayout = (ImageView) findViewById(R.id.rt);

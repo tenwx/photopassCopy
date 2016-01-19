@@ -88,6 +88,14 @@
                     android:text="@string/copyright2"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_12" />
+
+                <TextView
+                    android:id="@+id/develop_version_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_margin_16"
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_12"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

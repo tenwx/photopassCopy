@@ -2,8 +2,6 @@ package com.pictureair.photopass.util;
 
 import android.util.Log;
 
-import com.pictureair.photopass.MyApplication;
-
 /**
  * log的封装类
  *
@@ -16,7 +14,7 @@ public class PictureAirLog {
     private static final String BASE_TAG = "PhotoPass==>>";
 
     static {
-        DEBUG = MyApplication.DEBUG;
+        DEBUG = Common.DEBUG;
     }
 
     /**

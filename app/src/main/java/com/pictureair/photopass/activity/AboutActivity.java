@@ -4,18 +4,20 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.Common;
 
 
 public class AboutActivity extends BaseActivity {
     private TextView logo_text;
     private TextView tv_versionCode;
+    private TextView developTextView;
     private String versionCode;
     private String versionName;
+    private String developVersion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,15 @@ public class AboutActivity extends BaseActivity {
         setTopTitleShow(R.string.mypage_about);
         logo_text = (TextView) findViewById(R.id.logo_text);
         tv_versionCode = (TextView) findViewById(R.id.versionCode);
+        developTextView = (TextView) findViewById(R.id.develop_version_tv);
         getVersionCode();
-        tv_versionCode.setText(versionName);
+        tv_versionCode.setText("V" + versionName);
+        if (Common.DEBUG) {//研发版本
+            developVersion = getString(R.string.develop_version) + Common.VERSION_CODE;
+        } else {//内测版本
+            developVersion = getString(R.string.testing_version) + Common.VERSION_CODE;
+        }
+        developTextView.setText(developVersion);
 //		logo_text.setText((Html.fromHtml("我"+ "<font color='#ffa300'><big>"+ "(迪)"+ "</big></font>" + "故事里有您更精"+ "<font color='#ffa300'><big>"+ "(彩)"+ "</big></font>")));
         logo_text.setText(R.string.about_tips);
     }

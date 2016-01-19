@@ -296,7 +296,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
                 } else {
                     PictureAirLog.out("bit2-->" + bitmap2.getHeight() + "y--" + y + ",x---" + x + ",r--" + radius);
-                    bitmap3 = Bitmap.createBitmap(bitmap2, x, y, 2 * radius, 2 * radius);
+                    int cropX = 2 * radius;
+                    int cropY = 2 * radius;
+                    if (x + cropX > bitmap2.getWidth()) {
+                        cropX = bitmap2.getWidth() - x;
+                    }
+                    if (y + cropY > bitmap2.getHeight()) {
+                        cropY = bitmap2.getHeight() - y;
+                    }
+                    PictureAirLog.out("bit2-->" + "cropx--" + cropX + ",cropy---" + cropY);
+                    bitmap3 = Bitmap.createBitmap(bitmap2, x, y, cropX, cropY);
                     bitmap3 = Mask(bitmap3);
                     bitmap3 = UtilOfDraw.toRoundBitmap(bitmap3);
                 }
@@ -390,7 +399,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
                 editor.commit();
                 intent.putExtra("orderinfo", orderinfo);
-                intent.putExtra("isBack", "1");
+//                intent.putExtra("isBack", "1");//取消付款后是否回到当前页面
                 startActivity(intent);
                 break;
             case API1.BUY_PHOTO_FAILED:
@@ -423,6 +432,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                 }
                 break;
+
             case API1.GET_GOODS_FAILED:
                 progressDialog.dismiss();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
@@ -459,7 +469,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 orderinfoArrayList.add(cartItemInfo1);
                 intent1.putExtra("orderinfo", orderinfoArrayList);
-                intent1.putExtra("isBack", "1");
+//                intent1.putExtra("isBack", "1");//取消付款后是否回到当前页面
                 startActivity(intent1);
                 break;
 
@@ -548,13 +558,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                  * 2.在application中记录结果
                  */
                 JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
-                currentPhotoADTextView.setText(pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
-                        photoInfo.locationId, MyApplication.getInstance().getLanguageType()));
+                String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
+                        photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+
+                if (!adString.equals("")) {
+                    currentPhotoADTextView.setVisibility(View.VISIBLE);
+                    currentPhotoADTextView.setText(adString);
+                }
                 myApplication.setGetADLocationSuccess(true);
                 break;
 
             case API1.GET_AD_LOCATIONS_FAILED:
-                currentPhotoADTextView.setVisibility(View.GONE);
                 break;
 
             default:
@@ -796,10 +810,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
             }
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
-            currentPhotoADTextView.setVisibility(View.VISIBLE);
+            currentPhotoADTextView.setVisibility(View.GONE);
             if (myApplication.isGetADLocationSuccess()) {
                 //从数据库中查找
-                currentPhotoADTextView.setText(pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType()));
+                String adString = pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+                if (!adString.equals("")) {
+                    currentPhotoADTextView.setVisibility(View.VISIBLE);
+                    currentPhotoADTextView.setText(adString);
+                }
             } else {
                 //从网络获取
                 API1.getADLocations(previewPhotoHandler);
@@ -809,11 +827,19 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
 
         if (isLandscape) {//横屏模式
-            lastPhotoImageView.setVisibility(View.GONE);
-            nextPhotoImageView.setVisibility(View.GONE);
-            currentPhotoIndexTextView.setVisibility(View.GONE);
-            currentPhotoInfoTextView.setVisibility(View.GONE);
-            currentPhotoADTextView.setVisibility(View.GONE);
+//            lastPhotoImageView.setVisibility(View.GONE);
+//            nextPhotoImageView.setVisibility(View.GONE);
+//            currentPhotoIndexTextView.setVisibility(View.GONE);
+//            currentPhotoInfoTextView.setVisibility(View.GONE);
+//            currentPhotoADTextView.setVisibility(View.GONE);
+            if (mViewPager != null) {
+                mViewPager.setBackgroundColor(Color.BLACK);
+            }
+            touchtoclean.setTextColor(getResources().getColor(R.color.white));
+            touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.pp_dark_blue));
+        } else {
+            touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+            touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.transparent));
         }
     }
 
@@ -846,7 +872,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             sizeW = (int) (scaleW / 2);
             sizeH = (int) (scaleH / 2);
             if (photoInfo.isPayed == 0) {// 未购买的照片
-
+                if (bm != null) {
+                    bm.recycle();
+                }
                 bm = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
                 bitmap1 = UtilOfDraw.blur(bitmap2);//添加模糊度
                 PictureAirLog.v(TAG, "bitmap1 = " + bitmap1.getWidth() + "_" + bitmap1.getHeight());
@@ -975,13 +1003,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         matrix.postScale(sw, sh);//设置缩放的比例
         //将mask蒙板缩放到和截图一样大小
         bm = Bitmap.createBitmap(bm, 0, 0, w, h, matrix, true);
+        resultBitmap = Bitmap.createBitmap(resultBitmap, 0, 0, w, h, matrix, true);
         //创建数组
         int[] pixels_b = new int[b.getWidth() * b.getHeight()];
         int[] pixels_bm = new int[bm.getWidth() * bm.getHeight()];
         //得到传入参数的像素值，并且放入pixels_b中
-        b.getPixels(pixels_b, 0, b.getWidth(), 0, 0, b.getWidth(), b.getWidth());
+        b.getPixels(pixels_b, 0, b.getWidth(), 0, 0, b.getWidth(), b.getHeight());
         //得到mask蒙板的像素值，并且放入pixels_bm中
-        bm.getPixels(pixels_bm, 0, bm.getWidth(), 0, 0, bm.getWidth(), bm.getWidth());
+        bm.getPixels(pixels_bm, 0, bm.getWidth(), 0, 0, bm.getWidth(), bm.getHeight());
         //遍历mask蒙板数组，图片全黑部分转化为全透明，其他地方和截取的图片进行合成
         for (int i = 0; i < pixels_bm.length; i++) {
             if (pixels_bm[i] == 0xff000000) {//ff000000为不透明的黑色
@@ -1368,6 +1397,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      * 垂直模式
      */
     private void portraitOrientation(){
+        isLandscape = false;
         titleBar.setVisibility(View.VISIBLE);
         toolsBar.setVisibility(View.VISIBLE);
         indexBar.setVisibility(View.VISIBLE);
@@ -1378,12 +1408,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         photoFraRelativeLayout.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         image01.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        touchtoclean.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+        touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.transparent));
     }
 
     /**
      * 横屏模式
      */
     private void landscapeOrientation(){
+        isLandscape = true;
         if (sharePop.isShowing()) {
             sharePop.dismiss();
         }
@@ -1397,6 +1430,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         toolsBar.setVisibility(View.GONE);
         indexBar.setVisibility(View.GONE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        touchtoclean.setTextColor(getResources().getColor(R.color.white));
+        touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.pp_dark_blue));
     }
 
     /**

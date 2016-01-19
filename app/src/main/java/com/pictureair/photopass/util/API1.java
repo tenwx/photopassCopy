@@ -434,7 +434,6 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 //成功获取照片信息
-                PictureAirLog.out("getphotos--------" + jsonObject);
                 if (null == timeString) {//获取全部照片
                     handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS, jsonObject).sendToTarget();
                 } else {//获取当前照片

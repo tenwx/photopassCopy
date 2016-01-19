@@ -198,5 +198,9 @@
     <string name="http_error_code_5041">分享回调失败！</string>
     <string name="http_error_code_5042">订单图片合成失败！</string>
     <string name="http_error_code_5043">订单图片不存在！</string>
+    <string name="http_error_code_6154">PP+失效</string>
+    <string name="http_error_code_6155">需要升级的PP卡拍摄日期不符合要求</string>
+    <string name="http_error_code_6156">不能使用当前的PP+卡类型</string>
+    <string name="http_error_code_6157">查询PP+卡类型出错</string>
 
 </resources>

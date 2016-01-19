@@ -11,7 +11,6 @@ import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost.TabSpec;
@@ -222,7 +221,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     System.out.println("photo tab on click");
                     if (mTabHost.getCurrentTab() == 0) {//获取最新数据
                         PictureAirLog.d(TAG, "need refresh");
-                        EventBus.getDefault().postSticky(new StoryRefreshOnClickEvent(true));
+                        EventBus.getDefault().post(new StoryRefreshOnClickEvent(true));
                     } else {
                         PictureAirLog.d(TAG, "need not refresh");
                     }

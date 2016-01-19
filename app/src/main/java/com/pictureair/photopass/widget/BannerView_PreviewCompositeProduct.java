@@ -15,6 +15,7 @@ import com.pictureair.photopass.adapter.CompositeImageProductAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
     private CompositeImageProductView compositeImageProductView;
     private ImageView imageView;
     private CompositeImageProductAdapter adapter;
+    private LinearLayout viewpagerGroup;
 
     public BannerView_PreviewCompositeProduct(Context context) {
         super(context);
@@ -44,13 +46,14 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.banner_compositeimageview, this);
-        initView(context);
+        adViewPager = new ViewPager(context);
+        adViewPager.setLayoutParams(new LayoutParams(ScreenUtil.getScreenWidth(context), ScreenUtil.getScreenWidth(context) * 3 / 4));
+        group = (ViewGroup) findViewById(R.id.iv_image_compositeimage);
+
+        viewpagerGroup = (LinearLayout) findViewById(R.id.relativelayout_compositeimage);
+        viewpagerGroup.addView(adViewPager);
     }
 
-    private void initView(final Context context) {
-        adViewPager = (ViewPager) this.findViewById(R.id.viewPager_compositeimage);
-        group = (ViewGroup) findViewById(R.id.iv_image_compositeimage);
-    }
 
     //改变图片
     public void changeimagepath(ArrayList<PhotoInfo> list, String goodsUrl, int viewWidth, int viewHeight,

@@ -45,6 +45,7 @@ public class DealCodeUtil {
 		public void handleMessage(Message msg){
 			switch (msg.what) {
 				case API1.CHECK_CODE_FAILED:
+					PictureAirLog.out("check code failed");
 					switch (msg.arg1) {
 						case 6136://无效的条码类型
 							id = ReflectionUtil.getStringId(context, msg.arg1);
@@ -71,10 +72,10 @@ public class DealCodeUtil {
 							break;
 					}
 
+					myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
 					if (dealWay != null) {//如果从ppp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
 						handler.obtainMessage(DEAL_CODE_FAILED, id).sendToTarget();
 					}else {//弹出错误提示
-						myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
 						handler.sendEmptyMessage(DEAL_CODE_FAILED);
 					}
 					break;

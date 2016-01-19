@@ -17,6 +17,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PinYin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -192,10 +193,12 @@ public class PictureAirDbManager {
     public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         Cursor cursor = null;
+        Cursor cursor1 = null;
         try {
             database = photoInfoDBHelper.getReadableDatabase();
             cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where userId = ? order by shootOn desc", new String[]{userId});
             PhotoInfo photoInfo;
+            File file;
             while (cursor.moveToNext()) {
                 photoInfo = new PhotoInfo();
                 photoInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
@@ -217,6 +220,21 @@ public class PictureAirDbManager {
                 photoInfo.videoWidth = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoWidth")));
                 photoInfo.videoHeight = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoHeight")));
                 photoInfo.onLine = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isOnLine")));
+                if (photoInfo.isPayed == 0) {//如果为0，检查photo表是否是已经购买状态
+                    cursor1 = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and isPay = ?", new String[]{photoInfo.photoId, "1"});
+                    if (cursor1.getCount() > 0) {
+                        photoInfo.isPayed = 1;
+                    }
+                    if (cursor1 != null) {
+                        cursor1.close();
+                    }
+                }
+                if (photoInfo.onLine == 0) {//本地图片，检查是否存在
+                    file = new File(photoInfo.photoPathOrURL);
+                    if (!file.exists()) {
+                        continue;
+                    }
+                }
                 resultArrayList.add(photoInfo);
             }
 
@@ -1018,7 +1036,7 @@ public class PictureAirDbManager {
      * @return
      */
     public String getADByLocationId(String locationId, String language){
-        String ad = null;
+        String ad = "";
         Cursor cursor = null;
         try {
             database = photoInfoDBHelper.getReadableDatabase();
