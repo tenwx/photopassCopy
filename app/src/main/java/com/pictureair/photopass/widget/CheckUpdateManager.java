@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cn.smssdk.gui.CustomProgressDialog;
+
 public class CheckUpdateManager {
 	private BaseCheckUpdate baseCheckUpdate;
 	private Context context;

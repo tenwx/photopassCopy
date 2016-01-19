@@ -27,7 +27,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
@@ -118,9 +118,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                             id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
                             break;
                     }
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
+
                     myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                     break;
                 case API1.FIND_PWD_SUCCESS:

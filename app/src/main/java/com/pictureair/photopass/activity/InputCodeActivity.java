@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,7 +24,7 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;

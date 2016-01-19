@@ -24,4 +24,6 @@
 	<color name="pp_light_gray_normal">#e9eef1</color>
 	<!-- 淡浅灰，比如注册按钮点击颜色-->
 	<color name="pp_light_gray_press">#a1afc0</color>
+	<color name="blur_mask">#b2000000</color>
+
 </resources>

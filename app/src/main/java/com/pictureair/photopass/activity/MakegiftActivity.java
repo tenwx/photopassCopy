@@ -52,7 +52,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;

@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 

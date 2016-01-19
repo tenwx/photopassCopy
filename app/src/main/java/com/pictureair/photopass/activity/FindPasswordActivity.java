@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,12 +8,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -24,20 +19,12 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.SignAndLoginUtil;
-import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+
+import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.CustomButtonFont;
 import cn.smssdk.gui.EditTextWithClear;
-import cn.smssdk.gui.RegisterPage;
 
 /**
  * 忘记密码：2个页面

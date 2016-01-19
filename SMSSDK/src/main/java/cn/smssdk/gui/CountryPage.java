@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import cn.smssdk.EventHandler;
+import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.framework.FakeActivity;
 import cn.smssdk.gui.GroupListView.OnItemClickListener;
@@ -39,7 +40,10 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
     private HashMap<String, String> countryRules;
     private EventHandler handler;
     private CountryListView listView;
-    private Dialog pd;
+//    private Dialog pd;
+    private CustomProgressDialog customProgressDialog;
+
+
     private Handler mHandler = null;
     private boolean isSelectCountry = false;
 
@@ -56,13 +60,12 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
     }
 
     public void onCreate() {
-        if (pd != null && pd.isShowing()) {
-            pd.dismiss();
-        }
-        pd = CommonDialog.ProgressDialog(activity);
-        if (pd != null) {
-            pd.show();
-        }
+        goneDialog();
+//        pd = CommonDialog.ProgressDialog(activity);
+//        if (pd != null) {
+        customProgressDialog = CustomProgressDialog.show(activity, activity.getResources().getString(getStringRes(activity, "is_loading"))
+                , false, null);
+//        }
         // 初始化搜索引擎
 		SearchEngine.prepare(activity, new Runnable() {
 			public void run() {
@@ -70,6 +73,13 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
 			}
 		});
     }
+
+    private void goneDialog() {
+        if (null != customProgressDialog && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
+    }
+
 
     private void afterPrepare() {
         runOnUIThread(new Runnable() {
@@ -86,9 +96,7 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
                             if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                                 runOnUIThread(new Runnable() {
                                     public void run() {
-                                        if (pd != null && pd.isShowing()) {
-                                            pd.dismiss();
-                                        }
+                                        goneDialog();
 
                                         if (result == SMSSDK.RESULT_COMPLETE) {
                                             onCountryListGot((ArrayList<HashMap<String, Object>>) data);
@@ -111,9 +119,7 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
                     // 获取国家列表
                     SMSSDK.getSupportedCountries();
                 } else {
-                    if (pd != null && pd.isShowing()) {
-                        pd.dismiss();
-                    }
+                    goneDialog();
                     initPage();
                 }
             }

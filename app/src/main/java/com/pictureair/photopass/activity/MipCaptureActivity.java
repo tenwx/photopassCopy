@@ -28,7 +28,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
