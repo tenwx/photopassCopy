@@ -553,7 +553,7 @@
     <string name="notifacation_new_order">New Order</string>
     <string name="notifacation_new_photo">You have new photos</string>
     <string name="notifacation_new_video">You have new videos</string>
-    <string name="local_photo_not_support_makegift">Sorry we can't make gift from your edited photos.</string>
+    <string name="local_photo_not_support_makegift">Sorry we can\'t make gift from your edited photos.</string>
     <string name="transport">transport</string>
     <string name="goods_info">Shop Info</string>
 
@@ -581,7 +581,7 @@
 
     <!--  tips Start -->
     <!--   网络下载模式流程  -->
-    <string name="one_photo_download_msg1">Currently, it's set to download only under WiFi connection, do you want to change it?</string>
+    <string name="one_photo_download_msg1">Currently, it\'s set to download only under WiFi connection, do you want to change it?</string>
     <string name="one_photo_download_no_msg1">Cancel</string>
     <string name="one_photo_download_yes_msg1">OK</string>
 
