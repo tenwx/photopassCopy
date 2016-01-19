@@ -221,7 +221,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if ((float) mainBitmap.getWidth() / mainBitmap.getHeight() == (float) 4 / 3 || (float) mainBitmap.getWidth() / mainBitmap.getHeight() == (float) 3 / 4) {
 
 				} else {
-					changeMainBitmap(EditPhotoUtil.cropBitmap(mainBitmap, 4, 3));
+					mainBitmap = EditPhotoUtil.cropBitmap(mainBitmap, 4, 3);
+					mainImage.setImageBitmap(mainBitmap);
+//					changeMainBitmap(EditPhotoUtil.cropBitmap(mainBitmap, 4, 3));
 				}
 
 				btn_onedit_save.setVisibility(View.VISIBLE);
