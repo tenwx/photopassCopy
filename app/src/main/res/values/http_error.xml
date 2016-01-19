@@ -202,5 +202,4 @@
     <string name="http_error_code_6155">需要升级的PP卡拍摄日期不符合要求</string>
     <string name="http_error_code_6156">不能使用当前的PP+卡类型</string>
     <string name="http_error_code_6157">查询PP+卡类型出错</string>
-
 </resources>

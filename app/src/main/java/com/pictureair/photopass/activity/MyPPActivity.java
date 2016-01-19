@@ -32,7 +32,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PictureWorksDialog;
@@ -41,6 +40,8 @@ import com.pictureair.photopass.widget.XListViewHeader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 /*
  * 显示用户所有的PP或某张PP+可绑定的PP
@@ -116,7 +117,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
                     PictureAirLog.out("has ppcode ");
                     if (!isDeletePhoto) {
-                        delete.setVisibility(View.VISIBLE);
+                        delete.setVisibility(View.INVISIBLE);
                     }
                     listPP.setVisibility(View.VISIBLE);
                     noPhotoPassView.setVisibility(View.GONE);
