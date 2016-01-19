@@ -1,10 +1,8 @@
 package com.pictureair.photopass.service;
 
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,8 +10,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
-
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
@@ -21,28 +17,30 @@ import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.MalformedURLException;
-
 import de.greenrobot.event.EventBus;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
 
+/**
+ * 推送的服务。
+ * @author talon
+ */
 public class NotificationService extends android.app.Service {
     private final String TAG = "NotificationService";
+    private final int SOCKET_CONNECT_SUCCESS = 1111;
+    private final int SOCKET_RECEIVE_DATA = 3333;
     private int photoCount;
     private SocketIO socket;
     private SharedPreferences preferences;
-    //	private Editor editor;
     private String userId;
-
 
     private MyApplication application;
 
@@ -60,7 +58,7 @@ public class NotificationService extends android.app.Service {
 
             switch (msg.what) {
 
-                case 1111: // 链接成功
+                case SOCKET_CONNECT_SUCCESS: // 链接成功
                     API1.noticeSocketConnect();
                     break;
 
@@ -68,7 +66,7 @@ public class NotificationService extends android.app.Service {
 //				API.getDisConnect(preferences.getString(Common.USERINFO_TOKENID, null));
 //				break;
 
-                case 3333: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
+                case SOCKET_RECEIVE_DATA: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
                     API1.clearSocketCachePhotoCount(sendType);
                     break;
 
@@ -97,30 +95,21 @@ public class NotificationService extends android.app.Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
-        Log.e("＝＝＝＝＝＝＝＝＝＝＝", "onStartCommand");
         preferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         userId = preferences.getString(Common.USERINFO_ID, null);
         pictureAirDbManager = new PictureAirDbManager(this);
-//		editor = preferences.edit();
         if (intent != null && intent.getStringExtra("status") != null) {//断开连接
             if ("disconnect".equals(intent.getStringExtra("status"))) {
-                System.out.println("-----------disconnect-------socketio--------");
                 if (socket != null) {
                     socket.disconnect();
                     isConnected = false;
                 }
-//				editor.putInt(Common.SOCKETPUSHCONNECTED, 0);
-//				editor.commit();
                 stopSelf();//停止服务
-
             }
         } else {//请求连接
-//			if (preferences.getInt(Common.SOCKETPUSHCONNECTED, 0) == 0) {
             if (!isConnected) {
-                System.out.println("-----------connect-------socketio--------");
                 application = (MyApplication) getApplication();
-                Log.e("＝＝＝＝＝＝＝＝＝＝＝", "show Notification");
-                showNotification();
+                dealSocket();
             }
         }
         return START_STICKY;
@@ -133,67 +122,30 @@ public class NotificationService extends android.app.Service {
 		* */
     }
 
-//	@Override
-//	@Deprecated
-//	public void onStart(Intent intent, int startId) {
-//		preferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-//		userId = preferences.getString(Common.USERINFO_ID, null);
-//		if (intent.getStringExtra("status") != null) {//断开连接
-//			if ("disconnect".equals(intent.getStringExtra("status"))) {
-//				System.out.println("-----------disconnect-------socketio--------");
-//				
-//				socket.disconnect();
-//				isConnected = false;
-//				
-//			}
-//		}else {//请求连接
-//			if (!isConnected) {
-//				System.out.println("-----------connect-------socketio--------");
-//				application = (MyApplication) getApplication();
-//				showNotification();
-//			}
-//		}
-//
-//		super.onStart(intent, startId);
-//	}
-
-    private boolean isTopActivity() {
-        boolean isTop = false;
-        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-        if (cn.getClassName().contains("MainTabActivity")) {
-            isTop = true;
-        }
-        return isTop;
-    }
-
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        System.out.println("===========service destroy");
     }
 
-    int i = 0;
 
-    public void showNotification() {
+    /**
+     *  socket的回调。
+     */
+    public void dealSocket() {
         new Thread() {
             public void run() {
-                Log.e("i ", "======i =====:+" + i);
-                ++i;
                 try {
                     socket = new SocketIO(Common.BASE_URL_TEST);
-
                     socket.connect(new IOCallback() {
-
                         @Override
                         public void onMessage(JSONObject json,
                                               IOAcknowledge arg1) {
                             // TODO Auto-generated method stub
                             try {
-                                Log.e("======", "Server said json:"
+                                PictureAirLog.d(TAG, "Server said json:"
                                         + json.toString(2));
-                                Log.e("======",
+                                PictureAirLog.d(TAG,
                                         "IOAcknowledge:"
                                                 + arg1.toString());
                             } catch (JSONException e) {
@@ -206,80 +158,55 @@ public class NotificationService extends android.app.Service {
                         public void onMessage(String data,
                                               IOAcknowledge arg1) {
                             // TODO Auto-generated method stub
-                            Log.e("======", "Server said data: " + data);
-                            Log.e("======", "arg1:" + arg1.toString());
+                            PictureAirLog.d(TAG, "Server said data: " + data);
+                            PictureAirLog.d(TAG, "arg1:" + arg1.toString());
                         }
 
                         @Override
                         public void onError(
                                 SocketIOException socketIOException) {
                             // TODO Auto-generated method stub
-                            Log.e("======", "an Error occured："
+                            PictureAirLog.d(TAG, "an Error occured："
                                     + socketIOException.toString());
                             socketIOException.printStackTrace();
-//							editor.putInt(Common.SOCKETPUSHCONNECTED, 0);
-//							editor.commit();
                             isConnected = false;
-//							showNotification();
-                            socket.reconnect();
+                            socket.reconnect();  //出错的情况，让socket重新链接。
                         }
 
                         @Override
                         public void onDisconnect() {
                             // TODO Auto-generated method stub
-                            Log.e("======", "Connection terminated");
-//							editor.putInt(Common.SOCKETPUSHCONNECTED, 0);
-//							editor.commit();
+                            PictureAirLog.d(TAG, "Connection terminated");
                             isConnected = false;
-//							handler.sendEmptyMessage(2222);
                         }
 
                         @Override
                         public void onConnect() {
                             // TODO Auto-generated method stub
                             socket.emit("getNewPhotosCountOfUser", preferences.getString(Common.USERINFO_TOKENID, null));
-//							editor.putInt(Common.SOCKETPUSHCONNECTED, 1);
-//							editor.commit();
                             isConnected = true;
-                            Log.e("======", "Connection established");
-                            handler.sendEmptyMessage(1111);
+                            PictureAirLog.d(TAG, "Connection established");
+                            handler.sendEmptyMessage(SOCKET_CONNECT_SUCCESS);
                         }
 
                         @Override
                         public void on(String event,
                                        IOAcknowledge arg1, Object... arg2) {
                             // TODO Auto-generated method stub
-                            PictureAirLog.v("  ====  arg2", " :" + arg2);
-                            PictureAirLog.v("===on===", "Server triggered event '" + event + "'");
-                            //订单完成的推送。
+                            PictureAirLog.d("  ====  arg2", " :" + arg2);
+                            PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
+                            /**
+                             * 接收到  订单完成  事件
+                             */
                             if (event.toString().equals("doneOrderPay")) {
                                 sendType = "doneOrderPay";
-                                handler.sendEmptyMessage(3333);// 清空服务器消息。
-
+                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);// 清空服务器消息。
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     message = (JSONObject) message.get("c");
-                                    PictureAirLog.v(TAG, "doneOrderPay message: " + message.toString());
                                     PaymentOrderActivity.resultJsonObject = message;
 //									String orderId = message.getString("orderId");
-                                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                    Notification notification = new Notification(
-                                            R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message),
-                                            System.currentTimeMillis());
-                                    notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
-                                    notification.defaults = Notification.DEFAULT_ALL;
-                                    Intent intent = new Intent(
-                                            getApplicationContext(),
-                                            MainTabActivity.class);
-                                    PendingIntent pendingIntent = PendingIntent
-                                            .getActivity(
-                                                    getApplicationContext(), 0,
-                                                    intent, 0);
-                                    notification.setLatestEventInfo(
-                                            NotificationService.this,
-                                            getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_order_completed_msg), pendingIntent);
-                                    manager.notify(0, notification);
-
+                                    showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_order_completed_msg));
                                 } catch (JSONException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -295,7 +222,7 @@ public class NotificationService extends android.app.Service {
                              */
                             if (event.toString().equals("upgradedPhotos")) {
                                 sendType = "upgradedPhoto";
-                                handler.sendEmptyMessage(3333);
+                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
                                 JSONObject message = (JSONObject) arg2[0];
                                 PictureAirLog.e("推送", "收到推送：" + message.toString());
                                 int socketType = -1;
@@ -318,36 +245,24 @@ public class NotificationService extends android.app.Service {
                                 }
 
                                 //2.如果处于story页面，则更新数据，并且刷新列表；如果不是处于story页面，则设置更新变量
-                                if (isTopActivity() && application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
+                                if (AppManager.getInstance().getTopActivity() instanceof MainTabActivity && application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
                                     EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
                                 } else {//如果不是处于story页面，则设置更新变量
                                     application.setNeedRefreshOldPhotos(true);
                                 }
                             }
 
-                            //下单推送
+                            /**
+                             * 接收到  下订单  事件
+                             */
                             if (event.toString().equals("catchOrderInfoOf" + userId)) {
                                 sendType = "orderSend";
-                                handler.sendEmptyMessage(3333);
-//								Log.e("   订单事件中 ", " === ");
+                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     String info = message.getString("info");
-
-                                    Log.e(" 接受的订单信息 ", " === " + info);
-
-                                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                    Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message), System.currentTimeMillis());
-                                    notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
-                                    notification.defaults = Notification.DEFAULT_ALL;
-                                    Intent intent = new Intent(getApplicationContext(),
-                                            MainTabActivity.class);
-
-                                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-                                    notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_order), getResources().getString(R.string.notifacation_order_submit_msg), pendingIntent);
-                                    manager.notify(0, notification);
-
-                                    Log.e("=====", "执行");
+                                    PictureAirLog.d(TAG, "接受的订单信息:" + info);
+                                    showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_order_submit_msg));
                                 } catch (NumberFormatException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -357,39 +272,25 @@ public class NotificationService extends android.app.Service {
                                 }
                             }
 
-                            //照片推送
+                            /**
+                             * 接收到  收到照片  事件
+                             */
                             if (event.toString().equals("sendNewPhotosCountOf" + userId)) {
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
-                                    //									Log.e("===============","==:"+ message.getString("photoCount"));
                                     photoCount = Integer.valueOf(message.getString("c"));
-                                    System.out.println("receive photo count =====" + photoCount);
                                     if (photoCount > 0) {
                                         sendType = "photoSend";
-                                        handler.sendEmptyMessage(3333);
-//										System.out.println("photocount ========== > 0");
+                                        handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
 
-                                        if (!isTopActivity()) {
-//											System.out.println("not top activity");
-//											Log.e("推送", "要求推送");
+                                        if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity) ) {
                                             int photoCountLocal = preferences.getInt("photoCount", 0);
-//											Log.e("photoCountLocal ", "photoCountLocal:"+photoCountLocal);
                                             photoCount = photoCount + photoCountLocal;
-                                            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                            Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message), System.currentTimeMillis());
-                                            notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
-                                            notification.defaults = Notification.DEFAULT_ALL;
-                                            Intent intent = new Intent(getApplicationContext(),
-                                                    MainTabActivity.class);
-
-                                            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-                                            notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_photo), pendingIntent);
-                                            manager.notify(0, notification);
+                                            showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_new_photo));
                                             Editor editor = preferences.edit();// 获取编辑器
                                             editor.putInt("photoCount", photoCount);
                                             editor.commit();// 提交修改
                                         } else {
-//											System.out.println("top activity");
                                             Intent intent = new Intent();// 创建Intent对象
                                             intent.setAction("com.receiver.UpdateUiRecriver");
                                             intent.putExtra("photoCount", photoCount);
@@ -397,9 +298,6 @@ public class NotificationService extends android.app.Service {
                                         }
 
                                         application.setPushPhotoCount(photoCount);
-
-//									}else {
-//										System.out.println("photo count = 0");
                                     }
 
                                 } catch (JSONException e) {
@@ -409,26 +307,17 @@ public class NotificationService extends android.app.Service {
                             }
 
 
-                            //视频推送
+                            /**
+                             * 接收到  视频  事件
+                             */
                             if (event.toString().equals("videoGenerate")) {
                                 sendType = "videoGenerate";
-                                handler.sendEmptyMessage(3333);
+                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
 
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     int videoCount = message.getInt("c");
-
-                                    PictureAirLog.e(TAG, "收到视频推送。消息数量：" + videoCount);
-                                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                    Notification notification = new Notification(R.drawable.pp_icon, getResources().getString(R.string.notifacation_new_message), System.currentTimeMillis());
-                                    notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
-                                    notification.defaults = Notification.DEFAULT_ALL;
-                                    Intent intent = new Intent(getApplicationContext(),
-                                            MainTabActivity.class);
-
-                                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-                                    notification.setLatestEventInfo(NotificationService.this, getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_video), pendingIntent);
-                                    manager.notify(0, notification);
+                                    showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_new_video));
 
                                     Intent intent1 = new Intent();// 创建Intent对象
                                     intent1.setAction("com.receiver.UpdateUiRecriver");
@@ -449,10 +338,22 @@ public class NotificationService extends android.app.Service {
                     e.printStackTrace();
                 }
             }
-
-            ;
         }.start();
     }
 
+    /**
+     * 初始化notification的数据。
+     */
+    private void showNotification(String titleStr , String contentStr){
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification(R.drawable.pp_icon, titleStr, System.currentTimeMillis());
+        notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
+        notification.defaults = Notification.DEFAULT_ALL;
+        Intent intent = new Intent(getApplicationContext(),
+                MainTabActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+        notification.setLatestEventInfo(NotificationService.this, titleStr, contentStr, pendingIntent);
+        manager.notify(0, notification);
+    }
 
 }
