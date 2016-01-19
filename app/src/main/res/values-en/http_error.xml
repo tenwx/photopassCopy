@@ -198,4 +198,8 @@
     <string name="http_error_code_5041">Fail to share</string>
     <string name="http_error_code_5042">orderPhotoExecError!</string>
     <string name="http_error_code_5043">orderPhotoNotExists!</string>
+    <string name="http_error_code_6154">the PhotoPassPlus have expired!</string>
+    <string name="http_error_code_6155">bindDate is not allowed to use this PhotoPassPlus !</string>
+    <string name="http_error_code_6156">this PhotoPassPlus is not available PhotoPassPlus Type</string>
+    <string name="http_error_code_6157">query PhotoPassPlus Type error</string>
 </resources>

@@ -51,6 +51,8 @@ public class NotificationService extends android.app.Service {
 
     private PictureAirDbManager pictureAirDbManager;
 
+    private String syncMessage = "";
+
     private Handler handler = new Handler() {
 
         @Override
@@ -303,6 +305,11 @@ public class NotificationService extends android.app.Service {
                                 //1.更新数据库
                                 try {
                                     JSONObject updateJsonObject = message.getJSONObject("c");
+                                    if (updateJsonObject.toString().equals(syncMessage)) {//和上次的数据相同，直接返回
+                                        return;
+                                    } else {
+                                        syncMessage = updateJsonObject.toString();
+                                    }
                                     if (updateJsonObject.has("customerId")) {//ppp升级pp
                                         socketType = SocketEvent.SOCKET_PHOTOPASS;
                                         ppCode = updateJsonObject.getString("customerId");
@@ -319,6 +326,7 @@ public class NotificationService extends android.app.Service {
 
                                 //2.如果处于story页面，则更新数据，并且刷新列表；如果不是处于story页面，则设置更新变量
                                 if (isTopActivity() && application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
+                                    PictureAirLog.out("start sync bought info");
                                     EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
                                 } else {//如果不是处于story页面，则设置更新变量
                                     application.setNeedRefreshOldPhotos(true);
