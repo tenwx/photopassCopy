@@ -265,7 +265,7 @@
     <string name="orderclose">Closed</string>
     <string name="setting">Settings</string>
     <string name="download_pictures">Download Pictures</string>
-    <string name="updata_pictures">Synchronous update photos</string>
+    <string name="updata_pictures">Sync update photos</string>
     <string name="setting_language">Change Language</string>
     <string name="gprs_download">4G/3G/WIFI Download</string>
     <string name="wifi_download">WIFI Only</string>
@@ -493,7 +493,7 @@
     <string name="want_to_buy">Look around to buy something</string>
     <string name="to_add_good">Go shopping</string>
     <string name="dialog_download_message">Do you want to continue to download via GPRS?</string>
-    <string name="dialog_sync_message">Do you want to sync to download your album?</string>
+    <string name="dialog_sync_message">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
     <string name="dialog_sync_download">Open "WiFi Only" in Settings can save your cellular mobile data!</string>
     <string name="dialog_intent_buy_ppp">Update your PhotoPass to get your all high-quality photos!</string>
     <string name="order_empty_buttonString">Look around to buy something</string>
@@ -506,7 +506,7 @@
     <string name="story_no_photo">Hi, look for your photographer to take photos.</string>
     <string name="app_crash">Application crash</string>
     <string name="camera_closed">Please agree camera permission in Settings</string>
-    <string name="camera_closed_jump_to_manual">Please input manually cause you did not aggree the camera permission</string>
+    <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
 
     <string name="share_text">I would like to share with you every moment PhotoPass wonderful experience!</string>
 
@@ -523,7 +523,7 @@
     <string name="pay_result_callback_msg">Payment Result : %s</string>
     <string name="login_failed">Login Failed !</string>
     <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  Start-->
-    <string name="disney_video_about_null_photo_note">If you want to make one "My Disney Story" , you should purchase some PhotoPass Photos !Please Go to Shop to Pick your Favourite Products.</string>
+    <string name="disney_video_about_null_photo_note">If you want to make one "My Disney Story" , you should purchase some PhotoPass Photos!Please Go to Shop to Pick your Favourite Products.</string>
     <string name="disney_video_go_to_select_photo">Go to shop</string>
     <string name="disney_video_edit_photo">OK(%1$d/%2$d)</string>
     <string name="disney_video_edit_photo_null">OK(0/3)</string>
@@ -553,7 +553,7 @@
     <string name="notifacation_new_order">New Order</string>
     <string name="notifacation_new_photo">You have new photos</string>
     <string name="notifacation_new_video">You have new videos</string>
-    <string name="local_photo_not_support_makegift">This photo does not maked gift</string>
+    <string name="local_photo_not_support_makegift">Sorry we can't make gift from your edited photos.</string>
     <string name="transport">transport</string>
     <string name="goods_info">Shop Info</string>
 
@@ -564,7 +564,7 @@
     <string name="self_collect">Self-collect</string>
     <string name="preferential">Preferential:</string>
     <string name="select_address">Please Select Address</string>
-    <string name="about_tips">Capture You Magical Moments!</string>
+    <string name="about_tips">Capture Your Magical Moments!</string>
     <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Please enter your nickname</string>
@@ -581,32 +581,32 @@
 
     <!--  tips Start -->
     <!--   网络下载模式流程  -->
-    <string name="one_photo_download_msg1">Dear,you set the WIFI status only download, the current non WIFI network, whether you need to change？</string>
-    <string name="one_photo_download_no_msg1">Consideration</string>
-    <string name="one_photo_download_yes_msg1">To change</string>
+    <string name="one_photo_download_msg1">Currently, it's set to download only under WiFi connection, do you want to change it?</string>
+    <string name="one_photo_download_no_msg1">Cancel</string>
+    <string name="one_photo_download_yes_msg1">OK</string>
 
-    <string name="one_photo_download_msg2">Dear，Current non WIFI network, continue to download will consume mobile traffic oh</string>
-    <string name="one_photo_download_no_msg2">Stop Download</string>
-    <string name="one_photo_download_yes_msg2">Continue download</string>
+    <string name="one_photo_download_msg2">Do you want to continue download photos using mobile GPRS?</string>
+    <string name="one_photo_download_no_msg2">Cancel</string>
+    <string name="one_photo_download_yes_msg2">OK</string>
     <!--   推广PhotoPass＋流程  -->
     <string name="pp_first_up10_msg">Dear，Upgrade your PhotoPass+ you can have this card all HD digital photos！</string>
-    <string name="pp_first_up10_no_msg">Consideration</string>
-    <string name="pp_first_up10_yes_msg">To change</string>
+    <string name="pp_first_up10_no_msg">Cancel</string>
+    <string name="pp_first_up10_yes_msg">OK</string>
     <!--   同步更新照片流程  -->
-    <string name="first_tips_syns_msg1">Dear，Do you need to sync with the automatic updates to download your PhotoPass album？</string>
+    <string name="first_tips_syns_msg1">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
     <string name="first_tips_syns_no_msg1">Cancel</string>
     <string name="first_tips_syns_yes_msg1">Auto Sycn</string>
 
-    <string name="first_tips_syns_msg2">Dear，Do you need to sync the PhotoPass photos that have been purchased automatically by the download？</string>
+    <string name="first_tips_syns_msg2">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
     <string name="first_tips_syns_no_msg2">Cancel</string>
     <string name="first_tips_syns_yes_msg2">Auto Sycn</string>
     <!--  tips End  -->
 
-    <string name="no_activated">nonactivated</string>
+    <string name="no_activated">Inactive</string>
     <string name="activated">activated</string>
     <string name="ppp_has_used">Used</string>
     <string name="ppp_has_expired">Expired</string>
-    <string name="expired_on">Effective time:</string>
+    <string name="expired_on">Valid:</string>
     <string name="delivery_info">Delivery Info</string>
     <string name="multi_goods">PhotoPass multiple goods</string>
     <string name="blur_intro">If you like to save this wonderful moment forever, you should own this photo, and you will make this trip more meaningful.</string>
