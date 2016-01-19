@@ -553,6 +553,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					}
 				}
 				exitEditStates(); // 推出编辑状态
+				if(pathList.size() > 1){
+					preview_save.setVisibility(View.VISIBLE);
+				}
 				break;
 
 			//编辑边框。
@@ -833,6 +836,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		font_bar.setVisibility(View.GONE);
 		setFontGridView.setVisibility(View.GONE);
 		setColorGridView.setVisibility(View.GONE);
+
 	}
 
 	//读取 assets 目录下的图片
