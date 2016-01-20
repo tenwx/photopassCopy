@@ -25,7 +25,6 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,7 +58,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
 
@@ -75,6 +73,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.crypto.NoSuchPaddingException;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -188,7 +188,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private int radius = 0;
 
     private RelativeLayout leadView;
-    private Button knowImageView;
 
     private boolean loadFailed = false;
 
@@ -613,7 +612,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         image01 = (ImageView) findViewById(R.id.img01);
         leadView = (RelativeLayout) findViewById(R.id.blur_lead_view);
-        knowImageView = (Button) findViewById(R.id.leadknow);
         touchtoclean = (TextView) findViewById(R.id.textview_blur);
         blurFraRelativeLayout = (RelativeLayout) findViewById(R.id.blur_photo_relativelayout);
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.fra_layout);
@@ -801,14 +799,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             blurFraRelativeLayout.setVisibility(View.VISIBLE);
             currentPhotoADTextView.setVisibility(View.GONE);
             loadPhotoPassPhoto(photoInfo, isOnCreate);
-            if (!isFirst) {
-                if (pictureAirDbManager.checkFirstTimeStartActivity("blurActivity", sharedPreferences.getString(Common.USERINFO_ID, ""))) {//第一次进入
-                    PictureAirLog.v(TAG, "new user");
-                    leadView.setVisibility(View.VISIBLE);
-                    leadView.setOnClickListener(this);
-                    isFirst = true;
-                }
-            }
+//            if (!isFirst) {
+//                if (pictureAirDbManager.checkFirstTimeStartActivity("blurActivity", sharedPreferences.getString(Common.USERINFO_ID, ""))) {//第一次进入
+//                    PictureAirLog.v(TAG, "new user");
+//                    leadView.setVisibility(View.VISIBLE);
+//                    leadView.setOnClickListener(this);
+//                    isFirst = true;
+//                }
+//            }
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
             currentPhotoADTextView.setVisibility(View.GONE);
             if (myApplication.isGetADLocationSuccess()) {

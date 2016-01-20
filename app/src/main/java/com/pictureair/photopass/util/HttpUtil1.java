@@ -38,6 +38,9 @@ public class HttpUtil1 {
             asyncHttpClient.setConnectTimeout(60 * 1000);//设置连接超时时间
             asyncHttpClient.setResponseTimeout(20 * 1000);//设置响应超时时间
             asyncHttpClient.setThreadPool(threadPool);//设置线程池，方便线程管理，重用
+            if (Common.DEBUG) {
+                asyncHttpClient.setLoggingEnabled(true);
+            }
         }
     }
 

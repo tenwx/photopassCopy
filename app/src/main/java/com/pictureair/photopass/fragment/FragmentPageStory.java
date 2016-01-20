@@ -31,10 +31,10 @@ import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
@@ -49,7 +49,6 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
@@ -64,6 +63,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.smssdk.gui.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -275,7 +275,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
 
                 PictureAirLog.d(TAG, "--------->get photo success");
-                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, false);
+                saveJsonToSQLite((JSONObject) msg.obj, true, false);
                 break;
 
             case API1.GET_ALL_VIDEO_LIST_SUCCESS://获取视频成功
@@ -542,78 +542,75 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
      * @param isAll      布尔值，是否是获取全部数据
      * @param isVideo    是否是视频数据
      */
-    private synchronized void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll, final boolean isVideo) {
-        if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
-            if (isVideo) {
-                PictureAirLog.d(TAG, "delete all video data from table");
-                pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, true);
-            } else {
-                PictureAirLog.d(TAG, "delete all data from table");
-                pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, false);
-            }
-        } else {
-            PictureAirLog.d(TAG, "need not delete all data");
-        }
-
-        try {
-            final JSONArray responseArray = jsonObject.getJSONArray(isVideo ? "videoList" : "photos");
-
-            String updatetimeString = jsonObject.getString(isVideo ? "t" : "time");
-            PictureAirLog.out("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
-
-            if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
-                //需要存储这个时间
-                Editor editor = sharedPreferences.edit();
-                if (isVideo) {
-                    editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
-                } else {
-                    editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
-                }
-                editor.commit();
-            }
-
-            if (isAll) {//如果全部获取，需要清除原有的数据
-                if (isVideo) {
-                    app.photoPassVideoList.clear();
-                } else {
-                    app.photoPassPicList.clear();
-                }
-            }
-            new Thread() {
-                public void run() {
-                    synchronized (this) {
-                        ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
+    private void saveJsonToSQLite(final JSONObject jsonObject, final boolean isAll, final boolean isVideo) {
+        PictureAirLog.out("start save json");
+        new Thread() {
+            public void run() {
+                synchronized (this) {
+                    PictureAirLog.out("start save json in thread");
+                    if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
                         if (isVideo) {
-                            PictureAirLog.out("-----------------> start insert video data into database");
-                            if (!isAll) {
-                                refreshVideoDataCount = resultPhotoList.size();
-                                PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
-                            }
-                            app.photoPassVideoList.addAll(resultPhotoList);
+                            PictureAirLog.d(TAG, "delete all video data from table");
+                            pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, true);
                         } else {
-                            PictureAirLog.out("-----------------> start insert photo data into database");
-                            if (!isAll) {
-                                refreshDataCount = resultPhotoList.size();
-                                PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
-                            }
-                            app.photoPassPicList.addAll(resultPhotoList);
+                            PictureAirLog.d(TAG, "delete all data from table");
+                            pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, false);
                         }
+                    } else {
+                        PictureAirLog.d(TAG, "need not delete all data");
+                    }
+                    final JSONArray responseArray = jsonObject.getJSONArray(isVideo ? "videoList" : "photos");
 
-                        //通知已经处理完毕
-                        if (isAll) {
-                            fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
+                    String updatetimeString = jsonObject.getString(isVideo ? "t" : "time");
+                    PictureAirLog.out("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
 
+                    if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
+                        //需要存储这个时间
+                        Editor editor = sharedPreferences.edit();
+                        if (isVideo) {
+                            editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
                         } else {
-                            fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
+                            editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
+                        }
+                        editor.commit();
+                    }
+
+                    if (isAll) {//如果全部获取，需要清除原有的数据
+                        if (isVideo) {
+                            app.photoPassVideoList.clear();
+                        } else {
+                            app.photoPassPicList.clear();
                         }
                     }
-                }
+                    ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
+                    if (isVideo) {
+                        PictureAirLog.out("-----------------> start insert video data into database");
+                        if (!isAll) {
+                            refreshVideoDataCount = resultPhotoList.size();
+                            PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
+                        }
+                        app.photoPassVideoList.addAll(resultPhotoList);
+                    } else {
+                        PictureAirLog.out("-----------------> start insert photo data into database");
+                        if (!isAll) {
+                            refreshDataCount = resultPhotoList.size();
+                            PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
+                        }
+                        app.photoPassPicList.addAll(resultPhotoList);
+                    }
 
-                ;
-            }.start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                    //通知已经处理完毕
+                    if (isAll) {
+                        fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
+
+                    } else {
+                        fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
+                    }
+                }
+            }
+
+            ;
+        }.start();
     }
 
     @Override
