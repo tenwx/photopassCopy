@@ -446,7 +446,7 @@ public class AppUtil {
         if (d1.get(Calendar.YEAR) != y2) {
             days += d1.getActualMaximum(Calendar.DAY_OF_YEAR);
         }
-        PictureAirLog.d(TAG, "d1:" + d1.get(Calendar.YEAR) + "d2:" + y2);
+//        PictureAirLog.d(TAG, "d1:" + d1.get(Calendar.YEAR) + "d2:" + y2);
         //判断相差几天
         if (days == 0) {//当天的，只需要显示hh:mm
             result = time.substring(0, 5);
@@ -469,7 +469,7 @@ public class AppUtil {
                 result = result.substring(5, 10);
             }
         }
-        PictureAirLog.d(TAG, date + "----------->" + result);
+//        PictureAirLog.d(TAG, date + "----------->" + result);
         return result;
     }
 
@@ -540,7 +540,7 @@ public class AppUtil {
      * @return
      */
     public static String GTMToLocal(String GTMDate) {
-        PictureAirLog.d(TAG, "before translate = " + GTMDate);
+//        PictureAirLog.d(TAG, "before translate = " + GTMDate);
         int tIndex = GTMDate.indexOf("T");
         String dateTemp = GTMDate.substring(0, tIndex);
         String timeTemp = GTMDate.substring(tIndex + 1, GTMDate.length() - 5);

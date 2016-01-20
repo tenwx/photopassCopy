@@ -184,8 +184,8 @@ public class JsonUtil {
             String time = object.getString("createdOn");
             info.shootOn = AppUtil.GTMToLocal(time);
             info.shootTime = info.shootOn.substring(0, 10);
-            PictureAirLog.out("get transfer time----> " + info.shootOn);
-            PictureAirLog.out("shootTime----> " + info.shootTime);
+//            PictureAirLog.out("get transfer time----> " + info.shootOn);
+//            PictureAirLog.out("shootTime----> " + info.shootTime);
         }
 
         if (object.containsKey("fileSize")) {

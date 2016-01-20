@@ -31,16 +31,15 @@ import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -50,7 +49,6 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
@@ -65,6 +63,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.smssdk.gui.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -204,7 +203,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
-                PictureAirLog.d(TAG, "---------->get location success" + msg.obj.toString());
+                PictureAirLog.d(TAG, "---------->get location success");
                 try {
                     JSONObject response = JSONObject.parseObject(msg.obj.toString());
                     JSONArray resultArray = response.getJSONArray("locations");
@@ -276,7 +275,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取照片成功
 
                 PictureAirLog.d(TAG, "--------->get photo success");
-                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, false);
+                saveJsonToSQLite((JSONObject) msg.obj, true, false);
                 break;
 
             case API1.GET_ALL_VIDEO_LIST_SUCCESS://获取视频成功
@@ -543,79 +542,75 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
      * @param isAll      布尔值，是否是获取全部数据
      * @param isVideo    是否是视频数据
      */
-    private synchronized void saveJsonToSQLite(JSONObject jsonObject, final boolean isAll, final boolean isVideo) {
-        if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
-            if (isVideo) {
-                PictureAirLog.d(TAG, "delete all video data from table");
-                pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, true);
-            } else {
-                PictureAirLog.d(TAG, "delete all data from table");
-                pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, false);
-            }
-        } else {
-            PictureAirLog.d(TAG, "need not delete all data");
-        }
-
-        try {
-            final JSONArray responseArray = jsonObject.getJSONArray(isVideo ? "videoList" : "photos");
-
-            String updatetimeString = jsonObject.getString(isVideo ? "t" : "time");
-            PictureAirLog.out("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
-
-            if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
-                //需要存储这个时间
-                Editor editor = sharedPreferences.edit();
-                if (isVideo) {
-                    editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
-                } else {
-                    editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
-                }
-                editor.commit();
-            }
-
-            if (isAll) {//如果全部获取，需要清除原有的数据
-                if (isVideo) {
-                    app.photoPassVideoList.clear();
-                } else {
-                    app.photoPassPicList.clear();
-                }
-            }
-            new Thread() {
-                public void run() {
-                    synchronized (this) {
-                        ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
+    private void saveJsonToSQLite(final JSONObject jsonObject, final boolean isAll, final boolean isVideo) {
+        PictureAirLog.out("start save json");
+        new Thread() {
+            public void run() {
+                synchronized (this) {
+                    PictureAirLog.out("start save json in thread");
+                    if (isAll) {//获取全部数据，需要先清空数据库，反之，插入到后面
                         if (isVideo) {
-                            PictureAirLog.out("-----------------> start insert video data into database");
-                            if (!isAll) {
-                                refreshVideoDataCount = resultPhotoList.size();
-                                PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
-                            }
-                            app.photoPassVideoList.addAll(resultPhotoList);
+                            PictureAirLog.d(TAG, "delete all video data from table");
+                            pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, true);
                         } else {
-                            PictureAirLog.out("-----------------> start insert photo data into database");
-                            if (!isAll) {
-                                refreshDataCount = resultPhotoList.size();
-                                PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
-                            }
-                            app.photoPassPicList.addAll(resultPhotoList);
-                            downLoadPhoto(resultPhotoList);
+                            PictureAirLog.d(TAG, "delete all data from table");
+                            pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE, false);
                         }
+                    } else {
+                        PictureAirLog.d(TAG, "need not delete all data");
+                    }
+                    final JSONArray responseArray = jsonObject.getJSONArray(isVideo ? "videoList" : "photos");
 
-                        //通知已经处理完毕
-                        if (isAll) {
-                            fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
+                    String updatetimeString = jsonObject.getString(isVideo ? "t" : "time");
+                    PictureAirLog.out("updatetime:" + updatetimeString + "new data count = " + responseArray.size());
 
+                    if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
+                        //需要存储这个时间
+                        Editor editor = sharedPreferences.edit();
+                        if (isVideo) {
+                            editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
                         } else {
-                            fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
+                            editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
+                        }
+                        editor.commit();
+                    }
+
+                    if (isAll) {//如果全部获取，需要清除原有的数据
+                        if (isVideo) {
+                            app.photoPassVideoList.clear();
+                        } else {
+                            app.photoPassPicList.clear();
                         }
                     }
-                }
+                    ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
+                    if (isVideo) {
+                        PictureAirLog.out("-----------------> finish insert video data into database");
+                        if (!isAll) {
+                            refreshVideoDataCount = resultPhotoList.size();
+                            PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
+                        }
+                        app.photoPassVideoList.addAll(resultPhotoList);
+                    } else {
+                        PictureAirLog.out("-----------------> finish insert photo data into database");
+                        if (!isAll) {
+                            refreshDataCount = resultPhotoList.size();
+                            PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
+                        }
+                        app.photoPassPicList.addAll(resultPhotoList);
+                    }
 
-                ;
-            }.start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                    //通知已经处理完毕
+                    if (isAll) {
+                        fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_ALL_VIDEO_DATA_DONE : DEAL_ALL_PHOTO_DATA_DONE);
+
+                    } else {
+                        fragmentPageStoryHandler.sendEmptyMessage(isVideo ? DEAL_REFRESH_VIDEO_DATA_DONE : DEAL_REFRESH_PHOTO_DATA_DONE);
+                    }
+                }
+            }
+
+            ;
+        }.start();
     }
 
     @Override
@@ -1069,16 +1064,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         //处理视频信息
         for (int i = 0; i < app.photoPassVideoList.size(); i++) {
             PhotoInfo info = app.photoPassVideoList.get(i);
-            PictureAirLog.out("video shoot time is " + info.shootOn);
+//            PictureAirLog.out("video shoot time is " + info.shootOn);
             for (int j = 0; j < photoPassPictureList.size(); j++) {
-                PictureAirLog.out("j-->" + j + ", info shootTime-->" + info.shootTime + ", picList-->" + photoPassPictureList.get(j).shootTime);
+//                PictureAirLog.out("j-->" + j + ", info shootTime-->" + info.shootTime + ", picList-->" + photoPassPictureList.get(j).shootTime);
                 if (info.shootTime.equals(photoPassPictureList.get(j).shootTime)) {
-                    PictureAirLog.out("j-->" + j + ", info.isVideo-->" + info.isVideo + ", picList-->" + photoPassPictureList.get(j).list.get(0).isVideo);
+//                    PictureAirLog.out("j-->" + j + ", info.isVideo-->" + info.isVideo + ", picList-->" + photoPassPictureList.get(j).list.get(0).isVideo);
                     if (info.isVideo == photoPassPictureList.get(j).list.get(0).isVideo) {
                         photoPassPictureList.get(j).list.add(info);
                         date1 = sdf.parse(info.shootOn);
                         date2 = sdf.parse(photoPassPictureList.get(j).shootOn);
-                        PictureAirLog.out("date--->" + date1 + ";2-->" + date2);
+//                        PictureAirLog.out("date--->" + date1 + ";2-->" + date2);
                         if (date1.after(date2)) {
                             photoPassPictureList.get(j).shootOn = info.shootOn;
                         }
@@ -1090,7 +1085,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             //判断是否需要new
             if (!clone_contains) {//如果之前没有找到，说明需要new
                 photoItemInfo = new PhotoItemInfo();
-                PictureAirLog.out("need new shootTime:" + info.shootTime);
+//                PictureAirLog.out("need new shootTime:" + info.shootTime);
                 photoItemInfo.shootTime = info.shootTime;
                 photoItemInfo.place = getString(R.string.video_location);
                 photoItemInfo.list.add(info);
@@ -1501,27 +1496,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
             //刷新列表
             EventBus.getDefault().removeStickyEvent(socketEvent);
-        }
-    }
-
-    private void downLoadPhoto(ArrayList<PhotoInfo> lists) {
-        if (new SettingUtil(getContext()).isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-            for (int i = 0; i < lists.size(); i++) {
-                if (lists.get(i).isPayed == 1) {
-                    download(lists);
-                }
-            }
-        }
-    }
-
-    private void download(ArrayList<PhotoInfo> arrayList) {
-        if (arrayList.size() > 0) {
-            Intent intent = new Intent(getContext(),
-                    DownloadService.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("photos", arrayList);
-            intent.putExtras(bundle);
-            getContext().startService(intent);
         }
     }
 

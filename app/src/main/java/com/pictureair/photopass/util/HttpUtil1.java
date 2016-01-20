@@ -38,6 +38,11 @@ public class HttpUtil1 {
             asyncHttpClient.setConnectTimeout(60 * 1000);//设置连接超时时间
             asyncHttpClient.setResponseTimeout(20 * 1000);//设置响应超时时间
             asyncHttpClient.setThreadPool(threadPool);//设置线程池，方便线程管理，重用
+            if (Common.DEBUG) {
+                asyncHttpClient.setLoggingEnabled(true);
+            } else {
+                asyncHttpClient.setLoggingEnabled(false);
+            }
         }
     }
 
@@ -48,7 +53,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncGet url: " + url);
+//        PictureAirLog.v(TAG, "asyncGet url: " + url);
         asyncHttpClient.get(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -97,7 +102,7 @@ public class HttpUtil1 {
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
-                PictureAirLog.v(TAG, "parseResponse: " + rawJsonData);
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
                 return JsonTools.parseObject(rawJsonData);
             }
 
@@ -117,7 +122,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncGet url: " + url);
+//        PictureAirLog.v(TAG, "asyncGet url: " + url);
         asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -165,7 +170,7 @@ public class HttpUtil1 {
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
-                PictureAirLog.out("parseResponse: " + rawJsonData);
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
 
                 return JsonTools.parseObject(rawJsonData);
             }
@@ -185,7 +190,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncPost url: " + url);
+//        PictureAirLog.v(TAG, "asyncPost url: " + url);
         asyncHttpClient.post(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -234,7 +239,7 @@ public class HttpUtil1 {
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
-                PictureAirLog.out("result---->" + rawJsonData);
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
                 return JsonTools.parseObject(rawJsonData);
             }
 
@@ -255,8 +260,8 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncPost url: " + url);
-        PictureAirLog.v(TAG, "asyncPost params: " + params);
+//        PictureAirLog.v(TAG, "asyncPost url: " + url);
+//        PictureAirLog.v(TAG, "asyncPost params: " + params);
         asyncHttpClient.post(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -304,8 +309,8 @@ public class HttpUtil1 {
 
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                PictureAirLog.v(TAG, "parseResponse rawJsonData: " + rawJsonData);
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
                 return JsonTools.parseObject(rawJsonData);
             }
 
@@ -325,7 +330,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPut(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncPut url: " + url);
+//        PictureAirLog.v(TAG, "asyncPut url: " + url);
         asyncHttpClient.put(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -373,8 +378,8 @@ public class HttpUtil1 {
 
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                PictureAirLog.v(TAG, "parseResponse rawJsonData: " + rawJsonData);
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
                 return JsonTools.parseObject(rawJsonData);
             }
 
@@ -394,7 +399,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncDelete(final String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncDelete url: " + url);
+//        PictureAirLog.v(TAG, "asyncDelete url: " + url);
         asyncHttpClient.delete(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -442,7 +447,7 @@ public class HttpUtil1 {
 
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
-                PictureAirLog.v(TAG, "parseResponse rawJsonData: " + rawJsonData);
+                PictureAirLog.v(TAG, "get data from " + url + " finished");
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
                 return JsonTools.parseObject(rawJsonData);
             }
@@ -463,7 +468,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncDownloadBinaryData(String url, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
+//        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
         asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
@@ -502,7 +507,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asyncDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
+//        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
         asyncHttpClient.get(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
@@ -518,9 +523,6 @@ public class HttpUtil1 {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
                 PictureAirLog.e(TAG, error.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(statusCode);
             }
 

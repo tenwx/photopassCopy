@@ -145,7 +145,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         final int newWidth = getMeasuredWidth();
 
         if (lockedExpanded && oldWidth != newWidth) {
-            PictureAirLog.e(TAG, "onMeasure :" + mSelectedTabIndex);
             updateSelectTabTextViewColors(mSelectedTabIndex);
 //            setCurrentItem(mSelectedTabIndex);
 
@@ -202,9 +201,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public void onPageScrollStateChanged(int arg0) {
         if (mListener != null) {
             mListener.onPageScrollStateChanged(arg0);
-            PictureAirLog.e(TAG, "====onPageScrollStateChanged===" + arg0);
         }
-        PictureAirLog.e(TAG, "====onPageScrollStateChanged===" + arg0);
 
     }
 
@@ -212,9 +209,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public void onPageScrolled(int arg0, float arg1, int arg2) {
         if (mListener != null) {
             mListener.onPageScrolled(arg0, arg1, arg2);
-            PictureAirLog.e(TAG, "====onPageScrolled===" + arg0);
         }
-        PictureAirLog.e(TAG, "====onPageScrolled===" + arg0);
 
     }
 
@@ -222,9 +217,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public void onPageSelected(int arg0) {
         if (mListener != null) {
             mListener.onPageSelected(arg0);
-            PictureAirLog.e(TAG, "====onPageSelected 1===" + arg0);
         }
-        PictureAirLog.e(TAG, "====onPageSelected 2===" + arg0);
         updateSelectTabTextViewColors(arg0);
     }
 
@@ -303,7 +296,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     @Override
     public void setOnPageChangeListener(OnPageChangeListener listener) {
         mListener = listener;
-        PictureAirLog.e(TAG, "====setOnPageChangeListener===");
 
     }
 
