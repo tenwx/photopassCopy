@@ -40,6 +40,7 @@ import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -597,6 +598,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                                 PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
                             }
                             app.photoPassPicList.addAll(resultPhotoList);
+                            downLoadPhoto(resultPhotoList);
                         }
 
                         //通知已经处理完毕
@@ -1499,6 +1501,27 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
             //刷新列表
             EventBus.getDefault().removeStickyEvent(socketEvent);
+        }
+    }
+
+    private void downLoadPhoto(ArrayList<PhotoInfo> lists) {
+        if (new SettingUtil(getContext()).isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+            for (int i = 0; i < lists.size(); i++) {
+                if (lists.get(i).isPayed == 1) {
+                    download(lists);
+                }
+            }
+        }
+    }
+
+    private void download(ArrayList<PhotoInfo> arrayList) {
+        if (arrayList.size() > 0) {
+            Intent intent = new Intent(getContext(),
+                    DownloadService.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("photos", arrayList);
+            intent.putExtras(bundle);
+            getContext().startService(intent);
         }
     }
 

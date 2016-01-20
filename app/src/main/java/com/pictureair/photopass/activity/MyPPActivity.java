@@ -508,7 +508,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                             jsonObject.put("code", showPPCodeList.get(j).getPpCode());
                             jsonObject.put("bindDate", showPPCodeList.get(j).getShootDate());
                             photoInfo.photoId = showPPCodeList.get(j).getPpCode();
-                            photoInfo.shootTime = showPPCodeList.get(j).getPpCode();
+                            photoInfo.shootTime = showPPCodeList.get(j).getShootDate();
                             tempPhotoLists.add(photoInfo);
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -608,7 +608,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     //下载照片
     private void downloadPhotoList() {
-//        Log.e("＝＝＝＝＝", "downloadPhotoList");
         if (tempPhotoLists.size() > 0) {
             for (int i = 0; i < tempPhotoLists.size(); i++) {
                 download(pictureAirDbManager.getPhotoUrlByPhotoIDAndShootOn(tempPhotoLists.get(i).photoId, tempPhotoLists.get(i).shootTime));
@@ -618,7 +617,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void download(ArrayList<PhotoInfo> arrayList) {
-//        Log.e("=======", "arrayList.size()：" + arrayList.size());
         if (arrayList.size() > 0) {
             Intent intent = new Intent(MyPPActivity.this,
                     DownloadService.class);

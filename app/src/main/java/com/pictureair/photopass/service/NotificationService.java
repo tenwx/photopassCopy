@@ -10,6 +10,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.widget.ImageView;
+
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
@@ -20,8 +22,12 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import de.greenrobot.event.EventBus;
 import io.socket.IOAcknowledge;
@@ -51,36 +57,41 @@ public class NotificationService extends android.app.Service {
 
     private String syncMessage = "";
 
-    private Handler handler = new Handler() {
+    private final Handler notificationHandler = new NotificationHandler(this);
+    private static class NotificationHandler extends Handler{
+        private final WeakReference<NotificationService> mService;
+
+        public NotificationHandler(NotificationService service){
+            mService = new WeakReference<>(service);
+        }
 
         @Override
         public void handleMessage(Message msg) {
-
             super.handleMessage(msg);
-
-            switch (msg.what) {
-
-                case SOCKET_CONNECT_SUCCESS: // 链接成功
-                    API1.noticeSocketConnect();
-                    break;
-
-//			case 2222: // 退出账号。
-//				API.getDisConnect(preferences.getString(Common.USERINFO_TOKENID, null));
-//				break;
-
-                case SOCKET_RECEIVE_DATA: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
-                    API1.clearSocketCachePhotoCount(sendType);
-                    break;
-
-                default:
-
-                    break;
-
+            if (mService.get() == null) {
+                return;
             }
-
+            mService.get().dealHandler(msg);
         }
+    }
 
-    };
+    /**
+     * 处理Message
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case SOCKET_CONNECT_SUCCESS: // 链接成功
+                API1.noticeSocketConnect();
+                break;
+            case SOCKET_RECEIVE_DATA: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
+                API1.clearSocketCachePhotoCount(sendType);
+                break;
+
+            default:
+                break;
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -128,6 +139,7 @@ public class NotificationService extends android.app.Service {
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        notificationHandler.removeCallbacksAndMessages(null);
     }
 
 
@@ -188,7 +200,7 @@ public class NotificationService extends android.app.Service {
                             socket.emit("getNewPhotosCountOfUser", preferences.getString(Common.USERINFO_TOKENID, null));
                             isConnected = true;
                             PictureAirLog.d(TAG, "Connection established");
-                            handler.sendEmptyMessage(SOCKET_CONNECT_SUCCESS);
+                            notificationHandler.sendEmptyMessage(SOCKET_CONNECT_SUCCESS);
                         }
 
                         @Override
@@ -202,7 +214,7 @@ public class NotificationService extends android.app.Service {
                              */
                             if (event.toString().equals("doneOrderPay")) {
                                 sendType = "doneOrderPay";
-                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);// 清空服务器消息。
+                                notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);// 清空服务器消息。
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     message = (JSONObject) message.get("c");
@@ -224,7 +236,7 @@ public class NotificationService extends android.app.Service {
                              */
                             if (event.toString().equals("upgradedPhotos")) {
                                 sendType = "upgradedPhoto";
-                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+                                notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
                                 JSONObject message = (JSONObject) arg2[0];
                                 PictureAirLog.e("推送", "收到推送：" + message.toString());
                                 int socketType = -1;
@@ -265,7 +277,7 @@ public class NotificationService extends android.app.Service {
                              */
                             if (event.toString().equals("catchOrderInfoOf" + userId)) {
                                 sendType = "orderSend";
-                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+                                notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     String info = message.getString("info");
@@ -289,7 +301,7 @@ public class NotificationService extends android.app.Service {
                                     photoCount = Integer.valueOf(message.getString("c"));
                                     if (photoCount > 0) {
                                         sendType = "photoSend";
-                                        handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+                                        notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
 
                                         if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity) ) {
                                             int photoCountLocal = preferences.getInt("photoCount", 0);
@@ -320,7 +332,7 @@ public class NotificationService extends android.app.Service {
                              */
                             if (event.toString().equals("videoGenerate")) {
                                 sendType = "videoGenerate";
-                                handler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+                                notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
 
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {

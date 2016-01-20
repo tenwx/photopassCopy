@@ -585,7 +585,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
         init();//初始化UI
-        judge();//判断 照片是否购买，并弹出相应的tips
+//        judge();//判断 照片是否购买，并弹出相应的tips
     }
 
     private void init() {
@@ -1480,83 +1480,82 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     //判断 照片是否购买，并弹出相应的tips
-    private void judge() {
-
-        if (myApplication.isPhotoIsPaid()) {// 如果是 购买之后跳转过来的。
-            boolean wifiFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
-            boolean syncFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
-            boolean notFirstGoBuyOnePhotoFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));  //不是第一次。
-            if (!notFirstGoBuyOnePhotoFlag) {
-                customdialog = new CustomDialog.Builder(PreviewPhotoActivity.this)
-                        .setMessage(getResources().getString(R.string.dialog_sync_message))
-                        .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                // TODO Auto-generated method stub
-                                customdialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                // TODO Auto-generated method stub
-                                //判断网络状态
-                                pictureAirDbManager.insertSettingStatus(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                customdialog.dismiss();
-                                mNetWorkType = AppUtil.getNetWorkType(getApplicationContext());
-                                if (mNetWorkType == AppUtil.NETWORKTYPE_MOBILE) {
-                                    //如果是数据流量的话。
-                                    customdialog = new CustomDialog.Builder(PreviewPhotoActivity.this)
-                                            .setMessage(getResources().getString(R.string.dialog_sync_download))
-                                            .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-
-                                                @Override
-                                                public void onClick(DialogInterface arg0, int arg1) {
-                                                    // TODO Auto-generated method stub
-                                                    downloadPic();
-                                                    customdialog.dismiss();
-                                                    // 不需要的话，流量wifi 都可以下载。
-                                                }
-                                            })
-                                            .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface arg0, int arg1) {
-                                                    // TODO Auto-generated method stub
-                                                    customdialog.dismiss();
-                                                    // 仅wifi下载。 设置
-                                                    pictureAirDbManager.insertSettingStatus(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                                }
-                                            })
-                                            .setCancelable(false)
-                                            .create();
-                                    customdialog.show();
-
-                                } else if (mNetWorkType == AppUtil.NETWORKTYPE_WIFI) {
-                                    //如果是 wifi ，直接下载
-                                    downloadPic();
-                                } else {
-                                    // 网络不可用
-                                }
-                            }
-                        })
-                        .setCancelable(false)
-                        .create();
-                customdialog.show();
-                pictureAirDbManager.insertSettingStatus(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));
-
-            } else {
-                if (syncFlag) {
-                    downloadPic();
-                }
-            }
-
-        } else {
-
-        }
-        myApplication.setPhotoIsPaid(false); // 保持 不是购买的状态。
-    }
+//    private void judge() {
+//
+//        if (myApplication.isPhotoIsPaid()) {// 如果是 购买之后跳转过来的。
+//            boolean syncFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
+//            boolean notFirstGoBuyOnePhotoFlag = pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));  //不是第一次。
+//            if (!notFirstGoBuyOnePhotoFlag) {
+//                customdialog = new CustomDialog.Builder(PreviewPhotoActivity.this)
+//                        .setMessage(getResources().getString(R.string.dialog_sync_message))
+//                        .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(DialogInterface arg0, int arg1) {
+//                                // TODO Auto-generated method stub
+//                                customdialog.dismiss();
+//                            }
+//                        })
+//                        .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(DialogInterface arg0, int arg1) {
+//                                // TODO Auto-generated method stub
+//                                //判断网络状态
+//                                pictureAirDbManager.insertSettingStatus(Common.SETTING_SYNC, sharedPreferences.getString(Common.USERINFO_ID, ""));
+//                                customdialog.dismiss();
+//                                mNetWorkType = AppUtil.getNetWorkType(getApplicationContext());
+//                                if (mNetWorkType == AppUtil.NETWORKTYPE_MOBILE) {
+//                                    //如果是数据流量的话。
+//                                    customdialog = new CustomDialog.Builder(PreviewPhotoActivity.this)
+//                                            .setMessage(getResources().getString(R.string.dialog_sync_download))
+//                                            .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+//
+//                                                @Override
+//                                                public void onClick(DialogInterface arg0, int arg1) {
+//                                                    // TODO Auto-generated method stub
+//                                                    downloadPic();
+//                                                    customdialog.dismiss();
+//                                                    // 不需要的话，流量wifi 都可以下载。
+//                                                }
+//                                            })
+//                                            .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface arg0, int arg1) {
+//                                                    // TODO Auto-generated method stub
+//                                                    customdialog.dismiss();
+//                                                    // 仅wifi下载。 设置
+//                                                    pictureAirDbManager.insertSettingStatus(Common.SETTING_WIFI, sharedPreferences.getString(Common.USERINFO_ID, ""));
+//                                                }
+//                                            })
+//                                            .setCancelable(false)
+//                                            .create();
+//                                    customdialog.show();
+//
+//                                } else if (mNetWorkType == AppUtil.NETWORKTYPE_WIFI) {
+//                                    //如果是 wifi ，直接下载
+//                                    downloadPic();
+//                                } else {
+//                                    // 网络不可用
+//                                }
+//                            }
+//                        })
+//                        .setCancelable(false)
+//                        .create();
+//                customdialog.show();
+//                pictureAirDbManager.insertSettingStatus(Common.SETTING_NOT_FIRST_BUY_ONE_PHOTO, sharedPreferences.getString(Common.USERINFO_ID, ""));
+//
+//            } else {
+//                if (syncFlag) {
+//                    downloadPic();
+//                }
+//            }
+//
+//        } else {
+//
+//        }
+//        myApplication.setPhotoIsPaid(false); // 保持 不是购买的状态。
+//    }
 
     //直接下载
     private void downloadPic() {
