@@ -203,7 +203,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
-                PictureAirLog.d(TAG, "---------->get location success" + msg.obj.toString());
+                PictureAirLog.d(TAG, "---------->get location success");
                 try {
                     JSONObject response = JSONObject.parseObject(msg.obj.toString());
                     JSONArray resultArray = response.getJSONArray("locations");
@@ -584,14 +584,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     }
                     ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
                     if (isVideo) {
-                        PictureAirLog.out("-----------------> start insert video data into database");
+                        PictureAirLog.out("-----------------> finish insert video data into database");
                         if (!isAll) {
                             refreshVideoDataCount = resultPhotoList.size();
                             PictureAirLog.d(TAG, "------refresh count ----->" + refreshVideoDataCount);
                         }
                         app.photoPassVideoList.addAll(resultPhotoList);
                     } else {
-                        PictureAirLog.out("-----------------> start insert photo data into database");
+                        PictureAirLog.out("-----------------> finish insert photo data into database");
                         if (!isAll) {
                             refreshDataCount = resultPhotoList.size();
                             PictureAirLog.d(TAG, "------refresh count ----->" + refreshDataCount);
@@ -1064,16 +1064,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         //处理视频信息
         for (int i = 0; i < app.photoPassVideoList.size(); i++) {
             PhotoInfo info = app.photoPassVideoList.get(i);
-            PictureAirLog.out("video shoot time is " + info.shootOn);
+//            PictureAirLog.out("video shoot time is " + info.shootOn);
             for (int j = 0; j < photoPassPictureList.size(); j++) {
-                PictureAirLog.out("j-->" + j + ", info shootTime-->" + info.shootTime + ", picList-->" + photoPassPictureList.get(j).shootTime);
+//                PictureAirLog.out("j-->" + j + ", info shootTime-->" + info.shootTime + ", picList-->" + photoPassPictureList.get(j).shootTime);
                 if (info.shootTime.equals(photoPassPictureList.get(j).shootTime)) {
-                    PictureAirLog.out("j-->" + j + ", info.isVideo-->" + info.isVideo + ", picList-->" + photoPassPictureList.get(j).list.get(0).isVideo);
+//                    PictureAirLog.out("j-->" + j + ", info.isVideo-->" + info.isVideo + ", picList-->" + photoPassPictureList.get(j).list.get(0).isVideo);
                     if (info.isVideo == photoPassPictureList.get(j).list.get(0).isVideo) {
                         photoPassPictureList.get(j).list.add(info);
                         date1 = sdf.parse(info.shootOn);
                         date2 = sdf.parse(photoPassPictureList.get(j).shootOn);
-                        PictureAirLog.out("date--->" + date1 + ";2-->" + date2);
+//                        PictureAirLog.out("date--->" + date1 + ";2-->" + date2);
                         if (date1.after(date2)) {
                             photoPassPictureList.get(j).shootOn = info.shootOn;
                         }
@@ -1085,7 +1085,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             //判断是否需要new
             if (!clone_contains) {//如果之前没有找到，说明需要new
                 photoItemInfo = new PhotoItemInfo();
-                PictureAirLog.out("need new shootTime:" + info.shootTime);
+//                PictureAirLog.out("need new shootTime:" + info.shootTime);
                 photoItemInfo.shootTime = info.shootTime;
                 photoItemInfo.place = getString(R.string.video_location);
                 photoItemInfo.list.add(info);

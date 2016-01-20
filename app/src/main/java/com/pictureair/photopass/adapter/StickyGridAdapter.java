@@ -151,16 +151,16 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         }
 
         if (list.get(position).onLine == 0) {
-            PictureAirLog.out("getview---->local photo");
+//            PictureAirLog.out("getview---->local photo");
             viewHolder.storyAddressNameTextView.setText(R.string.magic_location);
         } else {
             if (list.get(position).isVideo == 1) {
-                PictureAirLog.out("getview---->video");
+//                PictureAirLog.out("getview---->video");
 
                 viewHolder.storyAddressNameTextView.setText(R.string.video_location);
             } else {
 
-                PictureAirLog.out("getview---->photo online");
+//                PictureAirLog.out("getview---->photo online");
                 String place = list.get(position).locationName;
                 if (place == null || place.equals("null")) {
                     place = "";

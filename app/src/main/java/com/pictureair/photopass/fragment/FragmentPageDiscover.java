@@ -42,7 +42,6 @@ import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
@@ -50,6 +49,8 @@ import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 发现页面，显示各个地点的与当前的距离，可以筛选各个地方，可支持导航
@@ -138,7 +139,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
             case API1.GET_ALL_LOCATION_SUCCESS:
                 //获取全部的location
-                PictureAirLog.d(TAG, "get location success============" + msg.obj);
+                PictureAirLog.d(TAG, "get location success============");
                 try {
                     JSONObject response = JSONObject.parseObject(msg.obj.toString());
                     JSONArray resultArray = response.getJSONArray("locations");
