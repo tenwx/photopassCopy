@@ -28,8 +28,6 @@ public class SettingUtil {
 	 * @return
 	 */
 	public boolean isOnlyWifiDownload(String userInfoId) {
-		PictureAirLog.e(TAG, ": ==>> "+pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_ONLY_WIFI,
-				userInfoId));
 		return pictureAirDbManager.checkFirstBuyPhoto(Common.SETTING_ONLY_WIFI,
 				userInfoId);// 是否仅wifi下载。
 	}
@@ -106,7 +104,7 @@ public class SettingUtil {
 	
 	/**
 	 * 获取 是否自动更新
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isAutoUpdate(String userInfoId) {
