@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.lang.reflect.Field;
+
 /**屏幕计算*/
 public class ScreenUtil {
 	
@@ -62,6 +65,30 @@ public class ScreenUtil {
 		int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 		Window myWindow = context.getWindow();
 		myWindow.setFlags(flag, flag);// 设置为全屏
+	}
+
+	/**
+	 * 计算状态栏的高度
+	 * @param context
+	 * @return
+	 */
+	public static int getStatusBarHeight(Context context) {
+		Class<?> c = null;
+		Object obj = null;
+		Field field = null;
+		int x = 0, sbar = 0;
+
+		try {
+			c = Class.forName("com.android.internal.R$dimen");
+			obj = c.newInstance();
+			field = c.getField("status_bar_height");
+			x = Integer.parseInt(field.get(obj).toString());
+			sbar = context.getResources().getDimensionPixelSize(x);
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return sbar;
 	}
 	
 }

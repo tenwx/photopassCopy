@@ -211,9 +211,9 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                if (AppExitUtil.isAppExit){
+                                if (AppExitUtil.isAppExit) {
                                     httpCallback.onFailure(httpBaseJson.getStatus());
-                                }else {
+                                } else {
                                     AppExitUtil.getInstance().AppReLogin();
                                 }
                                 break;
@@ -351,9 +351,9 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                if (AppExitUtil.isAppExit){
+                                if (AppExitUtil.isAppExit) {
                                     httpCallback.onFailure(httpBaseJson.getStatus());
-                                }else {
+                                } else {
                                     AppExitUtil.getInstance().AppReLogin();
                                 }
                                 break;
@@ -420,9 +420,9 @@ public class HttpUtil1 {
                         switch (httpBaseJson.getStatus()) {
                             case 6035://Current certification has expired, please login again
                             case 6034://please login
-                                if (AppExitUtil.isAppExit){
+                                if (AppExitUtil.isAppExit) {
                                     httpCallback.onFailure(httpBaseJson.getStatus());
-                                }else {
+                                } else {
                                     AppExitUtil.getInstance().AppReLogin();
                                 }
                                 break;

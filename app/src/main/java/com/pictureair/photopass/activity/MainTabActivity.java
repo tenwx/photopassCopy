@@ -2,17 +2,17 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -29,15 +29,17 @@ import com.pictureair.photopass.fragment.FragmentPageStory;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.view.CoverManager;
-import com.pictureair.photopass.view.DropCover.OnDragCompeteListener;
-import com.pictureair.photopass.view.WaterDrop;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.dropview.CoverManager;
+import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
+import com.pictureair.photopass.widget.dropview.WaterDrop;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -47,9 +49,12 @@ import de.greenrobot.event.Subscribe;
  * 包含三个页面，photo显示、相机拍照、商城，默认进入第一个photo显示页面
  * 通过扫描或者登录之后会来到此页面
  */
-public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener {
-    private LinearLayout linearLayout;
+public class MainTabActivity extends BaseFragmentActivity implements OnDragCompeteListener, Handler.Callback {
+    private RelativeLayout parentLayout;
     private WaterDrop waterDropView;
+    private ImageView explored;
+    private Handler handler;
+
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     // 定义一个布局
@@ -75,12 +80,30 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private static final String TAG = "MainTabActivity";
 
+    /**
+     * 消失动画的更新
+     */
+    private static final int UPDATE_EXPLORED = 101;
+
+    /**
+     * 更新间隔
+     */
+    private static final int UPDATE_EXPLORED_DURING_TIME = 50;
+
+    /**
+     * 动画播放索引值
+     */
+    private int expolredAnimFrameIndex = 0;
+
+    private static final String REFLECTION_RESOURCE = "explored";
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PictureAirLog.out(TAG + "==== onCreate");
         setContentView(R.layout.activity_main);
         application = (MyApplication) getApplication();
+        handler = new Handler(this);
         initView();
     }
 
@@ -100,7 +123,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private void initView() {
         // 实例化布局对象
         layoutInflater = LayoutInflater.from(this);
-        linearLayout = (LinearLayout) findViewById(R.id.parent_view);
+        parentLayout = (RelativeLayout) findViewById(R.id.parent);
         // 实例化TabHost对象，得到TabHost
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
@@ -109,16 +132,24 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, "");
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
-                linearLayout);
+                parentLayout);
         checkUpdateManager.startCheck();
         // 得到fragment的个数
         int count = fragmentArray.length;
+
+        parentLayout = (RelativeLayout) findViewById(R.id.parent);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        explored = new ImageView(this);
+        explored.setLayoutParams(params);
+        explored.setImageResource(R.drawable.explored1);
+        explored.setVisibility(View.INVISIBLE);
+        explored.setAdjustViewBounds(true);
+        parentLayout.addView(explored);
+
         loadFragment(count);//加载tab
         application.setIsStoryTab(true);
 
         CoverManager.getInstance().init(this);
-        CoverManager.getInstance().setMaxDragDistance(300);
-        CoverManager.getInstance().setExplosionTime(100);
     }
 
     /**
@@ -199,6 +230,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        CoverManager.getInstance().destroy();
         clearCache();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
@@ -277,43 +309,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         if (index == 0) {//添加badgeview
             waterDropView = (WaterDrop) view.findViewById(R.id.waterdrop);
             waterDropView.setOnDragCompeteListener(this);
-            expandViewTouchDelegate(waterDropView, 40, 40, 40, 40);
+            AppUtil.expandViewTouchDelegate(waterDropView, 40, 40, 40, 40);
         }
         return view;
     }
 
-    /**
-     * 扩大View的触摸和点击响应范围,最大不超过其父View范围
-     *
-     * @param view
-     * @param top
-     * @param bottom
-     * @param left
-     * @param right
-     */
-    private void expandViewTouchDelegate(final View view, final int top,
-                                         final int bottom, final int left, final int right) {
 
-        ((View) view.getParent()).post(new Runnable() {
-            @Override
-            public void run() {
-                Rect bounds = new Rect();
-                view.setEnabled(true);
-                view.getHitRect(bounds);
-
-                bounds.top -= top;
-                bounds.bottom += bottom;
-                bounds.left -= left;
-                bounds.right += right;
-
-                TouchDelegate touchDelegate = new TouchDelegate(bounds, view);
-
-                if (View.class.isInstance(view.getParent())) {
-                    ((View) view.getParent()).setTouchDelegate(touchDelegate);
-                }
-            }
-        });
-    }
 
     //双击退出app
     private void exitApp() {
@@ -342,10 +343,44 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     }
 
     @Override
-    public void onDrag() {
+    public void onDrag(float endX, float endY) {
         //小红点的拖拽消失，消失之后的消息回调，暂时此处不需要做任何的操作
-        PictureAirLog.out("waterDrop dismiss in MainTabActivity");
-        waterDropView.setVisibility(View.GONE);
+        explored.setVisibility(View.VISIBLE);
+        explored.setX(endX - explored.getWidth() / 2);
+        explored.setY(endY - explored.getHeight() / 2);
+        handler.sendEmptyMessage(UPDATE_EXPLORED);
+    }
+
+    @Override
+    public void onVisible(boolean visible) {
+        waterDropView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        // TODO Auto-generated method stub
+        switch (msg.what) {
+            /**
+             * 使用handler只是为了监听动画结束，从而将imageview消失，一般的帧动画是没有监听动画结束的监听
+             */
+            case UPDATE_EXPLORED:
+                expolredAnimFrameIndex++;
+                PictureAirLog.out("index--->" + expolredAnimFrameIndex);
+                if (expolredAnimFrameIndex < 6) {//更新动画
+                    PictureAirLog.out("update");
+                    explored.setImageResource(ReflectionUtil.getDrawableId(this, REFLECTION_RESOURCE + expolredAnimFrameIndex));
+                    handler.sendEmptyMessageDelayed(UPDATE_EXPLORED, UPDATE_EXPLORED_DURING_TIME);
+                } else {//动画结束，隐藏控件
+                    PictureAirLog.out("dismiss");
+                    expolredAnimFrameIndex = 0;
+                    explored.setVisibility(View.GONE);
+                }
+                break;
+
+            default:
+                break;
+        }
+        return false;
     }
 
 

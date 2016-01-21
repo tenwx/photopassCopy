@@ -179,7 +179,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                  * 1.存入数据库
                  * 2.在application中记录结果
                  */
-                JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
+                JSONObject adJsonObject = (JSONObject) msg.obj;
                 pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"));
                 app.setGetADLocationSuccess(true);
                 break;
@@ -281,18 +281,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             case API1.GET_ALL_VIDEO_LIST_SUCCESS://获取视频成功
 
                 PictureAirLog.d(TAG, "--->get video success");
-                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), true, true);
+                saveJsonToSQLite((JSONObject) msg.obj, true, true);
                 break;
 
             case API1.GET_REFRESH_PHOTOS_BY_CONDITIONS_SUCCESS://获取刷新的推送图片
 //                    app.setPushPhotoCount(0);
                 PictureAirLog.d(TAG, "deal refresh photos-------");
-                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, false);
+                saveJsonToSQLite((JSONObject) msg.obj, false, false);
                 break;
 
             case API1.GET_REFRESH_VIDEO_LIST_SUCCESS://获取刷新的视频成功
                 PictureAirLog.d(TAG, "--->get refresh video success");
-                saveJsonToSQLite(JSONObject.parseObject(msg.obj.toString()), false, true);
+                saveJsonToSQLite((JSONObject) msg.obj, false, true);
                 break;
 
             case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
@@ -304,6 +304,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
                 API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取全部视频信息
+
+                //刷新广告地点
+                app.setGetADLocationSuccess(false);
+                API1.getADLocations(fragmentPageStoryHandler);
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
