@@ -34,5 +34,4 @@
 	<string name="smssdk_error_detail_524">客户端请求发送短信验证过于频繁</string>
 	<string name="smssdk_error_detail_525">需要签名检验</string>
 	<string name="smssdk_error_detail_526">余额不足</string>
-
 </resources>

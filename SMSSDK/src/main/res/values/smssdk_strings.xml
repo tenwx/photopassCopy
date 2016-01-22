@@ -12,9 +12,6 @@
     <string name="smssdk_other_sign_up">其他方式注册</string>
     <string name="smssdk_explain_briefly">点击上面的‘注册’按钮，即表示您同意《乐拍通软件许可及服务协议》</string>
     <string name="smssdk_send_code2">再次发送验证码</string>
-    
-    
-    
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_make_sure_mobile_num">确认手机号码</string>
     <string name="smssdk_cancel">取消</string>
@@ -56,8 +53,6 @@
     <string name="smssdk_make_sure_send_sounds">确认发送？</string>
     <string name="smssdk_send_sounds_success">语音验证码发送成功</string>
     <string name="smssdk_send_sounds_verify">点击发送语音验证</string>
-    
-    
     <string name="smssdk_connecting">请稍后...</string>
      <string name="smssdk_modify_password_empty_hint">请输入密码</string>
     <string name="smssdk_notify_password_hint">密码不能小于6位!</string>
@@ -65,5 +60,4 @@
     <string name="smssdk_pwd_no_all_space">密码首或尾不能为空格!</string>
     <string name="smssdk_pwd_head_or_foot_space">密码首或尾不能为空格!</string>
     <string name="is_loading">正在加载中，请稍后...</string>
-
 </resources>
