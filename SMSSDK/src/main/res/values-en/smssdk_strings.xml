@@ -6,7 +6,6 @@
     <string name="smssdk_other_sign_up">Register in other ways</string>
     <string name="smssdk_explain_briefly">By signing up, you agree to our terms and conditions</string>
     <string name="smssdk_send_code2">Verification again</string>
-    
     <string name="smssdk_back">Back </string>
     <string name="smssdk_regist">New Account</string>
     <string name="smssdk_forget">Forgot password</string>
@@ -54,7 +53,6 @@
     <string name="smssdk_make_sure_send_sounds">Delivery confirmation?</string>
     <string name="smssdk_send_sounds_success">Voice verification code sent successfully</string>
     <string name="smssdk_send_sounds_verify">Send voice verification</string>
-    
     <string name="smssdk_connecting">Connecting...</string>
     <string name="smssdk_notify_password_hint">Password must be at least 6 characters!</string>
     <string name="smssdk_pw_is_inconsistency">Input Passwords do not match!</string>
@@ -62,5 +60,4 @@
     <string name="smssdk_pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
     <string name="smssdk_modify_password_empty_hint">Please enter a password.</string>
     <string name="is_loading">Loading...</string>
-
 </resources>

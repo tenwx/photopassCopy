@@ -27,7 +27,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
@@ -36,6 +35,7 @@ import java.util.HashMap;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.CountryPage;
+import cn.smssdk.gui.CustomProgressDialog;
 import cn.smssdk.gui.EditTextWithClear;
 import cn.smssdk.gui.RegisterPage;
 
@@ -57,8 +57,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     // 返回按键 反馈
     long i = 0;
     // 申明变量
-    private static final int START_OTHER_REGISTER_ACTIVITY = 1;// 启动 其他注册的侧面
-    private static final int START_NATIONAL_LIST_SELECTION_ACTIVITY = 2; // 启动国家列表窗口
+    private static final int START_OTHER_REGISTER_ACTIVITY = 11;// 启动 其他注册的侧面
     // 申明其他类
     private SharedPreferences appPreferences;
     private MyToast myToast;
@@ -68,8 +67,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private RegisterPage registerPage;
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
     private CustomProgressDialog customProgressDialog;
-    private SharedPreferences.Editor editor;
-    private SharedPreferences sp;
     private String forGetphoto;
     private String forGetPwd;
 
@@ -92,52 +89,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         }
     }
 
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (null != customProgressDialog && customProgressDialog.isShowing()) {
-                customProgressDialog.dismiss();
-            }
-            switch (msg.what){
-                case 1://国家
-                    String[] countrys = (String[])msg.obj;
-                    countryCode = countrys[1];
-                    country = countrys[0];
-                    tv_country.setText(country);
-                    tv_country_num.setText("+" + countryCode);
-                    break;
-                case API1.FIND_PWD_FAILED:
-                    int id = 0 ;
-                    switch (msg.arg1) {
-                        case 6031://用户名不存在
-                            id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
-                            break;
-
-                        default:
-                            id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
-                            break;
-                    }
-
-                    myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-                    break;
-                case API1.FIND_PWD_SUCCESS:
-                    new SignAndLoginUtil(LoginActivity.this, forGetphoto,
-                            forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
-                    break;
-
-                default:
-                    break;
-
-            }
-        }
-    };
-
     /**
      * 处理Message
      * @param msg
      */
     private void dealHandler(Message msg) {
+        if (null != customProgressDialog && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
         switch (msg.what) {
             case START_OTHER_REGISTER_ACTIVITY:
                 // 其他注册的按钮//
@@ -146,14 +105,32 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         OtherRegisterActivity.class));
                 break;
 
-            case START_NATIONAL_LIST_SELECTION_ACTIVITY:
-                // 传递2，说明是从注册页面跳转到国家列表界面，传递3为 此activity跳转到国家列表界面
-                Intent intent2 = new Intent();
-                intent2.setClass(LoginActivity.this,
-                        NationalListSelectionActivity.class);
-                intent2.putExtra("key", 2);
-                startActivity(intent2);
+            case 1://国家
+                String[] countrys = (String[])msg.obj;
+                countryCode = countrys[1];
+                country = countrys[0];
+                tv_country.setText(country);
+                tv_country_num.setText("+" + countryCode);
                 break;
+            case API1.FIND_PWD_FAILED:
+                int id = 0 ;
+                switch (msg.arg1) {
+                    case 6031://用户名不存在
+                        id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
+                        break;
+
+                    default:
+                        id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
+                        break;
+                }
+
+                myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+                break;
+            case API1.FIND_PWD_SUCCESS:
+                new SignAndLoginUtil(LoginActivity.this, forGetphoto,
+                        forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
+                break;
+
             default:
                 break;
         }
@@ -266,15 +243,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 break;
             case R.id.rl_country:
 
-//                // NationalListSelectionActivity
-//                PictureAirLog.v(TAG, "国家按钮");
-//                Intent i = new Intent(LoginActivity.this,
-//                        NationalListSelectionActivity.class);
-//                i.putExtra("isCountrycode", "Login");
-//                startActivityForResult(i, 0);
-
                 CountryPage countryPage = new CountryPage();
-                countryPage.setMHandler(handler);
+                countryPage.setMHandler(loginHandler);
                 countryPage.show(this,null);
                 break;
 
@@ -376,7 +346,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         customProgressDialog = CustomProgressDialog.show(LoginActivity.this, getString(R.string.is_loading), false, null);
                         forGetphoto = phone;
                         forGetPwd = pwd;
-                        API1.findPwd(handler, pwd, phone);
+                        API1.findPwd(loginHandler, pwd, phone);
 //                        myToast.setTextAndShow("phone:"+phone+"\n"+"PWD:"+pwd,Common.TOAST_SHORT_TIME);
                     }
                 }
@@ -403,10 +373,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             registerPage.finish();
         }
         loginHandler.removeCallbacksAndMessages(null);
-        if (null != handler){
-            handler.removeMessages(1);
-        }
-
     }
 
     @Override
