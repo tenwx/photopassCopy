@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_dialog_white_content" >
+        android:background="@drawable/bg_dialog_fillet_bottom" >
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/tv_dialog_hint"
