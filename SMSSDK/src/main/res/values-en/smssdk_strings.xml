@@ -33,4 +33,5 @@
     <string name="smssdk_pwd_no_all_space">Password\'s first or last character cannot be space!</string>
     <string name="smssdk_pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
     <string name="is_loading">Loading...</string>
+    <string name="smssdk_virificaition_code_wrong">Verification code error</string>
 </resources>
