@@ -47,12 +47,21 @@ public class StartActivity extends BaseActivity{
 			}else if (languageType.equals(Common.SIMPLE_CHINESE)) {
 				config.locale = Locale.SIMPLIFIED_CHINESE;
 			}
+		}else{
+			if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)){
+				languageType = Common.SIMPLE_CHINESE;
+			}else{
+				languageType = Common.ENGLISH;
+			}
 		}
 
 		versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
 		
-		((MyApplication) this.getApplicationContext()).setLanguageType(languageType);
 		getResources().updateConfiguration(config, displayMetrics);
+		((MyApplication) this.getApplicationContext()).setLanguageType(languageType);
+		SharedPreferences.Editor editor = spApp.edit();
+		editor.putString(Common.LANGUAGE_TYPE, languageType);
+		editor.commit();
 
 		try {
 			PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);

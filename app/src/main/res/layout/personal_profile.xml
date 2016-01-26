@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/pp_margin_2"
-                android:text="@string/grender"
+                android:text="@string/gender"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12" />
 

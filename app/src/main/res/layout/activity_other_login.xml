@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:gravity="center_vertical"
-            android:hint="@string/Email"
+            android:hint="@string/email"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
             android:paddingBottom="@dimen/pp_padding_16"
@@ -71,7 +71,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_marginTop="@dimen/pp_margin_16"
-            android:text="@string/forgot"
+            android:text="@string/forget_pwd"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_16"
             android:visibility="visible" />

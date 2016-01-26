@@ -13,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Handler;
-import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.Html;
@@ -160,7 +159,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
                 @Override
                 public void onClick(View arg0) {
-                    handler2.sendEmptyMessage(1);// 发送消息到loginActivity中
+                    handler2.sendEmptyMessage(11);// 发送消息到loginActivity中
                 }
             });
 

@@ -20,7 +20,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
@@ -28,6 +27,7 @@ import java.lang.ref.WeakReference;
 
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.CountryPage;
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 个人信息页面
@@ -276,10 +276,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 if (!countryString.trim().equals("")) {
                     return;
                 }
-//                intent = new Intent();
-//                intent.setClass(this, NationalListSelectionActivity.class);
-//                intent.putExtra("isCountrycode", "isCountryCode");
-//                startActivityForResult(intent, 0);
                 CountryPage countryPage = new CountryPage();
                 countryPage.setMHandler(profileHandler);
                 countryPage.show(this,null);
@@ -333,19 +329,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                         sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);
                 break;
 
-//            case 222://修改国家
-//                if (!isNetWorkConnect(this)) {
-//                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
-//                    return;
-//                }
-//                dialog = CustomProgressDialog.show(this,
-//                        getString(R.string.connecting), false, null);
-//                countryString = data.getStringExtra("countryCode");//简码
-//                countryString = AppUtil.getCountryByCountryCode(countryString, this);//国家名称
-//                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
-//                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-//                        countryString, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
-//                break;
             default:
                 break;
         }
@@ -397,8 +380,5 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     protected void onDestroy() {
         super.onDestroy();
         profileHandler.removeCallbacksAndMessages(null);
-//        if (null != countryPage){
-//            countryPage.finish();
-//        }
     }
 }

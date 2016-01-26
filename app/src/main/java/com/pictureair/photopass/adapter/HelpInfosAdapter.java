@@ -11,6 +11,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.HelpInfo;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.ArrayList;
 

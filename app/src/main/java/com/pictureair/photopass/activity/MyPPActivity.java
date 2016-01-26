@@ -35,7 +35,6 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PictureWorksDialog;
-import com.pictureair.photopass.widget.XListViewHeader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -395,11 +394,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             }
         }, false, null, null);
 
-        listPP.addHeaderView(new XListViewHeader(this));
         listPP.setAdapter(listPPAdapter);
-        listPP.setHeaderDividersEnabled(true);
-        listPP.setFooterDividersEnabled(false);
-
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
             return;
         }

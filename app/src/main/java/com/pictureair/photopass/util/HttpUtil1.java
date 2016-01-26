@@ -53,7 +53,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncGet url: " + url);
         asyncHttpClient.get(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -64,37 +63,12 @@ public class HttpUtil1 {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 // called when response HTTP status is "200 OK"
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        switch (httpBaseJson.getStatus()) {
-                            case 6035://Current certification has expired, please login again
-                            case 6034://please login
-                                if (AppExitUtil.isAppExit){
-                                    httpCallback.onFailure(httpBaseJson.getStatus());
-                                }else {
-                                    AppExitUtil.getInstance().AppReLogin();
-                                }
-                                break;
-                            default:
-                                httpCallback.onFailure(httpBaseJson.getStatus());
-                                break;
-                        }
-
-                    }
-                }
-
+                getAPISuccess(httpBaseJson, httpCallback);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.e(TAG, throwable.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(HTTP_ERROR);
 
             }
@@ -122,7 +96,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncGet url: " + url);
         asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -133,26 +106,7 @@ public class HttpUtil1 {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 // called when response HTTP status is "200 OK"
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        switch (httpBaseJson.getStatus()) {
-                            case 6035://Current certification has expired, please login again
-                            case 6034://please login
-                                if (AppExitUtil.isAppExit){
-                                    httpCallback.onFailure(httpBaseJson.getStatus());
-                                }else {
-                                    AppExitUtil.getInstance().AppReLogin();
-                                }
-                                break;
-                            default:
-                                httpCallback.onFailure(httpBaseJson.getStatus());
-                                break;
-                        }
-                    }
-                }
+                getAPISuccess(httpBaseJson, httpCallback);
 
             }
 
@@ -160,9 +114,6 @@ public class HttpUtil1 {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.e(TAG, throwable.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(HTTP_ERROR);
 
             }
@@ -190,7 +141,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncPost url: " + url);
         asyncHttpClient.post(url, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -201,37 +151,13 @@ public class HttpUtil1 {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 // called when response HTTP status is "200 OK"
-                //获取服务器返回内容,并解析.
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        //成功,返回内容
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        switch (httpBaseJson.getStatus()) {
-                            case 6035://Current certification has expired, please login again
-                            case 6034://please login
-                                if (AppExitUtil.isAppExit) {
-                                    httpCallback.onFailure(httpBaseJson.getStatus());
-                                } else {
-                                    AppExitUtil.getInstance().AppReLogin();
-                                }
-                                break;
-                            default:
-                                httpCallback.onFailure(httpBaseJson.getStatus());
-                                break;
-                        }
-                    }
-                }
+                getAPISuccess(httpBaseJson, httpCallback);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.e(TAG, throwable.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(HTTP_ERROR);
 
             }
@@ -260,8 +186,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPost(final String url, RequestParams params, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncPost url: " + url);
-//        PictureAirLog.v(TAG, "asyncPost params: " + params);
         asyncHttpClient.post(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -272,38 +196,13 @@ public class HttpUtil1 {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                PictureAirLog.v(TAG, "onSuccess");
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        //成功,返回内容
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        switch (httpBaseJson.getStatus()) {
-                            case 6035://Current certification has expired, please login again
-                            case 6034://please login
-                                if (AppExitUtil.isAppExit){
-                                    httpCallback.onFailure(httpBaseJson.getStatus());
-                                }else {
-                                    AppExitUtil.getInstance().AppReLogin();
-                                }
-                                break;
-                            default:
-                                httpCallback.onFailure(httpBaseJson.getStatus());
-                                break;
-                        }
-                    }
-                }
-
+                getAPISuccess(httpBaseJson, httpCallback);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.e(TAG, throwable.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(HTTP_ERROR);
             }
 
@@ -330,7 +229,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncPut(final String url, RequestParams params, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncPut url: " + url);
         asyncHttpClient.put(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -341,38 +239,13 @@ public class HttpUtil1 {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
-                PictureAirLog.v(TAG, "onSuccess");
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        //成功,返回内容
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        switch (httpBaseJson.getStatus()) {
-                            case 6035://Current certification has expired, please login again
-                            case 6034://please login
-                                if (AppExitUtil.isAppExit) {
-                                    httpCallback.onFailure(httpBaseJson.getStatus());
-                                } else {
-                                    AppExitUtil.getInstance().AppReLogin();
-                                }
-                                break;
-                            default:
-                                httpCallback.onFailure(httpBaseJson.getStatus());
-                                break;
-                        }
-                    }
-                }
-
+                getAPISuccess(httpBaseJson, httpCallback);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.e(TAG, throwable.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(HTTP_ERROR);
             }
 
@@ -399,7 +272,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncDelete(final String url, RequestParams params, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncDelete url: " + url);
         asyncHttpClient.delete(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
@@ -411,37 +283,13 @@ public class HttpUtil1 {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String rawJsonResponse, HttpBaseJson httpBaseJson) {
                 PictureAirLog.v(TAG, "onSuccess");
-                if (httpBaseJson != null) {
-                    if (httpBaseJson.getStatus() == 200) {
-                        //成功,返回内容
-                        httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
-                    } else {
-                        //失败返回错误码
-                        switch (httpBaseJson.getStatus()) {
-                            case 6035://Current certification has expired, please login again
-                            case 6034://please login
-                                if (AppExitUtil.isAppExit) {
-                                    httpCallback.onFailure(httpBaseJson.getStatus());
-                                } else {
-                                    AppExitUtil.getInstance().AppReLogin();
-                                }
-                                break;
-                            default:
-                                httpCallback.onFailure(httpBaseJson.getStatus());
-                                break;
-                        }
-                    }
-                }
-
+                getAPISuccess(httpBaseJson, httpCallback);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, String rawJsonData, HttpBaseJson errorResponse) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 PictureAirLog.e(TAG, throwable.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(HTTP_ERROR);
             }
 
@@ -468,7 +316,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncDownloadBinaryData(String url, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
         asyncHttpClient.get(url, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
@@ -484,9 +331,6 @@ public class HttpUtil1 {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
                 PictureAirLog.e(TAG, error.toString());
-//                for (Header header : headers) {
-//                    PictureAirLog.e(TAG, header.toString());
-//                }
                 httpCallback.onFailure(statusCode);
             }
 
@@ -507,7 +351,6 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调 - byte
      */
     public static void asyncDownloadBinaryData(String url, RequestParams params, final HttpCallback httpCallback) {
-//        PictureAirLog.v(TAG, "asyncDownloadBinaryData url: " + url);
         asyncHttpClient.get(url, params, new BinaryHttpResponseHandler(HTTP_HEAD_CONTENT_TYPE) {
             @Override
             public void onStart() {
@@ -535,4 +378,32 @@ public class HttpUtil1 {
         });
     }
 
+    /**
+     *
+     * @param httpBaseJson
+     * @param httpCallback
+     */
+    private static void getAPISuccess(HttpBaseJson httpBaseJson, HttpCallback httpCallback) {
+        if (httpBaseJson != null) {
+            if (httpBaseJson.getStatus() == 200) {
+                httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
+            } else {
+                //失败返回错误码
+                switch (httpBaseJson.getStatus()) {
+                    case 6035://Current certification has expired, please login again
+                    case 6034://please login
+                    case 5030://not login
+                        if (AppExitUtil.isAppExit){
+                            httpCallback.onFailure(httpBaseJson.getStatus());
+                        }else {
+                            AppExitUtil.getInstance().AppReLogin();
+                        }
+                        break;
+                    default:
+                        httpCallback.onFailure(httpBaseJson.getStatus());
+                        break;
+                }
+            }
+        }
+    }
 }

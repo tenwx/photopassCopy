@@ -29,7 +29,8 @@ public class AboutActivity extends BaseActivity {
         tv_versionCode = (TextView) findViewById(R.id.versionCode);
         developTextView = (TextView) findViewById(R.id.develop_version_tv);
         getVersionCode();
-        tv_versionCode.setText("V" + versionName);
+        tv_versionCode.setVisibility(View.GONE);
+//        tv_versionCode.setText("V" + versionName);
         if (Common.DEBUG) {//研发版本
             developVersion = getString(R.string.develop_version) + Common.VERSION_CODE;
         } else {//内测版本

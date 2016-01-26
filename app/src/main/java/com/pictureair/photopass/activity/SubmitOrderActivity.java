@@ -34,7 +34,6 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
@@ -42,6 +41,8 @@ import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
@@ -229,7 +230,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         list = (ArrayList<CartItemInfo1>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
-//        infoListView.addHeaderView(new XListViewHeader(this));
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);
         infoListView.addHeaderView(initHeaderAndFooterView(true, null));

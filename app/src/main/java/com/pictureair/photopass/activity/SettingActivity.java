@@ -111,7 +111,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                     public void yes() {
                         // TODO Auto-generated method stub // 确定退出：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
                         // logout 之后，清空上个用户的数据。
-                        application.setLast_tab(0);   // 设置 进入 app为主页
+                        application.setMainTabIndex(0);   // 设置 进入 app为主页
                         //断开推送
                         AppExitUtil.getInstance().AppLogout();
                     }

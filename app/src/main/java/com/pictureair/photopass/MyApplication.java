@@ -64,8 +64,6 @@ public class MyApplication extends Application {
     private String languageType;// 记录app选择的语言
     public int fragmentStoryLastSelectedTab = 0;// 记录story页面viewpager上次的页面序号
 
-    private int last_tab = 0;
-
     private ArrayList<PhotoInfo> isBuyingPhotoInfoList;// 记录正在购买的全部照片信息
     private int isBuyingIndex;// 记录正在购买的图片的索引值
     // private HashMap<String, Boolean> isBuyingPhotoFromAlbumHashMap = new
@@ -412,24 +410,6 @@ public class MyApplication extends Application {
      */
     public String getRefreshViewAfterBuyBlurPhoto() {
         return refreshViewAfterBuyBlurPhoto;
-    }
-
-    /**
-     * 获取mainTab上一个页面
-     *
-     * @return
-     */
-    public int getLast_tab() {
-        return last_tab;
-    }
-
-    /**
-     * 设置mainTab上一个页面
-     *
-     * @param last_tab
-     */
-    public void setLast_tab(int last_tab) {
-        this.last_tab = last_tab;
     }
 
     /**
