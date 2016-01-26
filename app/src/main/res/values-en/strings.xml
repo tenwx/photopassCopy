@@ -1,59 +1,38 @@
 <resources>
     <string name="app_name">PhotoPass</string>
-    <string name="xlistview_header_hint_normal">Pull to refresh</string>
-    <string name="xlistview_header_hint_ready">Release to refresh</string>
-    <string name="xlistview_header_hint_loading">Loading...</string>
-    <string name="xlistview_header_last_time">Last update time：</string>
-    <string name="xlistview_footer_hint_normal">Load more</string>
-    <string name="xlistview_footer_hint_ready">Release to load more</string>
-    <string name="scan_back">Back</string>
+    <!-- login activity start-->
+    <string name="user_login">Account</string>
+    <string name="country">Country</string>
+    <!-- login activity end-->
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">Confirm</string>
-    <string name="msg_camera_framework_bug">Camera is busy</string>
     <string name="username">User name</string>
     <string name="pwd">Password</string>
     <string name="pwd_again">Repeat password</string>
-    <string name="user_login">Account</string>
     <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
-    <string name="forgot">Forgot password?</string>
-    <string name="exit">"Double tap to exit PhotoPass"</string>
-    <string name="EM">Email/Mobile</string>
-    <string name="send_captcha">Send text messages</string>
-    <string name="scan_sign">Sign up</string>
-    <string name="scan_middle">Connecting memories</string>
-    <string name="scan_login">Have an account? Login</string>
-    <string name="whatspp">What is PhotoPass?</string>
-    <string name="whatsppp">What is PhotoPass+?</string>
+    <string name="exit">Double tap to exit PhotoPass</string>
     <string name="profile">Personal Profile</string>
     <string name="nn">Name</string>
-    <string name="grender">Gender</string>
+    <string name="gender">Gender</string>
     <string name="birthday">Date of birth</string>
-    <string name="Email">Email Address</string>
     <string name="weixin">Wechat</string>
-    <string name="share_photo">My shared photos</string>
     <string name="my_order">My Orders</string>
-    <string name="order_history">Order History</string>
     <string name="my_pp">My PhotoPass</string>
     <string name="my_ppp">My PhotoPass+</string>
     <string name="inputCode">Input your code</string>
     <string name="auto">Scan</string>
     <string name="manual">Manual</string>
-    <string name="forget_pwd">Forget password</string>
+    <string name="forget_pwd">Forgot password?</string>
     <string name="confirm">Check out</string>
     <string name="back">Back</string>
     <string name="view">View</string>
     <string name="filter">Filter</string>
     <string name="shop">Shop</string>
     <string name="pp">PhotoPass+</string>
-    <string name="gifts">Gifts</string>
-    <string name="like_it">Promotion</string>
-    <string name="more">All the goods</string>
-    <string name="hot">Shop List</string>
     <string name="user">User</string>
     <string name="product_name">Product name</string>
     <string name="price">Price: </string>
-    <string name="detail">product description:product descriptionproduct descriptionproduct description</string>
     <string name="buy">Shop</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cart">Cart</string>
@@ -77,7 +56,6 @@
     <string name="phone">Phone</string>
     <string name="save">Save</string>
     <string name="payment">Payment Order</string>
-    <string name="postadd">Post Address</string>
     <string name="add">Add</string>
     <string name="paymentmethod">Payment Methods</string>
     <string name="ok">OK</string>
@@ -102,15 +80,9 @@
     <string name="photo_album">My Album</string>
     <string name="logout">Log Out</string>
     <string name="submit_opinions">Feedback</string>
-    <string name="clear_cache">Clear Cache</string>
-    <string name="ppwith">Have pictures</string>
-    <string name="ppwithout">No pictures</string>
-    <string name="pppwith">Has been used</string>
-    <string name="pppwithout">Not used</string>
     <string name="upgrade">Upgrade </string>
     <string name="preview">Preview Gift</string>
     <string name="picture_number">pic(%s)</string>
-    <string name="tag_used">Tag(%1$d/%2$d)</string>
     <string name="set_head_photo">Set your Profile Photo</string>
     <string name="ppp_bottom_text">This PhotoPass can upgrade and bind PhotoPass+</string>
     <string name="pp_bottom_text">Select PhotoPass on the same day</string>
@@ -177,9 +149,7 @@
     <string name="input_right_phone_number">Please input correct phone number</string>
     <string name="is_taking">Processing</string>
     <string name="take_photo_failed">Take picture failed</string>
-    <string name="cannot_reduce">Cannot reduce any more</string>
     <string name="cannot_change_count">Cannot modify count</string>
-    <string name="login_success">Login successful</string>
     <string name="username_null">Username is not exist</string>
     <string name="pw_null">Password is incorrect</string>
     <string name="upload_failed">Upload photo failed</string>
@@ -218,9 +188,6 @@
     <string name="please_pay_first">Please pay first</string>
     <string name="input_phone_number">Input your mobile number</string>
     <string name="input_address">Input your address</string>
-    <string name="pull_to_refresh_pull_label">Pull to refresh</string>
-    <string name="pull_to_refresh_release_label">Release to refresh</string>
-    <string name="pull_to_refresh_refreshing_label">Loading…</string>
     <string name="bind_failed">Failed</string>
     <string name="payment_order">Unpaid</string>
     <string name="delivery_details">Delivery details</string>
@@ -291,11 +258,6 @@
     <string name="album_download">Download</string>
     <string name="album_other">Other</string>
     <string name="payment_ways">Payment methods</string>
-    <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>
-    <string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
-    <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
-    <string name="lead_page_text1">Keep your cameras at home, travel light and have our Disney PhotoPass photographer capture those special family moments that last a lifetime.</string>
-    <string name="lead_page_text2">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass mobile app or website.</string>
     <string name="copyright1">Copyright © 2015 pictureworks</string>
     <string name="copyright2">All Rights Reserved.</string>
     <string name="selectedphoto">Select(%1$d/%2$d)</string>
@@ -365,8 +327,6 @@
     <string name="select_a_country">Choose country</string>
     <string name="user_other_register">Register</string>
     <string name="other_sign_name">Name</string>
-    <string name="counry">Country</string>
-    <string name="sex">Gender</string>
     <string name="man">Male</string>
     <string name="woman">Female</string>
     <string name="date_of_birth">Date of Birth</string>
@@ -400,14 +360,6 @@
     <string name="buy_ppp_tips">PhotoPass+ has used, do you want to buy another one?</string>
     <!-- 日期 -->
     <string name="action_settings">Settings</string>
-    <!-- Mon Tue Wed Thu Fri Sat -->
-    <string name="sun">Sun</string>
-    <string name="mon">Mon</string>
-    <string name="tue">Tue</string>
-    <string name="wed">Wed</string>
-    <string name="thu">Thu</string>
-    <string name="fri">Fri</string>
-    <string name="sat">Sat</string>
     <string name="submit">OK</string>
     <string name="answer">Answer</string>
     <string name="advice">Feedback</string>
@@ -565,7 +517,6 @@
     <string name="ppp_has_used">Used</string>
     <string name="ppp_has_expired">Expired</string>
     <string name="expired_on">Valid:</string>
-    <string name="country">Country</string>
     <string name="account">Account</string>
     <string name="nick_name_empty">Please enter your nickname</string>
     <!-- 下载-->
@@ -596,9 +547,9 @@
     <string name="develop_version">Debug </string>
     <string name="testing_version">Beta </string>
     <string name="cancel">Cancel</string>
+    <string name="email">Email Address</string>
     <!-- 分享字段 start-->
     <string name="share">Share</string>
-    <string name="email">Email</string>
     <string name="share_completed">Operation succeeded</string>
     <string name="share_canceled">Operation canceled</string>
     <string name="share_failed">Operation failed</string>

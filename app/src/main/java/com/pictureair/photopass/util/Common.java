@@ -23,20 +23,18 @@ public class Common {
 //    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
 //    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/alipayNotify";//alipay的异步通知URL
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static boolean DEBUG = false;// false，不打印log
 //    public final static String VERSION_CODE = "V1.1.0";//内测版
 
     /**
-     * 8.3测试服务器
+     * 外网可访问的8.3测试服务器
      */
-    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
+    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
     public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
     public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
     public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
-    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
     public final static boolean DEBUG = true;// true，打印log
     public final static String VERSION_CODE = "V1.2.1";//开发版
 
@@ -124,6 +122,7 @@ public class Common {
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
+    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
 
 
     //user的SharedPreferences    以及   接口参数

@@ -200,6 +200,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 application.setIsStoryTab(true);
             }
         }
+        PictureAirLog.out("currenagLanguage--->" + currentLanguage + "___" + MyApplication.getInstance().getLanguageType());
         if (currentLanguage != null && !currentLanguage.equals(MyApplication.getInstance().getLanguageType())) {
             PictureAirLog.out("maintab ==== currentLanguage");
             mTabHost.clearAllTabs();

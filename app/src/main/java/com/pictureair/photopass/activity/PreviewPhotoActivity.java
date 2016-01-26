@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -774,7 +773,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         //更新序列号
         currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1, isEdited ? targetphotolist.size() : photolist.size()));
-        currentPhotoInfoTextView.setText(photoInfo.shootOn);
+        currentPhotoInfoTextView.setText(photoInfo.shootOn.substring(0, 16));
         //更新上一张下一张按钮
         if (currentPosition == 0) {
             lastPhotoImageView.setVisibility(View.INVISIBLE);

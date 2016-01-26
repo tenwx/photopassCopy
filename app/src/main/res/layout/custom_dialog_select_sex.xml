@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/pp_padding_10"
             android:padding="@dimen/pp_padding_10"
-            android:text="@string/grender"
+            android:text="@string/gender"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
     </RelativeLayout>

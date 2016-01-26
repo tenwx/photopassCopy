@@ -32,14 +32,14 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.XListViewHeader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 购物车页面
@@ -355,10 +355,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         totalTextView.setText((int) totalPrice + "");
         listView = (ListView) findViewById(R.id.cartListView);
         cartAdapter = new CartInfoAdapter(this, sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), cartInfoList, userId, cartHandler);
-        listView.addHeaderView(new XListViewHeader(this));
         listView.setAdapter(cartAdapter);
-        listView.setHeaderDividersEnabled(true);
-        listView.setFooterDividersEnabled(false);
         cartItemInfoJson = new CartItemInfoJson();
     }
 

@@ -40,11 +40,12 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 预览照片，总共有4大类，1，全部的照片，2，pictureair网络获取的图片，3，本软件拍的照片，4，已经购买的照片
