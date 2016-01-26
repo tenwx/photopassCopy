@@ -270,7 +270,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     intent.putExtra("deliveryInfo", grouplist.get(position));
                     //childlist
                     String orderName, orderIntroduce;
-                    if (childlist.size() == 1) {
+                    if (childlist.get(position).getCartItemInfos().size() == 1) {
                         orderName = childlist.get(position).getCartItemInfos().get(0).cart_productName;
                         orderIntroduce = childlist.get(position).getCartItemInfos().get(0).cart_productIntroduce;
                     } else {
