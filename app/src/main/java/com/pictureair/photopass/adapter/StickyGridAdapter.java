@@ -1,12 +1,8 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
@@ -19,12 +15,10 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
 import java.text.ParseException;
@@ -201,84 +195,4 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
     public long getHeaderId(int position) {
         return list.get(position).sectionId;
     }
-
-    /**
-     * 下载监听
-     *
-     * @author bauer_bao
-     */
-    private class DownloadAllListener implements OnClickListener {
-
-        private long headerId;
-
-        public DownloadAllListener(long headerId) {
-            this.headerId = headerId;
-        }
-
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-            switch (AppUtil.getNetWorkType(context)) {
-                case AppUtil.NETWORKTYPE_INVALID://无网络
-                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                    break;
-
-                case AppUtil.NETWORKTYPE_MOBILE://流量
-                    customDialog = new CustomDialog.Builder(context)
-                            .setMessage(context.getString(R.string.dialog_download_message))
-                            .setNegativeButton(context.getString(R.string.button_cancel), new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    // TODO Auto-generated method stub
-                                    customDialog.dismiss();
-                                }
-                            })
-                            .setPositiveButton(context.getString(R.string.button_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    // TODO Auto-generated method stub
-                                    startDownloadPhotos(headerId);
-                                    customDialog.dismiss();
-                                }
-                            })
-                            .setCancelable(false)
-                            .create();
-                    customDialog.show();
-                    break;
-
-                case AppUtil.NETWORKTYPE_WIFI://wifi
-                    startDownloadPhotos(headerId);
-                    break;
-
-                default:
-                    break;
-            }
-
-        }
-    }
-
-    /**
-     * 开始下载图片
-     *
-     * @param headerId
-     */
-    private void startDownloadPhotos(long headerId) {
-        Common.DOWNLOAD_TYPE = Common.ALL_PHOTOS_DOWNLOAD;
-        UmengUtil.onEvent(context, Common.ALL_PHOTOS_DOWNLOAD);
-        ArrayList<PhotoInfo> downloadList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            if (headerId == list.get(i).sectionId) {
-
-                downloadList.add(list.get(i));
-            }
-        }
-        //直接下载
-        Intent intent = new Intent(context, DownloadService.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("photos", downloadList);
-        intent.putExtras(bundle);
-        context.startService(intent);
-    }
-
 }

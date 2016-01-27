@@ -77,10 +77,6 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SignOrForgetActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.ProfileActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />

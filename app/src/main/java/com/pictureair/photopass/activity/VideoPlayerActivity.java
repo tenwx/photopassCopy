@@ -56,6 +56,8 @@ import java.util.ArrayList;
  */
 public class VideoPlayerActivity extends BaseActivity implements OnClickListener {
     private final static String TAG = "VideoPlayerActivity";
+    private final static int SCREEN_FULL = 0;
+    private final static int SCREEN_DEFAULT = 1;
     private static final int UPDATE_UI = 2866;
     private SeekBar seekBar = null;
     private TextView durationTextView = null;
@@ -76,7 +78,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private int playedTime;// 最小化 保存播放时间
     private int screenWidth = 0;
     private int screenHeight = 0;
-    private int controlHeight = 0;
     private final static int TIME = 3000;
     private boolean isControllerShow = true;
     private boolean isPaused = false;
@@ -86,21 +87,15 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private int mNetWorkType;  //当前网络的状态
     private CustomDialog customdialog; //  对话框
     private PictureAirDbManager pictureAirDbManager;
-    //    private boolean isLoading = true;
     //视频实际播放的宽高//4:3默认尺寸
     private int videoHeight = 600;
     private int videoWidth = 800;
-//    private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private final int NOT_NETWORK = 111;
     private boolean isOnline ;//网络true || 本地false
     private String videoPath;//视频本地路径 || 视频网络地址
     private int shareType = 0;
-
     private boolean isPlayFinash = false;//是否播放完毕
-
-
     private final Handler videoPlayerHandler = new VideoPlayerHandler(this);
-
 
     private static class VideoPlayerHandler extends Handler{
         private final WeakReference<VideoPlayerActivity> mActivity;
@@ -168,7 +163,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 } else if (ori == cf.ORIENTATION_PORTRAIT) {
                     verticalScreen();
                 }
-
                 //更新收藏图标
                 if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
                     videoInfo.isLove = 1;
@@ -184,8 +178,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         }
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,7 +189,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         myVVSizeChangeLinstener();// 屏幕大小发生改变的情况
         getScreenSize();// 给底下菜单的布局
         initSeekBarEvent();// 进度条调整
-//		 myGestureDetectr();//手势检测器
         initVVEvent();// VideoPlayerView类的回调
         getNetwork();
     }
@@ -258,14 +249,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         hideController();
     }
 
-    /**
-     * 所有按钮的事件
-     */
     private void initBtnEvent() {
         llShow.setOnClickListener(this);
         llShare.setOnClickListener(this);
         llDownload.setOnClickListener(this);
-//        ivIsLove.setOnClickListener(this);
     }
 
     private void getIsOnline(){
@@ -287,6 +274,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     private void startVideo() {
         isPlayFinash = false;
+//        videoPath = "http://m.fallback.wdjcdn.com/baobab/14468618701471.mp4";
         videoPlayerView.setVideoPath(videoPath);
         cancelDelayHide();
         hideControllerDelay();
@@ -325,9 +313,9 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                 // hour, minute, second));
 
                 videoPlayerView.start();
-//                btnPlayOrStop.setImageResource(R.drawable.pause);
-                btnPlayOrStop.setImageResource(0);
+                btnPlayOrStop.setVisibility(View.GONE);
                 hideControllerDelay();
+
                 videoPlayerHandler.sendEmptyMessage(PROGRESS_CHANGED);
             }
         });
@@ -338,14 +326,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             public void onCompletion(MediaPlayer arg0) {
                 PictureAirLog.e(TAG, "===> onCompletion");
 
-//				VideoPlayerView.stopPlayback();
-//				startVideo();
-                videoPlayerView.pause();
-                btnPlayOrStop.setImageResource(R.drawable.play);
-                cancelDelayHide();
-                showController();
-                isPaused = true;
-
+                pausedVideo();
                 isPlayFinash = true;
             }
         });
@@ -358,7 +339,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             public void onProgressChanged(SeekBar seekbar, int progress,
                                           boolean fromUser) {
                 PictureAirLog.e(TAG, "===> onProgressChanged");
-
                 if (fromUser) {
 //                    if (!isLoading) {
                     videoPlayerView.seekTo(progress);
@@ -408,62 +388,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         });
     }
 
-    @Override
-    protected void onPause() {
-        PictureAirLog.e(TAG, "=======>onPause");
-        playedTime = videoPlayerView.getCurrentPosition();
-        videoPlayerView.pause();
-        btnPlayOrStop.setImageResource(R.drawable.play);
-        isPaused = true;
-
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        PictureAirLog.e(TAG, "=======>onResume");
-        isPaused = true;
-        if (!isPlayFinash){
-            videoPlayerView.seekTo(playedTime);
-            videoPlayerView.start();
-            if (videoPlayerView.isPlaying()) {
-//            btnPlayOrStop.setImageResource(R.drawable.pause);
-                btnPlayOrStop.setImageResource(0);
-                hideControllerDelay();
-            }
-         isPaused = false;
-        }
-
-        if (sharePop != null) {
-            PictureAirLog.out("sharePop not null");
-            if (shareType != SharePop.TWITTER) {
-                PictureAirLog.out("dismiss dialog");
-                sharePop.dismissDialog();
-            }
-        }
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        videoPlayerHandler.removeMessages(PROGRESS_CHANGED);
-        videoPlayerHandler.removeMessages(HIDE_CONTROLER);
-
-        if (videoPlayerView.isPlaying()) {
-            videoPlayerView.stopPlayback();
-        }
-        videoPlayerHandler.removeCallbacksAndMessages(null);
-        super.onDestroy();
-    }
-
     /**
-     * 给底下菜单的布局
+     * 获取屏幕宽高
      */
     private void getScreenSize() {
-        Display display = getWindowManager().getDefaultDisplay();
-        screenHeight = display.getHeight();
-        screenWidth = display.getWidth();
-        controlHeight = screenHeight / 10;// 控制栏高的布局
+        screenHeight = ScreenUtil.getScreenHeight(context);
+        screenWidth = ScreenUtil.getScreenWidth(context);
     }
 
     private void hideControllerDelay() {
@@ -486,9 +416,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private void cancelDelayHide() {
         videoPlayerHandler.removeMessages(HIDE_CONTROLER);
     }
-
-    private final static int SCREEN_FULL = 0;
-    private final static int SCREEN_DEFAULT = 1;
 
     // 设置可以全屏
     private void setVideoScale(int flag) {
@@ -519,35 +446,17 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     /**
-     * 得到屏幕宽高
-     */
-    int height;
-    int width;
-
-    public void getDisplayMetrics() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        width = dm.widthPixels;    //得到宽度
-        height = dm.heightPixels;  //得到高度
-    }
-
-    /**
      * 当横竖屏切换的时候会直接调用onCreate方法中的 onConfigurationChanged方法
      */
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         getScreenSize();
-        getDisplayMetrics();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            PictureAirLog.out("landscape----->");
             sharePop.dismiss();
             crossScreen();//横屏计算大小
-//			Toast.makeText(context, " 横屏", 100).show();
         } else {
-            PictureAirLog.out("portrait----->");
             verticalScreen();//竖屏计算大小
-//			Toast.makeText(context, " 竖屏", 100).show();
         }
         isPausedOrPlay();
         super.onConfigurationChanged(newConfig);
@@ -557,9 +466,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         rlHead.setVisibility(View.GONE);
         llEnd.setVisibility(View.GONE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.black));
-
         setVideoResolution(false, videoWidth, videoHeight);
-
         setVideoScale(SCREEN_FULL);
     }
 
@@ -567,9 +474,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         rlHead.setVisibility(View.VISIBLE);
         llEnd.setVisibility(View.VISIBLE);
         rlBackground.setBackgroundColor(getResources().getColor(R.color.gray_light));
-
         setVideoResolution(true, videoWidth, videoHeight);
-
         setVideoScale(SCREEN_DEFAULT);
     }
 
@@ -594,15 +499,33 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
     private void isPausedOrPlay() {
         if (isPaused) {
-            videoPlayerView.pause();
-            btnPlayOrStop.setImageResource(R.drawable.play);
+            pausedVideo();
         } else {
-            videoPlayerView.start();
-//        btnPlayOrStop.setImageResource(R.drawable.play);
-            btnPlayOrStop.setImageResource(0);
-            cancelDelayHide();
-            hideControllerDelay();
+            playVideo();
         }
+    }
+
+    /**
+     * 暂停播放
+     */
+    private void pausedVideo(){
+        isPaused = true;
+        videoPlayerView.pause();
+        btnPlayOrStop.setVisibility(View.VISIBLE);
+        cancelDelayHide();
+        showController();
+    }
+
+    /**
+     * 播放视频
+     */
+    private void playVideo(){
+        isPaused = false;
+        isPlayFinash = false;
+        videoPlayerView.start();
+        btnPlayOrStop.setVisibility(View.GONE);
+        cancelDelayHide();
+        hideControllerDelay();
     }
 
     @Override
@@ -619,19 +542,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
             case R.id.ll_show:
                 // 单次处理
                 if (isPaused) {
-                    isPlayFinash = false;
-                    videoPlayerView.start();
-//                    btnPlayOrStop.setImageResource(R.drawable.pause);
-                    btnPlayOrStop.setImageResource(0);
-                    cancelDelayHide();
-                    hideControllerDelay();
+                    playVideo();
                 } else {
-                    videoPlayerView.pause();
-                    btnPlayOrStop.setImageResource(R.drawable.play);
-                    cancelDelayHide();
-                    showController();
+                    pausedVideo();
                 }
-                isPaused = !isPaused;
                 break;
 
             default:
@@ -733,6 +647,52 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         }
         ((MyApplication) getApplication()).needScanFavoritePhotos = true;
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        playedTime = videoPlayerView.getCurrentPosition();
+        pausedVideo();
+
+        PictureAirLog.e(TAG, "=======>onPause   playedTime:" + playedTime);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        PictureAirLog.e(TAG, "=======>onResume   playedTime:" + playedTime);
+
+        isPaused = true;
+        if (!isPlayFinash){
+            videoPlayerView.seekTo(playedTime);
+            videoPlayerView.start();
+            if (videoPlayerView.isPlaying()) {
+                btnPlayOrStop.setVisibility(View.GONE);
+                hideControllerDelay();
+            }
+            isPaused = false;
+        }
+
+        if (sharePop != null) {
+            PictureAirLog.out("sharePop not null");
+            if (shareType != SharePop.TWITTER) {
+                PictureAirLog.out("dismiss dialog");
+                sharePop.dismissDialog();
+            }
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        videoPlayerHandler.removeMessages(PROGRESS_CHANGED);
+        videoPlayerHandler.removeMessages(HIDE_CONTROLER);
+
+        if (videoPlayerView.isPlaying()) {
+            videoPlayerView.stopPlayback();
+        }
+        videoPlayerHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
 }
