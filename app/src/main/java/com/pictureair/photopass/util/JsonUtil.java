@@ -671,6 +671,15 @@ public class JsonUtil {
                         frameInfo.frameThumbnailPathLandscape400 = x400JsonObject.getString("url");
                     }
                 }
+                if (thumbnailJsonObject.containsKey("x160")) {
+                    JSONObject x160JsonObject = thumbnailJsonObject
+                            .getJSONObject("x160");
+                    if (x160JsonObject.containsKey("url")) {
+                        frameInfo.frameThumbnailPathH160 = x160JsonObject
+                                .getString("url");
+                    }
+                }
+
             }
             if (frameJsonObject.containsKey("thumbnail_V")) {
                 JSONObject thumbNailPortraritJsonObject = frameJsonObject.getJSONObject("thumbnail_V");
@@ -683,7 +692,7 @@ public class JsonUtil {
                 if (thumbNailPortraritJsonObject.containsKey("x120")) {
                     JSONObject x160JsonObject = thumbNailPortraritJsonObject.getJSONObject("x120");
                     if (x160JsonObject.containsKey("url")) {
-                        frameInfo.frameThumbnailPathH160 = x160JsonObject.getString("url");//测试代码，需要修改。
+                        frameInfo.frameThumbnailPathV160 = x160JsonObject.getString("url");
                     }
                 }
             }

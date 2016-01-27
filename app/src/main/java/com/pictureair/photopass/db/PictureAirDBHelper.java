@@ -185,7 +185,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "originalPathPortrait varchar(100), " +
                 "thumbnailPathLandscape400 varchar(100), " +
                 "thumbnailPathPortrait400 varchar(100), " +
-                "thumbnailPath160 varchar(100), " +
+                "thumbnailPathH160 varchar(100),"+
+                "thumbnailPathV160 varchar(100), " +
                 "locationId varchar(20), " +
                 "isActive integer, " +
                 "onLine integer, " +
