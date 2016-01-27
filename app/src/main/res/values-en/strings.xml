@@ -3,28 +3,405 @@
     <!-- login activity start-->
     <string name="user_login">Account</string>
     <string name="country">Country</string>
-    <!-- login activity end-->
-    <string name="button_cancel">Cancel</string>
-    <string name="button_ok">Confirm</string>
-    <string name="username">User name</string>
     <string name="pwd">Password</string>
-    <string name="pwd_again">Repeat password</string>
+    <string name="forget_pwd">Forgot password?</string>
     <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
-    <string name="exit">Double tap to exit PhotoPass</string>
-    <string name="profile">Personal Profile</string>
+    <string name="otherLogin">Login in other ways</string>
+    <string name="pwd_no_all_space">Password cannot include space</string>
+    <string name="pwd_head_or_foot_space">Password cannot include space</string>
+    <string name="modify_password_empty_hint">Please enter a password.</string>
+    <string name="notify_password_hint">Password must be at least 6 characters</string>
+    <string name="connecting">Connecting...</string>
+    <!-- login activity end-->
+
+    <!-- email login start -->
+    <string name="email">Email Address</string>
+    <string name="email_error">Email is not available</string>
+    <!-- email login end-->
+
+    <!-- email register start -->
     <string name="nn">Name</string>
+    <string name="other_sign_name">Name</string>
     <string name="gender">Gender</string>
-    <string name="birthday">Date of birth</string>
-    <string name="weixin">Wechat</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <!-- email register end-->
+
+    <!-- select country start-->
+    <string name="select_a_country">Choose country</string>
+    <!-- select country end -->
+
+    <!-- forget pwd start -->
+    <string name="reset_pwd">Reset password</string>
+    <string name="send_emal">Send a verification email</string>
+    <string name="back_login_page">Back to Login</string>
+    <!-- forget pwd end -->
+
+    <!-- 分享字段 start-->
+    <string name="share">Share</string>
+    <string name="share_completed">Operation succeeded</string>
+    <string name="share_canceled">Operation canceled</string>
+    <string name="share_failed">Operation failed</string>
+    <string name="weibo_oauth_regiseter">Authorization</string>
+    <string name="share_failure_wechat">Please download and install WeChat before sharing!</string>
+    <string name="share_failure_weibo">Please download and install SinaWeibo before sharing!</string>
+    <string name="share_failure_qzone">Please download and install QQ before sharing!</string>
+    <string name="share_failure_facebook">Please download and install Facebook before sharing!</string>
+    <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
+    <string name="sinaweibo">Sina Weibo</string>
+    <string name="qzone">QZone</string>
+    <string name="wechat">Wechat</string>
+    <string name="wechatmoments">Wechat Moments</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="qq">QQ</string>
+    <string name="share_text">I would like to share with you every moment PhotoPass wonderful experience!</string>
+    <!-- 分享字段 end-->
+
+    <!-- maintab start -->
+    <string name="exit">Double tap to exit PhotoPass</string>
+    <string name="tab_story">Story</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_camera">Camera</string>
+    <string name="tab_shops">Shop</string>
+    <string name="tab_me">Me</string>
+    <string name="please_relogin">please login again</string>
+    <!-- maintab end -->
+
+    <!-- story start -->
+    <string name="story_tab_all">All</string>
+    <string name="story_tab_photopass">PhotoPass</string>
+    <string name="story_tab_magic">Local</string>
+    <string name="story_tab_bought">Purchased</string>
+    <string name="story_tab_favorite">Favorite</string>
+    <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / PhotoPass card to start associating your photos.</string>
+    <string name="story_scan">Scan</string>
+    <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo ! </string>
+    <string name="no_photo_in_magiccam">Store all your edited photos here!</string>
+    <string name="no_photo_in_bought">Start to purchase your photos now!</string>
+    <string name="no_photo_in_favourite">Start collecting your photos now!</string>
+    <string name="storypage_no_photo">There is no photo in your gallery!</string>
+    <string name="story_no_photo">Hi, look for your photographer to take photos.</string>
+    <string name="no_network">Please check your network</string>
+    <string name="click_button_reload">Click button to reload</string>
+    <string name="reload">Reload</string>
+    <string name="nomore">No more data to load!</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="two_days_ago">2 days ago</string>
+    <string name="three_days_ago">3 days ago</string>
+    <string name="four_days_ago">4 days ago</string>
+    <string name="five_days_ago">5 days ago</string>
+    <string name="six_days_ago">6 days ago</string>
+    <!-- story end -->
+
+    <!-- scan start -->
+    <string name="auto">Scan</string>
+    <string name="scan_qr_code">QR Code</string>
+    <string name="scan_ppp_code">PhotoPass+</string>
+    <string name="scan_intro">Please scan your Shanghai Disneyland Park Ticket / PhotoPass card to start associating your pictures.</string>
+    <string name="re_scan">Rescan</string>
+    <string name="textview_center_hint">Please place PhotoPass+ card back in this area.Try to align edges</string>
+    <string name="camera_closed">Please agree camera permission in Settings</string>
+    <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
+    <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
+    <!-- scan end -->
+
+    <!-- manual input start -->
+    <string name="manual">Manual</string>
+    <string name="ok">OK</string>
+    <string name="manul_input_intro">Please input the 16-digit number on the back of your PhotoPass card.</string>
+    <string name="nocontext">Input your code</string>
+    <string name="wrong_length">Please check your card</string>
+    <!-- manual input end -->
+
+    <!-- disney story start -->
+    <string name="launching_camera">Hey, hurry up and get your photographer to take a picture of you!</string>
+    <string name="select">Select Photo</string>
+    <string name="selected">Select(0/9)</string>
+    <string name="disney_video_go_to_select_photo">Go to shop</string>
+    <string name="disney_video_edit_photo">OK(%1$d/%2$d)</string>
+    <string name="disney_video_edit_photo_null">OK(0/3)</string>
+    <string name="disney_video_bubble">You only can select %1$d photos!</string>
+    <string name="hasselectedphoto">OK(%1$d/%2$d)</string>
+    <string name="no_photo_update">You haven\'t photos to upgrade!</string>
+    <string name="photo_selected">The picture has been selected</string>
+    <string name="limit_photos">Cannot more than %1$d pictures!</string>
+    <string name="select_photos">Please select your photos</string>
+    <string name="magic_in_the_making">Magic in the making...</string>
+    <string name="we_will_send_you_to">We will send you to</string>
+    <string name="my_disney_story_once_it_is_ready">My Disney Story once it is ready</string>
+    <string name="disney_video_about_null_photo_note">If you want to make one "My Disney Story" , you should purchase some PhotoPass Photos!Please Go to Shop to Pick your Favourite Products.</string>
+    <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
+    <string name="start">Start</string>
+    <!-- disney story end -->
+
+    <!-- me start -->
+    <string name="mypage_message">Message</string>
+    <string name="mypage_coupons">Coupons</string>
+    <string name="mypage_myprofile">Profile</string>
+    <string name="mypage_myorder">Orders</string>
+    <string name="mypage_pp">PhotoPass</string>
+    <string name="mypage_ppp">PhotoPass+</string>
+    <string name="mypage_help">Help</string>
+    <string name="mypage_setting">Settings</string>
+    <string name="mypage_about">About</string>
+    <!-- me end -->
+
+    <!-- Disney video Start-->
+    <string name="my_disney_story">My Disney Story</string>
+    <string name="neednotdownload_video">Video exist</string>
+    <string name="disney_video_selectphoto_model">Mode</string>
+    <string name="down">Download</string>
+    <!-- Disney video End-->
+
+    <!-- preview photo start -->
+    <string name="edit">Edit</string>
+    <string name="makegift">Shop</string>
+    <string name="touchtoclean">Touch to preview your picture</string>
+    <string name="know">I know</string>
+    <string name="like_and_buy">Touch to preview your picture</string>
+    <string name="reloadphoto">Please reload this photo</string>
+    <string name="neednotdownload">The photo is already in your album</string>
+    <string name="local_photo_not_support_makegift">Sorry we can\'t make gift from your edited photos.</string>
+    <!-- preview photo end -->
+
+    <!-- blur start -->
+    <string name="blur_intro">If you like to save this wonderful moment forever, you should own this photo, and you will make this trip more meaningful.</string>
+    <string name="up_ppp_money">Upgrade to PhotoPass+</string>
+    <string name="buythisphoto">Purchase Single Digital Photo</string>
+    <string name="cancel1">Cancel</string>
+    <!-- blur end -->
+
+    <!-- download start -->
+    <string name="downloading">Downloading Now</string>
+    <string name="downloading_percent">Downloading %1$d</string>
+    <string name="finish_download">Download Successful!</string>
+    <string name="download_detail1">Downloaded %1$d photo(s)!</string>
+    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s)!</string>
+    <!-- download end -->
+
+    <!-- edit start -->
+    <string name="save">Save</string>
+    <string name="frames">Frames</string>
+    <string name="magicbrush">Filter</string>
+    <string name="decoration">Sticker</string>
+    <string name="rotate">Rotate</string>
+    <string name="rotate_left">Left 90</string>
+    <string name="rotate_right">Right 90</string>
+    <string name="saving">Saving...</string>
+    <string name="dealing">Dealing...</string>
+    <string name="exit_hint">Do you want to save this picture?</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_ok">OK</string>
+    <string name="original">Original</string>
+    <string name="lomo">LOMO</string>
+    <string name="earlybird">Earlybird</string>
+    <string name="natural">Natural</string>
+    <string name="hdr">HDR</string>
+    <string name="whitening">Whitening</string>
+    <string name="vintage">Vintage</string>
+    <!-- edit end -->
+
+    <!-- detail product start -->
+    <string name="choosephoto">Select photo</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="address_digital_goods">Digital download</string>
+    <string name="self_collect">Self-collect</string>
+    <string name="buy_good">Buy</string>
+    <!-- detail product end -->
+
+    <!-- preview product & make gift start -->
+    <string name="preview">Preview Gift</string>
+    <string name="confirm">Check out</string>
+    <string name="buy_good2">Buy</string>
+    <!-- preview product & make gift end -->
+
+    <!-- cart start -->
+    <string name="cart">Cart</string>
+    <string name="select_all">Select All</string>
+    <string name="totalprice">Total:</string>
+    <string name="go_pay">Pay(%1$d)</string>
+    <string name="delete">Delete</string>
+    <string name="no_cart">You have no any carts</string>
+    <string name="select_cart">Please select your cart</string>
+    <string name="selectyourcart">Select your goods</string>
+    <string name="addphoto">Add photo first</string>
+    <string name="want_to_buy">Look around to buy something</string>
+    <string name="to_add_good">Go shopping</string>
+    <string name="add_photo"> Select photo </string>
+    <string name="cannot_change_count">Cannot modify count</string>
+    <!-- cart end -->
+
+    <!-- submit order start -->
+    <string name="submitorder">Submit Order</string>
+    <string name="transport">transport</string>
+    <string name="goods_info">Shop Info</string>
+    <string name="all_goods">%1$d item(s)</string>
+    <string name="checkout">Confirm</string>
+    <string name="multi_goods">PhotoPass multiple goods</string>
+    <string name="select_address">Please Select Address</string>
+    <!-- submit order end -->
+
+    <!-- payment start -->
+    <string name="pay">Payment</string>
+    <string name="payment_ways">Payment methods</string>
+    <string name="zfbzf">Alipay</string>
+    <string name="yhkzf">UnionPay</string>
+    <string name="paypalzf">International Bank</string>
+    <string name="zfbsm">Recommended</string>
+    <string name="yhksm">Supported</string>
+    <string name="paypalsm">Supported</string>
+    <string name="wxzf">Wechat</string>
+    <string name="weixinsm">Supported</string>
+    <string name="submitpayment">Pay</string>
+    <string name="cancel_deal">You canceled this payment</string>
+    <string name="alipay_error">Alipay Error</string>
+    <!-- payment end -->
+
+    <!-- set header start -->
+    <string name="loading_percent">Uploading %1$d</string>
+    <!-- set header end -->
+
+    <!-- profile start -->
+    <string name="profile">Personal Profile</string>
+    <string name="account">Account</string>
+    <string name="modify">Modify Password</string>
+    <string name="add">Add</string>
+    <!-- profile end -->
+
+    <!-- modify pwd start -->
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="modify_password_success">Modify Password Success</string>
+    <string name="show_password">Show password</string>
+    <!-- modify pwd end -->
+
+    <!-- order start -->
     <string name="my_order">My Orders</string>
+    <string name="order_unpaid">Unpaid</string>
+    <string name="order_paid">Paid</string>
+    <string name="all_order">Done</string>
+    <string name="order_completed">Completed</string>
+    <string name="order_status">Order Status:</string>
+    <string name="payment_order_btn">Payment</string>
+    <string name="order_no">Order Number:</string>
+    <string name="orderprice">Order Price:</string>
+    <string name="order_time">Order Time:</string>
+    <string name="order_detail">Order Products:</string>
+    <string name="delete_order_btn">Delete</string>
+    <string name="order_empty_resultString">No orders</string>
+    <string name="order_empty_buttonString">Look around to buy something</string>
+    <string name="order_pending">Pending</string>
+    <!-- order end -->
+
+    <!-- order detail start -->
+    <string name="order_information">Order Detail</string>
+    <string name="product_information">Product Information</string>
+    <string name="order_detail_activity">Order detail</string>
+    <string name="productprice">Product Price:</string>
+    <string name="preferential">Preferential:</string>
+    <string name="paymethod">Payment Method:</string>
+    <string name="order_info">Order Information</string>
+    <string name="self_collect_address">Self-Collect:</string>
+    <string name="waitpay">Wait payment</string>
+    <!-- order detail end -->
+
+    <!-- ppp start -->
+    <string name="instruction">PhotoPass+ allows you to view and download all your photos taken by our professional PhotoPass Photographers in a single day.</string>
+    <string name="select_pp_hasUpgraded">PhotoPass has been updated</string>
+    <string name="not_ppp_card">The card is not PhotoPass+ card</string>
+    <string name="bind_pp_now">You have one PhotoPass, do you want to bind it now?</string>
+    <string name="dialog_cancel">No, Thanks</string>
+    <string name="dialog_ok">Yes, I do</string>
+    <string name="dialog_ok1">OK, I know</string>
+    <string name="no_activated">Inactive</string>
+    <string name="activated">activated</string>
+    <string name="ppp_has_used">Used</string>
+    <string name="ppp_has_expired">Expired</string>
+    <string name="expired_on">Valid:</string>
+    <string name="experiencephotopassplus">Experience PhotoPass+</string>
+    <!-- ppp end -->
+
+    <!-- select pp start -->
+    <string name="selectionpp">Select PhotoPass</string>
+    <string name="select_your_pp">Please select your PhotoPass</string>
+    <string name="no_photopass_update">You haven\'t permissive PhotoPass to upgrade!</string>
+    <string name="select_pp_wrong_date">Only choose continuous three days PhotoPass，please retry</string>
+    <string name="outofrange">Out of range</string>
+    <!-- select pp end -->
+
+    <!-- settings start -->
+    <string name="setting">Settings</string>
+    <string name="logout">Log Out</string>
+    <string name="submit_opinions">Feedback</string>
+    <string name="download_tpye">Download</string>
+    <string name="gprs_wifi_download">4G/3G/WIFI Download</string>
+    <string name="wifi_only_download">WIFI Only</string>
+    <string name="updata_pictures">Sync update photos</string>
+    <string name="auto_sync">Auto Sync</string>
+    <string name="setting_language">Change Language</string>
+    <string name="comfirm_logout">Do you want to Log Out?</string>
+    <!-- settings end -->
+
+    <!-- change language start -->
+    <string name="Chinese">Chinese</string>
+    <string name="English">English</string>
+    <!-- change language end -->
+
+    <!-- about start -->
+    <string name="about_tips">Capture Your Magical Moments!</string>
+    <string name="copyright"> </string>
+    <string name="copyright1">Copyright © 2015 pictureworks</string>
+    <string name="copyright2">All Rights Reserved.</string>
+    <!-- about end -->
+
+    <!-- check update start -->
+    <string name="generate_apk_failed">Download Failed</string>
+    <string name="update_version">New Version: %1$s</string>
+    <string name="generate_apk">Processing...</string>
+    <!-- check update end -->
+
+    <!-- socket start -->
+    <string name="notifacation_new_message">New Message</string>
+    <string name="notifacation_new_photo">You have new photos</string>
+    <string name="notifacation_new_video">You have new videos</string>
+    <string name="notifacation_order_completed_msg">Payment successful</string>
+    <string name="notifacation_order_submit_msg">Proceed to payment</string>
+    <!-- socket end -->
+
+    <!-- tips start -->
+    <!--   推广PhotoPass＋流程  -->
+    <string name="pp_first_up10_msg">Dear，Upgrade your PhotoPass+ you can have this card all HD digital photos！</string>
+    <string name="pp_first_up10_no_msg">Cancel</string>
+    <string name="pp_first_up10_yes_msg">OK</string>
+    <!-- 使用流量提示-->
+    <string name="dialog_download_message">Do you want to continue to download via GPRS?</string>
+    <!--   同步更新照片流程  -->
+    <string name="first_tips_syns_msg1">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
+    <string name="first_tips_syns_no_msg1">Cancel</string>
+    <string name="first_tips_syns_yes_msg1">Auto Sync</string>
+    <string name="first_tips_syns_msg2">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
+    <string name="first_tips_syns_no_msg2">Cancel</string>
+    <string name="first_tips_syns_yes_msg2">Auto Sycn</string>
+    <!--   网络下载模式流程  -->
+    <string name="one_photo_download_msg1">Currently, it\'s set to download only under WiFi connection, do you want to change it?</string>
+    <string name="one_photo_download_no_msg1">Cancel</string>
+    <string name="one_photo_download_yes_msg1">OK</string>
+    <string name="one_photo_download_msg2">Do you want to continue download photos using mobile GPRS?</string>
+    <string name="one_photo_download_no_msg2">Cancel</string>
+    <string name="one_photo_download_yes_msg2">OK</string>
+    <!-- tips end -->
+
+
+    <string name="username">User name</string>
+    <string name="pwd_again">Repeat password</string>
+    <string name="weixin">Wechat</string>
     <string name="my_pp">My PhotoPass</string>
     <string name="my_ppp">My PhotoPass+</string>
     <string name="inputCode">Input your code</string>
-    <string name="auto">Scan</string>
-    <string name="manual">Manual</string>
-    <string name="forget_pwd">Forgot password?</string>
-    <string name="confirm">Check out</string>
     <string name="back">Back</string>
     <string name="view">View</string>
     <string name="filter">Filter</string>
@@ -34,63 +411,34 @@
     <string name="product_name">Product name</string>
     <string name="price">Price: </string>
     <string name="buy">Shop</string>
-    <string name="buythisphoto">Purchase Single Digital Photo</string>
-    <string name="cart">Cart</string>
-    <string name="recommend">Recommendation</string>
-    <string name="select">Select Photo</string>
-    <string name="selected">Select(0/9)</string>
     <string name="all">Select All</string>
     <string name="disall">Disselect</string>
     <string name="pictureair">PhotoPass</string>
     <string name="camera">Camera</string>
     <string name="me">Me</string>
-    <string name="buy_now">Buy now</string>
-    <string name="add_to_cart">Add to Cart</string>
-    <string name="submitorder">Submit Order</string>
     <string name="orderdescription">Order Description</string>
     <string name="revise">Revise</string>
-    <string name="totalprice">Total:</string>
     <string name="mobile">Your Mobile Number</string>
-    <string name="checkout">Confirm</string>
-    <string name="sample1">Sample: 13838382438</string>
     <string name="phone">Phone</string>
-    <string name="save">Save</string>
     <string name="payment">Payment Order</string>
-    <string name="add">Add</string>
     <string name="paymentmethod">Payment Methods</string>
-    <string name="ok">OK</string>
-    <string name="submitpayment">Pay</string>
     <string name="payways">Choices of payment</string>
-    <string name="pay">Payment</string>
     <string name="pmtprc">Payment Price：</string>
-    <string name="zfbzf">Alipay</string>
-    <string name="yhkzf">UnionPay</string>
-    <string name="paypalzf">International Bank</string>
-    <string name="zfbsm">Recommended</string>
-    <string name="yhksm">Supported</string>
     <string name="at">\@</string>
     <string name="inputEmail">Please input your email</string>
     <string name="all_sel">All</string>
-    <string name="Share">Share</string>
-    <string name="down">Download</string>
-    <string name="edit">Edit</string>
     <string name="selection">Select %s</string>
     <string name="down_all">All\ndownloaded</string>
     <string name="down_sel">Download\nselected</string>
     <string name="photo_album">My Album</string>
-    <string name="logout">Log Out</string>
-    <string name="submit_opinions">Feedback</string>
     <string name="upgrade">Upgrade </string>
-    <string name="preview">Preview Gift</string>
     <string name="picture_number">pic(%s)</string>
     <string name="set_head_photo">Set your Profile Photo</string>
     <string name="ppp_bottom_text">This PhotoPass can upgrade and bind PhotoPass+</string>
     <string name="pp_bottom_text">Select PhotoPass on the same day</string>
     <string name="pp_ok">OK(%1$d/%2$d)</string>
-    <string name="makegift">Shop</string>
     <string name="addimage">Add photos</string>
     <string name="number">Number:</string>
-    <string name="choosephoto">Select photo</string>
     <string name="postway">Delivery</string>
     <string name="pickupbycustomer">Pick up by yourself:</string>
     <string name="noexpress">No express(Only for Virtual Product)</string>
@@ -98,29 +446,22 @@
     <string name="address">Address</string>
     <string name="newaddress">New Address</string>
     <string name="sampleaddress">6F Unit 6001 , Hong Tu Building, No.528, Chuan Hong Road, Pudong ChuanSha District, Shanghai, China, 201202</string>
-    <string name="edit2">Edit</string>
     <string name="name">Name</string>
-    <string name="mobilephone">Mobile</string>
     <string name="telephone">Telephone</string>
     <string name="province">Province</string>
     <string name="city">City</string>
     <string name="ad">Address</string>
     <string name="district">District</string>
-    <string name="up_ppp_money">Upgrade to PhotoPass+</string>
     <string name="getphotos">Scan Your PhotoPass</string>
-    <string name="up_ppp">Upgrade to PhotoPass+</string>
     <string name="hint_name">Input your name</string>
     <string name="hint_phone">Input phone number</string>
     <string name="hint_telephone">Input telephone number</string>
     <string name="hint_address">Input detail address</string>
-    <string name="delete">Delete</string>
     <string name="photopass">PhotoPass</string>
     <string name="photopassplus">PhotoPass+</string>
-    <string name="experiencephotopassplus">Experience PhotoPass+</string>
     <string name="getitnow">Get it now</string>
     <string name="mylocation">My location</string>
     <string name="myfavourite">My favourite</string>
-    <string name="cancel1">Cancel</string>
     <string name="edittitle">Click to edit your album title</string>
     <string name="magicalbum">Magic Album</string>
     <string name="product">Product</string>
@@ -128,20 +469,9 @@
     <string name="weichat">Wechat</string>
     <string name="buythephoto">You haven\'t bought this photo</string>
     <string name="loadsuccess">Load success!</string>
-    <string name="nomore">No more data to load!</string>
     <string name="uploadphotofailed">Failed,please try again</string>
-    <string name="nocontext">Input your code</string>
-    <string name="selectyourcart">Select your goods</string>
-    <string name="addphoto">Add photo first</string>
     <string name="china">China</string>
     <string name="other">Other</string>
-    <string name="neednotdownload">The photo is already in your album</string>
-    <string name="touchtoclean">Touch to preview your picture</string>
-    <string name="frames">Frames</string>
-    <string name="magicbrush">Filter</string>
-    <string name="decoration">Sticker</string>
-    <string name="rotate">Rotate</string>
-    <string name="selectionpp">Select PhotoPass</string>
     <string name="addpp">Add PhotoPass</string>
     <string name="scanpp">Scan Your PhotoPass</string>
     <string name="scanppp">Scan Your PhotoPass+</string>
@@ -149,31 +479,24 @@
     <string name="input_right_phone_number">Please input correct phone number</string>
     <string name="is_taking">Processing</string>
     <string name="take_photo_failed">Take picture failed</string>
-    <string name="cannot_change_count">Cannot modify count</string>
     <string name="username_null">Username is not exist</string>
     <string name="pw_null">Password is incorrect</string>
     <string name="upload_failed">Upload photo failed</string>
     <string name="user_exist">Username has been used</string>
     <string name="user_not_exist">User does not exist, please sign up</string>
     <string name="failed">Failed</string>
-    <string name="select_your_pp">Please select your PhotoPass</string>
     <string name="noppp_user">Not PhotoPass+ user</string>
     <string name="get_ppp_failed">Get PhotoPass+ failed</string>
     <string name="pay_failed">Payment failed</string>
     <string name="add_address">Please add your address</string>
     <string name="need_express">Reselect your post method</string>
-    <string name="cancel_deal">You canceled this payment</string>
-    <string name="alipay_error">Alipay Error</string>
     <string name="order_in_progress">Your order is in the process</string>
     <string name="save_success">Updated</string>
-    <string name="photo_selected">The picture has been selected</string>
     <string name="nophoto_in_PhotoPass">No photos in PhotoPass album</string>
     <string name="cannot_delete_in_PhotoPass">Cannot delete</string>
-    <string name="select_photos">Please select your photos</string>
     <string name="share_photo_count">Please select one picture only</string>
     <string name="success1">Success</string>
     <string name="upload_failed_retry">Upload failed, please retry</string>
-    <string name="outofrange">Out of range</string>
     <string name="no_space_in_ppp">No space in this PhotoPass+</string>
     <string name="add_address_success">Add address successful!</string>
     <string name="modify_success">Modify address successful!</string>
@@ -193,43 +516,23 @@
     <string name="delivery_details">Delivery details</string>
     <string name="buy_again">Purchase again</string>
     <string name="delivery_order">Paid</string>
-    <string name="all_order">Done</string>
-    <string name="order_time">Order Time:</string>
-    <string name="order_no">Order Number:</string>
     <string name="product_details">Product Details:</string>
-    <string name="order_detail">Order Products:</string>
-    <string name="order_information">Order Detail</string>
-    <string name="paymethod">Payment Method:</string>
-    <string name="order_status">Order Status:</string>
-    <string name="product_information">Product Information</string>
     <string name="delivery_info">Delivery Info</string>
-    <string name="order_info">Order Information</string>
     <string name="customer">Customer:</string>
     <string name="phone_number">Phone Number:</string>
     <string name="deliveryaddress">Delivery Address:</string>
-    <string name="self_collect_address">Self-Collect:</string>
-    <string name="orderprice">Order Price:</string>
-    <string name="productprice">Product Price:</string>
     <string name="shipping">Shipping:</string>
     <string name="expressltd">Express Company:</string>
     <string name="expressno">Express Number:</string>
     <string name="delivery_detail">Delivery Details</string>
-    <string name="waitpay">Wait payment</string>
     <string name="haspay">Paid, waiting delivery</string>
     <string name="hasdelivery">Deliveried</string>
     <string name="hassign">Signed</string>
     <string name="orderclose">Closed</string>
-    <string name="setting">Settings</string>
     <string name="download_pictures">Download Pictures</string>
-    <string name="updata_pictures">Sync update photos</string>
-    <string name="setting_language">Change Language</string>
     <string name="gprs_download">4G/3G/WIFI Download</string>
     <string name="wifi_download">WIFI Only</string>
     <string name="auto_download">Auto Download</string>
-    <string name="reloadphoto">Please reload this photo</string>
-    <string name="dialog_cancel">No, Thanks</string>
-    <string name="dialog_ok">Yes, I do</string>
-    <string name="dialog_ok1">OK, I know</string>
     <string name="scanedPPOrPPP">You had scaned %1$d %2$s %3$d %4$s before, are you sure want to tag it?</string>
     <string name="ppp_bind">Buy PhotoPass+</string>
     <string name="ppp_scan">Scan PhotoPass+</string>
@@ -242,9 +545,6 @@
     <string name="has_ppp_intro">The PhotoPass+ has bind one PhotoPass</string>
     <string name="no_ppp_intro">You can choose one PhotoPass to bind</string>
     <string name="not_pp_card">The card is not PhotoPass card</string>
-    <string name="not_ppp_card">The card is not PhotoPass+ card</string>
-    <string name="bind_pp_now">You have one PhotoPass, do you want to bind it now?</string>
-    <string name="wrong_length">Please check your card</string>
     <string name="choose_one_pp">Please choose one PhotoPass</string>
     <string name="choose_three_pp">Please choose three PhotoPass</string>
     <string name="scan_pp">Scan your PhotoPass</string>
@@ -257,24 +557,13 @@
     <string name="album_magic">Magic</string>
     <string name="album_download">Download</string>
     <string name="album_other">Other</string>
-    <string name="payment_ways">Payment methods</string>
-    <string name="copyright1">Copyright © 2015 pictureworks</string>
-    <string name="copyright2">All Rights Reserved.</string>
     <string name="selectedphoto">Select(%1$d/%2$d)</string>
-    <string name="hasselectedphoto">OK(%1$d/%2$d)</string>
     <string name="repeatPPbind">This PhotoPass has already added to this user</string>
-    <string name="tab_story">Story</string>
-    <string name="tab_discover">Discover</string>
-    <string name="tab_camera">Camera</string>
-    <string name="tab_shops">Shop</string>
-    <string name="tab_me">Me</string>
     <string name="loading...">Loading...</string>
     <string name="photo_is_uploading">Uploading photo...</string>
     <string name="is_loading">Loading...</string>
     <string name="is_check_code">Is checking code available...</string>
     <string name="send">Send</string>
-    <string name="male">Male</string>
-    <string name="female">Female</string>
     <string name="do_you_save">Do you want to save this photo?</string>
     <string name="start_now">[Enjoy the PhotoPass]</string>
     <string name="discover_popularity">Popularity</string>
@@ -282,33 +571,11 @@
     <string name="discover_selection">Filter</string>
     <string name="discover_collect">Favourite</string>
     <string name="http_failed">Connect server failed, please check network</string>
-    <string name="story_tab_all">All</string>
-    <string name="story_tab_photopass">PhotoPass</string>
-    <string name="story_tab_magic">Local</string>
-    <string name="story_tab_bought">Purchased</string>
-    <string name="story_tab_favorite">Favorite</string>
-    <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / PhotoPass card to start associating your photos.</string>
-    <string name="story_scan">Scan</string>
     <string name="suprise_price">Special Price</string>
     <string name="privilege_today">Special Offer</string>
     <string name="original_price">Original price:</string>
     <string name="pick_up_address">Self-collect： </string>
     <string name="disney_address"> Carefree Corner</string>
-    <string name="scan_intro">Please scan your Shanghai Disneyland Park Ticket / PhotoPass card to start associating your pictures.</string>
-    <string name="manul_input_intro">Please input the 16-digit number on the back of your PhotoPass card.</string>
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="two_days_ago">2 days ago</string>
-    <string name="three_days_ago">3 days ago</string>
-    <string name="four_days_ago">4 days ago</string>
-    <string name="five_days_ago">5 days ago</string>
-    <string name="six_days_ago">6 days ago</string>
-    <string name="limit_photos">Cannot more than %1$d pictures!</string>
-    <string name="select_all">Select All</string>
-    <string name="go_pay">Pay(%1$d)</string>
-    <string name="paypalsm">Supported</string>
-    <string name="wxzf">Wechat</string>
-    <string name="weixinsm">Supported</string>
     <string name="delete_with_photopass">PhotoPass photos can not be deleted, do you want to delete local Magic photos?</string>
     <!-- 微信支付string字段 -->
     <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
@@ -321,38 +588,13 @@
     <string name="get_prepayid_succ">Get prepayid success</string>
     <string name="get_prepayid_fail" formatted="false">Get prepayid failed, cause %s</string>
     <!-- 微信支付string字段 -->
-    <string name="add_photo"> Select photo </string>
-    <string name="all_goods">%1$d item(s)</string>
-    <string name="otherLogin">Login in other ways</string>
-    <string name="select_a_country">Choose country</string>
     <string name="user_other_register">Register</string>
-    <string name="other_sign_name">Name</string>
-    <string name="man">Male</string>
-    <string name="woman">Female</string>
-    <string name="date_of_birth">Date of Birth</string>
     <string name="year">year</string>
     <string name="month">month</string>
     <string name="day">day</string>
     <string name="email_is_empty">Please enter your email address</string>
     <string name="pwd_is_empty">Please enter a password</string>
     <string name="name_is_empty">Please enter your name</string>
-    <!-- 我的页面 -->
-    <string name="mypage_message">Message</string>
-    <string name="mypage_coupons">Coupons</string>
-    <string name="mypage_myprofile">Profile</string>
-    <string name="mypage_myorder">Orders</string>
-    <string name="mypage_pp">PhotoPass</string>
-    <string name="mypage_ppp">PhotoPass+</string>
-    <string name="mypage_help">Help</string>
-    <string name="mypage_setting">Settings</string>
-    <string name="mypage_about">About</string>
-    <!-- 我的订单页面 -->
-    <string name="payment_order_btn">Payment</string>
-    <string name="delete_order_btn">Delete</string>
-    <string name="order_unpaid">Unpaid</string>
-    <string name="order_paid">Paid</string>
-    <string name="order_pending">Pending</string>
-    <string name="order_completed">Completed</string>
     <!-- 帮助页面 -->
     <string name="search_hint">Search</string>
     <!-- 扫一扫 -->
@@ -363,30 +605,16 @@
     <string name="submit">OK</string>
     <string name="answer">Answer</string>
     <string name="advice">Feedback</string>
-    <string name="download_tpye">Download</string>
-    <string name="g_download">4G/3G/Wifi Download</string>
-    <string name="auto_update">Automatic updates to download</string>
-    <string name="Chinese">Chinese</string>
-    <string name="English">English</string>
     <string name="hint_text_nickname">NickName</string>
     <string name="title_update_nickname">Update NickName</string>
     <string name="title_update_email">Update Email</string>
-    <string name="hint_text_email">Email</string>
     <string name="hint_text_qq">QQ</string>
-    <string name="rotate_left">Left 90</string>
-    <string name="rotate_right">Right 90</string>
-    <string name="copyright"> </string>
     <string name="select_day">Select Date</string>
     <string name="calendar_year">-</string>
     <string name="calendar_month">-</string>
-    <string name="email_error">Email is not available</string>
     <string name="pwd_is_short">Password is too short</string>
     <string name="email_exist">Email exists</string>
-    <string name="no_cart">You have no any carts</string>
-    <string name="select_cart">Please select your cart</string>
     <string name="add_pp_first">Please add PhotoPass first</string>
-    <string name="like_and_buy">Touch to preview your picture</string>
-    <string name="know">I know</string>
     <string name="add_text">Add text</string>
     <string name="font_default">Default</string>
     <string name="font_fangzheng">FangZheng</string>
@@ -396,175 +624,36 @@
     <string name="goods_intro">Life is a beautiful moment , take pictures now </string>
     <string name="favourite">Favourite</string>
     <string name="address_goods">Self-collect: Carefree Corner</string>
-    <string name="address_digital_goods">Digital download</string>
     <string name="story_select">Select</string>
-    <string name="buy_good">Buy</string>
-    <string name="buy_good2">Buy</string>
-    <string name="modify">Modify Password</string>
-    <string name="old_password">Old Password</string>
-    <string name="new_password">New Password</string>
-    <string name="modify_password_success">Modify Password Success</string>
     <string name="errOldPwd">Original password error</string>
     <string name="shortPassword">The password is too short.</string>
     <string name="userNotExist">User not exist.</string>
-    <string name="modify_password_empty_hint">Please enter a password.</string>
-    <string name="show_password">Show password</string>
     <string name="magic_location">Local</string>
     <string name="video_location">My Disney Story</string>
-    <string name="order_detail_activity">Order detail</string>
     <string name="mobile_exist">Mobile exists</string>
-    <string name="loading_percent">Is uploading %1$d</string>
-    <string name="launching_camera">Hey, hurry up and get your photographer to take a picture of you!</string>
     <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
-    <string name="saving">Saving...</string>
-    <string name="dealing">Dealing...</string>
-    <string name="exit_hint">Do you want to save this picture?</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
-    <string name="no_network">Please check your network</string>
-    <string name="click_button_reload">Click button to reload</string>
-    <string name="reload">Reload</string>
-    <string name="want_to_buy">Look around to buy something</string>
-    <string name="to_add_good">Go shopping</string>
-    <string name="dialog_download_message">Do you want to continue to download via GPRS?</string>
-    <string name="dialog_sync_message">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
-    <string name="dialog_sync_download">Open "WiFi Only" in Settings can save your cellular mobile data!</string>
-    <string name="dialog_intent_buy_ppp">Update your PhotoPass to get your all high-quality photos!</string>
-    <string name="order_empty_buttonString">Look around to buy something</string>
-    <string name="order_empty_resultString">No orders</string>
+
     <string name="select_pp_faile">Update failed, please check your network</string>
     <string name="select_bind_pp_faile">Update failed</string>
-    <string name="select_pp_hasUpgraded">PhotoPass has been updated</string>
     <string name="no_favorite_photo">No favorite photos</string>
     <string name="qq_zone_share">I would like to share my wonderful experience at PhotoPass app with you.</string>
-    <string name="story_no_photo">Hi, look for your photographer to take photos.</string>
     <string name="app_crash">Application crash</string>
-    <string name="camera_closed">Please agree camera permission in Settings</string>
-    <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
-    <string name="share_text">I would like to share with you every moment PhotoPass wonderful experience!</string>
-    <string name="generate_apk_failed">Download Failed</string>
-    <string name="downloading_percent">Downloading %1$d</string>
-    <string name="update_version">New Version: %1$s</string>
-    <string name="generate_apk">Processing...</string>
-    <string name="connecting">Connecting...</string>
-    <string name="notify_password_hint">Password must be at least 6 characters</string>
+
     <string name="pw_is_inconsistency">Password input does not match</string>
-    <string name="pwd_no_all_space">Password cannot include space</string>
-    <string name="pwd_head_or_foot_space">Password cannot include space</string>
     <string name="login_failed">Login Failed!</string>
-    <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  Start-->
-    <string name="disney_video_about_null_photo_note">If you want to make one "My Disney Story" , you should purchase some PhotoPass Photos!Please Go to Shop to Pick your Favourite Products.</string>
-    <string name="disney_video_about_null_photo_note2">Go to shop pay the photo</string>
-    <string name="disney_video_go_to_select_photo">Go to shop</string>
-    <string name="disney_video_edit_photo">OK(%1$d/%2$d)</string>
-    <string name="disney_video_edit_photo_null">OK(0/3)</string>
-    <string name="disney_video_select_photo_less_than3">Choose Three Photos</string>
-    <string name="my_disney_story">My Disney Story</string>
-    <string name="magic_in_the_making">Magic in the making...</string>
-    <string name="we_will_send_you_to">We will send you to</string>
-    <string name="my_disney_story_once_it_is_ready">My Disney Story once it is ready</string>
-    <string name="start">Start</string>
-    <string name="neednotdownload_video">Video exist</string>
-    <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
-    <string name="disney_video_selectphoto_model">Mode</string>
-    <string name="disney_video_bubble">You only can select %1$d photos!</string>
-    <!-- Disney video 当前没有英文文案，先用中文替代，后面有英文文案之后  End-->
-    <string name="auto_sync">Auto Sync</string>
-    <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo ! </string>
-    <string name="no_photo_in_magiccam">Store all your edited photos here!</string>
-    <string name="no_photo_in_bought">Start to purchase your photos now!</string>
-    <string name="no_photo_in_favourite">Start collecting your photos now!</string>
-    <string name="storypage_no_photo">There is no photo in your gallery!</string>
-<string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
+    <string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
  Proin sodales pulvinar tempor.</string>
-    <string name="notifacation_new_message">New Message</string>
     <string name="notifacation_new_order">New Order</string>
-    <string name="notifacation_new_photo">You have new photos</string>
-    <string name="notifacation_new_video">You have new videos</string>
-    <string name="local_photo_not_support_makegift">Sorry we can\'t make gift from your edited photos.</string>
-    <string name="transport">transport</string>
-    <string name="goods_info">Shop Info</string>
-    <!--  tips Start -->
-    <!--   网络下载模式流程  -->
-    <string name="one_photo_download_msg1">Currently, it\'s set to download only under WiFi connection, do you want to change it?</string>
-    <string name="one_photo_download_no_msg1">Cancel</string>
-    <string name="one_photo_download_yes_msg1">OK</string>
-    <string name="one_photo_download_msg2">Do you want to continue download photos using mobile GPRS?</string>
-    <string name="one_photo_download_no_msg2">Cancel</string>
-    <string name="one_photo_download_yes_msg2">OK</string>
-    <!--   推广PhotoPass＋流程  -->
-    <string name="pp_first_up10_msg">Dear，Upgrade your PhotoPass+ you can have this card all HD digital photos！</string>
-    <string name="pp_first_up10_no_msg">Cancel</string>
-    <string name="pp_first_up10_yes_msg">OK</string>
-    <!--   同步更新照片流程  -->
-    <string name="first_tips_syns_msg1">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
-    <string name="first_tips_syns_no_msg1">Cancel</string>
-    <string name="first_tips_syns_yes_msg1">Auto Sycn</string>
-    <string name="first_tips_syns_msg2">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
-    <string name="first_tips_syns_no_msg2">Cancel</string>
-    <string name="first_tips_syns_yes_msg2">Auto Sycn</string>
-    <!--  tips End  -->
-    <string name="gprs_wifi_download">4G/3G/WIfI Download</string>
-    <string name="wifi_only_download">WIFI Only</string>
-    <string name="comfirm_logout">Do you want to Log Out?</string>
-    <string name="self_collect">Self-collect</string>
-    <string name="preferential">Preferential:</string>
-    <string name="select_address">Please Select Address</string>
-    <string name="about_tips">Capture Your Magical Moments!</string>
-    <string name="instruction">PhotoPass+ allows you to view and download all your photos taken by our professional PhotoPass Photographers in a single day.</string>
-    <string name="no_activated">Inactive</string>
-    <string name="activated">activated</string>
-    <string name="ppp_has_used">Used</string>
-    <string name="ppp_has_expired">Expired</string>
-    <string name="expired_on">Valid:</string>
-    <string name="account">Account</string>
+
     <string name="nick_name_empty">Please enter your nickname</string>
-    <!-- 下载-->
-    <string name="downloading">Downloading Now</string>
-    <string name="finish_download">Download Successful!</string>
-    <string name="download_detail1">Downloaded %1$d photo(s)!</string>
-    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s)!</string>
     <!-- 新增 推送 部分字段。-->
-    <string name="notifacation_order_completed_msg">Payment successful</string>
-    <string name="notifacation_order_submit_msg">Proceed to payment</string>
+
     <string name="please_wait">Taking pictures, please wait.</string>
-    <string name="multi_goods">PhotoPass multiple goods</string>
-    <string name="please_relogin">please login again</string>
-    <string name="scan_qr_code">QR Code</string>
-    <string name="scan_ppp_code">PhotoPass+</string>
     <string name="confirm_ppp_code_title">PhotoPass+</string>
-    <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
-    <string name="reset_pwd">Reset password</string>
-    <string name="send_emal">Send a verification email</string>
-    <string name="back_login_page">Back to Login</string>
-    <string name="re_scan">Rescan</string>
-    <string name="textview_center_hint">Please place PhotoPass+ card back in this area.Try to align edges</string>
-    <string name="blur_intro">If you like to save this wonderful moment forever, you should own this photo, and you will make this trip more meaningful.</string>
-    <string name="no_photo_update">You haven\'t photos to upgrade!</string>
-    <string name="no_photopass_update">You haven\'t permissive PhotoPass to upgrade!</string>
-    <string name="select_pp_wrong_date">Only choose continuous three days PhotoPass，please retry</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <string name="develop_version">Debug </string>
     <string name="testing_version">Beta </string>
     <string name="cancel">Cancel</string>
-    <string name="email">Email Address</string>
-    <!-- 分享字段 start-->
-    <string name="share">Share</string>
-    <string name="share_completed">Operation succeeded</string>
-    <string name="share_canceled">Operation canceled</string>
-    <string name="share_failed">Operation failed</string>
-    <string name="weibo_oauth_regiseter">Authorization</string>
-    <string name="share_failure_wechat">Please download and install WeChat before sharing!</string>
-    <string name="share_failure_weibo">Please download and install SinaWeibo before sharing!</string>
-    <string name="share_failure_qzone">Please download and install QQ before sharing!</string>
-    <string name="share_failure_facebook">Please download and install Facebook before sharing!</string>
-    <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
-    <string name="sinaweibo">Sina Weibo</string>
-    <string name="qzone">QZone</string>
-    <string name="wechat">Wechat</string>
-    <string name="wechatmoments">Wechat Moments</string>
-    <string name="facebook">Facebook</string>
-    <string name="twitter">Twitter</string>
-    <string name="qq">QQ</string>
-    <!-- 分享字段 end-->
 </resources>

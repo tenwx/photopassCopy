@@ -104,7 +104,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
 
                 clearImageCache(imageUrl);//清除之前的缓存
                 dialog.dismiss();
-                myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
+//                myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
                 finish();
                 break;
 

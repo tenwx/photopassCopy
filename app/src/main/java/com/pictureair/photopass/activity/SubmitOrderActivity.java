@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -302,35 +303,51 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             addressAdapter = new AddressAdapter(this, list, new AddressAdapter.doOnClickAddressListener() {
                 @Override
                 public void doOnClickAddressListener(int position) {
-                    if (position == curPositon) {
-                        return;
-                    } else {
-                        curPositon = position;
-                    }
-                    //选择地址
-                    if (addressList != null && addressList.size() > 0) {
-                        //单选
-                        boolean isSelect = addressList.get(position).getIsSelect();
-                        if (isSelect) {
-                            isSelect = false;
-                        } else {
-                            isSelect = true;
-                        }
-                        for (Address address : addressList) {
-                            if (address == addressList.get(position)) {
-                                address.setIsSelect(isSelect);
-                            } else {
-                                address.setIsSelect(!isSelect);
-                            }
-                        }
-                        addressAdapter.refresh(addressList);
-                    }
+                    refreshAddress(position);
                 }
             });
             transportListView.setAdapter(addressAdapter);
+            transportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    refreshAddress(position);
+                }
+            });
             fixListViewHeight(transportListView);
         }
         return view;
+    }
+
+    /**
+     * 更新选择地址
+     *
+     * @param position
+     */
+    public void refreshAddress(int position) {
+        if (position == curPositon) {
+            return;
+        } else {
+            curPositon = position;
+        }
+        //选择地址
+        if (addressList != null && addressList.size() > 0) {
+            //单选
+            boolean isSelect = addressList.get(position).getIsSelect();
+            if (isSelect) {
+                isSelect = false;
+            } else {
+                isSelect = true;
+            }
+            for (Address address : addressList) {
+                if (address == addressList.get(position)) {
+                    address.setIsSelect(isSelect);
+                } else {
+                    address.setIsSelect(!isSelect);
+                }
+            }
+            addressAdapter.refresh(addressList);
+        }
+
     }
 
     public void fixListViewHeight(ListView listView) {

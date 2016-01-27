@@ -47,7 +47,8 @@ public class EditActivityAdapter extends BaseAdapter {
     private Context mContext;
     private List<String> stickerPathList;
     private int editType = 0;
-    private String[] filterText = {"Original", "Lomo", "Earlybird", "Natural", "HDR", "whitening", "Vintage"};
+    private int[] filterText = { R.string.original, R.string.lomo, R.string.earlybird, R.string.natural,
+            R.string.hdr, R.string.whitening, R.string.vintage };
     private ArrayList<FrameOrStikerInfo> frameInfos;
     private Handler handler;
     private boolean firstFileFailOrExist = false;

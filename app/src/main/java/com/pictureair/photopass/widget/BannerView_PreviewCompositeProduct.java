@@ -78,7 +78,7 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
             } else {//没有上传过，要判断是否是photopass的相册
                 //获取对应的图片路径
                 if (list.get(i).onLine == 1) {
-                    photopathString = Common.PHOTO_URL + list.get(i).photoThumbnail;
+                    photopathString = list.get(i).photoThumbnail;
                 } else {
                     photopathString = "file://" + list.get(i).photoPathOrURL;
                 }

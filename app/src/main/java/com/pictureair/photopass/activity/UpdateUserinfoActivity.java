@@ -43,10 +43,6 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
                 setTopTitleShow(R.string.nn);
                 etUserInfo.setHint(R.string.hint_text_nickname);
                 break;
-            case Common.EMAILTYPE:
-                setTopTitleShow(R.string.title_update_email);
-                etUserInfo.setHint(R.string.hint_text_email);
-                break;
             default:
                 break;
         }
