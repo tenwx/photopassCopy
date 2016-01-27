@@ -113,7 +113,7 @@
             android:drawableTop="@drawable/edit_album_share_button"
             android:gravity="center_horizontal|bottom"
             android:padding="@dimen/pp_padding_2"
-            android:text="@string/Share"
+            android:text="@string/share"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_small_size" />
 

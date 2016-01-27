@@ -224,7 +224,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         if (activity != null && activity.equals(DisneyVideoTool.DISNEY_VIDEO)) {
             isBuy = true;
             isDisneyVideo = true;
-            tvHead.setText(getResources().getString(R.string.story_tab_bought));
+            tvHead.setText(getString(R.string.story_tab_bought));
             rtLayout.setImageResource(R.drawable.back_white_disney_video);
             initDisneySelectPhotoFootView();
         }
