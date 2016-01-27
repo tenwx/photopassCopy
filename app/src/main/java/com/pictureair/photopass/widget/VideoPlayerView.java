@@ -233,7 +233,6 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                     mVideoWidth = mp.getVideoWidth();
                     mVideoHeight = mp.getVideoHeight();
 
-
                     if (mMyChangeLinstener != null) {
                         mMyChangeLinstener.doMyThings();
                     }
@@ -266,7 +265,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                         mSeekWhenPrepared = 0;
                     }
                     if (mStartWhenPrepared) {
-                        mMediaPlayer.start();
+//                        mMediaPlayer.start();
                         mStartWhenPrepared = false;
                         if (mMediaController != null) {
                             mMediaController.show();
@@ -284,7 +283,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                     mSeekWhenPrepared = 0;
                 }
                 if (mStartWhenPrepared) {
-                    mMediaPlayer.start();
+//                    mMediaPlayer.start();
                     mStartWhenPrepared = false;
                 }
             }
@@ -379,7 +378,6 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                     mMediaPlayer.seekTo(mSeekWhenPrepared);
                     mSeekWhenPrepared = 0;
                 }
-                mMediaPlayer.start();
                 if (mMediaController != null) {
                     mMediaController.show();
                 }
@@ -497,6 +495,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     }
 
     public void seekTo(int msec) {
+        PictureAirLog.e(TAG,"seekTo :" + msec);
         if (mMediaPlayer != null && mIsPrepared) {
             mMediaPlayer.seekTo(msec);
         } else {
