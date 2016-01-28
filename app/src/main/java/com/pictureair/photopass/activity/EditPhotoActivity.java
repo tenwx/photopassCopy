@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,7 +42,6 @@ import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.BitmapUtils;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
-import com.pictureair.photopass.editPhoto.FontView;
 import com.pictureair.photopass.editPhoto.Matrix3;
 import com.pictureair.photopass.editPhoto.StickerItem;
 import com.pictureair.photopass.editPhoto.StickerView;
@@ -67,7 +65,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 
 import java.io.File;
@@ -79,11 +76,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import cn.smssdk.gui.CustomProgressDialog;
+
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
 public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener {
 	//视图
 	public StickerView mStickerView;// 贴图层View
-	public FontView fontView; //文字view
 	public Bitmap mainBitmap; //低层显示的bitmap，就是编辑的图片。
 	public ImageView mainImage; // 原始图
 
@@ -139,8 +137,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	//有关 文字
 	private TextView tvLeft90,tvRight90;  //设置字体，设置颜色
-	private GridView setFontGridView; //字体
-	private GridView setColorGridView; //文本颜色
 
 	//	有关相框
 	private ImageView frameImageView;
@@ -322,7 +318,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		mainImage = (ImageView) findViewById(R.id.main_image);
 		// 贴图  view
 		mStickerView = (StickerView) findViewById(R.id.sticker_panel);
-		fontView = (FontView) findViewById(R.id.font_panel);
 
 		frameImageView = (ImageView) findViewById(R.id.framephoto_imageView1); // 相框
 
@@ -340,10 +335,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		edit_text = (TextView) findViewById(R.id.edit_text);
 		edit_frame = (TextView) findViewById(R.id.edit_frame);
 		font_bar = (LinearLayout) findViewById(R.id.font_bar);
-		setFontGridView = (GridView) findViewById(R.id.fontList);
 		tvLeft90 = (TextView) findViewById(R.id.tv_left90);
 		tvRight90 = (TextView) findViewById(R.id.tv_right90);
-		setColorGridView = (GridView) findViewById(R.id.colorList);
 
 
 		edit_frame.setOnClickListener(this);
@@ -833,8 +826,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		edittoolsbar.setVisibility(View.VISIBLE);
 		//字体的编辑条消失。
 		font_bar.setVisibility(View.GONE);
-		setFontGridView.setVisibility(View.GONE);
-		setColorGridView.setVisibility(View.GONE);
 
 	}
 
@@ -1021,30 +1012,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				index = pathList.size() - 1;
 				return resultBit;
 			}else if(editType == 4){
-//				showText = getString(R.string.add_text); //保存之后，初始化原始数据。
-//				showColor = R.color.color16;
-//				showTypeface = Typeface.SANS_SERIF;
-//				//Matrix touchMatrix = mainImage.getImageViewMatrix();
-//				Matrix touchMatrix = mainImage.getImageMatrix();
 				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
 						Bitmap.Config.ARGB_8888, true);
-////				Bitmap resultBit = params[0];
-//				Canvas canvas = new Canvas(resultBit);
-//				canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));  //抗锯齿
-//				float[] data = new float[9];
-//				touchMatrix.getValues(data);// 底部图片变化记录矩阵原始数据
-//				Matrix3 cal = new Matrix3(data);// 辅助矩阵计算类
-//				Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
-//				Matrix m = new Matrix();
-//				m.setValues(inverseMatrix.getValues());
-//				LinkedHashMap<Integer, FontItem> addItems = fontView.getBank();
-//				for (Integer id : addItems.keySet()) {
-//					FontItem item = addItems.get(id);
-//					item.matrix.postConcat(m);// 乘以底部图片变化矩阵
-//					canvas.drawBitmap(item.bitmap, item.matrix, null);
-//				}// end for
-//				//				fontView.currentItem.matrix.postConcat(m);
-//				//				canvas.drawBitmap(fontView.currentItem.bitmap, fontView.currentItem.matrix, null);
 				EditPhotoUtil.saveBitmap(resultBit, url);
 				pathList.add(url);
 				index = pathList.size() - 1;
@@ -1111,7 +1080,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
 			mStickerView.clear();
-			fontView.clear();
 			frameImageView.setVisibility(View.INVISIBLE);
 			changeMainBitmap(result);
 			exitEditStates();

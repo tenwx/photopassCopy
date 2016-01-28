@@ -182,7 +182,7 @@ public class AppUtil {
      * @return
      */
     public static double gps2d(double lat_a, double lng_a, double lat_b, double lng_b) {
-        double d = 0;
+        double d;
         lat_a = rad(lat_a);
         lng_a = rad(lng_a);
         lat_b = rad(lat_b);
@@ -191,8 +191,10 @@ public class AppUtil {
         d = Math.sin(lat_a) * Math.sin(lat_b) + Math.cos(lat_a)
                 * Math.cos(lat_b) * Math.cos(lng_b - lng_a);
         d = Math.sqrt(1 - d * d);
-        d = Math.cos(lat_b) * Math.sin(lng_b - lng_a) / d;
-        d = Math.asin(d) * 180 / Math.PI;
+        if (d != 0) {
+            d = Math.cos(lat_b) * Math.sin(lng_b - lng_a) / d;
+            d = Math.asin(d) * 180 / Math.PI;
+        }
         return d;
     }
 

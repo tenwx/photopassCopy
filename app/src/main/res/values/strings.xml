@@ -115,6 +115,7 @@
     <string name="manul_input_intro">请输入你的乐拍通卡背面16位数字条码信息，即可获得您的照片信息</string>
     <string name="nocontext">输入你的编码</string>
     <string name="wrong_length">请检查你的乐拍通卡片</string>
+    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <!-- manual input end -->
 
     <!-- disney story start -->
@@ -356,6 +357,8 @@
     <string name="copyright">迪彩公司 版权所有</string>
     <string name="copyright1">Copyright © 2015 Pictureworks</string>
     <string name="copyright2">All Rights Reserved.</string>
+    <string name="develop_version">调试版 </string>
+    <string name="testing_version">公测版 </string>
     <!-- about end -->
 
     <!-- check update start -->
@@ -408,7 +411,6 @@
     <string name="shop">记忆屋</string>
     <string name="pp">乐拍通一卡通</string>
     <string name="user">用户</string>
-    <string name="product_name">产品名称</string>
     <string name="price">价格: </string>
     <string name="buy">购买</string>
     <string name="all">所有</string>
@@ -416,7 +418,6 @@
     <string name="pictureair">乐拍通</string>
     <string name="camera">相机</string>
     <string name="me">我</string>
-    <string name="orderdescription">订单描述</string>
     <string name="revise">修改</string>
     <string name="mobile">你的手机号码</string>
     <string name="phone">电话</string>
@@ -424,7 +425,6 @@
     <string name="paymentmethod">支付方式</string>
     <string name="payways">支付方式</string>
     <string name="pmtprc">支付 价格：</string>
-    <string name="at">\@</string>
     <string name="inputEmail">请输入你的邮箱</string>
     <string name="all_sel">全部</string>
     <string name="selection">选择 %s</string>
@@ -445,7 +445,6 @@
     <string name="expressdelivery">快递</string>
     <string name="address">地址</string>
     <string name="newaddress">新增地址</string>
-    <string name="sampleaddress">上海市浦东新区川沙镇川沙路川宏路528号宏图大楼6001室迪彩</string>
     <string name="name">姓名</string>
     <string name="telephone">座机</string>
     <string name="province">城市</string>
@@ -536,12 +535,6 @@
     <string name="scanedPPOrPPP">你之前已经扫描了%1$d %2$s %3$d %4$s，是否现在就要绑定？</string>
     <string name="ppp_bind">购买乐拍通一卡通</string>
     <string name="ppp_scan">扫描乐拍通一卡通</string>
-    <string name="ppp_info1">亲，您现在可以立即选择一张“乐拍通”卡进行升级，即可免费下载我们为您精心拍摄的多张照片！无限的惊喜等着您！</string>
-    <string name="ppp_info2">亲，对不起，您还没有绑定乐拍通卡哦，赶紧拿起您的手机扫描二维码绑定吧！注意：一张乐拍通一卡通卡只能升级同一天的三张乐拍通卡哦！</string>
-    <string name="ppp_info2_2">亲，对不起，您还没有绑定乐拍通卡哦，赶紧拿起您的手机扫描二维码绑定吧！注意：一张乐拍通一卡通卡只能升级同一天的三张乐拍通卡哦！</string>
-    <string name="ppp_info3">亲，您现在可以选择同一天的三张乐拍通卡进行升级服务，升级成功后即可无限量下载和编辑我们为您精心拍摄的多张高清图片，谢谢！</string>
-    <string name="ppp_info4">亲，您本张“乐拍通一卡通”卡服务已经全部使用，您可以继续使用其他“乐拍通一卡通”卡服务，或者您可以购买全新的“乐拍通一卡通”卡哦，谢谢！注意：一张乐拍通一卡通卡只能升级同一天的三张乐拍通卡哦！</string>
-    <string name="ppp_info5">亲，您本张“乐拍通一卡通”卡服务已经全部使用，您可以购买全新的“乐拍通一卡通”卡继续享受至尊服务哦，谢谢！注意：一张乐拍通一卡通卡只能升级同一天的三张乐拍通卡哦！</string>
     <string name="has_ppp_intro">“乐拍通一卡通”已经绑定了1张乐拍通</string>
     <string name="no_ppp_intro">您可以选择绑定一张乐拍通</string>
     <string name="not_pp_card">这张不是乐拍通卡</string>
@@ -600,7 +593,6 @@
     <!-- 扫一扫 -->
     <string name="auto_auto">扫一扫</string>
     <string name="buy_ppp_tips">乐拍通一卡通已经用完，是否去购买乐拍通一卡通？</string>
-    <!-- 日期 -->
     <string name="action_settings">设置</string>
     <string name="submit">确定</string>
     <string name="answer">回答</string>
@@ -615,13 +607,6 @@
     <string name="pwd_is_short">密码太短</string>
     <string name="email_exist">邮箱已存在</string>
     <string name="add_pp_first">请先添加乐拍通卡</string>
-    <string name="add_text">点击输入文字</string>
-    <string name="font_default">默认</string>
-    <string name="font_fangzheng">方正</string>
-    <string name="font_pen">钢笔</string>
-    <string name="font_lovely">可爱</string>
-    <string name="add_new_text">请输入文字</string>
-    <string name="goods_intro">给亲爱的人送一份特别甜蜜礼物，带上您们最真挚的照片回忆！</string>
     <string name="favourite">收藏</string>
     <string name="address_goods">自提地址: 美妙记忆屋</string>
     <string name="story_select">编辑</string>
@@ -634,26 +619,14 @@
     <string name="ppp_intro">With Disney PhotoPass+, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated AirPass card  mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="delete_percent">正在删除%1$d/%2$d</string>
-
     <string name="select_pp_faile">绑定失败，请检查您当前的网络环境</string>
     <string name="select_bind_pp_faile">绑定失败</string>
     <string name="no_favorite_photo">您还没有收藏，赶快去收藏吧！</string>
-    <string name="qq_zone_share">我愿和你分享每一刻在乐拍通app的美妙体验！</string>
     <string name="app_crash">程序停止运行</string>
-
     <string name="pw_is_inconsistency">密码输入不一致!</string>
     <string name="login_failed">登录失败</string>
-    <string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
- Proin sodales pulvinar tempor.</string>
-    <string name="notifacation_new_order">新的订单</string>
-
     <string name="nick_name_empty">昵称不能为空!</string>
-    <!-- 新增 推送 部分字段。-->
-
     <string name="please_wait">正在拍照，请稍后</string>
     <string name="confirm_ppp_code_title">乐拍通一卡通</string>
-    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
-    <string name="develop_version">调试版 </string>
-    <string name="testing_version">公测版 </string>
     <string name="cancel">取消</string>
 </resources>

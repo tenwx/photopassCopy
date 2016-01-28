@@ -177,20 +177,6 @@
             android:scrollbars="none"
             android:visibility="gone"></GridView>
 
-        <EditText
-            android:id="@+id/fontEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/button_translate_with_blue_line"
-            android:gravity="center"
-            android:hint="@string/add_text"
-            android:padding="@dimen/pp_padding_10"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="@dimen/text_size_18"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <LinearLayout

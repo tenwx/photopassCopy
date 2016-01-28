@@ -34,6 +34,7 @@ import com.pictureair.photopass.entity.LocationItem;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.text.NumberFormat;
@@ -74,6 +75,17 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     private ImageLoader imageLoader;
 
+    private LocationItem lastOpenLocationItem;
+
+    private int lastOpenPosition;
+
+    private boolean isRunning = false;
+
+    private int firstVisibleCount;
+
+    private int lastVisibleCount;
+
+
     public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Activity context, Handler hander, AMapLocation location, float x) {
         this.list = list;
         this.context = context;
@@ -89,6 +101,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_discover_loading).
                 showImageOnFail(R.drawable.ic_discover_failed).cacheInMemory(true).cacheOnDisk(true).build();
         imageLoader = ImageLoader.getInstance();
+        lastOpenLocationItem = null;
     }
 
     public HashMap<String, Integer> getActivatedLocationMap() {
@@ -122,6 +135,14 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     public void setX(float x) {
         this.x = x;
+    }
+
+    public void setFirstVisibleCount(int firstVisibleCount) {
+        this.firstVisibleCount = firstVisibleCount;
+    }
+
+    public void setLastVisibleCount(int lastVisibleCount) {
+        this.lastVisibleCount = lastVisibleCount;
     }
 
     @Override
@@ -249,7 +270,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         double lng_b = (mLocation != null) ? mLocation.getLongitude() : 0;
 //		double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
         double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
-        System.out.println("distance--in adapter--------->" + distance);
         viewHolder.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
         //获取旋转角度
         double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
@@ -270,6 +290,8 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         if (info.showDetail == 1) {
             viewHolder.showDetailImageView.setImageResource(R.drawable.discover_show_detail);
             viewHolder.locationDetailLayout.setVisibility(View.VISIBLE);
+            ViewHelper.setTranslationX(viewHolder.locationPhotoImageView, -screenWidth);
+            ViewHelper.setTranslationX(viewHolder.locationDetailLayout, 0);
         } else {
             viewHolder.showDetailImageView.setImageResource(R.drawable.discover_hide_detail);
             viewHolder.locationDetailLayout.setVisibility(View.GONE);
@@ -299,7 +321,12 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                 return;
             }
             if (clickIndex == MORE) {//显示详情操作
+                if (isRunning) {//动画执行的过程中不允许再次点击，不然会有问题
+                    return;
+                }
                 if (list.get(position).showDetail == 1) {//关闭详情
+                    PictureAirLog.out("close--->" + position + "---" + lastOpenPosition);
+                    isRunning = true;
                     list.get(position).showDetail = 0;
                     locationItem.showDetailImageView.setImageResource(R.drawable.discover_hide_detail);
                     closeAnimator = ObjectAnimator.ofFloat(locationItem.locationDetailLayout, "translationX", 0, screenWidth).setDuration(500);
@@ -321,6 +348,9 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                         public void onAnimationEnd(Animator animation) {
                             // TODO Auto-generated method stub
                             locationItem.locationDetailLayout.setVisibility(View.GONE);
+                            lastOpenLocationItem = null;
+                            lastOpenPosition = -1;
+                            isRunning = false;
                         }
 
                         @Override
@@ -332,11 +362,82 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                     closeAnimator.start();
                     ObjectAnimator.ofFloat(locationItem.locationPhotoImageView, "translationX", -screenWidth, 0).setDuration(500).start();
                 } else {//打开详情
+                    PictureAirLog.out("open---" + position + "--" + lastOpenPosition);
+                    isRunning = true;
                     locationItem.locationDetailLayout.setVisibility(View.VISIBLE);
                     list.get(position).showDetail = 1;
                     locationItem.showDetailImageView.setImageResource(R.drawable.discover_show_detail);
-                    ObjectAnimator.ofFloat(locationItem.locationPhotoImageView, "translationX", 0, -screenWidth).setDuration(500).start();
-                    ObjectAnimator.ofFloat(locationItem.locationDetailLayout, "translationX", screenWidth, 0).setDuration(500).start();
+                    ObjectAnimator openAnimator1 = ObjectAnimator.ofFloat(locationItem.locationPhotoImageView, "translationX", 0, -screenWidth).setDuration(500);
+                    ObjectAnimator openAnimator2 = ObjectAnimator.ofFloat(locationItem.locationDetailLayout, "translationX", screenWidth, 0).setDuration(500);
+                    openAnimator1.addListener(new AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            isRunning = false;
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });
+                    openAnimator1.start();
+                    openAnimator2.start();
+                    if (lastOpenLocationItem != null) {
+                        list.get(lastOpenPosition).showDetail = 0;
+
+                        if (lastOpenPosition < firstVisibleCount || lastOpenPosition > lastVisibleCount) {
+                            PictureAirLog.out("out of place");
+                            lastOpenLocationItem = locationItem;
+                            lastOpenPosition = position;
+                            return;
+                        }
+                        PictureAirLog.out("in place---" + lastOpenPosition + "_" + firstVisibleCount + "_" + lastVisibleCount);
+                        lastOpenLocationItem.showDetailImageView.setImageResource(R.drawable.discover_hide_detail);
+                        ObjectAnimator closeAnimator2 = ObjectAnimator.ofFloat(lastOpenLocationItem.locationDetailLayout, "translationX", 0, screenWidth).setDuration(500);
+                        closeAnimator2.addListener(new AnimatorListener() {
+
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                // TODO Auto-generated method stub
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+                                // TODO Auto-generated method stub
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                // TODO Auto-generated method stub
+                                lastOpenLocationItem.locationDetailLayout.setVisibility(View.GONE);
+                                lastOpenLocationItem = locationItem;
+                                lastOpenPosition = position;
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+                                // TODO Auto-generated method stub
+
+                            }
+                        });
+                        closeAnimator2.start();
+                        ObjectAnimator.ofFloat(lastOpenLocationItem.locationPhotoImageView, "translationX", -screenWidth, 0).setDuration(500).start();
+                    } else {
+                        lastOpenLocationItem = locationItem;
+                        lastOpenPosition = position;
+                    }
                 }
             } else if (clickIndex == LOVE) {
                 mHandler.sendEmptyMessage(STOPLOCATION);

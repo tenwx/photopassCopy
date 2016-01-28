@@ -115,6 +115,7 @@
     <string name="manul_input_intro">Please input the 16-digit number on the back of your PhotoPass card.</string>
     <string name="nocontext">Input your code</string>
     <string name="wrong_length">Please check your card</string>
+    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <!-- manual input end -->
 
     <!-- disney story start -->
@@ -356,6 +357,8 @@
     <string name="copyright"> </string>
     <string name="copyright1">Copyright © 2015 pictureworks</string>
     <string name="copyright2">All Rights Reserved.</string>
+    <string name="develop_version">Debug </string>
+    <string name="testing_version">Beta </string>
     <!-- about end -->
 
     <!-- check update start -->
@@ -408,7 +411,6 @@
     <string name="shop">Shop</string>
     <string name="pp">PhotoPass+</string>
     <string name="user">User</string>
-    <string name="product_name">Product name</string>
     <string name="price">Price: </string>
     <string name="buy">Shop</string>
     <string name="all">Select All</string>
@@ -416,7 +418,6 @@
     <string name="pictureair">PhotoPass</string>
     <string name="camera">Camera</string>
     <string name="me">Me</string>
-    <string name="orderdescription">Order Description</string>
     <string name="revise">Revise</string>
     <string name="mobile">Your Mobile Number</string>
     <string name="phone">Phone</string>
@@ -424,7 +425,6 @@
     <string name="paymentmethod">Payment Methods</string>
     <string name="payways">Choices of payment</string>
     <string name="pmtprc">Payment Price：</string>
-    <string name="at">\@</string>
     <string name="inputEmail">Please input your email</string>
     <string name="all_sel">All</string>
     <string name="selection">Select %s</string>
@@ -445,7 +445,6 @@
     <string name="expressdelivery">Express</string>
     <string name="address">Address</string>
     <string name="newaddress">New Address</string>
-    <string name="sampleaddress">6F Unit 6001 , Hong Tu Building, No.528, Chuan Hong Road, Pudong ChuanSha District, Shanghai, China, 201202</string>
     <string name="name">Name</string>
     <string name="telephone">Telephone</string>
     <string name="province">Province</string>
@@ -536,12 +535,6 @@
     <string name="scanedPPOrPPP">You had scaned %1$d %2$s %3$d %4$s before, are you sure want to tag it?</string>
     <string name="ppp_bind">Buy PhotoPass+</string>
     <string name="ppp_scan">Scan PhotoPass+</string>
-    <string name="ppp_info1">Would you like choose one PhotoPass to bind right now to download all your High-definition pictures？ Let’s do it.</string>
-    <string name="ppp_info2">Sorry, you do not have any PhotoPass yet, please add your PhotoPass by scan your PhotoPass QR code. \n(Maximum THREE PhotoPass in ONE PhotoPass+)</string>
-    <string name="ppp_info2_2">Dears, you do not have any PhotoPass yet, please add your PhotoPass by scan your PhotoPass QR code. \n(Maximum THREE PhotoPass in ONE PhotoPass+)</string>
-    <string name="ppp_info3">Dears, now you available to choose THREE PhotoPass ON THE SAME DAY to bind, then you can download all and get all your high-resolution pictures.</string>
-    <string name="ppp_info4">Dear, this PhotoPass+ has been fully used already (Maximum THREE PhotoPass bind in ONE PhotoPass+). Please use others PhotoPass+ OR purchases a new one please.</string>
-    <string name="ppp_info5">Dear, this PhotoPass+ has been fully used already ，one PhotoPass+ available to bind THREE PhotoPass ONLY. Please purchase new one for continues using.</string>
     <string name="has_ppp_intro">The PhotoPass+ has bind one PhotoPass</string>
     <string name="no_ppp_intro">You can choose one PhotoPass to bind</string>
     <string name="not_pp_card">The card is not PhotoPass card</string>
@@ -600,7 +593,6 @@
     <!-- 扫一扫 -->
     <string name="auto_auto">Scan</string>
     <string name="buy_ppp_tips">PhotoPass+ has used, do you want to buy another one?</string>
-    <!-- 日期 -->
     <string name="action_settings">Settings</string>
     <string name="submit">OK</string>
     <string name="answer">Answer</string>
@@ -615,13 +607,6 @@
     <string name="pwd_is_short">Password is too short</string>
     <string name="email_exist">Email exists</string>
     <string name="add_pp_first">Please add PhotoPass first</string>
-    <string name="add_text">Add text</string>
-    <string name="font_default">Default</string>
-    <string name="font_fangzheng">FangZheng</string>
-    <string name="font_pen">Pen</string>
-    <string name="font_lovely">Cute</string>
-    <string name="add_new_text">Please add text first</string>
-    <string name="goods_intro">Life is a beautiful moment , take pictures now </string>
     <string name="favourite">Favourite</string>
     <string name="address_goods">Self-collect: Carefree Corner</string>
     <string name="story_select">Select</string>
@@ -634,26 +619,14 @@
     <string name="ppp_intro">With Disney VIP, you can access to ALL your associated pictures taken in Shanghai Disneyland Resort in high-resolution digital files, at one price. You can also decorate, enhance and personalized your own Disney stories using dedicated PhotoPass mobile app or website.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
-
     <string name="select_pp_faile">Update failed, please check your network</string>
     <string name="select_bind_pp_faile">Update failed</string>
     <string name="no_favorite_photo">No favorite photos</string>
-    <string name="qq_zone_share">I would like to share my wonderful experience at PhotoPass app with you.</string>
     <string name="app_crash">Application crash</string>
-
     <string name="pw_is_inconsistency">Password input does not match</string>
     <string name="login_failed">Login Failed!</string>
-    <string name="testing_intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.
- Proin sodales pulvinar tempor.</string>
-    <string name="notifacation_new_order">New Order</string>
-
     <string name="nick_name_empty">Please enter your nickname</string>
-    <!-- 新增 推送 部分字段。-->
-
     <string name="please_wait">Taking pictures, please wait.</string>
     <string name="confirm_ppp_code_title">PhotoPass+</string>
-    <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
-    <string name="develop_version">Debug </string>
-    <string name="testing_version">Beta </string>
     <string name="cancel">Cancel</string>
 </resources>

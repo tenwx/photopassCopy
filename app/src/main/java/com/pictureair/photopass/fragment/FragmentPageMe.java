@@ -241,7 +241,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(2 * codePicView.getWidth(), 2 * codePicView.getHeight());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(3 * codePicView.getWidth(), 3 * codePicView.getHeight());
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setBackgroundResource(R.color.white);
         layout.addView(imageView, params);
@@ -264,7 +264,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         final AnimationSet set = new AnimationSet(false);
         set.setFillAfter(true);
         set.addAnimation(scaleAnimation);
-        set.setDuration(700);
+        set.setDuration(500);
         layout.startAnimation(set);
         //点击屏幕取消
         layout.setOnClickListener(new OnClickListener() {

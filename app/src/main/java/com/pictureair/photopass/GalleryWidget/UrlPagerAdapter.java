@@ -41,7 +41,6 @@ public class UrlPagerAdapter extends BasePagerAdapter {
     public Object instantiateItem(ViewGroup collection, final int position) {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
-            System.out.println();
             PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
             iv.setUrl(mResources.get(position).photoThumbnail_1024);
         } else if (mResources.get(position).onLine == 0) {

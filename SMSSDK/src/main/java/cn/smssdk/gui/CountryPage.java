@@ -7,14 +7,6 @@
  */
 package cn.smssdk.gui;
 
-import static cn.smssdk.framework.utils.R.getIdRes;
-import static cn.smssdk.framework.utils.R.getLayoutRes;
-import static cn.smssdk.framework.utils.R.getStringRes;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.app.Dialog;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -22,14 +14,19 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import cn.smssdk.EventHandler;
-import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.framework.FakeActivity;
 import cn.smssdk.gui.GroupListView.OnItemClickListener;
+
+import static cn.smssdk.framework.utils.R.getIdRes;
+import static cn.smssdk.framework.utils.R.getLayoutRes;
+import static cn.smssdk.framework.utils.R.getStringRes;
 
 /**
  * 国家列表界面
