@@ -207,8 +207,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if (dialog.isShowing()) {
 					dialog.dismiss();
 				}
-				//开始从网络获取最新数据
-				API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
 				break;
 
 			case 1111:
@@ -301,12 +299,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 		initView();
 		dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-		new Thread() {
-			public void run() {
+//		new Thread() {
+//			public void run() {
 				//		    addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
-				initData();
-			};
-		}.start();
+		initData();
+		//开始从网络获取最新数据
+		API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
+//			};
+//		}.start();
 
 		//		initDate();
 	}
@@ -1026,9 +1026,19 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				//不论边框显示与否，都让他合成。   即使是原图。
 				Bitmap frameBitmap;
 				if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
-					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+					if(frameInfos.get(curFramePosition).onLine == 1){
+						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait));
+					}else{
+						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+					}
 				}else{
-					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+					if(frameInfos.get(curFramePosition).onLine == 1){
+						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape));
+					}else{
+						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+					}
 				}
 
 
