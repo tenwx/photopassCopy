@@ -29,7 +29,6 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.wxpay.Constants;
 import com.pictureair.photopass.wxpay.MD5;
@@ -53,6 +52,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 public class PaymentOrderActivity extends BaseActivity implements
         OnClickListener {
@@ -264,7 +265,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         } else if (1 == payType) {
             PictureAirLog.v(TAG, "yl");
             customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this,
-                    getString(R.string.please_wait), false, null);
+                    getString(R.string.is_loading), false, null);
             API1.getUnionPayTN(paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
@@ -665,7 +666,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         @Override
         protected void onPreExecute() {
             dialog = CustomProgressDialog.show(PaymentOrderActivity.this,
-                    getString(R.string.getting_access_token), false, null);
+                    getString(R.string.is_loading), false, null);
 
         }
 

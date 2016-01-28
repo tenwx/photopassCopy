@@ -29,6 +29,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -39,12 +40,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+
 public class EditActivityAdapter extends BaseAdapter {
     private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
     private Context mContext;
     private List<String> stickerPathList;
     private int editType = 0;
-    private String[] filterText = {"Original", "Lomo", "Earlybird", "Natural", "HDR", "whitening", "Vintage"};
+    private int[] filterText = { R.string.original, R.string.lomo, R.string.earlybird, R.string.natural,
+            R.string.hdr, R.string.whitening, R.string.vintage };
     private ArrayList<FrameOrStikerInfo> frameInfos;
     private Handler handler;
     private boolean firstFileFailOrExist = false;
@@ -213,15 +217,20 @@ public class EditActivityAdapter extends BaseAdapter {
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);
             if (frameInfos.get(position).onLine == 1) {
                 // 网络边框。 3.0版本
-//				ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
-//				if (frameInfos.get(position).isDownload == 0) {
-//					holderView.maskImageView.setVisibility(View.VISIBLE);
-//					holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-//					holderView.fileSizeTextView.setText(frameInfos.get(position).fileSize / 1024 / 1024 + "M");
-//				}else {
-//					holderView.maskImageView.setVisibility(View.GONE);
-//					holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
-//				}
+                if (bitmap.getWidth() > bitmap.getHeight()) {
+                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
+                }else{
+                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+                }
+
+                if (frameInfos.get(position).isDownload == 0) {
+					holderView.maskImageView.setVisibility(View.VISIBLE);
+					holderView.fileSizeTextView.setVisibility(View.VISIBLE);
+					holderView.fileSizeTextView.setText(frameInfos.get(position).fileSize / 1024 / 1024 + "M");
+				}else {
+					holderView.maskImageView.setVisibility(View.GONE);
+					holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
+				}
             } else {
                 if (bitmap.getWidth() > bitmap.getHeight()) {
                     ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
@@ -263,11 +272,11 @@ public class EditActivityAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             if (frameInfos.get(position).onLine == 1 && frameInfos.get(position).isDownload == 0) {//网络图片，并且未下载
-//				holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
-//				holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-//				holderView.progressBar.setProgress(0);
-//				downloadFrame(position, true, holderView);
-//				downloadFrame(position, false, holderView);
+				holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
+				holderView.fileSizeTextView.setVisibility(View.VISIBLE);
+				holderView.progressBar.setProgress(0);
+				downloadFrame(position, true, holderView);
+				downloadFrame(position, false, holderView);
 
                 if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_INVALID) {//无网络
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
@@ -384,7 +393,7 @@ public class EditActivityAdapter extends BaseAdapter {
             file.mkdirs();
         }
         final File downloadFile = new File(file.toString(), downloadNameString);
-
+        PictureAirLog.e("adapeter","downloadFile:"+downloadFile.toString());
         if (downloadFile.exists()) {//文件存在
             System.out.println(downloadNameString + "file exist");
             if (firstTime) {
@@ -395,7 +404,74 @@ public class EditActivityAdapter extends BaseAdapter {
             return;
         }
 
-        HttpUtil1.asyncGet(Common.PHOTO_URL + url, new HttpCallback() {
+//        HttpUtil1.asyncGet(Common.PHOTO_URL + url, new HttpCallback() {
+//            @Override
+//            public void onSuccess(byte[] binaryData) {
+//                super.onSuccess(binaryData);
+//                BufferedOutputStream stream = null;
+//                try {
+//                    FileOutputStream fsStream = new FileOutputStream(downloadFile.toString());
+//                    stream = new BufferedOutputStream(fsStream);
+//                    stream.write(binaryData);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    try {
+//                        if (stream != null) {
+//                            stream.flush();
+//                            stream.close();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int status) {
+//                super.onFailure(status);
+//                downloadFile.delete();
+//                if (firstTime) {
+//                    firstFileFailOrExist = true;
+//                } else {
+//                    secondFileFailOrExist = true;
+//                }
+//            }
+//
+//            @Override
+//            public void onProgress(long bytesWritten, long totalSize) {
+//                super.onProgress(bytesWritten, totalSize);
+//                if (firstTime) {
+//                    firstFileProgress = bytesWritten * 50 / totalSize;
+//                } else {
+//                    secondFileProgress = bytesWritten * 50 / totalSize;
+//                }
+////				System.out.println("progress:"+ firstFileProgress + "-" + secondFileProgress);
+//                Message message = downloadHandler.obtainMessage();
+//                message.what = UPDATE_PROGRESS;
+//                message.obj = holderView;
+//                if (firstFileFailOrExist || secondFileFailOrExist) {//有文件存在，或者下载失败，需要在进度上加50
+//                    message.arg1 = (int) (50 + bytesWritten * 50 / totalSize);
+//                } else {//都可以正常下载，下载进度取两者平均值
+//                    message.arg1 = (int) (firstFileProgress + secondFileProgress);
+//                }
+//                downloadHandler.sendMessage(message);
+//                if (firstFileProgress + secondFileProgress == 100) {//下载完成的处理
+//                    holderView.progressBar.setVisibility(View.GONE);
+//                    holderView.maskImageView.setVisibility(View.GONE);
+//                    holderView.fileSizeTextView.setVisibility(View.GONE);
+//                    frameInfos.get(position).isDownload = 1;
+//                    firstFileFailOrExist = false;
+//                    secondFileFailOrExist = false;
+//                    firstFileProgress = 0;
+//                    secondFileProgress = 0;
+//                    pictureAirDbManager.updateFrameAndStickerDownloadStatus(frameInfos.get(position).frameName, 1);
+//                }
+//            }
+//        });
+
+        // two
+        HttpUtil1.asyncDownloadBinaryData(Common.PHOTO_URL + url,new HttpCallback(){
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);

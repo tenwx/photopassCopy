@@ -30,6 +30,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
 import com.pictureair.photopass.R;
@@ -139,7 +140,7 @@ public class UrlTouchImageView extends RelativeLayout {
             PictureAirLog.out("need load from network");
         }
         //使用imageloader加载图片
-        imageLoader.loadImage(imageUrl, new SimpleImageLoadingListener() {
+        imageLoader.loadImage(imageUrl, null, null, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view,
                                           Bitmap loadedImage) {
@@ -149,6 +150,15 @@ public class UrlTouchImageView extends RelativeLayout {
                 bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
                 handler.sendEmptyMessage(LOAD_FILE_DONE);
 
+            }
+        }, new ImageLoadingProgressListener() {
+
+            @Override
+            public void onProgressUpdate(String imageUri, View view, int current,
+                                         int total) {
+                // TODO Auto-generated method stub
+                PictureAirLog.out("current percent----->" + current * 100 / total);
+                progressImageView.setImageResource(getImageResource(current * 100 / total));;
             }
         });
 

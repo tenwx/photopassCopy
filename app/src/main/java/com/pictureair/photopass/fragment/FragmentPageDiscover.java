@@ -502,12 +502,13 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
-            // TODO Auto-generated method stub
         }
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem,
                              int visibleItemCount, int totalItemCount) {
+            discoverLocationAdapter.setFirstVisibleCount(firstVisibleItem);
+            discoverLocationAdapter.setLastVisibleCount(firstVisibleItem + visibleItemCount);
             if (locationActivatedIndex != -1) {//说明有激活的position
                 if (locationActivatedIndex < firstVisibleItem || locationActivatedIndex > discoverListView.getLastVisiblePosition()) {//超出屏幕
 //					Log.d(TAG, "out of window------->");

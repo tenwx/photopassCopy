@@ -4,11 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,11 +52,12 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private String userPP = "";//用户PP号
     private String avatarUrl = "";//用户头像url
     private boolean isCodePic = false;//是否已经生成二维码
+    private boolean isShowCodePic = false;//二维码是否已经放大
 
     private DisplayImageOptions headOptions;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, null);
         code_pic = (ImageView) view.findViewById(R.id.code_pic);
         headPhoto = (ImageView) view.findViewById(R.id.user_photo);
@@ -71,6 +78,16 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         rl_help.setOnClickListener(this);
         rl_setting.setOnClickListener(this);
         rl_about.setOnClickListener(this);
+        code_pic.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //二维码放大
+                if (!isShowCodePic) {
+                    isShowCodePic = true;
+                    showCodePic(code_pic, container);
+                }
+            }
+        });
 
         //初始化控件
         sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
@@ -99,6 +116,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      * 用户名、图像、
      */
     private void initData() {
+        isShowCodePic = false;
+        isCodePic = false;
         if ("".equals(sp.getString(Common.USERINFO_NICKNAME, ""))) {
             name.setText(sp.getString(Common.USERINFO_ACCOUNT, "PhotoPass"));
         } else {
@@ -135,7 +154,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      * 生成二维码
      */
     public void setCodePic() {
-        if (isCodePic) {
+        if (!isCodePic) {
             if (!userPP.isEmpty()) {
                 try {
                     //生成二维码
@@ -199,6 +218,65 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             default:
                 break;
         }
+    }
+
+    /**
+     * 显示二维码大图
+     * 1.动态添加大图
+     * 2.添加动画
+     *
+     * @param viewGroup
+     */
+    private void showCodePic(ImageView codePicView, ViewGroup viewGroup) {
+        //半透明背景
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout layout = new LinearLayout(viewGroup.getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setGravity(Gravity.CENTER);
+        layout.setBackgroundResource(R.color.white_alpha_90);
+        //二维码
+        ImageView imageView = new ImageView(viewGroup.getContext());
+        try {
+            imageView.setImageBitmap(AppUtil.createQRCode(userPP, ScreenUtil.getScreenWidth(getActivity()) / 5));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(3 * codePicView.getWidth(), 3 * codePicView.getHeight());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setBackgroundResource(R.color.white);
+        layout.addView(imageView, params);
+        viewGroup.addView(layout, layoutParams);
+        //动画开始
+        startAnimation(viewGroup, layout);
+    }
+
+    /**
+     * 开始动画（从中间放大）
+     *
+     * @param viewGroup
+     * @param layout
+     */
+    private void startAnimation(final ViewGroup viewGroup, final LinearLayout layout) {
+        final ScaleAnimation scaleAnimation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setInterpolator(new LinearInterpolator());
+        scaleAnimation.setRepeatCount(0);
+        scaleAnimation.setFillAfter(true);
+        final AnimationSet set = new AnimationSet(false);
+        set.setFillAfter(true);
+        set.addAnimation(scaleAnimation);
+        set.setDuration(500);
+        layout.startAnimation(set);
+        //点击屏幕取消
+        layout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scaleAnimation.cancel();
+                set.cancel();
+                layout.clearAnimation();
+                viewGroup.removeView(layout);
+                isShowCodePic = false;
+            }
+        });
     }
 
     @Override

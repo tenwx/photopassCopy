@@ -90,7 +90,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/edit_album_share_button"
             android:gravity="center_horizontal|bottom"
-            android:text="@string/Share"
+            android:text="@string/share"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_small_size" />
 
