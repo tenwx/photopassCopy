@@ -169,6 +169,11 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
     public void onItemClick(GroupListView parent, View view, int group, int position) {
         if (position >= 0) {
             String[] country = listView.getCountry(group, position);
+
+//            for (int i = 0;i< country.length; i ++){
+//                System.out.println("======onItemClick=====:"+country[i]);
+//            }
+
             if (countryRules != null && countryRules.containsKey(country[1])) {
                 isSelectCountry = true;
                 id = country[2];
@@ -211,6 +216,11 @@ public class CountryPage extends FakeActivity implements OnClickListener, TextWa
         // 销毁监听接口
         if (null != mHandler && isSelectCountry) {//返回LoginActivity:countryId = country[1];countryStr = country[0];
             String[] country = SMSSDK.getCountry(id);
+
+            for (int i = 0 ; i < country.length ; i++){
+                System.out.println("=======finish=======:"+country[i]);
+            }
+
             mHandler.obtainMessage(1, country).sendToTarget();
         } else {
             SMSSDK.unregisterEventHandler(handler);
