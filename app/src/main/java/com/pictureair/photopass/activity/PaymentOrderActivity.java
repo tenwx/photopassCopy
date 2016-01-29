@@ -465,7 +465,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                 if (msg.obj == null || ((String) msg.obj).length() == 0) {
                     paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
                 } else {
-                    UPPayAssistEx.startPayByJAR(PaymentOrderActivity.this, PayActivity.class, null, null, msg.obj.toString(), mMode);
+                    UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, msg.obj.toString(), mMode);
                 }
                 break;
 

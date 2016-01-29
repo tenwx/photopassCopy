@@ -10,9 +10,11 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.HttpBaseJson;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -24,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 
 
 /**
@@ -1780,18 +1784,55 @@ public class API1 {
      *
      * @param handler
      */
+//    public static void getUnionPayTN(final Handler handler){
+//        HttpUtil1.asyncPost(Common.GET_UNIONPAY_TN , new HttpCallback() {
+//            @Override
+//            public void onSuccess(JSONObject jsonObject) {
+//                super.onSuccess(jsonObject);
+//                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, jsonObject).sendToTarget();
+//            }
+//
+//            @Override
+//            public void onFailure(int status) {
+//                super.onFailure(status);
+//                handler.obtainMessage(UNIONPAY_GET_TN_FAILED, status, 0).sendToTarget();
+//            }
+//        });
+//    }
     public static void getUnionPayTN(final Handler handler){
-        HttpUtil1.asyncPost(Common.GET_UNIONPAY_TN , new HttpCallback() {
+        HttpUtil1.post("http://101.231.204.84:8091/sim/getacptn", new BaseJsonHttpResponseHandler<HttpBaseJson>() {
+
             @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, jsonObject).sendToTarget();
+            protected HttpBaseJson parseResponse(String arg0, boolean arg1)
+                    throws Throwable {
+                // TODO Auto-generated method stub
+                PictureAirLog.out("get tn---->" + arg0);
+                HttpBaseJson httpBaseJson = new HttpBaseJson();
+                httpBaseJson.setResult(arg0);
+                if (arg0 == null || arg0.length() == 0) {
+                    httpBaseJson.setStatus(401);
+                } else {
+                    httpBaseJson.setStatus(200);
+                }
+                return httpBaseJson;
             }
 
             @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.obtainMessage(UNIONPAY_GET_TN_FAILED, status, 0).sendToTarget();
+            public void onSuccess(int arg0, Header[] arg1, String arg2,
+                                  HttpBaseJson arg3) {
+                // TODO Auto-generated method stub
+                PictureAirLog.out("TN____jsonobject---->" + arg3.getResult());
+                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, arg3.getResult()).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int arg0, Header[] arg1, Throwable arg2, String arg3,
+                                  HttpBaseJson arg4) {
+                // TODO Auto-generated method stub
+                PictureAirLog.out("TN----failed");
+                handler.obtainMessage(UNIONPAY_GET_TN_SUCCESS, arg4.getStatus(), 0).sendToTarget();
+
             }
         });
     }

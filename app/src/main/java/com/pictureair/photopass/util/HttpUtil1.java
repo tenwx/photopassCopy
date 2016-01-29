@@ -177,6 +177,16 @@ public class HttpUtil1 {
         });
     }
 
+    /**
+     * 异步post请求
+     *
+     * @param url          请求url
+     * @param baseJsonHttpResponseHandler 请求回调
+     */
+    public static void post(final String url, BaseJsonHttpResponseHandler<HttpBaseJson> baseJsonHttpResponseHandler) {
+        asyncHttpClient.post(url, baseJsonHttpResponseHandler);
+    }
+
 
     /**
      * 异步post请求
