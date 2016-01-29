@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +27,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.blur.UtilOfDraw;
+import com.pictureair.photopass.blur.BlurUtil;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
 import com.pictureair.photopass.util.API1;
@@ -49,7 +48,6 @@ import java.util.HashMap;
 public class DiscoverLocationAdapter extends BaseAdapter {
     private ArrayList<DiscoverLocationItemInfo> list;
     private Handler mHandler;
-    private Context context;
     private DiscoverLocationItemInfo info;
     private LayoutInflater layoutInflater;
     //距离的小数点数量
@@ -66,7 +64,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
     public static final int STOPLOCATION = 104;
     private static final String TAG = "DicoverLocationAdapter";
 
-    private ObjectAnimator closeAnimator;
     private SharedPreferences sharedPreferences;
 
     private HashMap<String, Integer> activatedLocationMap;
@@ -88,7 +85,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Activity context, Handler hander, AMapLocation location, float x) {
         this.list = list;
-        this.context = context;
         this.mHandler = hander;
         this.mLocation = location;
         this.x = x;
@@ -96,7 +92,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         distanceFormat.setMaximumFractionDigits(1);
         layoutInflater = LayoutInflater.from(context);
         screenWidth = ScreenUtil.getScreenWidth(context);
-        activatedLocationMap = new HashMap<String, Integer>();
+        activatedLocationMap = new HashMap<>();
         sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_discover_loading).
                 showImageOnFail(R.drawable.ic_discover_failed).cacheInMemory(true).cacheOnDisk(true).build();
@@ -179,7 +175,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LocationItem viewHolder = null;
+        LocationItem viewHolder;
         if (null == convertView) {
             convertView = layoutInflater.inflate(R.layout.discover_listview_item, null);
             viewHolder = new LocationItem();
@@ -191,7 +187,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.distanceTextView = (TextView) convertView.findViewById(R.id.discover_distance);//距离
             viewHolder.showDetailImageView = (ImageView) convertView.findViewById(R.id.discover_show_detail);//显示详情按钮
             viewHolder.locationDetailLayout = (RelativeLayout) convertView.findViewById(R.id.discover_location_detail_info);//详情layout
-//			viewHolder.locationDetailNameTextView = (TextView) convertView.findViewById(R.id.discover_detail_place_name);//详情的地点名称
             viewHolder.locationDetailInfoTextView = (TextView) convertView.findViewById(R.id.discover_place_introduce);//地点的详情介绍
             viewHolder.locationBlurPhotoImageView = (ImageView) convertView.findViewById(R.id.discover_location_blur_photo);
             convertView.setTag(viewHolder);
@@ -201,7 +196,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         //初始化数据
         final View view = convertView;
         info = list.get(position);
-//		viewHolder.locationDetailNameTextView.setText(info.place);
         if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             //设置地点名称
             viewHolder.locationNameTextView.setText(info.placeCHName);
@@ -214,22 +208,16 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.locationDetailInfoTextView.setText(info.placeDetailENIntroduce);
         }
         //设置背景图片
-//		UniversalImageLoadTool.loadDiscoverImage(info.placeUrl, viewHolder.locationPhotoImageView, options);
         if (viewHolder.locationPhotoImageView.getTag() != null && viewHolder.locationPhotoImageView.getTag().equals(info.placeUrl)) {//直接显示，不需要tag
-            System.out.println("不需要加载");
         } else {
-            System.out.println("需要加在图片" + viewHolder.locationPhotoImageView.getTag());
             ImageAware imageAware = new ImageViewAware(viewHolder.locationPhotoImageView, false);
 
             imageLoader.displayImage(info.placeUrl, imageAware, options);
             viewHolder.locationPhotoImageView.setTag(info.placeUrl);
         }
         //设置模糊背景图片
-//		UniversalImageLoadTool.loadBlurImage(info.placeUrl, viewHolder.locationBlurPhotoImageView, options);
         if (viewHolder.locationBlurPhotoImageView.getTag() != null && viewHolder.locationBlurPhotoImageView.getTag().equals(info.placeUrl)) {
-            System.out.println("不需要加载模糊图片");
         } else {
-            System.out.println("需要加载模糊图片" + viewHolder.locationBlurPhotoImageView.getTag());
             ImageAware imageAware = new ImageViewAware(viewHolder.locationBlurPhotoImageView, false);
             viewHolder.locationBlurPhotoImageView.setTag(info.placeUrl);
             final ImageView imageView = viewHolder.locationBlurPhotoImageView;
@@ -239,7 +227,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                                               Bitmap loadedImage) {
                     // TODO Auto-generated method stub
                     super.onLoadingComplete(imageUri, view, loadedImage);
-                    imageView.setImageBitmap(UtilOfDraw.blur(loadedImage));
+                    imageView.setImageBitmap(BlurUtil.blur(loadedImage));
                 }
             });
         }
@@ -252,11 +240,9 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                 if (null != onUpdateLocationListener) {
                     if (activatedLocationMap.get(nPosition + "") == null || activatedLocationMap.get(nPosition + "") == 0) {//开启定位服务
                         activatedLocationMap.put(nPosition + "", 1);
-                        Log.d(TAG, "start location = 1");
                         onUpdateLocationListener.startLocation(nPosition, view);
                     } else {
 
-                        Log.d(TAG, "stop location");
                         activatedLocationMap.put(nPosition + "", 0);
                         mHandler.sendEmptyMessage(STOPLOCATION);
                     }
@@ -268,7 +254,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         double lng_a = info.longitude;// 经度
         double lat_b = (mLocation != null) ? mLocation.getLatitude() : 0;
         double lng_b = (mLocation != null) ? mLocation.getLongitude() : 0;
-//		double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
         double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
         viewHolder.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
         //获取旋转角度
@@ -297,7 +282,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.locationDetailLayout.setVisibility(View.GONE);
             ViewHelper.setTranslationX(viewHolder.locationPhotoImageView, 0);
         }
-
         return convertView;
     }
 
@@ -324,116 +308,26 @@ public class DiscoverLocationAdapter extends BaseAdapter {
                 if (isRunning) {//动画执行的过程中不允许再次点击，不然会有问题
                     return;
                 }
+                isRunning = true;
                 if (list.get(position).showDetail == 1) {//关闭详情
-                    PictureAirLog.out("close--->" + position + "---" + lastOpenPosition);
-                    isRunning = true;
                     list.get(position).showDetail = 0;
-                    locationItem.showDetailImageView.setImageResource(R.drawable.discover_hide_detail);
-                    closeAnimator = ObjectAnimator.ofFloat(locationItem.locationDetailLayout, "translationX", 0, screenWidth).setDuration(500);
-                    closeAnimator.addListener(new AnimatorListener() {
-
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            // TODO Auto-generated method stub
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-                            // TODO Auto-generated method stub
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            // TODO Auto-generated method stub
-                            locationItem.locationDetailLayout.setVisibility(View.GONE);
-                            lastOpenLocationItem = null;
-                            lastOpenPosition = -1;
-                            isRunning = false;
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                            // TODO Auto-generated method stub
-
-                        }
-                    });
-                    closeAnimator.start();
-                    ObjectAnimator.ofFloat(locationItem.locationPhotoImageView, "translationX", -screenWidth, 0).setDuration(500).start();
+                    //关闭
+                    showOrHideAnimation(false, locationItem);
                 } else {//打开详情
-                    PictureAirLog.out("open---" + position + "--" + lastOpenPosition);
-                    isRunning = true;
                     locationItem.locationDetailLayout.setVisibility(View.VISIBLE);
                     list.get(position).showDetail = 1;
-                    locationItem.showDetailImageView.setImageResource(R.drawable.discover_show_detail);
-                    ObjectAnimator openAnimator1 = ObjectAnimator.ofFloat(locationItem.locationPhotoImageView, "translationX", 0, -screenWidth).setDuration(500);
-                    ObjectAnimator openAnimator2 = ObjectAnimator.ofFloat(locationItem.locationDetailLayout, "translationX", screenWidth, 0).setDuration(500);
-                    openAnimator1.addListener(new AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            isRunning = false;
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
-                    openAnimator1.start();
-                    openAnimator2.start();
-                    if (lastOpenLocationItem != null) {
+                    //打开
+                    showOrHideAnimation(true, locationItem);
+                    if (lastOpenLocationItem != null) {//如果之前有打开过
                         list.get(lastOpenPosition).showDetail = 0;
-
-                        if (lastOpenPosition < firstVisibleCount || lastOpenPosition > lastVisibleCount) {
-                            PictureAirLog.out("out of place");
+                        PictureAirLog.out("last-" + lastVisibleCount + "first-" + firstVisibleCount + "last-" + lastVisibleCount);
+                        if (lastOpenPosition < firstVisibleCount || lastOpenPosition >= lastVisibleCount) {//不在屏幕上显示，直接跳过
                             lastOpenLocationItem = locationItem;
                             lastOpenPosition = position;
                             return;
                         }
-                        PictureAirLog.out("in place---" + lastOpenPosition + "_" + firstVisibleCount + "_" + lastVisibleCount);
-                        lastOpenLocationItem.showDetailImageView.setImageResource(R.drawable.discover_hide_detail);
-                        ObjectAnimator closeAnimator2 = ObjectAnimator.ofFloat(lastOpenLocationItem.locationDetailLayout, "translationX", 0, screenWidth).setDuration(500);
-                        closeAnimator2.addListener(new AnimatorListener() {
-
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                // TODO Auto-generated method stub
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-                                // TODO Auto-generated method stub
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                // TODO Auto-generated method stub
-                                lastOpenLocationItem.locationDetailLayout.setVisibility(View.GONE);
-                                lastOpenLocationItem = locationItem;
-                                lastOpenPosition = position;
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-                                // TODO Auto-generated method stub
-
-                            }
-                        });
-                        closeAnimator2.start();
-                        ObjectAnimator.ofFloat(lastOpenLocationItem.locationPhotoImageView, "translationX", -screenWidth, 0).setDuration(500).start();
+                        //关闭
+                        hideAnimation(position, locationItem);
                     } else {
                         lastOpenLocationItem = locationItem;
                         lastOpenPosition = position;
@@ -442,10 +336,8 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             } else if (clickIndex == LOVE) {
                 mHandler.sendEmptyMessage(STOPLOCATION);
                 if (list.get(position).islove == 1) {
-                    Log.d(TAG, "is love need remove");
                     API1.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "remove", position, mHandler);
                 } else {
-                    Log.d(TAG, "not love need add");
                     API1.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "add", position, mHandler);
                 }
             } else {
@@ -457,6 +349,87 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
             }
         }
+    }
+
+    /**
+     * 当前item的展示或者隐藏
+     * @param show
+     * @param locationItem
+     */
+    private void showOrHideAnimation(final boolean show, final LocationItem locationItem) {
+        locationItem.showDetailImageView.setImageResource(show ? R.drawable.discover_show_detail : R.drawable.discover_hide_detail);
+        //打开动画
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(locationItem.locationPhotoImageView, "translationX", show ? 0 : -screenWidth,
+                show ? -screenWidth : 0).setDuration(500);
+
+        ObjectAnimator animator2 = ObjectAnimator.ofFloat(locationItem.locationDetailLayout, "translationX", show ? screenWidth : 0,
+                show ? 0 : screenWidth).setDuration(500);
+
+        animator1.addListener(new AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!show) {
+                    locationItem.locationDetailLayout.setVisibility(View.GONE);
+                    lastOpenLocationItem = null;
+                    lastOpenPosition = -1;
+                }
+                isRunning = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator1.start();
+        animator2.start();
+    }
+
+    /**
+     * 之前打开过的item的消失动画
+     * @param curPostion
+     * @param curLocationItem
+     */
+    private void hideAnimation(final int curPostion, final LocationItem curLocationItem) {
+        //消失动画
+        lastOpenLocationItem.showDetailImageView.setImageResource(R.drawable.discover_hide_detail);
+        ObjectAnimator.ofFloat(lastOpenLocationItem.locationPhotoImageView, "translationX", -screenWidth, 0).setDuration(500).start();
+        ObjectAnimator hideAnimation = ObjectAnimator.ofFloat(lastOpenLocationItem.locationDetailLayout, "translationX", 0, screenWidth).setDuration(500);
+        hideAnimation.addListener(new AnimatorListener() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                lastOpenLocationItem.locationDetailLayout.setVisibility(View.GONE);
+                lastOpenLocationItem = curLocationItem;
+                lastOpenPosition = curPostion;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+        });
+        hideAnimation.start();
     }
 
     public interface OnUpdateLocationListener {

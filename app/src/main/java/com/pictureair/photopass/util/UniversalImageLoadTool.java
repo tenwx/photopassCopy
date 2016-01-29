@@ -9,7 +9,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.pictureair.photopass.blur.UtilOfDraw;
+import com.pictureair.photopass.blur.BlurUtil;
 
 public class UniversalImageLoadTool {
 	private static final String TAG = "UniversalImageLoadTool";
@@ -132,7 +132,7 @@ public class UniversalImageLoadTool {
 				@Override
 				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 					// TODO Auto-generated method stub
-					imageView.setImageBitmap(UtilOfDraw.blur(loadedImage));
+					imageView.setImageBitmap(BlurUtil.blur(loadedImage));
 					imageView.setTag(uri);
 				}
 

@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseActivity;
-import com.pictureair.photopass.blur.UtilOfDraw;
+import com.pictureair.photopass.blur.BlurUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -164,7 +164,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                 dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
                 dialog.show(0);
                 Bitmap bitmap = mClipImageLayout.clip();
-                bitmap = UtilOfDraw.comp(bitmap);
+                bitmap = BlurUtil.comp(bitmap);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] datas = baos.toByteArray();
