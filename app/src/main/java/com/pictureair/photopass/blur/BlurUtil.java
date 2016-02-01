@@ -17,7 +17,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 public class BlurUtil {
-	/** 模糊 */
+	/**
+	 * 制作高斯模糊
+	 *
+	 * 在创建缩略图的时候，因为float转int，会造成小数点丢失，因此会造成转换后的图片大小小于原图大小，因此在最后放大的时候，需要重新计算放大比例
+	 * @param bkg 需要制作blur的图片
+	 * @return
+	 */
 	public static Bitmap blur(Bitmap bkg) {
 		// 缩放尺寸
 		float scaleFactor = 6.0f;
@@ -31,10 +37,9 @@ public class BlurUtil {
 		canvas.drawBitmap(bkg, 0, 0, paint);
 		overlay = doBlur(overlay, (int) radius, true);
 		Matrix matrix = new Matrix();
-		matrix.postScale(scaleFactor, scaleFactor);
-		Bitmap overlay2 = Bitmap.createBitmap(overlay, 0, 0, overlay.getWidth(), overlay.getHeight(), matrix, true);
-		PictureAirLog.out("do blur=" + overlay.getWidth() + "_" + overlay.getHeight() + "_" + overlay2.getWidth() + "_" + overlay2.getHeight());
-		return overlay2;
+		matrix.postScale(bkg.getWidth() / (float) overlay.getWidth(), bkg.getHeight() / (float) overlay.getHeight());
+		overlay = Bitmap.createBitmap(overlay, 0, 0, overlay.getWidth(), overlay.getHeight(), matrix, true);
+		return overlay;
 	}
 
 	/** 圆形裁剪 */
