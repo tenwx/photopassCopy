@@ -305,10 +305,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
                 API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取全部视频信息
-
-                //刷新广告地点
-                app.setGetADLocationSuccess(false);
-                API1.getADLocations(fragmentPageStoryHandler);
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
@@ -345,7 +341,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 break;
 
             case SORT_COMPLETED_REFRESH:
-
+                //刷新广告地点
+                app.setGetADLocationSuccess(false);
+                API1.getADLocations(fragmentPageStoryHandler);
 
                 if (noPhotoViewStateRefresh) {//无图页的刷新
                     showViewPager();

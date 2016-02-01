@@ -130,20 +130,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private TextView currentPhotoADTextView;
 
     private CustomProgressDialog progressDialog;// 等待加载视图
-    private Bitmap bitmap1 = null;// 原图的模糊图
-    private Bitmap bitmap2 = null;// 原图
-    private Bitmap bitmap3 = null;// 圆圈图
-    private Bitmap bitmap4 = null;// 放大后的模糊图
-    private Bitmap bitmap5 = null;// 放大后的清晰图
-    private Bitmap resultBitmap = null;// 圆圈图的中心透明渐变
-    private Bitmap bm = null;// mask蒙板
+    private Bitmap oriBlurBmp = null;// 原图的模糊图
+    private Bitmap oriClearBmp = null;// 原图
+    private Bitmap touchClearBmp = null;// 圆圈图
+    private Bitmap zoomBlurBmp = null;// 放大后的模糊图
+    private Bitmap zoomClearBmp = null;// 放大后的清晰图
+    private Bitmap maskBmp = null;// mask蒙板
     private ImageView image01;// 模糊图的view
     private ImageView image02;// 圆圈的view
 
     private RelativeLayout photoFraRelativeLayout;
     private RelativeLayout blurFraRelativeLayout;
-    private float scaleH;// 图片缩放后的宽
-    private float scaleW;// 图片缩放后的高
+
     private int marginTop = 0;//图片上端与屏幕顶部的距离
     private Matrix matrix;
     private boolean flag = false;// 是否是放大的
@@ -178,13 +176,31 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
 
     /**
-     * sizeW、sizeH 截图比例 r 圆圈的半径
+     * 双击放大需要的尺寸，为预览容易的一半
      */
-    private int sizeW = 0;
-    private int sizeH = 0;
+    private int zoomW = 0;
+    private int zoomH = 0;
+
+    /**
+     * 图片预览容器的宽高
+     */
+    private float parentPreviewH;
+    private float parentPreviewW;
+
+    /**
+     * 标准圆半径
+     */
     private int originalRadius = 0;
 
+    /**
+     * 当前圆的半径
+     */
     private int curRadius = 0;
+
+    /**
+     * 标准R和当前R之间的最小值
+     */
+    private int minRadiue = 0;
 
     private RelativeLayout leadView;
 
@@ -195,12 +211,26 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private String[] photoUrls;
 
     /**
-     * x、y用于底图处理 x1、y1用于圆圈处理
+     * 当前圆圈的位置
      */
-    int x;
-    int y;
-    int x1;
-    int y1;
+    private int x;
+    private int y;
+    /**
+     * 放大的时候底层图片的位置
+     */
+    private int x1;
+    private int y1;
+
+    /**
+     * 当前图片的宽高
+     */
+    private int largerBmpWidth = 0 ;
+    private int largerBmpHeight = 0;
+
+    /**
+     * 超出屏幕的时候，每次移动的距离
+     */
+    private int moveSize = 30;
 
 
     private Handler previewPhotoHandler;
@@ -213,57 +243,65 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case 1://移动的时候
+                //计算双击变量
                 previewPhotoHandler.sendEmptyMessageDelayed(6, 500);
-                x = msg.arg1 - Math.min(originalRadius, curRadius);
-
-                int maxBmpWidth = 0 ;
-                int maxBmpHeight = 0;
-                if (flag) {
-                    maxBmpWidth = bitmap5.getWidth();
-                    maxBmpHeight = bitmap5.getHeight();
-                } else {
-                    maxBmpWidth = bitmap2.getWidth();
-                    maxBmpHeight = bitmap2.getHeight();
+                /**
+                 * 重新计算curRadius
+                 */
+                if (curRadius > largerBmpWidth / 2) {
+                    curRadius = largerBmpWidth / 2;
                 }
-                y = (int) (msg.arg2 - Math.min(originalRadius, curRadius) - ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) + scaleH);
-                if (x > maxBmpWidth - 2 * Math.min(originalRadius, curRadius)) {
-                    x = maxBmpWidth - 2 * Math.min(originalRadius, curRadius);
-                    x1 += 50;
+                if (curRadius > largerBmpHeight / 2) {
+                    curRadius = largerBmpHeight / 2;
+                }
+
+                PictureAirLog.out("larger bmp h---->" + largerBmpHeight);
+                PictureAirLog.out("larger bmp w---->" + largerBmpWidth);
+                PictureAirLog.out("current radius---->" + curRadius);
+
+                //获取当前R和标准R之间的最小值
+                minRadiue = curRadius;
+
+                x = (int) (msg.arg1 - minRadiue - (parentPreviewW - largerBmpWidth) / 2);
+                y = (int) (msg.arg2 - minRadiue - (isLandscape ? 0 : marginTop) - (parentPreviewH - largerBmpHeight) / 2);
+                if (x > largerBmpWidth - 2 * minRadiue) {
+                    x = largerBmpWidth - 2 * minRadiue;
+                    x1 += moveSize;
                     out = true;
                 }
                 if (x < 0) {
                     x = 0;
-                    x1 -= 50;
+                    x1 -= moveSize;
                     out = true;
                 }
-                if (y > maxBmpHeight - 2 * Math.min(originalRadius, curRadius)) {
-                    y = maxBmpHeight - 2 * Math.min(originalRadius, curRadius);
-                    y1 += 50;
+                if (y > largerBmpHeight - 2 * minRadiue) {
+                    y = largerBmpHeight - 2 * minRadiue;
+                    y1 += moveSize;
                     out = true;
                 }
                 if (y < 0) {
                     y = 0;
-                    y1 -= 50;
+                    y1 -= moveSize;
                     out = true;
                 }
-                if (x1 > maxBmpWidth - ((sizeW > bitmap2.getWidth()) ? bitmap2.getWidth() : sizeW)) {
-                    x1 = maxBmpWidth - ((sizeW > bitmap2.getWidth()) ? bitmap2.getWidth() : sizeW);
+
+                if (x1 > largerBmpWidth - Math.min(largerBmpWidth, zoomW)) {
+                    x1 = largerBmpWidth - Math.min(largerBmpWidth, zoomW);
                 }
 
-                if (y1 > maxBmpHeight - ((sizeH > bitmap2.getHeight()) ? bitmap2.getHeight() : sizeH)) {
-                    y1 = maxBmpHeight - ((sizeH > bitmap2.getHeight()) ? bitmap2.getHeight() : sizeH);
+                if (y1 > largerBmpHeight - Math.min(largerBmpHeight, zoomH)) {
+                    y1 = largerBmpHeight - Math.min(largerBmpHeight, zoomH);
                 }
 
-                PictureAirLog.out("bit1 w-" + bitmap1.getWidth() + "h--" + bitmap1.getHeight());
-                PictureAirLog.out("bit2 w-" + bitmap2.getWidth() + "h--" + bitmap2.getHeight());
-                /***********之后加的*****************/
-                if (x1 > bitmap1.getWidth() - ((sizeW > bitmap1.getWidth()) ? bitmap1.getWidth() : sizeW)) {
-                    x1 = bitmap1.getWidth() - ((sizeW > bitmap1.getWidth()) ? bitmap1.getWidth() : sizeW);
+                PictureAirLog.out("bit1 w-" + oriBlurBmp.getWidth() + "h--" + oriBlurBmp.getHeight());
+                PictureAirLog.out("bit2 w-" + oriClearBmp.getWidth() + "h--" + oriClearBmp.getHeight());
+
+                if (x1 > oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth())) {
+                    x1 = oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth());
                 }
-                if (y1 > bitmap1.getHeight() - ((sizeH > bitmap1.getHeight()) ? bitmap1.getHeight() : sizeH)) {
-                    y1 = bitmap1.getHeight() - ((sizeH > bitmap1.getHeight()) ? bitmap1.getHeight() : sizeH);
+                if (y1 > oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight())) {
+                    y1 = oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight());
                 }
-                /**********之后加的***************/
 
                 if (x1 < 0) {
                     x1 = 0;
@@ -272,128 +310,104 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     y1 = 0;
                 }
 
-                int cropX = 2 * originalRadius;
-                int cropY = 2 * originalRadius;
-                if (flag == true) {
-                    if (out == true) {
-                        bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, (sizeW > bitmap1.getWidth()) ? bitmap1.getWidth() : sizeW,
-                                (sizeH > bitmap1.getHeight()) ? bitmap1.getHeight() : sizeH);
-                        bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, (sizeW > bitmap2.getWidth()) ? bitmap2.getWidth() : sizeW,
-                                (sizeH > bitmap2.getHeight()) ? bitmap2.getHeight() : sizeH);
-                        Matrix m = new Matrix();
-                        m.postScale((float) scaleW / bitmap4.getWidth(), (float) scaleH / bitmap4.getHeight());
-                        bitmap4 = Bitmap.createBitmap(bitmap4, 0, 0, bitmap4.getWidth(), bitmap4.getHeight(), m, true);
-                        bitmap5 = Bitmap.createBitmap(bitmap5, 0, 0, bitmap5.getWidth(), bitmap5.getHeight(), m, true);
+                if (flag) {//放大
+                    if (out) {//超出屏幕
+                        zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
+                        zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
+                        matrix.reset();
+                        matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
+                        zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
+                        zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
                     }
-                    image01.setImageBitmap(bitmap4);
-
-                    if (cropX > bitmap5.getWidth()) {
-                        cropX = bitmap5.getWidth();
-                    }
-                    if (cropY > bitmap5.getHeight()) {
-                        cropY = bitmap5.getHeight();
-                    }
-                    PictureAirLog.out("bit2-->" + "cropx--" + cropX + ",cropy---" + cropY);
-                    curRadius = Math.min(cropX, cropY) / 2;
-                    if (x > bitmap5.getWidth() - 2 * curRadius) {
-                        x = bitmap5.getWidth() - 2 * curRadius;
-                    }
-                    if (y > bitmap5.getHeight() - 2 * curRadius) {
-                        y = bitmap5.getHeight() - 2 * curRadius;
-                    }
-                    bitmap3 = Bitmap.createBitmap(bitmap5, x, y, 2 * curRadius, 2 * curRadius);
-                } else {
-                    PictureAirLog.out("bit2-->" + bitmap2.getHeight() + "y--" + y + ",x---" + x + ",r--" + originalRadius);
-
-                    if (cropX > bitmap2.getWidth()) {
-                        cropX = bitmap2.getWidth();
-                    }
-                    if (cropY > bitmap2.getHeight()) {
-                        cropY = bitmap2.getHeight();
-                    }
-                    PictureAirLog.out("bit2-->" + "cropx--" + cropX + ",cropy---" + cropY);
-                    curRadius = Math.min(cropX, cropY) / 2;
-                    if (x > bitmap2.getWidth() - 2 * curRadius) {
-                        x = bitmap2.getWidth() - 2 * curRadius;
-                    }
-                    if (y > bitmap2.getHeight() - 2 * curRadius) {
-                        y = bitmap2.getHeight() - 2 * curRadius;
-                    }
-                    bitmap3 = Bitmap.createBitmap(bitmap2, x, y, 2 * curRadius, 2 * curRadius);
+                    image01.setImageBitmap(zoomBlurBmp);
                 }
-                bitmap3 = Mask(bitmap3);
-                bitmap3 = BlurUtil.toRoundBitmap(bitmap3);
+
+//                /**
+//                 * 重新计算curRadius
+//                 */
+//                if (curRadius > largerBmpWidth / 2) {
+//                    curRadius = largerBmpWidth / 2;
+//                }
+//                if (curRadius > largerBmpHeight / 2) {
+//                    curRadius = largerBmpHeight / 2;
+//                }
+//
+//                PictureAirLog.out("larger bmp h---->" + largerBmpHeight);
+//                PictureAirLog.out("larger bmp w---->" + largerBmpWidth);
+//                PictureAirLog.out("current radius---->" + curRadius);
+                if (x > largerBmpWidth - 2 * curRadius) {
+                    x = largerBmpWidth - 2 * curRadius;
+                }
+                if (y > largerBmpHeight - 2 * curRadius) {
+                    y = largerBmpHeight - 2 * curRadius;
+                }
+
+                touchClearBmp = Bitmap.createBitmap(flag ? zoomClearBmp : oriClearBmp, x, y, 2 * curRadius, 2 * curRadius);
+                touchClearBmp = BlurUtil.doMask(touchClearBmp, maskBmp);
+                touchClearBmp = BlurUtil.toRoundBitmap(touchClearBmp);
 
                 if (!image02.isShown()) {
                     image02.setVisibility(View.VISIBLE);
                 }
                 image02.setX(x);
                 image02.setY(y);
-                image02.setImageBitmap(bitmap3);
+                image02.setImageBitmap(touchClearBmp);
                 out = false;
                 break;
+
             case 2://取消移动的时候
-                PictureAirLog.v(TAG, "------->2");
-                //				if (image02 != null) {
-                //					PictureAirLog.v(TAG,"image2 not null and set null");
-                //					image02.setImageBitmap(null);
-                //				}
                 if (image02.isShown()) {
-                    PictureAirLog.v(TAG, "image2 is shown");
                     image02.setVisibility(View.GONE);
-                } else {
-                    PictureAirLog.v(TAG, "image2 is not shown");
                 }
 
-                if (null != bitmap3) {
-                    bitmap3.recycle();
-                    bitmap3 = null;
-                    PictureAirLog.v(TAG, "bitmap3 recycle-------->");
+                if (null != touchClearBmp) {
+                    touchClearBmp.recycle();
+                    touchClearBmp = null;
                 }
                 break;
+
             case 3://双击放大
-                x1 = msg.arg1 - sizeW / 2;
-                y1 = msg.arg2 - sizeH / 2;
+                x1 = msg.arg1 - zoomW / 2;
+                y1 = msg.arg2 - zoomH / 2;
                 PictureAirLog.v(TAG, "current xy = " + x1 + "+" + y1);
-                if (x1 > bitmap1.getWidth() - ((sizeW > bitmap1.getWidth()) ? bitmap1.getWidth() : sizeW)) {
-                    x1 = bitmap1.getWidth() - ((sizeW > bitmap1.getWidth()) ? bitmap1.getWidth() : sizeW);
+                if (x1 > oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth())) {
+                    x1 = oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth());
                 }
                 if (x1 < 0) {
                     x1 = 0;
                 }
-                if (y1 > bitmap1.getHeight() - ((sizeH > bitmap1.getHeight()) ? bitmap1.getHeight() : sizeH)) {
-                    y1 = bitmap1.getHeight() - ((sizeH > bitmap1.getHeight()) ? bitmap1.getHeight() : sizeH);
+                if (y1 > oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight())) {
+                    y1 = oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight());
                 }
                 if (y1 < 0) {
                     y1 = 0;
                 }
                 PictureAirLog.v(TAG, "after currnet xy = " + x1 + "_" + y1);
-                if (flag == false) {
-                    bitmap4 = Bitmap.createBitmap(bitmap1, x1, y1, (sizeW > bitmap1.getWidth()) ? bitmap1.getWidth() : sizeW,
-                            (sizeH > bitmap1.getHeight()) ? bitmap1.getHeight() : sizeH);
-                    bitmap5 = Bitmap.createBitmap(bitmap2, x1, y1, (sizeW > bitmap2.getWidth()) ? bitmap2.getWidth() : sizeW,
-                            (sizeH > bitmap2.getHeight()) ? bitmap2.getHeight() : sizeH);
-                    Matrix m = new Matrix();
-                    m.postScale((float) scaleW / bitmap4.getWidth(), (float) scaleH / bitmap4.getHeight());
-                    bitmap4 = Bitmap.createBitmap(bitmap4, 0, 0, bitmap4.getWidth(), bitmap4.getHeight(), m, true);
-                    bitmap5 = Bitmap.createBitmap(bitmap5, 0, 0, bitmap5.getWidth(), bitmap5.getHeight(), m, true);
-                    image01.setImageBitmap(bitmap4);
+                if (!flag) {
+                    zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
+                    zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
+                    matrix.reset();
+                    matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
+                    zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
+                    zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
+                    image01.setImageBitmap(zoomBlurBmp);
+                    largerBmpWidth = zoomClearBmp.getWidth();
+                    largerBmpHeight = zoomClearBmp.getHeight();
                     flag = true;
                 } else {
-                    image01.setImageBitmap(bitmap1);
+                    image01.setImageBitmap(oriBlurBmp);
                     flag = false;
+                    largerBmpWidth = oriClearBmp.getWidth();
+                    largerBmpHeight = oriClearBmp.getHeight();
                 }
-                break;
-            case 4://返回的时候初始化
-                image01.setImageBitmap(bitmap1);
-                flag = false;
-                out = false;
+                curRadius = originalRadius;
+                PictureAirLog.out("larger bmp h after zoom---->" + largerBmpHeight);
+                PictureAirLog.out("larger bmp w after zoom---->" + largerBmpWidth);
                 break;
 
             case SharePop.TWITTER:
                 shareType = msg.what;
                 break;
-
 
             case API1.BUY_PHOTO_SUCCESS:
                 progressDialog.dismiss();
@@ -539,12 +553,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case LOAD_FROM_NETWORK:
                 //添加模糊
-                if (null != bitmap2) {
+                if (null != oriClearBmp) {
                     PictureAirLog.v(TAG, "bitmap 2 not null");
                     progressDialog.dismiss();
                     initBlur();
                 } else {
-                    PictureAirLog.v(TAG, "bitmap2 null-->");
+                    PictureAirLog.v(TAG, "oriClearBmp null-->");
                     progressDialog.dismiss();
                     loadFailed = true;
                     newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
@@ -561,8 +575,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                bitmap2 = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                if (null != bitmap2) {
+                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                if (null != oriClearBmp) {
                     progressDialog.dismiss();
                     initBlur();
                 }
@@ -609,6 +623,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         settingUtil = new SettingUtil(this);
         newToast = new MyToast(this);
         sharePop = new SharePop(this);
+        matrix = new Matrix();
         pictureAirDbManager = new PictureAirDbManager(this);
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
@@ -708,6 +723,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             originalRadius = (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
         }
+        curRadius = originalRadius;
         previewPhotoHandler.sendEmptyMessage(7);
     }
 
@@ -753,7 +769,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    bitmap2 = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
+                    oriClearBmp = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
                 }
 
@@ -842,11 +858,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
 
         if (isLandscape) {//横屏模式
-//            lastPhotoImageView.setVisibility(View.GONE);
-//            nextPhotoImageView.setVisibility(View.GONE);
-//            currentPhotoIndexTextView.setVisibility(View.GONE);
-//            currentPhotoInfoTextView.setVisibility(View.GONE);
-//            currentPhotoADTextView.setVisibility(View.GONE);
             if (mViewPager != null) {
                 mViewPager.setBackgroundColor(Color.BLACK);
             }
@@ -865,35 +876,35 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void initBlur() {
         PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
         if (!loadFailed) {//加载成功
-            int w = bitmap2.getWidth();
-            int h = bitmap2.getHeight();
-            PictureAirLog.v(TAG, "bitmap2 width, height" + w + "?" + h);
-            scaleW = ScreenUtil.getScreenWidth(this);
-            scaleH = photoFraRelativeLayout.getHeight();
+            int w = oriClearBmp.getWidth();
+            int h = oriClearBmp.getHeight();
+            PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
+            parentPreviewW = ScreenUtil.getScreenWidth(this);
+            parentPreviewH = photoFraRelativeLayout.getHeight();
             int[] location = new int[2];
             photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
             marginTop = location[1];
             PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
             float sw = 0f;
-            if (h / (float) w > scaleH / (float) scaleW) {//左右留白
-                sw = scaleH / (float) h;
+            if (h / (float) w > parentPreviewH / parentPreviewW) {//左右留白
+                sw = parentPreviewH / (float) h;
             } else {//上下留白
-                sw = scaleW / (float) w;
+                sw = parentPreviewW / (float) w;
             }
-            matrix = new Matrix();
+            matrix.reset();
             matrix.postScale(sw, sw);
-            bitmap2 = Bitmap.createBitmap(bitmap2, 0, 0, w, h, matrix, true);
-            PictureAirLog.v(TAG, bitmap2.getWidth() + "----" + bitmap2.getHeight());
-            sizeW = (int) (scaleW / 2);
-            sizeH = (int) (scaleH / 2);
+            oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+            PictureAirLog.v(TAG, oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
+            zoomW = (int) (parentPreviewW / 2);
+            zoomH = (int) (parentPreviewH / 2);
             if (photoInfo.isPayed == 0) {// 未购买的照片
-                if (bm != null) {
-                    bm.recycle();
+                if (maskBmp != null) {
+                    maskBmp.recycle();
                 }
-                bm = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
-                bitmap1 = BlurUtil.blur(bitmap2);//添加模糊度
-                PictureAirLog.v(TAG, "bitmap1 = " + bitmap1.getWidth() + "_" + bitmap1.getHeight());
-                image01.setImageBitmap(bitmap1);
+                maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
+                oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+                PictureAirLog.v(TAG, "oriBlurBmp = " + oriBlurBmp.getWidth() + "_" + oriBlurBmp.getHeight());
+                image01.setImageBitmap(oriBlurBmp);
                 PictureAirLog.v(TAG, "---------->" + image01.getWidth() + "_____" + image01.getHeight());
             }
             image01.setVisibility(View.VISIBLE);
@@ -902,18 +913,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             touchtoclean.setText(R.string.failed);
         }
         mViewPager.setVisibility(View.GONE);
+        largerBmpWidth = oriClearBmp.getWidth();
+        largerBmpHeight = oriClearBmp.getHeight();
+        PictureAirLog.out("larger bmp h after init---->" + largerBmpHeight);
+        PictureAirLog.out("larger bmp w after init---->" + largerBmpWidth);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
         if (!loadFailed) {
             if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {// 未购买状态
-                if (event.getY() < marginTop || event.getY() > scaleH + marginTop) {
-                    if (mode == MODE_MOVE) {
-
-                    } else {
-                        PictureAirLog.v(TAG, "out of photo range");
-                        //				PictureAirLog.v(TAG,"up");
-                        //				fads；
+                if (event.getY() < marginTop || event.getY() > parentPreviewH + marginTop) {
+                    if (mode != MODE_MOVE) {
                         Message msg = previewPhotoHandler.obtainMessage();
                         msg.what = 2;
                         touchtoclean.setVisibility(View.VISIBLE);
@@ -937,12 +947,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         count++;
                         touchtoclean.setVisibility(View.INVISIBLE);
                         if (count == 1) {
-                            PictureAirLog.v(TAG, "---->1");
                             fir = System.currentTimeMillis();
                             msg.what = 1;
                         }
                         if (count == 2) {
-                            PictureAirLog.v(TAG, "------>2");
                             sec = System.currentTimeMillis();
                             if (sec - fir < 500) {// 双击放大
                                 msg.what = 3;
@@ -952,8 +960,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             } else {
                                 count = 0;
                             }
-                        } else {
-                            PictureAirLog.v(TAG, "------->" + count);
                         }
 
                         break;
@@ -983,81 +989,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         return super.onTouchEvent(event);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (flag == true && photoInfo.isPayed == 0) {
-            previewPhotoHandler.sendEmptyMessage(4);
-        } else {
-            PreviewPhotoActivity.this.finish();
-        }
-    }
 
-    /**
-     * 制作周边渐变模糊
-     * 1.将正方形内切圆以外的部分进行全透明处理
-     * 2.将蒙版图片设置成全黑，边缘透明，中心不透明 的渐变效果
-     * 3.将截取的图片的透明值设为完全透明
-     * 4.将截图和蒙版进行合成，分两点，1）透明值合成，截图的全透明和蒙版的透明进行或运算，得到的是蒙版的透明值
-     * 2）颜色值的合成，截图的颜色值和蒙版的颜色值（蒙版只有黑色）进行或运算，得到合成后的颜色值
-     * 因为是以十六进制表示，所以高位表示透明值，低位表示颜色值
-     *
-     * @param b Bitmap对象
-     * @return resultBitmap 合成之后的bitmap对象
-     */
-    private Bitmap Mask(Bitmap b) {
-        PictureAirLog.out("b in mask width-->" + b.getWidth() + "---h--->" + b.getHeight());
-        //如果resultBitmap已经存在，则不需要重新创建一个bitmap
-        if (resultBitmap == null)
-            //创建一个新的bitmap，三个参数依次是宽，高，config
-            resultBitmap = Bitmap.createBitmap(b.getWidth(), b.getHeight(), Config.ARGB_8888);
-        PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "__h-->" + resultBitmap.getHeight());
-        int w = bm.getWidth();//获取mask蒙板的宽
-        int h = bm.getHeight();//获取高
-        PictureAirLog.out("w-->" + w + " h--->" + h);
-        float sw = (float) b.getWidth() / w;
-        float sh = (float) b.getHeight() / h;
-        //matrix为android自带的图片处理的一个类（矩阵）
-        matrix.reset();//初始化
-        matrix.postScale(sw, sh);//设置缩放的比例
-        //将mask蒙板缩放到和截图一样大小
-        bm = Bitmap.createBitmap(bm, 0, 0, w, h, matrix, true);
-        PictureAirLog.out("bm w--?" + bm.getWidth() + "__h-" + bm.getHeight());
-        w = resultBitmap.getWidth();//获取mask蒙板的宽
-        h = resultBitmap.getHeight();//获取高
-        PictureAirLog.out("result w---" + w + "———h———" + h);
-        sw = (float) b.getWidth() / w;
-        sh = (float) b.getHeight() / h;
-        matrix.reset();
-        matrix.postScale(sw, sh);
-        resultBitmap = Bitmap.createBitmap(resultBitmap, 0, 0, w, h, matrix, true);
-        PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "---h--->" + resultBitmap.getHeight());
-        //创建数组
-        int[] pixels_b = new int[b.getWidth() * b.getHeight()];
-        int[] pixels_bm = new int[bm.getWidth() * bm.getHeight()];
-        //得到传入参数的像素值，并且放入pixels_b中
-        b.getPixels(pixels_b, 0, b.getWidth(), 0, 0, b.getWidth(), b.getHeight());
-        //得到mask蒙板的像素值，并且放入pixels_bm中
-        bm.getPixels(pixels_bm, 0, bm.getWidth(), 0, 0, bm.getWidth(), bm.getHeight());
-        //遍历mask蒙板数组，图片全黑部分转化为全透明，其他地方和截取的图片进行合成
-        for (int i = 0; i < pixels_bm.length; i++) {
-            if (pixels_bm[i] == 0xff000000) {//ff000000为不透明的黑色
-                //因为在截取图片的时候，只能截取方块，所以圆以外的部分做全透明处理
-                pixels_b[i] = 0;//全透明的黑色
-                //			} else if (pixels_b[i] == 0) {
-            } else {
-                pixels_bm[i] &= 0xff000000;//全部变成000000，但是透明度不变
-                pixels_bm[i] = 0xff000000 - pixels_bm[i];//颜色不变，透明度翻转，这两步相当于把蒙版的透明度翻转，颜色值全部变为黑色
-                pixels_b[i] &= 0x00ffffff;//颜色值不变，但是透明度全部变成完全透明，相当于将截取到的图片设为完全透明
-                pixels_b[i] |= pixels_bm[i];//将蒙版和截图进行合成，分两块，一块是透明度的合成，一块是颜色值的合成
-                //透明度的合成，截图完全透明，|操作，取的时蒙版的透明度
-                //颜色值的合成，截图的颜色值和蒙版的颜色值进行|操作
-            }
-        }
-        PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "---h--->" + resultBitmap.getHeight());
-        PictureAirLog.out("bm w--?" + bm.getWidth() + "__h-" + bm.getHeight());
-        resultBitmap.setPixels(pixels_b, 0, bm.getWidth(), 0, 0, bm.getWidth(), bm.getHeight());
-        return resultBitmap;
-    }
 
     public void onClick(View v) {
         Intent intent;
@@ -1378,7 +1310,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         super.onDestroy();
         PictureAirLog.v(TAG, "----------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
@@ -1393,10 +1324,33 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             }
             //按返回，把状态全部清除
             myApplication.clearIsBuyingPhotoList();
-//			myApplication.setIsBuyingPhotoInfo(null);
         }
         previewPhotoHandler.removeCallbacksAndMessages(null);
 
+        if (oriBlurBmp != null){
+            oriBlurBmp.recycle();
+            oriBlurBmp = null;
+        }
+        if (oriClearBmp != null) {
+            oriClearBmp.recycle();
+            oriClearBmp = null;
+        }
+        if (touchClearBmp != null) {
+            touchClearBmp.recycle();
+            touchClearBmp = null;
+        }
+        if (zoomBlurBmp != null) {
+            zoomBlurBmp.recycle();
+            zoomBlurBmp = null;
+        }
+        if (zoomClearBmp != null) {
+            zoomClearBmp.recycle();
+            zoomClearBmp = null;
+        }
+        if (maskBmp != null) {
+            maskBmp.recycle();
+            maskBmp = null;
+        }
     }
 
     @Override
@@ -1467,41 +1421,45 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      */
     private void resizeBlurImage() {
         PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
-        int w = bitmap2.getWidth();
-        int h = bitmap2.getHeight();
-        PictureAirLog.v(TAG, "bitmap2 width, height" + w + "?" + h);
-        scaleW = ScreenUtil.getScreenWidth(this);
-        scaleH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
-        if (scaleH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
-            scaleH = ScreenUtil.getScreenHeight(this);
+        int w = oriClearBmp.getWidth();
+        int h = oriClearBmp.getHeight();
+        PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
+        parentPreviewW = ScreenUtil.getScreenWidth(this);
+        parentPreviewH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
+        if (parentPreviewH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
+            parentPreviewH = ScreenUtil.getScreenHeight(this);
         }
-        PictureAirLog.v(TAG, "screen width, height" + scaleW + "?" + ScreenUtil.getScreenHeight(this));
-        PictureAirLog.v(TAG, "scale width, height" + scaleW + "?" + scaleH);
+        PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
+        PictureAirLog.v(TAG, "scale width, height" + parentPreviewW + "?" + parentPreviewH);
         float sw = 0f;
-        if (h / (float) w > scaleH / (float) scaleW) {//左右留白
-            sw = scaleH / (float) h;
+        if (h / (float) w > parentPreviewH / (float) parentPreviewW) {//左右留白
+            sw = parentPreviewH / (float) h;
         } else {//上下留白
-            sw = scaleW / (float) w;
+            sw = parentPreviewW / (float) w;
         }
 
-        matrix = new Matrix();
+        matrix.reset();
         matrix.postScale(sw, sw);
-        bitmap2 = Bitmap.createBitmap(bitmap2, 0, 0, w, h, matrix, true);
-        PictureAirLog.v(TAG, "bitmap2--->" + bitmap2.getWidth() + "----" + bitmap2.getHeight());
-        sizeW = (int) (scaleW / 2);
-        sizeH = (int) (scaleH / 2);
-        PictureAirLog.v(TAG, "size---->" + sizeW + "___" + sizeH);
+        oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+        PictureAirLog.v(TAG, "oriClearBmp--->" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
+        zoomW = (int) (parentPreviewW / 2);
+        zoomH = (int) (parentPreviewH / 2);
+        PictureAirLog.v(TAG, "size---->" + zoomW + "___" + zoomH);
 
-        bitmap1 = BlurUtil.blur(bitmap2);//添加模糊度
-        PictureAirLog.v(TAG, "bitmap1 = " + bitmap1.getWidth() + "_" + bitmap1.getHeight());
+        oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+        PictureAirLog.v(TAG, "oriBlurBmp = " + oriBlurBmp.getWidth() + "_" + oriBlurBmp.getHeight());
 
-        image01.setImageBitmap(bitmap1);
-
+        image01.setImageBitmap(oriBlurBmp);
+        largerBmpWidth = oriClearBmp.getWidth();
+        largerBmpHeight = oriClearBmp.getHeight();
         if (flag) {//放大模式
             flag = false;
-            bitmap4.recycle();
-            bitmap5.recycle();
+            zoomBlurBmp.recycle();
+            zoomClearBmp.recycle();
         }
+        curRadius = originalRadius;
+        PictureAirLog.out("larger bmp h after resize---->" + largerBmpHeight);
+        PictureAirLog.out("larger bmp w after resize---->" + largerBmpWidth);
     }
 
     //直接下载

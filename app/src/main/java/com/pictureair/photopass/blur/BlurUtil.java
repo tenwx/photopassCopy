@@ -11,6 +11,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.pictureair.photopass.util.PictureAirLog;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -31,7 +33,7 @@ public class BlurUtil {
 		Matrix matrix = new Matrix();
 		matrix.postScale(scaleFactor, scaleFactor);
 		Bitmap overlay2 = Bitmap.createBitmap(overlay, 0, 0, overlay.getWidth(), overlay.getHeight(), matrix, true);
-		System.out.println("do blur="+overlay.getWidth()+"_"+overlay.getHeight()+"_"+overlay2.getWidth()+"_"+overlay2.getHeight());
+		PictureAirLog.out("do blur=" + overlay.getWidth() + "_" + overlay.getHeight() + "_" + overlay2.getWidth() + "_" + overlay2.getHeight());
 		return overlay2;
 	}
 
@@ -346,5 +348,75 @@ public class BlurUtil {
 		bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
 		return (bitmap);
+	}
+
+	/**
+	 * 制作周边渐变模糊
+	 * 1.将正方形内切圆以外的部分进行全透明处理
+	 * 2.将蒙版图片设置成全黑，边缘透明，中心不透明 的渐变效果
+	 * 3.将截取的图片的透明值设为完全透明
+	 * 4.将截图和蒙版进行合成，分两点，1）透明值合成，截图的全透明和蒙版的透明进行或运算，得到的是蒙版的透明值
+	 * 2）颜色值的合成，截图的颜色值和蒙版的颜色值（蒙版只有黑色）进行或运算，得到合成后的颜色值
+	 * 因为是以十六进制表示，所以高位表示透明值，低位表示颜色值
+	 *
+	 * @param b Bitmap对象
+	 * @return resultBitmap 合成之后的bitmap对象
+	 */
+	public static Bitmap doMask(Bitmap b, Bitmap maskBmp) {
+		PictureAirLog.out("b in mask width-->" + b.getWidth() + "---h--->" + b.getHeight());
+		//创建一个新的bitmap，三个参数依次是宽，高，config
+		Bitmap resultBitmap = Bitmap.createBitmap(b.getWidth(), b.getHeight(), Config.ARGB_8888);
+		PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "__h-->" + resultBitmap.getHeight());
+		int w = maskBmp.getWidth();//获取mask蒙板的宽
+		int h = maskBmp.getHeight();//获取高
+		PictureAirLog.out("w-->" + w + " h--->" + h);
+		float sw = (float) b.getWidth() / w;
+		float sh = (float) b.getHeight() / h;
+		//matrix为android自带的图片处理的一个类（矩阵）
+		Matrix matrix = new Matrix();
+		matrix.postScale(sw, sh);//设置缩放的比例
+		//将mask蒙板缩放到和截图一样大小
+		maskBmp = Bitmap.createBitmap(maskBmp, 0, 0, w, h, matrix, true);
+		PictureAirLog.out("maskBmp w--?" + maskBmp.getWidth() + "__h-" + maskBmp.getHeight());
+
+//        w = resultBitmap.getWidth();//获取mask蒙板的宽
+//        h = resultBitmap.getHeight();//获取高
+//        PictureAirLog.out("result w---" + w + "———h———" + h);
+//        sw = (float) b.getWidth() / w;
+//        sh = (float) b.getHeight() / h;
+//
+//        if (sw != 1 || sh != 1) {//原来的resultBitmap和目标大小不一样，需要重新缩放resultBmp
+//            matrix.reset();
+//            matrix.postScale(sw, sh);
+//            resultBitmap = Bitmap.createBitmap(resultBitmap, 0, 0, w, h, matrix, true);
+//            PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "---h--->" + resultBitmap.getHeight());
+//        }
+
+		//创建数组
+		int[] pixels_b = new int[b.getWidth() * b.getHeight()];
+		int[] pixels_bm = new int[maskBmp.getWidth() * maskBmp.getHeight()];
+		//得到传入参数的像素值，并且放入pixels_b中
+		b.getPixels(pixels_b, 0, b.getWidth(), 0, 0, b.getWidth(), b.getHeight());
+		//得到mask蒙板的像素值，并且放入pixels_bm中
+		maskBmp.getPixels(pixels_bm, 0, maskBmp.getWidth(), 0, 0, maskBmp.getWidth(), maskBmp.getHeight());
+		//遍历mask蒙板数组，图片全黑部分转化为全透明，其他地方和截取的图片进行合成
+		for (int i = 0; i < pixels_bm.length; i++) {
+			if (pixels_bm[i] == 0xff000000) {//ff000000为不透明的黑色
+				//因为在截取图片的时候，只能截取方块，所以圆以外的部分做全透明处理
+				pixels_b[i] = 0;//全透明的黑色
+				//			} else if (pixels_b[i] == 0) {
+			} else {
+				pixels_bm[i] &= 0xff000000;//全部变成000000，但是透明度不变
+				pixels_bm[i] = 0xff000000 - pixels_bm[i];//颜色不变，透明度翻转，这两步相当于把蒙版的透明度翻转，颜色值全部变为黑色
+				pixels_b[i] &= 0x00ffffff;//颜色值不变，但是透明度全部变成完全透明，相当于将截取到的图片设为完全透明
+				pixels_b[i] |= pixels_bm[i];//将蒙版和截图进行合成，分两块，一块是透明度的合成，一块是颜色值的合成
+				//透明度的合成，截图完全透明，|操作，取的时蒙版的透明度
+				//颜色值的合成，截图的颜色值和蒙版的颜色值进行|操作
+			}
+		}
+		PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "---h--->" + resultBitmap.getHeight());
+		PictureAirLog.out("maskBmp w--?" + maskBmp.getWidth() + "__h-" + maskBmp.getHeight());
+		resultBitmap.setPixels(pixels_b, 0, maskBmp.getWidth(), 0, 0, maskBmp.getWidth(), maskBmp.getHeight());
+		return resultBitmap;
 	}
 }
