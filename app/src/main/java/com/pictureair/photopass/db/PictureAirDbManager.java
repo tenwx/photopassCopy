@@ -78,6 +78,7 @@ public class PictureAirDbManager {
         } finally {
             database.close();
         }
+        database = null;
     }
 
     /**
@@ -111,6 +112,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return result;
@@ -178,6 +180,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return resultArrayList;
@@ -244,8 +247,10 @@ public class PictureAirDbManager {
             if (cursor != null)
                 cursor.close();
 
-            if (database != null)
+            if (database != null) {
                 database.close();
+                database = null;
+            }
         }
 
         return resultArrayList;
@@ -276,6 +281,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -309,6 +315,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return resultArray;
@@ -358,6 +365,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
 
@@ -380,6 +388,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -399,6 +408,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -427,6 +437,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return result;
@@ -463,6 +474,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return photoInfos;
@@ -554,6 +566,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return showPPCodeList;
@@ -573,6 +586,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -586,12 +600,13 @@ public class PictureAirDbManager {
     public void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate) {
         try {
             database = photoInfoDBHelper.getWritableDatabase();
-            database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode = ? and shootTime = ?", new String[]{ppCode, shootDate});
+            database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -621,6 +636,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return result;
@@ -639,6 +655,7 @@ public class PictureAirDbManager {
             e.printStackTrace();
         } finally {
             database.close();
+            database = null;
         }
     }
 
@@ -656,6 +673,7 @@ public class PictureAirDbManager {
             e.printStackTrace();
         } finally {
             database.close();
+            database = null;
         }
     }
 
@@ -712,6 +730,7 @@ public class PictureAirDbManager {
         database.setTransactionSuccessful();
         database.endTransaction();
         database.close();
+        database = null;
         return resultArrayList;
     }
 
@@ -768,6 +787,7 @@ public class PictureAirDbManager {
         }
         cursor.close();
         database.close();
+        database = null;
         return resultArrayList;
     }
 
@@ -802,6 +822,7 @@ public class PictureAirDbManager {
         }
         cursor.close();
         database.close();
+        database = null;
         return resultArrayList;
     }
 
@@ -868,6 +889,7 @@ public class PictureAirDbManager {
             database.setTransactionSuccessful();
             database.endTransaction();
             database.close();
+            database = null;
         }
     }
 
@@ -886,6 +908,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -902,6 +925,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
 
@@ -931,6 +955,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return orderIds;
@@ -948,6 +973,7 @@ public class PictureAirDbManager {
         } finally {
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
 
@@ -983,6 +1009,7 @@ public class PictureAirDbManager {
             database.endTransaction();
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
     }
@@ -1025,6 +1052,7 @@ public class PictureAirDbManager {
             database.endTransaction();
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return result;
@@ -1057,6 +1085,7 @@ public class PictureAirDbManager {
             }
             if (database != null) {
                 database.close();
+                database = null;
             }
         }
         return ad;

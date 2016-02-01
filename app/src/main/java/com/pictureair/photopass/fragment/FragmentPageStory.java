@@ -86,6 +86,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private static final int DEAL_REFRESH_VIDEO_DATA_DONE = 999;
     private static final int DEAL_FAVORITE_DATA_SUCCESS = 1000;
     private static final int SYNC_BOUGHT_PHOTOS = 1001;
+    private static final int SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE = 1002;
 
     private static final String TAG = "FragmentPageStory";
 
@@ -449,14 +450,23 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 }
                 syncBoughtPhotos = true;
 
-                app.photoPassPicList.clear();
-                app.photoPassVideoList.clear();
+                new Thread(){
+                    @Override
+                    public void run() {
+                        synchronized (this) {
+                            app.photoPassPicList.clear();
+                            app.photoPassVideoList.clear();
+                            loadDataFromDataBase();
+                            photoPassPictureList.clear();
+                            app.allPicList.clear();
+                            app.boughtPicList.clear();
+                            fragmentPageStoryHandler.sendEmptyMessage(SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE);
+                        }
+                    }
+                }.start();
+                break;
 
-                loadDataFromDataBase();
-
-                photoPassPictureList.clear();
-                app.allPicList.clear();
-                app.boughtPicList.clear();
+            case SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE:
                 try {
                     getData();
                 } catch (ParseException e) {
@@ -584,6 +594,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         } else {
                             app.photoPassPicList.clear();
                         }
+                    }
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     ArrayList<PhotoInfo> resultPhotoList = pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, isVideo, isAll);
                     if (isVideo) {

@@ -10,7 +10,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.widget.ImageView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -22,13 +21,13 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ReflectionUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
+
 import de.greenrobot.event.EventBus;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -153,25 +152,17 @@ public class NotificationService extends android.app.Service {
                     socket = new SocketIO(Common.BASE_URL_TEST);
                     socket.connect(new IOCallback() {
                         @Override
-                        public void onMessage(JSONObject json,
-                                              IOAcknowledge arg1) {
-                            // TODO Auto-generated method stub
+                        public void onMessage(JSONObject json, IOAcknowledge arg1) {
                             try {
-                                PictureAirLog.d(TAG, "Server said json:"
-                                        + json.toString(2));
-                                PictureAirLog.d(TAG,
-                                        "IOAcknowledge:"
-                                                + arg1.toString());
+                                PictureAirLog.d(TAG, "Server said json:" + json.toString(2));
+                                PictureAirLog.d(TAG, "IOAcknowledge:" + arg1.toString());
                             } catch (JSONException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
 
                         @Override
-                        public void onMessage(String data,
-                                              IOAcknowledge arg1) {
-                            // TODO Auto-generated method stub
+                        public void onMessage(String data, IOAcknowledge arg1) {
                             PictureAirLog.d(TAG, "Server said data: " + data);
                             PictureAirLog.d(TAG, "arg1:" + arg1.toString());
                         }
@@ -180,8 +171,7 @@ public class NotificationService extends android.app.Service {
                         public void onError(
                                 SocketIOException socketIOException) {
                             // TODO Auto-generated method stub
-                            PictureAirLog.d(TAG, "an Error occured："
-                                    + socketIOException.toString());
+                            PictureAirLog.d(TAG, "an Error occured："  + socketIOException.toString());
                             socketIOException.printStackTrace();
                             isConnected = false;
                             socket.reconnect();  //出错的情况，让socket重新链接。
@@ -204,8 +194,7 @@ public class NotificationService extends android.app.Service {
                         }
 
                         @Override
-                        public void on(String event,
-                                       IOAcknowledge arg1, Object... arg2) {
+                        public void on(String event, IOAcknowledge arg1, Object... arg2) {
                             // TODO Auto-generated method stub
                             PictureAirLog.d("  ====  arg2", " :" + arg2);
                             PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
@@ -237,6 +226,11 @@ public class NotificationService extends android.app.Service {
                             if (event.toString().equals("upgradedPhotos")) {
                                 sendType = "upgradedPhoto";
                                 notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+                                try {
+                                    sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 JSONObject message = (JSONObject) arg2[0];
                                 PictureAirLog.e("推送", "收到推送：" + message.toString());
                                 int socketType = -1;
@@ -264,7 +258,7 @@ public class NotificationService extends android.app.Service {
                                 }
 
                                 //2.如果处于story页面，则更新数据，并且刷新列表；如果不是处于story页面，则设置更新变量
-                                if (AppManager.getInstance().getTopActivity() instanceof MainTabActivity && application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
+                                if (application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
                                     PictureAirLog.out("start sync bought info");
                                     EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
                                 } else {//如果不是处于story页面，则设置更新变量
