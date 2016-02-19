@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1.0"
             android:gravity="center"
-            android:text="@string/payment_order"
+            android:text="@string/order_unpaid"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_16" />
 
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1.0"
             android:gravity="center"
-            android:text="@string/delivery_order"
+            android:text="@string/order_paid"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_16" />
 

@@ -41,7 +41,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
         switch (type) {
             case Common.NICKNAMETYPE:
                 setTopTitleShow(R.string.nn);
-                etUserInfo.setHint(R.string.hint_text_nickname);
+                etUserInfo.setHint(R.string.nn);
                 break;
             default:
                 break;
@@ -74,7 +74,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
                 switch (type) {
                     case Common.NICKNAMETYPE:
                         if (TextUtils.isEmpty(etUserInfo.getText().toString().trim())) {
-                            myToast.setTextAndShow(R.string.nick_name_empty, Common.TOAST_SHORT_TIME);
+                            myToast.setTextAndShow(R.string.name_is_empty, Common.TOAST_SHORT_TIME);
                             return;
                         }
                         mIntent = new Intent();

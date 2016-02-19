@@ -126,7 +126,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 // 登录
                 hideInputMethodManager(v);
                 if (userName.getText().toString().trim().isEmpty()) {
-                    myToast.setTextAndShow(R.string.username_null,
+                    myToast.setTextAndShow(R.string.email_is_empty,
                             Common.TOAST_SHORT_TIME);
                     break;
                 }
@@ -150,7 +150,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
-                        myToast.setTextAndShow(R.string.pwd_is_empty,
+                        myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint,
                                 Common.TOAST_SHORT_TIME);
                         break;
 

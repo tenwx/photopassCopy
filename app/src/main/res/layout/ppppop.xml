@@ -44,7 +44,7 @@
         android:gravity="left|center_vertical"
         android:paddingLeft="@dimen/pp_padding_20"
         android:paddingRight="@dimen/pp_padding_20"
-        android:text="@string/auto_auto"
+        android:text="@string/story_scan"
         android:textColor="@drawable/textview_selector"
         android:textSize="@dimen/text_size_16" />
 

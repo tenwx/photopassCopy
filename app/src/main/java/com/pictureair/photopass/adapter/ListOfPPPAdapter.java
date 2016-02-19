@@ -146,7 +146,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				holder.tvState.setText(R.string.ppp_has_used);
 			}
 		} else {//普通ppp
-			holder.pppName.setText(R.string.photopassplus);
+			holder.pppName.setText(R.string.mypage_ppp);
 			holder.pp1_img.setVisibility(View.VISIBLE);
 			holder.pp2_img.setVisibility(View.VISIBLE);
 			holder.pp3_img.setVisibility(View.VISIBLE);

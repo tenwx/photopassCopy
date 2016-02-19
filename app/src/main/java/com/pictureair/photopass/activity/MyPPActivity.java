@@ -254,7 +254,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 if (msg.obj.toString().equals("PPHasUpgraded")) {//提示已经绑定
                     myToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
                 } else {//获取失败
-                    myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     listPP.setVisibility(View.GONE);
                 }
                 if (dialog.isShowing()) {

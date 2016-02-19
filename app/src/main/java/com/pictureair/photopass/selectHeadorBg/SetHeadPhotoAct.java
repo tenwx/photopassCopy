@@ -158,7 +158,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.clip:
                 if (!isNetWorkConnect(this)) {
-                    myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);

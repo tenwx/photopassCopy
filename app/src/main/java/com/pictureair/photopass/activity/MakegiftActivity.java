@@ -52,7 +52,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
@@ -60,6 +59,8 @@ import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 public class MakegiftActivity extends BaseActivity implements OnClickListener {
     //选择商品的horizontalscrollview的popupwindow
@@ -180,7 +181,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.UPLOAD_PHOTO_SUCCESS:
@@ -258,7 +259,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     progressBarPop.dismiss();
                 }
                 upload_index = 0;
-                newToast.setTextAndShow(R.string.upload_failed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             case WAIT_DRAW_FINISH:

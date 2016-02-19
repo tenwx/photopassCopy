@@ -251,7 +251,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             case R.id.login:
                 hideInputMethodManager(v);
                 if (userName.getText().toString().trim().isEmpty()) {
-                    myToast.setTextAndShow(R.string.username_null,
+                    myToast.setTextAndShow(R.string.input_mobile,
                             Common.TOAST_SHORT_TIME);
                     break;
                 }
@@ -269,7 +269,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
-                        myToast.setTextAndShow(R.string.pwd_is_empty,
+                        myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint,
                                 Common.TOAST_SHORT_TIME);
                         break;
 

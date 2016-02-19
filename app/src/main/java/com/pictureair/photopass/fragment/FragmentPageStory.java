@@ -853,7 +853,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     selectPhotoItemInfo.isChecked = 0;
                     selectPhotoItemInfo.isSelected = 0;
                     selectPhotoItemInfo.showMask = 0;
-                    selectPhotoItemInfo.locationName = getString(R.string.magic_location);
+                    selectPhotoItemInfo.locationName = getString(R.string.story_tab_magic);
                     selectPhotoItemInfo.isPayed = 1;
                     selectPhotoItemInfo.onLine = 0;
                     selectPhotoItemInfo.isVideo = 0;
@@ -888,7 +888,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     localPhotoInfo.isChecked = 0;
                     localPhotoInfo.isSelected = 0;
                     localPhotoInfo.showMask = 0;
-                    localPhotoInfo.locationName = getString(R.string.magic_location);
+                    localPhotoInfo.locationName = getString(R.string.story_tab_magic);
                     localPhotoInfo.isPayed = 1;
                     localPhotoInfo.onLine = 0;
                     localPhotoInfo.isVideo = 0;
@@ -1259,7 +1259,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 photoItemInfo = new PhotoItemInfo();
                 System.out.println("shootTime:" + app.magicPicList.get(i).shootTime);
                 photoItemInfo.shootTime = app.magicPicList.get(i).shootTime;
-                photoItemInfo.place = getString(R.string.magic_location);
+                photoItemInfo.place = getString(R.string.story_tab_magic);
                 photoItemInfo.list.add(app.magicPicList.get(i));
                 photoItemInfo.shootOn = app.magicPicList.get(i).shootOn;
                 magicPicList.add(photoItemInfo);

@@ -84,7 +84,7 @@ public class CheckUpdateManager {
 			case API1.DOWNLOAD_APK_FAILED:
 				PictureAirLog.out("failed");
 				customProgressBarPop.dismiss();
-				myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+				myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
 				break;
 				
 			case API1.DOWNLOAD_APK_SUCCESS:

@@ -536,7 +536,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     PictureAirLog.v(TAG, "oriClearBmp null-->");
                     progressDialog.dismiss();
                     loadFailed = true;
-                    newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     initBlur();
                 }
                 break;
@@ -884,7 +884,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             image01.setVisibility(View.VISIBLE);
 
         } else {
-            touchtoclean.setText(R.string.failed);
+            touchtoclean.setText(R.string.http_error_code_401);
         }
         mViewPager.setVisibility(View.GONE);
         curShowBmpWidth = oriClearBmp.getWidth();
@@ -1066,7 +1066,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 if (photoInfo.isPayed == 1) {
@@ -1117,7 +1117,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
 
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
 
@@ -1142,7 +1142,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case R.id.buynow:
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     dia.dismiss();
                     return;
                 }
@@ -1154,7 +1154,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case R.id.buy_ppp:
                 //直接购买PP+
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     dia.dismiss();
                     return;
                 }
@@ -1249,7 +1249,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 selectPhotoItemInfo.isChecked = 0;
                 selectPhotoItemInfo.isSelected = 0;
                 selectPhotoItemInfo.showMask = 0;
-                selectPhotoItemInfo.locationName = getString(R.string.magic_location);
+                selectPhotoItemInfo.locationName = getString(R.string.story_tab_magic);
                 //					selectPhotoItemInfo.albumName = albumName;
                 selectPhotoItemInfo.onLine = 0;
                 selectPhotoItemInfo.isUploaded = 0;

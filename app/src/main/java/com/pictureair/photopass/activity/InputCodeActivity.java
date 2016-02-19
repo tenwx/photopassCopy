@@ -24,13 +24,11 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-
-import cn.smssdk.gui.CustomProgressDialog;
-
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.gui.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -172,7 +170,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
 
             ok.setVisibility(View.GONE);
             tvConfirmHint.setVisibility(View.VISIBLE);
-            setTopTitleShow(R.string.confirm_ppp_code_title);
+            setTopTitleShow(R.string.scan_ppp_code);
             resultList = getIntent().getStringExtra("text").split("-");
             input1.setText(resultList[0]);
             input2.setText(resultList[1]);

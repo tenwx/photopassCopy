@@ -149,7 +149,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             case API1.DELETE_CART_FAILED:
             case API1.UPLOAD_PHOTO_FAILED:
                 isDelete = false;
-                newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 editTextView.setEnabled(true);
                 break;
 
@@ -199,7 +199,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                newToast.setTextAndShow(R.string.uploadphotofailed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件

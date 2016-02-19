@@ -371,7 +371,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
     private ArrayList<DiscoverLocationItemInfo> createLocationList() {
         ArrayList<DiscoverLocationItemInfo> resultArrayList = new ArrayList<DiscoverLocationItemInfo>();
         if (ACache.get(mContext).getAsString(Common.LOCATION_INFO) == null) {
-            myToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
         } else {
             try {
                 com.alibaba.fastjson.JSONObject response =  com.alibaba.fastjson.JSONObject.parseObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));

@@ -156,7 +156,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		}
 
 		if (photoList.get(position).onLine == 0) {
-			viewHolder.storyAddressNameTextView.setText(R.string.magic_location);
+			viewHolder.storyAddressNameTextView.setText(R.string.story_tab_magic);
 		}else {
 			String place = photoList.get(position).locationName;
 			if (place == null || place.equals("null")) {

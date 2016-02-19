@@ -28,7 +28,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
@@ -43,6 +42,7 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Vector;
 
+import cn.smssdk.gui.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -296,7 +296,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             System.out.println("scan result = " + resultString);
             if (resultString.equals("")) {
                 //			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
-                newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
             } else {
                 code = resultString.substring(resultString.lastIndexOf("?") + 1, resultString.length());  //截取字符串。
                 Log.e("=====", "code：：：" + code);

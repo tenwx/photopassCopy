@@ -19,11 +19,10 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import cn.smssdk.gui.CustomButtonFont;
+import cn.smssdk.gui.CustomProgressDialog;
 import cn.smssdk.gui.EditTextWithClear;
 
 /**
@@ -61,7 +60,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                 case API1.FIND_PWD_FAILED:
 
 
-                    myToast.setTextAndShow(R.string.failed,Common.TOAST_SHORT_TIME);
+                    myToast.setTextAndShow(R.string.http_error_code_401,Common.TOAST_SHORT_TIME);
                     break;
 
                 default:

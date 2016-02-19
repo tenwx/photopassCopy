@@ -18,11 +18,11 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.gui.CustomProgressDialog;
 import cn.smssdk.gui.EditTextWithClear;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
@@ -112,7 +112,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
         switch (v.getId()) {
             case R.id.submit:
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 if (oldPassword.getText().toString().trim().equals("")

@@ -20,7 +20,6 @@
         android:paddingBottom="@dimen/pp_padding_10"
         android:paddingLeft="@dimen/pp_padding_20"
         android:paddingRight="@dimen/pp_padding_20"
-        android:text="@string/story_select"
         android:textColor="@drawable/textview_selector"
         android:textSize="@dimen/text_size_16" />
 
@@ -67,7 +66,6 @@
         android:paddingLeft="@dimen/pp_margin_20"
         android:paddingRight="@dimen/pp_padding_20"
         android:paddingTop="@dimen/pp_padding_10"
-        android:text="@string/favourite"
         android:textColor="@drawable/textview_selector"
         android:textSize="@dimen/text_size_16" />
 

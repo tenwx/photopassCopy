@@ -181,7 +181,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 break;
 
             case API1.UPLOAD_PHOTO_FAILED:
-                newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.UPLOAD_PHOTO_SUCCESS:

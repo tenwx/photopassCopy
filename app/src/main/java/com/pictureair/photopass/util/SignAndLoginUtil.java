@@ -11,8 +11,9 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 
 /**
@@ -69,7 +70,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 if (customProgressDialog.isShowing()) {
                     customProgressDialog.dismiss();
                 }
-                myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.GET_TOKEN_ID_SUCCESS://获取tokenId成功
@@ -84,7 +85,7 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.LOGIN_FAILED://登录失败
                 switch (msg.arg1) {
                     case 6035://token过期
-                        id = R.string.http_failed;
+                        id = R.string.http_error_code_401;
                         PictureAirLog.v(TAG, "tokenExpired");
                         editor = sp.edit();
                         editor.putString(Common.USERINFO_TOKENID, null);

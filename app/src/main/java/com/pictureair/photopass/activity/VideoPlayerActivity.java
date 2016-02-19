@@ -12,9 +12,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -577,7 +575,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
      */
     private void downloadVideo() {
         if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
-            myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
             return;
         }
         if (isOnline) {

@@ -102,7 +102,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.ADD_TO_CART_FAILED:
-                myToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.ADD_TO_CART_SUCCESS:

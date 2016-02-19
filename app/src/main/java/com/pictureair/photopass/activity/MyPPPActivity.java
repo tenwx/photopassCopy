@@ -37,7 +37,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
@@ -47,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cn.smssdk.gui.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -185,7 +185,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     PictureAirLog.v(TAG, "PP has upgraded");
                     newToast.setTextAndShow(R.string.select_pp_hasUpgraded, Common.TOAST_SHORT_TIME);
                 } else {
-                    newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 }
                 if (dialog.isShowing()) {
                     dialog.dismiss();
@@ -309,7 +309,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             case API1.ADD_CODE_TO_USER_FAILED:
                 //绑定失败
                 dialog.dismiss();
-                newToast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
 
                 break;
 
@@ -478,7 +478,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             case R.id.text_instruction:
                 //购买PP+，先获取商品 然后进入订单界面
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);

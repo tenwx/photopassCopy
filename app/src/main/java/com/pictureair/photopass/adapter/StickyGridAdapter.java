@@ -146,7 +146,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 
         if (list.get(position).onLine == 0) {
 //            PictureAirLog.out("getview---->local photo");
-            viewHolder.storyAddressNameTextView.setText(R.string.magic_location);
+            viewHolder.storyAddressNameTextView.setText(R.string.story_tab_magic);
         } else {
             if (list.get(position).isVideo == 1) {
 //                PictureAirLog.out("getview---->video");

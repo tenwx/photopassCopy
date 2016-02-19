@@ -18,7 +18,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
@@ -231,12 +230,12 @@ public class OtherRegisterActivity extends BaseActivity implements
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
-                            myToast.setTextAndShow(R.string.pwd_is_empty,
+                            myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint,
                                     Common.TOAST_SHORT_TIME);
                             break;
 
                         case AppUtil.PWD_INCONSISTENCY:// 不一致
-                            myToast.setTextAndShow(R.string.pw_is_inconsistency,
+                            myToast.setTextAndShow(R.string.smssdk_pw_is_inconsistency,
                                     Common.TOAST_SHORT_TIME);
                             break;
 

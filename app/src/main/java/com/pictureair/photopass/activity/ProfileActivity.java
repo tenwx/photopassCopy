@@ -77,7 +77,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 String[] countrys = (String[])msg.obj;
                 countryString = countrys[0];//countrys[1] CODE
                 if (!isNetWorkConnect(this)) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 dialog = CustomProgressDialog.show(this,
@@ -91,7 +91,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
             case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 Bundle bundle = (Bundle) msg.obj;
@@ -105,7 +105,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
             case R.id.item_gender:
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 dialog = CustomProgressDialog.show(ProfileActivity.this,
@@ -318,7 +318,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         switch (resultCode) {
             case 1://更改昵称的标识
                 if (!isNetWorkConnect(this)) {
-                    newToast.setTextAndShow(R.string.http_failed, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
                 nickNameString = data.getStringExtra("nickName");

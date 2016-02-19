@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_20"
-                android:text="@string/photopassplus"
+                android:text="@string/mypage_ppp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_18"
                 android:textStyle="bold" />

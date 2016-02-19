@@ -57,7 +57,7 @@
             android:paddingLeft="@dimen/pp_padding_16"
             android:paddingRight="@dimen/pp_padding_16"
             android:paddingTop="@dimen/pp_margin_5"
-            android:text="@string/payment_order"
+            android:text="@string/order_unpaid"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
     </RelativeLayout>

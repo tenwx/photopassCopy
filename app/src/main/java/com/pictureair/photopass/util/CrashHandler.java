@@ -3,9 +3,6 @@ package com.pictureair.photopass.util;
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.pictureair.photopass.R;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
@@ -92,7 +89,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			@Override      
 			public void run() {      
 				Looper.prepare();      
-				Toast.makeText(mContext, mContext.getResources().getString(R.string.app_crash), Toast.LENGTH_SHORT).show();
+//				Toast.makeText(mContext, mContext.getResources().getString(R.string.app_crash), Toast.LENGTH_SHORT).show();
 				Looper.loop();      
 			}      
 		}.start();      
