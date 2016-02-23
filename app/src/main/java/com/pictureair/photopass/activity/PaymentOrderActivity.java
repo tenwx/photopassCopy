@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.sdk.app.PayTask;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -23,6 +24,7 @@ import com.pictureair.photopass.alipay.PayResult;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AliPayUtil;
 import com.pictureair.photopass.util.AppManager;
@@ -37,7 +39,6 @@ import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.unionpay.UPPayAssistEx;
-import com.unionpay.uppay.PayActivity;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -98,6 +99,10 @@ public class PaymentOrderActivity extends BaseActivity implements
     private boolean isPaying = false;
 
     private static final String TAG = "PaymentOrderActivity";
+
+    //银联测试假数据
+    private String RESULT = "{\"sign\":\"ZnZY4nqFGu/ugcXNIhniJh6UDVriWANlHtIDRzV9w120E6tUgpL9Z7jIFzWrSV73hmrkk8BZMXMc/9b8u3Ex1ugnZn0OZtWfMZk2I979dxp2MmOB+1N+Zxf8iHr7KNhf9xb+VZdEydn3Wc/xX/B4jncg0AwDJO/0pezhSZqdhSivTEoxq7KQTq2KaHJmNotPzBatWI5Ta7Ka2l/fKUv8zr6DGu3/5UaPqHhnUq1IwgxEWOYxGWQgtyTMo/tDIRx0OlXOm4iOEcnA9DWGT5hXTT3nONkRFuOSyqS5Rzc26gQE6boD+wkdUZTy55ns8cDCdaPajMrnuEByZCs70yvSgA==\",\"data\":\"pay_result=success&tn=201512151321481233778\"}";
+
 
     /*****************************************************************
      * mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
@@ -481,6 +486,63 @@ public class PaymentOrderActivity extends BaseActivity implements
                 break;
         }
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 10) {//银联
+            /*************************************************
+             * 步骤3：处理银联手机支付控件返回的支付结果
+             ************************************************/
+
+            //银联测试假数据
+            data = new Intent();
+            data.putExtra("pay_result", "success");
+            data.putExtra("result_data", RESULT);
+
+            if (data == null) {
+                return;
+            }
+
+	        /*
+	         * 支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
+	         */
+            String str = data.getExtras().getString("pay_result");
+            if (str.equalsIgnoreCase("success")) {
+                // 支付成功后，extra中如果存在result_data，取出校验
+                // result_data结构见c）result_data参数说明
+                if (data.hasExtra("result_data")) {
+                    String result = data.getExtras().getString("result_data");
+                    JSONObject resultJson = JSONObject.parseObject(result);
+                    String sign = resultJson.getString("sign");
+                    String dataOrg = resultJson.getString("data");
+                    // 验签证书同后台验签证书
+                    // 此处的verify，商户需送去商户后台做验签
+                    boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
+
+                    //测试修改
+                    ret = true;
+
+                    if (ret) {
+                        // 验证通过后，显示支付结果
+                        paymentOrderHandler.sendEmptyMessage(RQF_SUCCESS);
+                    } else {
+                        // 验证不通过后的处理
+                        // 建议通过商户后台查询支付结果
+                        paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                    }
+                } else {
+                    // 未收到签名信息
+                    // 建议通过商户后台查询支付结果
+                    paymentOrderHandler.sendEmptyMessage(RQF_SUCCESS);
+                }
+            } else if (str.equalsIgnoreCase("fail")) {
+                paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+            } else if (str.equalsIgnoreCase("cancel")) {
+                paymentOrderHandler.sendEmptyMessage(RQF_CANCEL);
+            }
+        }
+    };
 
 
     /**
