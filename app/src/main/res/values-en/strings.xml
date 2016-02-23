@@ -426,5 +426,6 @@
     <string name="all">Select All</string>
     <string name="disall">Disselect</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
+    <string name="code_tips">请向”乐拍通“摄影师出示此二维码关联您的照片，即可轻松预览照片。</string>
     <!-- edit story end -->
 </resources>
