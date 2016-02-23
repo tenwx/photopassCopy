@@ -59,7 +59,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private ImageView setting;
     private ListView listPPP;
     private ImageView back;
-    private Button text_instruction;
+    private Button button_buy_ppp,button_scan_ppp; // 无PP＋时 底部的两个按钮。
+    private LinearLayout ll_button_area;//无PP＋时 底部的两个按钮的区域。
 
     //    private BannerView_PPPIntroduce nopppLayout;
     private LinearLayout nopppLayout;
@@ -143,7 +144,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 if (API1.PPPlist.size() == 0) {
                     listPPP.setVisibility(View.GONE);
                     nopppLayout.setVisibility(View.VISIBLE);
-                    text_instruction.setVisibility(View.VISIBLE);
+                    ll_button_area.setVisibility(View.VISIBLE);
 
                 } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -171,7 +172,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     PictureAirLog.v(TAG, "list-=--=" + list1.size());
                     listPPP.setVisibility(View.VISIBLE);
                     nopppLayout.setVisibility(View.GONE);
-                    text_instruction.setVisibility(View.GONE);
+                    ll_button_area.setVisibility(View.GONE);
                     listPPPAdapter = new ListOfPPPAdapter(list1, MyPPPActivity.this);
                     listPPP.setAdapter(listPPPAdapter);
                 }
@@ -204,7 +205,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPPHandler, true);
                 listPPP.setVisibility(View.INVISIBLE);
                 nopppLayout.setVisibility(View.GONE);
-                text_instruction.setVisibility(View.GONE);
+                ll_button_area.setVisibility(View.GONE);
                 break;
 
 
@@ -333,8 +334,12 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         newToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //找控件
-        text_instruction = (Button) findViewById(R.id.text_instruction);
-        text_instruction.setTypeface(MyApplication.getInstance().getFontBold());
+        button_buy_ppp = (Button) findViewById(R.id.button_buy_ppp);
+        button_scan_ppp = (Button) findViewById(R.id.button_scan_ppp);
+        button_buy_ppp.setTypeface(MyApplication.getInstance().getFontBold());
+        button_scan_ppp.setTypeface(MyApplication.getInstance().getFontBold());
+
+        ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);
         setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
@@ -343,10 +348,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         list1 = new ArrayList<>();
         //设置需要刷新PPPList
         MyApplication.getInstance().setNeedRefreshPPPList(true);
-        text_instruction.setOnClickListener(this);
+        button_buy_ppp.setOnClickListener(this);
+        button_scan_ppp.setOnClickListener(this);
 
         nopppLayout.setVisibility(View.INVISIBLE);
-        text_instruction.setVisibility(View.GONE);
+        ll_button_area.setVisibility(View.GONE);
         listPPP.setVisibility(View.GONE);
 //		optionImageView.setOnClickListener(this);
 //		optoinTextView.setOnClickListener(this);
@@ -475,7 +481,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 pppPop.showAsDropDown(setting);
                 break;
 
-            case R.id.text_instruction:
+            case R.id.button_buy_ppp:
                 //购买PP+，先获取商品 然后进入订单界面
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
@@ -484,6 +490,12 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
                 getGoods();
+                break;
+
+            case R.id.button_scan_ppp:
+                Intent intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
+                intent.putExtra("type", "ppp");//只扫描ppp
+                startActivity(intent);
                 break;
 
             default:
