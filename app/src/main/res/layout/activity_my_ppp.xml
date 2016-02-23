@@ -60,7 +60,7 @@
         android:background="@color/pp_light_gray_background"
         android:padding="@dimen/pp_padding_20"
         android:layout_below="@id/head"
-        android:layout_above="@+id/text_instruction"
+        android:layout_above="@+id/ll_button_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -79,7 +79,10 @@
             android:layout_weight="1"
             android:text="@string/instruction"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/pp_padding_20"
+            android:paddingRight="@dimen/pp_padding_20"/>
 
     </LinearLayout>
 
@@ -91,19 +94,41 @@
         android:layout_below="@id/head"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/text_instruction"
-        android:layout_margin="@dimen/pp_margin_16"
-        android:layout_alignParentBottom="true"
+    <LinearLayout
+        android:id="@+id/ll_button_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_blue_shape_and_selector"
-        android:gravity="center"
-        android:padding="@dimen/pp_padding_10"
-        android:text="@string/buy_good2"
-        android:textColor="@drawable/textview_selector_blue_white"
-        android:textSize="@dimen/text_size_16"
-         />
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/pp_margin_16">
+
+        <Button
+            android:id="@+id/button_buy_ppp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/buy_ppp_text"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/pp_margin_16" />
+
+        <Button
+            android:id="@+id/button_scan_ppp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_weight="1"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/scan_ppp_text"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/pp_margin_16" />
+
+    </LinearLayout>
+
+
 
     <ListView
         android:id="@+id/list_ppp"

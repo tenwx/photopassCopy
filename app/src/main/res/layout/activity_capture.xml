@@ -32,6 +32,13 @@
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
+
+    <com.pictureair.photopass.zxing.view.ScanView
+        android:id="@+id/scan_view_line_ocr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
     <!-- 蒙版界面-->
     <RelativeLayout
         android:id="@+id/rl_mask"
@@ -127,6 +134,7 @@
             android:textSize="@dimen/text_size_16"
             android:padding="@dimen/pp_margin_10"/>
     </LinearLayout>
+
 
 
 

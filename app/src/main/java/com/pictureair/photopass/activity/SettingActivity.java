@@ -22,6 +22,7 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
 /**
+ * @author talon
  * 用户功能设置
  */
 public class SettingActivity extends BaseActivity implements OnClickListener {
@@ -156,13 +157,27 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 judgeSettingStatus();
                 break;
             case R.id.ib_auto_update:
-            case R.id.rl_auto_update: // 自动更新
+            case R.id.rl_auto_update: // 自动更新。  选择框提示。
                 if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
                     settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    judgeSettingStatus();
                 } else {
-                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    new CustomDialog(SettingActivity.this, R.string.confirm_sync_msg, R.string.confirm_sync_no, R.string.confirm_sync_yes, new CustomDialog.MyDialogInterface() {
+
+                        @Override
+                        public void yes() {
+                            // TODO Auto-generated method stub // 确认同步更新后，修改更新设置状态
+                            settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                            judgeSettingStatus();
+                        }
+
+                        @Override
+                        public void no() {
+                            // TODO Auto-generated method stub // 取消：不做操作
+
+                        }
+                    });
                 }
-                judgeSettingStatus();
                 break;
             default:
                 break;

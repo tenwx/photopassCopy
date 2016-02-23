@@ -32,6 +32,7 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
+import com.pictureair.photopass.zxing.view.ScanView;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
 import java.io.File;
@@ -78,12 +79,14 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private ViewfinderView viewfinder_view; // QR码 扫描的矩形
     private TextView tvScanQRcodeTips;// QR码的提示字体。
     private RelativeLayout rlMask,rlLight; //蒙版, 高亮部分
+    private ScanView ocrScanView;
     // 点击响应方法
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.tv_scan_qr_code:
                 scanType = 1;
+                ocrScanView.setVisibility(View.GONE);
                 viewfinder_view.setVisibility(View.VISIBLE);
                 tvScanQRcodeTips.setVisibility(View.VISIBLE);
                 rlMask.setVisibility(View.GONE);
@@ -96,6 +99,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
             case R.id.tv_scan_ppp_code:
                 scanType = 2;
+                ocrScanView.setVisibility(View.VISIBLE);
                 rlMask.setVisibility(View.VISIBLE);
                 viewfinder_view.setVisibility(View.GONE);
                 tvScanQRcodeTips.setVisibility(View.GONE);
@@ -196,6 +200,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
             }
         }
+
+        ocrScanView = (ScanView) findViewById(R.id.scan_view_line_ocr);
         tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
         tvCenterHint.setRotation(90);
 

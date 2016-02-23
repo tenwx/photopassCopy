@@ -523,7 +523,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 });
 
                 PictureAirLog.v(TAG, "----------------------->initing...6");
-                judgeBuyOnePhoto();
+//                judgeBuyOnePhoto(); // 根据需求， 取消了购买的流程 的同步流程
                 break;
 
             case LOAD_FROM_NETWORK:
@@ -1473,55 +1473,55 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
-    // 判断 是否第一次提示 同步更新。，并弹出相应的tips
-    private void judgeBuyOnePhoto() {
-        if (myApplication.isPhotoIsPaid()) {// 如果是 购买之后跳转过来的。
-            if (settingUtil.isFirstTipsSyns(sharedPreferences.getString(
-                    Common.USERINFO_ID, ""))) {
-                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
-                        Common.USERINFO_ID, ""))) {
-                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                        downloadPic();
-                    }
-                } else {
-                    new CustomDialog(PreviewPhotoActivity.this,
-                            R.string.first_tips_syns_msg1,
-                            R.string.first_tips_syns_no_msg1,
-                            R.string.first_tips_syns_yes_msg1,
-                            new CustomDialog.MyDialogInterface() {
-                                @Override
-                                public void yes() {
-                                    // TODO Auto-generated method stub
-                                    // //同步更新：下载单张照片，并且修改设置。
-                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                                        downloadPic();
-                                    }
-                                }
-
-                                @Override
-                                public void no() {
-                                    // TODO Auto-generated method stub // 取消；不操作
-                                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                }
-                            });
-                }
-                settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences
-                        .getString(Common.USERINFO_ID, ""));
-            } else {
-                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
-                        Common.USERINFO_ID, ""))) {
-                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                        downloadPic();
-                    }
-                }
-            }
-
-        } else {
-
-        }
-        myApplication.setPhotoIsPaid(false); // 保持 不是购买的状态。
-    }
+    // 判断 是否第一次提示 同步更新。，并弹出相应的tips  暂时取消这个设置。
+//    private void judgeBuyOnePhoto() {
+//        if (myApplication.isPhotoIsPaid()) {// 如果是 购买之后跳转过来的。
+//            if (settingUtil.isFirstTipsSyns(sharedPreferences.getString(
+//                    Common.USERINFO_ID, ""))) {
+//                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
+//                        Common.USERINFO_ID, ""))) {
+//                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+//                        downloadPic();
+//                    }
+//                } else {
+//                    new CustomDialog(PreviewPhotoActivity.this,
+//                            R.string.first_tips_syns_msg1,
+//                            R.string.first_tips_syns_no_msg1,
+//                            R.string.first_tips_syns_yes_msg1,
+//                            new CustomDialog.MyDialogInterface() {
+//                                @Override
+//                                public void yes() {
+//                                    // TODO Auto-generated method stub
+//                                    // //同步更新：下载单张照片，并且修改设置。
+//                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+//                                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+//                                        downloadPic();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void no() {
+//                                    // TODO Auto-generated method stub // 取消；不操作
+//                                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+//                                }
+//                            });
+//                }
+//                settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences
+//                        .getString(Common.USERINFO_ID, ""));
+//            } else {
+//                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
+//                        Common.USERINFO_ID, ""))) {
+//                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+//                        downloadPic();
+//                    }
+//                }
+//            }
+//
+//        } else {
+//
+//        }
+//        myApplication.setPhotoIsPaid(false); // 保持 不是购买的状态。
+//    }
 
     /**
      * tips 1，网络下载流程。
