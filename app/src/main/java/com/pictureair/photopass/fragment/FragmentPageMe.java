@@ -233,18 +233,23 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         LinearLayout layout = new LinearLayout(viewGroup.getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
-        layout.setBackgroundResource(R.color.white_alpha_90);
-        //二维码
-        ImageView imageView = new ImageView(viewGroup.getContext());
+        layout.setBackgroundResource(R.color.black_alpha_60);
+        //边框 存放二维码/文字
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.show_code_layout, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.code_pic_iv);
         try {
             imageView.setImageBitmap(AppUtil.createQRCode(userPP, ScreenUtil.getScreenWidth(getActivity()) / 5));
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(3 * codePicView.getWidth(), 3 * codePicView.getHeight());
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(viewGroup.getContext())/2, ScreenUtil.getScreenWidth(viewGroup.getContext())/2));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setBackgroundResource(R.color.white);
-        layout.addView(imageView, params);
+
+        LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        viewParams.gravity = Gravity.CENTER;
+        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(),64),0,ScreenUtil.dip2px(viewGroup.getContext(),64),0);
+        layout.addView(view, viewParams);
+
         viewGroup.addView(layout, layoutParams);
         //动画开始
         startAnimation(viewGroup, layout);
@@ -264,7 +269,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         final AnimationSet set = new AnimationSet(false);
         set.setFillAfter(true);
         set.addAnimation(scaleAnimation);
-        set.setDuration(500);
+        set.setDuration(300);
         layout.startAnimation(set);
         //点击屏幕取消
         layout.setOnClickListener(new OnClickListener() {
