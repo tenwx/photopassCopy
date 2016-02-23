@@ -416,7 +416,7 @@
     <string name="one_photo_download_msg2">Do you want to continue download photos using mobile GPRS?</string>
     <string name="one_photo_download_no_msg2">Cancel</string>
     <string name="one_photo_download_yes_msg2">OK</string>
-    <string name="confirm_sync_msg">The app will automatically download all paid photos, continue?</string>
+    <string name="confirm_sync_msg">Paid photos will be downloaded automatically, continue?</string>
     <string name="confirm_sync_yes">OK</string>
     <string name="confirm_sync_no">Cancel</string>
     <!-- tips end -->
