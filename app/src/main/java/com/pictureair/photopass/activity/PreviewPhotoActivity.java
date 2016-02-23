@@ -123,8 +123,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private boolean isLandscape = false;
 
     //底部切换索引按钮
-    private ImageView lastPhotoImageView;
-    private ImageView nextPhotoImageView;
+    private TextView lastPhotoImageView;
+    private TextView nextPhotoImageView;
     private TextView currentPhotoIndexTextView;
     private TextView currentPhotoInfoTextView;
     private TextView currentPhotoADTextView;
@@ -611,8 +611,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         makegiftButton = (TextView) findViewById(R.id.preview_makegift);
         loveImageButton = (ImageButton) findViewById(R.id.preview_love);
 
-        lastPhotoImageView = (ImageView) findViewById(R.id.index_last);
-        nextPhotoImageView = (ImageView) findViewById(R.id.index_next);
+        lastPhotoImageView = (TextView) findViewById(R.id.index_last);
+        nextPhotoImageView = (TextView) findViewById(R.id.index_next);
         currentPhotoInfoTextView = (TextView) findViewById(R.id.index_time);
         currentPhotoIndexTextView = (TextView) findViewById(R.id.current_index);
         currentPhotoADTextView = (TextView) findViewById(R.id.preview_photo_ad_intro_tv);

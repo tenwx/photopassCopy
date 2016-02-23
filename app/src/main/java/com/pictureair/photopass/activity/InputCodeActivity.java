@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +20,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -34,7 +34,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 手动输入条码的页面
  */
-public class InputCodeActivity extends BaseActivity implements OnClickListener, View.OnKeyListener {
+public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private String[] resultList;
     private TextView tvConfirmHint, tvManulInputIntro;
 
@@ -52,6 +52,11 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
     private CustomProgressDialog dialog;
 
     private final Handler inputCodeHandler = new InputCodeHandler(this);
+
+    /**
+     * 统计已输入条码的个数
+     */
+    private int[] codeCount;
 
 
     private static class InputCodeHandler extends Handler {
@@ -151,6 +156,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
 
+        codeCount = new int[]{0, 0, 0, 0};
 
         if (getIntent().getStringExtra("text") == null) {
             lvButtom.setVisibility(View.GONE);
@@ -176,47 +182,33 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
             input2.setText(resultList[1]);
             input3.setText(resultList[2]);
             input4.setText(resultList[3]);
+            codeCount[0] = resultList[0].length();
+            codeCount[1] = resultList[1].length();
+            codeCount[2] = resultList[2].length();
+            codeCount[3] = resultList[3].length();
         }
-
-
-        input2.setOnKeyListener(this);
-        input3.setOnKeyListener(this);
-        input4.setOnKeyListener(this);
 
         input1.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                PictureAirLog.out("========== input1 onTextChanged " + arg0.length());
-                if (arg0.length() > 3) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                } else if (arg0.length() > 3 && input2.getText().toString().length() > 0) {
-                    input2.setEnabled(false);
-                    input2.clearFocus();
-                }
-                if (arg0.length() == 5) { // input1 中输入第5个字符，就让第5个字符  移动到input2 中
-                    String text1 = input1.getText().toString();
-                    PictureAirLog.e("", "====:" + text1);
-                    input1.setText(text1.substring(0, 4));
-                    input2.setText(String.valueOf(text1.charAt(4)));
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input2.setSelection(input2.getText().toString().length());
-                }
 
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                PictureAirLog.out("========== input1 before " + arg0.length());
-
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                PictureAirLog.out("========== input1 after " + input1.getText().toString().length());
+                codeCount[0] = arg0.length();
+                if (!AppUtil.isInputCodeEditing(codeCount, input1.getSelectionStart(), 0)) {//非编辑
+                    if (AppUtil.inputCodeEditJump(input1.getSelectionStart(), 0) == 1) {//往后
+                        input2.setEnabled(true);
+                        input2.requestFocus();
+                        input1.clearFocus();
+                    }
+                }
             }
         });
 
@@ -225,69 +217,27 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                PictureAirLog.out("========== input2 onTextChanged " + arg0.length());
-                if (arg0.length() > 3) {
-                    input3.setEnabled(true);
-                    input3.requestFocus();
-
-                } else if (arg0.length() == 0) {
-                    input1.setEnabled(true);
-                    input1.requestFocus();
-                    input1.setSelection(input1.getText().toString().length());
-                }
-
-                if (arg0.length() == 5) { // input2 中输入第5个字符，就让第5个字符  移动到input3 中
-                    String text2 = input2.getText().toString();
-                    PictureAirLog.e("", "====:" + text2);
-                    input2.setText(text2.substring(0, 4));
-                    input3.setText(String.valueOf(text2.charAt(4)));
-                    input3.setEnabled(true);
-                    input3.requestFocus();
-                    input3.setSelection(input3.getText().toString().length());
-                }
-                if (arg0.length() == 3 && input2.requestFocus()) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input4.clearFocus();
-                }
-                if (arg0.length() == 2 && input2.requestFocus()) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input4.clearFocus();
-                }
-                if (arg0.length() == 1 && input2.requestFocus()) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input4.clearFocus();
-                }
 
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                PictureAirLog.out("========== input2  before " + arg0.length());
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                PictureAirLog.out("========== input2  after " + input2.getText().toString().length());
-                if (input2.getText().toString().length() == 3 && input2.requestFocus()) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input4.clearFocus();
+                codeCount[1] = arg0.length();
+                if (!AppUtil.isInputCodeEditing(codeCount, input2.getSelectionStart(), 1)) {//非编辑
+                    if (AppUtil.inputCodeEditJump(input2.getSelectionStart(), 1) == 1) {//往后
+                        input3.setEnabled(true);
+                        input3.requestFocus();
+                        input2.clearFocus();
+                    } else if (AppUtil.inputCodeEditJump(input2.getSelectionStart(), 1) == -1) {//往前
+                        input1.setEnabled(true);
+                        input1.requestFocus();
+                        input2.clearFocus();
+                    }
                 }
-                if (input2.getText().toString().length() == 2 && input2.requestFocus()) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input4.clearFocus();
-                }
-                if (input2.getText().toString().length() == 1 && input2.requestFocus()) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input4.clearFocus();
-                }
-
             }
         });
 
@@ -295,32 +245,26 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                if (arg0.length() > 3) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                } else if (arg0.length() == 0) {
-                    input2.setEnabled(true);
-                    input2.requestFocus();
-                    input2.setSelection(input2.getText().toString().length());
-                }
-                if (arg0.length() == 5) { // input3 中输入第5个字符，就让第5个字符  移动到input4 中
-                    String text3 = input3.getText().toString();
-                    PictureAirLog.e("", "====:" + text3);
-                    input3.setText(text3.substring(0, 4));
-                    input4.setText(String.valueOf(text3.charAt(4)));
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input4.setSelection(input4.getText().toString().length());
-                }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
+                codeCount[2] = arg0.length();
+                if (!AppUtil.isInputCodeEditing(codeCount, input3.getSelectionStart(), 2)) {//非编辑
+                    if (AppUtil.inputCodeEditJump(input3.getSelectionStart(), 2) == 1) {//往后
+                        input4.setEnabled(true);
+                        input4.requestFocus();
+                        input3.clearFocus();
+                    } else if (AppUtil.inputCodeEditJump(input3.getSelectionStart(), 2) == -1) {//往前
+                        input2.setEnabled(true);
+                        input2.requestFocus();
+                        input3.clearFocus();
+                    }
+                }
             }
         });
 
@@ -328,196 +272,27 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                if (arg0.length() == 0) {
-                    input3.setEnabled(true);
-                    input3.requestFocus();
-                    input3.setSelection(input3.getText().toString().length());
-                }
-                if (arg0.length() == 3 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
-                if (arg0.length() == 2 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
-                if (arg0.length() == 1 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                if (input4.getText().toString().length() == 3 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
-                if (input4.getText().toString().length() == 2 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
-                if (input4.getText().toString().length() == 1 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                if (input4.getText().toString().length() == 3 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
-                if (input4.getText().toString().length() == 2 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
-                }
-                if (input4.getText().toString().length() == 1 && input4.requestFocus()) {
-                    input4.setEnabled(true);
-                    input4.requestFocus();
-                    input2.clearFocus();
+                codeCount[3] = arg0.length();
+                if (!AppUtil.isInputCodeEditing(codeCount, input4.getSelectionStart(), 3)) {//非编辑
+                    if (AppUtil.inputCodeEditJump(input4.getSelectionStart(), 3) == -1) {//往前
+                        input3.setEnabled(true);
+                        input3.requestFocus();
+                        input4.clearFocus();
+                    }
                 }
             }
         });
 
         dealCodeUtil = new DealCodeUtil(this, getIntent(), inputCodeHandler);
 
-    }
-
-
-    @Override
-    public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-        PictureAirLog.out("============ keyCode" + keyCode);
-
-        if (keyCode == KeyEvent.KEYCODE_DEL) {
-            PictureAirLog.out("============ input2.getText().toString().length()" + input2.getText().toString().length());
-            if (input2.getText().toString().length() == 0 && input2.requestFocus()) {
-                input1.setEnabled(true);
-                input1.requestFocus();
-            } else if (input3.getText().toString().length() == 0 && input3.requestFocus()) {
-                input2.setEnabled(true);
-                input2.requestFocus();
-            } else if (input4.getText().toString().length() == 0 && input4.requestFocus()) {
-                input3.setEnabled(true);
-                input3.requestFocus();
-            }
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input3.requestFocus()) {
-                input3.setEnabled(true);
-                input3.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input4.clearFocus();
-            }
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input4.requestFocus()) {
-                input4.setEnabled(true);
-                input4.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input3.clearFocus();
-                if (input4.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0) {
-                    input3.setEnabled(true);
-                    input3.requestFocus();
-                    input1.clearFocus();
-                    input2.clearFocus();
-                    input4.clearFocus();
-                }
-            }
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() == 0 && input4.requestFocus()) {
-                input4.setEnabled(true);
-                input4.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input3.clearFocus();
-            }
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input4.getText().toString().length() == 0 && input3.requestFocus()) {
-                input3.setEnabled(true);
-                input3.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input4.clearFocus();
-            }
-            if (input1.getText().toString().length() > 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() >= 0 && input3.requestFocus()) {
-                input3.setEnabled(true);
-                input3.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input4.clearFocus();
-            }
-            if (input1.getText().toString().length() > 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input4.requestFocus()) {
-                input4.setEnabled(true);
-                input4.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input3.clearFocus();
-            }
-            if (input1.getText().toString().length() > 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input4.requestFocus()) {
-                input4.setEnabled(true);
-                input4.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input3.clearFocus();
-            }
-
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() > 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input4.requestFocus()) {
-                input4.setEnabled(true);
-                input4.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input3.clearFocus();
-            }
-
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() > 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input2.requestFocus()) {
-                input2.setEnabled(true);
-                input2.requestFocus();
-                input1.clearFocus();
-                input3.clearFocus();
-                input4.clearFocus();
-            }
-
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() == 0 && input3.requestFocus()) {
-                input1.setEnabled(true);
-                input1.requestFocus();
-                input2.clearFocus();
-                input3.clearFocus();
-                input4.clearFocus();
-            }
-
-            if (input1.getText().toString().length() == 0 && input2.getText().toString().length() == 0 && input3.getText().toString().length() > 0 && input4.getText().toString().length() > 0 && input3.requestFocus()) {
-                input3.setEnabled(true);
-                input3.requestFocus();
-                input1.clearFocus();
-                input2.clearFocus();
-                input4.clearFocus();
-            }
-
-//            if (input1.getText().toString().length() > 0 && input2.getText().toString().length() > 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input4.hasFocusable()) {
-//                input4.setEnabled(true);
-//                input4.requestFocus();
-//                input1.clearFocus();
-//                input2.clearFocus();
-//                input3.clearFocus();
-//            }
-
-            if (input1.getText().toString().length() > 0 && input2.getText().toString().length() > 0 && input3.getText().toString().length() == 0 && input4.getText().toString().length() > 0 && input2.hasFocusable()) {
-                input2.setEnabled(true);
-                input2.requestFocus();
-                input1.clearFocus();
-                input3.clearFocus();
-                input4.clearFocus();
-            }
-
-        }
-        return false;
     }
 
     private void hideInputMethodManager(View v) {

@@ -1024,4 +1024,56 @@ public class AppUtil {
             }
         });
     }
+
+    /**
+     * 检查手动输入框是否处于编辑状态
+     * @param codeCount 当前code长度的数组
+     * @param cursorIndex 当前光标位置
+     * @param inputIndex 当前输入的位置，从0开始计算
+     * @return
+     */
+    public static boolean isInputCodeEditing(int[] codeCount, int cursorIndex, int inputIndex){
+        int codeAllCount = 0;
+        /**
+         * 先判断前面的格子是否都已经满了
+         */
+        for (int i = 0; i < inputIndex; i++) {
+            if (codeCount[i] != 4){//不满，则为编辑状态
+                PictureAirLog.out("edit");
+                return true;
+            } else {
+                codeAllCount += 4;
+            }
+        }
+        codeAllCount += codeCount[inputIndex];
+
+        PictureAirLog.out("index--->" + cursorIndex + ",codeCount---->" + codeCount[inputIndex]);
+        return cursorIndex + inputIndex * 4 != codeAllCount;//判断光标的位置和当前字符数一否一样
+//        return (cursorIndex != codeCount[inputIndex]) && (cursorIndex + inputIndex * 4 != codeCount);//判断光标的位置和当前格子的字符数一否一样
+    }
+
+    /**
+     * 判断光标是否该自动切换
+     * @param cursorIndex 当前光标位置
+     * @param inputIndex 当前输入的位置，从0开始计算
+     * @return 1往后切换，-1往前切换，0不切换
+     */
+    public static int inputCodeEditJump(int cursorIndex, int inputIndex) {
+        if (cursorIndex == 4) {//在当前输入框的最后面
+            if (inputIndex == 3) {//已经是最后一个，不需要移动
+                return 0;
+            } else {//需要往后移动
+                return 1;
+            }
+        } else if (cursorIndex == 0) {//在当前输入框的最前面
+            if (inputIndex == 0) {//已经是第一个输入框，不需要往前移动
+                return 0;
+            } else {//需要往前移动
+                return -1;
+            }
+        } else {//不移动
+            return 0;
+        }
+    }
+
 }

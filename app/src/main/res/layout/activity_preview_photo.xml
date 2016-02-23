@@ -129,7 +129,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" >
 
-            <ImageView
+            <TextView
                 android:id="@+id/index_last"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,7 +137,9 @@
                 android:paddingRight="@dimen/pp_padding_20"
                 android:paddingTop="@dimen/pp_padding_5"
                 android:paddingBottom="@dimen/pp_padding_5"
-                android:src="@drawable/index_last" />
+                android:text="&lt;"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_20"/>
 
             <TextView
                 android:id="@+id/current_index"
@@ -147,7 +149,7 @@
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/index_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -155,7 +157,9 @@
                 android:paddingRight="@dimen/pp_padding_16"
                 android:paddingTop="@dimen/pp_padding_5"
                 android:paddingBottom="@dimen/pp_padding_5"
-                android:src="@drawable/index_next" />
+                android:text="&gt;"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_20"/>
         </LinearLayout>
 
         <TextView

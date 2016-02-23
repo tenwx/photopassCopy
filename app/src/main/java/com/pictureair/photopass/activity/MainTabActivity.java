@@ -306,6 +306,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         textView.setText(mTextviewArray[index]);
         if (index == 2) {
             textView.setVisibility(View.GONE);
+
+            /**
+             * 隐藏视频模块
+             */
+            view.setVisibility(View.GONE);
         }
         if (index == 0) {//添加badgeview
             waterDropView = (WaterDrop) view.findViewById(R.id.waterdrop);
