@@ -164,6 +164,13 @@ public class UrlTouchImageView extends RelativeLayout {
 
     }
 
+    /**
+     * 设置进度条可见
+     * @param visible
+     */
+    public void setProgressImageViewVisible(boolean visible) {
+        progressImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
 
     public void setScaleType(ScaleType scaleType) {
         mImageView.setScaleType(scaleType);

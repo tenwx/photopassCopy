@@ -42,11 +42,15 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
             PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
+            iv.setProgressImageViewVisible(true);
             iv.setUrl(mResources.get(position).photoThumbnail_1024);
         } else if (mResources.get(position).onLine == 0) {
 
             PictureAirLog.v("instantiateItem", "local photo : " + position + position);
+            iv.setProgressImageViewVisible(true);
             iv.setImagePath(mResources.get(position).photoPathOrURL);
+        } else {
+            iv.setProgressImageViewVisible(false);
         }
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collection.addView(iv, 0);
