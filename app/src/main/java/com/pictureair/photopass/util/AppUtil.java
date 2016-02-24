@@ -1041,15 +1041,14 @@ public class AppUtil {
             if (codeCount[i] != 4){//不满，则为编辑状态
                 PictureAirLog.out("edit");
                 return true;
-            } else {
-                codeAllCount += 4;
             }
         }
-        codeAllCount += codeCount[inputIndex];
 
-        PictureAirLog.out("index--->" + cursorIndex + ",codeCount---->" + codeCount[inputIndex]);
+        for (int i = 0; i < 4; i++) {
+            codeAllCount += codeCount[i];
+        }
+
         return cursorIndex + inputIndex * 4 != codeAllCount;//判断光标的位置和当前字符数一否一样
-//        return (cursorIndex != codeCount[inputIndex]) && (cursorIndex + inputIndex * 4 != codeCount);//判断光标的位置和当前格子的字符数一否一样
     }
 
     /**

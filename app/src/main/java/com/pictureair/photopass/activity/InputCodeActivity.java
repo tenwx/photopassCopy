@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -34,7 +35,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 手动输入条码的页面
  */
-public class InputCodeActivity extends BaseActivity implements OnClickListener{
+public class InputCodeActivity extends BaseActivity implements OnClickListener, View.OnKeyListener{
     private String[] resultList;
     private TextView tvConfirmHint, tvManulInputIntro;
 
@@ -212,7 +213,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
             }
         });
 
-
         input2.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -235,6 +235,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                     } else if (AppUtil.inputCodeEditJump(input2.getSelectionStart(), 1) == -1) {//往前
                         input1.setEnabled(true);
                         input1.requestFocus();
+                        input1.setSelection(4);
                         input2.clearFocus();
                     }
                 }
@@ -262,6 +263,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                     } else if (AppUtil.inputCodeEditJump(input3.getSelectionStart(), 2) == -1) {//往前
                         input2.setEnabled(true);
                         input2.requestFocus();
+                        input2.setSelection(4);
                         input3.clearFocus();
                     }
                 }
@@ -285,25 +287,69 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                     if (AppUtil.inputCodeEditJump(input4.getSelectionStart(), 3) == -1) {//往前
                         input3.setEnabled(true);
                         input3.requestFocus();
+                        input3.setSelection(4);
                         input4.clearFocus();
                     }
                 }
             }
         });
 
+        input2.setOnKeyListener(this);
+        input3.setOnKeyListener(this);
+        input4.setOnKeyListener(this);
+
         dealCodeUtil = new DealCodeUtil(this, getIntent(), inputCodeHandler);
 
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        PictureAirLog.out("keycode-->" + keyCode);
+        /**
+         * 处理光标处于输入框最前面的时候的回删操作
+         */
+        if (keyCode == KeyEvent.KEYCODE_DEL) {
+            switch (v.getId()) {
+                case R.id.input2:
+                    if (!AppUtil.isInputCodeEditing(codeCount, 0, 1)) {
+                        input1.setEnabled(true);
+                        input1.requestFocus();
+                        input1.setText(input1.getText().toString().substring(0, 3));
+                        input1.setSelection(3);
+                    }
+                    break;
+
+                case R.id.input3:
+                    if (!AppUtil.isInputCodeEditing(codeCount, 0, 2)) {
+                        input2.setEnabled(true);
+                        input2.requestFocus();
+                        input2.setText(input2.getText().toString().substring(0, 3));
+                        input2.setSelection(3);
+                    }
+                    break;
+
+                case R.id.input4:
+                    if (!AppUtil.isInputCodeEditing(codeCount, 0, 3)) {
+                        input3.setEnabled(true);
+                        input3.requestFocus();
+                        input3.setText(input3.getText().toString().substring(0, 3));
+                        input3.setSelection(3);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return false;
     }
 
     private void hideInputMethodManager(View v) {
         // TODO Auto-generated method stub
         /*隐藏软键盘*/
-        InputMethodManager imm = (InputMethodManager) v
-                .getContext().getSystemService(
-                        INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
-            imm.hideSoftInputFromWindow(
-                    v.getApplicationWindowToken(), 0);
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
         }
     }
 
