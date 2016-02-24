@@ -229,8 +229,10 @@ public final class CameraManager {
 
   public Rect getOCRFrameRect(){
     int width = ScreenUtil.getScreenWidth(context)/3*2;
-    int topOffset = ScreenUtil.getScreenHeight(context) - (ScreenUtil.getScreenWidth(context)*(ScreenUtil.getScreenWidth(context)/3*2*85/54) / width - (ScreenUtil.getScreenWidth(context)/3*2*85/54))/2 - (ScreenUtil.getScreenWidth(context)/3*2*85/54);
-    int leftOffset = ScreenUtil.getScreenWidth(context)/3/2;
+//    int topOffset = ScreenUtil.getScreenHeight(context) - (ScreenUtil.getScreenWidth(context)*(ScreenUtil.getScreenWidth(context)/3*2*85/54) / width - (ScreenUtil.getScreenWidth(context)/3*2*85/54))/2 - (ScreenUtil.getScreenWidth(context)/3*2*85/54);
+    int topOffset = 0;
+//    int leftOffset = ScreenUtil.getScreenWidth(context)/3/2;
+    int leftOffset = 0;
     Rect framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + ScreenUtil.getScreenWidth(context)/3*2*85/54);
     return framingRect;
   }

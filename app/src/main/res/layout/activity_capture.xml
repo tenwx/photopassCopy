@@ -33,11 +33,6 @@
             android:textSize="@dimen/text_size_16" />
 
 
-    <com.pictureair.photopass.zxing.view.ScanView
-        android:id="@+id/scan_view_line_ocr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
 
     <!-- 蒙版界面-->
     <RelativeLayout
@@ -65,6 +60,12 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_16"
                 android:text="@string/textview_center_hint"/>
+            <!--扫描线 -->
+            <com.pictureair.photopass.zxing.view.ScanView
+                android:id="@+id/scan_view_line_ocr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
