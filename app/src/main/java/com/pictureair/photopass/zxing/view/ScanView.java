@@ -15,6 +15,8 @@ import com.pictureair.photopass.zxing.camera.CameraManager;
 /**
  * @author talon
  * OCR 扫描线。自定义View
+ * 遇到的问题：drawBitmap (Bitmap bitmap, Rect src, Rect dst, Paint paint)
+ * Rect src: 是对图片进行裁截，若是空null则显示整个图片 RectF dst：是图片在Canvas画布中显示的区域。  所以此处的矩形区域的坐标是相对于 Canvas 的。在布局文件和CameraManager中控制。
  */
 public final class ScanView extends View {
     /**
@@ -62,10 +64,10 @@ public final class ScanView extends View {
 
         Rect lineRect = new Rect();
         lineRect.left = slideRight;
-        lineRect.right = slideRight + 5;// 18 是线的宽度。
+        lineRect.right = slideRight + 18;// 18 是线的宽度。
         lineRect.top = frame.top;
         lineRect.bottom = frame.bottom;
-        canvas.drawBitmap(((BitmapDrawable) (getResources().getDrawable(R.drawable.qrcode_scan_line))).getBitmap(), null, lineRect, paint);
+        canvas.drawBitmap(((BitmapDrawable) (getResources().getDrawable(R.drawable.qrcode_scan_line_ocr))).getBitmap(), null, lineRect, paint);
         //只刷新扫描框的内容，其他地方不刷新
         postInvalidateDelayed(ANIMATION_DELAY, frame.left, frame.top,
                 frame.right, frame.bottom);
