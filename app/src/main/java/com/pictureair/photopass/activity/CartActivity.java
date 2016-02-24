@@ -595,7 +595,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private void ShowNoNetOrNoCountView() {
         bottomRelativeLayout.setVisibility(View.INVISIBLE);
         netWorkOrNoCountView.setVisibility(View.VISIBLE);
-        netWorkOrNoCountView.setResult(R.string.no_cart, R.string.want_to_buy, R.string.to_add_good, R.drawable.no_cart, cartHandler, false);
+        netWorkOrNoCountView.setResult(R.string.no_cart, 0, R.string.to_add_good, R.drawable.no_cart, cartHandler, false);
         editTextView.setVisibility(View.INVISIBLE);
     }
 

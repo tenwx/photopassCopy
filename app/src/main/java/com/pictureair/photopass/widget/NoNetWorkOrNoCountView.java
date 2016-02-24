@@ -74,9 +74,14 @@ public class NoNetWorkOrNoCountView extends RelativeLayout implements OnClickLis
 			resultTextView.setVisibility(View.VISIBLE);
 			resultTextView.setText(resultString);
 		}
-		
-		resultTipTextView.setText(resultTipsString);
-		
+
+		if (resultTipsString == 0) {
+			resultTipTextView.setVisibility(View.INVISIBLE);
+		} else {
+			resultTipTextView.setVisibility(View.VISIBLE);
+			resultTipTextView.setText(resultTipsString);
+		}
+
 		if (buttonString == 0) {
 			resultButton.setVisibility(View.INVISIBLE);
 		}else {
