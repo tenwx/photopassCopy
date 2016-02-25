@@ -1,6 +1,6 @@
 package cn.smssdk.gui;
 
-import static cn.smssdk.framework.utils.R.getRawRes;
+import static com.mob.tools.utils.R.getRawRes;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.zip.GZIPInputStream;
 
-import m.framework.utils.Hashon;
+import com.mob.tools.utils.Hashon;
 import android.content.Context;
 
 public class SearchEngine {

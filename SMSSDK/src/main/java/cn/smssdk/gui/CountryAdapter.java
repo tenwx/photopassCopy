@@ -7,8 +7,7 @@
  */
 package cn.smssdk.gui;
 
-import static cn.smssdk.framework.utils.R.dipToPx;
-import static cn.smssdk.framework.utils.R.getColorRes;
+import static com.mob.tools.utils.R.getColorRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,10 +20,9 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.GroupListView.GroupAdapter;
-
+import cn.smssdk.gui.layout.SizeHelper;
 /**
  * 自定义的国家列表，适配器，用于填充国家listview
  */
@@ -142,12 +140,13 @@ public class CountryAdapter extends GroupAdapter {
             if (CustomFontManager.IS_CUSOTM_FONT) {
                 tv.setTypeface(typeface);
             }
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             int resId = getColorRes(parent.getContext(), "smssdk_lv_title_color");
             if (resId > 0) {
                 tv.setTextColor(parent.getContext().getResources().getColor(resId));
             }
-            int dp_6 = dipToPx(parent.getContext(), 6);
+            int dp_6 = SizeHelper.fromPxWidth(30);
+            dp_6 = 30;
             tv.setPadding(0, dp_6, 0, dp_6);
             tv.setLayoutParams(new LinearLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -180,6 +179,7 @@ public class CountryAdapter extends GroupAdapter {
             typeface = Typeface.createFromAsset(parent.getContext().getAssets(), CustomFontManager.CUSOTM_FONT_NAME);
         }
         if (convertView == null) {
+
             LinearLayout ll = new LinearLayout(parent.getContext());
             ll.setBackgroundColor(0xffffffff);
             convertView = ll;
@@ -192,8 +192,9 @@ public class CountryAdapter extends GroupAdapter {
             if (resId > 0) {
                 tv.setTextColor(parent.getContext().getResources().getColor(resId));
             }
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            int dp_16 = dipToPx(parent.getContext(), 16);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            int dp_16 = SizeHelper.fromPxWidth(30);
+            dp_16 = 30;
             tv.setPadding(0, dp_16, 0, dp_16);
             ll.addView(tv, new LinearLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));

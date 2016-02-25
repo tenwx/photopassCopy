@@ -38,12 +38,12 @@ import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.UserInterruptException;
-import cn.smssdk.framework.FakeActivity;
+import com.mob.tools.FakeActivity;
 
-import static cn.smssdk.framework.utils.R.getIdRes;
-import static cn.smssdk.framework.utils.R.getLayoutRes;
-import static cn.smssdk.framework.utils.R.getStringRes;
-import static cn.smssdk.framework.utils.R.getStyleRes;
+import static com.mob.tools.utils.R.getIdRes;
+import static com.mob.tools.utils.R.getLayoutRes;
+import static com.mob.tools.utils.R.getStringRes;
+import static com.mob.tools.utils.R.getStyleRes;
 
 /**
  * 2个页面

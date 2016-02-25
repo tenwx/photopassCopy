@@ -18,6 +18,7 @@ android {
 }
 
 dependencies {
-    compile files('libs/SMSSDK-1.1.9.jar')
-    compile files('libs/mframework.jar')
+
+    compile files('libs/SMSSDK-2.0.1.jar')
+    compile files('libs/MobTools-2016.0131.1739.jar')
 }
