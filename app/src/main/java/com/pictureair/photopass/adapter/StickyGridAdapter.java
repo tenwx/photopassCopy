@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -123,13 +124,16 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             viewHolder.storyTimeTextView = (TextView) convertView.findViewById(R.id.section_time);
             viewHolder.storyAddressNameTextView = (TextView) convertView.findViewById(R.id.section_location_place);
             viewHolder.storyCountryTextView = (TextView) convertView.findViewById(R.id.section_location_country);
+            viewHolder.storyCountryTextView.setTypeface(MyApplication.getInstance().getFontBold());
+            viewHolder.storyAddressNameTextView.setTypeface(MyApplication.getInstance().getFontBold());
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (HeaderViewHolder) convertView.getTag();
         }
 
         String headerTime = list.get(position).shootOn;
-        for (int i = position; i >= 0; i-- ){
+        for (int i = position; i >= 0; i--) {
             if (list.get(position).sectionId == list.get(i).sectionId) {//当前的
                 headerTime = list.get(i).shootOn;
             } else {

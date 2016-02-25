@@ -189,6 +189,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.locationDetailLayout = (RelativeLayout) convertView.findViewById(R.id.discover_location_detail_info);//详情layout
             viewHolder.locationDetailInfoTextView = (TextView) convertView.findViewById(R.id.discover_place_introduce);//地点的详情介绍
             viewHolder.locationBlurPhotoImageView = (ImageView) convertView.findViewById(R.id.discover_location_blur_photo);
+            viewHolder.locationNameTextView.setTypeface(MyApplication.getInstance().getFontBold());
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (LocationItem) convertView.getTag();
