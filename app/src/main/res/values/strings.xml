@@ -24,7 +24,6 @@
 
     <!-- email register start -->
     <string name="nn">昵称</string>
-    <string name="other_sign_name">名字</string>
     <string name="gender">性别</string>
     <string name="date_of_birth">出生日期</string>
     <string name="male">男</string>
@@ -316,7 +315,6 @@
     <!-- order detail start -->
     <string name="order_information">订单详情</string>
     <string name="product_information">商品详情:</string>
-    <string name="order_detail_activity">订单详情</string>
     <string name="productprice">商品价格:</string>
     <string name="preferential">优惠:</string>
     <string name="paymethod">支付方式:</string>

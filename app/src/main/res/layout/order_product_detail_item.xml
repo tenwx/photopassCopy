@@ -66,7 +66,7 @@
                     android:focusable="false"
                     android:text="$"
                     android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <TextView
                     android:id="@+id/order_textView_pr"
@@ -79,7 +79,7 @@
                     android:singleLine="true"
                     android:text="15.00"
                     android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
             </LinearLayout>
 
             <LinearLayout
@@ -97,7 +97,7 @@
                     android:focusable="false"
                     android:text="x"
                     android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <TextView
                     android:id="@+id/order_editText_count"

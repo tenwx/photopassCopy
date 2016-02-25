@@ -159,7 +159,7 @@
                 android:gravity="center"
                 android:text="@string/disney_video_selectphoto_model"
                 android:textColor="@drawable/textview_selector_onclick"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>
 
@@ -186,7 +186,7 @@
                 android:gravity="center"
                 android:text="@string/disney_video_go_to_select_photo"
                 android:textColor="@color/pp_purple"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>
     </LinearLayout>
@@ -202,14 +202,14 @@
         android:gravity="center"
         android:text="@string/disney_video_edit_photo_null"
         android:textColor="@color/gray_light5"
-        android:textSize="@dimen/text_size_12"
+        android:textSize="@dimen/text_size_14"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_12"
+        android:textSize="@dimen/text_size_14"
         android:background="@drawable/bubble"
         android:text="@string/disney_video_bubble"
         android:textColor="@color/white"

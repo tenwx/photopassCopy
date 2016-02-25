@@ -40,7 +40,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/textView_currency"
@@ -50,7 +50,7 @@
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/textView_pr"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/editText_count1"
@@ -60,7 +60,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/pp_margin_5"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <ImageView
             android:id="@+id/showOrHeight"

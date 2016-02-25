@@ -167,7 +167,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_small_size" />
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
     <LinearLayout
@@ -189,7 +189,7 @@
             android:gravity="center_horizontal|bottom"
             android:text="@string/edit"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/preview_share"
@@ -200,7 +200,7 @@
             android:gravity="center_horizontal|bottom"
             android:text="@string/share"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/preview_download"
@@ -211,7 +211,7 @@
             android:gravity="center_horizontal|bottom"
             android:text="@string/down"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/preview_makegift"
@@ -222,7 +222,7 @@
             android:gravity="center_horizontal|bottom"
             android:text="@string/makegift"
             android:textColor="@drawable/textview_selector_onclick"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
     </LinearLayout>
 
     <RelativeLayout

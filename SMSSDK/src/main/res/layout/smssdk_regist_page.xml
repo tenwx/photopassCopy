@@ -264,7 +264,7 @@
                 android:gravity="center"
                 android:text="@string/smssdk_explain_briefly"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <com.pictureair.photopass.widget.CustomTextView
                 android:id="@+id/tv_otherRegistered"
@@ -275,7 +275,7 @@
                 android:padding="5dp"
                 android:text="@string/smssdk_other_sign_up"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
         </LinearLayout>
     </ScrollView>
 

@@ -123,7 +123,7 @@
                         android:layout_centerVertical="true"
                         android:text="@string/gprs_wifi_download"
                         android:textColor="@color/pp_gray"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
 
                     <ImageButton
                         android:id="@+id/ib_gprs_wifi_download"
@@ -155,7 +155,7 @@
                         android:layout_centerVertical="true"
                         android:text="@string/wifi_only_download"
                         android:textColor="@color/pp_gray"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
 
 
                     <ImageButton
@@ -205,7 +205,7 @@
                         android:layout_marginLeft="@dimen/pp_margin_16"
                         android:text="@string/auto_sync"
                         android:textColor="@color/pp_gray"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
 
                     <ImageButton
                         android:id="@+id/ib_auto_update"

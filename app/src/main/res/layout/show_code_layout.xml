@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/pp_margin_20"
             android:text="@string/code_tips"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
     </LinearLayout>
 

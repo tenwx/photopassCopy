@@ -75,7 +75,7 @@
                 android:padding="@dimen/pp_padding_16"
                 android:text="@string/Chinese"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <ImageView
                 android:id="@+id/chinese_imageView"
@@ -109,7 +109,7 @@
                 android:padding="@dimen/pp_padding_16"
                 android:text="@string/English"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <ImageView
                 android:id="@+id/english_imageView"

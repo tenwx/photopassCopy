@@ -59,8 +59,8 @@
             android:background="@drawable/bg1"
             android:gravity="center"
             android:padding="@dimen/pp_padding_1"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/text_small_size" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 
     <LinearLayout
@@ -99,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:paddingBottom="@dimen/pp_padding_8"
                         android:textColor="@color/pp_blue"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
 
                     <View
                         android:layout_width="match_parent"
@@ -135,7 +135,7 @@
                             android:layout_marginTop="@dimen/pp_padding_8"
                             android:text="@string/self_collect"
                             android:textColor="@color/pp_blue"
-                            android:textSize="@dimen/text_size_12" />
+                            android:textSize="@dimen/text_size_14" />
                     </RelativeLayout>
 
                 </LinearLayout>

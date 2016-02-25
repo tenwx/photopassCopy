@@ -37,7 +37,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/nn"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/nick_name"
@@ -47,7 +47,7 @@
                 android:layout_marginRight="@dimen/pp_margin_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
-                android:textSize="@dimen/text_size_10" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
         <View
@@ -71,7 +71,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/gender"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/sex"
@@ -81,7 +81,7 @@
                 android:layout_marginRight="@dimen/pp_margin_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
-                android:textSize="@dimen/text_size_10" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
         <View
@@ -118,7 +118,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/date_of_birth"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/birthday"
@@ -128,7 +128,7 @@
                 android:layout_marginRight="@dimen/pp_margin_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
-                android:textSize="@dimen/text_size_10" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
         <View
@@ -152,7 +152,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/country"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/country_tv"
@@ -162,7 +162,7 @@
                 android:layout_marginRight="@dimen/pp_margin_2"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
-                android:textSize="@dimen/text_size_10" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
 
@@ -187,7 +187,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/account"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/account_tv"
@@ -199,7 +199,7 @@
                 android:singleLine="true"
                 android:text="@string/add"
                 android:textColor="@color/pp_light_gray_press"
-                android:textSize="@dimen/text_size_10" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
         <View
@@ -222,7 +222,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/qq"
                 android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
 
             <TextView
                 android:id="@+id/qq"
@@ -233,7 +233,7 @@
                 android:maxWidth="@dimen/pp_height_150"
                 android:singleLine="true"
                 android:textColor="@color/pp_light_gray_press"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -265,7 +265,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_2"
                 android:text="@string/modify"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
         <View

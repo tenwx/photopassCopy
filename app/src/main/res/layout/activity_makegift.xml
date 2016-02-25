@@ -68,7 +68,7 @@
             android:gravity="center"
             android:padding="@dimen/pp_padding_1"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_small_size" />
+            android:textSize="@dimen/text_size_12" />
 
         <ImageView
             android:id="@+id/rt"
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/pp_padding_16"
                     android:textColor="@color/pp_blue"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <View
                     android:layout_width="match_parent"
@@ -164,7 +164,7 @@
                         android:layout_marginTop="@dimen/pp_padding_8"
                         android:text="@string/self_collect"
                         android:textColor="@color/pp_blue"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
                 </RelativeLayout>
 
             </LinearLayout>

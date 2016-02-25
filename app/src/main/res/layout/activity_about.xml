@@ -37,7 +37,7 @@
                 android:layout_toRightOf="@+id/logo"
                 android:text="1.0"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_12" />
+                android:textSize="@dimen/text_size_14" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/copyright"
                     android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:layout_marginTop="@dimen/pp_margin_8"
                     android:text="@string/copyright1"
                     android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                     android:layout_marginTop="@dimen/pp_margin_8"
                     android:text="@string/copyright2"
                     android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <TextView
                     android:id="@+id/develop_version_tv"
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/pp_margin_16"
                     android:textColor="@color/pp_gray"
-                    android:textSize="@dimen/text_size_12"/>
+                    android:textSize="@dimen/text_size_14"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

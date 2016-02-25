@@ -16,9 +16,9 @@
 
     <dimen name="text_size_20">20sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
-    <!-- 把12号和10好字体都改为14号字体-->
-    <dimen name="text_size_12">14sp</dimen>
-    <dimen name="text_size_10">14sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_10">10sp</dimen>
     <dimen name="text_size_8">8sp</dimen>
     <dimen name="text_size_6">6sp</dimen>
     <dimen name="drawable_padding">8dp</dimen>

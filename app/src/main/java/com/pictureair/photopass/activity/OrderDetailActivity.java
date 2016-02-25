@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
 
     private Button deliveryButton;
-    private TextView orderNumber, orderTime, payMethod, orderStatus, productPrice, address, payTotalPrice;
+    private TextView orderNumber, orderTime, payMethod, orderStatus, productPrice, address, payTotalPrice, preferentialPrice;
     private OrderInfo orderInfo;
     private ArrayList<CartItemInfo> orderDetailArrayList;
     private SharedPreferences sharedPreferences;
@@ -57,6 +57,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         payMethod = (TextView) findViewById(R.id.order_detail_paymethod);
         orderStatus = (TextView) findViewById(R.id.order_status);
         productPrice = (TextView) findViewById(R.id.order_productprice);
+        preferentialPrice = (TextView) findViewById(R.id.preferential_tv);
         payTotalPrice = (TextView) findViewById(R.id.pay_total_price);
 
         address = (TextView) findViewById(R.id.order_delivery_address);
@@ -95,7 +96,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             //订单当前状态 1等待买家付款，2买家已付款（等待卖家发货），3卖家已发货（等待买家确认），4交易成功，5交易关闭,订单冻结,6,已付款 未收到推送
             case 1:
                 orderstatus = getResources().getString(R.string.waitpay);
-                deliveryButton.setVisibility(View.VISIBLE);
+                deliveryButton.setVisibility(View.GONE);
                 deliveryButton.setText(R.string.pay);
                 deliveryButton.setClickable(true);
                 break;
@@ -109,7 +110,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 break;
             case 6:
                 orderstatus = getResources().getString(R.string.order_pending);
-                deliveryButton.setVisibility(View.VISIBLE);
+                deliveryButton.setVisibility(View.GONE);
                 deliveryButton.setBackgroundResource(R.drawable.button_gray);
                 deliveryButton.setText(R.string.pay);
                 deliveryButton.setClickable(false);
@@ -121,8 +122,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
         orderStatus.setText(orderstatus);
 
-        productPrice.setText((int) orderInfo.orderTotalPrice + "");
-        payTotalPrice.setText((int) orderInfo.orderTotalPrice + "");
+        productPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
+        payTotalPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
+        preferentialPrice.setText("-" + currency + 0);
 
         switch (orderInfo.deliveryMethod) {
             case 1:

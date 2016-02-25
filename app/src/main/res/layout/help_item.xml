@@ -18,7 +18,7 @@
         android:layout_margin="@dimen/pp_margin_16"
         android:text="What is the PhotoPass?"
         android:textColor="@color/pp_blue"
-        android:textSize="@dimen/text_size_12" />
+        android:textSize="@dimen/text_size_14" />
 
     <View
         android:id="@+id/v_line"
@@ -37,7 +37,7 @@
         android:layout_marginLeft="@dimen/pp_margin_20"
         android:layout_marginTop="@dimen/pp_margin_10"
         android:textColor="@color/pp_light_gray_press"
-        android:textSize="@dimen/text_size_10" />
+        android:textSize="@dimen/text_size_14" />
 
 
 </RelativeLayout>

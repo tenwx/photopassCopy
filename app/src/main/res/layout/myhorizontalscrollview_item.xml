@@ -20,7 +20,7 @@
         android:padding="@dimen/pp_margin_16"
         android:textColor="@color/pp_gray"
         android:text="1"
-        android:textSize="@dimen/text_size_12" />
+        android:textSize="@dimen/text_size_14" />
 
 <!--
     <TextView

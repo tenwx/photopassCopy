@@ -322,7 +322,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         }
 
         private void init() {
-            setTextSize(10);
+            setTextSize(12);
             setTextColor(getResources().getColor(R.color.pp_gray));
         }
 

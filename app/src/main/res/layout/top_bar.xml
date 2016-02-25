@@ -80,7 +80,7 @@
             android:paddingBottom="@dimen/pp_margin_10"
             android:clickable="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_14"
             android:visibility="gone" />
 
     </LinearLayout>

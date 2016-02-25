@@ -24,7 +24,6 @@
 
     <!-- email register start -->
     <string name="nn">Nickname</string>
-    <string name="other_sign_name">Name</string>
     <string name="gender">Gender</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="male">Male</string>
@@ -316,7 +315,6 @@
     <!-- order detail start -->
     <string name="order_information">Order Detail</string>
     <string name="product_information">Product Information</string>
-    <string name="order_detail_activity">Order detail</string>
     <string name="productprice">Product Price:</string>
     <string name="preferential">Preferential:</string>
     <string name="paymethod">Payment Method:</string>

@@ -75,7 +75,7 @@
             android:layout_toRightOf="@id/cartSelectAllImageView"
             android:text="@string/select_all"
             android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
         <LinearLayout
             android:id="@+id/cartPriceLinearLayout"

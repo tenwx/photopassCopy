@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/order_detail_activity"
+            android:text="@string/order_information"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
@@ -57,7 +57,7 @@
                     android:padding="@dimen/pp_padding_16"
                     android:text="@string/product_information"
                     android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <com.pictureair.photopass.widget.DashedLineView
                     android:paddingBottom="@dimen/pp_margin_8"
@@ -98,7 +98,7 @@
                         android:padding="@dimen/pp_padding_16"
                         android:text="@string/order_information"
                         android:textColor="@color/pp_dark_blue"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
 
                     <Button
                         android:id="@+id/order_detail_payment"
@@ -141,7 +141,7 @@
                         android:gravity="center"
                         android:text="@string/productprice"
                         android:textColor="@color/pp_gray"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
 
                     <TextView
                         android:id="@+id/order_productprice"
@@ -151,7 +151,7 @@
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:textColor="@color/pp_gray"
-                        android:textSize="@dimen/text_size_12" />
+                        android:textSize="@dimen/text_size_14" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -174,6 +174,7 @@
                         android:textSize="@dimen/text_small_size" />
 
                     <TextView
+                        android:id="@+id/preferential_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -264,7 +265,7 @@
                     android:padding="@dimen/pp_padding_16"
                     android:text="@string/order_info"
                     android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_14" />
 
                 <com.pictureair.photopass.widget.DashedLineView
                     android:layout_width="match_parent"

@@ -224,7 +224,7 @@ public class CartInfoAdapter extends BaseAdapter {
         viewHolder.cartCurrencyTextView.setText(currency);
         viewHolder.cartGoodProductQuentityTextView.setText("x" + goodArrayList.get(position).getQty() + "");
         viewHolder.cartGoodPriceTextView.setText(goodArrayList.get(position).getUnitPrice() + "");
-        viewHolder.cartGoodNameTextView.setText(goodArrayList.get(position).getProductName());
+        viewHolder.cartGoodNameTextView.setText(goodArrayList.get(position).getProductNameAlias());
         viewHolder.cartAddImageView.setOnClickListener(new ChangeCountOnclick(viewHolder, gridviewlist, goodArrayList.get(position), position));
         viewHolder.cartReduceImageView.setOnClickListener(new ChangeCountOnclick(viewHolder, gridviewlist, goodArrayList.get(position), position));
         if (goodArrayList.get(position).getShowEdit() == 1) {

@@ -48,6 +48,6 @@
             android:gravity="right|center_vertical"
             android:text="time"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_14" />
 
 </LinearLayout>
