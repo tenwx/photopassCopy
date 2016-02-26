@@ -160,7 +160,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         viewHolder.goodQuentityTextView.setText("x" + arrayList.get(position).getQty());//数量
         viewHolder.currencyTextView.setText(currency);//单位
         viewHolder.goodPriceTextView.setText(arrayList.get(position).getUnitPrice() + "");//单价
-        viewHolder.goodNameTextView.setText(arrayList.get(position).getProductName());
+        viewHolder.goodNameTextView.setText(arrayList.get(position).getProductNameAlias());
         viewHolder.goodRelativeLayout.setClickable(true);
         //PP+商品不需要显示照片
 //        if (arrayList.get(position).getCartProductType() != 3) {
