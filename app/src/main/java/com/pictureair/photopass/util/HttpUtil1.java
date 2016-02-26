@@ -96,6 +96,7 @@ public class HttpUtil1 {
      * @param httpCallback 请求回调
      */
     public static void asyncGet(final String url, RequestParams params, final HttpCallback httpCallback) {
+        PictureAirLog.out("url--->" + url);
         asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.wxpay;
+package net.sourceforge.simcpux;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

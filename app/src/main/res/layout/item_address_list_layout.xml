@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/cart_not_select" />
+            android:src="@drawable/nosele" />
 
     </RelativeLayout>
 
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_height_1"
         android:layout_marginTop="@dimen/pp_margin_10"
-        android:background="@color/pp_blue" />
+        android:background="@color/pp_light_gray_normal" />
 
 
 </LinearLayout>

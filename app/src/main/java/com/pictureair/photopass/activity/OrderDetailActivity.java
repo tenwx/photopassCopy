@@ -99,6 +99,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 deliveryButton.setVisibility(View.GONE);
                 deliveryButton.setText(R.string.pay);
                 deliveryButton.setClickable(true);
+                payMethod.setVisibility(View.INVISIBLE);
                 break;
 
             case 2:
