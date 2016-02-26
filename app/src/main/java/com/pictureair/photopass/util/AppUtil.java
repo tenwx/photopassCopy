@@ -1075,4 +1075,33 @@ public class AppUtil {
         }
     }
 
+    /**
+     * 将简码转换成 国家名称
+     */
+    public static String getCountryByCountryCode(String countryCode,
+                                                 Context context) {
+        String[] codeStrings;
+        String country = null;
+        // 国家名称集合
+        //		Map<String, String> countryMap = new HashMap<String, String>();
+        /** 读取国家简码 */
+        codeStrings = context.getResources().getStringArray(R.array.country_code);
+        if (null != codeStrings) {
+
+            for (int i = 0; i < codeStrings.length; i++) {
+                String bb[] = codeStrings[i].split(",");
+                //bb[0]:国家
+                //bb[1]:简码
+                //				countryMap.put(bb[1].trim(), bb[0].trim());
+                if (countryCode.trim().equals(bb[1].trim())) {
+                    country = bb[0].trim();
+                    break;
+                }
+            }
+        }
+        //		country = countryMap.get(countryCode.trim());
+        return country;
+    }
+
+
 }

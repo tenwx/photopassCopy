@@ -39,6 +39,7 @@ public class OtherRegisterActivity extends BaseActivity implements
     // 变量
     private String sex = "";// 性别
     private String country = "";
+    private String countryCode = "";
     private String birthday = "";
 
     // 日期探矿选择器
@@ -108,6 +109,7 @@ public class OtherRegisterActivity extends BaseActivity implements
                 String[] countrys = (String[])msg.obj;
 //                countryCode = countrys[1];
                 country = countrys[0];
+                countryCode = countrys[4];
                 etCounry.setText(country);// 国家名称
                 break;
 
@@ -226,7 +228,7 @@ public class OtherRegisterActivity extends BaseActivity implements
 
                         case AppUtil.PWD_AVAILABLE:// 密码可用
                             new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
-                                    name, birthday, sex, country, OtherRegisterActivity.this);
+                                    name, birthday, sex, countryCode, OtherRegisterActivity.this);
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
