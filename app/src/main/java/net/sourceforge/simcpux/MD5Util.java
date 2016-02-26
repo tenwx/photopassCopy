@@ -1,4 +1,4 @@
-package com.pictureair.photopass.wxpay;
+package net.sourceforge.simcpux;
 
 import java.security.MessageDigest;
 

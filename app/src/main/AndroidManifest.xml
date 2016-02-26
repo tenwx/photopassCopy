@@ -114,7 +114,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:scheme="wxb41738d7ee3af024" />
+                <data android:scheme="wxc3d2d4d75042f800" />
             </intent-filter>
         </activity>
         <activity
@@ -246,11 +246,11 @@
 
         <!-- wechat支付 -->
         <activity
-            android:name=".wxpay.WXPayEntryActivity"
+            android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop" />
 
-        <receiver android:name=".wxpay.AppRegister">
+        <receiver android:name="net.sourceforge.simcpux.AppRegister">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
