@@ -21,9 +21,8 @@ public class WebViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
         setTopLeftValueAndShow(R.drawable.back_white, true);
-//        setTopTitleShow(R.string.mypage_about);
 
-        int key = getIntent().getIntExtra("key",1);
+        int key = getIntent().getIntExtra("key", 1);
         pb = (ProgressBar) findViewById(R.id.pb);
         pb.setMax(100);
 
@@ -36,8 +35,10 @@ public class WebViewActivity extends BaseActivity {
         initWebSettings();// 初始化webViewsetting
         if (key == 1){
             webView.loadUrl(Common.POLICY_AGREEMENT);
+            setTopTitleShow(R.string.policy); // 设置标题
         }else if(key == 2){
             webView.loadUrl(Common.TERMS_AGREEMENT);
+            setTopTitleShow(R.string.terms); // 设置标题
         }
     }
 

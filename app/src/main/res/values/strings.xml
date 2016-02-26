@@ -427,4 +427,7 @@
     <string name="delete_percent">正在删除%1$d/%2$d</string>
     <string name="title_activity_web_view">WebViewActivity</string>
     <!-- edit story end -->
+
+    <string name="terms">乐拍通软件许可及服务协议</string>
+    <string name="policy">隐私声明</string>
 </resources>

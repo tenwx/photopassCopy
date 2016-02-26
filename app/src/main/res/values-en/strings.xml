@@ -426,4 +426,8 @@
     <string name="disall">Disselect</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
     <!-- edit story end -->
+
+    <string name="terms">Terms and Conditions</string>
+    <string name="policy">Privacy Policy</string>
+
 </resources>
