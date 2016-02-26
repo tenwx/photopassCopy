@@ -242,7 +242,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     System.out.println("photolist size = 0");
                     //判断是否之前有成功获取过
                     API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
-                    API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
                 } else {
                     PictureAirLog.out("photolist size = " + app.photoPassPicList.size());
                     //有数据，直接显示
@@ -305,12 +304,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
-                API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取全部视频信息
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
                 app.setPushPhotoCount(0);//清空推送消息的数量
                 getPhotoInfoDone = true;
+                API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
                 getDataFinish();
                 break;
 
@@ -327,6 +326,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 Editor editor = sharedPreferences.edit();// 获取编辑器
                 editor.putInt("photoCount", 0);
                 editor.commit();// 提交修改
+                API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取全部视频信息
                 getRefreshDataFinish();
                 break;
 
@@ -386,7 +386,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     scanMagicPhotoNeedCallBack = true;
                     fragments = new ArrayList<>();
                     fragments.clear();
-
                     showViewPager();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
                     if (sharedNeedFresh) {
@@ -764,6 +763,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
             EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
             EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
+            if (app.getPushPhotoCount() + app.getPushViedoCount() == 0){
+                EventBus.getDefault().post(new RedPointControlEvent(false));
+            }
         } else {//没有图片
 
             //判断是否应该显示左上角红点
@@ -950,7 +952,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 dialog.show();
             }
             API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
-            API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {//app内的正常流程

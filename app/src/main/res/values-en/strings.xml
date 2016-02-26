@@ -250,7 +250,7 @@
 
     <!-- submit order start -->
     <string name="submitorder">Submit Order</string>
-    <string name="transport">Shipping</string>
+    <string name="transport">Self Collect</string>
     <string name="goods_info">Shop Info</string>
     <string name="all_goods">%1$d item(s)</string>
     <string name="checkout">Confirm</string>
@@ -374,7 +374,7 @@
     <!-- about start -->
     <string name="about_tips">Capture Your Magical Moments!</string>
     <string name="copyright"> </string>
-    <string name="copyright1">Copyright © 2015 Pictureworks</string>
+    <string name="copyright1">Copyright © 2016 Pictureworks</string>
     <string name="copyright2">All Rights Reserved.</string>
     <string name="develop_version">Debug </string>
     <string name="testing_version">Beta </string>

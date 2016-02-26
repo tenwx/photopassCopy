@@ -30,6 +30,17 @@ public class Common {
 //    public final static boolean DEBUG = false;// false，不打印log
 
     /**
+     * 正式上线服务器
+     */
+//    public static final String BASE_URL_TEST = "http://211.144.223.226:3006";
+//    public static final String PHOTO_URL = "http://211.144.223.224:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.144.223.226:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://211.144.223.226:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+//    public final static String VERSION_CODE = "V1.1.2";//开发版
+//    public final static boolean DEBUG = true;// true，打印log
+
+    /**
      * 外网可访问的8.3测试服务器
      */
 //    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
