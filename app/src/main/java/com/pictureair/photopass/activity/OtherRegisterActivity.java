@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -30,6 +36,7 @@ import cn.smssdk.gui.EditTextWithClear;
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     // 声明控件
+    private TextView tvAgreement;
     private EditTextWithClear etEmail, etPwd, etPwd2, etName;
     private TextView etYear, etMonth, etDay, etCounry;
     private RadioGroup rg;
@@ -129,6 +136,22 @@ public class OtherRegisterActivity extends BaseActivity implements
     }
 
     private void initview() {
+        tvAgreement = (TextView) findViewById(R.id.tv_agreement);
+        tvAgreement.setMovementMethod(LinkMovementMethod.getInstance());
+        CharSequence text = tvAgreement.getText();
+        if (text instanceof Spannable) {
+            int end = text.length();
+            Spannable sp = (Spannable) tvAgreement.getText();
+            URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(text);
+            style.clearSpans();// should clear old spans
+            for (URLSpan url : urls) {
+                MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            tvAgreement.setText(style);
+        }
+
         myToast = new MyToast(OtherRegisterActivity.this);
 //		getDateYMD();
         setTopLeftValueAndShow(R.drawable.back_white,true);
@@ -310,6 +333,22 @@ public class OtherRegisterActivity extends BaseActivity implements
                 break;
             default:
                 break;
+        }
+    }
+
+
+    private class MyURLSpan extends ClickableSpan {
+        private String mUrl;
+        MyURLSpan(String url) {
+            mUrl = url;
+        }
+
+        @Override
+        public void onClick(View widget) {
+            Intent intent=new Intent();
+            intent.putExtra("key", Integer.valueOf(mUrl));
+            intent.setClass(OtherRegisterActivity.this, WebViewActivity.class);
+            startActivity(intent);
         }
     }
 
