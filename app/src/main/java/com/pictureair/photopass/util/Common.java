@@ -28,6 +28,8 @@ public class Common {
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String VERSION_CODE = "V1.1.2";//内测版
 //    public final static boolean DEBUG = false;// false，不打印log
+//    public final static String POLICY_AGREEMENT = "http://192.168.8.49:3004/policy.html?source=outer";  //政策 1
+//    public final static String TERMS_AGREEMENT = "http://192.168.8.49:3004/terms.html?source=outer";  //条款 2
 
     /**
      * 外网可访问的8.3测试服务器
@@ -39,6 +41,8 @@ public class Common {
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String VERSION_CODE = "V1.2.3";//开发版
 //    public final static boolean DEBUG = true;// true，打印log
+//    public final static String POLICY_AGREEMENT = "http://211.95.27.34:3004/policy.html?source=outer";  //政策 1
+//    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
 
     /**
      * 内网8.3测试服务器
@@ -50,6 +54,9 @@ public class Common {
     public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
     public final static String VERSION_CODE = "V1.2.3";//开发版
     public final static boolean DEBUG = true;// true，打印log
+    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
+    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
+
 
 
     //接口

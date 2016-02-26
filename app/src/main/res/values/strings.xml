@@ -425,5 +425,6 @@
     <string name="all">所有</string>
     <string name="disall">取消</string>
     <string name="delete_percent">正在删除%1$d/%2$d</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
     <!-- edit story end -->
 </resources>
