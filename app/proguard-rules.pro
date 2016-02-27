@@ -173,8 +173,8 @@
 -keep class com.nostra13.universalimageloader.** { *; }
 
 ##异步网络请求避免混淆
--dontwarn android-async-http-1.4.9.jar.**
--keep class android-async-http-1.4.9.jar.**{*;}
+-dontwarn android-async-http-1.4.8.jar.**
+-keep class android-async-http-1.4.8.jar.**{*;}
 
  # fastjson 混淆
 -dontwarn com.alibaba.fastjson.**
@@ -186,7 +186,3 @@
  # OCR文字识别 混淆
  -keep class com.pictureair.photopass.zxing.**{*;}
  -keep class com.googlecode.**{*;}
-
-
-
-

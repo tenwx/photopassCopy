@@ -118,6 +118,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                     CartItemInfo1 cartItemInfo = new CartItemInfo1();
                     cartItemInfo.setCartId(cartId);
                     cartItemInfo.setProductName(goodsInfo.getName());
+                    cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
                     cartItemInfo.setUnitPrice(goodsInfo.getPrice());
                     cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
                     cartItemInfo.setDescription(goodsInfo.getDescription());

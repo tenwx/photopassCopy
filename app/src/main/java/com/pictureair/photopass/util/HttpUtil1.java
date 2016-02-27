@@ -7,10 +7,11 @@ import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.entity.HttpBaseJson;
 
+import org.apache.http.Header;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cz.msebera.android.httpclient.Header;
 
 
 /**
