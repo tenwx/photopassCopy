@@ -312,12 +312,12 @@
             </intent-filter>
         </activity>
 
-        <!-- shareSDK短信 -->
-        <activity
-            android:name="cn.smssdk.SMSSDKUIShell"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <!--&lt;!&ndash; shareSDK短信 &ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name="com.mob.tools.MobUIShell"-->
+            <!--android:configChanges="keyboardHidden|orientation|screenSize"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
+            <!--android:windowSoftInputMode="stateHidden|adjustResize" />-->
 
         <service
             android:name=".service.DownloadService"

@@ -32,15 +32,14 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.MyToast;
-
-import net.sourceforge.simcpux.Constants;
-import net.sourceforge.simcpux.MD5;
-import net.sourceforge.simcpux.Util;
-
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.unionpay.UPPayAssistEx;
+
+import net.sourceforge.simcpux.Constants;
+import net.sourceforge.simcpux.MD5;
+import net.sourceforge.simcpux.Util;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -854,7 +853,7 @@ public class PaymentOrderActivity extends BaseActivity implements
             List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
             packageParams
                     .add(new BasicNameValuePair("appid", Constants.APP_ID));// 公众账号ID
-            packageParams.add(new BasicNameValuePair("body", "weixin"));// 商品描述
+            packageParams.add(new BasicNameValuePair("body", nameString));// 商品描述
             packageParams
                     .add(new BasicNameValuePair("mch_id", Constants.MCH_ID));// 商户号
             packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));// 随机字符串

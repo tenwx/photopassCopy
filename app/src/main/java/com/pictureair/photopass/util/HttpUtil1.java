@@ -100,6 +100,7 @@ public class HttpUtil1 {
         asyncHttpClient.get(url, params, new BaseJsonHttpResponseHandler<HttpBaseJson>() {
             @Override
             public void onStart() {
+                PictureAirLog.out("start---> get");
                 super.onStart();
                 httpCallback.onStart();
             }
