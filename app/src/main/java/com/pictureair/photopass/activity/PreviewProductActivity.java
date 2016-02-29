@@ -171,6 +171,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         Intent intent = new Intent(PreviewProductActivity.this, SubmitOrderActivity.class);
                         ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
                         CartItemInfo1 cartItemInfo = new CartItemInfo1();
+                        cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
                         cartItemInfo.setProductName(goodsInfo.getName());
                         cartItemInfo.setEntityType(goodsInfo.getEntityType());
                         cartItemInfo.setUnitPrice(goodsInfo.getPrice());
