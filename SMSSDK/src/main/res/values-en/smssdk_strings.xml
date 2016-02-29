@@ -9,7 +9,7 @@
     <string name="smssdk_send_verification_code">Verification</string>
     <string name="smssdk_sign_up">Sign Up</string>
     <string name="smssdk_other_sign_up">Register in other ways</string>
-    <string name="smssdk_explain_briefly">By signing up, you agree to our terms and conditions</string>
+    <string name="smssdk_explain_briefly">By signing up, you agree to our <a href = "2">Terms and Conditions</a>,and <a href = "1">Privacy Policy.</a></string>
     <string name="smssdk_send_code2">Verification again</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>

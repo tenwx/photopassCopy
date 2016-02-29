@@ -32,9 +32,11 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.wxpay.Constants;
-import com.pictureair.photopass.wxpay.MD5;
-import com.pictureair.photopass.wxpay.Util;
+
+import net.sourceforge.simcpux.Constants;
+import net.sourceforge.simcpux.MD5;
+import net.sourceforge.simcpux.Util;
+
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -83,6 +85,11 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     private int payType;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
     // wechat
+
+    /**
+     * 微信支付中
+     */
+    private boolean weChatIsPaying = false;
 
     private SharedPreferences sPreferences;
 
@@ -276,11 +283,19 @@ public class PaymentOrderActivity extends BaseActivity implements
             PictureAirLog.v(TAG, "paypal");
 
         } else if (payType == 7) {
+            weChatIsPaying = true;
             PictureAirLog.v(TAG, "wechat");
-            // 调起微信支付
-            // 生成prepay_id
-            GetPrepayIdTask getPrepayId = new GetPrepayIdTask();
-            getPrepayId.execute();
+            try {
+                // 调起微信支付
+                // 生成prepay_id
+                GetPrepayIdTask getPrepayId = new GetPrepayIdTask();
+                getPrepayId.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+                newToast.setTextAndShow(R.string.pay_failed, Common.TOAST_SHORT_TIME);
+            }
+
+
         } else {
             PictureAirLog.v(TAG, "other");
         }
@@ -368,7 +383,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
         myApplication.clearIsBuyingPhotoList();
         myApplication.setRefreshViewAfterBuyBlurPhoto("");
-        if (isBack!= null && !isBack.isEmpty() && isBack.equals("1")) {
+        if (isBack != null && !isBack.isEmpty() && isBack.equals("1")) {
             //返回到上一个界面
             AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         } else {
@@ -505,7 +520,7 @@ public class PaymentOrderActivity extends BaseActivity implements
             }
 
 	        /*
-	         * 支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
+             * 支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
 	         */
             String str = data.getExtras().getString("pay_result");
             if (str.equalsIgnoreCase("success")) {
@@ -542,7 +557,9 @@ public class PaymentOrderActivity extends BaseActivity implements
                 paymentOrderHandler.sendEmptyMessage(RQF_CANCEL);
             }
         }
-    };
+    }
+
+    ;
 
 
     /**
@@ -904,6 +921,34 @@ public class PaymentOrderActivity extends BaseActivity implements
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+
+        if (weChatIsPaying) {
+            int resultCode = sPreferences.getInt(Common.WECHAT_PAY_STATUS, -3);
+            switch (resultCode) {
+                case 0:// 微信支付成功
+                    PictureAirLog.out("======resultCode=====" + resultCode);
+                    paymentOrderHandler.sendEmptyMessage(RQF_SUCCESS);
+                    break;
+
+                case -1:// 微信支付取消
+                    PictureAirLog.out("===========" + resultCode);
+                    paymentOrderHandler.sendEmptyMessage(RQF_CANCEL);
+                    break;
+
+                case -2:// 微信支付失败
+                    PictureAirLog.out("===========" + resultCode);
+                    paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                    break;
+
+                default:
+                    break;
+            }
+            weChatIsPaying = false;
+            SharedPreferences.Editor editor = sPreferences.edit();
+            editor.putInt(Common.WECHAT_PAY_STATUS, -3);
+            editor.commit();
+            resultCode = -3;
+        }
     }
 
     @Override

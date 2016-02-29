@@ -22,9 +22,9 @@ import android.widget.TextView;
 
 import cn.smssdk.gui.GroupListView.OnItemClickListener;
 
-import static cn.smssdk.framework.utils.R.dipToPx;
-import static cn.smssdk.framework.utils.R.getBitmapRes;
-import static cn.smssdk.framework.utils.R.getColorRes;
+import static com.mob.tools.utils.R.dipToPx;
+import static com.mob.tools.utils.R.getBitmapRes;
+import static com.mob.tools.utils.R.getColorRes;
 
 /**
  * 自定义国家列表控件listview

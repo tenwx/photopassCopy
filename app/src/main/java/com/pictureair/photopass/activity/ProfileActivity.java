@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -45,6 +46,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     private SelectDateWeidget selectDateWeidget;
 
     private CustomProgressDialog dialog;
+    private String countryCode;//国家简码
 //    private CountryPage countryPage;
 
     private final Handler profileHandler = new ProfileHandler(this);
@@ -75,7 +77,14 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         switch (msg.what) {
             case 1://国家
                 String[] countrys = (String[])msg.obj;
-                countryString = countrys[0];//countrys[1] CODE
+                /**
+                 * countrys[1] 手机区号
+                 * countrys[0] 国家名称
+                 * countrys[4] 国家简码
+                 */
+                countryString = countrys[0];
+                countryCode = countrys[4];
+
                 if (!isNetWorkConnect(this)) {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
@@ -87,7 +96,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 //                }
                 API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-                        countryString, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
+                        countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
                 break;
             case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
@@ -156,7 +165,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 SharedPreferences.Editor e = sp.edit();
                 e.putString(Common.USERINFO_BIRTHDAY, birthdayString);
                 e.putString(Common.USERINFO_NICKNAME, nickNameString);
-                e.putString(Common.USERINFO_COUNTRY, countryString);
+                e.putString(Common.USERINFO_COUNTRY, countryCode);
                 e.putString(Common.USERINFO_GENDER, genderString);
                 e.commit();
                 if (dialog.isShowing()) {
@@ -234,7 +243,8 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
         // 设置国家
         countryString = sp.getString(Common.USERINFO_COUNTRY, "");
-        if (!countryString.trim().equals("")) {
+        if (null != countryString && !countryString.equals("")){
+            countryString = AppUtil.getCountryByCountryCode(countryString, this);
             countryTv.setText(countryString);
         }
 
@@ -273,7 +283,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.item_country:
-                if (!countryString.trim().equals("")) {
+                if (null != countryString && !countryString.trim().equals("")) {
                     return;
                 }
                 CountryPage countryPage = new CountryPage();

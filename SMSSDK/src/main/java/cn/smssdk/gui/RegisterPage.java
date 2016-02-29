@@ -13,11 +13,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,12 +44,12 @@ import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.UserInterruptException;
-import cn.smssdk.framework.FakeActivity;
+import com.mob.tools.FakeActivity;
 
-import static cn.smssdk.framework.utils.R.getIdRes;
-import static cn.smssdk.framework.utils.R.getLayoutRes;
-import static cn.smssdk.framework.utils.R.getStringRes;
-import static cn.smssdk.framework.utils.R.getStyleRes;
+import static com.mob.tools.utils.R.getIdRes;
+import static com.mob.tools.utils.R.getLayoutRes;
+import static com.mob.tools.utils.R.getStringRes;
+import static com.mob.tools.utils.R.getStyleRes;
 
 /**
  * 2个页面
@@ -154,6 +160,20 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
 
             tvExplain =(TextView) activity.findViewById(getIdRes(activity, "tv_explain"));
+            tvExplain.setMovementMethod(LinkMovementMethod.getInstance());
+            CharSequence text = tvExplain.getText();
+            if (text instanceof Spannable) {
+                int end = text.length();
+                Spannable sp = (Spannable) tvExplain.getText();
+                URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                SpannableStringBuilder style = new SpannableStringBuilder(text);
+                style.clearSpans();// should clear old spans
+                for (URLSpan url : urls) {
+                    MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                    style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                }
+                tvExplain.setText(style);
+            }
             tv_otherRegistered = (TextView) activity.findViewById(getIdRes(activity, "tv_otherRegistered"));
             tv_otherRegistered.setOnClickListener(new OnClickListener() {
 
@@ -862,6 +882,21 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                     tvCountry.setText(country[0]);
                 }
             }
+        }
+    }
+
+    private class MyURLSpan extends ClickableSpan {
+        private String mUrl;
+        MyURLSpan(String url) {
+            mUrl = url;
+        }
+
+        @Override
+        public void onClick(View widget) {
+            Message message=new Message();
+            message.arg1= Integer.valueOf(mUrl);
+            message.what=22;
+            handler2.sendMessage(message);
         }
     }
 

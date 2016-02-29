@@ -58,6 +58,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     long i = 0;
     // 申明变量
     private static final int START_OTHER_REGISTER_ACTIVITY = 11;// 启动 其他注册的侧面
+    private final int START_AGREEMENT_WEBVIEW = 22;
     // 申明其他类
     private SharedPreferences appPreferences;
     private MyToast myToast;
@@ -129,6 +130,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             case API1.FIND_PWD_SUCCESS:
                 new SignAndLoginUtil(LoginActivity.this, forGetphoto,
                         forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
+                break;
+            case START_AGREEMENT_WEBVIEW:
+                Intent intent=new Intent();
+                intent.putExtra("key", msg.arg1);
+                intent.setClass(LoginActivity.this, WebViewActivity.class);
+                startActivity(intent);
                 break;
 
             default:
