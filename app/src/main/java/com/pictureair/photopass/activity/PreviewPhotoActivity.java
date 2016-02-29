@@ -464,6 +464,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
                 cartItemInfo1.setCartId(cartId);
                 cartItemInfo1.setProductName(pppGoodsInfo.getName());
+                cartItemInfo1.setProductNameAlias(pppGoodsInfo.getNameAlias());
                 cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
                 cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
                 cartItemInfo1.setDescription(pppGoodsInfo.getDescription());

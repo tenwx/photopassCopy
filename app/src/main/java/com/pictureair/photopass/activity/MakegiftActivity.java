@@ -288,6 +288,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
                     CartItemInfo1 cartItemInfo = new CartItemInfo1();
                     cartItemInfo.setProductName(goodsInfo.getName());
+                    cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
                     cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
                     cartItemInfo.setUnitPrice(goodsInfo.getPrice());
                     cartItemInfo.setEntityType(goodsInfo.getEntityType());
