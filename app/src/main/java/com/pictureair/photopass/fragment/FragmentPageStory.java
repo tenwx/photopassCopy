@@ -1309,6 +1309,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                                 //									System.out.println("date2--->"+info.shootOn);
                                 Date date1 = sdf.parse(p.list.get(i).shootOn);
                                 Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                                Date date3 = sdf.parse(p.shootOn);
                                 info.locationName = p.place;
 
                                 //									System.out.println("date1--->"+date1);
@@ -1317,14 +1318,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                                     PictureAirLog.out("the lastest time, need add");
                                     p.list.add(i, info);
                                     PictureAirLog.out("size->" + p.list.size());
-                                    p.shootOn = info.shootOn;//更新shootOn的时间
+                                    if (date2.after(date3)) {//当前时间date3之后
+                                        p.shootOn = info.shootOn;//更新shootOn的时间
+                                    }
                                     break;
                                 } else {
                                     if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
                                         PictureAirLog.out("the last position, need add");
                                         p.list.add(info);
                                         PictureAirLog.out("size->" + p.list.size());
-                                        p.shootOn = info.shootOn;//更新shootOn的时间
+                                        if (date2.after(date3)) {//当前时间date3之后
+                                            p.shootOn = info.shootOn;//更新shootOn的时间
+                                        }
                                         break;
                                     } else {
 
@@ -1409,18 +1414,23 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         try {
                             Date date1 = sdf.parse(p.list.get(i).shootOn);
                             Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                            Date date3 = sdf.parse(p.shootOn);
                             if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
                                 PictureAirLog.out("the lastest time, need add");
                                 p.list.add(i, info);
                                 PictureAirLog.out("size->" + p.list.size());
-                                p.shootOn = info.shootOn;//更新shootOn的时间
+                                if (date2.after(date3)) {//当前时间date3之后
+                                    p.shootOn = info.shootOn;//更新shootOn的时间
+                                }
                                 break;
                             } else {
                                 if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
                                     PictureAirLog.out("the last position, need add");
                                     p.list.add(info);
                                     PictureAirLog.out("size->" + p.list.size());
-                                    p.shootOn = info.shootOn;//更新shootOn的时间
+                                    if (date2.after(date3)) {//当前时间date3之后
+                                        p.shootOn = info.shootOn;//更新shootOn的时间
+                                    }
                                     break;
                                 } else {
                                     PictureAirLog.out("scan next------>");
