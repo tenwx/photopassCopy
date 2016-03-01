@@ -250,7 +250,7 @@
 
     <!-- submit order start -->
     <string name="submitorder">Submit Order</string>
-    <string name="transport">Self Collect</string>
+    <string name="transport">Self-Collect</string>
     <string name="goods_info">Shop Info</string>
     <string name="all_goods">%1$d item(s)</string>
     <string name="checkout">Confirm</string>
@@ -320,7 +320,7 @@
     <string name="paymethod">Payment Method:</string>
     <string name="order_info">Order Information</string>
     <string name="self_collect_address">Self-Collect:</string>
-    <string name="waitpay">Wait payment</string>
+    <string name="waitpay">Waiting for payment</string>
     <!-- order detail end -->
 
     <!-- ppp start -->

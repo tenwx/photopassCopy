@@ -1676,7 +1676,7 @@ public class API1 {
         params.put(Common.SHARE_CONTENT, orgJSONObject.toString());
         params.put(Common.IS_USE_SHORT_URL, false);
         //BASE_URL_TEST2 测试成功
-        PictureAirLog.out("get share url----------------");
+        PictureAirLog.out("get share url----------------" + params.toString());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_SHARE_URL, params, new HttpCallback() {
 
             @Override

@@ -242,6 +242,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     System.out.println("photolist size = 0");
                     //判断是否之前有成功获取过
                     API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
+                    API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
                 } else {
                     PictureAirLog.out("photolist size = " + app.photoPassPicList.size());
                     //有数据，直接显示
@@ -304,12 +305,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
+                API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取最新视频信息
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
                 app.setPushPhotoCount(0);//清空推送消息的数量
                 getPhotoInfoDone = true;
-                API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
                 getDataFinish();
                 break;
 
@@ -326,7 +327,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 Editor editor = sharedPreferences.edit();// 获取编辑器
                 editor.putInt("photoCount", 0);
                 editor.commit();// 提交修改
-                API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取全部视频信息
                 getRefreshDataFinish();
                 break;
 
@@ -952,6 +952,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 dialog.show();
             }
             API1.getPhotosByConditions(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageStoryHandler, null);//获取全部图片
+            API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {//app内的正常流程
@@ -1309,6 +1310,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                                 //									System.out.println("date2--->"+info.shootOn);
                                 Date date1 = sdf.parse(p.list.get(i).shootOn);
                                 Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                                Date date3 = sdf.parse(p.shootOn);
                                 info.locationName = p.place;
 
                                 //									System.out.println("date1--->"+date1);
@@ -1317,14 +1319,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                                     PictureAirLog.out("the lastest time, need add");
                                     p.list.add(i, info);
                                     PictureAirLog.out("size->" + p.list.size());
-                                    p.shootOn = info.shootOn;//更新shootOn的时间
+                                    if (date2.after(date3)) {//当前时间date3之后
+                                        p.shootOn = info.shootOn;//更新shootOn的时间
+                                    }
                                     break;
                                 } else {
                                     if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
                                         PictureAirLog.out("the last position, need add");
                                         p.list.add(info);
                                         PictureAirLog.out("size->" + p.list.size());
-                                        p.shootOn = info.shootOn;//更新shootOn的时间
+                                        if (date2.after(date3)) {//当前时间date3之后
+                                            p.shootOn = info.shootOn;//更新shootOn的时间
+                                        }
                                         break;
                                     } else {
 
@@ -1409,18 +1415,23 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                         try {
                             Date date1 = sdf.parse(p.list.get(i).shootOn);
                             Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                            Date date3 = sdf.parse(p.shootOn);
                             if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
                                 PictureAirLog.out("the lastest time, need add");
                                 p.list.add(i, info);
                                 PictureAirLog.out("size->" + p.list.size());
-                                p.shootOn = info.shootOn;//更新shootOn的时间
+                                if (date2.after(date3)) {//当前时间date3之后
+                                    p.shootOn = info.shootOn;//更新shootOn的时间
+                                }
                                 break;
                             } else {
                                 if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
                                     PictureAirLog.out("the last position, need add");
                                     p.list.add(info);
                                     PictureAirLog.out("size->" + p.list.size());
-                                    p.shootOn = info.shootOn;//更新shootOn的时间
+                                    if (date2.after(date3)) {//当前时间date3之后
+                                        p.shootOn = info.shootOn;//更新shootOn的时间
+                                    }
                                     break;
                                 } else {
                                     PictureAirLog.out("scan next------>");
