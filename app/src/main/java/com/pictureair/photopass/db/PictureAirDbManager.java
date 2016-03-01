@@ -38,6 +38,7 @@ public class PictureAirDbManager {
     public PictureAirDbManager(Context context) {
         if (photoInfoDBHelper == null) {
             photoInfoDBHelper = PictureAirDBHelper.getInstance(context);
+            DBManager.initializeInstance(photoInfoDBHelper);//初始化数据库操作类
         }
     }
 
@@ -49,8 +50,9 @@ public class PictureAirDbManager {
      * @param setLove   是收藏还是取消收藏操作
      */
     public void setPictureLove(PhotoInfo photoInfo, String userId, boolean setLove) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             if (setLove) {//添加收藏
                 Log.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
                 database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -71,14 +73,15 @@ public class PictureAirDbManager {
                 }
 
             }
+            database.setTransactionSuccessful();
 
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
         } finally {
-            database.close();
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
-        database = null;
     }
 
     /**
@@ -91,7 +94,8 @@ public class PictureAirDbManager {
         boolean result = false;
         Cursor cursor = null;
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().readData();
+
             if (photoInfo.onLine == 1) {
 
                 cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE +
@@ -110,10 +114,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return result;
     }
@@ -131,7 +132,7 @@ public class PictureAirDbManager {
         PhotoInfo photoInfo;
         Cursor cursor = null;
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().writData();
             for (int i = 0; i < originalPhotosArrayList.size(); i++) {
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = originalPhotosArrayList.get(i).locationId;
@@ -178,10 +179,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return resultArrayList;
     }
@@ -198,7 +196,7 @@ public class PictureAirDbManager {
         Cursor cursor = null;
         Cursor cursor1 = null;
         try {
-            database = photoInfoDBHelper.getReadableDatabase();
+            database = DBManager.getInstance().writData();
             cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where userId = ? order by shootOn desc", new String[]{userId});
             PhotoInfo photoInfo;
             File file;
@@ -246,11 +244,7 @@ public class PictureAirDbManager {
         } finally {
             if (cursor != null)
                 cursor.close();
-
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
 
         return resultArrayList;
@@ -263,26 +257,23 @@ public class PictureAirDbManager {
      * @param questionArrayList
      */
     public void insertIntoQuestionTable(ArrayList<QuestionInfo> questionArrayList) {
-        database = photoInfoDBHelper.getWritableDatabase();
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
             database.delete(Common.HELP_QUESTION_TABLE, null, null);
 
             System.out.println("title size" + questionArrayList.size());
             String addsql = "insert into " + Common.HELP_QUESTION_TABLE + " values(null,?,?,?,?)";
-            database.beginTransaction();
             for (int i = 0; i < questionArrayList.size(); i++) {
                 System.out.println("inserting data into database:" + i);
                 database.execSQL(addsql, new String[]{i + "", questionArrayList.get(i).questionName, questionArrayList.get(i).answer, PinYin.getPinYin(questionArrayList.get(i).questionName)});
             }
             database.setTransactionSuccessful();
-            database.endTransaction();
         } catch (Exception e) {
             // TODO: handle exception
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -295,8 +286,7 @@ public class PictureAirDbManager {
         ArrayList<QuestionInfo> resultArray = new ArrayList<QuestionInfo>();
         Cursor cursor = null;
         try {
-
-            database = photoInfoDBHelper.getReadableDatabase();
+            database = DBManager.getInstance().writData();
             cursor = database.rawQuery("select * from " + Common.HELP_QUESTION_TABLE, null);
             QuestionInfo question = null;
             //			cursor.moveToFirst();
@@ -313,10 +303,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return resultArray;
     }
@@ -329,7 +316,7 @@ public class PictureAirDbManager {
      */
     public ArrayList<QuestionInfo> queryQuestionInfo(String pinyin) {
         ArrayList<QuestionInfo> resultArray = new ArrayList<QuestionInfo>();
-        database = photoInfoDBHelper.getReadableDatabase();
+        database = DBManager.getInstance().writData();
         Cursor cursor = null;
         try {
             // 创建模糊查询的条件
@@ -363,10 +350,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
 
         return resultArray;
@@ -380,16 +364,16 @@ public class PictureAirDbManager {
      * @param userInfoId  用户ID
      */
     public void insertSettingStatus(String settingType, String userInfoId) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("insert into " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " values(null,?,?)", new String[]{settingType, userInfoId});
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -400,16 +384,16 @@ public class PictureAirDbManager {
      * @param userInfoId  用户ID
      */
     public void deleteSettingStatus(String settingType, String userInfoId) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("delete from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -426,7 +410,7 @@ public class PictureAirDbManager {
         Cursor cursor = null;
         boolean result = false;
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().writData();
             cursor = database.rawQuery("select * from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{settingType, userInfoId});
             result = (cursor.getCount() > 0) ? true : false;
         } catch (Exception e) {
@@ -435,10 +419,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return result;
     }
@@ -454,7 +435,7 @@ public class PictureAirDbManager {
         ArrayList<PhotoInfo> photoInfos = new ArrayList<PhotoInfo>();
         Cursor cursor = null;
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().writData();
             cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ? and shootTime=? order by shootOn", new String[]{"%" + photoCode + "%", shootOn});
 
             Log.e("查出来的数据。", "cursor.getCount(); ;" + cursor.getCount());
@@ -472,10 +453,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return photoInfos;
     }
@@ -490,18 +468,18 @@ public class PictureAirDbManager {
     public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList, int type) {
         ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
         //获取需要显示的PP(去掉重复、隐藏的) (new add 选择PP+界面直接解析)
-        if (type == 1){
+        if (type == 1) {
             for (int j = 0; j < ppCodeList.size(); j++) {
                 if (j + 1 < ppCodeList.size() && ppCodeList.get(j).getPpCode().equals(ppCodeList.get(j + 1).getPpCode())) {
                     ppCodeList.remove(j);
                 }
             }
-        }else{
+        } else {
 
         }
         Cursor cursor = null;
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().writData();
             ArrayList<String> urlList;
             ArrayList<PhotoInfo> selectPhotoItemInfos;
             for (int i = 0; i < ppCodeList.size(); i++) {
@@ -547,7 +525,7 @@ public class PictureAirDbManager {
                     } while (cursor.moveToNext());
 
                 }
-                if (type == 2){
+                if (type == 2) {
                     Collections.reverse(urlList);
                 }
                 PPinfo ppInfo1 = new PPinfo();
@@ -564,10 +542,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return showPPCodeList;
     }
@@ -578,16 +553,16 @@ public class PictureAirDbManager {
      * @param selectedPhotoId 指定照片ID
      */
     public void updatePhotoBought(String selectedPhotoId) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -598,16 +573,15 @@ public class PictureAirDbManager {
      * @param shootDate 绑定时间
      */
     public void updatePhotoBoughtByPPCodeAndDate(String ppCode, String shootDate) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -622,7 +596,7 @@ public class PictureAirDbManager {
         Cursor cursor = null;
         try {
             //第一次进入，判断数据库中是否存在当前UserId，如果不存在，则第一次进入
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().writData();
             cursor = database.rawQuery("select * from " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " where activity = ? and userId = ?", new String[]{activity, userID});
             if (cursor.getCount() == 0) {//说明没有数据，则为第一次进入
                 database.execSQL("insert into " + Common.FIRST_START_ACTIVITY_INFO_TABLE + " values(null,?,?)", new String[]{activity, userID});
@@ -634,10 +608,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return result;
     }
@@ -648,14 +619,13 @@ public class PictureAirDbManager {
      * @param tableName 需要清空的表的名字
      */
     public void deleteAllInfoFromTable(String tableName) {
-        database = photoInfoDBHelper.getWritableDatabase();
+        database = DBManager.getInstance().writData();
         try {
             database.execSQL("delete from " + tableName);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            database.close();
-            database = null;
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -666,14 +636,13 @@ public class PictureAirDbManager {
      * @param isVideo   是不是视频数据
      */
     public void deleteAllInfoFromTable(String tableName, boolean isVideo) {
-        database = photoInfoDBHelper.getWritableDatabase();
+        database = DBManager.getInstance().writData();
         try {
             database.execSQL("delete from " + tableName + " where isVideo = ?", new String[]{isVideo ? "1" : "0"});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            database.close();
-            database = null;
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -689,7 +658,7 @@ public class PictureAirDbManager {
         if (responseArray.size() == 0) {
             return resultArrayList;
         }
-        database = photoInfoDBHelper.getWritableDatabase();
+        database = DBManager.getInstance().writData();
         database.beginTransaction();
         Cursor cursor = null;
         try {
@@ -720,17 +689,17 @@ public class PictureAirDbManager {
                         photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
                         photo.videoWidth + "", photo.videoHeight + ""});
             }
+
+            database.setTransactionSuccessful();
         } catch (JSONException e1) {
             e1.printStackTrace();
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
-        database.setTransactionSuccessful();
-        database.endTransaction();
-        database.close();
-        database = null;
         return resultArrayList;
     }
 
@@ -741,7 +710,7 @@ public class PictureAirDbManager {
      */
     public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo, String deleteTime) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
-        database = photoInfoDBHelper.getReadableDatabase();
+        database  =DBManager.getInstance().writData();
         //根据当前时间，删除超过30天并且未支付的数据信息
         /**
          * 1.获取当前时间，以毫秒为单位
@@ -786,8 +755,7 @@ public class PictureAirDbManager {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        database.close();
-        database = null;
+        DBManager.getInstance().closeDatabase();
         return resultArrayList;
     }
 
@@ -799,7 +767,7 @@ public class PictureAirDbManager {
      */
     public ArrayList<FrameOrStikerInfo> getLastContentDataFromDB(int frame) {
         ArrayList<FrameOrStikerInfo> resultArrayList = new ArrayList<FrameOrStikerInfo>();
-        database = photoInfoDBHelper.getReadableDatabase();
+        database = DBManager.getInstance().writData();
         Cursor cursor = database.rawQuery("select * from " + Common.FRAME_STICKER_TABLES + " where isActive = ? and fileType = ?", new String[]{"1", frame + ""});
         FrameOrStikerInfo frameInfo;
         if (cursor.moveToFirst()) {//判断是否有数据
@@ -821,8 +789,7 @@ public class PictureAirDbManager {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        database.close();
-        database = null;
+        DBManager.getInstance().closeDatabase();
         return resultArrayList;
     }
 
@@ -851,7 +818,7 @@ public class PictureAirDbManager {
                     if (frameInfo.isActive == 1) {
                         database.execSQL("insert into " + Common.FRAME_STICKER_TABLES + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
                                 frameInfo.frameName, frameInfo.frameOriginalPathLandscape, frameInfo.frameOriginalPathPortrait, frameInfo.frameThumbnailPathLandscape400
-                                , frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPathH160,frameInfo.frameThumbnailPathV160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "",
+                                , frameInfo.frameThumbnailPathPortrait400, frameInfo.frameThumbnailPathH160, frameInfo.frameThumbnailPathV160, frameInfo.locationId, frameInfo.isActive + "", frameInfo.onLine + "",
                                 frameInfo.isDownload + "", frameInfo.fileSize + "", isFrame ? "1" : "0"});//测试代码，需要修改。
                     } else {//如果为0，说明需要修改以前的数据状态
                         //根据边框或者饰品名字修改使用状态
@@ -861,7 +828,7 @@ public class PictureAirDbManager {
             } else {
                 Log.d(TAG, "has no any frames or stickers");
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -872,7 +839,7 @@ public class PictureAirDbManager {
      * @param jsonObject
      */
     public void insertFrameAndStickerIntoDB(JSONObject jsonObject) {
-        database = photoInfoDBHelper.getWritableDatabase();
+        database = DBManager.getInstance().writData();
         database.beginTransaction();
         try {
             if (jsonObject.containsKey("frames")) {
@@ -881,15 +848,13 @@ public class PictureAirDbManager {
             if (jsonObject.containsKey("cliparts")) {
                 insertFrameAndSticker(jsonObject.getJSONArray("cliparts"), false);
             }
-
+            database.setTransactionSuccessful();
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
-            database.setTransactionSuccessful();
             database.endTransaction();
-            database.close();
-            database = null;
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -900,16 +865,15 @@ public class PictureAirDbManager {
      * @param frame 边框为1，饰品为0
      */
     public void updateFrameAndStickerDownloadStatus(String name, int frame) {
-        database = photoInfoDBHelper.getWritableDatabase();
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
             database.execSQL("update " + Common.FRAME_STICKER_TABLES + " set isDownload = 1 where frameName = ? and fileType = ?", new String[]{name, frame + ""});
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -917,16 +881,16 @@ public class PictureAirDbManager {
      * 添加已支付的订单ID
      */
     public void insertPaymentOrderIdDB(String userId, String orderId) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("insert into " + Common.PAYMENT_ORDER + " values(null,?,?)", new String[]{userId, orderId});
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
         }
 
     }
@@ -940,7 +904,7 @@ public class PictureAirDbManager {
         List<String> orderIds = new ArrayList<>();
         Cursor cursor = null;
         try {
-            database = photoInfoDBHelper.getReadableDatabase();
+            database = DBManager.getInstance().readData();
             cursor = database.query(Common.PAYMENT_ORDER, null, null, null, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -953,10 +917,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return orderIds;
     }
@@ -966,15 +927,12 @@ public class PictureAirDbManager {
      */
     public void removePaymentOrderIdDB(String orderId) {
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
+            database = DBManager.getInstance().writData();
             database.execSQL("delete from " + Common.PAYMENT_ORDER + " where orderId = ? ", new String[]{orderId});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
 
     }
@@ -983,13 +941,14 @@ public class PictureAirDbManager {
      * 插入广告地点信息
      * 1.先清除广告数据
      * 2.再插入广告数据
+     *
      * @param jsonArray
      */
-    public void insertADLocations(JSONArray jsonArray){
+    public void insertADLocations(JSONArray jsonArray) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("delete from " + Common.AD_LOCATION);
-            database.beginTransaction();
             JSONObject jsonObject;
             String locationId, adCH, adEN;
             JSONObject adJsonObject;
@@ -1002,15 +961,12 @@ public class PictureAirDbManager {
                 database.execSQL("insert into " + Common.AD_LOCATION + " values(null,?,?,?)",
                         new String[]{locationId, adCH, adEN});
             }
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            database.setTransactionSuccessful();
             database.endTransaction();
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
     }
 
@@ -1018,14 +974,15 @@ public class PictureAirDbManager {
      * 插入广告地点信息
      * 1.先清除广告数据
      * 2.再插入广告数据
+     *
      * @param jsonArray
      */
-    public String insertADLocations(JSONArray jsonArray, String photoLocationId, String language){
+    public String insertADLocations(JSONArray jsonArray, String photoLocationId, String language) {
         String result = "";
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
         try {
-            database = photoInfoDBHelper.getWritableDatabase();
             database.execSQL("delete from " + Common.AD_LOCATION);
-            database.beginTransaction();
             JSONObject jsonObject;
             String locationId, adCH, adEN;
             JSONObject adJsonObject;
@@ -1038,39 +995,37 @@ public class PictureAirDbManager {
                 database.execSQL("insert into " + Common.AD_LOCATION + " values(null,?,?,?)",
                         new String[]{locationId, adCH, adEN});
                 if (photoLocationId.equals(locationId)) {
-                    if (language.equals(Common.SIMPLE_CHINESE)){
+                    if (language.equals(Common.SIMPLE_CHINESE)) {
                         result = adCH;
                     } else {
                         result = adEN;
                     }
                 }
             }
+            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            database.setTransactionSuccessful();
             database.endTransaction();
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return result;
     }
 
     /**
      * 根据locationId获取广告信息
+     *
      * @param locationId
      * @param language
      * @return
      */
-    public String getADByLocationId(String locationId, String language){
+    public String getADByLocationId(String locationId, String language) {
         String ad = "";
         Cursor cursor = null;
         try {
-            database = photoInfoDBHelper.getReadableDatabase();
+            database = DBManager.getInstance().writData();
             cursor = database.rawQuery("select * from " + Common.AD_LOCATION + " where locationId = ?", new String[]{locationId});
-            if (cursor.moveToFirst()){
+            if (cursor.moveToFirst()) {
                 if (language.equals(Common.SIMPLE_CHINESE)) {
                     ad = cursor.getString(cursor.getColumnIndex("descriptionCH"));
                 } else {
@@ -1083,10 +1038,7 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            if (database != null) {
-                database.close();
-                database = null;
-            }
+            DBManager.getInstance().closeDatabase();
         }
         return ad;
     }
