@@ -6,7 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.pictureair.photopass.util.AppManager;
+import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.UmengUtil;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;

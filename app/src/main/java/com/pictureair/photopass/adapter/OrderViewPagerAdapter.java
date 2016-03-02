@@ -20,7 +20,7 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.AppManager;
+import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OrderInfoDateSortUtil;
 import com.pictureair.photopass.util.OrderProductDateSortUtil;

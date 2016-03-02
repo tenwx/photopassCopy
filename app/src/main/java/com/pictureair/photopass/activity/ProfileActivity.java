@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.CustomProgressDialog;
+import cn.smssdk.gui.country.SelectCountryActivity;
 
 /**
  * 个人信息页面
@@ -69,6 +70,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+
     /**
      * 处理Message
      * @param msg
@@ -76,27 +78,27 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case 1://国家
-                String[] countrys = (String[])msg.obj;
-                /**
-                 * countrys[1] 手机区号
-                 * countrys[0] 国家名称
-                 * countrys[4] 国家简码
-                 */
-                countryString = countrys[0];
-                countryCode = countrys[4];
-
-                if (!isNetWorkConnect(this)) {
-                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    return;
-                }
-                dialog = CustomProgressDialog.show(this,
-                        getString(R.string.connecting), false, null);
-//                if (null != countryPage){
-//                    countryPage.finish();
+//                String[] countrys = (String[])msg.obj;
+//                /**
+//                 * countrys[1] 手机区号
+//                 * countrys[0] 国家名称
+//                 * countrys[4] 国家简码
+//                 */
+//                countryString = countrys[0];
+//                countryCode = countrys[4];
+//
+//                if (!isNetWorkConnect(this)) {
+//                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+//                    return;
 //                }
-                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
-                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-                        countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
+//                dialog = CustomProgressDialog.show(this,
+//                        getString(R.string.connecting), false, null);
+////                if (null != countryPage){
+////                    countryPage.finish();
+////                }
+//                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
+//                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
+//                        countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
                 break;
             case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
@@ -286,9 +288,11 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 if (null != countryString && !countryString.trim().equals("")) {
                     return;
                 }
-                CountryPage countryPage = new CountryPage();
-                countryPage.setMHandler(profileHandler);
-                countryPage.show(this,null);
+
+
+
+                intent = new Intent(ProfileActivity.this, SelectCountryActivity.class);
+                startActivityForResult(intent, SelectCountryActivity.requestCountry);
                 break;
 
             case R.id.item_modify:
@@ -322,9 +326,32 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("resultCode", " " + resultCode);
+
+        if (resultCode!=0 && requestCode == SelectCountryActivity.requestCountry) {
+            String[] strs = data.getExtras().getStringArray("country");
+            if (null != strs) {
+                /**
+                 * countrys[1] 手机区号
+                 * countrys[0] 国家名称
+                 * countrys[4] 国家简码
+                 */
+                countryString = strs[0];
+                countryCode = strs[4];
+
+                if (!isNetWorkConnect(this)) {
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                dialog = CustomProgressDialog.show(this,
+                        getString(R.string.connecting), false, null);
+                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
+                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
+                        countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
+            }
+        }
+
         switch (resultCode) {
             case 1://更改昵称的标识
                 if (!isNetWorkConnect(this)) {
@@ -342,6 +369,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
             default:
                 break;
         }
+
     }
 
     /**

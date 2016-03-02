@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,8 @@ import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.UserInterruptException;
+import cn.smssdk.gui.country.SelectCountryActivity;
+
 import com.mob.tools.FakeActivity;
 
 import static com.mob.tools.utils.R.getIdRes;
@@ -144,7 +148,9 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
 
             tvCountry = (TextView) activity.findViewById(getIdRes(activity, "tv_country"));// 国家的name
-            String[] country = getCurrentCountry(); // 获取当前国.数组
+//            String[] country = getCurrentCountry(); // 获取当前国.数组
+            String[] country = {"66","88"}; // 获取当前国.数组
+
             if (country != null) {
                 currentCode = country[1];// 获取国家的区号，例如：中国 86
                 tvCountry.setText(country[0]);// 现实国家的名称，例如：中国
@@ -288,19 +294,19 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
     }
 
-    private String[] getCurrentCountry() {
-        String mcc = getMCC();
-        String[] country = null;
-        if (!TextUtils.isEmpty(mcc)) {
-            country = SMSSDK.getCountryByMCC(mcc);
-        }
-
-        if (country == null) {
-            Log.w("SMSSDK", "no country found by MCC: " + mcc);
-            country = SMSSDK.getCountry(DEFAULT_COUNTRY_ID);
-        }
-        return country;
-    }
+//    private String[] getCurrentCountry() {
+//        String mcc = getMCC();
+//        String[] country = null;
+//        if (!TextUtils.isEmpty(mcc)) {
+//            country = SMSSDK.getCountryByMCC(mcc);
+//        }
+//
+//        if (country == null) {
+//            Log.w("SMSSDK", "no country found by MCC: " + mcc);
+//            country = SMSSDK.getCountry(DEFAULT_COUNTRY_ID);
+//        }
+//        return country;
+//    }
 
     private String getMCC() {
         TelephonyManager tm = (TelephonyManager) activity
@@ -480,12 +486,11 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         } else if (id == id_ll_back) {
             finish();
         } else if (id == id_rl_country) {
-            // 自定义的国家列表
-//            myToast.setTextAndShow("currentId:"+currentId+"\n"+"",3000);
-            CountryPage countryPage = new CountryPage();
-            countryPage.setCountryId(currentId);// 当前的id
-            countryPage.setCountryRuls(countryRules);// 国家号码的规则
-            countryPage.showForResult(activity, null, this);
+
+            Intent intent = new Intent();
+            intent.setClass(getContext(), SelectCountryActivity.class);
+            startActivityForResult(intent, SelectCountryActivity.requestCountry);
+
         } else if (id == id_btn_next) {
             System.out.println("请求发送验证码");
             // 请求发送短信验证码
@@ -504,6 +509,20 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 String code = tvCountryNum.getText().toString().trim();
 
                 checkPhoneNum(phone, code);// 检查电话号码
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode!=0 && requestCode == SelectCountryActivity.requestCountry){
+            String[] strs= data.getExtras().getStringArray("country");
+//            Toast.makeText(getContext(),"国家名称：" + strs[0] + "\n" + "国家区号：" + strs[1] + "\n" + "国家简码：" + strs[4],Toast.LENGTH_SHORT).show();
+            if (null!=strs){
+                currentCode = strs[1];
+                tvCountryNum.setText("+" + currentCode);
+                tvCountry.setText(strs[0]);
             }
         }
     }
@@ -865,24 +884,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         public void afterTextChanged(Editable s) {
         }
 
-    }
-
-    @SuppressWarnings("unchecked")
-    public void onResult(HashMap<String, Object> data) {
-        if (data != null) {
-            int page = (Integer) data.get("page");
-            if (page == 1) {
-                // 国家列表返回
-                currentId = (String) data.get("id");
-                countryRules = (HashMap<String, String>) data.get("rules");
-                String[] country = SMSSDK.getCountry(currentId);
-                if (countryC != null) {
-                    currentCode = country[1];
-                    tvCountryNum.setText("+" + currentCode);
-                    tvCountry.setText(country[0]);
-                }
-            }
-        }
     }
 
     private class MyURLSpan extends ClickableSpan {
