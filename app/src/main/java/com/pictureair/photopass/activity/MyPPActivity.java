@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
@@ -42,6 +41,7 @@ import java.util.HashMap;
 
 import cn.smssdk.gui.CustomProgressDialog;
 
+
 /*
  * 显示用户所有的PP或某张PP+可绑定的PP
  * @author talon & milo
@@ -49,6 +49,7 @@ import cn.smssdk.gui.CustomProgressDialog;
 public class MyPPActivity extends BaseActivity implements OnClickListener {
     private final String TAG = "MyPPActivity";
     private final int GET_SELECT_PP_SUCCESS = 2222;
+    private final int REMOVE_PP_FROM_DB_FINISH = 3333;
     private ImageView back;
     private ListView listPP;
     private ImageView delete;
@@ -60,7 +61,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     private static final int UPDATE_UI = 10000;
     private static final int DELETE_PHOTO = 10001;
-    public static boolean isDeletePhoto = false;//是否是编辑状态
+    private boolean isDeletePhoto = false;//是否是编辑状态
     private MyApplication myApplication;
     private int selectedCurrent = -1;
     private int selectedTag = -1;
@@ -81,7 +82,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private SettingUtil settingUtil;
 
     private PictureWorksDialog pictureWorksDialog;
-
 
     private final Handler myPPHandler = new MyPPHandler(this);
 
@@ -112,48 +112,72 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             case UPDATE_UI:
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
                 PictureAirLog.out("pp code size --->" + showPPCodeList.size());
-                // 更新界面
+                // 更新界面  查看pp页面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
                     PictureAirLog.out("has ppcode ");
                     if (!isDeletePhoto) {
-                        delete.setVisibility(View.INVISIBLE);
+                        delete.setVisibility(View.VISIBLE);
                     }
                     listPP.setVisibility(View.VISIBLE);
                     noPhotoPassView.setVisibility(View.GONE);
-                    listPPAdapter.refresh(showPPCodeList);
+                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
                 } else {
                     PictureAirLog.out("has not pp code");
                     showPPCodeList.clear();
-                    listPPAdapter.refresh(showPPCodeList);
+                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
                     delete.setVisibility(View.GONE);
                     listPP.setVisibility(View.INVISIBLE);
                     noPhotoPassView.setVisibility(View.VISIBLE);
                 }
                 break;
 
-            case API1.HIDE_PP_SUCCESS:
-                // 请求删除API成功
-                JSONObject objectSuccess;
-                objectSuccess = JSONObject.parseObject(msg.obj.toString());
-                boolean result = objectSuccess.getBoolean("success");
-                if (result) {
-                    //更新界面
-                    if (showPPCodeList != null && showPPCodeList.size() > 0) {
-                        API1.getPPSByUserId(myPPHandler);
-                    }
-                }
+            case API1.REMOVE_PP_SUCCESS:
+                //请求删除API成功 更新界面
+                if (showPPCodeList != null && showPPCodeList.size() > 0) {
+                    final String deletePPCode = showPPCodeList.get((int) msg.obj).getPpCode();
+                    showPPCodeList.remove((int) msg.obj);
 
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            pictureAirDbManager.removePhotosFromUserByPPCode(deletePPCode);
+                            myPPHandler.sendEmptyMessage(REMOVE_PP_FROM_DB_FINISH);
+                        }
+                    }.start();
+                }
                 break;
 
-            case API1.HIDE_PP_FAILED:
+            case API1.REMOVE_PP_FAILED:
+                if (customProgressDialog.isShowing())
+                    customProgressDialog.dismiss();
                 // 请求删除API失败
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
+            case REMOVE_PP_FROM_DB_FINISH://数据库更新完毕之后
+                listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
+
+                //更新sp中的字段
+
+
+
+
+//                sharedPreferences.
+
+
+
+
+
+
+                if (customProgressDialog.isShowing())
+                    customProgressDialog.dismiss();
                 break;
 
             case DELETE_PHOTO:
                 //更新界面
                 if (showPPCodeList != null && showPPCodeList.size() >= 0) {
-                    listPPAdapter.refresh(showPPCodeList);
+                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
                 }
                 break;
 
@@ -234,7 +258,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             // seletePP的页面
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, null, true, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, null, true, isDeletePhoto, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {
@@ -334,7 +358,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pp);
-        initView_common();
+        initView();
         dppp = getIntent().getParcelableExtra("ppp");
         if (dppp != null) {
             initView_selectPP();
@@ -345,7 +369,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    private void initView_common() {
+    private void initView() {
         settingUtil = new SettingUtil(this);
         myToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
@@ -392,7 +416,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 // TODO Auto-generated method stub
                 deleteAPI(position);// 提交删除PP
             }
-        }, false, null, null);
+        }, false, isDeletePhoto, null, null);
 
         listPP.setAdapter(listPPAdapter);
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
@@ -568,24 +592,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     // 请求删除API
     public boolean deleteAPI(int position) {
-        RequestParams params = new RequestParams();
-        String tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, "");
-//        PictureAirLog.e(TAG, "tokenId:" + sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
-        params.put("tokenId", tokenId);
-        if (showPPCodeList == null || showPPCodeList.size() <= 0
-                || tokenId.equals("")) {
+        if (showPPCodeList == null || showPPCodeList.size() <= 0) {
             return false;
         }
-
-        JSONArray pps = new JSONArray();
-//		for (int j = 0; j < showPPCodeList.size(); j++) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", showPPCodeList.get(position).getPpCode());
-        pps.add(jsonObject);
-//		}
-        params.put("pps", pps.toString());
-
-        API1.hidePPs(params, myPPHandler);
+        if (!customProgressDialog.isShowing())
+            customProgressDialog.show();
+        API1.removePPFromUser(showPPCodeList.get(position).getPpCode(), position, myPPHandler);
         return false;
     }
 

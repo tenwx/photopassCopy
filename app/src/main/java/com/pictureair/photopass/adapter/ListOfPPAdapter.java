@@ -2,6 +2,7 @@ package com.pictureair.photopass.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.EditStoryAlbumActivity;
-import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -61,14 +61,21 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
     private int choice = 0;//选中的个数
     private HashMap<Integer, Boolean> map;//统计被勾选的子项
     private PPPinfo pppInfo;
+    private boolean isDeletePP;
 
-    public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doShowPhotoListener listener, final doDeletePhotoListener deleteListner, boolean isSelete, Handler mHandler, PPPinfo pppInfo) {
+    private SharedPreferences sharedPreferences;
+
+    private String userPP;
+
+    public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doShowPhotoListener listener, final doDeletePhotoListener deleteListner,
+                           boolean isSelete, boolean isDeletePP, Handler mHandler, PPPinfo pppInfo) {
         this.arrayList = list;
         this.mContext = mContext;
         this.listener = listener;
         this.deleteListner = deleteListner;
         this.isSelete = isSelete;
         this.mHandler = mHandler;
+        this.isDeletePP = isDeletePP;
         myToast = new MyToast(mContext);
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         screenWidth = ScreenUtil.getScreenWidth(mContext);// 获取屏幕宽度
@@ -85,6 +92,8 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             useNumber = pppInfo.bindInfo.size();
         }
 
+        sharedPreferences = mContext.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        userPP = sharedPreferences.getString(Common.USERINFO_USER_PP, "");
 
     }
 
@@ -157,7 +166,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.itemLayout.setOnClickListener(childClickListener);
         } else {
             //判断是否显示删除按钮
-            if (MyPPActivity.isDeletePhoto) {
+            if (isDeletePP && !arrayList.get(position).getPpCode().equals(userPP)) {
                 holder.deleteMyPP.setVisibility(View.VISIBLE);
             } else {
                 holder.deleteMyPP.setVisibility(View.GONE);
@@ -491,9 +500,11 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
      * 刷新界面
      *
      * @param ppInfo1s 数据
+     * @param isDeletePP
      */
-    public void refresh(ArrayList<PPinfo> ppInfo1s) {
+    public void refresh(ArrayList<PPinfo> ppInfo1s, boolean isDeletePP) {
         this.arrayList = ppInfo1s;
+        this.isDeletePP = isDeletePP;
         this.notifyDataSetChanged();
     }
 

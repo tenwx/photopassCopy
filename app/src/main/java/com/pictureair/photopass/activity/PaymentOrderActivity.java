@@ -700,7 +700,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         sb.append(Constants.API_KEY);
 
         String packageSign = MD5.getMessageDigest(sb.toString().getBytes()).toUpperCase();
-        Log.e("orion", packageSign);
+        PictureAirLog.d("orion", packageSign);
         return packageSign;
     }
 
@@ -718,7 +718,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
         this.sb.append("sign str\n" + sb.toString() + "\n\n");
         String appSign = MD5.getMessageDigest(sb.toString().getBytes()).toUpperCase();
-        Log.e("orion", appSign);
+        PictureAirLog.d("orion", appSign);
         return appSign;
     }
 
@@ -733,7 +733,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         }
         sb.append("</xml>");
 
-        Log.e("orion", sb.toString());
+        PictureAirLog.d("orion", sb.toString());
         return sb.toString();
     }
 
@@ -757,7 +757,7 @@ public class PaymentOrderActivity extends BaseActivity implements
             sb.append("prepay_id\n" + result.get("prepay_id") + "\n\n");
 
             resultunifiedorder = result;
-            Log.e("===============", result.toString());
+            PictureAirLog.d("===============", result.toString());
 
             // 生成签名参数
             genPayReq();
@@ -779,12 +779,12 @@ public class PaymentOrderActivity extends BaseActivity implements
             // 生成的支付订单
             String entity = genProductArgs();
 
-            Log.e("orion", entity);
+            PictureAirLog.d("orion", entity);
             // 把生成的支付订单post生成预付单
             byte[] buf = Util.httpPost(url, entity);
 
             String content = new String(buf);
-            Log.e("orion", content);
+            PictureAirLog.d("orion", content);
             Map<String, String> xml = decodeXml(content);
 
             return xml;
@@ -820,7 +820,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
             return xml;
         } catch (Exception e) {
-            Log.e("orion", e.toString());
+            PictureAirLog.d("orion", e.toString());
         }
         return null;
 
@@ -874,7 +874,7 @@ public class PaymentOrderActivity extends BaseActivity implements
             return xmlstring;
 
         } catch (Exception e) {
-            Log.e(TAG, "genProductArgs fail, ex = " + e.getMessage());
+            PictureAirLog.d(TAG, "genProductArgs fail, ex = " + e.getMessage());
             return null;
         }
 
@@ -899,7 +899,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
         req.sign = genAppSign(signParams);
         sb.append("sign\n" + req.sign + "\n\n");
-        Log.e("orion", signParams.toString());
+        PictureAirLog.d("orion", signParams.toString());
 
     }
 

@@ -703,6 +703,25 @@ public class PictureAirDbManager {
         return resultArrayList;
     }
 
+
+    /**
+     * 根据ppCode删除对应的照片
+     * @param ppCode
+     */
+    public void removePhotosFromUserByPPCode(String ppCode){
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        try {
+            database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ?", new String[]{"%" + ppCode + "%"});
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+    }
+
     /**
      * 查询数据库中的图片信息
      *
