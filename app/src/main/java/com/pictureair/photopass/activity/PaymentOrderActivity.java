@@ -27,7 +27,6 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AliPayUtil;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -47,6 +46,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.StringReader;
 import java.lang.ref.WeakReference;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
 
 public class PaymentOrderActivity extends BaseActivity implements
@@ -377,46 +378,11 @@ public class PaymentOrderActivity extends BaseActivity implements
         finish();
     }
 
-    // 调起微信支付后取消操作处理
-    private void SuccessAfterCancelInPayment() {
-        // TODO Auto-generated method stub
-        // myApplication.setIsBuyingPhotoInfo(null);
-        newToast.setTextAndShow(R.string.pay_unsuccesss, Common.TOAST_SHORT_TIME);
-        myApplication.clearIsBuyingPhotoList();
-        myApplication.setRefreshViewAfterBuyBlurPhoto("");
-        if (isBack != null && !isBack.isEmpty() && isBack.equals("1")) {
-            //返回到上一个界面
-            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
-        } else {
-            //进入订单界面
-            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
-            AppManager.getInstance().killActivity(PreviewProductActivity.class);
-            // AppManager.getInstance().killActivity(BlurActivity.class);
-            AppManager.getInstance().killActivity(SelectPhotoActivity.class);
-            AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-            AppManager.getInstance().killActivity(MakegiftActivity.class);
-
-            AppManager.getInstance().killActivity(DetailProductActivity.class);
-            Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
-            startActivity(intent2);
-        }
-//        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
-//        AppManager.getInstance().killActivity(SubmitOrderActivity.class);
-//        AppManager.getInstance().killActivity(PreviewProductActivity.class);
-//        // AppManager.getInstance().killActivity(BlurActivity.class);
-//        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
-//        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-//        AppManager.getInstance().killActivity(MakegiftActivity.class);
-//        AppManager.getInstance().killActivity(DetailProductActivity.class);
-
-        finish();
-    }
-
     // 取消操作处理
-    private void CancelInPayment() {
+    private void CancelInPayment(boolean isCancel) {
         // TODO Auto-generated method stub
         // myApplication.setIsBuyingPhotoInfo(null);
-        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
+        newToast.setTextAndShow(isCancel ? R.string.cancel_deal : R.string.pay_unsuccesss, Common.TOAST_SHORT_TIME);
         myApplication.clearIsBuyingPhotoList();
         myApplication.setRefreshViewAfterBuyBlurPhoto("");
         if (isBack != null && !isBack.isEmpty() && isBack.equals("1")) {
@@ -435,15 +401,6 @@ public class PaymentOrderActivity extends BaseActivity implements
             Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
             startActivity(intent2);
         }
-//        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
-//        AppManager.getInstance().killActivity(SubmitOrderActivity.class);
-//        AppManager.getInstance().killActivity(PreviewProductActivity.class);
-//        // AppManager.getInstance().killActivity(BlurActivity.class);
-//        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
-//        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
-//        AppManager.getInstance().killActivity(MakegiftActivity.class);
-//        AppManager.getInstance().killActivity(DetailProductActivity.class);
-
         finish();
     }
 
@@ -496,11 +453,19 @@ public class PaymentOrderActivity extends BaseActivity implements
                 startActivity(intent1);
                 ErrorInPayment();
                 break;
+
             case RQF_CANCEL:
                 PictureAirLog.v(TAG, "RQF_CANCEL");
                 //从模糊照片单张购买、PP+购买 回到之前的预览界面
-                CancelInPayment();
+                CancelInPayment(true);
                 break;
+
+            case RQF_UNSUCCESS:
+                PictureAirLog.v(TAG, "RQF_UNSUCCESS");
+                //从模糊照片单张购买、PP+购买 回到之前的预览界面
+                CancelInPayment(false);
+                break;
+
             case RQF_SUCCESS:
                 PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
                 //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
@@ -512,12 +477,6 @@ public class PaymentOrderActivity extends BaseActivity implements
                         getData();
                     }
                 });
-                break;
-
-            case RQF_UNSUCCESS:
-                PictureAirLog.v(TAG, "RQF_UNSUCCESS");
-                //从模糊照片单张购买、PP+购买 回到之前的预览界面
-                SuccessAfterCancelInPayment();
                 break;
 
             case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
@@ -863,7 +822,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
             return xml;
         } catch (Exception e) {
-            PictureAirLog.d("orion", e.toString());
+            PictureAirLog.d("orion---exception", e.toString());
         }
         return null;
 
@@ -892,11 +851,15 @@ public class PaymentOrderActivity extends BaseActivity implements
         try {
             String nonceStr = genNonceStr();
 
+            PictureAirLog.out("name--->" + nameString);
+            PictureAirLog.out("name  utf--->" + URLDecoder.decode(nameString, "UTF-8"));
+
             xml.append("</xml>");
             List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
             packageParams
                     .add(new BasicNameValuePair("appid", Constants.APP_ID));// 公众账号ID
-            packageParams.add(new BasicNameValuePair("body", nameString));// 商品描述
+            packageParams.add(new BasicNameValuePair("body", new String(nameString.getBytes("utf-8"),"utf-8")));// 商品描述
+//            packageParams.add(new BasicNameValuePair("input_charset", "UTF-8"));
             packageParams
                     .add(new BasicNameValuePair("mch_id", Constants.MCH_ID));// 商户号
             packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));// 随机字符串
@@ -1007,7 +970,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                 PictureAirLog.v(TAG, "TopViewClick topLeftView");
 //                Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
 //                startActivity(intent2);
-                CancelInPayment();
+                CancelInPayment(true);
 //                finish();
                 break;
             default:
@@ -1022,7 +985,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         PictureAirLog.v(TAG, "TopViewClick onBackPressed");
 //        Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
 //        startActivity(intent2);
-        CancelInPayment();
+        CancelInPayment(true);
 //        finish();
     }
 }

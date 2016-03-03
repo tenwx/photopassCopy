@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 
-import cn.sharesdk.facebook.Facebook;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
@@ -48,7 +47,7 @@ import cn.sharesdk.twitter.Twitter;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 import cn.sharesdk.wechat.moments.WechatMoments.ShareParams;
-import cn.smssdk.gui.CustomProgressDialog;
+import cn.smssdk.gui.*;
 
 import static com.mob.tools.utils.R.getStringRes;
 
@@ -82,6 +81,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	private String shareFileType;//必须为：photo、userInfo、product、video
 	public static final String SHARE_PHOTO_TYPE = "photo";
 	public static final String SHARE_VIDEO_TYOE = "video";
+
+	private MyToast myToast;
 
 	public SharePop(Context context) {
 		super(context);
@@ -125,7 +126,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
 	private void initPopupWindow() {
 		ShareSDK.initSDK(context);
-		// myToast = new MyToast(context);
+		myToast = new MyToast(context);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		defaultView = inflater.inflate(R.layout.share_dialog, null);
@@ -484,12 +485,17 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			case R.id.facebook:
 			case R.id.twitter:
 				PictureAirLog.out("share on click--->");
-				if ("local".equals(type)) {//开始分享
-					PictureAirLog.out("local");
-					startShare(v.getId());
-				} else if ("online".equals(type)) {//网络，需要获取shareURL
-					PictureAirLog.out("online");
-					API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+				if (!Common.DEBUG) {//release版本
+					dialog.dismiss();
+					myToast.setTextAndShow(R.string.share_not_open, Common.TOAST_SHORT_TIME);
+				} else {
+					if ("local".equals(type)) {//开始分享
+						PictureAirLog.out("local");
+						startShare(v.getId());
+					} else if ("online".equals(type)) {//网络，需要获取shareURL
+						PictureAirLog.out("online");
+						API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+					}
 				}
 				break;
 

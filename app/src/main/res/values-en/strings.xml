@@ -63,6 +63,7 @@
     <string name="twitter">Twitter</string>
     <string name="qq">QQ</string>
     <string name="share_text">I would like to share my magical experience through Disney PhotoPass APP with you!</string>
+    <string name="share_not_open">This feature will be available after app goes live.</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->

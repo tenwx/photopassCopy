@@ -63,6 +63,7 @@
     <string name="twitter">Twitter</string>
     <string name="qq">QQ</string>
     <string name="share_text">我愿和你分享每一刻在“迪士尼乐拍通”的美妙体验!</string>
+    <string name="share_not_open">请在应用上线后使用此功能！</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->

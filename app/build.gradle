@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
-        versionName "1.2.0"
+        versionName "1.1.2"
 
     }
 
@@ -39,16 +39,6 @@ dependencies {
     compile files('libs/AMap_3DMap_V2.4.0.jar')
     compile files('libs/Android_Location_V1.3.2.jar')
     compile files('libs/MobCommons.jar')
-    compile files('libs/ShareSDK-Core-2.6.4.jar')
-    compile files('libs/ShareSDK-Facebook-2.6.4.jar')
-    compile files('libs/ShareSDK-QQ-2.6.4.jar')
-    compile files('libs/ShareSDK-QZone-2.6.4.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.6.3.jar')
-    compile files('libs/ShareSDK-Twitter-2.6.4.jar')
-    compile files('libs/ShareSDK-Wechat-2.6.4.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.6.4.jar')
-    compile files('libs/ShareSDK-Wechat-Favorite-2.6.4.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.6.4.jar')
     compile files('libs/alipaysdk.jar')
     compile files('libs/alipaysecsdk.jar')
     compile files('libs/alipayutdid.jar')
@@ -70,4 +60,14 @@ dependencies {
     compile files('libs/tess-two.tesseract3.01-leptonica1.68-LibJPEG6b.jar')
     compile files('libs/UPPayAssistEx.jar')
     compile files('libs/MobCommons-2016.0131.1739.jar')
+    compile files('libs/ShareSDK-Core-2.7.0.jar')
+    compile files('libs/ShareSDK-QQ-2.7.0.jar')
+    compile files('libs/ShareSDK-QZone-2.7.0.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.7.0.jar')
+    compile files('libs/ShareSDK-Twitter-2.7.0.jar')
+    compile files('libs/ShareSDK-Wechat-2.7.0.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.7.0.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.7.0.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.7.0.jar')
+    compile files('libs/ShareSDK-Facebook-2.6.4.jar')
 }
