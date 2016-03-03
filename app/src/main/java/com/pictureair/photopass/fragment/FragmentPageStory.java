@@ -860,6 +860,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     selectPhotoItemInfo.isPayed = 1;
                     selectPhotoItemInfo.onLine = 0;
                     selectPhotoItemInfo.isVideo = 0;
+                    selectPhotoItemInfo.isHasPreset = 0;
                     app.magicPicList.add(selectPhotoItemInfo);
                     System.out.println("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
                 }
@@ -895,6 +896,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                     localPhotoInfo.isPayed = 1;
                     localPhotoInfo.onLine = 0;
                     localPhotoInfo.isVideo = 0;
+                    localPhotoInfo.isHasPreset = 0;
                     localPhotoList.add(localPhotoInfo);
                 }
             }

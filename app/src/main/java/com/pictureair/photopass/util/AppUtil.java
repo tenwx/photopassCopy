@@ -810,6 +810,7 @@ public class AppUtil {
                 temp.fileSize = temp2.fileSize;
                 temp.videoWidth = temp2.videoWidth;
                 temp.videoHeight = temp2.videoHeight;
+                temp.isHasPreset = temp2.isHasPreset;
                 tempInfos.add(temp);
             }
         }

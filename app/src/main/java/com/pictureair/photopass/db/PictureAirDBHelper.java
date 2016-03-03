@@ -85,7 +85,9 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "isVideo integer, " +
                 "fileSize integer, " +
                 "videoWidth integer, " +
-                "videoHeight integer)");
+                "videoHeight integer, "+
+                "isHasPreset integer)"
+        );
 
         /**
          * 创建图片收藏表，用来记录已收藏的信息
@@ -133,8 +135,9 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                 "fileSize integer, " +
                 "videoWidth integer, " +
                 "videoHeight integer, " +
-                "isOnLine integer)");
-
+                "isOnLine integer," +
+                "isHasPreset integer)"
+        );
 
         /**
          * 创建firststart表，记录所有页面第一次进入的记录
