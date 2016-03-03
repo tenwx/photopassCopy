@@ -42,7 +42,7 @@ public class Common {
     public final static String VERSION_CODE = "V1.1.2";//开发版
     public final static String POLICY_AGREEMENT = "http://211.144.223.224:3000/policy.html";  //政策 1
     public final static String TERMS_AGREEMENT = "http://211.144.223.224:3000/terms.html";  //条款 2
-    public final static boolean DEBUG = false;// true，打印log
+//    public final static boolean DEBUG = false;// true，打印log
 
     /**
      * 外网可访问的8.3测试服务器
@@ -68,7 +68,7 @@ public class Common {
 //    public final static String VERSION_CODE = "V1.2.3";//开发版
 //    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
-//    public final static boolean DEBUG = true;// true，打印log
+    public final static boolean DEBUG = true;// true，打印log
 
 
 

@@ -410,8 +410,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-//                PictureAirLog.out("get location info success ----->" + jsonObject.toString());
-                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString());
+                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString(), ACache.TIME_DAY);
                 handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
             }
 
