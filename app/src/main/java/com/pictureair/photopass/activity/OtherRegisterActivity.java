@@ -32,6 +32,7 @@ import java.lang.ref.WeakReference;
 
 import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.EditTextWithClear;
+import cn.smssdk.gui.country.SelectCountryActivity;
 
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
@@ -112,17 +113,22 @@ public class OtherRegisterActivity extends BaseActivity implements
                 System.out.println("birthday " + birthday);
                 break;
 
-            case 1://国家
-                String[] countrys = (String[])msg.obj;
-//                countryCode = countrys[1];
-                country = countrys[0];
-                countryCode = countrys[4];
-                etCounry.setText(country);// 国家名称
-                break;
-
-
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode!=0 && requestCode == SelectCountryActivity.requestCountry) {
+            String[] strs = data.getExtras().getStringArray("country");
+//            Toast.makeText(getContext(),"国家名称：" + strs[0] + "\n" + "国家区号：" + strs[1] + "\n" + "国家简码：" + strs[4],Toast.LENGTH_SHORT).show();
+            if (null != strs) {
+                country = strs[0];
+                countryCode = strs[4];
+                etCounry.setText(country);// 国家名称
+            }
         }
     }
 
@@ -130,8 +136,6 @@ public class OtherRegisterActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_register);
-
-
         initview();// 初始化
     }
 
@@ -298,9 +302,11 @@ public class OtherRegisterActivity extends BaseActivity implements
                 break;
 
             case R.id.other_sign_country:
-                CountryPage countryPage = new CountryPage();
-                countryPage.setMHandler(otherRegisterHandler);
-                countryPage.show(this,null);
+
+                Intent intent = new Intent();
+                intent.setClass(OtherRegisterActivity.this, SelectCountryActivity.class);
+                startActivityForResult(intent, SelectCountryActivity.requestCountry);
+
                 break;
 
             default:

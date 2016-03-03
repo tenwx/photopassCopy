@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="smssdk_country_group_a">
+    <string-array name="smssdk_country">
 		<item>Afghanistan,93,45,412,AF</item>
 		<item>Albania,355,108,276,AL</item>
 		<item>Algeria,213,50,603,DZ</item>
@@ -14,9 +14,7 @@
 		<item>Australia,61,33,505,AU</item>
 		<item>Austria,43,16,232,AT</item>
 		<item>Azerbaijan,994,189,400,AZ</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_b">
 		<item>Bahamas,1242,193,364,BS</item>
 		<item>Bahrain,973,182,426,BH</item>
 		<item>Bangladesh,880,168,470,BD</item>
@@ -35,9 +33,7 @@
 		<item>Bulgaria,359,112,284,BG</item>
 		<item>Burkina Faso,226,59,613,BF</item>
 		<item>Burundi,257,88,642,BI</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_c">
 		<item>Cambodia,855,166,456,KH</item>
 		<item>Cameroon,237,70,624,CM</item>
 		<item>Canada,1,1,302,CA</item>
@@ -55,17 +51,13 @@
 		<item>Cuba,53,26,368,CU</item>
 		<item>Cyprus,357,110,280,CY</item>
 		<item>Czech Republic,420,129,230,CZ</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_d">
 		<item>Democratic Republic of the Congo,243,76,630,CD</item>
 		<item>Denmark,45,19,238,DK</item>
 		<item>Djibouti,253,84,638,DJ</item>
 		<item>Dominica,1767,206,366,DM</item>
 		<item>Dominican Republic,1809,209,370,DO</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_e">
 		<item>East Timor,670,151,514,TL</item>
 		<item>Ecuador,593,144,740,EC</item>
 		<item>Egypt,20,5,602,EG</item>
@@ -74,17 +66,13 @@
 		<item>Estonia,372,115,248,EE</item>
 		<item>Ethiopia,251,82,636,ET</item>
 		<item>Faroe Islands,298,101,288,FO</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_f">
 		<item>Fiji,679,156,542,FJ</item>
 		<item>Finland,358,111,244,FI</item>
 		<item>France,33,10,208,FR</item>
 		<item>French Guiana,594,145,742,GF</item>
 		<item>French Polynesia,689,161,547,PF</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_g">
 		<item>Gabon,241,74,628,GA</item>
 		<item>Gambia,220,53,607,GM</item>
 		<item>Georgia,995,190,282,GE</item>
@@ -100,16 +88,12 @@
 		<item>Guinea,224,57,611,GN</item>
 		<item>Guinea-Bissau,245,78,632,GW</item>
 		<item>Guyana,592,143,738,GY</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_h">
 		<item>Haiti,509,140,372,HT</item>
 		<item>Honduras,504,135,708,HN</item>
 		<item>Hong Kong,852,164,454,HK</item>
 		<item>Hungary,36,12,216,HU</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_i">
 		<item>Iceland,354,107,274,IS</item>
 		<item>India,91,44,404|405|406,IN</item>
 		<item>Indonesia,62,34,510,ID</item>
@@ -119,24 +103,18 @@
 		<item>Israel,972,181,425,IL</item>
 		<item>Italy,39,13,222,IT</item>
 		<item>Ivory Coast,225,58,612,CI</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_j">
 		<item>Jamaica,1876,212,338,JM</item>
 		<item>Japan,81,39,441|440,JP</item>
 		<item>Jersey,44,17,234,JE</item>
 		<item>Jordan,962,172,416,JO</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_k">
 		<item>Kazakhstan,7,3,401,KZ</item>
 		<item>Kenya,254,85,639,KE</item>
 		<item>Kiribati,686,159,545,KI</item>
 		<item>Kuwait,965,175,419,KW</item>
 		<item>Kyrgyzstan,996,191,437,KG</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_l">
 		<item>Laos,856,167,457,LA</item>
 		<item>Latvia,371,114,247,LV</item>
 		<item>Lebanon,961,171,415,LB</item>
@@ -146,9 +124,7 @@
 		<item>Liechtenstein,423,131,295,LI</item>
 		<item>Lithuania,370,113,246,LT</item>
 		<item>Luxembourg,352,105,270|294,LU</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_m">
 		<item>Macau,853,165,455,MO</item>
 		<item>Macedonia,389,128,294,MK</item>
 		<item>Madagascar,261,91,646,MG</item>
@@ -169,9 +145,7 @@
 		<item>Montserrat,1664,203,354,MS</item>
 		<item>Morocco,212,49,604,MA</item>
 		<item>Mozambique,258,89,643,MZ</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_n">
 		<item>Namibia,264,94,649,NA</item>
 		<item>Nepal,977,186,429,NP</item>
 		<item>Netherlands,31,8,204,NL</item>
@@ -183,13 +157,9 @@
 		<item>Nigeria,234,67,621,NG</item>
 		<item>North Korea,850,163,467,KP</item>
 		<item>Norway,47,21,242,NO</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_o">
 		<item>Oman,968,178,422,OM</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_p">
 		<item>Palestinian Territory,970,179,425,PS</item>
 		<item>Panama,507,138,714,PA</item>
 		<item>Papua New Guinea,675,153,537,PG</item>
@@ -199,21 +169,15 @@
 		<item>Poland,48,22,260,PL</item>
 		<item>Portugal,351,104,268,PT</item>
 		<item>Puerto Rico,1787,208,330,PR</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_q">
 		<item>Qatar,974,183,427,QA</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_r">
 		<item>Republic Of The Congo,242,75,629,CD</item>
 		<item>Réunion Island,262,92,647,RE</item>
 		<item>Romania,40,14,226,RO</item>
 		<item>Russia,7,4,250,RU</item>
 		<item>Rwanda,250,81,635,RW</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_s">
 		<item>Saint Kitts and Nevis,1869,211,356,KN</item>
 		<item>Saint Lucia,1758,205,358,LC</item>
 		<item>Saint Pierre and Miquelon,508,139,308,PM</item>
@@ -241,9 +205,7 @@
 		<item>Sweden,46,20,240,SE</item>
 		<item>Switzerland,41,15,228,CH</item>
 		<item>Syria,963,173,417,SY</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_t">
 		<item>Taiwan,886,169,466,TW</item>
 		<item>Tajikistan,992,187,436,TJ</item>
 		<item>Tanzania,255,86,640,TZ</item>
@@ -255,9 +217,7 @@
 		<item>Turkey,90,43,286,TR</item>
 		<item>Turkmenistan,993,188,438,TM</item>
 		<item>Turks and Caicos Islands,1649,202,376,TC</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_u">
 		<item>Uganda,256,87,641,UG</item>
 		<item>Ukraine,380,122,255,UA</item>
 		<item>United Arab Emirates,971,180,424|430|431,AE</item>
@@ -265,29 +225,16 @@
 		<item>United States,1,2,310|311|312|313|314|315|316,UM</item>
 		<item>Uruguay,598,149,748,UY</item>
 		<item>Uzbekistan,998,192,434,UZ</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_v">
+	
 		<item>Vanuatu,678,155,541,VU</item>
 		<item>Venezuela,58,31,734,VE</item>
 		<item>Vietnam,84,41,452,VN</item>
 		<item>Virgin Islands, British,1340,198,348,VG</item>
 		<item>Virgin Islands, US,1284,197,332,VI</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_w">
-	    
-	</string-array>
-	
-	<string-array name="smssdk_country_group_x">
-	    
-	</string-array>
-	
-	<string-array name="smssdk_country_group_y">
 		<item>Yemen,967,177,421,YE</item>
-	</string-array>
 	
-	<string-array name="smssdk_country_group_z">
 		<item>Zambia,260,90,645,ZM</item>
 		<item>Zimbabwe,263,93,648,ZW</item>
     </string-array>

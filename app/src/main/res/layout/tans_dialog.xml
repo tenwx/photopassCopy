@@ -27,6 +27,7 @@
             android:padding="@dimen/pp_margin_16"
             android:text="@string/blur_intro"
             android:textColor="@color/pp_blue"
+            android:visibility="invisible"
             android:textSize="@dimen/text_size_16" />
 
         <LinearLayout

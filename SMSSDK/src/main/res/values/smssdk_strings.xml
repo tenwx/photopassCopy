@@ -9,7 +9,7 @@
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_sign_up">注册</string>
     <string name="smssdk_other_sign_up">其他方式注册</string>
-    <string name="smssdk_explain_briefly">点击上面的‘注册’按钮，即表示您同意<a href = "2">《乐拍通软件许可及服务协议》</a>和<a href = "1">《隐私声明》</a></string>
+    <string name="smssdk_explain_briefly">点击上面的‘注册’按钮，即表示您同意<a href = "2">《“迪士尼乐拍通”软件许可及服务协议》</a>和<a href = "1">《隐私声明》</a></string>
     <string name="smssdk_send_code2">再次发送验证码</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>

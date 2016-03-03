@@ -71,6 +71,10 @@
     <color name="color16">#fff</color>
 
     <color name="black_alpha_60">#9a000000</color>
+    <!-- 灰色 例如国家选择右边的检索工具 -->
+    <color name="gray4">#50505050</color>
+    <color name="vt_head">#FFE0E0E0</color>
+
 
 
     <!-- TAB -->

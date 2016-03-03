@@ -27,7 +27,7 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AliPayUtil;
-import com.pictureair.photopass.util.AppManager;
+import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -906,7 +906,12 @@ public class PaymentOrderActivity extends BaseActivity implements
                     orderid));// 商户订单号:商户系统内部的订单号,32个字符内、可包含字母
             packageParams.add(new BasicNameValuePair("spbill_create_ip",
                     "127.0.0.1"));// 终端IP:APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP
-            packageParams.add(new BasicNameValuePair("total_fee", Common.DEBUG ? "1" : Integer.valueOf(priceString) * 100 + ""));// 总金额只能为整数,单位是分
+
+            PictureAirLog.out("price------>" + priceString);
+            double price = Double.valueOf(priceString);
+            PictureAirLog.out("price------>" + (int)price);
+
+            packageParams.add(new BasicNameValuePair("total_fee", Common.DEBUG ? "1" : ((int)price) * 100 + ""));// 总金额只能为整数,单位是分
             packageParams.add(new BasicNameValuePair("trade_type", "APP"));// 交易类型:取值如下：JSAPI，NATIVE，APP，WAP
 
             String sign = genPackageSign(packageParams);

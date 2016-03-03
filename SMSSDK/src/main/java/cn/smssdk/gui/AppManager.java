@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package cn.smssdk.gui;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -79,7 +79,7 @@ public class AppManager {
 	public void killTopActivity() {
 		Activity activity = mActivityStack.lastElement();
 		killActivity(activity);
-		PictureAirLog.d(TAG, "mactivitystack size = "+mActivityStack.size());
+//		PictureAirLog.d(TAG, "mactivitystack size = "+mActivityStack.size());
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class AppManager {
 			if (!activity.isFinishing()) {//如果正在finish的话，就不需要再finish
 				activity.finish();
 			}
-			PictureAirLog.out("finished-----" + activity.toString());
+//			PictureAirLog.out("finished-----" + activity.toString());
 			activity = null;
 		}
 	}

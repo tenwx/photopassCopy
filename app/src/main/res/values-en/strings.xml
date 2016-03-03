@@ -29,6 +29,8 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="name_is_empty">Please enter your Nickname</string>
+    <string name="terms">Terms and Conditions</string>
+    <string name="policy">Privacy Policy</string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -60,11 +62,11 @@
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
     <string name="qq">QQ</string>
-    <string name="share_text">I would like to share with you every moment PhotoPass wonderful experience!</string>
+    <string name="share_text">I would like to share my magical experience through Disney PhotoPass APP with you!</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->
-    <string name="exit">Double tap to exit PhotoPass</string>
+    <string name="exit">Double tap to exit Disney PhotoPass</string>
     <string name="tab_story">Story</string>
     <string name="tab_discover">Discover</string>
     <string name="tab_camera">Camera</string>
@@ -79,14 +81,14 @@
     <string name="story_tab_magic">Local</string>
     <string name="story_tab_bought">Purchased</string>
     <string name="story_tab_favorite">Favorite</string>
-    <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / PhotoPass card to start associating your photos.</string>
+    <string name="story_no_pp">Please scan your Shanghai Disneyland Park ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo ! </string>
     <string name="no_photo_in_magiccam">Store all your edited photos here!</string>
     <string name="no_photo_in_bought">Start to purchase your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
     <string name="storypage_no_photo">There is no photo in your gallery!</string>
-    <string name="story_no_photo">Hi, look for your photographer to take photos.</string>
+    <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_network">Please check your network</string>
     <string name="click_button_reload">Click button to reload</string>
     <string name="reload">Reload</string>
@@ -104,19 +106,19 @@
     <!-- scan start -->
     <string name="auto">Scan</string>
     <string name="scan_qr_code">QR Code</string>
-    <string name="scan_ppp_code">PhotoPass+</string>
-    <string name="scan_intro">Please scan your Park Ticket / PhotoPass card to start associating your photos.</string>
+    <string name="scan_ppp_code">Disney PhotoPass+</string>
+    <string name="scan_intro">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="re_scan">Rescan</string>
-    <string name="textview_center_hint">Please place PhotoPass+ card back in this area.Try to align edges</string>
+    <string name="textview_center_hint">Please place the back of your Disney PhotoPass+ in this area, try to align to edges</string>
     <string name="camera_closed">Please agree camera permission in Settings</string>
     <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
-    <string name="confirm_ppp_code_text_hint">Please check your card number\nIf incorrect, please return to rescan</string>
+    <string name="confirm_ppp_code_text_hint">Please check your Disney PhotoPass+ card number \n If incorrect,please re-scan</string>
     <!-- scan end -->
 
     <!-- manual input start -->
     <string name="manual">Manual</string>
     <string name="ok">OK</string>
-    <string name="manul_input_intro">Please input the 16-digit number on the back of your PhotoPass card.</string>
+    <string name="manul_input_intro">Please input the 16-digit number on the back of your Shanghai Disneyland Park Ticket / Disney PhotoPass card</string>
     <string name="nocontext">Input your code</string>
     <string name="wrong_length">Please check your card</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
@@ -143,9 +145,9 @@
     <string name="limit_photos">Cannot more than %1$d pictures!</string>
     <string name="select_photos">Please select your photos</string>
     <string name="magic_in_the_making">Magic in the making...</string>
-    <string name="we_will_send_you_to">We will send you to</string>
-    <string name="my_disney_story_once_it_is_ready">My Disney Story once it is ready</string>
-    <string name="disney_video_about_null_photo_note">If you want to make one "My Disney Story" , you should purchase some PhotoPass Photos!Please Go to Shop to Pick your Favourite Products.</string>
+    <string name="we_will_send_you_to">My Disney Story will be sent to you</string>
+    <string name="my_disney_story_once_it_is_ready"> once it is ready.</string>
+    <string name="disney_video_about_null_photo_note">If you wish to create your very own “My Disney Story”, please purchase Disney PhotoPass+</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="start">Start</string>
     <!-- disney story end -->
@@ -155,12 +157,12 @@
     <string name="mypage_coupons">Coupons</string>
     <string name="mypage_myprofile">Profile</string>
     <string name="mypage_myorder">Orders</string>
-    <string name="mypage_pp">PhotoPass</string>
-    <string name="mypage_ppp">PhotoPass+</string>
+    <string name="mypage_pp">Disney PhotoPass</string>
+    <string name="mypage_ppp">Disney PhotoPass+</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
-    <string name="code_tips">Please approach PhotoPass photographer to scan and associate your photos.</string>
+    <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
 
     <!-- Disney video Start-->
@@ -183,8 +185,8 @@
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="blur_intro">If you like to save this wonderful moment forever, you should own this photo, and you will make this trip more meaningful.</string>
-    <string name="up_ppp_money">Upgrade to PhotoPass+</string>
+    <string name="blur_intro">Disney PhotoPass+ allows you to view and download all your photos taken by our professional Disney PhotoPass Photographers in a single day.</string>
+    <string name="up_ppp_money">Upgrade to Disney PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
     <!-- blur end -->
@@ -254,7 +256,7 @@
     <string name="goods_info">Shop Info</string>
     <string name="all_goods">%1$d item(s)</string>
     <string name="checkout">Confirm</string>
-    <string name="multi_goods">PhotoPass multiple goods</string>
+    <string name="multi_goods">Multiple Products</string>
     <string name="select_address">Please Select Address</string>
     <!-- submit order end -->
 
@@ -271,7 +273,7 @@
     <string name="weixinsm">Supported</string>
     <string name="submitpayment">Pay</string>
     <string name="cancel_deal">You canceled this payment</string>
-    <string name="alipay_error">Alipay Error</string>
+    <string name="alipay_error">Pay Error</string>
     <string name="pay_failed">Payment failed</string>
     <string name="pay_unsuccesss">Pay failed，please try again</string>
     <!-- payment end -->
@@ -325,10 +327,10 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">PhotoPass+ allows you to view and download all your photos taken by our professional PhotoPass Photographers in a single day.</string>
-    <string name="select_pp_hasUpgraded">PhotoPass has been updated</string>
-    <string name="not_ppp_card">The card is not PhotoPass+ card</string>
-    <string name="bind_pp_now">You have one PhotoPass, do you want to bind it now?</string>
+    <string name="instruction">Disney PhotoPass+ allows you to view and download all your photos taken by our professional Disney PhotoPass Photographers in a single day.</string>
+    <string name="select_pp_hasUpgraded">You have associated this Disney PhotoPass card</string>
+    <string name="not_ppp_card">Invalid Disney PhotoPass+</string>
+    <string name="bind_pp_now">You have one Disney PhotoPass, do you want to bind it now?</string>
     <string name="dialog_cancel">No, Thanks</string>
     <string name="dialog_ok">Yes, I do</string>
     <string name="dialog_ok1">OK, I know</string>
@@ -337,9 +339,9 @@
     <string name="ppp_has_used">Used</string>
     <string name="ppp_has_expired">Expired</string>
     <string name="expired_on">Valid:</string>
-    <string name="experiencephotopassplus">Experience PhotoPass+</string>
-    <string name="buy_ppp_text">Buy PhotoPass+</string>
-    <string name="scan_ppp_text">Scan your existing PhotoPass+</string>
+    <string name="experiencephotopassplus">Experience Disney PhotoPass+</string>
+    <string name="buy_ppp_text">Buy Disney PhotoPass+</string>
+    <string name="scan_ppp_text">Scan your existing Disney PhotoPass+</string>
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -347,10 +349,10 @@
     <!-- pp end -->
 
     <!-- select pp start -->
-    <string name="selectionpp">Select PhotoPass</string>
-    <string name="select_your_pp">Please select your PhotoPass</string>
-    <string name="no_photopass_update">You haven\'t permissive PhotoPass to upgrade!</string>
-    <string name="select_pp_wrong_date">Only choose continuous three days PhotoPass，please retry</string>
+    <string name="selectionpp">Select Disney PhotoPass</string>
+    <string name="select_your_pp">Please select your Disney PhotoPass</string>
+    <string name="no_photopass_update">You haven\'t permissive Disney PhotoPass to upgrade!</string>
+    <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->
 
@@ -397,16 +399,16 @@
 
     <!-- tips start -->
     <!--   推广PhotoPass＋流程  -->
-    <string name="pp_first_up10_msg">Dear，Upgrade your PhotoPass+ you can have this card all HD digital photos！</string>
+    <string name="pp_first_up10_msg">Upgrade your Disney PhotoPass+ you can have this card all HD digital photos！</string>
     <string name="pp_first_up10_no_msg">Cancel</string>
     <string name="pp_first_up10_yes_msg">OK</string>
     <!-- 使用流量提示-->
     <string name="dialog_download_message">Do you want to continue to download via GPRS?</string>
     <!--   同步更新照片流程  -->
-    <string name="first_tips_syns_msg1">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
+    <string name="first_tips_syns_msg1">Do you want to auto sync your newly purchased Disney PhotoPass+ photos?</string>
     <string name="first_tips_syns_no_msg1">Cancel</string>
     <string name="first_tips_syns_yes_msg1">Auto Sync</string>
-    <string name="first_tips_syns_msg2">Do you want to auto sync your newly purchased PhotoPass+ photos?</string>
+    <string name="first_tips_syns_msg2">Do you want to auto sync your newly purchased Disney PhotoPass+ photos?</string>
     <string name="first_tips_syns_no_msg2">Cancel</string>
     <string name="first_tips_syns_yes_msg2">Auto Sycn</string>
     <!--   网络下载模式流程  -->
@@ -427,8 +429,5 @@
     <string name="disall">Disselect</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
     <!-- edit story end -->
-
-    <string name="terms">Terms and Conditions</string>
-    <string name="policy">Privacy Policy</string>
 
 </resources>

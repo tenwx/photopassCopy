@@ -34,10 +34,10 @@ import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.CustomProgressDialog;
 import cn.smssdk.gui.EditTextWithClear;
 import cn.smssdk.gui.RegisterPage;
+import cn.smssdk.gui.country.SelectCountryActivity;
 
 /**
  * 登录页面 点击登录按钮之后，需要触发几个接口 1.登录接口 2.登录成功之后，需要获取一些信息，会调用获取购物车数量，获取storeId，获取PP列表
@@ -73,10 +73,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
     private final Handler loginHandler = new LoginHandler(this);
 
-    private static class LoginHandler extends Handler{
+    private static class LoginHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
 
-        public LoginHandler(LoginActivity activity){
+        public LoginHandler(LoginActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -90,8 +90,24 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode!=0 && requestCode == SelectCountryActivity.requestCountry) {
+            String[] strs = data.getExtras().getStringArray("country");
+//            Toast.makeText(getContext(),"国家名称：" + strs[0] + "\n" + "国家区号：" + strs[1] + "\n" + "国家简码：" + strs[4],Toast.LENGTH_SHORT).show();
+            if (null != strs) {
+                countryCode = strs[1];
+                country = strs[0];
+                tv_country.setText(country);
+                tv_country_num.setText("+" + countryCode);
+            }
+        }
+    }
+
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -106,15 +122,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         OtherRegisterActivity.class));
                 break;
 
-            case 1://国家
-                String[] countrys = (String[])msg.obj;
-                countryCode = countrys[1];
-                country = countrys[0];
-                tv_country.setText(country);
-                tv_country_num.setText("+" + countryCode);
-                break;
+//            case 1://国家
+//                String[] countrys = (String[])msg.obj;
+//                countryCode = countrys[1];
+//                country = countrys[0];
+//                tv_country.setText(country);
+//                tv_country_num.setText("+" + countryCode);
+//                break;
             case API1.FIND_PWD_FAILED:
-                int id = 0 ;
+                int id = 0;
                 switch (msg.arg1) {
                     case 6031://用户名不存在
                         id = ReflectionUtil.getStringId(LoginActivity.this, msg.arg1);
@@ -132,7 +148,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
                 break;
             case START_AGREEMENT_WEBVIEW:
-                Intent intent=new Intent();
+                Intent intent = new Intent();
                 intent.putExtra("key", msg.arg1);
                 intent.setClass(LoginActivity.this, WebViewActivity.class);
                 startActivity(intent);
@@ -220,7 +236,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             public boolean onEditorAction(TextView v, int actionId,
                                           KeyEvent event) {
                 // TODO Auto-generated method stub
-				/* 判断是否是“GO”键 */
+                /* 判断是否是“GO”键 */
                 if (actionId == EditorInfo.IME_ACTION_GO) {
                     hideInputMethodManager(v);//
                     login.performClick(); //
@@ -250,9 +266,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 break;
             case R.id.rl_country:
 
-                CountryPage countryPage = new CountryPage();
-                countryPage.setMHandler(loginHandler);
-                countryPage.show(this,null);
+                Intent intent = new Intent();
+                intent.setClass(LoginActivity.this, SelectCountryActivity.class);
+                startActivityForResult(intent, SelectCountryActivity.requestCountry);
                 break;
 
             case R.id.login:
@@ -305,9 +321,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
             case R.id.otherLogin:
                 PictureAirLog.v(TAG, "tap other login 其他方式登录");
-                Intent intent = new Intent(LoginActivity.this,
+                Intent intent2 = new Intent(LoginActivity.this,
                         OtherLoginActivity.class);
-                startActivity(intent);
+                startActivity(intent2);
                 break;
 
             default:
@@ -330,7 +346,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         registerPage = new RegisterPage(type, loginHandler);
         registerPage.setRegisterCallback(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
-                PictureAirLog.v(TAG, "type ---- >" + type + ",result--->"+ result + "data-->" + data);
+                PictureAirLog.v(TAG, "type ---- >" + type + ",result--->" + result + "data-->" + data);
                 // 解析注册结果
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
@@ -384,10 +400,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
     @Override
     public void loginSuccess() {
-		Intent intent = new Intent();
-		intent.setClass(this, MainTabActivity.class);
-		startActivity(intent);
-		finish();
+        Intent intent = new Intent();
+        intent.setClass(this, MainTabActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

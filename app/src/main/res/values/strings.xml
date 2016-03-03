@@ -29,6 +29,8 @@
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="name_is_empty">昵称不能为空</string>
+    <string name="terms">“迪士尼乐拍通”软件许可及服务协议</string>
+    <string name="policy">隐私声明</string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -60,11 +62,11 @@
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
     <string name="qq">QQ</string>
-    <string name="share_text">我愿和你分享每一刻在乐拍通的美妙体验!</string>
+    <string name="share_text">我愿和你分享每一刻在“迪士尼乐拍通”的美妙体验!</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->
-    <string name="exit">再按一次退出乐拍通</string>
+    <string name="exit">再按一次退出“迪士尼乐拍通”</string>
     <string name="tab_story">故事</string>
     <string name="tab_discover">发现</string>
     <string name="tab_camera">相机</string>
@@ -79,13 +81,13 @@
     <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">已收藏</string>
-    <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者乐拍通卡上的二维码, 更快获得你们的游玩照片。</string>
+    <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者“迪士尼乐拍通”卡上的二维码, 更快获得你们的游玩照片。</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
     <string name="no_photo_in_magiccam">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
     <string name="no_photo_in_bought">没有照片,赶快来购买吧!</string>
     <string name="no_photo_in_favourite">没有照片,赶快去收藏吧!</string>
-    <string name="storypage_no_photo">您的乐拍通相册中还没有游玩的照片哦！</string>
+    <string name="storypage_no_photo">您的“迪士尼乐拍通”相册中还没有游玩的照片哦！</string>
     <string name="story_no_photo">嗨！赶快去找您的摄影师为您拍照吧！</string>
     <string name="no_network">加载失败，请检查您当前的网络环境</string>
     <string name="click_button_reload">您可以点击按钮重新加载</string>
@@ -104,21 +106,21 @@
     <!-- scan start -->
     <string name="auto">扫描</string>
     <string name="scan_qr_code">二维码</string>
-    <string name="scan_ppp_code">乐拍通一卡通</string>
-    <string name="scan_intro">请扫描您的上海迪士尼主题乐园门票或者乐拍通卡上的二维码，更快获得你们的游玩照片。</string>
+    <string name="scan_ppp_code">“迪士尼乐拍通”一卡通</string>
+    <string name="scan_intro">请扫描您的上海迪士尼主题乐园门票或者“迪士尼乐拍通”卡上的二维码，更快获得你们的游玩照片。</string>
     <string name="re_scan">重扫</string>
-    <string name="textview_center_hint">请将乐拍通一卡通卡背面置于此区域，尝试对齐边缘</string>
+    <string name="textview_center_hint">请将“迪士尼乐拍通”一卡通卡背面置于此区域，尝试对齐边缘</string>
     <string name="camera_closed">请先在设置中打开相机权限</string>
     <string name="camera_closed_jump_to_manual">因为没有打开相机权限，所以请手动输入</string>
-    <string name="confirm_ppp_code_text_hint">请核对乐拍通一卡通号后进行确认\n\n如卡号有误，请返回重拍</string>
+    <string name="confirm_ppp_code_text_hint">请核对“迪士尼乐拍通”一卡通号后进行确认\n\n如卡号有误，请返回重拍</string>
     <!-- scan end -->
 
     <!-- manual input start -->
     <string name="manual">手动输入</string>
     <string name="ok">确定</string>
-    <string name="manul_input_intro">请输入你的乐拍通卡背面16位数字条码信息，即可获得您的照片信息</string>
+    <string name="manul_input_intro">请输入你的“迪士尼乐拍通”卡背面16位数字条码信息，即可获得您的照片信息</string>
     <string name="nocontext">输入你的编码</string>
-    <string name="wrong_length">请检查你的乐拍通卡片</string>
+    <string name="wrong_length">请检查你的“迪士尼乐拍通”卡片</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <!-- manual input end -->
 
@@ -144,8 +146,8 @@
     <string name="select_photos">请选择你的照片</string>
     <string name="magic_in_the_making">神奇的迪士尼故事正在制作中……</string>
     <string name="we_will_send_you_to">我们将立即发送给您！</string>
-    <string name="my_disney_story_once_it_is_ready">当我的迪士尼故事制作完成后</string>
-    <string name="disney_video_about_null_photo_note">您还不能制作“我的迪士尼故事”，快去购买一些乐拍通照片吧！</string>
+    <string name="my_disney_story_once_it_is_ready">当“我的迪士尼故事”制作完成后</string>
+    <string name="disney_video_about_null_photo_note">如果您想开启“我的迪士尼故事”，请尽快购买“迪士尼乐拍通”一卡通吧！</string>
     <string name="disney_video_introduces">Lorem ipsum dolor dolor sit amet,consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus acctmsan et viverra justo commodo. Proin sodales pulvinar tempor.</string>
     <string name="start">开始</string>
     <!-- disney story end -->
@@ -155,12 +157,12 @@
     <string name="mypage_coupons">优惠券</string>
     <string name="mypage_myprofile">个人信息</string>
     <string name="mypage_myorder">我的订单</string>
-    <string name="mypage_pp">乐拍通</string>
-    <string name="mypage_ppp">乐拍通一卡通</string>
+    <string name="mypage_pp">“迪士尼乐拍通”</string>
+    <string name="mypage_ppp">“迪士尼乐拍通”一卡通</string>
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>
-    <string name="code_tips">请向”乐拍通“摄影师出示此二维码关联您的照片，即可轻松预览照片。</string>
+    <string name="code_tips">请向“迪士尼乐拍通”摄影师出示此二维码关联您的照片，即可轻松预览照片。</string>
     <!-- me end -->
 
     <!-- Disney video start-->
@@ -183,8 +185,8 @@
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="blur_intro">如果您想把这一刻的美妙回忆保存并延续下去，那您需要拥有这张照片，您会发现这一次的旅程将更有意义！</string>
-    <string name="up_ppp_money">升级成为乐拍通一卡通</string>
+    <string name="blur_intro">只需购买“迪士尼乐拍通”一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
+    <string name="up_ppp_money">升级成为“迪士尼乐拍通”一卡通</string>
     <string name="buythisphoto">购买数码照片</string>
     <string name="cancel1">取消</string>
     <!-- blur end -->
@@ -254,7 +256,7 @@
     <string name="goods_info">商品信息</string>
     <string name="all_goods">共%1$d件商品</string>
     <string name="checkout">确认</string>
-    <string name="multi_goods">乐拍通多项商品</string>
+    <string name="multi_goods">“迪士尼乐拍通”多项商品</string>
     <string name="select_address">请选择自提地址</string>
     <!-- submit order end -->
 
@@ -271,7 +273,7 @@
     <string name="weixinsm">推荐安装5.0及以上的版本使用</string>
     <string name="submitpayment">付款</string>
     <string name="cancel_deal">您取消了支付</string>
-    <string name="alipay_error">支付宝错误</string>
+    <string name="alipay_error">支付错误</string>
     <string name="pay_failed">付款失败</string>
     <string name="pay_unsuccesss">未成功支付，请重试</string>
     <!-- payment end -->
@@ -325,10 +327,10 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">只需购买乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
-    <string name="select_pp_hasUpgraded">该乐拍通已经被绑定</string>
-    <string name="not_ppp_card">这张不是乐拍通一卡通</string>
-    <string name="bind_pp_now">您有一张乐拍通，是否现在就去绑定？</string>
+    <string name="instruction">只需购买“迪士尼乐拍通”一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
+    <string name="select_pp_hasUpgraded">该“迪士尼乐拍通”已经被绑定</string>
+    <string name="not_ppp_card">这张不是“迪士尼乐拍通”一卡通</string>
+    <string name="bind_pp_now">您有一张“迪士尼乐拍通”，是否现在就去绑定？</string>
     <string name="dialog_cancel">不用了，谢谢</string>
     <string name="dialog_ok">好的</string>
     <string name="dialog_ok1">我知道了</string>
@@ -337,9 +339,9 @@
     <string name="ppp_has_used">已用完</string>
     <string name="ppp_has_expired">已过期</string>
     <string name="expired_on">有效时间:</string>
-    <string name="experiencephotopassplus">乐拍通一卡通体验卡</string>
-    <string name="buy_ppp_text">购买乐拍通一卡通</string>
-    <string name="scan_ppp_text">扫描已有的乐拍通一卡通</string>
+    <string name="experiencephotopassplus">“迪士尼乐拍通”一卡通体验卡</string>
+    <string name="buy_ppp_text">购买“迪士尼乐拍通”一卡通</string>
+    <string name="scan_ppp_text">扫描已有的“迪士尼乐拍通”一卡通</string>
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -347,10 +349,10 @@
     <!-- pp end -->
 
     <!-- select pp start -->
-    <string name="selectionpp">选择乐拍通卡</string>
-    <string name="select_your_pp">请选择你的乐拍通</string>
-    <string name="no_photopass_update">您还没有符合升级的乐拍通!</string>
-    <string name="select_pp_wrong_date">只能选择连续三天的乐拍通卡</string>
+    <string name="selectionpp">选择“迪士尼乐拍通”卡</string>
+    <string name="select_your_pp">请选择你的“迪士尼乐拍通”</string>
+    <string name="no_photopass_update">您还没有符合升级的“迪士尼乐拍通”！</string>
+    <string name="select_pp_wrong_date">只能选择连续三天的“迪士尼乐拍通”卡</string>
     <string name="outofrange">超出范围</string>
     <!-- select pp end -->
 
@@ -397,16 +399,16 @@
 
     <!-- tips start -->
     <!--   推广PhotoPass＋流程  -->
-    <string name="pp_first_up10_msg">亲，升级您的乐拍通一卡通即可拥有此卡内所有高清数码照片！</string>
+    <string name="pp_first_up10_msg">亲，升级您的“迪士尼乐拍通”一卡通即可拥有此卡内所有高清数码照片！</string>
     <string name="pp_first_up10_no_msg">考虑下</string>
     <string name="pp_first_up10_yes_msg">去升级</string>
     <!-- 使用流量提示-->
     <string name="dialog_download_message">正在使用流量，是否继续下载？</string>
     <!--   同步更新照片流程  -->
-    <string name="first_tips_syns_msg1">亲，您需要同步自动更新下载您的乐拍通相册吗？</string>
+    <string name="first_tips_syns_msg1">亲，您需要同步自动更新下载您的“迪士尼乐拍通”相册吗？</string>
     <string name="first_tips_syns_no_msg1">取消</string>
     <string name="first_tips_syns_yes_msg1">同步更新</string>
-    <string name="first_tips_syns_msg2">亲，您需要同步自动更新下载已购买的乐拍通照片吗？</string>
+    <string name="first_tips_syns_msg2">亲，您需要同步自动更新下载已购买的“迪士尼乐拍通”照片吗？</string>
     <string name="first_tips_syns_no_msg2">取消</string>
     <string name="first_tips_syns_yes_msg2">同步更新</string>
     <!--   网络下载模式流程  -->
@@ -416,7 +418,7 @@
     <string name="one_photo_download_msg2">亲，当前非WIFI网络，继续下载将会消耗手机流量哦</string>
     <string name="one_photo_download_no_msg2">停止下载</string>
     <string name="one_photo_download_yes_msg2">继续下载</string>
-    <string name="confirm_sync_msg">开启后已付费的乐拍通照片将自动下载，是否继续？</string>
+    <string name="confirm_sync_msg">开启后已付费的“迪士尼乐拍通”照片将自动下载，是否继续？</string>
     <string name="confirm_sync_yes">确认</string>
     <string name="confirm_sync_no">取消</string>
     <!-- tips end -->
@@ -426,9 +428,6 @@
     <string name="all">所有</string>
     <string name="disall">取消</string>
     <string name="delete_percent">正在删除%1$d/%2$d</string>
-    <string name="title_activity_web_view">WebViewActivity</string>
     <!-- edit story end -->
 
-    <string name="terms">乐拍通软件许可及服务协议</string>
-    <string name="policy">隐私声明</string>
 </resources>
