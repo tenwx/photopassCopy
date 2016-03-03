@@ -1288,6 +1288,7 @@ public class API1 {
     public static void getOrderInfo(final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_ALL_ORDERS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1376,7 +1377,8 @@ public class API1 {
      */
     public static void getOutlets(final Handler handler) {
         RequestParams params = new RequestParams();
-        params.put("tokenId", MyApplication.getTokenId());
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_OUTLET_ID, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
