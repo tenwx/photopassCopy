@@ -82,6 +82,8 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     private static final int INITPAYPAL = 4;
 
+    private static final int RQF_UNSUCCESS = 5;
+
     private int payType;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
     // wechat
 
@@ -375,6 +377,41 @@ public class PaymentOrderActivity extends BaseActivity implements
         finish();
     }
 
+    // 调起微信支付后取消操作处理
+    private void SuccessAfterCancelInPayment() {
+        // TODO Auto-generated method stub
+        // myApplication.setIsBuyingPhotoInfo(null);
+        newToast.setTextAndShow(R.string.pay_unsuccesss, Common.TOAST_SHORT_TIME);
+        myApplication.clearIsBuyingPhotoList();
+        myApplication.setRefreshViewAfterBuyBlurPhoto("");
+        if (isBack != null && !isBack.isEmpty() && isBack.equals("1")) {
+            //返回到上一个界面
+            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+        } else {
+            //进入订单界面
+            AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+            AppManager.getInstance().killActivity(PreviewProductActivity.class);
+            // AppManager.getInstance().killActivity(BlurActivity.class);
+            AppManager.getInstance().killActivity(SelectPhotoActivity.class);
+            AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+            AppManager.getInstance().killActivity(MakegiftActivity.class);
+
+            AppManager.getInstance().killActivity(DetailProductActivity.class);
+            Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+            startActivity(intent2);
+        }
+//        newToast.setTextAndShow(R.string.cancel_deal, Common.TOAST_SHORT_TIME);
+//        AppManager.getInstance().killActivity(SubmitOrderActivity.class);
+//        AppManager.getInstance().killActivity(PreviewProductActivity.class);
+//        // AppManager.getInstance().killActivity(BlurActivity.class);
+//        AppManager.getInstance().killActivity(SelectPhotoActivity1.class);
+//        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+//        AppManager.getInstance().killActivity(MakegiftActivity.class);
+//        AppManager.getInstance().killActivity(DetailProductActivity.class);
+
+        finish();
+    }
+
     // 取消操作处理
     private void CancelInPayment() {
         // TODO Auto-generated method stub
@@ -475,6 +512,12 @@ public class PaymentOrderActivity extends BaseActivity implements
                         getData();
                     }
                 });
+                break;
+
+            case RQF_UNSUCCESS:
+                PictureAirLog.v(TAG, "RQF_UNSUCCESS");
+                //从模糊照片单张购买、PP+购买 回到之前的预览界面
+                SuccessAfterCancelInPayment();
                 break;
 
             case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
@@ -936,7 +979,7 @@ public class PaymentOrderActivity extends BaseActivity implements
 
                 case -2:// 微信支付失败
                     PictureAirLog.out("===========" + resultCode);
-                    paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
+                    paymentOrderHandler.sendEmptyMessage(RQF_UNSUCCESS);
                     break;
 
                 default:

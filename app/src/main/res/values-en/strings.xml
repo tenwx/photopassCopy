@@ -273,6 +273,7 @@
     <string name="cancel_deal">You canceled this payment</string>
     <string name="alipay_error">Alipay Error</string>
     <string name="pay_failed">Payment failed</string>
+    <string name="pay_unsuccesss">Pay failed，please try again</string>
     <!-- payment end -->
 
     <!-- set header start -->

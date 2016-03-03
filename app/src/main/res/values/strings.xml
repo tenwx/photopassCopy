@@ -273,6 +273,7 @@
     <string name="cancel_deal">您取消了支付</string>
     <string name="alipay_error">支付宝错误</string>
     <string name="pay_failed">付款失败</string>
+    <string name="pay_unsuccesss">未成功支付，请重试</string>
     <!-- payment end -->
 
     <!-- set header start -->
