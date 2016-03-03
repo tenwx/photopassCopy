@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="smssdk_country_group_a">
+    <string-array name="smssdk_country">
 		<item>阿尔巴尼亚,355,108,276,AL</item>
 		<item>阿尔及利亚,213,50,603,DZ</item>
 		<item>阿富汗,93,45,412,AF</item>
@@ -20,9 +20,7 @@
 		<item>奥地利,43,16,232,AT</item>
 		<item>澳大利亚,61,33,505,AU</item>
 		<item>澳门,853,165,455,MO</item>
-    </string-array>
     
-    <string-array name="smssdk_country_group_b">
 		<item>巴巴多斯,1246,194,342,BB</item>
 		<item>巴布亚新几内亚,675,153,537,PG</item>
 		<item>巴哈马群岛,1242,193,364,BS</item>
@@ -46,28 +44,20 @@
 		<item>不丹,975,184,402,BT</item>
 		<item>布基纳法索,226,59,613,BF</item>
 		<item>布隆迪,257,88,642,BI</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_c">
 		<item>朝鲜,850,163,467,KP</item>
 		<item>赤道几内亚,240,73,627,GQ</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_d">
 		<item>丹麦,45,19,238,DK</item>
 		<item>德国,49,23,262,DE</item>
 		<item>东帝汶,670,151,514,TL</item>
 		<item>多哥,228,61,615,TG</item>
 		<item>多米尼加共和国,1809,209,370,DO</item>
 		<item>多米尼克,1767,206,366,DM</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_e">
 		<item>俄罗斯,7,4,250,RU</item>
 		<item>厄瓜多尔,593,144,740,EC</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_f">
 		<item>法国,33,10,208,FR</item>
 		<item>法罗群岛,298,101,288,FO</item>
 		<item>法属波利尼西亚,689,161,547,PF</item>
@@ -76,9 +66,7 @@
 		<item>斐济,679,156,542,FJ</item>
 		<item>芬兰,358,111,244,FI</item>
 		<item>佛得角,238,71,625,CV</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_g">
 		<item>冈比亚,220,53,607,GM</item>
 		<item>刚果共和国,242,75,629,CG</item>
 		<item>刚果民主共和国,243,76,630,CD</item>
@@ -91,9 +79,7 @@
 		<item>瓜德罗普岛,590,141,340,GP</item>
 		<item>关岛,1671,204,535,GU</item>
 		<item>圭亚那,592,143,738,GY</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_h">
 		<item>哈萨克斯坦,7,3,401,KZ</item>
 		<item>海地,509,140,372,HT</item>
 		<item>韩国,82,40,450,KR</item>
@@ -101,13 +87,7 @@
 		<item>荷属安的列斯群岛,599,150,362,NULL</item>
 		<item>黑山共和国,382,124,297,ME</item>
 		<item>洪都拉斯,504,135,708,HN</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_i">
-	    
-	</string-array>
-	
-	<string-array name="smssdk_country_group_j">
 		<item>基里巴斯,686,159,545,KI</item>
 		<item>吉布提,253,84,638,DJ</item>
 		<item>吉尔吉斯斯坦,996,191,437,KG</item>
@@ -119,10 +99,8 @@
 		<item>柬埔寨,855,166,456,KH</item>
 		<item>捷克共和国,420,129,230,CZ</item>
 		<item>津巴布韦,263,93,648,ZW</item>
-    </string-array>
-    
-	<string-array name="smssdk_country_group_k">
-		<item>喀麦隆,237,70,624,CM</item>
+
+				<item>喀麦隆,237,70,624,CM</item>
 		<item>卡塔尔,974,183,427,QA</item>
 		<item>开曼群岛,1345,199,346,KY</item>
 		<item>科摩罗,269,99,654,KM</item>
@@ -131,9 +109,7 @@
 		<item>克罗地亚,385,125,219,HR</item>
 		<item>肯尼亚,254,85,639,KE</item>
 		<item>库克群岛,682,157,548,CK</item>
-    </string-array>
-    
-	<string-array name="smssdk_country_group_l">
+	    
 		<item>拉脱维亚,371,114,247,LV</item>
 		<item>莱索托,266,96,651,LS</item>
 		<item>老挝,856,167,457,LA</item>
@@ -146,9 +122,7 @@
 		<item>卢森堡,352,105,270|294,LU</item>
 		<item>卢旺达,250,81,635,RW</item>
 		<item>罗马尼亚,40,14,226,RO</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_m">
 		<item>马达加斯加,261,91,646,MG</item>
 		<item>马尔代夫,960,170,472,MV</item>
 		<item>马耳他,356,109,278,MT</item>
@@ -170,9 +144,7 @@
 		<item>摩纳哥,377,120,212,MC</item>
 		<item>莫桑比克,258,89,643,MZ</item>
 		<item>墨西哥,52,25,334,MX</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_n">
 		<item>纳米比亚,264,94,649,NA</item>
 		<item>南非,27,6,655,ZA</item>
 		<item>南苏丹,211,48,659,SS</item>
@@ -181,26 +153,13 @@
 		<item>尼日尔,227,60,614,NE</item>
 		<item>尼日利亚,234,67,621,NG</item>
 		<item>挪威,47,21,242,NO</item>
-    </string-array>
-    
-	<string-array name="smssdk_country_group_o">
-	    
-	</string-array>
 	
-	<string-array name="smssdk_country_group_p">
 		<item>葡萄牙,351,104,268,PT</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_q">
-	</string-array>
-	
-	<string-array name="smssdk_country_group_r">
 		<item>日本,81,39,441|440,JP</item>
 		<item>瑞典,46,20,240,SE</item>
 		<item>瑞士,41,15,228,CH</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_s">
 		<item>萨尔瓦多,503,134,706,CV</item>
 		<item>萨摩亚,685,158,549,WS</item>
 		<item>塞尔维亚,381,123,220,RS</item>
@@ -222,9 +181,7 @@
 		<item>苏丹,249,80,634,SD</item>
 		<item>苏里南,597,148,746,SR</item>
 		<item>索马里,252,83,637,SO</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_t">
 		<item>塔吉克斯坦,992,187,436,TJ</item>
 		<item>台湾,886,169,466,TW</item>
 		<item>泰国,66,38,520,TH</item>
@@ -235,17 +192,7 @@
 		<item>突尼斯,216,51,605,TN</item>
 		<item>土耳其,90,43,286,TR</item>
 		<item>土库曼斯坦,993,188,438,TM</item>
-    </string-array>
-    
-	<string-array name="smssdk_country_group_u">
-	    
-	</string-array>
 	
-	<string-array name="smssdk_country_group_v">
-	    
-	</string-array>
-	
-	<string-array name="smssdk_country_group_w">
 		<item>瓦努阿图,678,155,54,VU</item>
 		<item>危地马拉,502,133,704,GT</item>
 		<item>维尔京群岛，美国,1284,197,332,VI</item>
@@ -256,9 +203,7 @@
 		<item>乌克兰,380,122,255,UA</item>
 		<item>乌拉圭,598,149,748,UY</item>
 		<item>乌兹别克斯坦,998,192,434,UZ</item>
-    </string-array>
-    
-	<string-array name="smssdk_country_group_x">
+		
 		<item>西班牙,34,11,21,ES</item>
 		<item>希腊,30,7,202,GR</item>
 		<item>香港,852,164,454,HK</item>
@@ -267,9 +212,7 @@
 		<item>新西兰,64,36,530,NZ</item>
 		<item>匈牙利,36,12,216,HU</item>
 		<item>叙利亚,963,173,417,SY</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_y">
 		<item>牙买加,1876,212,338,JM</item>
 		<item>亚美尼亚,374,117,283,AM</item>
 		<item>也门,967,177,421,YE</item>
@@ -282,9 +225,7 @@
 		<item>英国,44,18,234|235,GB</item>
 		<item>约旦,962,172,416,JO</item>
 		<item>越南,84,41,452,VN</item>
-    </string-array>
     
-	<string-array name="smssdk_country_group_z">
 		<item>赞比亚,260,90,645,ZM</item>
 		<item>泽西,44,17,234,JE</item>
 		<item>乍得,235,68,622,TD</item>

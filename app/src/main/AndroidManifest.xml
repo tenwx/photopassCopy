@@ -198,6 +198,11 @@
             android:name=".activity.ModifyPasswordActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="cn.smssdk.gui.country.SelectCountryActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
         <!-- 扫描 -->
         <activity
             android:name=".activity.MipCaptureActivity"
