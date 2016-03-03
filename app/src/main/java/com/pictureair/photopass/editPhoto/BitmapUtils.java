@@ -16,28 +16,27 @@
 
 package com.pictureair.photopass.editPhoto;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
+import android.os.Environment;
+import android.util.Log;
+import android.view.Display;
+import android.view.View;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory.Options;
-import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
-import android.os.Environment;
-import android.util.FloatMath;
-import android.util.Log;
-import android.view.Display;
-import android.view.View;
 
 /**
  * BitmapUtils
@@ -100,12 +99,12 @@ public class BitmapUtils {
 
 		if (height > reqHeight || width > reqWidth) {
 			if (width > height) {
-				inSampleSize = (int) FloatMath
+				inSampleSize = (int) Math
 						.floor(((float) height / reqHeight) + 0.5f); // Math.round((float)height
 																		// /
 																		// (float)reqHeight);
 			} else {
-				inSampleSize = (int) FloatMath
+				inSampleSize = (int) Math
 						.floor(((float) width / reqWidth) + 0.5f); // Math.round((float)width
 																	// /
 																	// (float)reqWidth);
@@ -132,8 +131,8 @@ public class BitmapUtils {
 			int originalHeight, int numPixels) {
 		float ratio = (float) originalWidth / originalHeight;
 
-		int scaledHeight = (int) FloatMath.sqrt((float) numPixels / ratio);
-		int scaledWidth = (int) (ratio * FloatMath.sqrt((float) numPixels
+		int scaledHeight = (int) Math.sqrt((float) numPixels / ratio);
+		int scaledWidth = (int) (ratio * Math.sqrt((float) numPixels
 				/ ratio));
 
 		return new BitmapSize(scaledWidth, scaledHeight);

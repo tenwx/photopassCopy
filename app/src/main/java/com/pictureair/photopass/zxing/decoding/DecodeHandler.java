@@ -129,12 +129,52 @@ final class DecodeHandler extends Handler {
   }
 
   /**
-   * 处理OCR 的具体方法。
+   * 处理OCR 的具体方法。 旧版PP+
+   */
+//  private void decodeOCR(byte[] data, int width, int height){
+//    image = new YuvImage(data, ImageFormat.NV21, width, height, null);
+//    if(image!=null){
+////      PictureAirLog.e("","width:"+width+"_height:"+height);
+//      //计算出矩形区域的长和宽。  长边为宽，短边为高
+//      recHeight = height/3*2;
+//      recWidth = recHeight*85/54;
+//      //计算出状态栏高度，计算出标题栏高度。
+//      Rect frame = new Rect();
+//      activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+//      int topHeight = frame.top;
+//      int topBarHeight = ScreenUtil.dip2px(activity,52);
+//      //计算出 横向PP+卡左上角的坐标。
+//      a_x = (width - topHeight - topBarHeight - recWidth)/2 + topHeight + topHeight;  //横向  坐标。
+//      a_y = (height - recHeight)/2;
+//      PictureAirLog.e("","a_x:"+a_x+"a_y:"+a_y);
+//
+//
+//      //横向情况，计算出 卡号 区域左上角的坐标。
+//      int b_x = a_x + recWidth*20/85; // 横向情况，计算出 卡号 区域左上角的坐标。
+//      int b_y = a_y + recHeight*39/54;
+//
+//      // 计算出PP＋号码区域 矩形的长和宽。长边为宽，短边为高
+//      int targetWidth = recWidth*(85-20*2)/85;
+//      int targetHeight = recHeight * 8/54;
+//
+//      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//      image.compressToJpeg(new Rect(b_x, b_y, b_x + targetWidth, b_y + targetHeight), 90, stream);
+//      Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+//      try {
+//        stream.close();
+//      } catch (Exception ex) {
+//      }
+//      regonize(bmp,data);
+//    }
+//  }
+
+
+  /**
+   * 处理OCR 的具体方法。新版PP+
    */
   private void decodeOCR(byte[] data, int width, int height){
     image = new YuvImage(data, ImageFormat.NV21, width, height, null);
     if(image!=null){
-//      PictureAirLog.e("","width:"+width+"_height:"+height);
       //计算出矩形区域的长和宽。  长边为宽，短边为高
       recHeight = height/3*2;
       recWidth = recHeight*85/54;
@@ -150,11 +190,11 @@ final class DecodeHandler extends Handler {
 
 
       //横向情况，计算出 卡号 区域左上角的坐标。
-      int b_x = a_x + recWidth*20/85; // 横向情况，计算出 卡号 区域左上角的坐标。
-      int b_y = a_y + recHeight*39/54;
+      int b_x = a_x + recWidth*6/85; // 横向情况，计算出 卡号 区域左上角的坐标。
+      int b_y = a_y + recHeight*16/54;
 
       // 计算出PP＋号码区域 矩形的长和宽。长边为宽，短边为高
-      int targetWidth = recWidth*(85-20*2)/85;
+      int targetWidth = recWidth*55/85;
       int targetHeight = recHeight * 8/54;
 
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -176,7 +216,7 @@ final class DecodeHandler extends Handler {
    * 3,判断识别出来的字符是否正确，如果正确，显示结果，结束相机，如果错误，不做操作继续扫描识别。
    */
   private void regonize(Bitmap bitmap, byte[] data) {
-    bitmap = OCRUtils.transform(bitmap);
+//    bitmap = OCRUtils.transform(bitmap);
     String text = doOcr(bitmap, "eng");
     PictureAirLog.e("","测试结果:"+text);
     text = OCRUtils.dealCode(text);

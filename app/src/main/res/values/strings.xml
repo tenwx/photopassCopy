@@ -271,7 +271,7 @@
     <string name="weixinsm">推荐安装5.0及以上的版本使用</string>
     <string name="submitpayment">付款</string>
     <string name="cancel_deal">您取消了支付</string>
-    <string name="alipay_error">支付宝错误</string>
+    <string name="alipay_error">支付错误</string>
     <string name="pay_failed">付款失败</string>
     <!-- payment end -->
 

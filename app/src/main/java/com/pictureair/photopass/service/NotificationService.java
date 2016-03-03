@@ -10,6 +10,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -360,13 +361,20 @@ public class NotificationService extends android.app.Service {
      */
     private void showNotification(String titleStr , String contentStr){
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.pp_icon, titleStr, System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击之后自动清除
-        notification.defaults = Notification.DEFAULT_ALL;
+
+
         Intent intent = new Intent(getApplicationContext(),
                 MainTabActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-        notification.setLatestEventInfo(NotificationService.this, titleStr, contentStr, pendingIntent);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
+        Notification notification = new NotificationCompat.Builder(NotificationService.this).
+                setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(titleStr).
+                setContentIntent(pendingIntent)
+                .setContentText(contentStr).setWhen(System.currentTimeMillis()).setTicker(titleStr).build();
+
+        notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
+        notification.defaults = Notification.DEFAULT_ALL;//默认下载完成声音
+
         manager.notify(0, notification);
     }
 

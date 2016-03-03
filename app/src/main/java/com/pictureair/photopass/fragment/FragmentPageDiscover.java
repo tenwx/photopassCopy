@@ -33,7 +33,6 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.adapter.DiscoverLocationAdapter;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
-import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -323,22 +322,21 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
         //获取数据
         dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-        getLocationData();
+        API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
 
         return view;
     }
 
-    //获取地点数据
-    private void getLocationData() {
-        if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
-            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
-        } else {
-            Message message = fragmentPageDiscoverHandler.obtainMessage();
-            message.what = API1.GET_ALL_LOCATION_SUCCESS;
-            message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-            fragmentPageDiscoverHandler.sendMessage(message);
-        }
-    }
+//    //获取地点数据
+//    private void getLocationData() {
+//        if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
+//        } else {
+//            Message message = fragmentPageDiscoverHandler.obtainMessage();
+//            message.what = API1.GET_ALL_LOCATION_SUCCESS;
+//            message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+//            fragmentPageDiscoverHandler.sendMessage(message);
+//        }
+//    }
 
     @Override
     public void onStop() {

@@ -224,6 +224,7 @@ public class JsonUtil {
         SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
         e.putString(Common.USERINFO_TOKENID, object.getString("tokenId"));
+        PictureAirLog.out("get user info---->" + object.toString());
         JSONObject obj = object.getJSONObject("user");
         if (obj.containsKey("_id")) {
 
@@ -607,7 +608,7 @@ public class JsonUtil {
             for (int i = 0; i < productsArray.size(); i++) {
                 cartItemInfo = new CartItemInfo();
                 JSONObject productJsonObject = productsArray.getJSONObject(i);
-                cartItemInfo.cart_productName = productJsonObject.getString("productName");//商品名字
+                cartItemInfo.cart_productName = productJsonObject.getString("productNameAilas");//商品名字
                 cartItemInfo.cart_productImageUrl = productJsonObject.getString("productImage");//商品预览图URL
                 cartItemInfo.cart_quantity = productJsonObject.getIntValue("qty");//商品数量
                 cartItemInfo.cart_promotionPrice = productJsonObject.getDouble("unitPrice");//商品单价

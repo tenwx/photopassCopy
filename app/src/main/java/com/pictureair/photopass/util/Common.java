@@ -27,9 +27,9 @@ public class Common {
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String VERSION_CODE = "V1.1.2";//内测版
-//    public final static boolean DEBUG = false;// false，不打印log
 //    public final static String POLICY_AGREEMENT = "http://192.168.8.49:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.49:3004/terms.html?source=outer";  //条款 2
+//    public final static boolean DEBUG = false;// false，不打印log
 
     /**
      * 正式上线服务器
@@ -40,9 +40,9 @@ public class Common {
     public static final String WECHAT_NOTIFY = "http://211.144.223.226:3006/api/weChatNotify";//wechat的异步通知URL
     public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
     public final static String VERSION_CODE = "V1.1.2";//开发版
-    public final static boolean DEBUG = true;// true，打印log
     public final static String POLICY_AGREEMENT = "http://211.144.223.224:3000/policy.html";  //政策 1
     public final static String TERMS_AGREEMENT = "http://211.144.223.224:3000/terms.html";  //条款 2
+//    public final static boolean DEBUG = false;// true，打印log
 
     /**
      * 外网可访问的8.3测试服务器
@@ -53,9 +53,9 @@ public class Common {
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String VERSION_CODE = "V1.2.3";//开发版
-//    public final static boolean DEBUG = true;// true，打印log
 //    public final static String POLICY_AGREEMENT = "http://211.95.27.34:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
+//    public final static boolean DEBUG = true;// true，打印log
 
     /**
      * 内网8.3测试服务器
@@ -66,9 +66,9 @@ public class Common {
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String VERSION_CODE = "V1.2.3";//开发版
-//    public final static boolean DEBUG = true;// true，打印log
 //    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
+    public final static boolean DEBUG = true;// true，打印log
 
 
 
@@ -156,6 +156,7 @@ public class Common {
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
     public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
+    public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
 
 
     //user的SharedPreferences    以及   接口参数
@@ -179,6 +180,7 @@ public class Common {
     public static final String USERINFO_WECHAT = "wechat";
     public static final String USERINFO_TWITTER = "twitter";
     public static final String USERINFO_ACCOUNT = "account";
+    public static final String NEED_DELETE = "need_delete";
     public static final String SOCKETPUSHCONNECTED = "isConnected";
     public static final String NEW_PASSWORD = "newPwd";
     public static final String OLD_PASSWORD = "oldPwd";

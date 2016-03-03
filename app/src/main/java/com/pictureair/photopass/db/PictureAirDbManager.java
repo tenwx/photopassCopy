@@ -15,6 +15,7 @@ import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.PinYin;
 
 import java.io.File;
@@ -701,6 +702,64 @@ public class PictureAirDbManager {
             DBManager.getInstance().closeDatabase();
         }
         return resultArrayList;
+    }
+
+
+    /**
+     * 根据ppCode删除对应的照片
+     * @param position 删除的position
+     * @param ppList 原始ppCode列表
+     */
+    public void removePhotosFromUserByPPCode(int position, ArrayList<PPinfo> ppList){
+        /**
+         * 删除步骤
+         * 1.获取删除ppcode对应的所有图片
+         * 2.获取删除图片对应的ppcode
+         * 3.遍历pp列表中其他pp
+         * 4.检查是否其他pp的code在删除图片对应的ppcode中
+         * 5.如果在，则不删除，如果不在，则删除
+         */
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        String deletePPCode;
+        boolean needDelete = true;
+        ArrayList<PhotoInfo> deletePhotos = new ArrayList<>();
+        //1
+        deletePhotos.addAll(ppList.get(position).getSelectPhotoItemInfos());
+
+        try {
+            for (int i = 0; i < deletePhotos.size(); i++) {
+                //2
+                deletePPCode = deletePhotos.get(i).photoPassCode;
+                PictureAirLog.out("deletePPCode--->" + deletePPCode);
+                //3
+                for (int j = 0; j < ppList.size(); j++) {
+                    if (j == position) {
+                        continue;
+                    }
+
+                    //4
+                    if (deletePPCode.contains(ppList.get(j).getPpCode())) {
+                        needDelete = false;
+                        break;
+                    }
+                }
+
+                //5
+                if (needDelete) {//需要删除
+                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).photoId});
+                } else {
+                    needDelete = true;
+                }
+            }
+
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
     }
 
     /**

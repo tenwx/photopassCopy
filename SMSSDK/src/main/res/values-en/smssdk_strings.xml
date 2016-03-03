@@ -23,7 +23,7 @@
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
     <string name="smssdk_choose_country">Choose country</string>
     <string name="smssdk_network_error">Network error, please try later</string>
-    <string name="smssdk_country_not_support_currently">Country not support, please choose other</string>
+    <string name="smssdk_country_not_support_currently">Incorrect Network, please back to check again.</string>
     <string name="smssdk_get_verifycode_frequentlly">Send verification code too frequently, please try later!</string>
     <string name="smssdk_get_phone_verifycode_today_frequentlly">I am sorry, the phone number for verification code number too much, please try again tomorrow!</string>
     <string name="smssdk_connecting">Connecting...</string>

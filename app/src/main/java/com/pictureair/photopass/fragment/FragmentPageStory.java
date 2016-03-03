@@ -633,6 +633,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        PictureAirLog.out("on create----->");
         View view = inflater.inflate(R.layout.fragment_story, null);
         //获取控件
         more = (ImageView) view.findViewById(R.id.story_more);

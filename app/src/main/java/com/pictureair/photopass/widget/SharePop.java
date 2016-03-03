@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -777,14 +778,11 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			final int id = Integer.MAX_VALUE / 13 + 1;
 			nm.cancel(id);
 
-			long when = System.currentTimeMillis();
-			Notification notification = new Notification(R.drawable.pp_icon,
-					text, when);
-			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(),
-					0);
-			notification.setLatestEventInfo(app,
-					context.getString(R.string.app_name), text, pi);
-			notification.flags = Notification.FLAG_AUTO_CANCEL;
+			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
+			Notification notification = new NotificationCompat.Builder(app).
+					setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(context.getString(R.string.app_name))
+					.setContentText(text).setWhen(System.currentTimeMillis()).setTicker(text).setContentIntent(pi).build();
+			notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
 			nm.notify(id, notification);
 
 			if (cancelTime > 0) {

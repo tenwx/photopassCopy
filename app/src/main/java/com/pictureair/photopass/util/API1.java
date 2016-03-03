@@ -195,6 +195,9 @@ public class API1 {
     public static final int ADD_PHOTO_TO_PPP_FAILED = 5120;
     public static final int ADD_PHOTO_TO_PPP_SUCCESS = 5121;
 
+    public static final int REMOVE_PP_SUCCESS = 5131;
+    public static final int REMOVE_PP_FAILED = 5130;
+
     //我的模块 end
 
 
@@ -407,8 +410,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-//                PictureAirLog.out("get location info success ----->" + jsonObject.toString());
-                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString());
+                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString(), ACache.TIME_DAY);
                 handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
             }
 
@@ -1012,6 +1014,31 @@ public class API1 {
             public void onFailure(int status) {
                 super.onFailure(status);
                 handler.obtainMessage(ADD_PHOTO_TO_PPP_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
+     * 从用户中移除pp
+     * @param ppCode pp码
+     * @param position
+     * @param handler
+     */
+    public static void removePPFromUser(String ppCode, final int position, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.CUSTOMERID, ppCode);
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PP_FROM_USER, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(REMOVE_PP_SUCCESS, position).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(REMOVE_PP_FAILED, status, 0).sendToTarget();
             }
         });
     }
