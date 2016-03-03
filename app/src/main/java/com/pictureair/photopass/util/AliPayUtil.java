@@ -25,7 +25,7 @@ public class AliPayUtil {
 	 * create the order info. 创建订单信息
 	 * 
 	 */
-	public static String getOrderInfo(String orderId, String nameString, String introductString) {
+	public static String getOrderInfo(String orderId, String nameString, String introductString, String price) {
 		// 签约合作者身份ID
 		String orderInfo = "partner=" + "\"" + Keys.DEFAULT_PARTNER + "\"";
 		// 签约卖家支付宝账号
@@ -37,7 +37,7 @@ public class AliPayUtil {
 		// 商品详情
 		orderInfo += "&body=" + "\"" + introductString + "\"";
 		// 商品金额
-		orderInfo += "&total_fee=" + "\"" + "0.01" + "\"";
+		orderInfo += "&total_fee=" + "\"" + price + "\"";
 		//		sb.append(priceString);
 		// 服务器异步通知页面路径
 		orderInfo += "&notify_url=" + "\"" + Common.ALIPAY_NOTIFY + "\"";

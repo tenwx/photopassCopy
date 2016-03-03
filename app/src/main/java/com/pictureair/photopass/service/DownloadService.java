@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.Base64;
@@ -88,9 +89,10 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         System.out.println("DownloadService ----------> preparedownload");
         System.out.println("DownloadService ----------> before notification");
-        notification = new Notification(R.drawable.pp_icon, mContext.getString(R.string.downloading), System.currentTimeMillis());
-        notification.flags = Notification.FLAG_NO_CLEAR;
-        notification.setLatestEventInfo(mContext, mContext.getString(R.string.app_name), mContext.getString(R.string.downloading), null);
+        Notification notification = new NotificationCompat.Builder(mContext).
+                setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
+                .setContentText(mContext.getString(R.string.downloading)).setWhen(System.currentTimeMillis()).setTicker(mContext.getString(R.string.downloading)).build();
+        notification.flags = Notification.FLAG_ONGOING_EVENT;//通知栏可以自动删除
         manager.notify(0, notification);
         System.out.println("DownloadService ----------> after notification");
         handler.sendEmptyMessage(START_DOWNLOAD);
@@ -117,14 +119,13 @@ public class DownloadService extends Service {
                     if (failed_num >0) {
                         notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
                     }
-                    notification = new Notification(R.drawable.pp_icon, mContext.getString(R.string.finish_download), System.currentTimeMillis());
-                    //						Intent intentBack = new Intent(mContext, SelectPhotoActivity.class);
-                    //						PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intentBack, PendingIntent.FLAG_UPDATE_CURRENT);
-                    //						notification.setLatestEventInfo(mContext, "下载完毕", "共" + downed_num + "张", pIntent);
-                    notification.setLatestEventInfo(mContext, mContext.getString(R.string.app_name), notificationDetail, null);
+
+                    Notification notification = new NotificationCompat.Builder(mContext).
+                            setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
+                            .setContentText(notificationDetail).setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
                     notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
                     notification.defaults = Notification.DEFAULT_SOUND;//默认下载完成声音
-                    //					scan(msg.obj.toString());
+
                     stopSelf();//下载服务停止
                     manager.notify(0, notification);
                     downed_num = 0;

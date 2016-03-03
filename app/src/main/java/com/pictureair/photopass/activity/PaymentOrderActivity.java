@@ -226,7 +226,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         if (0 == payType) {// 支付宝支付方式
             try {
                 String info = AliPayUtil.getOrderInfo(orderId, nameString,
-                        introductString);
+                        introductString, Common.DEBUG ? "0.01" : priceString);
                 PictureAirLog.v(TAG, "info:" + info);
                 // 对订单做RSA 签名
                 String sign = AliPayUtil.sign(info);
@@ -863,7 +863,7 @@ public class PaymentOrderActivity extends BaseActivity implements
                     orderid));// 商户订单号:商户系统内部的订单号,32个字符内、可包含字母
             packageParams.add(new BasicNameValuePair("spbill_create_ip",
                     "127.0.0.1"));// 终端IP:APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP
-            packageParams.add(new BasicNameValuePair("total_fee", "1"));// 总金额只能为整数,单位是分
+            packageParams.add(new BasicNameValuePair("total_fee", Common.DEBUG ? "1" : Integer.valueOf(priceString) * 100 + ""));// 总金额只能为整数,单位是分
             packageParams.add(new BasicNameValuePair("trade_type", "APP"));// 交易类型:取值如下：JSAPI，NATIVE，APP，WAP
 
             String sign = genPackageSign(packageParams);

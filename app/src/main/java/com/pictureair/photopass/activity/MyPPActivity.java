@@ -134,14 +134,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             case API1.REMOVE_PP_SUCCESS:
                 //请求删除API成功 更新界面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
-                    final String deletePPCode = showPPCodeList.get((int) msg.obj).getPpCode();
-                    showPPCodeList.remove((int) msg.obj);
-
+                    final int deletePosition = (int) msg.obj;
                     new Thread() {
                         @Override
                         public void run() {
                             super.run();
-                            pictureAirDbManager.removePhotosFromUserByPPCode(deletePPCode);
+                            pictureAirDbManager.removePhotosFromUserByPPCode(deletePosition, showPPCodeList);
+                            showPPCodeList.remove(deletePosition);
                             myPPHandler.sendEmptyMessage(REMOVE_PP_FROM_DB_FINISH);
                         }
                     }.start();
@@ -157,19 +156,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             case REMOVE_PP_FROM_DB_FINISH://数据库更新完毕之后
                 listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
-
-                //更新sp中的字段
-
-
-
-
-//                sharedPreferences.
-
-
-
-
-
-
                 if (customProgressDialog.isShowing())
                     customProgressDialog.dismiss();
                 break;
