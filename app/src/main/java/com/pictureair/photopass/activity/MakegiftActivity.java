@@ -163,6 +163,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
                 priceTextView.setText(allList.get(0).getPrice() + "");
                 introduceTextView.setText(allList.get(0).getDescription());
+//                selectButton.setText(allList.get(0).getNameAlias());
                 Message message = makeGiftHandler.obtainMessage();
                 message.what = WAIT_DRAW_FINISH;
                 makeGiftHandler.sendMessageDelayed(message, 500);
@@ -446,6 +447,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 }
                 goodsInfo = allList.get(position);
                 priceTextView.setText(goodsInfo.getPrice() + "");
+//                selectButton.setText(goodsInfo.getNameAlias());
                 introduceTextView.setText(goodsInfo.getDescription());
                 setProductImage(goodsInfo.getName(), (goodsInfo.getPictures().size() > 0) ? goodsInfo.getPictures().get(0).getUrl() : "");
                 gonePopupwindow();
