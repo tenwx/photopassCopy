@@ -425,6 +425,10 @@
     <string name="confirm_sync_msg">开启后已付费的“迪士尼乐拍通”照片将自动下载，是否继续？</string>
     <string name="confirm_sync_yes">确认</string>
     <string name="confirm_sync_no">取消</string>
+    <!-- 删除pp的提示-->
+    <string name="delete_pp">确认删除此“迪士尼乐拍通”？一旦删除，即该账户不会显示此“迪士尼乐拍通”的照片！</string>
+    <string name="delete_pp_cancel">取消</string>
+    <string name="delete_pp_ok">删除</string>
     <!-- tips end -->
 
     <!-- edit story start -->

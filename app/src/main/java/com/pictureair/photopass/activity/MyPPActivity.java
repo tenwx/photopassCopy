@@ -577,13 +577,24 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     // 请求删除API
-    public boolean deleteAPI(int position) {
+    public boolean deleteAPI(final int position) {
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
             return false;
         }
-        if (!customProgressDialog.isShowing())
-            customProgressDialog.show();
-        API1.removePPFromUser(showPPCodeList.get(position).getPpCode(), position, myPPHandler);
+        new CustomDialog(MyPPActivity.this, R.string.delete_pp, R.string.delete_pp_cancel, R.string.delete_pp_ok, new CustomDialog.MyDialogInterface() {
+
+            @Override
+            public void yes() {
+                if (!customProgressDialog.isShowing())
+                    customProgressDialog.show();
+                API1.removePPFromUser(showPPCodeList.get(position).getPpCode(), position, myPPHandler);
+            }
+
+            @Override
+            public void no() {
+
+            }
+        });
         return false;
     }
 
