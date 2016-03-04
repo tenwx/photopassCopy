@@ -63,6 +63,7 @@
     <string name="twitter">Twitter</string>
     <string name="qq">QQ</string>
     <string name="share_text">I would like to share my magical experience through Disney PhotoPass APP with you!</string>
+    <string name="share_not_open">This feature will be available after app goes live.</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->
@@ -182,6 +183,9 @@
     <string name="neednotdownload">The photo is already in your album</string>
     <string name="local_photo_not_support_makegift">Sorry we can\'t make gift from your edited photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
+    <string name="photo_cannot_edit_content">Sorry, your this PhotoPass picture does not support editing!</string>
+    <string name="photo_cannot_edit_no">Cancel</string>
+    <string name="photo_cannot_edit_yes">OK</string>
     <!-- preview photo end -->
 
     <!-- blur start -->

@@ -18,19 +18,26 @@ package com.pictureair.photopass.alipay;
 public final class Keys {
 
 	//合作身份者id，以2088开头的16位纯数字
-	public static final String DEFAULT_PARTNER = "2088611102827602";
+	public static final String DEFAULT_PARTNER = "2088121658521542";
 
 	//收款支付宝账号
-	public static final String DEFAULT_SELLER = "online.payment@pictureworks.biz";
+	public static final String DEFAULT_SELLER = "online.shdr@pictureworks.biz";
 
 	//商户私钥，自助生成
-	public static final String PRIVATE = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAOEKTVKgUdpqrp/+YFHv+zgZQjAr3UfQQhJsLzVh9Lb/OzAn2EXaaPG04W/blf5I9Fa+txasplMNLiDx"+
-			"MS4t813uJsihYNxOGFTzpNAdE0iurNx4yYRirYlH8/lxv6MMqbUeerU5tJcVFqlgBNulHC2W7MAI8AyPMVHYZSxwZSgPAgMBAAECgYEAz44t5MBC3l04tA3sjoX1QTdi"+
-			"qYU7cQmudsla/TRcfQ+IapDFUx/vXMbEieOQQtjMqtj5iqswODdWzUFHZ90vsD6+zyx2/G0zt1cpFmVPBc1CdXDBjmqlD032pwnnMM8m5oB5pnl89pgWz5z0/3Gz16Rg"+
-			"Ih59/etgYYrpjR44fxkCQQDwb0nDAssrE8hG2zD+jAaNEtGD+XFQXz9yk7yaW0xvgVewi/7fcNxhD/MNXsV+fOUQZ7b8Tl8lX4q3ak0DoHhNAkEA75vhzqiAg8WFusqw"+
-			"0z6zECoBL0Wj5SxETm/H8iulfFCDLTnAtiEvrBrFiXAMFb5VsSPWoEA7HFjNZ3veuh5PywJBALzeHuoyUphXJNcMLdN2+VpuMujh1HJXL8b4aIo0N7nLt692eVLaHDOe"+
-			"zMVu8eKnh2S4pBRUGAeKorPrq+2ya20CQQC9oGZSgPREVNwC+kp6xBI+Zp/NY5XT1vawBLL+qyAqhCVsc1paSWVLFVzj6jMGOj3jFPPUm0CsrHLSxSt9rGOFAkBs9gJ5"+
-			"UsfgAjgY7H5uyY3p139aU1MraBHRbyOP8wvX5XbcmwuyrPwflyF9BmXdHkMkrYeRX8d4slhj4cWlzsNY";
+	public static final String PRIVATE = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAM4aMbrHbIakLyu7" +
+			"KD6lhco7uhYeEtbA+sTJg5j7NVgL/c7gs448lSeQQgmslAg8u5Unw2dGU9bDvigs" +
+			"7pBSSGjVP8ffN/Fhbibru+o43GnPrmN/VaZMJeZ4L6Yq7DOPwefB1qquH0JmSkwA" +
+			"jDLuXBCW7SAhWaxvAhQw0TA7onF/AgMBAAECgYBdaFW9dwBijSqrwSjeK5pVK3iM" +
+			"6ZhUKCX+5e10efWVL+oZxpDaF+7pfWHQjJySlyPU166hsafxn8kg4CxG0GPr/r5l" +
+			"TI/iTNXTl5kMs7pBkNSMfqwiaFw2y86+FQxA6vWAYct58h0TfJIbQxew3FNKm9L3" +
+			"mkP39QabHS0IZZPLAQJBAPBN0ccA2U0nFejnxxPFb9X/ZigM2yz0mN2RSumxjeK8" +
+			"j6zQ9q8YGiT5KN/SlsKKwmZjn3SGhOBG5szYRdR2sz8CQQDbkHsKz6jElfGBUJeh" +
+			"w2D2X3Wz4YMLwpdmM72zxaL57skMUYAYr7Z88kLjDo8NkFPnKLd/i2iSAGLhr+Hh" +
+			"2fHBAkEAwS/euRzelZ8Zhx9mtWdhzGnB5+rF/XM6vc3DqvJ6PdEXtHheCU/YHOdO" +
+			"S/pSB15kgMoQdC58/o0hmYc5RGCVIwJAH6/AMhU58/T3v4PT/kJmEehA4k7fTKku" +
+			"lE9PR0x0csFlPmPcqrNhELMduAr31itIEIotwThrRPbNTmjFnoSHgQJAbOZSeGCq" +
+			"hlh24Mn+k6bgUFYKqiZZBhcSvIq8SfMFuBCFzDZ8XG9cRKnY54raYVxve9pLtR8x" +
+			"TAsHocRTAzvJ2g==";
 
 	//支付宝公钥
 	public static final String PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQE" +

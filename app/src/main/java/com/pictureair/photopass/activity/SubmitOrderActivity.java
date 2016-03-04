@@ -147,7 +147,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
                     String orderName, orderIntroduce;
                     if (list.size() == 1) {
-                        orderName = list.get(0).getProductName();
+                        orderName = list.get(0).getProductNameAlias();
                         orderIntroduce = list.get(0).getDescription();
                     } else {
                         orderName = getString(R.string.multi_goods);
@@ -400,7 +400,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     intent2.putExtra("price", totalpriceTextView.getText().toString());
                     String orderName, orderIntroduce;
                     if (list.size() == 1) {
-                        orderName = list.get(0).getProductName();
+                        orderName = list.get(0).getProductNameAlias();
                         orderIntroduce = list.get(0).getDescription();
                     } else {
                         orderName = getString(R.string.multi_goods);

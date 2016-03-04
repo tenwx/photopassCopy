@@ -148,6 +148,19 @@ public class JsonUtil {
         if (object.containsKey("strShootOn")) {
             info.shootOn = object.getString("strShootOn");
         }
+
+        //是否添加过 模版
+        if(object.containsKey("presetId")){
+            String presetId = object.getString("presetId");
+            if (presetId.equals("000000000000000000000000")){
+                info.isHasPreset = 0;
+            }else {
+                info.isHasPreset = 1;
+            }
+        }else{
+            info.isHasPreset = 0;
+        }
+
         info.isChecked = 0;
         info.isSelected = 0;
         info.isLove = 0;

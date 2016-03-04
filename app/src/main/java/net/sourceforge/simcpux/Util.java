@@ -1,24 +1,13 @@
 package net.sourceforge.simcpux;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import com.pictureair.photopass.util.PictureAirLog;
+
+import junit.framework.Assert;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -40,12 +29,25 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import junit.framework.Assert;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.CompressFormat;
-import android.util.Log;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class Util {
 	
@@ -98,25 +100,29 @@ public class Util {
 			Log.e(TAG, "httpPost, url is null");
 			return null;
 		}
-		
+
+		PictureAirLog.out("http post");
 		HttpClient httpClient = getNewHttpClient();
 		
 		HttpPost httpPost = new HttpPost(url);
 		
 		try {
-			httpPost.setEntity(new StringEntity(entity));
+			StringEntity entity1 = new StringEntity(entity, "utf-8");
+			entity1.setContentEncoding("utf-8");
+			entity1.setContentType("text/xml");
+			httpPost.setEntity(entity1);
 			httpPost.setHeader("Accept", "application/json");
 			httpPost.setHeader("Content-type", "application/json");
-			
+
 			HttpResponse resp = httpClient.execute(httpPost);
 			if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				Log.e(TAG, "httpGet fail, status code = " + resp.getStatusLine().getStatusCode());
+				PictureAirLog.out("httpGet fail, status code = " + resp.getStatusLine().getStatusCode());
 				return null;
 			}
 
 			return EntityUtils.toByteArray(resp.getEntity());
 		} catch (Exception e) {
-			Log.e(TAG, "httpPost exception, e = " + e.getMessage());
+			PictureAirLog.out("httpPost exception, e = " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}

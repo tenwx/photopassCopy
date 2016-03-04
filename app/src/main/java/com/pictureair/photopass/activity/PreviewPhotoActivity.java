@@ -1015,14 +1015,33 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (photoInfo.isPayed == 1) {
-                    intent = new Intent(this, EditPhotoActivity.class);
-                    if (isEdited) {//已经编辑过，取targetlist中的值
-                        intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
-                    } else {//没有编辑，取正常的值
-                        intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
-                    }
-                    startActivityForResult(intent, 1);
+                    if (photoInfo.isHasPreset == 0){ // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
+                        intent = new Intent(this, EditPhotoActivity.class);
+                        if (isEdited) {//已经编辑过，取targetlist中的值
+                            intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
+                        } else {//没有编辑，取正常的值
+                            intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
+                        }
+                        startActivityForResult(intent, 1);
+                    }else{
+//                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
+                        customdialog = new CustomDialog(PreviewPhotoActivity.this,
+                                R.string.photo_cannot_edit_content,
+                                R.string.photo_cannot_edit_no,
+                                R.string.photo_cannot_edit_yes,
+                                new CustomDialog.MyDialogInterface() {
 
+                                    @Override
+                                    public void yes() {
+                                        // TODO Auto-generated method stub
+                                    }
+
+                                    @Override
+                                    public void no() {
+                                        // TODO Auto-generated method stub // 考虑下：弹窗消失
+                                    }
+                                });
+                    }
                 } else {
                     if (loadFailed) {
                         newToast.setTextAndShow(R.string.reloadphoto, Common.TOAST_SHORT_TIME);
@@ -1256,6 +1275,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 selectPhotoItemInfo.isUploaded = 0;
                 selectPhotoItemInfo.isPayed = 1;
                 selectPhotoItemInfo.isVideo = 0;
+                selectPhotoItemInfo.isHasPreset = 0;
 
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);

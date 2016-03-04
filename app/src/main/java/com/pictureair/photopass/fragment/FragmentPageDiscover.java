@@ -145,6 +145,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                     for (int i = 0; i < resultArray.size(); i++) {
                         JSONObject object = resultArray.getJSONObject(i);
                         DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
+                        if (locationInfo.locationId.equals("photoSouvenirs") || locationInfo.locationIds.contains("photoSouvenirs")) {
+                            continue;
+                        }
                         locationList.add(locationInfo);
                     }
                     locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);

@@ -83,6 +83,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	public static final String SHARE_PHOTO_TYPE = "photo";
 	public static final String SHARE_VIDEO_TYOE = "video";
 
+	private MyToast myToast;
+
 	public SharePop(Context context) {
 		super(context);
 		this.context = context;
@@ -125,7 +127,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
 	private void initPopupWindow() {
 		ShareSDK.initSDK(context);
-		// myToast = new MyToast(context);
+		myToast = new MyToast(context);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		defaultView = inflater.inflate(R.layout.share_dialog, null);
@@ -484,12 +486,17 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			case R.id.facebook:
 			case R.id.twitter:
 				PictureAirLog.out("share on click--->");
-				if ("local".equals(type)) {//开始分享
-					PictureAirLog.out("local");
-					startShare(v.getId());
-				} else if ("online".equals(type)) {//网络，需要获取shareURL
-					PictureAirLog.out("online");
-					API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+				if (!Common.DEBUG) {//release版本
+					dialog.dismiss();
+					myToast.setTextAndShow(R.string.share_not_open, Common.TOAST_SHORT_TIME);
+				} else {
+					if ("local".equals(type)) {//开始分享
+						PictureAirLog.out("local");
+						startShare(v.getId());
+					} else if ("online".equals(type)) {//网络，需要获取shareURL
+						PictureAirLog.out("online");
+						API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
+					}
 				}
 				break;
 
