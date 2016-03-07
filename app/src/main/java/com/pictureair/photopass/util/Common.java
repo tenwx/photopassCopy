@@ -282,6 +282,7 @@ public class Common {
     public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
     public static final String AD_LOCATION = "ad_location";
+    public static final String THREAD_INFO = "thread_info";
 
 
     //相册名称字段
