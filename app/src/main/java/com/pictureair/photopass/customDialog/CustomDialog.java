@@ -219,8 +219,8 @@ public class CustomDialog extends Dialog {
 
 	// 接口
 	public interface MyDialogInterface{
-		public void no();
-		public void yes();
+		void no();
+		void yes();
 	}
 	
 }

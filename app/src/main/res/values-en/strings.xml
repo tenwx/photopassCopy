@@ -425,6 +425,10 @@
     <string name="confirm_sync_msg">Paid photos will be downloaded automatically, continue?</string>
     <string name="confirm_sync_yes">OK</string>
     <string name="confirm_sync_no">Cancel</string>
+    <!-- 删除pp的提示-->
+    <string name="delete_pp">Do you want to delete this Disney PhotoPass? This Disney PhotoPass photos cannot be shown once deleted！</string>
+    <string name="delete_pp_cancel">Cancel</string>
+    <string name="delete_pp_ok">Delete</string>
     <!-- tips end -->
 
     <!-- edit story start -->
