@@ -1085,12 +1085,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
 						(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
 
-//										frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
-//												frameBitmap.getWidth(), frameBitmap.getHeight(),
-//												matrix2, true);
+										frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
+												frameBitmap.getWidth(), frameBitmap.getHeight(),
+												matrix2, true);
 
 				canvas.drawBitmap(mainBitmap, 0, 0, point);
-				canvas.drawBitmap(frameBitmap, matrix2, point);
+//				canvas.drawBitmap(frameBitmap, matrix2, point);
+				canvas.drawBitmap(frameBitmap, 0,0, point);
 				matrix2.reset();
 				frameBitmap.recycle();
 				EditPhotoUtil.saveBitmap(heBitmap, url);
@@ -1468,9 +1469,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
 				(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
 
+		frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
+				frameBitmap.getWidth(), frameBitmap.getHeight(),
+				matrix2, true);
 
 		canvas.drawBitmap(mainBitmap, 0, 0, point);
-		canvas.drawBitmap(frameBitmap, matrix2, point);
+//		canvas.drawBitmap(frameBitmap, matrix2, point);
+		canvas.drawBitmap(frameBitmap, 0, 0, point);
 		matrix2.reset();
 		frameBitmap.recycle();
 		return heBitmap;
