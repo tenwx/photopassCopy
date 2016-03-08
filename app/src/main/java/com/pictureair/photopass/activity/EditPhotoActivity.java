@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -46,8 +47,10 @@ import com.pictureair.photopass.editPhoto.Matrix3;
 import com.pictureair.photopass.editPhoto.StickerItem;
 import com.pictureair.photopass.editPhoto.StickerView;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.photopass.entity.EditPhotoInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.entity.StikerInfo;
 import com.pictureair.photopass.filter.Amaro;
 import com.pictureair.photopass.filter.BeautifyFilter;
 import com.pictureair.photopass.filter.BlurFilter;
@@ -122,7 +125,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private File tempFile; //保存文件的临时目录
 	private SimpleDateFormat dateFormat;
 	// 保存图片路径的集合。
-	private ArrayList<String> pathList;
+	private ArrayList<EditPhotoInfo> editPhotoInfoArrayList;
 	private int index = -1; // 索引。   控制图片步骤 前进后退。
 
 	private SharedPreferences sharedPreferences;
@@ -161,6 +164,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	int displayBitmapWidth = 0;
 	int displayBitmapHeight = 0;
 	//end
+
+	// 记录旋转角度。
+	private int rotateAngle;
 
 	// 旋转图片组件
 
@@ -354,6 +360,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	}
 
 	private void initData(){
+		rotateAngle = 0;
 		nameFile = new File(Common.PHOTO_SAVE_PATH);
 
 		if (!nameFile.isDirectory()) {
@@ -428,7 +435,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
 		appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
 
-		pathList = new ArrayList<String>();
+		editPhotoInfoArrayList = new ArrayList<EditPhotoInfo>();
 
 		imageWidth = 900;
 		imageHeight = 1200;
@@ -445,7 +452,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			isOnlinePic = false;
 			loadImage(photoURL);
 		}
-		pathList.add(photoURL);
+		addEditPhotoInfo(photoURL,0,null,null,"",0);
 
 	}
 
@@ -504,14 +511,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						frameImageView.setVisibility(View.INVISIBLE);
 					}
 					//恢复到没有裁减的状态。
-					if (pathList.size() == 1){ //代表最初的图片。
+					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 						if (photoInfo.onLine == 1) {
 							loadOnlineImg(photoURL);
 						}else{
 							loadImage(photoURL);
 						}
 					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(pathList.get(pathList.size() - 1));
+						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
 					}
 				}
 
@@ -529,23 +536,32 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						newImage = null;
 //					newImage.recycle();
 					}
-					mainImage.setImageBitmap(mainBitmap);
-				}
-
-				//如果添加了字体  // 如果旋转了
-				if (editType == 4) { // 恢复到原始状态。
-					if (pathList.size() == 1){ //代表最初的图片。
+//					mainImage.setImageBitmap(mainBitmap);
+					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 						if (photoInfo.onLine == 1) {
 							loadOnlineImg(photoURL);
 						}else{
 							loadImage(photoURL);
 						}
 					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(pathList.get(pathList.size() - 1));
+						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+					}
+				}
+
+				// 如果旋转了
+				if (editType == 4) { // 恢复到原始状态。
+					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+						if (photoInfo.onLine == 1) {
+							loadOnlineImg(photoURL);
+						}else{
+							loadImage(photoURL);
+						}
+					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
 					}
 				}
 				exitEditStates(); // 推出编辑状态
-				if(pathList.size() > 1){
+				if(editPhotoInfoArrayList.size() > 1){
 					preview_save.setVisibility(View.VISIBLE);
 				}
 				break;
@@ -624,6 +640,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 								break;
 						}
 						ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
+//
+						if (photoInfo.onLine == 1) {
+							mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
+						}else{
+							mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
+									imageHeight);
+						}
 						excuteFilterTask.execute(mainBitmap);
 					}
 				});
@@ -719,7 +742,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						}
 					}).start();
 				}else{
-					EditPhotoUtil.copyFile(pathList.get(index), url);
+					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
 					scan(url);
 					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
 				}
@@ -727,33 +750,33 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				break;
 			case R.id.btn_forward: // 前进按钮。
 				if (index == -1) {
-					index = pathList.size() - 1;
+					index = editPhotoInfoArrayList.size() - 1;
 				}
 
-				if (pathList.size() > index + 1) {
+				if (editPhotoInfoArrayList.size() > index + 1) {
 					index++;
-					loadImage(pathList.get(index));
+					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
 				}
 				check();
 				break;
 			case R.id.btn_cancel: //返回按钮。
 				if (index == -1) {
-					index = pathList.size() - 1;
+					index = editPhotoInfoArrayList.size() - 1;
 				}
 				if (index >= 1) {
 					index--;
 				}
 
-				if (pathList.size() - 2 >= 0) {
+				if (editPhotoInfoArrayList.size() - 2 >= 0) {
 
 					if (index == 0) {
 						if (isOnlinePic) {
-							loadOnlineImg(pathList.get(index));
+							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
 						}else{
-							loadImage(pathList.get(index));
+							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
 						}
 					}else{
-						loadImage(pathList.get(index));
+						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
 					}
 				}
 				check();
@@ -762,11 +785,15 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				btn_onedit_save.setVisibility(View.VISIBLE);
 				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,-90);
 				mainImage.setImageBitmap(mainBitmap);
+
+				rotateAngle = rotateAngle - 90;
 				break;
 			case R.id.tv_right90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
 				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,90);
 				mainImage.setImageBitmap(mainBitmap);
+
+				rotateAngle = rotateAngle + 90;
 				break;
 
 			default:
@@ -778,9 +805,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	// 判断 后退 前进按钮的状态
 	private void check() {
 		if (index == -1) {
-			index = pathList.size() - 1;
+			index = editPhotoInfoArrayList.size() - 1;
 		}
-		if (index == pathList.size() - 1) {
+		if (index == editPhotoInfoArrayList.size() - 1) {
 			btn_forward.setImageResource(R.drawable.forward1);
 			btn_forward.setClickable(false);
 		} else {
@@ -985,11 +1012,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					+ dateFormat.format(new Date()) + ".JPG";
 			if (editType == 2) {//滤镜
 				EditPhotoUtil.saveBitmap(params[0], url);
-				pathList.add(url);
-				index = pathList.size() - 1;
+//				pathList.add(url);
+				addEditPhotoInfo(url, editType, null, null, "",0);
+				index = editPhotoInfoArrayList.size() - 1;
 				return params[0];
 			}else if(editType == 3){//饰品
 				//				Matrix touchMatrix = mainImage.getImageViewMatrix();
+				List<StikerInfo> stikerInfoList = new ArrayList<StikerInfo>();
 				Matrix touchMatrix = mainImage.getImageMatrix();
 				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
 						Bitmap.Config.ARGB_8888, true);
@@ -1006,17 +1035,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					StickerItem item = addItems.get(id);
 					item.matrix.postConcat(m);// 乘以底部图片变化矩阵
 					canvas.drawBitmap(item.bitmap, item.matrix, null);
+					stikerInfoList.add(new StikerInfo(item.bitmap, item.matrix)); //添加进去
 				}// end for
 				EditPhotoUtil.saveBitmap(resultBit, url);
-				pathList.add(url);
-				index = pathList.size() - 1;
+//				pathList.add(url);
+				addEditPhotoInfo(url, editType, null, stikerInfoList, "",0);
+				index = editPhotoInfoArrayList.size() - 1;
 				return resultBit;
 			}else if(editType == 4){
 				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
 						Bitmap.Config.ARGB_8888, true);
 				EditPhotoUtil.saveBitmap(resultBit, url);
-				pathList.add(url);
-				index = pathList.size() - 1;
+//				pathList.add(url);
+				addEditPhotoInfo(url, editType, null, null, "",rotateAngle);
+				rotateAngle = 0; //设置完之后恢复状态。
+				index = editPhotoInfoArrayList.size() - 1;
 				return resultBit;
 			}else if(editType == 1){
 				Bitmap mainBitmap = params[0];
@@ -1042,7 +1075,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 
 
-				Log.e("＝＝＝＝＝＝＝＝＝＝＝＝＝＝", "frameBitmap width:"+frameBitmap.getWidth()+"_height:"+frameBitmap.getHeight());
 
 				Canvas canvas = new Canvas(heBitmap);
 				Paint point = new Paint();
@@ -1062,8 +1094,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				matrix2.reset();
 				frameBitmap.recycle();
 				EditPhotoUtil.saveBitmap(heBitmap, url);
-				pathList.add(url);
-				index = pathList.size() - 1;
+//				pathList.add(url);
+				addEditPhotoInfo(url, editType, frameBitmap, null, "",0);
+				index = editPhotoInfoArrayList.size() - 1;
 				return heBitmap;
 //				}else{
 //					.
@@ -1112,7 +1145,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	/**
 	 * 执行滤镜任务
 	 *
-	 * @author panyi
+	 * @author talon
 	 *
 	 */
 	private final class ExcuteFilterTask extends
@@ -1141,6 +1174,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			} else if (filter instanceof BlurFilter) {
 				newImage = ((BlurFilter) filter).transform(params[0]);
 			}
+			newImage = savaFitlerAfter(newImage); // 滤镜合成之后，再去合成曾经操作过的步骤。
 			//           
 			return newImage;
 		}
@@ -1253,7 +1287,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
 				String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
-				EditPhotoUtil.copyFile(pathList.get(index), url);
+				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
 				scan(url);
 				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
 			}
@@ -1339,4 +1373,131 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		rightBottomY = leftTopY + displayBitmapHeight;
 	}
 
+	/**
+	 * 纪录 编辑的过程
+	 * @param photoPath
+	 * @param editType
+	 * @param frameBitmap
+	 * @param stikerInfoList
+	 * @param filterName
+	 */
+	private void addEditPhotoInfo(String photoPath, int editType, Bitmap frameBitmap, List<StikerInfo> stikerInfoList, String filterName,int rotateAngle){
+		EditPhotoInfo editPhotoInfo = new EditPhotoInfo();
+		editPhotoInfo.setPhotoPath(photoPath);
+		editPhotoInfo.setEditType(editType);
+		if (frameBitmap != null){
+			editPhotoInfo.setFrameBitmap(frameBitmap);
+		}
+
+		if (stikerInfoList != null){
+			editPhotoInfo.setStikerInfoList(stikerInfoList);
+		}
+		editPhotoInfo.setFilterName(filterName);
+		editPhotoInfo.setRotateAngle(rotateAngle);
+
+		editPhotoInfoArrayList.add(editPhotoInfo);
+	}
+
+
+	/**
+	 * 保存滤镜之后，添加以前的操作。
+	 * 针对 添加滤镜，不对照片与边框有效 的方法。 线程中。
+	 */
+	private Bitmap savaFitlerAfter(Bitmap bitmap){
+		if (editPhotoInfoArrayList.size() == 1){
+
+		}else{
+			for (int i = 0; i < editPhotoInfoArrayList.size(); i++){
+				if (editPhotoInfoArrayList.get(i).getEditType() == 1){  //为边框时
+					//合成边框
+					bitmap = saveFrame(bitmap);
+				}
+				if(editPhotoInfoArrayList.get(i).getEditType() == 3){  // 为饰品 时
+					// 合成饰品。
+					bitmap = saveStiker(bitmap, editPhotoInfoArrayList.get(i).getStikerInfoList());
+				}
+				if(editPhotoInfoArrayList.get(i).getEditType() == 4){  // 为饰品 时
+					// 旋转图片。
+					bitmap = saveRotate(bitmap,editPhotoInfoArrayList.get(i).getRotateAngle());
+				}
+			}
+		}
+		return bitmap;
+	}
+
+	/**
+	 * 保存 边框
+	 * @param bitmap
+	 * @return
+	 */
+	private Bitmap saveFrame(Bitmap bitmap){
+		Bitmap mainBitmap = bitmap;
+
+		if ((float) mainBitmap.getWidth() / mainBitmap.getHeight() == (float) 4 / 3 || (float) mainBitmap.getWidth() / mainBitmap.getHeight() == (float) 3 / 4) {
+
+		} else {
+			mainBitmap = EditPhotoUtil.cropBitmap(mainBitmap, 4, 3);
+		}
+
+		Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(),
+				Config.ARGB_8888);
+//				if (frameImageView.isShown()) {
+		//不论边框显示与否，都让他合成。   即使是原图。
+		Bitmap frameBitmap;
+		if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
+//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+			if(frameInfos.get(curFramePosition).onLine == 1){
+				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait));
+			}else{
+				frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+			}
+		}else{
+//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+			if(frameInfos.get(curFramePosition).onLine == 1){
+				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape));
+			}else{
+				frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+			}
+		}
+		Canvas canvas = new Canvas(heBitmap);
+		Paint point = new Paint();
+		point.setXfermode(new PorterDuffXfermode(
+				android.graphics.PorterDuff.Mode.SRC_OVER));
+		Matrix matrix2 = new Matrix();
+		matrix2.postScale(
+				(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
+				(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
+
+
+		canvas.drawBitmap(mainBitmap, 0, 0, point);
+		canvas.drawBitmap(frameBitmap, matrix2, point);
+		matrix2.reset();
+		frameBitmap.recycle();
+		return heBitmap;
+	}
+
+	/**
+	 * 保存 饰品
+	 * @param bitmap
+	 * @return
+	 */
+	private Bitmap saveStiker(Bitmap bitmap, List<StikerInfo> stikerInfoList) {
+		Bitmap resultBit = Bitmap.createBitmap(bitmap.copy(Bitmap.Config.ARGB_8888, true));
+		for (int i = 0; i < stikerInfoList.size(); i++) {
+			Canvas canvas = new Canvas(resultBit);
+			canvas.drawBitmap(stikerInfoList.get(i).getStickerBitmap(), stikerInfoList.get(i).getStickerMatrix(), null);
+		}
+		return resultBit;
+	}
+
+	/**
+	 * 保存旋转图片
+	 * @param bitmap
+	 * @param rotateAngle
+	 * @return
+	 */
+	private Bitmap saveRotate(Bitmap bitmap, int rotateAngle) {
+		bitmap = EditPhotoUtil.rotateImage(bitmap,rotateAngle);
+		return bitmap;
+	}
 }

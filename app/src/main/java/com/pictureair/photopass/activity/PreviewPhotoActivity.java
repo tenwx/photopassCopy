@@ -58,6 +58,7 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
@@ -1024,6 +1025,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                         startActivityForResult(intent, 1);
                     }else{
+
+//                        new PictureWorksDialog(PreviewPhotoActivity.this,getString(R.string.photo_cannot_edit_title),getString(R.string.photo_cannot_edit_content),getString(R.string.photo_cannot_edit_no),getString(R.string.photo_cannot_edit_yes),true,null).show();
 //                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
                         customdialog = new CustomDialog(PreviewPhotoActivity.this,
                                 R.string.photo_cannot_edit_content,
