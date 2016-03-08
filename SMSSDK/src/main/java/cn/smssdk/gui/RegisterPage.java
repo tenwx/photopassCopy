@@ -98,7 +98,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
     private MyToast myToast;
     private Typeface typeface;
-    private LinearLayout llPwdConten,llMobileCenten,llPutIdentifyCenten;
+    private LinearLayout llPwdConten, llMobileCenten, llPutIdentifyCenten;
     private TextView tvExplain;//底部文案
     private View viewCountry;
     private String forgetPhoto;
@@ -149,7 +149,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
             tvCountry = (TextView) activity.findViewById(getIdRes(activity, "tv_country"));// 国家的name
 //            String[] country = getCurrentCountry(); // 获取当前国.数组
-            String[] country = {"66","88"}; // 获取当前国.数组
+            String[] country = {"66", "88"}; // 获取当前国.数组
 
             if (country != null) {
                 currentCode = country[1];// 获取国家的区号，例如：中国 86
@@ -165,7 +165,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             etPhoneNum.requestFocus();// 点击tab键或enter键焦点自动进入下一个输入框
 
 
-            tvExplain =(TextView) activity.findViewById(getIdRes(activity, "tv_explain"));
+            tvExplain = (TextView) activity.findViewById(getIdRes(activity, "tv_explain"));
             tvExplain.setMovementMethod(LinkMovementMethod.getInstance());
             CharSequence text = tvExplain.getText();
             if (text instanceof Spannable) {
@@ -208,9 +208,9 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             etPwd2 = (EditTextWithClear) activity.findViewById(getIdRes(activity, "pwd_again"));// 第二个密码输入框
             etPwd2.addTextChangedListener(new MyTextWatcher());
 
-            llPwdConten = (LinearLayout)activity.findViewById(getIdRes(activity, "ll_pwd_centen"));//忘记密码 页面 需要隐藏密码框
-            llMobileCenten = (LinearLayout)activity.findViewById(getIdRes(activity, "ll_mobile_centen"));//忘记密码 页面点击下一步 需要隐藏手机输入框
-            llPutIdentifyCenten = (LinearLayout)activity.findViewById(getIdRes(activity, "ll_put_identify_centen"));//忘记密码 页面点击下一步 需要隐藏 输入验证码一行
+            llPwdConten = (LinearLayout) activity.findViewById(getIdRes(activity, "ll_pwd_centen"));//忘记密码 页面 需要隐藏密码框
+            llMobileCenten = (LinearLayout) activity.findViewById(getIdRes(activity, "ll_mobile_centen"));//忘记密码 页面点击下一步 需要隐藏手机输入框
+            llPutIdentifyCenten = (LinearLayout) activity.findViewById(getIdRes(activity, "ll_put_identify_centen"));//忘记密码 页面点击下一步 需要隐藏 输入验证码一行
 
             if (CustomFontManager.IS_CUSOTM_FONT) {
                 typeface = Typeface.createFromAsset(activity.getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
@@ -218,7 +218,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 btnSubmit.setTypeface(typeface);
             }
 
-            if (type == 1){//忘记密码页面
+            if (type == 1) {//忘记密码页面
                 llPwdConten.setVisibility(View.GONE);
                 tv_otherRegistered.setVisibility(View.GONE);
                 tvExplain.setVisibility(View.GONE);
@@ -390,10 +390,12 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     // 监听手机号编辑框
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         onChangedEditTestiSempet();
-        if (s.length() > 0) {
-            btnNext.setEnabled(true);
-        } else {
-            btnNext.setEnabled(false);
+        if (!countdownIn) {
+            if (s.length() > 0) {
+                btnNext.setEnabled(true);
+            } else {
+                btnNext.setEnabled(false);
+            }
         }
     }
 
@@ -462,7 +464,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         int id_btnSubmit = getIdRes(activity, "sure");
 
         if (id == id_btnSubmit) {
-            if(isForgetPwdPage){
+            if (isForgetPwdPage) {
                 //忘记密码的提交
                 String pwd = etPwd.getText().toString();
                 // 验证密码的合法性
@@ -516,10 +518,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode!=0 && requestCode == SelectCountryActivity.requestCountry){
-            String[] strs= data.getExtras().getStringArray("country");
+        if (resultCode != 0 && requestCode == SelectCountryActivity.requestCountry) {
+            String[] strs = data.getExtras().getStringArray("country");
 //            Toast.makeText(getContext(),"国家名称：" + strs[0] + "\n" + "国家区号：" + strs[1] + "\n" + "国家简码：" + strs[4],Toast.LENGTH_SHORT).show();
-            if (null!=strs){
+            if (null != strs) {
                 currentCode = strs[1];
                 tvCountryNum.setText("+" + currentCode);
                 tvCountry.setText(strs[0]);
@@ -566,6 +568,8 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
      * @param result
      * @param data
      */
+    private boolean countdownIn = false;
+
     private void afterGet(final int result, final Object data) {
         System.out.println("获取验证码成功后,的执行动作————————afterGet");
         runOnUIThread(new Runnable() {
@@ -576,8 +580,9 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     time = RETRY_INTERVAL;
+
+                    countdownIn = true;
                     countDown();// 倒计时
-                    // 999;
                 } else {
                     ((Throwable) data).printStackTrace();
                     Throwable throwable = (Throwable) data;
@@ -662,6 +667,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
     /**
      * 验证码不正确
+     *
      * @param data
      */
     private void resultFail(Throwable data) {
@@ -676,6 +682,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     /**
      * 最后一步
      * 验证成功，发送至LoginActivity
+     *
      * @param data
      */
     private void resultComplete(HashMap<String, Object> data) {
@@ -701,7 +708,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 time--;
                 if (time == 0) {
                     // 倒计时完毕后
-
+                    countdownIn = false;
                     int resId = getStringRes(activity, "smssdk_send_code2");// 再次发送验证码
                     if (resId > 0) {
                         btnNext.setText(resId);
@@ -869,12 +876,12 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         @Override
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
-            if (type == 0 ){//注册
+            if (type == 0) {//注册
                 onChangedEditTestiSempet();
-            }else{
+            } else {
                 if (etPhoneNum.getText().toString().trim().length() > 0 && etIdentifyNum.getText().toString().trim().length() > 0) {
                     setSubmitAvailable(true);
-                }else{
+                } else {
                     setSubmitAvailable(false);
                 }
             }
@@ -888,15 +895,16 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
     private class MyURLSpan extends ClickableSpan {
         private String mUrl;
+
         MyURLSpan(String url) {
             mUrl = url;
         }
 
         @Override
         public void onClick(View widget) {
-            Message message=new Message();
-            message.arg1= Integer.valueOf(mUrl);
-            message.what=22;
+            Message message = new Message();
+            message.arg1 = Integer.valueOf(mUrl);
+            message.what = 22;
             handler2.sendMessage(message);
         }
     }

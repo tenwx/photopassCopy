@@ -229,7 +229,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         if (0 == payType) {// 支付宝支付方式
             try {
                 String info = AliPayUtil.getOrderInfo(orderId, nameString,
-                        introductString, Common.DEBUG ? "0.01" : priceString);
+                        introductString, Common.PAY_DEBUG ? "0.01" : priceString);
                 PictureAirLog.v(TAG, "info:" + info);
                 // 对订单做RSA 签名
                 String sign = AliPayUtil.sign(info);
@@ -874,7 +874,7 @@ public class PaymentOrderActivity extends BaseActivity implements
             double price = Double.valueOf(priceString);
             PictureAirLog.out("price------>" + (int)price);
 
-            packageParams.add(new BasicNameValuePair("total_fee", Common.DEBUG ? "1" : ((int)price) * 100 + ""));// 总金额只能为整数,单位是分
+            packageParams.add(new BasicNameValuePair("total_fee", Common.PAY_DEBUG ? "1" : ((int)price) * 100 + ""));// 总金额只能为整数,单位是分
             packageParams.add(new BasicNameValuePair("trade_type", "APP"));// 交易类型:取值如下：JSAPI，NATIVE，APP，WAP
 
             String sign = genPackageSign(packageParams);

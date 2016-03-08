@@ -48,7 +48,7 @@ import cn.sharesdk.twitter.Twitter;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 import cn.sharesdk.wechat.moments.WechatMoments.ShareParams;
-import cn.smssdk.gui.*;
+import cn.smssdk.gui.CustomProgressDialog;
 
 import static com.mob.tools.utils.R.getStringRes;
 
