@@ -382,6 +382,8 @@
         <!-- 开启notification的服务 -->
         <service android:name=".service.NotificationService" />
 
+        <service android:name=".service.BreakpointDownloadService" />
+
         <!-- notification里面的  广播接受 -->
         <!-- <receiver android:name="com.pictureAir.receiver.AlertManagerRecriver" > -->
         <!-- <intent-filter android:priority="500" > -->

@@ -13,6 +13,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.entity.QuestionInfo;
+import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -62,7 +63,7 @@ public class PictureAirDbManager {
                                 photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
                                 photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
                                 photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
-                                photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "",photoInfo.isHasPreset+""});
+                                photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "", photoInfo.isHasPreset + ""});
             } else {//取消收藏
 
                 if (photoInfo.onLine == 1) {
@@ -690,7 +691,7 @@ public class PictureAirDbManager {
                         photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
                         photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
                         photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
-                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset+""});
+                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + ""});
             }
 
             database.setTransactionSuccessful();
@@ -707,13 +708,13 @@ public class PictureAirDbManager {
     }
 
 
-
     /**
      * 根据ppCode删除对应的照片
+     *
      * @param position 删除的position
-     * @param ppList 原始ppCode列表
+     * @param ppList   原始ppCode列表
      */
-    public void removePhotosFromUserByPPCode(int position, ArrayList<PPinfo> ppList){
+    public void removePhotosFromUserByPPCode(int position, ArrayList<PPinfo> ppList) {
         /**
          * 删除步骤
          * 1.获取删除ppcode对应的所有图片
@@ -772,7 +773,7 @@ public class PictureAirDbManager {
      */
     public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo, String deleteTime) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
-        database  =DBManager.getInstance().writData();
+        database = DBManager.getInstance().writData();
         //根据当前时间，删除超过30天并且未支付的数据信息
         /**
          * 1.获取当前时间，以毫秒为单位
@@ -1104,6 +1105,110 @@ public class PictureAirDbManager {
             DBManager.getInstance().closeDatabase();
         }
         return ad;
+    }
+
+
+    /**
+     * * 是否存在下载线程信息
+     *
+     * @param url
+     * @param threadId
+     * @return
+     */
+    public boolean isExistsThread(String url, int threadId) {
+        Cursor cursor = null;
+        boolean exists = false;
+        try {
+            database = DBManager.getInstance().writData();
+            cursor = database.rawQuery("select * from " + Common.THREAD_INFO + " where url = ? and thread_id = ?", new String[]{url, threadId + ""});
+            exists = cursor.moveToNext();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return exists;
+    }
+
+    /**
+     * 读取下载线程信息
+     *
+     * @param url
+     */
+    public List<ThreadInfo> getTreads(String url) {
+        List<ThreadInfo> list = new ArrayList<ThreadInfo>();
+        Cursor cursor = null;
+        try {
+            database = DBManager.getInstance().writData();
+            cursor = database.rawQuery("select * from " + Common.THREAD_INFO + " where url = ?", new String[]{url});
+            while (cursor.moveToNext()) {
+                ThreadInfo threadInfo = new ThreadInfo();
+                threadInfo.setId(cursor.getInt(cursor.getColumnIndex("thread_id")));
+                threadInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                threadInfo.setFinished(cursor.getInt(cursor.getColumnIndex("finished")));
+                threadInfo.setEnd(cursor.getInt(cursor.getColumnIndex("end")));
+                threadInfo.setStart(cursor.getInt(cursor.getColumnIndex("start")));
+                list.add(threadInfo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return list;
+    }
+
+
+    /**
+     * 更新下载线程
+     *
+     * @param url
+     * @param threadId
+     * @param finished
+     */
+    public void updateThread(String url, int threadId, long finished) {
+        database = DBManager.getInstance().writData();
+        database.execSQL("update " + Common.THREAD_INFO + " set finished = ? where url = ? and thread_id = ?",
+                new Object[]{finished, url, threadId});
+        DBManager.getInstance().closeDatabase();
+    }
+
+
+    /**
+     * 删除下载线程
+     *
+     * @param url
+     * @param threadId
+     */
+    public void deleteThread(String url, int threadId) {
+        database = DBManager.getInstance().writData();
+        database.execSQL("delete from " + Common.THREAD_INFO + " where url = ? and thread_id = ?",
+                new Object[]{url, threadId});
+        DBManager.getInstance().closeDatabase();
+    }
+
+    public void insertThread(ThreadInfo threadInfo) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        try {
+            database.execSQL("insert into " + Common.THREAD_INFO + "(thread_id,url,start,end,finished) values(?,?,?,?,?)",
+                    new Object[]{threadInfo.getId(), threadInfo.getUrl(), threadInfo.getStart(), threadInfo.getEnd(), threadInfo.getFinished()});
+            database.setTransactionSuccessful();
+            database.setTransactionSuccessful();
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
     }
 
 }
