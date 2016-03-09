@@ -1188,9 +1188,14 @@ public class PictureAirDbManager {
      */
     public void deleteThread(String url, int threadId) {
         database = DBManager.getInstance().writData();
-        database.execSQL("delete from " + Common.THREAD_INFO + " where url = ? and thread_id = ?",
-                new Object[]{url, threadId});
-        DBManager.getInstance().closeDatabase();
+        try {
+            database.execSQL("delete from " + Common.THREAD_INFO + " where url = ? and thread_id = ?",
+                    new Object[]{url, threadId});
+        }catch (Exception e){
+            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
+        }finally {
+            DBManager.getInstance().closeDatabase();
+        }
     }
 
     public void insertThread(ThreadInfo threadInfo) {
@@ -1199,7 +1204,6 @@ public class PictureAirDbManager {
         try {
             database.execSQL("insert into " + Common.THREAD_INFO + "(thread_id,url,start,end,finished) values(?,?,?,?,?)",
                     new Object[]{threadInfo.getId(), threadInfo.getUrl(), threadInfo.getStart(), threadInfo.getEnd(), threadInfo.getFinished()});
-            database.setTransactionSuccessful();
             database.setTransactionSuccessful();
 
         } catch (Exception e) {

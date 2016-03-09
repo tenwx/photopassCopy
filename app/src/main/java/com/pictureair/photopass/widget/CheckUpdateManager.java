@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,6 +31,9 @@ import java.util.ArrayList;
 
 import cn.smssdk.gui.CustomProgressDialog;
 
+/**
+ * 检查更新apk封装类
+ */
 public class CheckUpdateManager {
     private BaseCheckUpdate baseCheckUpdate;
     private Context context;
@@ -37,7 +41,6 @@ public class CheckUpdateManager {
     private PictureWorksDialog pictureWorksDialog;
     private String downloadURL, forceUpdate, currentLanguage;
     private CustomProgressBarPop customProgressBarPop;
-    private CustomProgressDialog customProgressDialog;
     private View parentView;
     private MyToast myToast;
     private String version;
@@ -45,17 +48,34 @@ public class CheckUpdateManager {
     private static final int INSTALL_APK = 201;
     private static final int GENERATE_APK_FAILED = 202;
 
+    /**
+     * 接受广播
+     */
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (BreakpointDownloadService.ACTION_UPDATE.equals(intent.getAction())) {
+                long bytesWritten = intent.getLongExtra("bytesWritten", 0);
+                long totalSize = intent.getLongExtra("totalSize", 100);
+                boolean onFailure = intent.getBooleanExtra("onFailure", false);
+
+                if (bytesWritten == 100){
+                    //下载完毕
+                    insertAPK();
+                } else if (onFailure){//下载失败
+                    handler.sendEmptyMessage(API1.DOWNLOAD_APK_FAILED);
+                } else{//还在下载
+                    customProgressBarPop.setProgress(bytesWritten, totalSize);
+                }
+            }
+        }
+    };
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case API1.GET_TOKEN_ID_FAILED:
                     break;
-
-                case API1.GET_TOKEN_ID_SUCCESS:
-                    baseCheckUpdate.checkUpdate(context, handler, deviceInfos.get(1), currentLanguage);
-                    break;
-
 
                 case API1.APK_NEED_NOT_UPDATE://不更新
                     PictureAirLog.out("apk need not update");
@@ -64,14 +84,7 @@ public class CheckUpdateManager {
                 case API1.APK_NEED_UPDATE:
                     PictureAirLog.out("apk need update");
                     //开始显示对话框
-                    String objsString[] = (String[]) msg.obj;
-                    downloadURL = objsString[3];
-                    forceUpdate = objsString[1];
-                    version = objsString[0];
-
-                    pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), objsString[2],
-                            forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
-                    pictureWorksDialog.show();
+                    showUpdateApkDialog(msg);
                     break;
 
                 case DialogInterface.BUTTON_POSITIVE:
@@ -84,51 +97,11 @@ public class CheckUpdateManager {
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
 
-//                case API1.DOWNLOAD_APK_SUCCESS:
-//                    //下载成功
-//                    PictureAirLog.out("success");
-//                    if (customProgressBarPop != null) {
-//                        customProgressBarPop.dismiss();
-//                    }
-//                    customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.generate_apk), false, null);
-//                    //准备生成apk
-//                    final byte[] data = (byte[]) msg.obj;
-//
-//                    new Thread() {
-//                        public void run() {
-//
-//                            File downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH);
-//                            if (!downloadAPKFile.exists()) {
-//                                downloadAPKFile.mkdirs();
-//                            }
-//                            File downloadFile = new File(Common.DOWNLOAD_APK_PATH + "pictureAir_" + version + ".apk");
-//                            try {
-//                                downloadFile.createNewFile();
-//
-//                                FileOutputStream fos = new FileOutputStream(downloadFile);
-//                                fos.write(data);
-//                                fos.close();
-//                                handler.sendEmptyMessage(INSTALL_APK);
-//                            } catch (IOException e) {
-//                                // TODO Auto-generated catch block
-//                                e.printStackTrace();
-//                                downloadFile.delete();
-//                                handler.sendEmptyMessage(GENERATE_APK_FAILED);
-//                            }
-//                        }
-//
-//                        ;
-//                    }.start();
-//                    break;
-
                 case INSTALL_APK:
                     insertAPK();
                     break;
 
                 case GENERATE_APK_FAILED://生成apk失败
-                    if (customProgressDialog != null) {
-                        customProgressDialog.dismiss();
-                    }
                     myToast.setTextAndShow(R.string.generate_apk_failed, Common.TOAST_SHORT_TIME);
                     break;
 
@@ -139,6 +112,29 @@ public class CheckUpdateManager {
 
         ;
     };
+
+    /**
+     * 询问是否更新APK Dialog
+     * @param msg
+     */
+    private void showUpdateApkDialog(Message msg) {
+        String objsString[] = (String[]) msg.obj;
+        downloadURL = objsString[3];
+        forceUpdate = objsString[1];
+        version = objsString[0];
+
+        pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), objsString[2],
+                forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
+        pictureWorksDialog.show();
+
+        //测试
+//        downloadURL = "http://gdown.baidu.com/data/wisegame/1f10e30a23693de1/baidushoujizhushou_16786079.apk";
+//        forceUpdate = "true";
+//        version = "3.3.3";
+//        pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), "123",
+//                forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
+//        pictureWorksDialog.show();
+    }
 
     /**
      * 自动检查更新封装类
@@ -169,9 +165,8 @@ public class CheckUpdateManager {
         if (MyApplication.getTokenId() == null) {
             baseCheckUpdate.getTokenId(context, handler);
         } else {
-            handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
+            baseCheckUpdate.checkUpdate(context, handler, deviceInfos.get(1), currentLanguage);
         }
-
     }
 
     /**
@@ -196,31 +191,25 @@ public class CheckUpdateManager {
         return number;
     }
 
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (BreakpointDownloadService.ACTION_UPDATE.equals(intent.getAction())) {
-                long bytesWritten = intent.getLongExtra("bytesWritten", 0);
-                long totalSize = intent.getLongExtra("totalSize", 0);
-                boolean isOk = intent.getBooleanExtra("totalSize", false);
-                boolean onFailure = intent.getBooleanExtra("onFailure", false);
-
-                if (isOk){
-                    //下载完毕
-                    insertAPK();
-                } else if (onFailure){//下载失败
-                    handler.sendEmptyMessage(API1.DOWNLOAD_APK_FAILED);
-                } else{//还在下载
-                    customProgressBarPop.setProgress(bytesWritten, totalSize);
-                }
-            }
-        }
-    };
-
+    /**
+     * 注销广播
+     */
     public void unregisterReceiver() {
         if (null!= receiver){
+            try{
             context.unregisterReceiver(receiver);
+            }catch (Exception e){
+            }
         }
+    }
+
+    /**
+     * 注册广播
+     */
+    public void registerReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BreakpointDownloadService.ACTION_UPDATE);
+        context.registerReceiver(receiver, filter);
     }
 
     /**
@@ -240,11 +229,8 @@ public class CheckUpdateManager {
             customProgressBarPop.show(0);
 
             //注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BreakpointDownloadService.ACTION_UPDATE);
-            context.registerReceiver(receiver, filter);
+            registerReceiver();
             //创建文件信息
-
             FileInfo fileInfo = new FileInfo();
             fileInfo.setId(0);
             fileInfo.setUrl(downloadURL);
@@ -266,22 +252,21 @@ public class CheckUpdateManager {
     private void insertAPK() {
         /**
          * 需要在安装之前判断apk文件的md5值
-         * 需要在安装之前判断apk文件的md5值
-         * 需要在安装之前判断apk文件的md5值
+         * 需要服务器穿一个md5值 与当前本地算出的md5做对比
+         * 如果文件较大 需要放在线程中处理
          * start
          */
-
+//        try {
+//            AppUtil.getMd5ByFile(downloadAPKFile);
+//        }catch (Exception e){
+//
+//        }
         /**
          * end
-         * 需要在安装之前判断apk文件的md5值
-         * 需要在安装之前判断apk文件的md5值
          * 需要在安装之前判断apk文件的md5值
          */
         if (customProgressBarPop != null) {
             customProgressBarPop.dismiss();
-        }
-        if (customProgressDialog != null) {
-            customProgressDialog.dismiss();
         }
         //开始安装新版本
         Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -117,24 +117,14 @@ public class DownloadTask {
                     }
                     //下载完后，删除线程信息
                     dbDAO.deleteThread(threadInfo.getUrl(), threadInfo.getId());
-
-                    intent.putExtra("isOk", true);
-                    context.sendBroadcast(intent);
                 }
 
             } catch (Exception e) {
-                /**
-                 * 需要保存下载进度
-                 * start
-                 */
-
-                /**
-                 * 需要保存下载进度
-                 * end
-                 */
+                PictureAirLog.e(TAG, e.getMessage());
+                saveThreadInfo(mFinish);//需要保存下载进度
                 intent.putExtra("onFailure", true);
                 context.sendBroadcast(intent);
-                PictureAirLog.e(TAG, e.getMessage());
+                e.printStackTrace();
             } finally {
                 try {
                     //关闭流
