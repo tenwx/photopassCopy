@@ -231,14 +231,15 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                                 e.printStackTrace();
                             }
                         }
+                        upload_index++;
                     } else {//服务器上获取的图片，只需要将photoid获取就行
                         PhotoInfo info = photoList.get(upload_index);
                         info.photoId = photoList.get(upload_index).photoId;
                         info.photoPathOrURL = photoList.get(upload_index).photoThumbnail_512;
                         photoList.set(upload_index, info);
+                        upload_index++;
                         makeGiftHandler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
                     }
-                    upload_index++;
                 } else {//开始加入购物车
                     upload_index = 0;
                     //编辑传入照片的信息
@@ -250,7 +251,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     }
                     PictureAirLog.v(TAG, embedPhotos.toString());
                     PictureAirLog.out(embedPhotos.toString());
-                    API1.addToCart(goodsInfo.getGoodsKey(), 1, false, embedPhotos, makeGiftHandler);
+                    API1.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedPhotos, makeGiftHandler);
                 }
                 break;
 

@@ -17,6 +17,7 @@ package com.pictureair.photopass.alipay;
 // Note: 为安全起见，使用RSA私钥进行签名的操作过程，应该尽量放到商家服务器端去进行。
 public final class Keys {
 
+	//pp参数
 	//合作身份者id，以2088开头的16位纯数字
 	public static final String DEFAULT_PARTNER = "2088121658521542";
 

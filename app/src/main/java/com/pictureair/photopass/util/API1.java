@@ -822,6 +822,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.out("ppp--->" + jsonObject.toString());
                 PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
                 handler.obtainMessage(GET_PPP_SUCCESS, jsonObject).sendToTarget();
             }
