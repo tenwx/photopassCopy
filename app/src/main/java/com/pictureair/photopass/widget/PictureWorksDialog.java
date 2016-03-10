@@ -18,7 +18,7 @@ public class PictureWorksDialog {
 	private CustomDialog customDialog;
 	private Handler handler;
 	private boolean gravity;
-	
+
 	/**
 	 * 初始化
 	 * 怎么使用？
@@ -26,7 +26,7 @@ public class PictureWorksDialog {
 	 * 2. pictureWorksDialog = new PictureWorksDialog(context, titleString, messageString, cancelString, okString, true, handler);
 	 * 3. pictureWorksDialog.show();
 	 * 4. 处理handler中 DialogInterface.BUTTON_POSITIVE 和 DialogInterface.BUTTON_NEGATIVE 事件
-	 * 
+	 *
 	 * @param context
 	 * @param titleString 提示的title,如果不需要title，则为null
 	 * @param messageString 提示的内容
@@ -45,26 +45,26 @@ public class PictureWorksDialog {
 		this.handler = handler;
 		init();
 	}
-	
+
 	private void init() {
 		//初始化dialog
 		customDialog = new CustomDialog.Builder(context)
 		.setTitle(titleString)
-		.setMessage(messageString) 
+		.setMessage(messageString)
 		.setGravity(gravity)
 		.setNegativeButton(cancelString, new DialogOnClickListener())
 		.setPositiveButton(okString, new DialogOnClickListener())
 		.setCancelable(false)
 		.create();
 	}
-	
+
 	/**
 	 * 显示dialog
 	 */
 	public void show() {
-		customDialog.show();	
+		customDialog.show();
 	}
-	
+
 	/**
 	 * 对话框按钮的监听
 	 * @author bauer_bao
@@ -84,7 +84,7 @@ public class PictureWorksDialog {
 				PictureAirLog.out("click no");
 				handler.sendEmptyMessage(DialogInterface.BUTTON_NEGATIVE);
 				break;
-				
+
 			default:
 				break;
 			}

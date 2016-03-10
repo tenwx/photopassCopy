@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import com.pictureair.photopass.entity.HttpBaseJson;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.ThreadInfo;
+import com.pictureair.photopass.service.BreakpointDownloadService;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
@@ -1519,33 +1522,67 @@ public class API1 {
         });
     }
 
-    /**
-     * 下载apk文件
-     *
-     * @param downloadURL 下載路徑
-     * @param handler
-     */
-    public static void downloadAPK(String downloadURL, final CustomProgressBarPop customProgressBarPop, final String version, final Handler handler) {
-        HttpUtil1.asyncDownloadBinaryData(downloadURL, new HttpCallback() {
-            @Override
-            public void onSuccess(byte[] binaryData) {
-                super.onSuccess(binaryData);
-                handler.obtainMessage(DOWNLOAD_APK_SUCCESS, binaryData).sendToTarget();
-            }
+//    /**
+//     * 下载apk文件
+//     *
+//     * @param downloadURL 下載路徑
+//     * @param handler
+//     */
+//    public static void downloadAPK(final Context content,String downloadURL, final CustomProgressBarPop customProgressBarPop, final String version, final Handler handler) {
+//
+//        HttpUtil1.asyncDownloadBinaryData(downloadURL, new HttpCallback() {
+//            @Override
+//            public void onSuccess(byte[] binaryData) {
+//                super.onSuccess(binaryData);
+//                handler.obtainMessage(DOWNLOAD_APK_SUCCESS, binaryData).sendToTarget();
+//            }
+//
+//            @Override
+//            public void onFailure(int status) {
+//                super.onFailure(status);
+//                handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
+//            }
+//
+//            @Override
+//            public void onProgress(long bytesWritten, long totalSize) {
+//                super.onProgress(bytesWritten, totalSize);
+//                customProgressBarPop.setProgress(bytesWritten,totalSize);
+//            }
+//        });
+//    }
 
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                customProgressBarPop.setProgress(bytesWritten, totalSize);
-            }
-        });
-    }
+//    /**
+//     * 下载apk文件
+//     * @param content
+//     * @param threadInfo
+//     * @param handler
+//     */
+//    public static void downloadAPK2(final Context content,final ThreadInfo threadInfo, final Handler handler) {
+//        final Intent intent = new Intent(BreakpointDownloadService.ACTION_UPDATE);
+//
+//        HttpUtil1.asyncDownloadBinaryData(threadInfo.getUrl(), new HttpCallback() {
+//            @Override
+//            public void onSuccess(byte[] binaryData) {
+//                super.onSuccess(binaryData);
+//                handler.obtainMessage(DOWNLOAD_APK_SUCCESS, binaryData).sendToTarget();
+//            }
+//
+//            @Override
+//            public void onFailure(int status) {
+//                super.onFailure(status);
+//                handler.sendEmptyMessage(DOWNLOAD_APK_FAILED);
+//            }
+//
+//            @Override
+//            public void onProgress(long bytesWritten, long totalSize) {
+//                super.onProgress(bytesWritten, totalSize);
+//
+//                intent.putExtra("bytesWritten", bytesWritten);
+//                intent.putExtra("totalSize", totalSize);
+//                content.sendBroadcast(intent);
+//            }
+//        });
+//    }
 
 
     /***************************************推送 Start**************************************/

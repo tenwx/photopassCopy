@@ -391,6 +391,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        checkUpdateManager.unregisterReceiver();
         if (registerPage != null) {
             PictureAirLog.v(TAG, "logout onDestroy, need finish registerPage");
             registerPage.finish();

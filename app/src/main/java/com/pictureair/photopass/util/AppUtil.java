@@ -40,10 +40,13 @@ import org.apache.http.conn.util.InetAddressUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -51,6 +54,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
@@ -1103,6 +1108,49 @@ public class AppUtil {
         //		country = countryMap.get(countryCode.trim());
         return country;
     }
+
+
+    /**
+     * 计算文件md5
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static String getMd5ByFile(File file) throws FileNotFoundException {
+        String value = null;
+        FileInputStream in = new FileInputStream(file);
+        MappedByteBuffer byteBuffer = null;
+        MessageDigest md5 = null;
+        BigInteger bi = null;
+        try {
+            byteBuffer = in.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+            md5 = MessageDigest.getInstance("MD5");
+            md5.update(byteBuffer);
+            bi = new BigInteger(1, md5.digest());
+            value = bi.toString(16);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null != in) {
+                    in.close();
+                }
+                if (null != byteBuffer) {
+                    byteBuffer.clear();
+                    byteBuffer = null;
+                }
+                if (null != md5) {
+                    md5 = null;
+                }
+                if (null != bi) {
+                    bi = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return value; }
 
 
 }
