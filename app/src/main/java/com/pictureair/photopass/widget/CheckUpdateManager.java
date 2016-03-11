@@ -13,8 +13,10 @@ import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BaseCheckUpdate;
 import com.pictureair.photopass.entity.FileInfo;
+import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.service.BreakpointDownloadService;
 import com.pictureair.photopass.util.API1;
 
@@ -28,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.smssdk.gui.CustomProgressDialog;
 
@@ -47,11 +50,14 @@ public class CheckUpdateManager {
     private File downloadAPKFile;
     private static final int INSTALL_APK = 201;
     private static final int GENERATE_APK_FAILED = 202;
+    private boolean isRegisterReceiver = false;
+    private final int UPDATE_PB = 203;
+    private PictureAirDbManager dbDAO = null;
 
     /**
      * 接受广播
      */
-    BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (BreakpointDownloadService.ACTION_UPDATE.equals(intent.getAction())) {
@@ -61,11 +67,12 @@ public class CheckUpdateManager {
 
                 if (bytesWritten == 100){
                     //下载完毕
-                    insertAPK();
+                    handler.sendEmptyMessage(INSTALL_APK);
                 } else if (onFailure){//下载失败
                     handler.sendEmptyMessage(API1.DOWNLOAD_APK_FAILED);
                 } else{//还在下载
-                    customProgressBarPop.setProgress(bytesWritten, totalSize);
+                    long[] numbers ={bytesWritten,totalSize};
+                    handler.obtainMessage(UPDATE_PB,numbers).sendToTarget();
                 }
             }
         }
@@ -74,7 +81,14 @@ public class CheckUpdateManager {
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
+                case UPDATE_PB:
+                    customProgressBarPop.setProgress(((long[])msg.obj)[0], ((long[])msg.obj)[1]);
+                    break;
                 case API1.GET_TOKEN_ID_FAILED:
+                    break;
+
+                case API1.GET_TOKEN_ID_SUCCESS:
+                    checkApk();
                     break;
 
                 case API1.APK_NEED_NOT_UPDATE://不更新
@@ -154,10 +168,11 @@ public class CheckUpdateManager {
         this.parentView = parent;
         myToast = new MyToast(context);
         baseCheckUpdate = CheckUpdate.getInstance();
-
+        dbDAO = new PictureAirDbManager(context);
     }
 
     /**
+     * 先检查tokenid，再
      * 开始检查更新
      */
     public void startCheck() {
@@ -165,8 +180,15 @@ public class CheckUpdateManager {
         if (MyApplication.getTokenId() == null) {
             baseCheckUpdate.getTokenId(context, handler);
         } else {
-            baseCheckUpdate.checkUpdate(context, handler, deviceInfos.get(1), currentLanguage);
+            checkApk();
         }
+    }
+
+    /**
+     * 开始检查更新
+     */
+    private void checkApk(){
+        baseCheckUpdate.checkUpdate(context, handler, deviceInfos.get(1), currentLanguage);
     }
 
     /**
@@ -195,7 +217,7 @@ public class CheckUpdateManager {
      * 注销广播
      */
     public void unregisterReceiver() {
-        if (null!= receiver){
+        if (null != receiver && isRegisterReceiver){
             try{
             context.unregisterReceiver(receiver);
             }catch (Exception e){
@@ -207,6 +229,7 @@ public class CheckUpdateManager {
      * 注册广播
      */
     public void registerReceiver() {
+        isRegisterReceiver = true;
         IntentFilter filter = new IntentFilter();
         filter.addAction(BreakpointDownloadService.ACTION_UPDATE);
         context.registerReceiver(receiver, filter);
@@ -219,7 +242,8 @@ public class CheckUpdateManager {
         PictureAirLog.out("apk yes");
         String FILE_NAME = "SHDRPhotoPass_" + version + ".apk";
         downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH + FILE_NAME);
-        if (downloadAPKFile.exists()) {//文件已经存在
+
+        if (downloadAPKFile.exists() && !dbDAO.isExistsThread()) {//文件已经存在
             PictureAirLog.out("apk exist");
             insertAPK();
         } else {//文件不存在，需要去下载

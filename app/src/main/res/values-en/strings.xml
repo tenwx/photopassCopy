@@ -438,4 +438,10 @@
     <string name="delete_percent">Deleting %1$d/%2$d</string>
     <!-- edit story end -->
 
+    <!-- 优惠卷start   文案没有，暂时中文-->
+    <string name="coupon">Coupon</string>
+    <string name="coupon_exchange_use">兑换使用</string>
+    <string name="coupon_scan">扫描兑换</string>
+    <!-- 优惠卷end-->
+
 </resources>

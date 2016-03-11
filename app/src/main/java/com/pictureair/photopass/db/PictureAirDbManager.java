@@ -1134,6 +1134,29 @@ public class PictureAirDbManager {
     }
 
     /**
+     * 查看所有下载线程
+     *
+     * @return
+     */
+    public boolean isExistsThread() {
+        Cursor cursor = null;
+        boolean exists = false;
+        try {
+            database = DBManager.getInstance().writData();
+            cursor = database.rawQuery("select * from " + Common.THREAD_INFO,null);
+            exists = cursor.moveToNext();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return exists;
+    }
+
+    /**
      * 读取下载线程信息
      *
      * @param url

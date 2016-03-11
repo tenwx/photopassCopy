@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/pp_padding_10">
 
-</RelativeLayout>
+    <!-- 优惠卷item-->
+
+    <!-- 优惠卷价格或者折扣-->
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color1"
+        android:gravity="center"
+        android:text="价格？折扣？"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18" />
+    <!-- 优惠卷名字-->
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color1"
+        android:gravity="center"
+        android:text="优惠卷名字"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18" />
+    <!-- 描述-->
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_describe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color1"
+        android:gravity="center"
+        android:text="描述"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18" />
+
+    <!-- 有效期-->
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_validity_period"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color1"
+        android:gravity="center"
+        android:text="有效期"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18" />
+
+    <!-- 状态-->
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color1"
+        android:gravity="center"
+        android:text="状态"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18" />
+
+</LinearLayout>

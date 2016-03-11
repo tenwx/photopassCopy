@@ -1,10 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.pictureair.photopass.activity.CouponActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pp_light_gray_background">
+
+    <include
+        android:id="@+id/head"
+        layout="@layout/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true"></include>
+    <!-- 手动扫二维码 -->
+    <LinearLayout
+        android:id="@+id/ll_scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head"
+        android:layout_margin="@dimen/pp_margin_16"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/pp_padding_10">
+
+        <cn.smssdk.gui.EditTextWithClear
+            android:id="@+id/et_userinfo_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/nn"
+            android:imeOptions="actionDone"
+            android:paddingTop="@dimen/pp_padding_16"
+            android:singleLine="true"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_14" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/pp_padding_5"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/coupon_exchange_use"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_size_14" />
+
+        <Button
+            android:id="@+id/btn_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/coupon_scan"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_size_14" />
+    </LinearLayout>
+    <!-- 优惠卷-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_scan"
+        android:layout_margin="@dimen/pp_padding_10" />
 
 </RelativeLayout>

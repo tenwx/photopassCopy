@@ -228,6 +228,14 @@ public class API1 {
     public static final int FIND_PWD_SUCCESS = 6051;
     public static final int FIND_PWD_FAILED = 6050;
 
+    //获取所有优惠卷
+    public static final int GET_COUPON_SUCCESS = 6061;
+    public static final int GET_COUPON_FAILED = 6060;
+
+    //添加一张优惠卷
+    public static final int INSERT_COUPON_SUCCESS = 6071;
+    public static final int INSERT_COUPON_FAILED = 6070;
+
     /**
      * 发送设备ID获取tokenId
      *

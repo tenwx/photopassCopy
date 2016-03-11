@@ -117,6 +117,7 @@ public class DownloadTask {
                     }
                     //下载完后，删除线程信息
                     dbDAO.deleteThread(threadInfo.getUrl(), threadInfo.getId());
+
                 }
 
             } catch (Exception e) {

@@ -54,8 +54,7 @@ public class BreakpointDownloadService extends Service {
                 mTask.isPause = true;
             }
         }
-
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;//被系统kill之后，不会自动复活重新启动服务
     }
 
     Handler mHandler = new Handler() {
