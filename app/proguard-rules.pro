@@ -89,6 +89,12 @@
 -keep class com.alipay.mobilesecuritysdk.*
 -keep class com.ut.*
 
+#微信支付避免混淆
+-keep class com.tencent.mm.sdk.** { *;}
+
+#避免混淆银联支付
+-keep class com.unionpay.** {*;}
+
 #短信验证和分享避免混淆
 -keep class android.net.http.SslError
 -keep class android.webkit.**{*;}
@@ -186,3 +192,5 @@
  # OCR文字识别 混淆
  -keep class com.pictureair.photopass.zxing.**{*;}
  -keep class com.googlecode.**{*;}
+
+

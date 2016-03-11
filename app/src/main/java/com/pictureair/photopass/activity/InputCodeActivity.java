@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
@@ -29,6 +28,7 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
@@ -298,7 +298,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
         input3.setOnKeyListener(this);
         input4.setOnKeyListener(this);
 
-        dealCodeUtil = new DealCodeUtil(this, getIntent(), inputCodeHandler);
+        dealCodeUtil = new DealCodeUtil(this, getIntent(), true, inputCodeHandler);
 
     }
 

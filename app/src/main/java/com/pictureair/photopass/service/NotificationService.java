@@ -19,7 +19,6 @@ import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -29,6 +28,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 
+import cn.smssdk.gui.AppManager;
 import de.greenrobot.event.EventBus;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -259,7 +259,8 @@ public class NotificationService extends android.app.Service {
                                 }
 
                                 //2.如果处于story页面，则更新数据，并且刷新列表；如果不是处于story页面，则设置更新变量
-                                if (application.isStoryTab()) {//如果处于story页面，则更新数据，并且刷新列表
+                                if (application.isStoryTab() && //如果处于story页面，则更新数据，并且刷新列表
+                                        !preferences.getBoolean(Common.NEED_FRESH, false)) {//返回到故事页面会重新拉取数据，所以取反
                                     PictureAirLog.out("start sync bought info");
                                     EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
                                 } else {//如果不是处于story页面，则设置更新变量

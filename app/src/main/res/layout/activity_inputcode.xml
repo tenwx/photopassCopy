@@ -104,7 +104,7 @@
             android:ems="4"
             android:digits="@string/input_content"
             android:gravity="center"
-            android:imeOptions="actionGo"
+            android:imeOptions="actionDone"
             android:maxLength="4"
             android:singleLine="true"
             android:textColor="@color/pp_gray"

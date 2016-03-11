@@ -1,7 +1,6 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -19,8 +18,6 @@ import com.pictureair.photopass.entity.HttpBaseJson;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.ThreadInfo;
-import com.pictureair.photopass.service.BreakpointDownloadService;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
@@ -833,6 +830,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.out("ppp--->" + jsonObject.toString());
                 PPPlist = JsonUtil.getPPPSByUserId(jsonObject);
                 handler.obtainMessage(GET_PPP_SUCCESS, jsonObject).sendToTarget();
             }
@@ -1440,6 +1438,7 @@ public class API1 {
     public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
             + "'version': '2.1.2', 'createdOn': '2015-09-23T06:06:17.371Z', "
             + " 'mandatory': 'false',  '__v': 0, "
+            + " 'versionOS': ['android'], "
             + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
             + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
             + "'downloadChannel':[ {'channel':'360',"
@@ -1464,6 +1463,8 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
 
                 super.onSuccess(jsonObject);
+//
+//                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
 
                 if (jsonObject.getJSONObject("version").getJSONArray("versionOS").toString().contains("android")) {
                     //结果不为null，并且结果更新平台中有android，则需要更新

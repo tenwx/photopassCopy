@@ -585,6 +585,7 @@ public class PictureAirDbManager {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
     }
@@ -937,6 +938,7 @@ public class PictureAirDbManager {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
     }

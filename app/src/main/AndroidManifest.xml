@@ -134,6 +134,7 @@
                 <data android:scheme="wxc3d2d4d75042f800" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.MyPPPActivity"
             android:configChanges="keyboard|orientation"
