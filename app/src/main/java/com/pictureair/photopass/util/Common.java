@@ -61,8 +61,8 @@ public class Common {
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
-    public final static String VERSION_CODE = "V1.2.0";//开发版
-    public final static boolean DEBUG = false;// true，打印log， false，不打印log
+    public final static String VERSION_CODE = "V1.3.0";//开发版
+    public final static boolean DEBUG = true;// true，打印log， false，不打印log
     public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
 

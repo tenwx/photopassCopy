@@ -27,6 +27,7 @@ public class DealCodeUtil {
 	private String needBind;
 	private String bindData;
 	private String pppId;
+	private boolean isInputAct;
 	private SharedPreferences sharedPreferences;
 
 	/**
@@ -41,8 +42,9 @@ public class DealCodeUtil {
 	private int id = 0;
 	
 	
-	private Handler handler2 = new Handler(){
-		public void handleMessage(Message msg){
+	private Handler handler2 = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 				case API1.CHECK_CODE_FAILED:
 					PictureAirLog.out("check code failed");
@@ -72,7 +74,8 @@ public class DealCodeUtil {
 							break;
 					}
 
-					if (dealWay != null) {//如果从ppp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
+					if (dealWay != null && //如果从ppp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
+							!isInputAct) {//如果不是手动输入页面
 						handler.obtainMessage(DEAL_CODE_FAILED, id).sendToTarget();
 					}else {//弹出错误提示
 						myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
@@ -147,11 +150,12 @@ public class DealCodeUtil {
 				default:
 					break;
 			}
-		};
-	};
+			return false;
+		}
+	});
 	
 	
-	public DealCodeUtil(Context context, Intent intent, Handler handler) {
+	public DealCodeUtil(Context context, Intent intent, boolean isInputAct, Handler handler) {
 		this.context = context;
 		this.handler = handler;
 		myToast = new MyToast(context);
@@ -159,6 +163,7 @@ public class DealCodeUtil {
 		needBind = intent.getStringExtra("needbind");
 		bindData = intent.getStringExtra("binddate");
 		pppId = intent.getStringExtra("pppid");
+		this.isInputAct = isInputAct;
 		sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE);
 	}
 	

@@ -60,7 +60,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="shanghaiphotopass" android:host="com.photopass"/>
+                <data android:scheme="shdrphotopass" android:host="com.photopass"/>
             </intent-filter>
 
         </activity>

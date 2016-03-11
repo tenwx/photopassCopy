@@ -120,7 +120,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/pp_margin_20"
                     android:gravity="center"
-                    android:text="@string/storypage_no_photo"
+                    android:text="@string/storypage_no_pp"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
@@ -140,6 +140,7 @@
                     android:layout_weight="1"
                     android:text="@string/story_scan"
                     android:textColor="@color/pp_blue"
+                    android:textStyle="bold"
                     android:textSize="@dimen/text_size_20" />
 
                 <com.pictureair.photopass.widget.CustomTextView
@@ -159,30 +160,56 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/pp_margin_30"
-                android:paddingRight="@dimen/pp_margin_30"
-                android:paddingTop="@dimen/pp_margin_40"
+                android:paddingBottom="@dimen/pp_margin_64"
                 android:visibility="gone">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
+                    android:src="@drawable/story_tips_bg" />
+
+                <com.pictureair.photopass.widget.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pp_margin_20"
+                    android:gravity="center"
+                    android:text="@string/storypage_no_photo"
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_16" />
+
+                <ImageView
+                    android:id="@+id/story_to_discover"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
                     android:src="@drawable/story_no_photo_1" />
 
                 <com.pictureair.photopass.widget.CustomTextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:layout_marginTop="@dimen/pp_margin_10"
-                    android:text="@string/story_no_photo"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size_16" />
+                    android:layout_weight="1"
+                    android:text="@string/tab_discover"
+                    android:textStyle="bold"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_20" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <com.pictureair.photopass.widget.CustomTextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/story_no_photo" />
+                    android:layout_marginLeft="@dimen/pp_margin_20"
+                    android:layout_marginRight="@dimen/pp_margin_20"
+                    android:gravity="center"
+                    android:text="@string/story_no_photo"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_14" />
+
             </LinearLayout>
         </RelativeLayout>
 

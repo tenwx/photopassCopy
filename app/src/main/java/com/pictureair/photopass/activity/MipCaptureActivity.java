@@ -215,7 +215,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         setTopRightValueAndShow(R.drawable.manual_input,true);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
-        dealCodeUtil = new DealCodeUtil(this, getIntent(), mipCaptureHandler);
+        dealCodeUtil = new DealCodeUtil(this, getIntent(), false, mipCaptureHandler);
 
         //OCR 识别需要用到的组件。
         viewfinder_view = (ViewfinderView) findViewById(R.id.viewfinder_view);

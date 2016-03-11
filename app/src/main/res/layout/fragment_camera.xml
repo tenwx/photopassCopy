@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/story_no_photo_1"/>
+            android:src="@drawable/story_no_photo_2"/>
 
         <TextView
             android:padding="@dimen/pp_height_10"

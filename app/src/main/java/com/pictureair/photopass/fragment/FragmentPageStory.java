@@ -35,6 +35,7 @@ import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
@@ -116,6 +117,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     private ViewPager storyViewPager;
     private LinearLayout storyNoPpToScanLinearLayout;
     private ImageView storyNoPpScanImageView;
+    private ImageView storyNoPhotoToDiscoverImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -645,6 +647,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         storyViewPager = (ViewPager) view.findViewById(R.id.story_viewPager);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
         noPhotoView = (LinearLayout) view.findViewById(R.id.no_photo_view_relativelayout);
+        storyNoPhotoToDiscoverImageView = (ImageView) view.findViewById(R.id.story_to_discover);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
@@ -667,6 +670,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         storyNoPpScanImageView.setOnClickListener(this);
         scanLayout.setOnClickListener(this);
         scanRelativeLayout.setOnClickListener(this);
+        storyNoPhotoToDiscoverImageView.setOnClickListener(this);
         more.setOnClickListener(this);
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
@@ -1486,6 +1490,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 // Disney Video
                 DisneyVideoTool.getIsOneGoToDisneyVideoPage(context);
                 // storyMenuPop.showAsDropDown(v);
+                break;
+
+            case R.id.story_to_discover://跳转到Discover页面
+                PictureAirLog.out("Onclick---->Discover");
+                EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DISCOVER_TAB));
                 break;
 
             default:

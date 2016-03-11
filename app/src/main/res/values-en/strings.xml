@@ -88,7 +88,8 @@
     <string name="no_photo_in_magiccam">Store all your edited photos here!</string>
     <string name="no_photo_in_bought">Start to purchase your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
-    <string name="storypage_no_photo">There is no photo in your gallery!</string>
+    <string name="storypage_no_photo">There is no photo in your Disney PhotoPass!</string>
+    <string name="storypage_no_pp">There is no Disney PhotoPass added to your account.</string>
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_network">Please check your network</string>
     <string name="click_button_reload">Click button to reload</string>

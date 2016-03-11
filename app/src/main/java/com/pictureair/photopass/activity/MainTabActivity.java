@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.MainTabSwitchEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshOnClickEvent;
 import com.pictureair.photopass.fragment.FragmentPageCamera;
@@ -28,7 +29,6 @@ import com.pictureair.photopass.fragment.FragmentPageShop;
 import com.pictureair.photopass.fragment.FragmentPageStory;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -41,6 +41,7 @@ import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
+import cn.smssdk.gui.AppManager;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -398,7 +399,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      */
     @Subscribe
     public void onUserEvent(BaseBusEvent baseBusEvent) {
-        if (baseBusEvent instanceof RedPointControlEvent) {
+        if (baseBusEvent instanceof RedPointControlEvent) {//红点的刷新
             PictureAirLog.out("control the badgeView----->");
             RedPointControlEvent redPointControlEvent = (RedPointControlEvent) baseBusEvent;
             if (redPointControlEvent.isShowRedPoint()) {//显示红点
@@ -410,6 +411,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             }
             //刷新列表
             EventBus.getDefault().removeStickyEvent(redPointControlEvent);
+        } else if (baseBusEvent instanceof MainTabSwitchEvent) {//切换到对应的tab
+            MainTabSwitchEvent mainTabSwitchEvent = (MainTabSwitchEvent) baseBusEvent;
+            mTabHost.setCurrentTab(mainTabSwitchEvent.getMainTabSwitchIndex());
+            application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
+            last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
+            EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
         }
     }
 }
