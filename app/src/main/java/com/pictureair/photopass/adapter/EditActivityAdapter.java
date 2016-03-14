@@ -377,14 +377,14 @@ public class EditActivityAdapter extends BaseAdapter {
                 firstFileFailOrExist = true;
                 return;
             }
-            downloadNameString = "frame_landscape_" + ScreenUtil.getReallyFileName(url);
+            downloadNameString = "frame_landscape_" + ScreenUtil.getReallyFileName(url,0);
         } else {
             url = frameInfos.get(position).frameOriginalPathPortrait;
             if (url == null || url.equals("")) {//文件不存在
                 secondFileFailOrExist = true;
                 return;
             }
-            downloadNameString = "frame_portrait_" + ScreenUtil.getReallyFileName(url);
+            downloadNameString = "frame_portrait_" + ScreenUtil.getReallyFileName(url,0);
         }
 
         File file = new File(mContext.getFilesDir(), "frames");

@@ -254,7 +254,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void getIsOnline(){
-        String fileName = ScreenUtil.getReallyFileName(videoInfo.photoPathOrURL);
+        String fileName = ScreenUtil.getReallyFileName(videoInfo.photoPathOrURL,1);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
