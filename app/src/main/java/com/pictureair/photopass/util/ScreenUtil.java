@@ -52,10 +52,9 @@ public class ScreenUtil {
 	 * @return 文件名
 	 */
 	public static String getReallyFileName(String url) {  
-//		String filename = url;
-//		filename = filename.substring(filename.lastIndexOf("/") + 1);
-		String filename = System.currentTimeMillis()+".jpg";
-		return filename;  
+		String filename = url;
+		filename = filename.substring(filename.lastIndexOf("/") + 1)+".jpg";
+		return filename;
 	}
 	
 	/**
