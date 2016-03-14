@@ -36,6 +36,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
 
 /**
  * 我的界面
@@ -57,37 +58,45 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
     private DisplayImageOptions headOptions;
 
+    private PullToZoomScrollViewEx scrollView;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, null);
-        code_pic = (ImageView) view.findViewById(R.id.code_pic);
-        headPhoto = (ImageView) view.findViewById(R.id.user_photo);
-        name = (TextView) view.findViewById(R.id.user_name);
-        profileTV = (TextView) view.findViewById(R.id.me_profile);
-        orderTV = (TextView) view.findViewById(R.id.me_order);
-        ppTV = (TextView) view.findViewById(R.id.me_pp);
-        pppTV = (TextView) view.findViewById(R.id.me_ppp);
-        helpTV = (TextView) view.findViewById(R.id.me_help);
-        settingTV = (TextView) view.findViewById(R.id.me_setting);
-        aboutTV = (TextView) view.findViewById(R.id.me_about);
-        couponTV = (TextView) view.findViewById(R.id.me_coupon);
+        scrollView = (PullToZoomScrollViewEx) view.findViewById(R.id.scroll_view);
+        View headView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_head_view, null, false);
+        View zoomView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_zoom_view, null, false);
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_content_view, null, false);
+        scrollView.setHeaderView(headView);
+        scrollView.setZoomView(zoomView);
+        scrollView.setScrollContentView(contentView);
 
-        linearLayout1 = (LinearLayout) view.findViewById(R.id.line1_ll);
-        linearLayout2 = (LinearLayout) view.findViewById(R.id.line2_ll);
-        linearLayout3 = (LinearLayout) view.findViewById(R.id.line3_ll);
+        code_pic = (ImageView) scrollView.getZoomView().findViewById(R.id.code_pic);
 
+        headPhoto = (ImageView) scrollView.getHeaderView().findViewById(R.id.user_photo);
+        name = (TextView) scrollView.getHeaderView().findViewById(R.id.user_name);
+
+        profileTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_profile);
+        orderTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_order);
+        ppTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_pp);
+        pppTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_ppp);
+        helpTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_help);
+        settingTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_setting);
+        aboutTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_about);
+        couponTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_coupon);
+        linearLayout1 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line1_ll);
+        linearLayout2 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line2_ll);
+        linearLayout3 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line3_ll);
         ViewGroup.LayoutParams params1 = linearLayout1.getLayoutParams();
         params1.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
         linearLayout1.setLayoutParams(params1);
-
         ViewGroup.LayoutParams params2 = linearLayout2.getLayoutParams();
         params2.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
         linearLayout2.setLayoutParams(params2);
-
         ViewGroup.LayoutParams params3 = linearLayout3.getLayoutParams();
         params3.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
         linearLayout3.setLayoutParams(params3);
-
         headPhoto.setOnClickListener(this);
         profileTV.setOnClickListener(this);
         orderTV.setOnClickListener(this);
@@ -97,6 +106,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         settingTV.setOnClickListener(this);
         aboutTV.setOnClickListener(this);
         couponTV.setOnClickListener(this);
+
         code_pic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +129,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 .cacheOnDisk(true)
                 .cacheInMemory(true)
                 .build();
+
+        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(getActivity()),
+                (int) (4.0F * (ScreenUtil.getScreenHeight(getActivity()) / 16.0F)) + ScreenUtil.dip2px(getActivity(), 35));
+        scrollView.setHeaderLayoutParams(localObject);
+
         return view;
     }
 
@@ -274,12 +289,12 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(viewGroup.getContext())/2, ScreenUtil.getScreenWidth(viewGroup.getContext())/2));
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2, ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         viewParams.gravity = Gravity.CENTER;
-        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(),64),0,ScreenUtil.dip2px(viewGroup.getContext(),64),0);
+        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(), 64), 0, ScreenUtil.dip2px(viewGroup.getContext(), 64), 0);
         layout.addView(view, viewParams);
 
         viewGroup.addView(layout, layoutParams);
@@ -324,6 +339,5 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        AppManager.getInstance().killActivity(getActivity());
     }
 }
