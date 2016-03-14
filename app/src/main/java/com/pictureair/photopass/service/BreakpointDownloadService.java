@@ -31,6 +31,7 @@ public class BreakpointDownloadService extends Service {
     public static final String ACTION_STRAT = "action strat";
     public static final String ACTION_STOP = "action stop";
     public static final String ACTION_UPDATE = "action update";
+    public static final int SERVICE_STOP = 2;
 
     public static final int MSG_INIT = 0;
     private DownloadTask mTask = null;
@@ -65,8 +66,12 @@ public class BreakpointDownloadService extends Service {
                 case MSG_INIT:
                     FileInfo fileInfo = (FileInfo) msg.obj;
                     //启动下载任务
-                    mTask = new DownloadTask(BreakpointDownloadService.this, fileInfo);
+                    mTask = new DownloadTask(BreakpointDownloadService.this, fileInfo,mHandler);
                     mTask.download();
+                    break;
+
+                case SERVICE_STOP:
+                    stopSelf();//下载服务停止
                     break;
             }
 
@@ -136,6 +141,12 @@ public class BreakpointDownloadService extends Service {
     }
 
 
+    @Override
+    public void onDestroy() {
+        /**
+         * 断开服务时如果正在下载，需要保存下载记录
+          */
 
-
+        super.onDestroy();
+    }
 }

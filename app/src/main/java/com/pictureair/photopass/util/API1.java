@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-
 /**
  * 所有与后台的交互都封装到此类
  */
@@ -660,6 +659,7 @@ public class API1 {
 
     /**
      * 获取有广告的地点
+     *
      * @param handler
      */
     public static void getADLocations(final Handler handler) {
@@ -1001,6 +1001,7 @@ public class API1 {
 
     /**
      * 使用体验卡绑定未购买的图片
+     *
      * @param pppCode  体验卡卡号
      * @param photoIds 绑定的图片
      * @param handler
@@ -1029,7 +1030,8 @@ public class API1 {
 
     /**
      * 从用户中移除pp
-     * @param ppCode pp码
+     *
+     * @param ppCode   pp码
      * @param position
      * @param handler
      */
@@ -1463,8 +1465,11 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
 
                 super.onSuccess(jsonObject);
-//
-//                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
+
+                /**
+                 * 测试使用
+                 */
+//            jsonObject = JSONObject.parseObject(checkUpdateTestingString);
 
                 if (jsonObject.getJSONObject("version").getJSONArray("versionOS").toString().contains("android")) {
                     //结果不为null，并且结果更新平台中有android，则需要更新
@@ -1828,11 +1833,12 @@ public class API1 {
 
     /**
      * 忘记密码
+     *
      * @param handler
      * @param pwd
      * @param mobile
      */
-    public static void findPwd(final Handler handler,String pwd,String mobile){
+    public static void findPwd(final Handler handler, String pwd, String mobile) {
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.NEW_PASSWORD, AppUtil.md5(pwd));
@@ -1875,7 +1881,7 @@ public class API1 {
 //            }
 //        });
 //    }
-    public static void getUnionPayTN(final Handler handler){
+    public static void getUnionPayTN(final Handler handler) {
         HttpUtil1.post("http://101.231.204.84:8091/sim/getacptn", new BaseJsonHttpResponseHandler<HttpBaseJson>() {
 
             @Override
@@ -1912,4 +1918,75 @@ public class API1 {
             }
         });
     }
+
+    /**
+     * 两个业务处理AB
+     * A根据用户查询所有优惠卷
+     * 1. tokenId
+     * B根据商品查询所有可以使用的优惠卷
+     * 1. tokenId
+     * 2. cartItemIds:array<string>,用户选中的购物项(可选)
+     */
+    public static void getCoupons(final Handler handler, JSONArray cartItemIds) {
+        final RequestParams params = new RequestParams();
+        if (null != cartItemIds) {//订单页面发来的请求
+            params.put(Common.CART_ITEM_IDS, cartItemIds);
+        }
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+
+    /**
+     * 添加优惠卷
+     *
+     * * 两个业务处理AB
+     * A在me中进入的添加优惠卷
+     * 1. tokenId
+     * 2. 优惠code
+     * B在订单页面进入的添加优惠卷
+     * 1. tokenId
+     * 2. 优惠code
+     * 3. cartItemIds:array<string>,用户选中的购物项(可选)
+     */
+    public static void addCoupons(final Handler handler, String couponsCode,JSONArray cartItemIds) {
+        final RequestParams params = new RequestParams();
+        if (null != cartItemIds) {//订单页面发来的请求
+            params.put(Common.CART_ITEM_IDS, cartItemIds);
+        }
+
+        params.put(Common.couponCode, couponsCode);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(INSERT_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+
+
+
 }

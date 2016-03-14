@@ -27,6 +27,7 @@ import cn.smssdk.gui.EditTextWithClear;
  */
 public class CouponActivity extends BaseActivity implements CouponViewInterface,View.OnClickListener{
     private final String TAG="CouponActivity";
+
     private RecyclerView mRecyclerView;
     private List<CouponInfo> mData;
     private EditTextWithClear mEditTextWithClear;
@@ -36,8 +37,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private Context context;
     private MyToast myToast;
 
-
     private CouponTool couponTool;
+    private String whatPege = "";//是从什么页面进来的
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         context = this;
         couponTool = new CouponTool(this);
         initViews();
-        couponTool.queryCoupon();
+        couponTool.getIntentActivity(getIntent());
     }
 
     private void initViews() {
@@ -97,7 +98,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        goneProgressBar();
+        couponTool.onDestroyCouponTool();
     }
 
     @Override
@@ -121,6 +122,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     @Override
     public void sortCoupon(List<CouponInfo> sortDatas) {
+        couponAdapter.setPage(whatPege);//设置显示界面
+
         if (couponAdapter == null){
             couponAdapter = new CouponAdapter(context,sortDatas);
             mRecyclerView.setAdapter(couponAdapter);
@@ -151,6 +154,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     public void fail(String str) {
         myToast.setTextAndShow("处理失败："+str, Common.TOAST_SHORT_TIME);
 
+    }
+
+    @Override
+    public void getWhatPege(String whatPege) {
+        this.whatPege = whatPege;
     }
 
     /**

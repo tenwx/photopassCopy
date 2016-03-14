@@ -20,6 +20,10 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "PhotoInfoDBHelper";
     private static PictureAirDBHelper photoInfoDBHelper;
+    private final String SQL_CREATE_TABLE_THREAD = "create table if not exists " + Common.THREAD_INFO + "(_id integer primary key autoincrement," +
+            "thread_id integer,url text,start integer,end integer,finished integer)";
+    private final String SQL_DELETE_TABLE_THREAD = "drop table if exists " + Common.THREAD_INFO;
+
 
     public PictureAirDBHelper(Context context, String name, CursorFactory factory,
                               int version) {
@@ -223,18 +227,18 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         /**
          * 线程表
          */
-        db.execSQL("create table if not exists " + Common.THREAD_INFO + "(_id integer primary key autoincrement," +
-                "thread_id integer,url text,start integer,end integer,finished integer)");
-        /**
-         * 删除线程表内容
-         */
-        db.execSQL("drop table if exists " + Common.THREAD_INFO);
+        db.execSQL(SQL_CREATE_TABLE_THREAD);
     }
 
     //如果数据库的版本号不一致，会执行onUpgrade函数
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "update Database");
+        /**
+         * 删除线程表内容
+         */
+        db.execSQL(SQL_DELETE_TABLE_THREAD);
+        db.execSQL(SQL_CREATE_TABLE_THREAD);
         switch (newVersion) {
             case 2://版本号为2的更新包
 
