@@ -47,15 +47,21 @@ public class ScreenUtil {
 	} 
 	
 	/**
-	 * 得到url中正确的文件名
+	 * 得到url中正确的文件名,根据 isVideo 获取是视频还是图片
 	 * @param url 原始url
+	 * @param isVideo 判断是照片还是视频，0 代表是照片。
 	 * @return 文件名
 	 */
-	public static String getReallyFileName(String url) {  
+	public static String getReallyFileName(String url,int isVideo) {
 		String filename = url;
-		filename = filename.substring(filename.lastIndexOf("/") + 1)+".jpg";
+		if (isVideo == 0){
+			filename = filename.substring(filename.lastIndexOf("/") + 1)+".jpg";
+		}else{
+			filename = filename.substring(filename.lastIndexOf("/") + 1)+".mp4";
+		}
 		return filename;
 	}
+
 	
 	/**
 	 * 设置全屏显示

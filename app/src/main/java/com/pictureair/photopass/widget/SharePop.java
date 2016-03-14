@@ -548,8 +548,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 								}
 								shareFile = new File(Common.SHARE_PATH
 										+ ScreenUtil
-												.getReallyFileName(imagePath)
-										+ ".jpg");
+												.getReallyFileName(imagePath,0));
 								if (shareFile.exists()) {
 
 								} else {

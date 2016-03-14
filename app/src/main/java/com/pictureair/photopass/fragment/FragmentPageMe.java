@@ -34,6 +34,7 @@ import com.pictureair.photopass.activity.SettingActivity;
 import com.pictureair.photopass.selectHeadorBg.SetHeadPhotoAct;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
@@ -258,6 +259,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 break;
 
             case R.id.me_coupon:
+                i.setClass(MyApplication.getInstance(), CouponActivity.class);
+                i.putExtra(CouponTool.ACTIVITY_ME, CouponTool.ACTIVITY_ME);
                 i.setClass(MyApplication.getInstance(), CouponActivity.class);
                 startActivity(i);
                 break;

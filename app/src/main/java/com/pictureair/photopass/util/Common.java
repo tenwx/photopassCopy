@@ -93,7 +93,8 @@ public class Common {
     public static final String ADD_COMMENT = "/p/addCpmment";// 评论照片
     public static final String SHARE_TO_SOCIAL = "/p/shareToSocial";// 分享照片
     public static final String FORGET_PWD = "/user/forgotPwd";// 忘记密码（手机号）
-
+    public static final String GET_COUPONS = "/api/coupons";// 查询优惠卷
+    public static final String ADD_COUPONS = "/api/coupons";//添加优惠卷
 
     public static final String ADD_LIKE = "/p/addLike";// 照片点赞
     public static final String SAVE_PHOTO = "/p/savePhto";// 保存编辑后的照片
@@ -111,7 +112,6 @@ public class Common {
     public static final String MODIFY_TO_CART = "/api/carts";//修改购物车
     public static final String DELETE_TO_CART = "/api/carts";//删除购物车
     public static final String ADD_ORDER = "/api/checkOut";//用户提交订单
-
 
     public static final String GET_TOP_GOODS = "/ms/getTop4Goods";//获取热门商品
     public static final String GET_PHOTO_PASS_PLUS = "/shopping/getDefaultPhotoPassPluss";//获取PPP商品
@@ -244,6 +244,7 @@ public class Common {
     public static final String SHARE_PLATFORM = "platform";
     public static final String EPPP = "ePPP";
     public static final String EPPP_IDS = "ids";
+    public static final String couponCode = "couponCode";//优惠code
 
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
