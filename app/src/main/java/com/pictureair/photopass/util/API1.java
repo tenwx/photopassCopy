@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-
 /**
  * 所有与后台的交互都封装到此类
  */
@@ -232,6 +231,10 @@ public class API1 {
     //添加一张优惠卷
     public static final int INSERT_COUPON_SUCCESS = 6071;
     public static final int INSERT_COUPON_FAILED = 6070;
+
+    //使用优惠券
+    public static final int PREVIEW_COUPON_SUCCESS = 6081;
+    public static final int PREVIEW_COUPON_FAILED = 6080;
 
     /**
      * 发送设备ID获取tokenId
@@ -660,6 +663,7 @@ public class API1 {
 
     /**
      * 获取有广告的地点
+     *
      * @param handler
      */
     public static void getADLocations(final Handler handler) {
@@ -1001,6 +1005,7 @@ public class API1 {
 
     /**
      * 使用体验卡绑定未购买的图片
+     *
      * @param pppCode  体验卡卡号
      * @param photoIds 绑定的图片
      * @param handler
@@ -1029,7 +1034,8 @@ public class API1 {
 
     /**
      * 从用户中移除pp
-     * @param ppCode pp码
+     *
+     * @param ppCode   pp码
      * @param position
      * @param handler
      */
@@ -1828,11 +1834,12 @@ public class API1 {
 
     /**
      * 忘记密码
+     *
      * @param handler
      * @param pwd
      * @param mobile
      */
-    public static void findPwd(final Handler handler,String pwd,String mobile){
+    public static void findPwd(final Handler handler, String pwd, String mobile) {
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.NEW_PASSWORD, AppUtil.md5(pwd));
@@ -1875,7 +1882,7 @@ public class API1 {
 //            }
 //        });
 //    }
-    public static void getUnionPayTN(final Handler handler){
+    public static void getUnionPayTN(final Handler handler) {
         HttpUtil1.post("http://101.231.204.84:8091/sim/getacptn", new BaseJsonHttpResponseHandler<HttpBaseJson>() {
 
             @Override
@@ -1912,4 +1919,35 @@ public class API1 {
             }
         });
     }
+
+    /**
+     * 用户使用优惠码预览费用
+     *
+     * @param handler
+     * @param couponCodes  优惠码
+     * @param cartItemsIds 用户选中的购物项
+     */
+    public static void previewCoupon(final Handler handler, JSONArray couponCodes, JSONArray cartItemsIds) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("couponCodes", couponCodes);
+        params.put("cartItemsIds", cartItemsIds);
+
+        HttpUtil1.asyncPost("", params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(PREVIEW_COUPON_SUCCESS, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(PREVIEW_COUPON_FAILED, status, 0).sendToTarget();
+            }
+
+        });
+    }
+
 }

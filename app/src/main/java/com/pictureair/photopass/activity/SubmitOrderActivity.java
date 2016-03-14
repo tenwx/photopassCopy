@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -47,6 +48,7 @@ import cn.smssdk.gui.CustomProgressDialog;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
+    public static int PREVIEW_COUPON_CODE = 10000;
     private TextView submitButton;
     private TextView totalpriceTextView, currencyTextView, allGoodsTextView;
 
@@ -74,6 +76,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private ListView transportListView;
     private AddressAdapter addressAdapter;
     private int curPositon = -1;//记录选择的地址
+
+    private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
+            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv;
+
+    private int couponCount = 0;//优惠券数量
+    private float payPrice = 0;//优惠后总费
+    private float depletePrice = 0;//优惠减免费用
 
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
@@ -104,6 +113,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         switch (msg.what) {
             case CHANGE_PHOTO:
                 selectPhoto(msg.arg1);
+                break;
+            case API1.PREVIEW_COUPON_SUCCESS:
+                //使用优惠码成功 -- 解析数据
+                JSONObject json = (JSONObject) msg.obj;
+                depletePrice = json.getFloat("deplete");
+                payPrice = json.getFloat("price");
+                //更新界面
+                customProgressDialog.dismiss();
+                updateShopPriceUI();
+                break;
+            case API1.PREVIEW_COUPON_FAILED:
+                //使用优惠码失败
+                customProgressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
                 break;
             case API1.GET_OUTLET_ID_SUCCESS:
                 //获取自提地址成功
@@ -233,7 +257,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);
-        infoListView.addHeaderView(initHeaderAndFooterView(true, null));
+        infoListView.addHeaderView(initHeaderAndFooterView(true, false, null));
         infoListView.setAdapter(submitorderAdapter);
         if (list == null || list.size() < 0) {
             PictureAirLog.v(TAG, "initView list == null ");
@@ -259,10 +283,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if (deliveryType.contains("1")) {
             //需要显示自提地址列表
             addressList = new ArrayList<>();
-            infoListView.addFooterView(initHeaderAndFooterView(false, addressList));
+            infoListView.addFooterView(initHeaderAndFooterView(false, true, addressList));
             //获取地址
             getAddress();
+        } else {
+            //显示shop和商品优惠信息
+            infoListView.addFooterView(initHeaderAndFooterView(false, true, null));
         }
+
+
         totalpriceTextView.setText((int) totalprice + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
@@ -287,35 +316,79 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      * @param isHeader
      * @return
      */
-    public View initHeaderAndFooterView(final boolean isHeader, List<Address> list) {
+    public View initHeaderAndFooterView(final boolean isHeader, boolean isShowAddress, List<Address> list) {
         View view = LayoutInflater.from(this).inflate(R.layout.address_layout, null);
         ImageView transportIv = (ImageView) view.findViewById(R.id.transport_iv);
         TextView transportTv = (TextView) view.findViewById(R.id.transport_tv);
+        RelativeLayout coupon_count_rl = (RelativeLayout) view.findViewById(R.id.coupon_count_rl);
+        coupon_count_rl.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (couponCount > 0) {
+                    //进入优惠券选择界面
+
+                }
+            }
+        });
+
+        couponCountTv = (TextView) view.findViewById(R.id.coupon_count_tv);
+
+        couponPriceUnitTv = (TextView) view.findViewById(R.id.coupon_price_unit_tv);
+        couponPriceTv = (TextView) view.findViewById(R.id.coupon_price_tv);
+
+        shopPriceUnitTv = (TextView) view.findViewById(R.id.shop_price_unit_tv);
+        shopPriceTv = (TextView) view.findViewById(R.id.shop_price_tv);
+
+        payPriceUnitTv = (TextView) view.findViewById(R.id.pay_price_unit_tv);
+        payPriceTv = (TextView) view.findViewById(R.id.pay_price_tv);
+
+
         transportListView = (ListView) view.findViewById(R.id.transport_list);
         if (isHeader) {
             transportIv.setImageResource(R.drawable.icon_shop);
             transportTv.setText(R.string.goods_info);
             transportListView.setVisibility(View.GONE);
         } else {
-            transportIv.setImageResource(R.drawable.icon_transport);
-            transportTv.setText(R.string.transport);
-            transportListView.setVisibility(View.VISIBLE);
-            addressAdapter = new AddressAdapter(this, list, new AddressAdapter.doOnClickAddressListener() {
-                @Override
-                public void doOnClickAddressListener(int position) {
-                    refreshAddress(position);
-                }
-            });
-            transportListView.setAdapter(addressAdapter);
-            transportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    refreshAddress(position);
-                }
-            });
-            fixListViewHeight(transportListView);
+            //判断是否是需要显示地址
+            if (isShowAddress) {
+                transportIv.setImageResource(R.drawable.icon_transport);
+                transportTv.setText(R.string.transport);
+                transportListView.setVisibility(View.VISIBLE);
+                addressAdapter = new AddressAdapter(this, list, new AddressAdapter.doOnClickAddressListener() {
+                    @Override
+                    public void doOnClickAddressListener(int position) {
+                        refreshAddress(position);
+                    }
+                });
+                transportListView.setAdapter(addressAdapter);
+                transportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        refreshAddress(position);
+                    }
+                });
+                fixListViewHeight(transportListView);
+            }
+
+            //显示商品优惠价格
+            updateShopPriceUI();
+
         }
         return view;
+    }
+
+    /**
+     * 更新商品优惠信息
+     */
+    public void updateShopPriceUI() {
+        couponPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        shopPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        payPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+
+        couponCountTv.setText("-" + depletePrice);
+        couponPriceTv.setText(depletePrice + "");
+        shopPriceTv.setText(totalprice + "");
+        payPriceTv.setText(payPrice + "");
     }
 
     /**
@@ -469,6 +542,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     e.printStackTrace();
                 }
             }
+        } else if (resultCode == PREVIEW_COUPON_CODE) {
+            //选择优惠码返回 请求API使用优惠券
+            JSONArray couponCodes = (JSONArray) data.getExtras().get("couponCodes");
+            if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
+                customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
+            }
+
         }
     }
 
