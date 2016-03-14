@@ -25,7 +25,7 @@ public interface CouponViewInterface {
     void sortCoupon(List<CouponInfo> sortDatas);
 
     /**
-     * 读取code
+     * 读取输入的code
      */
     String getCouponCode();
 
@@ -44,5 +44,11 @@ public interface CouponViewInterface {
      * @param str 失败原因
      */
     void fail(String str);
+
+    /**
+     * 是什么页面进来的
+     */
+    void getWhatPege(String whatPege);
+
 
 }

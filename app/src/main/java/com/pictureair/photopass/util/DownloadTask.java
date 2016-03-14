@@ -22,16 +22,18 @@ import java.util.List;
  * Created by bass on 16/3/8.
  */
 public class DownloadTask {
-    public final String TAG = "DownloadTask";
+    private final String TAG = "DownloadTask";
     private Context context;
     private FileInfo fileInfo;
     private PictureAirDbManager dbDAO = null;
     private long mFinish = 0;
     public boolean isPause = false;//是否暂停
+    public Handler mHandler;
 
-    public DownloadTask(Context context, FileInfo fileInfo) {
+    public DownloadTask(Context context, FileInfo fileInfo,Handler handler) {
         this.context = context;
         this.fileInfo = fileInfo;
+        this.mHandler = handler;
         dbDAO = new PictureAirDbManager(context);
     }
 
@@ -96,19 +98,25 @@ public class DownloadTask {
                     byte[] buffer = new byte[1024 * 4];
                     int len = -1;
                     //相隔500毫秒发送一次
-//                    long time = System.currentTimeMillis();
+                    long time = System.currentTimeMillis();
                     while ((len = inputStream.read(buffer)) != -1) {
                         //写入文件
                         raf.write(buffer, 0, len);
                         //把下载的进度发送广播给 Activity
                         mFinish += len;
+                        if (mFinish * 100 / fileInfo.getLength() == 100){
+                            intent.putExtra("bytesWritten", mFinish * 100 / fileInfo.getLength());
+                            intent.putExtra("totalSize", fileInfo.getLength());
+                            context.sendBroadcast(intent);
+                            return;
+                        }
 
-//                        if (System.currentTimeMillis() - time > 500) {
-//                            time = System.currentTimeMillis();
+                        if (System.currentTimeMillis() - time > 500) {
+                            time = System.currentTimeMillis();
                         intent.putExtra("bytesWritten", mFinish * 100 / fileInfo.getLength());
                         intent.putExtra("totalSize", fileInfo.getLength());
                         context.sendBroadcast(intent);
-//                        }
+                        }
                         //在下载暂停时，保存下载进度
                         if (isPause) {
                             saveThreadInfo(mFinish);
@@ -117,7 +125,7 @@ public class DownloadTask {
                     }
                     //下载完后，删除线程信息
                     dbDAO.deleteThread(threadInfo.getUrl(), threadInfo.getId());
-
+                    mHandler.sendEmptyMessage(BreakpointDownloadService.SERVICE_STOP);
                 }
 
             } catch (Exception e) {

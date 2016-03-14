@@ -15,7 +15,6 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
@@ -25,6 +24,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.AboutActivity;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.CouponActivity;
 import com.pictureair.photopass.activity.HelpActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
@@ -34,6 +34,7 @@ import com.pictureair.photopass.activity.SettingActivity;
 import com.pictureair.photopass.selectHeadorBg.SetHeadPhotoAct;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
@@ -45,7 +46,8 @@ import com.pictureair.photopass.util.ScreenUtil;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private RelativeLayout rl_myprofile, rl_myorder, rl_pp, rl_ppp, rl_help, rl_setting, rl_about;
+    private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, aboutTV, couponTV;
+    private LinearLayout linearLayout1, linearLayout2, linearLayout3;
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private SharedPreferences sp;
@@ -62,22 +64,40 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         code_pic = (ImageView) view.findViewById(R.id.code_pic);
         headPhoto = (ImageView) view.findViewById(R.id.user_photo);
         name = (TextView) view.findViewById(R.id.user_name);
-        rl_myprofile = (RelativeLayout) view.findViewById(R.id.rl_myprofile);
-        rl_myorder = (RelativeLayout) view.findViewById(R.id.rl_myorder);
-        rl_pp = (RelativeLayout) view.findViewById(R.id.rl_pp);
-        rl_ppp = (RelativeLayout) view.findViewById(R.id.rl_ppp);
-        rl_help = (RelativeLayout) view.findViewById(R.id.rl_help);
-        rl_setting = (RelativeLayout) view.findViewById(R.id.rl_setting);
-        rl_about = (RelativeLayout) view.findViewById(R.id.rl_about);
+        profileTV = (TextView) view.findViewById(R.id.me_profile);
+        orderTV = (TextView) view.findViewById(R.id.me_order);
+        ppTV = (TextView) view.findViewById(R.id.me_pp);
+        pppTV = (TextView) view.findViewById(R.id.me_ppp);
+        helpTV = (TextView) view.findViewById(R.id.me_help);
+        settingTV = (TextView) view.findViewById(R.id.me_setting);
+        aboutTV = (TextView) view.findViewById(R.id.me_about);
+        couponTV = (TextView) view.findViewById(R.id.me_coupon);
+
+        linearLayout1 = (LinearLayout) view.findViewById(R.id.line1_ll);
+        linearLayout2 = (LinearLayout) view.findViewById(R.id.line2_ll);
+        linearLayout3 = (LinearLayout) view.findViewById(R.id.line3_ll);
+
+        ViewGroup.LayoutParams params1 = linearLayout1.getLayoutParams();
+        params1.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
+        linearLayout1.setLayoutParams(params1);
+
+        ViewGroup.LayoutParams params2 = linearLayout2.getLayoutParams();
+        params2.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
+        linearLayout2.setLayoutParams(params2);
+
+        ViewGroup.LayoutParams params3 = linearLayout3.getLayoutParams();
+        params3.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
+        linearLayout3.setLayoutParams(params3);
 
         headPhoto.setOnClickListener(this);
-        rl_myprofile.setOnClickListener(this);
-        rl_myorder.setOnClickListener(this);
-        rl_pp.setOnClickListener(this);
-        rl_ppp.setOnClickListener(this);
-        rl_help.setOnClickListener(this);
-        rl_setting.setOnClickListener(this);
-        rl_about.setOnClickListener(this);
+        profileTV.setOnClickListener(this);
+        orderTV.setOnClickListener(this);
+        ppTV.setOnClickListener(this);
+        pppTV.setOnClickListener(this);
+        helpTV.setOnClickListener(this);
+        settingTV.setOnClickListener(this);
+        aboutTV.setOnClickListener(this);
+        couponTV.setOnClickListener(this);
         code_pic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,42 +199,57 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //			getAlbum.setType("image/*");
 //			startActivityForResult(getAlbum, 1);
 //			break;
+
             case R.id.user_photo:
                 // 跳转到图片选择返回一张图片更新头像
                 i.setClass(MyApplication.getInstance(), SetHeadPhotoAct.class);
                 startActivity(i);
-//			getActivity().finish();
                 break;
-            case R.id.rl_myprofile:
+
+            case R.id.me_profile:
                 i.setClass(MyApplication.getInstance(), ProfileActivity.class);
                 startActivity(i);
                 break;
-            case R.id.rl_myorder:
+
+            case R.id.me_order:
                 // 跳转到我的订单页面
                 i.setClass(MyApplication.getInstance(), OrderActivity.class);
                 startActivity(i);
                 break;
-            case R.id.rl_pp:
+
+            case R.id.me_pp:
                 i.setClass(MyApplication.getInstance(), MyPPActivity.class);
                 startActivity(i);
                 break;
-            case R.id.rl_ppp:
+
+            case R.id.me_ppp:
                 // 跳转到PPP页面
                 i.setClass(MyApplication.getInstance(), MyPPPActivity.class);
                 startActivity(i);
                 break;
-            case R.id.rl_help:
+
+            case R.id.me_help:
                 i.setClass(MyApplication.getInstance(), HelpActivity.class);
                 startActivity(i);
                 break;
-            case R.id.rl_setting:
+
+            case R.id.me_setting:
                 i.setClass(MyApplication.getInstance(), SettingActivity.class);
                 startActivity(i);
                 break;
-            case R.id.rl_about:
+
+            case R.id.me_about:
                 i.setClass(MyApplication.getInstance(), AboutActivity.class);
                 startActivity(i);
                 break;
+
+            case R.id.me_coupon:
+                i.setClass(MyApplication.getInstance(), CouponActivity.class);
+                i.putExtra(CouponTool.ACTIVITY_ME, CouponTool.ACTIVITY_ME);
+                i.setClass(MyApplication.getInstance(), CouponActivity.class);
+                startActivity(i);
+                break;
+
             default:
                 break;
         }

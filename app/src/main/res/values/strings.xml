@@ -161,6 +161,8 @@
     <string name="mypage_myorder">我的订单</string>
     <string name="mypage_pp">“迪士尼乐拍通”</string>
     <string name="mypage_ppp">“迪士尼乐拍通”一卡通</string>
+    <string name="mypage_pp1">迪士尼\n乐拍通</string>
+    <string name="mypage_ppp1">迪士尼\n乐拍通一卡通</string>
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>

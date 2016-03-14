@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -32,6 +33,7 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -44,10 +46,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
+    private MyApplication myApplication;
     public static int PREVIEW_COUPON_CODE = 10000;
     private TextView submitButton;
     private TextView totalpriceTextView, currencyTextView, allGoodsTextView;
@@ -77,12 +81,17 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private AddressAdapter addressAdapter;
     private int curPositon = -1;//记录选择的地址
 
+    private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
+
     private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
             shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv;
 
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
     private float depletePrice = 0;//优惠减免费用
+
+    private static final int PAY_SUCCESS = 10001;//支付成功
+    private static final int PAY_FAILED = 10002;//失败
 
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
@@ -113,6 +122,19 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         switch (msg.what) {
             case CHANGE_PHOTO:
                 selectPhoto(msg.arg1);
+                break;
+
+            case API1.GET_COUPON_SUCCESS:
+                JSONObject couponJson = (JSONObject) msg.obj;
+                couponCount = couponJson.getInteger("amount");
+                //更新界面
+                updateShopPriceUI();
+
+                break;
+            case API1.GET_COUPON_FAILED:
+                customProgressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
                 break;
             case API1.PREVIEW_COUPON_SUCCESS:
                 //使用优惠码成功 -- 解析数据
@@ -222,6 +244,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
                 updatephotolist.set(0, itemInfo);
                 break;
+            case PAY_SUCCESS:
+                //成功跳转相应的界面
+
+
+                break;
+            case PAY_FAILED:
+                //失败
+
+                break;
 
             default:
                 break;
@@ -235,7 +266,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_submit_order);
-
+        myApplication = MyApplication.getInstance();
         newToast = new MyToast(this);
         initView();
 
@@ -280,7 +311,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             }
         }
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
+        payPrice = totalprice;//默认总金额和实际支付金额相等
+        //获取优惠码数量
+//        getCoupons();
         if (deliveryType.contains("1")) {
+            productType = 1;
             //需要显示自提地址列表
             addressList = new ArrayList<>();
             infoListView.addFooterView(initHeaderAndFooterView(false, true, addressList));
@@ -288,14 +323,22 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             getAddress();
         } else {
             //显示shop和商品优惠信息
+            productType = 2;
             infoListView.addFooterView(initHeaderAndFooterView(false, true, null));
         }
-
-
+        updateShopPriceUI();
         totalpriceTextView.setText((int) totalprice + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
 
+    }
+
+    /**
+     * 获取优惠信息
+     */
+    public void getCoupons() {
+        customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+        API1.getCoupons(submitOrderHandler, cartItemIds);
     }
 
     /**
@@ -320,34 +363,37 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         View view = LayoutInflater.from(this).inflate(R.layout.address_layout, null);
         ImageView transportIv = (ImageView) view.findViewById(R.id.transport_iv);
         TextView transportTv = (TextView) view.findViewById(R.id.transport_tv);
-        RelativeLayout coupon_count_rl = (RelativeLayout) view.findViewById(R.id.coupon_count_rl);
-        coupon_count_rl.setOnClickListener(new OnClickListener() {
+        RelativeLayout couponCountRl = (RelativeLayout) view.findViewById(R.id.coupon_count_rl);
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.shop_coupon_ll);
+        couponCountRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (couponCount > 0) {
                     //进入优惠券选择界面
-
+                    Intent intent = new Intent();
+                    intent.setClass(SubmitOrderActivity.this, CouponActivity.class);
+                    intent.putExtra(CouponTool.ACTIVITY_ORDER, CouponTool.ACTIVITY_ORDER);
+                    intent.putExtra(CouponTool.ACTIVITY_ORDER_CART_DATAS, cartItemIds);
+                    startActivityForResult(intent, PREVIEW_COUPON_CODE);
                 }
             }
         });
 
         couponCountTv = (TextView) view.findViewById(R.id.coupon_count_tv);
-
         couponPriceUnitTv = (TextView) view.findViewById(R.id.coupon_price_unit_tv);
         couponPriceTv = (TextView) view.findViewById(R.id.coupon_price_tv);
-
         shopPriceUnitTv = (TextView) view.findViewById(R.id.shop_price_unit_tv);
         shopPriceTv = (TextView) view.findViewById(R.id.shop_price_tv);
-
         payPriceUnitTv = (TextView) view.findViewById(R.id.pay_price_unit_tv);
         payPriceTv = (TextView) view.findViewById(R.id.pay_price_tv);
-
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
         if (isHeader) {
             transportIv.setImageResource(R.drawable.icon_shop);
             transportTv.setText(R.string.goods_info);
             transportListView.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+
         } else {
             //判断是否是需要显示地址
             if (isShowAddress) {
@@ -371,6 +417,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             }
 
             //显示商品优惠价格
+            layout.setVisibility(View.VISIBLE);
             updateShopPriceUI();
 
         }
@@ -384,11 +431,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         couponPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         shopPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         payPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-
-        couponCountTv.setText("-" + depletePrice);
-        couponPriceTv.setText(depletePrice + "");
-        shopPriceTv.setText(totalprice + "");
-        payPriceTv.setText(payPrice + "");
+        if (couponCount == 0) {
+            couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+        } else {
+            couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) depletePrice);
+        }
+        couponPriceTv.setText((int) depletePrice + "");
+        shopPriceTv.setText((int) totalprice + "");
+        payPriceTv.setText((int) payPrice + "");
     }
 
     /**
@@ -423,6 +473,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     }
 
+    /**
+     * 展开所有item
+     *
+     * @param listView
+     */
     public void fixListViewHeight(ListView listView) {
         // 如果没有设置数据适配器，则ListView没有子项，返回。
         ListAdapter listAdapter = listView.getAdapter();
@@ -454,6 +509,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     return;
                 }
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
+                //判断结算价格是否为0（优惠后的价格）为0，出弹窗提示，确认直接支付成功；不为0，正常支付
+                if (payPrice == 0) {
+                    //
+
+                }
+
                 if (orderId == null || orderId.equals("")) {
                     if (deliveryType.contains("1")) {
                         //获取收货地址
@@ -549,8 +610,90 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
             }
-
         }
+    }
+
+
+    /**
+     * 处理收到推送的数据
+     *
+     * @param resultJsonObject
+     */
+    public void dealData(org.json.JSONObject resultJsonObject) {
+        PictureAirLog.v(TAG, "dealData()");
+        Intent intent;
+        if (resultJsonObject.has("pppCode")) {// ppp
+            // product
+            PictureAirLog.v(TAG, "----------------->buy ppp");
+            myApplication.setNeedRefreshPPPList(true);
+            intent = new Intent(SubmitOrderActivity.this, MyPPPActivity.class);
+            API1.PPPlist.clear();
+
+        } else {
+            // 以下两种情况，进入图片清晰页面
+            PictureAirLog.v(TAG, "get refresh view after buy blur photo---->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
+            // 以下三种情况要回到清晰图片页面
+            if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)
+                    || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)
+                    || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
+                PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
+                myApplication.setPhotoIsPaid(true);
+                ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
+                photopassArrayList.addAll(myApplication.getIsBuyingPhotoInfoList());
+                // 找出购买的info，并且将购买属性改为1
+                photopassArrayList.get(myApplication.getIsBuyingIndex()).isPayed = 1;
+                PictureAirLog.v("position--->", myApplication.getIsBuyingIndex() + "");
+                PictureAirLog.v("photoId---->", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
+
+                intent = new Intent(SubmitOrderActivity.this, PreviewPhotoActivity.class);
+                intent.putExtra("activity", "paymentorderactivity");
+                intent.putExtra("position", myApplication.getIsBuyingIndex());// 在那个相册中的位置
+                intent.putExtra("photoId", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
+                intent.putExtra("photos", photopassArrayList);// 那个相册的全部图片路径
+                intent.putExtra("targetphotos", myApplication.magicPicList);
+
+                // 清空标记
+                myApplication.clearIsBuyingPhotoList();
+
+                if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
+                    myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_VIEWORSELECTACTIVITYANDPAYED);
+                } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
+                    myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASSPAYED);
+                } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
+                    myApplication.setRefreshViewAfterBuyBlurPhoto("");
+                }
+
+            } else {
+                // 回到订单页面
+                intent = new Intent(SubmitOrderActivity.this, OrderActivity.class);
+                intent.putExtra("orderType", productType);
+            }
+        }
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Common.NEED_FRESH, true);
+        editor.commit();
+        if (customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
+        SuccessAfterPayment();
+        startActivity(intent);
+
+        finish();
+    }
+
+    // 成功支付之后的操作
+    private void SuccessAfterPayment() {
+        // TODO Auto-generated method stub
+        PictureAirLog.v(TAG, "start finish expired activity");
+        AppManager.getInstance().killActivity(PreviewProductActivity.class);
+        // AppManager.getInstance().killActivity(BlurActivity.class);
+        AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+        AppManager.getInstance().killActivity(SelectPhotoActivity.class);
+        AppManager.getInstance().killActivity(DetailProductActivity.class);
+        AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
+        AppManager.getInstance().killActivity(MakegiftActivity.class);
+        AppManager.getInstance().killActivity(OrderActivity.class);
+
     }
 
     @Override

@@ -156,11 +156,13 @@
 
     <!-- me start -->
     <string name="mypage_message">Message</string>
-    <string name="mypage_coupons">Coupons</string>
+    <string name="mypage_coupons">Coupon</string>
     <string name="mypage_myprofile">Profile</string>
     <string name="mypage_myorder">Orders</string>
     <string name="mypage_pp">Disney PhotoPass</string>
     <string name="mypage_ppp">Disney PhotoPass+</string>
+    <string name="mypage_pp1">Disney\nPhotoPass</string>
+    <string name="mypage_ppp1">Disney\nPhotoPass+</string>
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>

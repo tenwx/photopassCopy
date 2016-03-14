@@ -1469,8 +1469,11 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
 
                 super.onSuccess(jsonObject);
-//
-//                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
+
+                /**
+                 * 测试使用
+                 */
+//            jsonObject = JSONObject.parseObject(checkUpdateTestingString);
 
                 if (jsonObject.getJSONObject("version").getJSONArray("versionOS").toString().contains("android")) {
                     //结果不为null，并且结果更新平台中有android，则需要更新
@@ -1921,6 +1924,73 @@ public class API1 {
     }
 
     /**
+     * 两个业务处理AB
+     * A根据用户查询所有优惠卷
+     * 1. tokenId
+     * B根据商品查询所有可以使用的优惠卷
+     * 1. tokenId
+     * 2. cartItemIds:array<string>,用户选中的购物项(可选)
+     */
+    public static void getCoupons(final Handler handler, JSONArray cartItemIds) {
+        final RequestParams params = new RequestParams();
+        if (null != cartItemIds) {//订单页面发来的请求
+            params.put(Common.CART_ITEM_IDS, cartItemIds);
+        }
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+
+    /**
+     * 添加优惠卷
+     * <p/>
+     * * 两个业务处理AB
+     * A在me中进入的添加优惠卷
+     * 1. tokenId
+     * 2. 优惠code
+     * B在订单页面进入的添加优惠卷
+     * 1. tokenId
+     * 2. 优惠code
+     * 3. cartItemIds:array<string>,用户选中的购物项(可选)
+     */
+    public static void addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
+        final RequestParams params = new RequestParams();
+        if (null != cartItemIds) {//订单页面发来的请求
+            params.put(Common.CART_ITEM_IDS, cartItemIds);
+        }
+
+        params.put(Common.couponCode, couponsCode);
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(INSERT_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(INSERT_COUPON_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
+    /**
      * 用户使用优惠码预览费用
      *
      * @param handler
@@ -1933,12 +2003,11 @@ public class API1 {
         params.put("couponCodes", couponCodes);
         params.put("cartItemsIds", cartItemsIds);
 
-        HttpUtil1.asyncPost("", params, new HttpCallback() {
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
                 handler.obtainMessage(PREVIEW_COUPON_SUCCESS, jsonObject).sendToTarget();
-
             }
 
             @Override
@@ -1949,5 +2018,4 @@ public class API1 {
 
         });
     }
-
 }
