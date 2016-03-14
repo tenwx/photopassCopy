@@ -726,7 +726,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				break;
 			case R.id.preview_save: //真正的保存按钮。
-				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
+				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
 				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
 					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
 					dialog.show();
@@ -1009,7 +1009,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		protected Bitmap doInBackground(Bitmap... params) {
 			// System.out.println("保存贴图!");
 			String url = tempFile + "/"
-					+ dateFormat.format(new Date()) + ".JPG";
+					+ dateFormat.format(new Date()) + ".jpg";
 			if (editType == 2) {//滤镜
 				EditPhotoUtil.saveBitmap(params[0], url);
 //				pathList.add(url);
@@ -1287,7 +1287,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
-				String url = nameFile + "/" + dateFormat.format(new Date()) + ".JPG";
+				String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
 				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
 				scan(url);
 				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
