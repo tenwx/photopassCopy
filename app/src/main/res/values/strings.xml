@@ -29,7 +29,7 @@
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="name_is_empty">昵称不能为空</string>
-    <string name="terms">“迪士尼乐拍通”软件许可及服务协议</string>
+    <string name="terms">迪士尼乐拍通软件许可及服务协议</string>
     <string name="policy">隐私声明</string>
     <!-- email register end-->
 

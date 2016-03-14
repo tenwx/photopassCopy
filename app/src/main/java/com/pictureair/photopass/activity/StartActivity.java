@@ -18,7 +18,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.Locale;
 
-import static android.os.Handler.*;
+import static android.os.Handler.Callback;
 
 /**
  * 开始的启动页面，如果第一次进入，则进入第一次的引导页，如果不是，则进入登录页面
@@ -97,9 +97,9 @@ public class StartActivity extends BaseActivity implements Callback{
 				}, 2000);
 //			} else {//进入引导页
 //				API1.getTokenId(this, null);
-//				Editor editor = spApp.edit();
-//				editor.putInt(Common.APP_VERSION_CODE, versionCode);
-//				editor.commit();
+				editor = spApp.edit();
+				editor.putInt(Common.APP_VERSION_CODE, versionCode);
+				editor.commit();
 //				new Handler().postDelayed(new Runnable() {
 //					@Override
 //					public void run() {

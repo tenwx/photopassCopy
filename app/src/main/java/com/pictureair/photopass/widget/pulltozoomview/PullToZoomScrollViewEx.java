@@ -38,6 +38,8 @@ public class PullToZoomScrollViewEx extends PullToZoomBase<ScrollView> {
     private int mHeaderHeight;
     private ScalingRunnable mScalingRunnable;
     private int offset = 0;
+    private ImageView codeImageview;
+    private ViewGroup.LayoutParams codeParams;
 
     private static final Interpolator sInterpolator = new Interpolator() {
         public float getInterpolation(float paramAnonymousFloat) {
@@ -129,11 +131,13 @@ public class PullToZoomScrollViewEx extends PullToZoomBase<ScrollView> {
         zoomLayoutParams.height = height;
         mZoomView.setLayoutParams(zoomLayoutParams);
 
-        ImageView imageView = (ImageView) mZoomView.findViewById(R.id.code_pic);
-        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        layoutParams.width = zoomLayoutParams.height / 2;
-        layoutParams.height = layoutParams.width;
-        imageView.setLayoutParams(layoutParams);
+        if (codeImageview == null) {
+            codeImageview = (ImageView) mZoomView.findViewById(R.id.code_pic);
+            codeParams = codeImageview.getLayoutParams();
+        }
+        codeParams.width = zoomLayoutParams.height / 2;
+        codeParams.height = codeParams.width;
+        codeImageview.setLayoutParams(codeParams);
     }
 
     private void updateHeaderView() {

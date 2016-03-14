@@ -29,8 +29,8 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="name_is_empty">Please enter your Nickname</string>
-    <string name="terms">Terms and Conditions</string>
-    <string name="policy">Privacy Policy</string>
+    <string name="terms">Disney PhotoPass Terms and Conditions</string>
+    <string name="policy">Disney PhotoPass Privacy Policy</string>
     <!-- email register end-->
 
     <!-- select country start-->
