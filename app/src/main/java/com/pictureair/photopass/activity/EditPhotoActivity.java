@@ -929,7 +929,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		 * 需要使用三级缓存，1.判断SD卡是否存在，2.判断缓存中是否存在，3.从网上下载
 		 */
 		// 1.获取需要显示文件的文件名
-		String fileString = ScreenUtil.getReallyFileName(photoURL);
+		String fileString = ScreenUtil.getReallyFileName(photoURL,0);
 		// 2、判断文件是否存在sd卡中
 		File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
 		if (file.exists()) {// 3、如果存在SD卡，则从SD卡获取图片信息
@@ -1061,14 +1061,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
 //					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
 					if(frameInfos.get(curFramePosition).onLine == 1){
-						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait));
+						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
 					}else{
 						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
 					}
 				}else{
 //					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
 					if(frameInfos.get(curFramePosition).onLine == 1){
-						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape));
+						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
 					}else{
 						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
 					}
@@ -1222,10 +1222,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			if (frameInfos.get(position).onLine == 1) {//网络图片，这个时候已经下载，所以直接取本地图片路径
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-					imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait),
+					imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait,0),
 							frameImageView, options, new ImageloaderListener());
 				}else{
-					imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape),
+					imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape,0),
 							frameImageView, options, new ImageloaderListener());
 				}
 			}else {//本地图片
@@ -1448,14 +1448,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
 //					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
 			if(frameInfos.get(curFramePosition).onLine == 1){
-				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait));
+				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
 			}else{
 				frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
 			}
 		}else{
 //					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
 			if(frameInfos.get(curFramePosition).onLine == 1){
-				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape));
+				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
 			}else{
 				frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
 			}

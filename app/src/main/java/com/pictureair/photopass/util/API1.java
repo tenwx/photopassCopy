@@ -232,6 +232,10 @@ public class API1 {
     public static final int INSERT_COUPON_SUCCESS = 6071;
     public static final int INSERT_COUPON_FAILED = 6070;
 
+    //使用优惠券
+    public static final int PREVIEW_COUPON_SUCCESS = 6081;
+    public static final int PREVIEW_COUPON_FAILED = 6080;
+
     /**
      * 发送设备ID获取tokenId
      *
@@ -1957,7 +1961,6 @@ public class API1 {
 
     /**
      * 添加优惠卷
-     * <p/>
      * * 两个业务处理AB
      * A在me中进入的添加优惠卷
      * 1. tokenId
@@ -1992,5 +1995,32 @@ public class API1 {
         });
     }
 
+    /**
+     * 用户使用优惠码预览费用
+     *
+     * @param handler
+     * @param couponCodes  优惠码
+     * @param cartItemsIds 用户选中的购物项
+     */
+    public static void previewCoupon(final Handler handler, JSONArray couponCodes, JSONArray cartItemsIds) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("couponCodes", couponCodes);
+        params.put("cartItemsIds", cartItemsIds);
 
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(PREVIEW_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(PREVIEW_COUPON_FAILED, status, 0).sendToTarget();
+            }
+
+        });
+    }
 }

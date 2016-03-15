@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 
 /**
  * Photo页的图片信息数据库的databasehelper
@@ -47,6 +47,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        PictureAirLog.out("create sqlite-------->");
         // TODO Auto-generated method stub
         /**
          * 创建photo表
@@ -234,7 +235,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
     //如果数据库的版本号不一致，会执行onUpgrade函数
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "update Database");
+        PictureAirLog.d(TAG, "update Database");
         switch (newVersion) {
             case 2://版本号为2的更新包
 

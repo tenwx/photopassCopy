@@ -29,8 +29,8 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="name_is_empty">Please enter your Nickname</string>
-    <string name="terms">Terms and Conditions</string>
-    <string name="policy">Privacy Policy</string>
+    <string name="terms">Disney PhotoPass Terms and Conditions</string>
+    <string name="policy">Disney PhotoPass Privacy Policy</string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -442,9 +442,14 @@
     <!-- edit story end -->
 
     <!-- 优惠卷start   文案没有，暂时中文-->
+    <string name="my_coupon">My Coupon</string>
     <string name="coupon">Coupon</string>
     <string name="coupon_exchange_use">兑换使用</string>
     <string name="coupon_scan">扫描兑换</string>
+    <string name="shop_price">商品金额</string>
+    <string name="coupon_price">优惠券抵用</string>
+    <string name="pay_price">实际支付</string>
+    <string name="coupon_count">有%1$d张优惠券可用</string>
     <!-- 优惠卷end-->
 
 </resources>

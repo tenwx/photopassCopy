@@ -71,7 +71,6 @@ public class Common {
     public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
 
-
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
     public static final String GET_ALL_LOCATIONS_OF_ALBUM_GROUP = "/park/getLocationsOfAlbumGroup";//获得location信息
@@ -100,6 +99,7 @@ public class Common {
     public static final String FORGET_PWD = "/user/forgotPwd";// 忘记密码（手机号）
     public static final String GET_COUPONS = "/api/coupons";// 查询优惠卷
     public static final String ADD_COUPONS = "/api/coupons";//添加优惠卷
+    public static final String PREVIEW_COUPONS = "/api/previewCoupon";//使用优惠券
 
     public static final String ADD_LIKE = "/p/addLike";// 照片点赞
     public static final String SAVE_PHOTO = "/p/savePhto";// 保存编辑后的照片

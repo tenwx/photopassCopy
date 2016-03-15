@@ -57,7 +57,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private void initViews() {
         myToast = new MyToast(context);
         setTopLeftValueAndShow(R.drawable.back_white, true);
-        setTopTitleShow(R.string.coupon);
+        setTopTitleShow(R.string.my_coupon);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
         mEditTextWithClear = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
         mBtnSubmit = (Button) findViewById(R.id.btn_submit);
