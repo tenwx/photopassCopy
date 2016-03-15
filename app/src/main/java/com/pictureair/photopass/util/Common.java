@@ -18,15 +18,11 @@ public class Common {
 //    public static final String SMS_APPKEY = "d082b4315aed"; // SMSS，公司的账号
 //    public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
 
-    /**
-     * 齐超的服务器调试
-     */
-    public static final String BASE_URL_TEST = "http://172.16.30.225:3006";
 
     /**
      * 49演示服务器
      */
-    //    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
+    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
     public static final String PHOTO_URL = "http://192.168.8.82:4000/";
     public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/alipayNotify";//alipay的异步通知URL
     public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL

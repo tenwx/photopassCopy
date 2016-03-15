@@ -79,7 +79,7 @@ public class PayUtils {
                 // 设置为沙箱模式，不设置默认为线上环境
                 // alipay.setSandBox(true);
                 // 调用支付接口，获取支付结果
-                String result = alipay.pay(payInfo);
+                String result = alipay.pay(payInfo, true);
                 // Result result = new
                 // Result(alipay.pay(orderInfo).toString());
                 PictureAirLog.v(TAG, "pay info=" + result);
