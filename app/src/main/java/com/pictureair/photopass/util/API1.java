@@ -1933,26 +1933,31 @@ public class API1 {
             params.put(Common.CART_ITEM_IDS, cartItemIds);
         }
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
 
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "============" + jsonObject);
                 handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                PictureAirLog.e(TAG, "============" + status);
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
+
+
         });
     }
 
 
     /**
      * 添加优惠卷
-     *
+     * <p/>
      * * 两个业务处理AB
      * A在me中进入的添加优惠卷
      * 1. tokenId
@@ -1962,7 +1967,7 @@ public class API1 {
      * 2. 优惠code
      * 3. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static void addCoupons(final Handler handler, String couponsCode,JSONArray cartItemIds) {
+    public static void addCoupons(final Handler handler, String couponsCode, JSONArray cartItemIds) {
         final RequestParams params = new RequestParams();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
@@ -1970,6 +1975,7 @@ public class API1 {
 
         params.put(Common.couponCode, couponsCode);
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        PictureAirLog.e(TAG, MyApplication.getTokenId());
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
             @Override
@@ -1985,8 +1991,6 @@ public class API1 {
             }
         });
     }
-
-
 
 
 }

@@ -124,7 +124,7 @@ public class CouponInfo implements Serializable {
         this.cpNumber = cpNumber;
     }
 
-    public boolean isCpIsSelect() {
+    public boolean getCpIsSelect() {
         return cpIsSelect;
     }
 

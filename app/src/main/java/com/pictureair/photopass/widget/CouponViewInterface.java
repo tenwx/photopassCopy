@@ -46,6 +46,12 @@ public interface CouponViewInterface {
     void fail(String str);
 
     /**
+     * 添加优惠卷失败
+     * @param id 失败原因
+     */
+    void fail(int id);
+
+    /**
      * 是什么页面进来的
      */
     void getWhatPege(String whatPege);

@@ -34,18 +34,17 @@ public class CouponTool {
             super.handleMessage(msg);
             switch (msg.what) {
                 case API1.GET_COUPON_FAILED://获取所有优惠卷失败
+                case API1.INSERT_COUPON_FAILED://添加一张优惠卷失败
                     couponView.goneProgressBar();
-                    couponView.fail("获取所有优惠卷失败");
+                    int id = ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1);
+                    couponView.fail(id);
                     break;
+
                 case API1.GET_COUPON_SUCCESS://获取所有优惠卷成功
                     getApiReturnDatas((JSONObject) msg.obj);
                     break;
-                case API1.INSERT_COUPON_FAILED://添加一张优惠卷失败
-                    couponView.goneProgressBar();
-                    couponView.fail("添加一张优惠卷失败");
-                    break;
+
                 case API1.INSERT_COUPON_SUCCESS://添加一张优惠卷成功
-                    //1. 添加一张优惠卷成功之后得到所有的优惠卷对象，重新显示
                     insertCouponSuccess((JSONObject) msg.obj);
                     break;
             }
@@ -95,7 +94,7 @@ public class CouponTool {
      */
     public void queryCouponOrderPage(JSONArray cartItemIds){
         couponView.showProgressBar();
-        API1.getCoupons(mHandler,cartItemIds);
+        API1.getCoupons(mHandler, cartItemIds);
     }
 
     /**
@@ -106,14 +105,14 @@ public class CouponTool {
      */
     public void queryCouponMePage() {
         couponView.showProgressBar();
-        API1.getCoupons(mHandler,null);//从me中进来的
-        //测试
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mHandler.sendEmptyMessage(API1.GET_COUPON_SUCCESS);
-//            }
-//        }, 2000);
+        PictureAirLog.out("从Me界面进入queryCouponMePage");
+        API1.getCoupons(mHandler, null);//从me中进来的
+
+        /**
+         * test
+         */
+//        couponView.sortCoupon(testData());
+//        couponView.goneProgressBar();
     }
 
     /**
@@ -137,16 +136,8 @@ public class CouponTool {
             API1.addCoupons(mHandler,cpCode,null);
         }else {
             couponView.goneProgressBar();
-            couponView.fail("添加失败");
+            couponView.fail("insert coupon fail");
         }
-
-//        //测试
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mHandler.sendEmptyMessage(API1.INSERT_COUPON_SUCCESS);
-//            }
-//        }, 2000);
     }
 
     /**
@@ -159,6 +150,7 @@ public class CouponTool {
      *
      */
     private void getApiReturnDatas(JSONObject jsonObject){
+        mDatas = null;
         mDatas = getJsonToObj(jsonObject);
         couponView.goneProgressBar();
         if (null == mDatas || mDatas.size() < 0){
@@ -173,7 +165,7 @@ public class CouponTool {
      */
     private boolean getTokenID(){
         if (MyApplication.getTokenId() == null) {
-            couponView.fail("获取token失败");
+            couponView.fail("get token fail");
             return false;
         }
         return true;
@@ -210,8 +202,32 @@ public class CouponTool {
      * 解析优惠卷的json
      */
     private List<CouponInfo> getJsonToObj(JSONObject jsonObject){
-        PictureAirLog.e(TAG,""+jsonObject);
-        return null;
+        PictureAirLog.e(TAG, "解析优惠卷的json" + jsonObject);
+        int amount = jsonObject.getIntValue("amount");
+        if (amount == 0){
+            return null;
+        }
+        List<CouponInfo> list = new ArrayList<>();
+        JSONArray array =  jsonObject.getJSONArray("data");
+        CouponInfo couponInfo = null;
+        String effectiveTime;
+        String failureTime;
+        for (int i = 0; i < array.size(); i++){
+            couponInfo = new CouponInfo();
+
+            couponInfo.setCpStatus(array.getJSONObject(i).getString("status"));
+            couponInfo.setCpCode(array.getJSONObject(i).getString("code"));
+            couponInfo.setCpNumber(array.getJSONObject(i).getDouble("money"));
+            couponInfo.setCpType(array.getJSONObject(i).getString("genre"));//优惠卷类型（discount,full,subtract）折扣，满，减
+            couponInfo.setCpDescribe(array.getJSONObject(i).getString("description"));//描述
+            couponInfo.setCpName(array.getJSONObject(i).getString("name"));//优惠卷名称
+            //有效期
+            effectiveTime = array.getJSONObject(i).getString("effectiveTime");//有效开始时间
+            failureTime = array.getJSONObject(i).getString("failureTime");//有效结束时间
+            couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+            list.add(couponInfo);
+        }
+        return list;
     }
 
     /**
@@ -222,7 +238,7 @@ public class CouponTool {
      * 4. 交给view
      */
     private void insertCouponSuccess(JSONObject jsonObject){
-
+        getApiReturnDatas(jsonObject);//暂时这里的业务是一样的
     }
 
     /**
@@ -241,17 +257,17 @@ public class CouponTool {
     public List<CouponInfo> testData() {
         List<CouponInfo> datas = new ArrayList<>();
         CouponInfo couponInfo = new CouponInfo(1, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 1, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo2 = new CouponInfo(2, "1234-1333-2333-2222", "有效期 20130405～2016年", "active", "discount", "描述：pp＋卡专用", 3, "1246527681767538712653671253875", 8, true, 0, "pp＋卡优惠卷");
+        CouponInfo couponInfo2 = new CouponInfo(2, "1234-1333-2333-2222", "有效期 20130405～2016年", "active", "discount", "描述：pp＋卡专用", 3, "1246527681767538712653671253875", 8, false, 0, "pp＋卡优惠卷");
         CouponInfo couponInfo3 = new CouponInfo(3, "1234-1333-2333-2222", "有效期 20130405～2017年","active", "discount", "描述：pp＋卡专用", 4, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
         CouponInfo couponInfo4 = new CouponInfo(4, "1234-1333-2333-2222", "有效期 20130405～2018年", "active", "discount", "描述：pp＋卡专用", 5, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
         CouponInfo couponInfo5 = new CouponInfo(5, "1234-1333-2333-2222", "有效期 20130405～2014年", "active", "discount", "描述：pp＋卡专用", 7, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo6 = new CouponInfo(6, "1234-1333-2333-2222", "有效期 20130405～2013年", "active", "discount", "描述：pp＋卡专用", 10, "1246527681767538712653671253875", 8, true, 0, "pp＋卡优惠卷");
+        CouponInfo couponInfo6 = new CouponInfo(6, "1234-1333-2333-2222", "有效期 20130405～2013年", "active", "discount", "描述：pp＋卡专用", 10, "1246527681767538712653671253875", 8, false, 0, "pp＋卡优惠卷");
         CouponInfo couponInfo7 = new CouponInfo(7, "1234-1333-2333-2222", "有效期 20130405～2012年", "active", "discount", "描述：pp＋卡专用", 11, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo8 = new CouponInfo(8, "1234-1333-2333-2222", "有效期 20130405～2011年", "active", "discount", "描述：pp＋卡专用", 14, "1246527681767538712653671253875", 7, true, 0, "pp＋卡优惠卷");
+        CouponInfo couponInfo8 = new CouponInfo(8, "1234-1333-2333-2222", "有效期 20130405～2011年", "active", "discount", "描述：pp＋卡专用", 14, "1246527681767538712653671253875", 7, false, 0, "pp＋卡优惠卷");
         CouponInfo couponInfo9 = new CouponInfo(9, "1234-1333-2333-2222", "有效期 20130405～2019年", "active", "discount", "描述：pp＋卡专用", 17, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo10 = new CouponInfo(10, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 19, "1246527681767538712653671253875", 3, true, 0, "pp＋卡优惠卷");
+        CouponInfo couponInfo10 = new CouponInfo(10, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 19, "1246527681767538712653671253875", 3, false, 0, "pp＋卡优惠卷");
         CouponInfo couponInfo11 = new CouponInfo(11, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 21, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo12 = new CouponInfo(12, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 23, "1246527681767538712653671253875", 2, true, 0, "pp＋卡优惠卷");
+        CouponInfo couponInfo12 = new CouponInfo(12, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 23, "1246527681767538712653671253875", 2, false, 0, "pp＋卡优惠卷");
 
         datas.add(couponInfo);
         datas.add(couponInfo2);
