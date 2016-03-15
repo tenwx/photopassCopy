@@ -21,6 +21,7 @@ public class DiscoverLocationItemInfo implements Parcelable{
 	public int showDetail;//地点详情是否显示,0：未显示；1：显示
 	public double latitude;//地点纬度
 	public double longitude;//经度
+	public int isShow;//是否显示，1，显示，0，不显示
 	
 	public static final Parcelable.Creator<DiscoverLocationItemInfo> CREATOR = new Creator<DiscoverLocationItemInfo>() {
 
@@ -52,6 +53,7 @@ public class DiscoverLocationItemInfo implements Parcelable{
 		showDetail = source.readInt();
 		latitude = source.readDouble();
 		longitude = source.readDouble();
+		isShow = source.readInt();
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class DiscoverLocationItemInfo implements Parcelable{
 		dest.writeInt(showDetail);
 		dest.writeDouble(latitude);
 		dest.writeDouble(longitude);
-
+		dest.writeInt(isShow);
 	}
 
 }

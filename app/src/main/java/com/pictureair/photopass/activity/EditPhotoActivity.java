@@ -30,7 +30,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -469,7 +468,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
 					JSONObject object = resultArray.getJSONObject(i);
 					locationInfo = JsonUtil.getLocation(object);
-					locationItemInfos.add(locationInfo);
+					if (locationInfo.isShow == 1) {
+						locationItemInfos.add(locationInfo);
+					}
 				}
 				locationUtil.setLocationItemInfos(locationItemInfos, this);
 			} catch (com.alibaba.fastjson.JSONException e1) {
