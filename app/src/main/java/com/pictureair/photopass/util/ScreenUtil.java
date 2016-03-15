@@ -2,6 +2,7 @@ package com.pictureair.photopass.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -95,6 +96,24 @@ public class ScreenUtil {
 			e1.printStackTrace();
 		}
 		return sbar;
+	}
+
+	/**
+	 * 获取控件到父控件的上边距
+	 * @param myView
+	 * @return
+	 */
+	public static int getRelativeTop(View myView) {
+		return myView.getId() == android.R.id.content ? myView.getTop() : myView.getTop() + getRelativeTop((View) myView.getParent());
+	}
+
+	/**
+	 * 获取控件到父控件的左边距
+	 * @param myView
+	 * @return
+	 */
+	public static int getRelativeLeft(View myView) {
+		return myView.getId() == android.R.id.content ? myView.getLeft() : myView.getLeft() + getRelativeLeft((View) myView.getParent());
 	}
 	
 }
