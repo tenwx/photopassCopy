@@ -223,19 +223,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"></activity>
 
-        <!-- alipay sdk begin -->
-        <activity
-            android:name="com.alipay.sdk.app.H5PayActivity"
-            android:configChanges="orientation|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name="com.alipay.sdk.auth.AuthActivity"
-            android:configChanges="orientation|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="behind" />
-
         <!-- Disney Video start -->
         <activity
             android:name=".activity.IsOneGoToVideoActivity"
@@ -253,6 +240,14 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
 
+        <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
         <!-- alipay sdk end -->
 
 

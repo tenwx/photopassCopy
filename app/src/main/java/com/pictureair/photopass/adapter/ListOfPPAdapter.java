@@ -379,21 +379,17 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
     //获取地点信息
     private ArrayList<DiscoverLocationItemInfo> createLocationList() {
         ArrayList<DiscoverLocationItemInfo> resultArrayList = new ArrayList<DiscoverLocationItemInfo>();
-        if (ACache.get(mContext).getAsString(Common.LOCATION_INFO) == null) {
-            myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-        } else {
-            try {
-                com.alibaba.fastjson.JSONObject response =  com.alibaba.fastjson.JSONObject.parseObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));
-                com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
-                for (int i = 0; i < resultArray.size(); i++) {
-                    DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-                    com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
-                    locationInfo = JsonUtil.getLocation(object);
-                    resultArrayList.add(locationInfo);
-                }
-            } catch (com.alibaba.fastjson.JSONException e) {
-                e.printStackTrace();
+        try {
+            com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));
+            com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+            for (int i = 0; i < resultArray.size(); i++) {
+                DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
+                com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
+                locationInfo = JsonUtil.getLocation(object);
+                resultArrayList.add(locationInfo);
             }
+        } catch (com.alibaba.fastjson.JSONException e) {
+            e.printStackTrace();
         }
         return resultArrayList;
     }

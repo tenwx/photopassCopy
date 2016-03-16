@@ -38,6 +38,7 @@ public class JsonUtil {
         DiscoverLocationItemInfo info = new DiscoverLocationItemInfo();
         info.locationId = object.getString("locationId");
         info.locationIds = object.getJSONArray("shootSpots").toString();
+        info.isShow = object.getBooleanValue("visibility") ? 1 : 0;
         if (object.containsKey("location")) {
             info.placeCHName = object.getString("location");
         }

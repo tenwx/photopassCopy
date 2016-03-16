@@ -1132,7 +1132,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
                 // TODO Auto-generated method stub
                 while (isLoading) {
                     //如果magic相册已经处理完毕
-                    PictureAirLog.d(TAG, "waiting for scanning local photo completed");
+//                    PictureAirLog.d(TAG, "waiting for scanning local photo completed");
                     if (app.scanMagicFinish) {
                         isLoading = false;
                     }
