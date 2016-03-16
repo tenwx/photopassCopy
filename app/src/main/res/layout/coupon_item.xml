@@ -2,66 +2,90 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color1"
-    android:orientation="vertical"
-    android:padding="@dimen/pp_padding_10">
+    android:orientation="horizontal">
 
     <!-- 优惠卷item-->
+    <RelativeLayout
+        android:id="@+id/rl_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/coupon_1">
 
-    <!-- 优惠卷价格或者折扣-->
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/tv_number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="价格？折扣？"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18" />
-    <!-- 优惠卷名字-->
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/tv_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="优惠卷名字"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18" />
-    <!-- 描述-->
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/tv_describe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="描述"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18" />
+        <ImageView
+            android:id="@+id/iv_select"
+            android:layout_width="@dimen/pp_height_40"
+            android:layout_height="@dimen/pp_height_40"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/sele"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
-    <!-- 有效期-->
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/tv_validity_period"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/rl_right"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="有效期"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18" />
+        android:layout_toRightOf="@+id/rl_left"
+        android:background="@drawable/coupon_2"
+        android:padding="@dimen/pp_padding_16">
 
-    <!-- 状态-->
-    <com.pictureair.photopass.widget.CustomTextView
-        android:id="@+id/tv_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="状态"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18" />
+        <!-- 优惠卷名字-->
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:text="优惠卷名字"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_20" />
 
-    <ImageView
-        android:id="@+id/iv_select"
-        android:layout_width="@dimen/pp_height_40"
-        android:layout_height="@dimen/pp_height_40"
-        android:scaleType="centerInside"
-        android:src="@drawable/sel1"
-        android:visibility="invisible" />
+        <!-- 有效期-->
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/tv_validity_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginTop="@dimen/pp_margin_20"
+            android:text="有效期"
+            android:textColor="@color/gray2"
+            android:textSize="@dimen/text_size_12" />
+
+        <!-- 描述-->
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/tv_describe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_validity_period"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:text="描述"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_12" />
+
+        <!-- 优惠卷价格或者折扣-->
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/tv_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_validity_period"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:text="价格？折扣？"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_20" />
+
+
+        <!-- 状态-->
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_number"
+            android:layout_alignParentRight="true"
+            android:text="状态"
+            android:textColor="@color/gray_cover"
+            android:textSize="@dimen/text_size_18" />
+    </RelativeLayout>
+
 
 </LinearLayout>

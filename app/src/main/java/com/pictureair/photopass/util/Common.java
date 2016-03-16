@@ -19,6 +19,8 @@ public class Common {
 //    public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
 
 
+
+
     /**
      * 49演示服务器
      */
@@ -51,6 +53,9 @@ public class Common {
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
 //    public final static String POLICY_AGREEMENT = "http://211.95.27.34:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
+
+
+//    public static final String BASE_URL_TEST = "http://172.16.30.225:3006";
 
     /**
      * 内网8.3测试服务器

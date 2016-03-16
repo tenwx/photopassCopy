@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.util.CouponTool;
@@ -55,26 +57,58 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
      */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if (whatPage.equals(CouponTool.ACTIVITY_ORDER)){//如果是订单页面进来的，显示选择的框
-            holder.ivSelect.setVisibility(View.VISIBLE);
-        }else{
+        if (whatPage.equals(CouponTool.ACTIVITY_ORDER)){//订单页面进来的，显示选择的框.active可使用
+            if (mDatas.get(position).getCpStatus().equals("active")){
+                holder.ivSelect.setVisibility(View.VISIBLE);
+                /**
+                 * 如果选中，显示打勾
+                 */
+                if (mDatas.get(position).getCpIsSelect()){
+                    holder.ivSelect.setImageResource(R.drawable.sele);
+                }else{
+                    holder.ivSelect.setImageResource(R.drawable.nosele);
+                }
+            }else{//不可使用或者已经过期
+                holder.ivSelect.setVisibility(View.INVISIBLE);
+            }
+        }else{//me 界面进来的
             holder.ivSelect.setVisibility(View.INVISIBLE);
         }
 
         /**
-         * 如果选中，显示打勾
+         * 使用情况
          */
-        if (mDatas.get(position).getCpIsSelect()){
-            holder.ivSelect.setVisibility(View.VISIBLE);
+        if (mDatas.get(position).getCpStatus().equals("active")){//可使用
+            setMyTextViewColor2(holder);
+            holder.tvStatus.setText("");
+            holder.rlRight.setBackgroundResource(R.drawable.coupon_2);
+        }else if (mDatas.get(position).getCpStatus().equals("used")){//已使用
+            setMyTextViewColor(holder);
+            holder.tvStatus.setText(R.string.has_been_used);
+            holder.rlRight.setBackgroundResource(R.drawable.coupon_3);
+        }else if (mDatas.get(position).getCpStatus().equals("failure")){//已过期
+            setMyTextViewColor(holder);
+            holder.tvStatus.setText(R.string.expired);
+            holder.rlRight.setBackgroundResource(R.drawable.coupon_3);
         }else{
-            holder.ivSelect.setVisibility(View.INVISIBLE);
+
         }
 
+        /**
+         * 显示价格 还是折扣
+         */
+        if (mDatas.get(position).getCpType().equals("discount")){//折扣
+            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
+        }else if (mDatas.get(position).getCpType().equals("full")){//满
+            //目前不知如何显示
+            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
+        }else if (mDatas.get(position).getCpType().equals("subtract")){//减
+            holder.tvNumber.setText("-"+(int)mDatas.get(position).getCpNumber()+mContext.getResources().getString(R.string.yuan));//这里是价格或者是折扣需要单位
+        }
         holder.tvName.setText(mDatas.get(position).getCpName());
-        holder.tvNumber.setText(mDatas.get(position).getCpNumber()+"");//这里是价格或者是折扣需要单位
         holder.tvDescribe.setText(mDatas.get(position).getCpDescribe());
         holder.tvValiditPeriod.setText(mDatas.get(position).getCpValidityPeriod());
-        holder.tvStatus.setText(mDatas.get(position).getCpStatus() + "");
+
         //将数据保存在itemView的Tag中，以便点击时进行获取
         holder.itemView.setTag(mDatas.get(position));
     }
@@ -91,6 +125,30 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
         return viewHolder;
     }
 
+    /**
+     * 设置颜色
+     * @param holder
+     */
+    private void setMyTextViewColor(MyViewHolder holder){
+        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.white));
+        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.white));
+        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.white));
+        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.white));
+        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.gray_cover));
+    }
+
+    /**
+     * 设置可用优惠卷的字体颜色
+     * @param holder
+     */
+    private void setMyTextViewColor2(MyViewHolder holder){
+        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.gray));
+        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.gray));
+        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.gray));
+        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.gray2));
+        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.white));
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
         TextView tvNumber;
@@ -98,6 +156,7 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
         TextView tvValiditPeriod;
         TextView tvStatus;
         ImageView ivSelect;
+        RelativeLayout rlRight;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -107,6 +166,10 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
             tvValiditPeriod = (TextView) itemView.findViewById(R.id.tv_validity_period);
             tvStatus = (TextView) itemView.findViewById(R.id.tv_status);
             ivSelect = (ImageView)itemView.findViewById(R.id.iv_select);
+            tvStatus.setRotation(30);
+            tvNumber.setTypeface(MyApplication.getInstance().getFontBold());
+            tvName.setTypeface(MyApplication.getInstance().getFontBold());
+            rlRight = (RelativeLayout)itemView.findViewById(R.id.rl_right);
         }
     }
 

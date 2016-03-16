@@ -18,6 +18,7 @@ import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.widget.CouponViewInterface;
+import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
     private EditTextWithClear mEditTextWithClear;
-    private Button mBtnSubmit, mBtnScan;
+    private CustomTextView mBtnSubmit, mBtnScan;
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
     private Context context;
@@ -63,8 +64,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         setTopTitleShow(R.string.my_coupon);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
         mEditTextWithClear = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
-        mBtnSubmit = (Button) findViewById(R.id.btn_submit);
-        mBtnScan = (Button) findViewById(R.id.btn_scan);
+        mBtnSubmit = (CustomTextView) findViewById(R.id.btn_submit);
+        mBtnScan = (CustomTextView) findViewById(R.id.btn_scan);
         llNoCoupon = (LinearLayout)findViewById(R.id.ll_no_coupon);
         mBtnSubmit.setOnClickListener(this);
         mBtnScan.setOnClickListener(this);
@@ -110,7 +111,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     @Override
     public void onBackPressed() {
-        myToast.setTextAndShow(mSelectData.size() + "", Common.TOAST_SHORT_TIME);
+//        myToast.setTextAndShow(mSelectData.size() + "", Common.TOAST_SHORT_TIME);
         if (whatPege.equals(CouponTool.ACTIVITY_ME)) {
         } else if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//返回到订单页面 ，给jsonArray的优惠code
             Intent intent = new Intent();
@@ -129,12 +130,14 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                String cpCode = getCouponCode();
+                myToast.setTextAndShow("添加页面", Common.TOAST_SHORT_TIME);
+
+//                String cpCode = getCouponCode();
 //                if (name.length() <5){
 //                    myToast.setTextAndShow();
 //                    return;
 //                }
-                couponTool.insertCoupon(cpCode);
+//                couponTool.insertCoupon(cpCode);
                 break;
 
             case R.id.btn_scan:

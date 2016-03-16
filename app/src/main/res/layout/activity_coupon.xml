@@ -17,45 +17,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/head"
-        android:layout_margin="@dimen/pp_margin_16"
+        android:layout_margin="@dimen/pp_margin_5"
         android:background="@color/transparent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/pp_padding_10">
 
-        <cn.smssdk.gui.EditTextWithClear
-            android:id="@+id/et_userinfo_text"
+        <!--<cn.smssdk.gui.EditTextWithClear-->
+        <!--android:id="@+id/et_userinfo_text"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@null"-->
+        <!--android:hint="@string/nn"-->
+        <!--android:imeOptions="actionDone"-->
+        <!--android:paddingTop="@dimen/pp_padding_16"-->
+        <!--android:singleLine="true"-->
+        <!--android:textColor="@color/gray"-->
+        <!--android:textSize="@dimen/text_size_14" />-->
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:hint="@string/nn"
-            android:imeOptions="actionDone"
-            android:paddingTop="@dimen/pp_padding_16"
-            android:singleLine="true"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_14" />
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/btn_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/pp_padding_5"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
-            android:text="@string/coupon_exchange_use"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_14" />
+            <com.pictureair.photopass.widget.CustomTextView
+                android:id="@+id/btn_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/pp_margin_10"
+                android:drawableTop="@drawable/preview_coupon_button"
+                android:gravity="center_horizontal|bottom"
+                android:text="@string/coupon_exchange_use"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14" />
 
-        <Button
-            android:id="@+id/btn_scan"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_blue_shape_and_selector"
-            android:padding="@dimen/pp_padding_10"
-            android:text="@string/coupon_scan"
-            android:textColor="@drawable/textview_selector_blue_white"
-            android:textSize="@dimen/text_size_14" />
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.pictureair.photopass.widget.CustomTextView
+                android:id="@+id/btn_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/pp_margin_10"
+                android:drawableTop="@drawable/preview_coupon_scan_button"
+                android:gravity="center_horizontal|bottom"
+                android:text="@string/coupon_scan"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14" />
+        </LinearLayout>
+
+
     </LinearLayout>
     <!-- 优惠卷-->
     <android.support.v7.widget.RecyclerView
@@ -63,7 +81,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_scan"
-        android:layout_margin="@dimen/pp_padding_10"
         android:visibility="gone" />
 
     <LinearLayout
@@ -85,12 +102,12 @@
 
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_10"
-            android:textColor="@color/gray"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_18"
             android:layout_gravity="center_horizontal"
-            android:text="@string/no_coupon" />
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:text="@string/no_coupon"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_18" />
 
     </LinearLayout>
 
