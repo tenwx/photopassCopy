@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.R;
@@ -110,10 +109,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         } else if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//返回到订单页面 ，给jsonArray的优惠code
             Intent intent = new Intent();
             JSONArray array = new JSONArray();
-            for (int i =0; i < mSelectData.size(); i++){
-                array.add(mSelectData.get(i));
+            for (int i = 0; i < mSelectData.size(); i++) {
+                array.add(mSelectData.get(i).getCpCode());
             }
-            intent.putExtra(couponTool.ACTIVITY_ORDER_CART_DATAS,array);
+            intent.putExtra("couponCodes", array.toString());
+            setResult(RESULT_OK, intent);
         }
         finish();
     }

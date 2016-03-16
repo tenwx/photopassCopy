@@ -1975,7 +1975,6 @@ public class API1 {
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
         }
-
         params.put(Common.couponCode, couponsCode);
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         PictureAirLog.e(TAG, MyApplication.getTokenId());
@@ -2005,10 +2004,10 @@ public class API1 {
     public static void previewCoupon(final Handler handler, JSONArray couponCodes, JSONArray cartItemsIds) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put("couponCodes", couponCodes);
-        params.put("cartItemsIds", cartItemsIds);
-
-        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_COUPONS, params, new HttpCallback() {
+        params.put("couponCodes", couponCodes.toString());
+        params.put("cartItemIds", cartItemsIds.toString());
+        PictureAirLog.v(TAG, "previewCoupon params：" + params);
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
