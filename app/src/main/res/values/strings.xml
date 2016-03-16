@@ -451,6 +451,7 @@
     <string name="coupon_price">优惠券抵用</string>
     <string name="pay_price">实际支付</string>
     <string name="coupon_count">有%1$d张优惠券可用</string>
+    <string name="no_coupon">您还没有可使用的优惠卷</string>
     <!-- 我的优惠卷 end-->
 
 

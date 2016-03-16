@@ -3,10 +3,12 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
@@ -32,6 +34,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private final String TAG = "CouponActivity";
 
     private RecyclerView mRecyclerView;
+    private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
     private EditTextWithClear mEditTextWithClear;
@@ -62,6 +65,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         mEditTextWithClear = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
         mBtnSubmit = (Button) findViewById(R.id.btn_submit);
         mBtnScan = (Button) findViewById(R.id.btn_scan);
+        llNoCoupon = (LinearLayout)findViewById(R.id.ll_no_coupon);
         mBtnSubmit.setOnClickListener(this);
         mBtnScan.setOnClickListener(this);
 
@@ -70,6 +74,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         couponAdapter = new CouponAdapter(context, mAllData);
         mRecyclerView.setAdapter(couponAdapter);
         listview();
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         couponAdapter.setOnItemClickListener(new CouponAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, CouponInfo data) {
@@ -123,7 +128,12 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                couponTool.insertCoupon(getCouponCode());
+                String cpCode = getCouponCode();
+//                if (name.length() <5){
+//                    myToast.setTextAndShow();
+//                    return;
+//                }
+                couponTool.insertCoupon(cpCode);
                 break;
 
             case R.id.btn_scan:
@@ -167,6 +177,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     public void sortCoupon(List<CouponInfo> sortDatas) {
         couponAdapter.setPage(whatPege);//设置显示界面
         mRecyclerView.setVisibility(View.VISIBLE);
+        llNoCoupon.setVisibility(View.GONE);
         if (couponAdapter == null) {
             couponAdapter = new CouponAdapter(context, sortDatas);
             mRecyclerView.setAdapter(couponAdapter);
@@ -186,7 +197,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     @Override
     public void noCoupon() {
         mRecyclerView.setVisibility(View.GONE);
-        myToast.setTextAndShow("无优惠卷", Common.TOAST_SHORT_TIME);
+        llNoCoupon.setVisibility(View.VISIBLE);
     }
 
     @Override
