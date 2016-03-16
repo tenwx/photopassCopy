@@ -86,8 +86,6 @@
 -keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
 -keep class com.alipay.sdk.app.PayTask{ public *;}
 -keep class com.alipay.sdk.app.AuthTask{ public *;}
--keep class com.alipay.mobilesecuritysdk.*
--keep class com.ut.*
 
 #微信支付避免混淆
 -keep class com.tencent.mm.sdk.** { *;}

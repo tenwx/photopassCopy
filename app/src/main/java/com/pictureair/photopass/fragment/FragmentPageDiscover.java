@@ -138,17 +138,16 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
             case API1.GET_ALL_LOCATION_SUCCESS:
                 //获取全部的location
-                PictureAirLog.d(TAG, "get location success============");
+                PictureAirLog.d(TAG, "get location success============" + msg.obj);
                 try {
                     JSONObject response = JSONObject.parseObject(msg.obj.toString());
                     JSONArray resultArray = response.getJSONArray("locations");
                     for (int i = 0; i < resultArray.size(); i++) {
                         JSONObject object = resultArray.getJSONObject(i);
                         DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                        if (locationInfo.locationId.equals("photoSouvenirs") || locationInfo.locationIds.contains("photoSouvenirs")) {
-                            continue;
+                        if (locationInfo.isShow == 1) {
+                            locationList.add(locationInfo);
                         }
-                        locationList.add(locationInfo);
                     }
                     locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
                 } catch (JSONException e1) {

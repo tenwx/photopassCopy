@@ -8,6 +8,7 @@
         layout="@layout/top_bar" />
 
     <ScrollView
+        android:id="@+id/pay_sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/head"
@@ -275,6 +276,21 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/no_pay_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点击提交。。。" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -9,9 +9,12 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -22,6 +25,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.unionpay.UPPayAssistEx;
 
@@ -36,6 +40,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private String nameString;
     private String priceString;
     private String introductString;
+
+    private View paySv;
+    private LinearLayout noPayLl;
 
     private RelativeLayout zfbLayout;
     private RelativeLayout ylLayout;
@@ -66,6 +73,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private PayUtils payUtils;
 
     private OrderInfo orderInfo;
+    private String outletId;
+    private JSONArray cartItemIds;
     private String orderid = "";
     private boolean weChatIsPaying = false;
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
@@ -76,6 +85,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
     private final String mMode = "01";
+
+    private boolean isNeedPay = true;//是否需要支付
 
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
@@ -155,6 +166,29 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
                 break;
 
+            case API1.ADD_ORDER_SUCCESS:
+                PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                //确认订单成功，等待接收推送
+                paymentOrderHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startTimer();
+                        getData();
+                    }
+                });
+
+                break;
+
+            case API1.ADD_ORDER_FAILED:
+                PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
+                customProgressDialog.dismiss();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                Intent errorIntent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
+                startActivity(errorIntent);
+                ErrorInPayment();
+                break;
+
             default:
                 break;
         }
@@ -172,6 +206,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private void findViewById() {
         setTopTitleShow(R.string.pay);
         setTopLeftValueAndShow(R.drawable.back_white, true);
+        paySv = findViewById(R.id.pay_sv);
+        noPayLl = (LinearLayout) findViewById(R.id.no_pay_ll);
         sbmtButton = (TextView) findViewById(R.id.button_smpm);
         sbmtButton.setTypeface(MyApplication.getInstance().getFontBold());
         // 支付方式选择
@@ -208,10 +244,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (getIntent().getStringExtra("flag") == null) {
             // 为空，说明是正常流程进入
             PictureAirLog.v(TAG, "为空，说明是正常流程进入");
+            isNeedPay = getIntent().getBooleanExtra("isNeedPay", true);
             nameString = getIntent().getStringExtra("name");// 获取name
             priceString = getIntent().getStringExtra("price");// 获取price
             introductString = getIntent().getStringExtra("introduce");// 获取介绍信息
             orderid = getIntent().getStringExtra("orderId");
+            outletId = getIntent().getStringExtra("outletId");
+            cartItemIds = JSONArray.parseArray(getIntent().getStringExtra("cartItemIds"));
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -239,6 +278,32 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 //			pickupTextView.setText(getString(R.string.pick_up_address)
 //					+ getString(R.string.disney_address));
 //		}
+
+        //判断是否需要支付
+        if (isNeedPay) {
+            paySv.setVisibility(View.VISIBLE);
+            noPayLl.setVisibility(View.GONE);
+        } else {
+            paySv.setVisibility(View.GONE);
+            noPayLl.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    /**
+     * 提交订单（无需付钱的情况）
+     */
+    public void checkOut() {
+        customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+        if (cartItemIds != null) {
+            if (productType == 1) {
+                //获取收货地址
+                API1.addOrder(cartItemIds, 1, outletId, "", paymentOrderHandler);
+            } else {
+                //PP+/数码商品不需要地址
+                API1.addOrder(cartItemIds, 3, "", "", paymentOrderHandler);
+            }
+        }
     }
 
 
@@ -251,11 +316,16 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
-
                 sbmtButton.setEnabled(false);
                 PictureAirLog.v(TAG, "-------------pay on click");
-                // 直接调用接口
-                pay(orderid);
+
+                if (isNeedPay) {
+                    // 直接调用接口，正常流程
+                    pay(orderid);
+                } else {
+                    //直接提交订单，等待推送
+                    checkOut();
+                }
                 break;
 
             case R.id.zfb:// 选择支付宝支付
