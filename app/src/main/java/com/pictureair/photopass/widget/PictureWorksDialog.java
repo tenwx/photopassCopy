@@ -58,6 +58,35 @@ public class PictureWorksDialog {
 		.create();
 	}
 
+
+	/**
+	 * 带输入框的
+	 * 注意：带输入框的按钮监听使用接口回调的方式
+	 *
+	 * @param context
+	 * @param titleString 提示的title,如果不需要title，则为null
+	 * @param cancelString 取消按钮的文字, 设置按钮的内容，如果内容为null，则不显示按钮
+	 * @param okString 确定按钮的文字, 设置按钮的内容，如果内容为null，则不显示按钮
+	 * @param isEdittext  是否要输入框？
+	 * @param isEdittext  输入框字符串最少长度
+	 * @param edittextHint Hint
+	 * @param  inputType 默认 －1，输入框的inputType属性
+	 */
+	public PictureWorksDialog(Context context, String titleString, String cancelString, String okString, boolean isEdittext,int lenght,String edittextHint,int inputType,CustomDialog.MyEditTextDialogInterface metdi) {
+		//初始化dialog
+		customDialog = new CustomDialog.Builder(context)
+				.setTitle(titleString)
+				.setMessage(null)
+				.setGravity(false)
+				.setEditText(isEdittext)
+				.setEditTextHint(edittextHint)
+				.setEditTextLenght(lenght)
+				.setEditTextButtonClickListener(okString, cancelString,metdi)
+				.setCancelable(false)
+				.setEditTextInputType(inputType)
+				.create();
+	}
+
 	/**
 	 * 显示dialog
 	 */
@@ -91,4 +120,5 @@ public class PictureWorksDialog {
 			dialog.dismiss();
 		}
 	}
+
 }
