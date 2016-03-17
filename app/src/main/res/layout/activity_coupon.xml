@@ -47,10 +47,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/pp_margin_10"
-                android:drawableTop="@drawable/preview_coupon_button"
+                android:drawableTop="@drawable/coupon_add2"
                 android:gravity="center_horizontal|bottom"
                 android:text="@string/coupon_exchange_use"
-                android:textColor="@drawable/textview_selector_onclick"
+                android:textColor="@color/gray2"
                 android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>
@@ -66,10 +66,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/pp_margin_10"
-                android:drawableTop="@drawable/preview_coupon_scan_button"
+                android:drawableTop="@drawable/coupon_scan1"
                 android:gravity="center_horizontal|bottom"
                 android:text="@string/coupon_scan"
-                android:textColor="@drawable/textview_selector_onclick"
+                android:textColor="@color/gray2"
                 android:textSize="@dimen/text_size_14" />
         </LinearLayout>
 

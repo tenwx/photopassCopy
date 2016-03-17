@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,12 +15,14 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
+import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.widget.CouponViewInterface;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
-    private EditTextWithClear mEditTextWithClear;
+//    private EditTextWithClear mEditTextWithClear;
     private CustomTextView mBtnSubmit, mBtnScan;
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
@@ -63,10 +66,10 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.my_coupon);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
-        mEditTextWithClear = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
+//        mEditTextWithClear = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
         mBtnSubmit = (CustomTextView) findViewById(R.id.btn_submit);
         mBtnScan = (CustomTextView) findViewById(R.id.btn_scan);
-        llNoCoupon = (LinearLayout)findViewById(R.id.ll_no_coupon);
+        llNoCoupon = (LinearLayout) findViewById(R.id.ll_no_coupon);
         mBtnSubmit.setOnClickListener(this);
         mBtnScan.setOnClickListener(this);
 
@@ -130,14 +133,22 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                myToast.setTextAndShow("添加页面", Common.TOAST_SHORT_TIME);
+                new PictureWorksDialog(context, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), true, 5, getResources().getString(R.string.conpon_input_hint), InputType.TYPE_TEXT_FLAG_MULTI_LINE, new CustomDialog.MyEditTextDialogInterface() {
+                    @Override
+                    public void no() {//取消
+                    }
 
-//                String cpCode = getCouponCode();
-//                if (name.length() <5){
-//                    myToast.setTextAndShow();
-//                    return;
-//                }
-//                couponTool.insertCoupon(cpCode);
+                    @Override
+                    public void yes(String result) {
+                        couponTool.insertCoupon(result);
+                    }
+
+                    @Override
+                    public void prompt() {//字符数不够
+                        myToast.setTextAndShow("字符数不够", Common.TOAST_SHORT_TIME);
+                    }
+                }).show();
+
                 break;
 
             case R.id.btn_scan:
@@ -195,7 +206,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     @Override
     public String getCouponCode() {
-        return mEditTextWithClear.getText().toString();
+        return "";
     }
 
     @Override
