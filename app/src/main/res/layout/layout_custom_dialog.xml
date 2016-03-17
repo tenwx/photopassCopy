@@ -48,17 +48,6 @@
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size_14" />
 
-                <cn.smssdk.gui.EditTextWithClear
-                    android:id="@+id/et_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:paddingTop="@dimen/pp_padding_16"
-                    android:singleLine="true"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size_14"
-                    android:visibility="gone" />
-
             </FrameLayout>
         </RelativeLayout>
 

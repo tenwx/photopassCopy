@@ -1,6 +1,7 @@
 package com.pictureair.photopass.customDialog;
 
 import android.app.Dialog;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -86,11 +87,6 @@ public class CustomDialog extends Dialog {
         private DialogInterface.OnClickListener negativeButtonClickListener;
         private boolean cancelable = true;
         private boolean textCenter = true;
-        private boolean isEditText = false;
-        private String edittextHint = "";
-        private MyEditTextDialogInterface myEditTextDialogInterface;
-        private int edittextLenght = 0;//输入框最少字符数
-        private int edittextInputType = -1;//输入类型设置
 
         public Builder(Context context) {
             this.mContext = context;
@@ -105,44 +101,6 @@ public class CustomDialog extends Dialog {
             this.mContext = context;
             this.title = title;
             this.message = message;
-        }
-
-        //设置输入框内最小字符数
-        public Builder setEditTextLenght(int lenght) {
-            this.edittextLenght = lenght;
-            return this;
-        }
-
-        //设置输入框的类型
-        public Builder setEditTextInputType(int edittextInputType) {
-            this.edittextInputType = edittextInputType;
-            return this;
-        }
-
-        //设置是否需要输入框
-        public Builder setEditText(boolean isEditText) {
-            this.isEditText = isEditText;
-            return this;
-        }
-
-        /**
-         * 设置输入框的监听接口
-         * @param positiveButtonText 确认按钮文本设置
-         * @param negativeButtonText 取消按钮文本设置
-         * @param myEditTextDialogInterface
-         * @return
-         */
-        public Builder setEditTextButtonClickListener(String positiveButtonText,String negativeButtonText, MyEditTextDialogInterface myEditTextDialogInterface) {
-            this.positiveButtonText = positiveButtonText;
-            this.negativeButtonText = negativeButtonText;
-            this.myEditTextDialogInterface = myEditTextDialogInterface;
-            return this;
-        }
-
-        //设置title
-        public Builder setEditTextHint(String edittextHint) {
-            this.edittextHint = edittextHint;
-            return this;
         }
 
         //设置title
@@ -233,45 +191,18 @@ public class CustomDialog extends Dialog {
                 tvMessage.setGravity(textCenter ? Gravity.CENTER : Gravity.START | Gravity.CENTER_VERTICAL);
             }
 
-            final EditTextWithClear editTextWithClear = (EditTextWithClear) layout.findViewById(R.id.et_text);
-            if (isEditText) {//需要输入框
-                editTextWithClear.setVisibility(View.VISIBLE);
-                if (null != edittextHint) {
-                    editTextWithClear.setHint(edittextHint);
-                }
-                if (edittextInputType != -1){
-                    editTextWithClear.setInputType(edittextInputType);
-                }
-                editTextWithClear.setVisibility(View.VISIBLE);
-            }
-
             final GroupButton btnGroup = (GroupButton) layout.findViewById(R.id.btn_group);
             {
                 btnGroup.setButtonText(positiveButtonText, negativeButtonText);
                 btnGroup.setOnClickListener(new GroupButton.OnClickListener() {
                     @Override
                     public void onPositiveButtonClicked() {
-                        if (isEditText) {
-                            String str = editTextWithClear.getText().toString().trim();
-                            if ( edittextLenght >0 && str.length() < edittextLenght) {
-                                myEditTextDialogInterface.prompt();//当字符数没达到要求
-                                return;
-                            }
-                            myEditTextDialogInterface.yes(str);
-                            dialog.dismiss();
-                        } else {
                             positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                        }
                     }
 
                     @Override
                     public void onNegativeButtonClicked() {
-                        if (isEditText) {
-                            myEditTextDialogInterface.no();
-                            dialog.dismiss();
-                        } else {
                             negativeButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
-                        }
                     }
                 });
             }
@@ -300,13 +231,6 @@ public class CustomDialog extends Dialog {
         void no();
 
         void yes();
-    }
-
-    // EditText使用的接口
-    public interface MyEditTextDialogInterface {
-        void no();
-        void yes(String result);
-        void prompt();
     }
 
 }

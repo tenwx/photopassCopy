@@ -1,8 +1,11 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -128,26 +131,39 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         finish();
     }
 
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case DialogInterface.BUTTON_POSITIVE:
+//                    myToast.setTextAndShow(""+msg.obj, Common.TOAST_SHORT_TIME);
+                    couponTool.insertCoupon(""+msg.obj);
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                new PictureWorksDialog(context, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), true, 5, getResources().getString(R.string.conpon_input_hint), InputType.TYPE_TEXT_FLAG_MULTI_LINE, new CustomDialog.MyEditTextDialogInterface() {
-                    @Override
-                    public void no() {//取消
-                    }
-
-                    @Override
-                    public void yes(String result) {
-                        couponTool.insertCoupon(result);
-                    }
-
-                    @Override
-                    public void prompt() {//字符数不够
-                        myToast.setTextAndShow("字符数不够", Common.TOAST_SHORT_TIME);
-                    }
-                }).show();
+                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,mHandler,R.layout.dialog_edittext).show();
+//                new PictureWorksDialog(context, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), true, 5, getResources().getString(R.string.conpon_input_hint), InputType.TYPE_TEXT_FLAG_MULTI_LINE, new CustomDialog.MyEditTextDialogInterface() {
+//                    @Override
+//                    public void no() {//取消
+//                    }
+//
+//                    @Override
+//                    public void yes(String result) {
+//                        couponTool.insertCoupon(result);
+//                    }
+//
+//                    @Override
+//                    public void prompt() {//字符数不够
+//                        myToast.setTextAndShow("字符数不够", Common.TOAST_SHORT_TIME);
+//                    }
+//                }).show();
 
                 break;
 

@@ -3,9 +3,15 @@ package com.pictureair.photopass.widget;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
 
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.util.PictureAirLog;
+
+import cn.smssdk.gui.EditTextWithClear;
 
 /**
  * 自定义对话框的封装
@@ -18,6 +24,8 @@ public class PictureWorksDialog {
 	private CustomDialog customDialog;
 	private Handler handler;
 	private boolean gravity;
+	private int layout = -1;
+	private View view = null;
 
 	/**
 	 * 初始化
@@ -60,30 +68,38 @@ public class PictureWorksDialog {
 
 
 	/**
-	 * 带输入框的
-	 * 注意：带输入框的按钮监听使用接口回调的方式
-	 *
+	 * 带输入框
 	 * @param context
-	 * @param titleString 提示的title,如果不需要title，则为null
-	 * @param cancelString 取消按钮的文字, 设置按钮的内容，如果内容为null，则不显示按钮
-	 * @param okString 确定按钮的文字, 设置按钮的内容，如果内容为null，则不显示按钮
-	 * @param isEdittext  是否要输入框？
-	 * @param isEdittext  输入框字符串最少长度
-	 * @param edittextHint Hint
-	 * @param  inputType 默认 －1，输入框的inputType属性
+	 * @param titleString
+	 * @param messageString
+	 * @param cancelString
+	 * @param okString
+	 * @param gravity
+	 * @param handler
 	 */
-	public PictureWorksDialog(Context context, String titleString, String cancelString, String okString, boolean isEdittext,int lenght,String edittextHint,int inputType,CustomDialog.MyEditTextDialogInterface metdi) {
+	public PictureWorksDialog(Context context, String titleString, String messageString, String cancelString, String okString, boolean gravity, Handler handler,int layout) {
+		this.context = context;
+		this.titleString = titleString;
+		this.messageString = messageString;
+		this.cancelString = cancelString;
+		this.okString = okString;
+		this.gravity = gravity;
+		this.handler = handler;
+		this.layout = layout;
+		view = LayoutInflater.from(context).inflate(layout,null);
+		init2();
+	}
+
+	private void init2() {
 		//初始化dialog
 		customDialog = new CustomDialog.Builder(context)
 				.setTitle(titleString)
-				.setMessage(null)
-				.setGravity(false)
-				.setEditText(isEdittext)
-				.setEditTextHint(edittextHint)
-				.setEditTextLenght(lenght)
-				.setEditTextButtonClickListener(okString, cancelString,metdi)
+				.setMessage(messageString)
+				.setGravity(gravity)
+				.setContentView(view)
+				.setNegativeButton(cancelString, new DialogOnClickListener())
+				.setPositiveButton(okString, new DialogOnClickListener())
 				.setCancelable(false)
-				.setEditTextInputType(inputType)
 				.create();
 	}
 
@@ -106,7 +122,12 @@ public class PictureWorksDialog {
 			switch (which) {
 			case DialogInterface.BUTTON_POSITIVE:
 				PictureAirLog.out("click ok");
-				handler.sendEmptyMessage(DialogInterface.BUTTON_POSITIVE);
+				Message message = new Message();
+				message.what =DialogInterface.BUTTON_POSITIVE;
+				if (null != view && view instanceof cn.smssdk.gui.EditTextWithClear){
+					message.obj = ((EditTextWithClear)view.findViewById(R.id.et_text)).getText().toString().trim();
+				}
+				handler.sendMessage(message);
 				break;
 
 			case DialogInterface.BUTTON_NEGATIVE:

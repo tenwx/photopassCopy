@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<cn.smssdk.gui.EditTextWithClear xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/et_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:imeOptions="actionDone"
+    android:paddingTop="@dimen/pp_padding_16"
+    android:singleLine="true"
+    android:textColor="@color/gray"
+    android:textSize="@dimen/text_size_14" />
