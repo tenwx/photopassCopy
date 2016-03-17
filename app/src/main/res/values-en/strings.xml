@@ -31,6 +31,7 @@
     <string name="name_is_empty">Please enter your Nickname</string>
     <string name="terms">Disney PhotoPass Terms and Conditions</string>
     <string name="policy">Disney PhotoPass Privacy Policy</string>
+    <string name="terms_and_policy"><a href = "2">《Disney PhotoPass Terms and Conditions》</a>\n\nand<a href = "1">《Disney PhotoPass Privacy Policy》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -455,6 +456,7 @@
     <string name="expired">已过期</string>
     <string name="discount">折</string>
     <string name="yuan">元</string>
+    <string name="conpon_input_hint">请输入优惠卷，体验卡等，优惠卷兑换码</string>
     <!-- 优惠卷end-->
 
 </resources>

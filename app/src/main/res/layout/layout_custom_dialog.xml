@@ -47,6 +47,7 @@
                     android:paddingTop="@dimen/pp_padding_10"
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size_14" />
+
             </FrameLayout>
         </RelativeLayout>
 

@@ -31,6 +31,7 @@
     <string name="name_is_empty">昵称不能为空</string>
     <string name="terms">迪士尼乐拍通软件许可及服务协议</string>
     <string name="policy">隐私声明</string>
+    <string name="terms_and_policy"><a href = "2">《迪士尼乐拍通软件许可及服务协议》</a>\n\n和<a href = "1">《隐私声明》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -456,6 +457,7 @@
     <string name="expired">已过期</string>
     <string name="discount">折</string>
     <string name="yuan">元</string>
+    <string name="conpon_input_hint">请输入优惠卷，体验卡等，优惠卷兑换码</string>
     <!-- 我的优惠卷 end-->
 
 
