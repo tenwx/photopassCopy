@@ -31,6 +31,7 @@
     <string name="name_is_empty">Please enter your Nickname</string>
     <string name="terms">Disney PhotoPass Terms and Conditions</string>
     <string name="policy">Disney PhotoPass Privacy Policy</string>
+    <string name="terms_and_policy"><a href = "2">《Disney PhotoPass Terms and Conditions》</a>\n\nand<a href = "1">《Disney PhotoPass Privacy Policy》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
