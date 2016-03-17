@@ -76,7 +76,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_8"
+                    android:layout_marginTop="@dimen/pp_margin_5"
                     android:text="@string/copyright1"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_14" />
@@ -84,7 +84,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_8"
+                    android:layout_marginTop="@dimen/pp_margin_5"
                     android:text="@string/copyright2"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_14" />
@@ -93,9 +93,20 @@
                     android:id="@+id/develop_version_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pp_margin_16"
+                    android:layout_marginTop="@dimen/pp_margin_10"
                     android:textColor="@color/pp_gray"
                     android:textSize="@dimen/text_size_14"/>
+
+                <TextView
+                    android:id="@+id/tv_terms_policy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/pp_margin_10"
+                    android:textColor="@color/pp_gray"
+                    android:textSize="@dimen/text_size_14"
+                    android:text="@string/terms_and_policy"/>
+
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

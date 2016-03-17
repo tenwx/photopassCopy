@@ -31,6 +31,7 @@
     <string name="name_is_empty">昵称不能为空</string>
     <string name="terms">迪士尼乐拍通软件许可及服务协议</string>
     <string name="policy">隐私声明</string>
+    <string name="terms_and_policy"><a href = "2">《迪士尼乐拍通软件许可及服务协议》</a>\n\n和<a href = "1">《隐私声明》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
