@@ -9,8 +9,8 @@ import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONArray;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
 
 /**
  * 优惠卷view
@@ -81,17 +80,17 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         couponAdapter.setOnItemClickListener(new CouponAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, CouponInfo data) {
-                if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//当订单页面进来 ，取消注释
+                if (whatPege.equals(CouponTool.ACTIVITY_ORDER) && data.getCpStatus().equals("active")) {//当订单页面进来 ，状态为可使用，取消注释
                     if (data.getCpIsSelect()) {//取消选中
                         if (!mSelectData.isEmpty() && mSelectData.contains(data)) {
                             mSelectData.remove(data);
                         }
                         data.setCpIsSelect(false);
-                        (view.findViewById(R.id.iv_select)).setVisibility(View.INVISIBLE);
+                        ((ImageView)view.findViewById(R.id.iv_select)).setImageResource(R.drawable.nosele);
                     } else {//选中
-                        mSelectData.add(data);
-                        data.setCpIsSelect(true);
-                        (view.findViewById(R.id.iv_select)).setVisibility(View.VISIBLE);
+                            mSelectData.add(data);
+                            data.setCpIsSelect(true);
+                            ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.sele);
                     }
                 }
             }

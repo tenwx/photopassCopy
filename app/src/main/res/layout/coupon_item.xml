@@ -8,6 +8,7 @@
     <RelativeLayout
         android:id="@+id/rl_left"
         android:layout_width="wrap_content"
+        android:gravity="right"
         android:layout_height="wrap_content"
         android:background="@drawable/coupon_1">
 
@@ -15,8 +16,9 @@
             android:id="@+id/iv_select"
             android:layout_width="@dimen/pp_height_40"
             android:layout_height="@dimen/pp_height_40"
-            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
             android:scaleType="centerInside"
+            android:layout_marginRight="@dimen/pp_margin_5"
             android:src="@drawable/sele"
             android:visibility="invisible" />
     </RelativeLayout>
