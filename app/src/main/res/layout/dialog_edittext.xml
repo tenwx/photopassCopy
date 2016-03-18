@@ -4,8 +4,10 @@
     android:id="@+id/et_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/button_translate_with_blue_line"
     android:imeOptions="actionDone"
-    android:paddingTop="@dimen/pp_padding_16"
+    android:hint="@string/conpon_input_hint"
     android:singleLine="true"
+    android:padding="@dimen/pp_padding_10"
     android:textColor="@color/gray"
     android:textSize="@dimen/text_size_14" />
