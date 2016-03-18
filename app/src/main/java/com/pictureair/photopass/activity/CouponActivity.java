@@ -27,6 +27,7 @@ import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,40 +132,42 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         finish();
     }
 
-    private Handler mHandler = new Handler(){
+    private final Handler myHandler = new MyHandler(this);
+
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<CouponActivity> mActivity;
+
+        public MyHandler(CouponActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case DialogInterface.BUTTON_POSITIVE:
-//                    myToast.setTextAndShow(""+msg.obj, Common.TOAST_SHORT_TIME);
-                    couponTool.insertCoupon(""+msg.obj);
-                    break;
+            if (mActivity.get() == null) {
+                return;
             }
+            mActivity.get().dealHandler(msg);
         }
-    };
+    }
+
+
+    private void dealHandler(Message msg) {
+        switch (msg.what){
+            case DialogInterface.BUTTON_POSITIVE:
+//                    myToast.setTextAndShow(""+msg.obj, Common.TOAST_SHORT_TIME);
+                couponTool.insertCoupon(""+msg.obj);
+                break;
+        }
+
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,mHandler,R.layout.dialog_edittext).show();
-//                new PictureWorksDialog(context, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), true, 5, getResources().getString(R.string.conpon_input_hint), InputType.TYPE_TEXT_FLAG_MULTI_LINE, new CustomDialog.MyEditTextDialogInterface() {
-//                    @Override
-//                    public void no() {//取消
-//                    }
-//
-//                    @Override
-//                    public void yes(String result) {
-//                        couponTool.insertCoupon(result);
-//                    }
-//
-//                    @Override
-//                    public void prompt() {//字符数不够
-//                        myToast.setTextAndShow("字符数不够", Common.TOAST_SHORT_TIME);
-//                    }
-//                }).show();
-
+                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,myHandler,R.layout.dialog_edittext).show();
                 break;
 
             case R.id.btn_scan:
@@ -183,6 +186,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         couponTool.onDestroyCouponTool();
         mSelectData.clear();
         mSelectData = null;
+        myHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
