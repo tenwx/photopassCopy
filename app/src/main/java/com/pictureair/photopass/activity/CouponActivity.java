@@ -11,14 +11,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
-import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
@@ -45,7 +42,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
-//    private EditTextWithClear mEditTextWithClear;
     private CustomTextView mBtnSubmit, mBtnScan;
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
@@ -70,7 +66,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.my_coupon);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
-//        mEditTextWithClear = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
         mBtnSubmit = (CustomTextView) findViewById(R.id.btn_submit);
         mBtnScan = (CustomTextView) findViewById(R.id.btn_scan);
         llNoCoupon = (LinearLayout) findViewById(R.id.ll_no_coupon);
@@ -98,7 +93,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
                         data.setCpIsSelect(true);
                         (view.findViewById(R.id.iv_select)).setVisibility(View.VISIBLE);
                     }
-//                    myToast.setTextAndShow(data.getCpId()+"",Common.TOAST_SHORT_TIME);
                 }
             }
         });
@@ -156,7 +150,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private void dealHandler(Message msg) {
         switch (msg.what){
             case DialogInterface.BUTTON_POSITIVE:
-//                    myToast.setTextAndShow(""+msg.obj, Common.TOAST_SHORT_TIME);
                 couponTool.insertCoupon(""+msg.obj);
                 break;
         }
@@ -167,7 +160,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,myHandler,R.layout.dialog_edittext).show();
+                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,R.layout.dialog_edittext,myHandler).show();
                 break;
 
             case R.id.btn_scan:
@@ -242,7 +235,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     @Override
     public void fail(String str) {
-        myToast.setTextAndShow("处理失败：" + str, Common.TOAST_SHORT_TIME);
+        myToast.setTextAndShow(str, Common.TOAST_SHORT_TIME);
 
     }
 

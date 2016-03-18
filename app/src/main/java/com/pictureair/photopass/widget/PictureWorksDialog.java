@@ -3,8 +3,6 @@ package com.pictureair.photopass.widget;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import com.pictureair.photopass.R;
@@ -24,8 +22,7 @@ public class PictureWorksDialog {
 	private CustomDialog customDialog;
 	private Handler handler;
 	private boolean gravity;
-	private int layout = -1;
-	private View view = null;
+	private View contentView;
 
 	/**
 	 * 初始化
@@ -51,33 +48,22 @@ public class PictureWorksDialog {
 		this.okString = okString;
 		this.gravity = gravity;
 		this.handler = handler;
+		this.contentView = null;
 		init();
 	}
 
-	private void init() {
-		//初始化dialog
-		customDialog = new CustomDialog.Builder(context)
-		.setTitle(titleString)
-		.setMessage(messageString)
-		.setGravity(gravity)
-		.setNegativeButton(cancelString, new DialogOnClickListener())
-		.setPositiveButton(okString, new DialogOnClickListener())
-		.setCancelable(false)
-		.create();
-	}
-
-
 	/**
-	 * 带输入框
+	 *
 	 * @param context
 	 * @param titleString
 	 * @param messageString
 	 * @param cancelString
 	 * @param okString
 	 * @param gravity
+	 * @param contentView
 	 * @param handler
 	 */
-	public PictureWorksDialog(Context context, String titleString, String messageString, String cancelString, String okString, boolean gravity, Handler handler,int layout) {
+	public PictureWorksDialog(Context context, String titleString, String messageString, String cancelString, String okString, boolean gravity, View contentView, Handler handler) {
 		this.context = context;
 		this.titleString = titleString;
 		this.messageString = messageString;
@@ -85,21 +71,44 @@ public class PictureWorksDialog {
 		this.okString = okString;
 		this.gravity = gravity;
 		this.handler = handler;
-		this.layout = layout;
-		view = LayoutInflater.from(context).inflate(layout,null);
-		init2();
+		this.contentView = contentView;
+		init();
 	}
 
-	private void init2() {
+	/**
+	 *
+	 * @param context
+	 * @param titleString
+	 * @param messageString
+	 * @param cancelString
+	 * @param okString
+	 * @param gravity
+	 * @param layoutId
+	 * @param handler
+	 */
+	public PictureWorksDialog(Context context, String titleString, String messageString, String cancelString, String okString, boolean gravity, int layoutId, Handler handler) {
+		this.context = context;
+		this.titleString = titleString;
+		this.messageString = messageString;
+		this.cancelString = cancelString;
+		this.okString = okString;
+		this.gravity = gravity;
+		this.handler = handler;
+		this.contentView = View.inflate(context, layoutId, null);
+		init();
+	}
+
+
+	private void init() {
 		//初始化dialog
 		customDialog = new CustomDialog.Builder(context)
 				.setTitle(titleString)
 				.setMessage(messageString)
 				.setGravity(gravity)
-				.setContentView(view)
 				.setNegativeButton(cancelString, new DialogOnClickListener())
 				.setPositiveButton(okString, new DialogOnClickListener())
 				.setCancelable(false)
+				.setContentView(contentView)
 				.create();
 	}
 
@@ -122,12 +131,12 @@ public class PictureWorksDialog {
 			switch (which) {
 			case DialogInterface.BUTTON_POSITIVE:
 				PictureAirLog.out("click ok");
-				Message message = new Message();
-				message.what =DialogInterface.BUTTON_POSITIVE;
-				if (null != view && view instanceof cn.smssdk.gui.EditTextWithClear){
-					message.obj = ((EditTextWithClear)view.findViewById(R.id.et_text)).getText().toString().trim();
+				if (contentView instanceof EditTextWithClear) {
+					handler.obtainMessage(DialogInterface.BUTTON_POSITIVE,
+							((EditTextWithClear) contentView.findViewById(R.id.et_text)).getText().toString().trim()).sendToTarget();
+				} else {
+					handler.sendEmptyMessage(DialogInterface.BUTTON_POSITIVE);
 				}
-				handler.sendMessage(message);
 				break;
 
 			case DialogInterface.BUTTON_NEGATIVE:
@@ -141,5 +150,4 @@ public class PictureWorksDialog {
 			dialog.dismiss();
 		}
 	}
-
 }
