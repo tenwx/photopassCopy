@@ -341,6 +341,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         TextView transportTv = (TextView) view.findViewById(R.id.transport_tv);
         RelativeLayout couponCountRl = (RelativeLayout) view.findViewById(R.id.coupon_count_rl);
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shop_coupon_ll);
+        View lineView = view.findViewById(R.id.coupon_line);
         couponCountRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -369,10 +370,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             transportTv.setText(R.string.goods_info);
             transportListView.setVisibility(View.GONE);
             layout.setVisibility(View.GONE);
+            lineView.setVisibility(View.GONE);
 
         } else {
             //判断是否是需要显示地址
             if (isShowAddress) {
+                lineView.setVisibility(View.VISIBLE);
                 transportIv.setImageResource(R.drawable.icon_transport);
                 transportTv.setText(R.string.transport);
                 transportListView.setVisibility(View.VISIBLE);
@@ -391,8 +394,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 });
                 fixListViewHeight(transportListView);
             } else {
-                transportIv.setImageResource(R.drawable.icon_coupon);
-                transportTv.setText(R.string.coupon);
+                lineView.setVisibility(View.GONE);
+                transportIv.setVisibility(View.GONE);
+                transportTv.setVisibility(View.GONE);
             }
 
             //显示商品优惠价格
