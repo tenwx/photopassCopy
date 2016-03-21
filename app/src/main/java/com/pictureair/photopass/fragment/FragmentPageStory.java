@@ -74,7 +74,7 @@ import de.greenrobot.event.Subscribe;
  * 可以左右滑动切换不同的相册
  * 可以下拉刷新，获取更多的图片信息
  */
-public class FragmentPageStory extends BaseFragment implements OnClickListener {
+public class FragmentPageStory extends BaseFragment implements OnClickListener, ViewPager.OnPageChangeListener{
     //声明静态变量
     private static final int DEAL_ALL_PHOTO_DATA_DONE = 444;
     private static final int DEAL_REFRESH_PHOTO_DATA_DONE = 555;
@@ -152,6 +152,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
     //申明handler消息回调机制
 
     private final Handler fragmentPageStoryHandler = new FragmentPageStoryHandler(this);
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        PictureAirLog.out("change tap--->" + i);
+        app.fragmentStoryLastSelectedTab = i;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
+    }
 
     private static class FragmentPageStoryHandler extends Handler {
         private final WeakReference<FragmentPageStory> mActivity;
@@ -653,10 +669,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener {
         swipeRefreshLayout.setEnabled(false);
 
         indicator = (TabPageIndicator) view.findViewById(R.id.indicator);
+        indicator.setOnPageChangeListener(this);
         //初始化控件
         context = getActivity();
         settingUtil = new SettingUtil(context);
         app = (MyApplication) getActivity().getApplication();
+        PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
+        indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
         pictureAirDbManager = new PictureAirDbManager(getActivity());
         sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         photoPassPictureList = new ArrayList<>();

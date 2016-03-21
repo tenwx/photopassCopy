@@ -28,7 +28,6 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomTextView;
@@ -100,7 +99,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     private OnPageChangeListener mListener;
 
     private int mMaxTabWidth;
-    private int mSelectedTabIndex = MyApplication.getInstance().fragmentStoryLastSelectedTab;//记录滑动tab当前的索引
+    private int mSelectedTabIndex = 0;
 
     private OnTabReselectedListener mTabReselectedListener;
 
@@ -238,6 +237,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         notifyDataSetChanged();
     }
 
+    public void setmSelectedTabIndex(int mSelectedTabIndex) {
+        this.mSelectedTabIndex = mSelectedTabIndex;
+    }
+
     public void notifyDataSetChanged() {
         mTabLayout.removeAllViews();
         PagerAdapter adapter = mViewPager.getAdapter();
@@ -280,7 +283,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         }
         mSelectedTabIndex = item;
         mViewPager.setCurrentItem(item);
-        MyApplication.getInstance().fragmentStoryLastSelectedTab = item;
+
 
         final int tabCount = mTabLayout.getChildCount();
         for (int i = 0; i < tabCount; i++) {
