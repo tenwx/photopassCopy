@@ -486,10 +486,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			case R.id.facebook:
 			case R.id.twitter:
 				PictureAirLog.out("share on click--->");
-				if (!Common.DEBUG) {//release版本
-					dialog.dismiss();
-					myToast.setTextAndShow(R.string.share_not_open, Common.TOAST_SHORT_TIME);
-				} else {
+//				if (!Common.DEBUG) {//release版本
+//					dialog.dismiss();
+//					myToast.setTextAndShow(R.string.share_not_open, Common.TOAST_SHORT_TIME);
+//				} else {
 					if ("local".equals(type)) {//开始分享
 						PictureAirLog.out("local");
 						startShare(v.getId());
@@ -497,7 +497,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 						PictureAirLog.out("online");
 						API1.getShareUrl(photoId, shareFileType, v.getId(), mHandler);
 					}
-				}
+//				}
 				break;
 
 			case R.id.share_cancel:

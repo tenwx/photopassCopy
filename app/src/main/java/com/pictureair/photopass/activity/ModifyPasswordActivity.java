@@ -115,8 +115,8 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                if (oldPassword.getText().toString().trim().equals("")
-                        || newPassword.getText().toString().trim().equals("")) {
+                if (oldPassword.getText().toString().equals("")
+                        || newPassword.getText().toString().equals("")) {
                     newToast.setTextAndShow(R.string.modify_password_empty_hint,
                             Common.TOAST_SHORT_TIME);
                 } else {

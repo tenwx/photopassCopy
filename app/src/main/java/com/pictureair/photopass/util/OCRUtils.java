@@ -3,9 +3,6 @@ package com.pictureair.photopass.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Environment;
-
-import java.io.File;
 
 /**
  * Created by talon on 16/1/10.
@@ -43,7 +40,7 @@ public class OCRUtils {
                 codeStr = codeStr.substring(codeStr.length() - 19, codeStr.length()); //码在后面的情况。特殊情况。
             }
             //由于前面 两位 字符印刷问题经常识别不准确。故去掉前两位的检验标准。  由于前两位有可能识别成三位字符。故从最后 开始取值。
-            codeStr ="Q6FV" + codeStr.substring(codeStr.length() - 15 , codeStr.length());
+//            codeStr ="Q6FV" + codeStr.substring(codeStr.length() - 15 , codeStr.length());
             return codeStr;
         }else{
             return "";
@@ -75,8 +72,10 @@ public class OCRUtils {
         // 检查PP+生成算法规则。 //这里应该检查是否有三个 “－” 号。
         if (String.valueOf(codeStr.charAt(4)).equals("-") && String.valueOf(codeStr.charAt(9)).equals("-") && String.valueOf(codeStr.charAt(14)).equals("-")) {
             String[] reStr = codeStr.split("-");
-            String resultStr = "SHDP" + reStr[1] + reStr[2] + reStr[3].substring(0, reStr[3].length() - 1);
-            if (strList[getCheckNum(resultStr)].equals(String.valueOf(reStr[3].charAt(3)))) {
+            if (codeStr.substring(0,4).equals("Q6FV")){
+                codeStr = "SHDP" + reStr[1] + reStr[2] + reStr[3].substring(0, reStr[3].length() - 1);
+            }
+            if (strList[getCheckNum(codeStr)].equals(String.valueOf(reStr[3].charAt(3)))) {
                 return true;
             }
         }

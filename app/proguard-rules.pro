@@ -181,8 +181,28 @@
 -keep class com.alibaba.fastjson.** { *; }
 -keepclassmembers class * {
     public <methods>;
- }
+}
 
- # OCR文字识别 混淆
- -keep class com.pictureair.photopass.zxing.**{*;}
- -keep class com.googlecode.**{*;}
+# OCR文字识别 混淆
+-keep class com.pictureair.photopass.zxing.**{*;}
+-keep class com.googlecode.**{*;}
+
+
+# sqlcipher混淆
+-keep class net.sqlcipher.database.* extends java.lang.Exception {
+   *;
+}
+-keepclasseswithmembers class net.sqlcipher.** {
+    native <methods>;
+}
+-keep class net.sqlcipher.database.SQLite* {
+    int nHandle;
+    int nStatement;
+}
+-keep class net.sqlcipher.CursorWindow {
+    int nWindow;
+}
+-keep class net.sqlcipher.database.SQLiteDatabase {
+    int mNativeHandle;
+}
+

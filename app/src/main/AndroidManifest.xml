@@ -329,6 +329,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <!-- 调用新浪原生SDK，需要注册的回调activity -->
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!--&lt;!&ndash; shareSDK短信 &ndash;&gt;-->
@@ -357,14 +363,6 @@
         -->
 
 
-        <!-- 调用新浪客户端分享，需要注册的回调activity -->
-        <activity android:name="cn.sharesdk.sina.weibo.SinaActivity" >
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
