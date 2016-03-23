@@ -378,6 +378,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView_notSelectPP() {
+        PictureAirLog.out("not select pp");
         delete = (ImageView) findViewById(R.id.cancel);
         myApplication = (MyApplication) getApplication();
         delete.setOnClickListener(this);
@@ -406,8 +407,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
         listPP.setAdapter(listPPAdapter);
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
+            PictureAirLog.out(" no select pp ---> return");
             return;
         }
+            PictureAirLog.out(" no select pp ---> not return");
 
         updateUI(UPDATE_UI);
     }

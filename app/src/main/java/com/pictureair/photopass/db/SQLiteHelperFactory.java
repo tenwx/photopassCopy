@@ -1,6 +1,9 @@
 package com.pictureair.photopass.db;
 
 
+import android.content.Context;
+
+import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
 /**
@@ -18,21 +21,21 @@ public class SQLiteHelperFactory {
 		
 	}
 	
-//	public static SQLiteOpenHelper create(Context context){
-//		
-//		if(sqLiteOpenHelper==null){
-//			
-//			synchronized (SQLiteHelperFactory.class) {
-//				
-//				if(sqLiteOpenHelper==null){
-//					
-//					sqLiteOpenHelper = new PhotoInfoDBHelper(context.getApplicationContext());
-//					
-//					//必须先调用此方法
-//					SQLiteDatabase.loadLibs(context);
-//				}
-//			}
-//		}
-//		return sqLiteOpenHelper;
-//	}
+	public static SQLiteOpenHelper create(Context context){
+
+		if(sqLiteOpenHelper==null){
+
+			synchronized (SQLiteHelperFactory.class) {
+
+				if(sqLiteOpenHelper==null){
+
+					sqLiteOpenHelper = new PictureAirDBHelper(context.getApplicationContext());
+
+					//必须先调用此方法
+					SQLiteDatabase.loadLibs(context);
+				}
+			}
+		}
+		return sqLiteOpenHelper;
+	}
 }

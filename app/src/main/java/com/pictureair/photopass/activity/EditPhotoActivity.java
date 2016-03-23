@@ -519,7 +519,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							loadImage(photoURL);
 						}
 					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+//						loadImage(pathList.get(pathList.size() - 1));
 					}
 				}
 

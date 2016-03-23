@@ -1,12 +1,12 @@
 package com.pictureair.photopass.db;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
-
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase.CursorFactory;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 /**
  * Photo页的图片信息数据库的databasehelper
@@ -25,6 +25,10 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
     private final String SQL_DELETE_TABLE_THREAD = "drop table if exists " + Common.THREAD_INFO;
 
 
+    public PictureAirDBHelper(Context context) {
+        this(context, Common.PHOTOPASS_INFO_NAME);
+    }
+
     public PictureAirDBHelper(Context context, String name, CursorFactory factory,
                               int version) {
         super(context, name, factory, version);
@@ -38,12 +42,12 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         this(context, name, null, version);
     }
 
-    public static PictureAirDBHelper getInstance(Context context) {
-        if (photoInfoDBHelper == null) {
-            photoInfoDBHelper = new PictureAirDBHelper(context, Common.PHOTOPASS_INFO_NAME);
-        }
-        return photoInfoDBHelper;
-    }
+//    public static PictureAirDBHelper getInstance(Context context) {
+//        if (photoInfoDBHelper == null) {
+//            photoInfoDBHelper = new PictureAirDBHelper(context, Common.PHOTOPASS_INFO_NAME);
+//        }
+//        return photoInfoDBHelper;
+//    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

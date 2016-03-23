@@ -1,6 +1,10 @@
 package com.pictureair.photopass.db;
 
-import android.database.sqlite.SQLiteDatabase;
+
+import com.pictureair.photopass.util.Common;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,10 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DBManager {
     private static AtomicInteger mOpenCounter = new AtomicInteger();
     private static DBManager dbManager;
-    private static PictureAirDBHelper dbHelper;
+    private static SQLiteOpenHelper dbHelper;
     private static SQLiteDatabase db;
 
-    public static synchronized void initializeInstance(PictureAirDBHelper helper) {
+    public static synchronized void initializeInstance(SQLiteOpenHelper helper) {
         if (dbManager == null) {
             dbManager = new DBManager();
             dbHelper = helper;
@@ -45,7 +49,7 @@ public class DBManager {
     public synchronized SQLiteDatabase writData() {
         if (mOpenCounter.incrementAndGet() == 1) {
             // Opening new database
-            db = dbHelper.getWritableDatabase();
+            db = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
         }
         return db;
     }
@@ -60,7 +64,7 @@ public class DBManager {
             // Opening new database
             //db = dbHelper.getReadableDatabase();
             //API原文：This will be the same object returned by getWritableDatabase() unless some problem, such as a full disk, requires the database to be opened read-only.
-            db = dbHelper.getWritableDatabase();
+            db = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
         }
         return db;
     }
