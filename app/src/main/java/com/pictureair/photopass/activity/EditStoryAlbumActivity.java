@@ -215,15 +215,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			public void onItemClick(AdapterView<?> parent, View view,
 									int position, long id) {
 				System.out.println("select" + position);
-								Intent i = new Intent();
+				Intent i = new Intent();
 
-								i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
-								i.putExtra("activity", "EditStoryAlbumActivity");
-								i.putExtra("position", position);//在那个相册中的位置
-								i.putExtra("photoId", albumArrayList.get(position).photoId);
-								i.putExtra("photos", albumArrayList);//那个相册的全部图片路径
-								i.putExtra("targetphotos", ((MyApplication)getApplication()).magicPicList);
-								startActivity(i);
+				i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
+				i.putExtra("activity", "EditStoryAlbumActivity");
+				i.putExtra("position", position);//在那个相册中的位置
+				i.putExtra("photoId", albumArrayList.get(position).photoId);
+				i.putExtra("photos", albumArrayList);//那个相册的全部图片路径
+				i.putExtra("targetphotos", ((MyApplication) getApplication()).magicPicList);
+				startActivity(i);
 			}
 		});
 
