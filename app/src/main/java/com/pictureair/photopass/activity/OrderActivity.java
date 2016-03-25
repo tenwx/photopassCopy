@@ -28,19 +28,20 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.smssdk.gui.AppManager;
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order
@@ -128,6 +129,7 @@ public class OrderActivity extends BaseActivity {
                 //解析数据
                 JSONObject resultJsonObject = (JSONObject) msg.obj;
                 JSONArray allOrdersArray = resultJsonObject.getJSONArray("orders");//得到所有的订单信息
+                PictureAirLog.v(TAG, "orderInfo" + allOrdersArray.toString());
                 for (int i = 0; i < allOrdersArray.size(); i++) {
                     JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
                     orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
@@ -138,7 +140,6 @@ public class OrderActivity extends BaseActivity {
                     orderProductInfo.setOrderTime(orderInfo.orderTime);
                     orderProductInfo.setCartItemInfos(cartItemInfo);
                     PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
-
                     if (orderInfo.orderStatus == 1) {//1等待买家付款
                         if (orderIds != null && orderIds.size() > 0) {
                             for (String orderId : orderIds) {
@@ -151,10 +152,7 @@ public class OrderActivity extends BaseActivity {
                         }
                         paymentOrderArrayList.add(orderInfo);
                         paymentOrderChildArrayList.add(orderProductInfo);
-                    } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-//                        deliveryOrderArrayList.add(orderInfo);
-//                        deliveryOrderChildArrayList.add(orderProductInfo);
-                    } else if (orderInfo.orderStatus == 4 || orderInfo.orderStatus == 5) {
+                    } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
                         //暂时模拟数据
                         if (orderInfo.deliveryMethod == 3) {
                             //3为虚拟商品
@@ -165,11 +163,7 @@ public class OrderActivity extends BaseActivity {
                             deliveryOrderArrayList.add(orderInfo);
                             deliveryOrderChildArrayList.add(orderProductInfo);
                         }
-
-
                     }
-//                    allOrderArrayList.add(orderInfo);
-//                    allOrderChildArrayList.add(orderProductInfo);
                 }
 
                 orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,

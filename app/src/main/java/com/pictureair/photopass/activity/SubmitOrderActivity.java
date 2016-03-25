@@ -184,13 +184,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 customProgressDialog.dismiss();
                 if (orderId != null && !orderId.isEmpty()) {
                     //一旦成功，购物车已经被服务器删除，此处需要修改购物车数量
-                    int count = 0;
-                    for (int i = 0; i < list.size(); i++) {
-                        count += list.get(i).getQty();
-                    }
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
-                    editor.commit();
+//                    int count = 0;
+//                    for (int i = 0; i < list.size(); i++) {
+//                        count += list.get(i).getQty();
+//                    }
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
+//                    editor.commit();
                     goToPayActivity(true);
                 }
 
@@ -505,6 +505,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         //传递商品类型，用于成功后返回订单
         if (deliveryType.contains("1")) {
             //实体商品
+            if (curPositon < 0) {
+                newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
+                return;
+            }
             intent2.putExtra("productType", 1);
             intent2.putExtra("outletId", addressList.get(curPositon).getOutletId());
             PictureAirLog.v(TAG, "productType: " + 1);
@@ -526,11 +530,18 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
+                //确认订单后 减掉购物项
+                int count = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    count += list.get(i).getQty();
+                }
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
+                editor.commit();
 
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
                 //判断结算价格是否为0（优惠后的价格）为0，出弹窗提示，确认直接支付成功；不为0，正常支付
                 if (payPrice == 0) {
-                    //
                     goToPayActivity(false);
                     return;
                 }

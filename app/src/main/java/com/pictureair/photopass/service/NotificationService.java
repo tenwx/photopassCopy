@@ -37,6 +37,7 @@ import io.socket.SocketIOException;
 
 /**
  * 推送的服务。
+ *
  * @author talon
  */
 public class NotificationService extends android.app.Service {
@@ -58,10 +59,11 @@ public class NotificationService extends android.app.Service {
     private String syncMessage = "";
 
     private final Handler notificationHandler = new NotificationHandler(this);
-    private static class NotificationHandler extends Handler{
+
+    private static class NotificationHandler extends Handler {
         private final WeakReference<NotificationService> mService;
 
-        public NotificationHandler(NotificationService service){
+        public NotificationHandler(NotificationService service) {
             mService = new WeakReference<>(service);
         }
 
@@ -77,6 +79,7 @@ public class NotificationService extends android.app.Service {
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -144,7 +147,7 @@ public class NotificationService extends android.app.Service {
 
 
     /**
-     *  socket的回调。
+     * socket的回调。
      */
     public void dealSocket() {
         new Thread() {
@@ -172,7 +175,7 @@ public class NotificationService extends android.app.Service {
                         public void onError(
                                 SocketIOException socketIOException) {
                             // TODO Auto-generated method stub
-                            PictureAirLog.d(TAG, "an Error occured："  + socketIOException.toString());
+                            PictureAirLog.d(TAG, "an Error occured：" + socketIOException.toString());
                             socketIOException.printStackTrace();
                             isConnected = false;
                             socket.reconnect();  //出错的情况，让socket重新链接。
@@ -208,9 +211,10 @@ public class NotificationService extends android.app.Service {
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     message = (JSONObject) message.get("c");
+                                    PictureAirLog.d(TAG, "message： " + message);
                                     PaymentOrderActivity.resultJsonObject = message;
 //									String orderId = message.getString("orderId");
-                                    showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_order_completed_msg));
+                                    showNotification(getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_order_completed_msg));
                                 } catch (JSONException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -278,7 +282,7 @@ public class NotificationService extends android.app.Service {
                                 try {
                                     String info = message.getString("info");
                                     PictureAirLog.d(TAG, "接受的订单信息:" + info);
-                                    showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_order_submit_msg));
+                                    showNotification(getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_order_submit_msg));
                                 } catch (NumberFormatException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -299,10 +303,10 @@ public class NotificationService extends android.app.Service {
                                         sendType = "photoSend";
                                         notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
 
-                                        if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity) ) {
+                                        if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity)) {
                                             int photoCountLocal = preferences.getInt("photoCount", 0);
                                             photoCount = photoCount + photoCountLocal;
-                                            showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_new_photo));
+                                            showNotification(getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_photo));
                                             Editor editor = preferences.edit();// 获取编辑器
                                             editor.putInt("photoCount", photoCount);
                                             editor.commit();// 提交修改
@@ -333,7 +337,7 @@ public class NotificationService extends android.app.Service {
                                 JSONObject message = (JSONObject) arg2[0];
                                 try {
                                     int videoCount = message.getInt("c");
-                                    showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_new_video));
+                                    showNotification(getResources().getString(R.string.notifacation_new_message), getResources().getString(R.string.notifacation_new_video));
 
                                     Intent intent1 = new Intent();// 创建Intent对象
                                     intent1.setAction("com.receiver.UpdateUiRecriver");
@@ -360,14 +364,14 @@ public class NotificationService extends android.app.Service {
     /**
      * 初始化notification的数据。
      */
-    private void showNotification(String titleStr , String contentStr){
+    private void showNotification(String titleStr, String contentStr) {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
         Intent intent = new Intent(getApplicationContext(),
                 MainTabActivity.class);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
         Notification notification = new NotificationCompat.Builder(NotificationService.this).
                 setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(titleStr).
                 setContentIntent(pendingIntent)

@@ -458,6 +458,8 @@
     <string name="discount">折</string>
     <string name="yuan">元</string>
     <string name="conpon_input_hint">请输入优惠卷，体验卡等，优惠卷兑换码</string>
+    <string name="submit_order">订单已提交</string>
+    <string name="no_pay_tips">您不用额外支付任何费用</string>
     <!-- 我的优惠卷 end-->
 
 

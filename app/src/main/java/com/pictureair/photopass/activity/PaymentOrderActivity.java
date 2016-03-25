@@ -493,15 +493,17 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         @Override
         public void onFinish() {//支付超时或者失败
             PictureAirLog.v(TAG, "onFinish ");
+            if (customProgressDialog.isShowing()) {
+                customProgressDialog.dismiss();
+            }
             if (resultJsonObject == null) {
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
                 PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
                 pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-
                 SuccessAfterPayment();
                 finish();
+            } else {
+                PictureAirLog.v(TAG, "onFinish productType： " + productType);
+                dealData(resultJsonObject);
             }
         }
     };

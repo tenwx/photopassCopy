@@ -281,14 +281,37 @@
         android:visibility="gone"
         android:id="@+id/no_pay_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/head"
+        android:background="@color/pp_light_gray_background"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/pp_width_80"
+            android:layout_height="@dimen/pp_width_80"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/pp_margin_100"
+            android:scaleType="centerInside"
+            android:src="@drawable/icon_no_pay" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="点击提交。。。" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/pp_margin_20"
+            android:text="@string/submit_order"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_20" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/pp_margin_8"
+            android:text="@string/no_pay_tips"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
+
 
     </LinearLayout>
 
