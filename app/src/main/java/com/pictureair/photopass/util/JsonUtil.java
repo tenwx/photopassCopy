@@ -288,6 +288,11 @@ public class JsonUtil {
             bgUrl = obj.getString("coverHeaderImage");
             e.putString(Common.USERINFO_BGPHOTO, bgUrl);
         }
+
+        if (obj.containsKey("customerIds")) {
+            e.putInt(Common.PP_COUNT, obj.getJSONArray("customerIds").size());
+        }
+
         e.commit();
     }
 

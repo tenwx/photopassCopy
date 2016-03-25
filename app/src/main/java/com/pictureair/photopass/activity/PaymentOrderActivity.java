@@ -48,12 +48,12 @@ import java.io.StringReader;
 import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
@@ -829,19 +829,12 @@ public class PaymentOrderActivity extends BaseActivity implements
     }
 
     private String genNonceStr() {
-        Random random = new Random();
-        return MD5.getMessageDigest(String.valueOf(random.nextInt(10000))
-                .getBytes());
+        SecureRandom secureRandom = new SecureRandom();
+        return MD5.getMessageDigest(String.valueOf(secureRandom.nextInt(10000)).getBytes());
     }
 
     private long genTimeStamp() {
         return System.currentTimeMillis() / 1000;
-    }
-
-    private String genOutTradNo() {
-        Random random = new Random();
-        return MD5.getMessageDigest(String.valueOf(random.nextInt(10000))
-                .getBytes());
     }
 
     // 生成支付订单

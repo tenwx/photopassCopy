@@ -25,13 +25,13 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.mob.tools.FakeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,8 +47,6 @@ import cn.smssdk.R;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.UserInterruptException;
 import cn.smssdk.gui.country.SelectCountryActivity;
-
-import com.mob.tools.FakeActivity;
 
 import static com.mob.tools.utils.R.getIdRes;
 import static com.mob.tools.utils.R.getLayoutRes;
@@ -839,7 +837,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                                     if (pd != null) {
                                         pd.show();
                                     }
-                                    Log.e("verification phone ==>>", phone);
 
                                     // 开始发送短信
                                     System.out.println("提示框，确定按钮触动，确认号码："

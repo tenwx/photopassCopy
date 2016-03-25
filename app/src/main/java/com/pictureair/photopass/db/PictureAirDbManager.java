@@ -202,13 +202,21 @@ public class PictureAirDbManager {
      * @param userId
      * @return
      */
-    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId) {
+    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId, String deleteTime) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         Cursor cursor = null;
         Cursor cursor1 = null;
         try {
             database = DBManager.getInstance().writData();
             PictureAirLog.out("cursor open ---> getFavoritePhotoInfoListFromDB");
+
+            //根据当前时间，删除超过30天并且未支付的数据信息
+            /**
+             * 1.获取当前时间，以毫秒为单位
+             * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
+             */
+            database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
+
             cursor = database.rawQuery("select * from " + Common.FAVORITE_INFO_TABLE + " where userId = ? order by shootOn desc", new String[]{userId});
             PhotoInfo photoInfo;
             File file;

@@ -6,8 +6,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
@@ -156,7 +154,6 @@ public class SignAndLoginUtil implements Handler.Callback {
 
             case API1.UPDATE_PROFILE_FAILED://修改个人信息失败
             case API1.GET_CART_FAILED://获取购物车失败
-            case API1.GET_PPS_FAILED://获取pp失败
             case API1.GET_STOREID_FAILED://获取storeId失败
                 id = ReflectionUtil.getStringId(context, msg.arg1);
                 if (customProgressDialog.isShowing()) {
@@ -195,23 +192,6 @@ public class SignAndLoginUtil implements Handler.Callback {
                 ed.putInt(Common.CART_COUNT, cartCount);
                 ed.commit();
                 PictureAirLog.out("start get pp");
-                API1.getPPSByUserId(handler);// 获取pp列表
-                break;
-
-            case API1.GET_PPS_SUCCESS://获取pp成功
-                PictureAirLog.out("get pps success");
-                //获取pp成功之后，需要放入sharedPrefence中
-                JSONObject ppsJsonObject = JSONObject.parseObject(msg.obj.toString());
-                if (ppsJsonObject.containsKey("PPList")) {
-                    try {
-                        JSONArray pplists = ppsJsonObject.getJSONArray("PPList");
-                        Editor editor = sp.edit();
-                        editor.putInt(Common.PP_COUNT, pplists.size());
-                        editor.commit();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
                 //获取StoreId
                 API1.getStoreId(handler);
                 break;
