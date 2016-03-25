@@ -1006,8 +1006,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 @Override
                 public void run() {
                     super.run();
+                    long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""))));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)))));
                     fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
 
                 }
@@ -1164,8 +1165,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     app.allPicList.addAll(magicPicList);
                     Collections.sort(app.allPicList);//对all进行排序
                     favouritePhotoList.clear();
+                    long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""))));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)))));
                     PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
                     fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {

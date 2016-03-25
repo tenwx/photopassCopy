@@ -14,11 +14,11 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.StringReader;
 import java.net.URLDecoder;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by milo on 16/3/9.
@@ -67,9 +67,8 @@ public class WXPayUtil {
     }
 
     private String genNonceStr() {
-        Random random = new Random();
-        return MD5.getMessageDigest(String.valueOf(random.nextInt(10000))
-                .getBytes());
+        SecureRandom secureRandom = new SecureRandom();
+        return MD5.getMessageDigest(String.valueOf(secureRandom.nextInt(10000)).getBytes());
     }
 
     // 生成支付订单
