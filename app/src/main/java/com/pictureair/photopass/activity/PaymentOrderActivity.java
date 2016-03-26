@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -24,6 +23,8 @@ import com.pictureair.photopass.alipay.PayResult;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AliPayUtil;
@@ -57,6 +58,8 @@ import java.util.Map;
 
 import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 public class PaymentOrderActivity extends BaseActivity implements
         OnClickListener {
@@ -84,6 +87,8 @@ public class PaymentOrderActivity extends BaseActivity implements
     private static final int INITPAYPAL = 4;
 
     private static final int RQF_UNSUCCESS = 5;
+
+    private static final int ASYNC_PAY_SUCCESS = 6;
 
     private int payType;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
     // wechat
@@ -126,8 +131,9 @@ public class PaymentOrderActivity extends BaseActivity implements
 
 
     private PictureAirDbManager pictureAirDbManager;
-    public static org.json.JSONObject resultJsonObject;
-    private CustomProgressDialog customProgressDialog;
+    private boolean paySyncResult = false;
+    private org.json.JSONObject payAsyncResultJsonObject;
+    private CustomProgressDialog dialog;
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
     private String isBack = "0";//用于判断是否需要返回 0- 不返回 1-返回
 
@@ -136,6 +142,9 @@ public class PaymentOrderActivity extends BaseActivity implements
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_order);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         findViewById();
         init();
     }
@@ -155,7 +164,7 @@ public class PaymentOrderActivity extends BaseActivity implements
         paypalLayout = (RelativeLayout) findViewById(R.id.paypal);
         wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
         pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
-
+        dialog = CustomProgressDialog.create(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
     }
 
     private void init() {
@@ -278,8 +287,9 @@ public class PaymentOrderActivity extends BaseActivity implements
             }
         } else if (1 == payType) {
             PictureAirLog.v(TAG, "yl");
-            customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this,
-                    getString(R.string.is_loading), false, null);
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
             API1.getUnionPayTN(paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
@@ -469,19 +479,40 @@ public class PaymentOrderActivity extends BaseActivity implements
             case RQF_SUCCESS:
                 PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
                 //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
-                customProgressDialog = CustomProgressDialog.show(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
-                paymentOrderHandler.post(new Runnable() {
+                if (!dialog.isShowing()) {
+                    dialog.show();
+                }
+                paySyncResult = true;
+                paymentOrderHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startTimer();
-                        getData();
+                        PictureAirLog.v(TAG, "onFinish ");
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+
+                        if (payAsyncResultJsonObject == null) {
+                            pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                        }
+
+                        SuccessAfterPayment();
+                        finish();
                     }
-                });
+                }, 5000);
+                break;
+
+            case ASYNC_PAY_SUCCESS:
+                if (paySyncResult) {//很有可能先收到异步通知，然后才返回同步通知，所以要做判断
+                    paySyncResult = false;
+                    dealData(payAsyncResultJsonObject);
+                } else {
+                    paymentOrderHandler.sendEmptyMessageDelayed(ASYNC_PAY_SUCCESS, 500);
+                }
                 break;
 
             case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
                 }
                 if (msg.obj == null || ((String) msg.obj).length() == 0) {
                     paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
@@ -491,8 +522,8 @@ public class PaymentOrderActivity extends BaseActivity implements
                 break;
 
             case API1.UNIONPAY_GET_TN_FAILED://获取银联TN失败
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
                 }
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
@@ -564,51 +595,6 @@ public class PaymentOrderActivity extends BaseActivity implements
 
 
     /**
-     * 获取推送消息，跳转相应界面
-     */
-    public void startTimer() {
-        PictureAirLog.v(TAG, "satrtTimer ");
-        if (countDownTimer != null) {
-            countDownTimer.start();
-        }
-    }
-
-    CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {//支付超时或者失败
-            PictureAirLog.v(TAG, "onFinish ");
-            if (resultJsonObject == null) {
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
-                PictureAirLog.v(TAG, "onFinish resultJsonObject == null");
-                pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-
-                SuccessAfterPayment();
-                finish();
-            }
-        }
-    };
-
-
-    /**
-     * 获取推送消息，跳转相应界面
-     */
-    public void getData() {
-        PictureAirLog.v(TAG, "getData ");
-        while (resultJsonObject != null) {
-            PictureAirLog.v(TAG, "onTick resultJsonObject: " + resultJsonObject.toString());
-            dealData(resultJsonObject);
-            break;
-        }
-    }
-
-    /**
      * 处理收到推送的数据
      *
      * @param resultJsonObject
@@ -668,15 +654,11 @@ public class PaymentOrderActivity extends BaseActivity implements
         SharedPreferences.Editor editor = sPreferences.edit();
         editor.putBoolean(Common.NEED_FRESH, true);
         editor.commit();
-        if (customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
+        if (dialog.isShowing()) {
+            dialog.dismiss();
         }
         SuccessAfterPayment();
         startActivity(intent);
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
         finish();
     }
 
@@ -685,6 +667,9 @@ public class PaymentOrderActivity extends BaseActivity implements
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         paymentOrderHandler.removeCallbacksAndMessages(null);
     }
 
@@ -741,19 +726,19 @@ public class PaymentOrderActivity extends BaseActivity implements
 
     private class GetPrepayIdTask extends AsyncTask<Void, Void, Map<String, String>> {
 
-        private CustomProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
-            dialog = CustomProgressDialog.show(PaymentOrderActivity.this,
-                    getString(R.string.is_loading), false, null);
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
 
         }
 
         @Override
         protected void onPostExecute(Map<String, String> result) {
             // 生成预付单的结果
-            if (dialog != null) {
+            if (dialog.isShowing()) {
                 dialog.dismiss();
             }
             sb.append("prepay_id\n" + result.get("prepay_id") + "\n\n");
@@ -927,19 +912,18 @@ public class PaymentOrderActivity extends BaseActivity implements
 
         if (weChatIsPaying) {
             int resultCode = sPreferences.getInt(Common.WECHAT_PAY_STATUS, -3);
+            PictureAirLog.out("======resultCode=====" + resultCode);
             switch (resultCode) {
                 case 0:// 微信支付成功
-                    PictureAirLog.out("======resultCode=====" + resultCode);
                     paymentOrderHandler.sendEmptyMessage(RQF_SUCCESS);
                     break;
 
                 case -1:// 微信支付取消
-                    PictureAirLog.out("===========" + resultCode);
+                case -3:
                     paymentOrderHandler.sendEmptyMessage(RQF_CANCEL);
                     break;
 
                 case -2:// 微信支付失败
-                    PictureAirLog.out("===========" + resultCode);
                     paymentOrderHandler.sendEmptyMessage(RQF_UNSUCCESS);
                     break;
 
@@ -980,5 +964,18 @@ public class PaymentOrderActivity extends BaseActivity implements
 //        startActivity(intent2);
         CancelInPayment(true);
 //        finish();
+    }
+
+    @Subscribe
+    public void onUserEvent(BaseBusEvent baseBusEvent) {
+        if (baseBusEvent instanceof AsyncPayResultEvent) {
+            AsyncPayResultEvent asyncPayResultEvent = (AsyncPayResultEvent) baseBusEvent;
+            PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult());
+            payAsyncResultJsonObject = asyncPayResultEvent.getAsyncPayResult();
+            paymentOrderHandler.sendEmptyMessage(ASYNC_PAY_SUCCESS);
+
+            //刷新列表
+            EventBus.getDefault().removeStickyEvent(asyncPayResultEvent);
+        }
     }
 }

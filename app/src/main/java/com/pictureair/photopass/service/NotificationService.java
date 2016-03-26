@@ -15,8 +15,8 @@ import android.support.v4.app.NotificationCompat;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
-import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
@@ -206,11 +206,11 @@ public class NotificationService extends android.app.Service {
                                 sendType = "doneOrderPay";
                                 notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);// 清空服务器消息。
                                 JSONObject message = (JSONObject) arg2[0];
+                                PictureAirLog.out("message--->" + message);
                                 try {
                                     message = (JSONObject) message.get("c");
-                                    PaymentOrderActivity.resultJsonObject = message;
-//									String orderId = message.getString("orderId");
                                     showNotification(getResources().getString(R.string.notifacation_new_message),getResources().getString(R.string.notifacation_order_completed_msg));
+                                    EventBus.getDefault().post(new AsyncPayResultEvent(message));
                                 } catch (JSONException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
