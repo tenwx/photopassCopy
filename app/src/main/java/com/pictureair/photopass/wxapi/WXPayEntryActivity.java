@@ -30,8 +30,8 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pay_result);
 
+		PictureAirLog.out("wxpay activity---> oncreate");
 		api = WXAPIFactory.createWXAPI(this, Constants.APP_ID);
-
 		api.handleIntent(getIntent(), this);
 	}
 
@@ -50,14 +50,12 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 	// 返回结果
 	@Override
 	public void onResp(BaseResp resp) {
-		PictureAirLog.d(TAG, "onPayFinish, errCode = " + resp.errCode);
+		PictureAirLog.d(TAG, "onPay, errCode = " + resp.errCode);
 		if (sharedPreferences == null) {
 			sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-			PictureAirLog.err("init sp" + sharedPreferences);
 		}
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putInt(Common.WECHAT_PAY_STATUS, resp.errCode);
-		PictureAirLog.out("====resp.errCode=====" + resp.errCode);
 		editor.commit();
 		finish();
 	}
