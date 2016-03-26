@@ -89,6 +89,9 @@
 -keep class com.alipay.mobilesecuritysdk.*
 -keep class com.ut.*
 
+#避免混淆银联支付
+-keep class com.unionpay.** {*;}
+
 #短信验证和分享避免混淆
 -keep class android.net.http.SslError
 -keep class android.webkit.**{*;}
