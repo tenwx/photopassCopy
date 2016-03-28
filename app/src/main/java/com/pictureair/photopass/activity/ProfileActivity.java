@@ -27,7 +27,6 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 import java.lang.ref.WeakReference;
 
 import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.CustomProgressDialog;
 import cn.smssdk.gui.country.SelectCountryActivity;
 
@@ -158,6 +157,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
                     case API1.UPDATE_PROFILE_COUNTRY:
                         countryTv.setText(countryString);
+                        countryRL.setEnabled(false);
                         break;
 
                     default:
@@ -245,9 +245,11 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
         // 设置国家
         countryString = sp.getString(Common.USERINFO_COUNTRY, "");
+        PictureAirLog.out("coutry----->" + countryString);
         if (null != countryString && !countryString.equals("")){
             countryString = AppUtil.getCountryByCountryCode(countryString, this);
             countryTv.setText(countryString);
+            countryRL.setEnabled(false);
         }
 
         if (!sp.getString(Common.USERINFO_ACCOUNT, "").equals("")) {// email

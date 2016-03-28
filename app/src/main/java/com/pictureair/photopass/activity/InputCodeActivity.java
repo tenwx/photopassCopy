@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
@@ -29,7 +28,9 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
+import cn.smssdk.gui.EditTextWithClear;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -51,6 +52,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
     private DealCodeUtil dealCodeUtil;
 
     private CustomProgressDialog dialog;
+
+    private EditTextWithClear inputCodeEdit;
+    private LinearLayout comfirmPPPLayout;
 
     private final Handler inputCodeHandler = new InputCodeHandler(this);
 
@@ -154,6 +158,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
         input3 = (EditText) findViewById(R.id.input3);
         input4 = (EditText) findViewById(R.id.input4);
 
+        inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);
+        comfirmPPPLayout = (LinearLayout) findViewById(R.id.comfirm_ppp_layout);
+
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
 
@@ -169,12 +176,13 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
             ok.setVisibility(View.VISIBLE);
             tvConfirmHint.setVisibility(View.INVISIBLE);
             setTopTitleShow(R.string.manual);
+            comfirmPPPLayout.setVisibility(View.GONE);
         } else {
             tvManulInputIntro.setVisibility(View.GONE);
             ivShowResult.setVisibility(View.VISIBLE);
             ivShowResult.setImageBitmap(MipCaptureActivity.tempBitmap);
             MipCaptureActivity.tempBitmap = null;
-
+            inputCodeEdit.setVisibility(View.GONE);
             ok.setVisibility(View.GONE);
             tvConfirmHint.setVisibility(View.VISIBLE);
             setTopTitleShow(R.string.scan_ppp_code);
@@ -358,8 +366,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.btn_confirm_scan_ppp_code:
-            case R.id.sure:
+            case R.id.btn_confirm_scan_ppp_code://ppp确认页面的确定按钮
                 inputValue1 = input1.getText().toString();
                 inputValue2 = input2.getText().toString();
                 inputValue3 = input3.getText().toString();
@@ -380,6 +387,18 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
                     dealCodeUtil.startDealCode(inputValue1.trim().toUpperCase() + inputValue2.trim().toUpperCase() + inputValue3.trim().toUpperCase() + inputValue4.trim().toUpperCase());
                 }
                 break;
+
+            case R.id.sure://手动输入页面的确定
+                if ("".equals(inputCodeEdit.getText().toString())) {
+                    newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
+                } else {
+                    //如果有键盘显示，把键盘取消掉
+                    hideInputMethodManager(v);
+                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                    dealCodeUtil.startDealCode(inputCodeEdit.getText().toString().toUpperCase());
+                }
+                break;
+
             case R.id.btn_re_scan_ppp_code:
                 this.finish();
                 break;
