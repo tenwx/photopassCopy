@@ -89,9 +89,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
      */
     private static final int RETRY_INTERVAL = 60;// 30秒
     private int time = RETRY_INTERVAL;// 时间变量
-    private EventHandler handlerIdentify;
     private EditTextWithClear etIdentifyNum, etPwd, etPwd2;// 验证码输入框,密码，再次输入密码
-    private BroadcastReceiver smsReceiver;// 广播接收器
     private Button btnSubmit;// 提交按钮
 
     private MyToast myToast;
@@ -103,7 +101,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     private boolean isForgetPwdPage = false;
 
     // 用来传递一个值到项目中去。其他注册
-
     public RegisterPage(int type, Handler handler) {
         this.type = type;
         handler2 = handler;
@@ -217,10 +214,13 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             }
 
             if (type == 1) {//忘记密码页面
+                isForgetPwdPage = true;
                 llPwdConten.setVisibility(View.GONE);
                 tv_otherRegistered.setVisibility(View.GONE);
                 tvExplain.setVisibility(View.GONE);
                 btnSubmit.setText(R.string.smssdk_next);
+            }else{//注册页面
+                isForgetPwdPage = false;
             }
 
             llBack.setOnClickListener(this);
@@ -234,7 +234,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         /** 提交验证码 */
-                        afterSubmit(result, data);//
+                        afterSubmit(result, data);
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         /** 获取验证码成功后的执行动作 */
                         afterGet(result, data);
@@ -250,9 +250,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                                 if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                                     // 请求支持国家列表
                                     onCountryListGot((ArrayList<HashMap<String, Object>>) data);
-                                } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                                    // 请求验证码后，跳转到验证码填写页面（请求验证码）
-                                    // afterVerificationCodeRequested();
                                 }
                             } else {
                                 if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE
@@ -261,7 +258,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                                     // 由于此处是开发者自己决定要中断发送的，因此什么都不用做
                                     return;
                                 }
-
                                 // 根据服务器返回的网络错误，给toast提示
                                 try {
                                     ((Throwable) data).printStackTrace();
@@ -288,59 +284,17 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                     });
                 }
             };
+            SMSSDK.registerEventHandler(handler);
         }
 
-    }
-
-//    private String[] getCurrentCountry() {
-//        String mcc = getMCC();
-//        String[] country = null;
-//        if (!TextUtils.isEmpty(mcc)) {
-//            country = SMSSDK.getCountryByMCC(mcc);
-//        }
-//
-//        if (country == null) {
-//            Log.w("SMSSDK", "no country found by MCC: " + mcc);
-//            country = SMSSDK.getCountry(DEFAULT_COUNTRY_ID);
-//        }
-//        return country;
-//    }
-
-    private String getMCC() {
-        TelephonyManager tm = (TelephonyManager) activity
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        // 返回当前手机注册的网络运营商所在国家的MCC+MNC. 如果没注册到网络就为空.
-        String networkOperator = tm.getNetworkOperator();
-
-        // 返回SIM卡运营商所在国家的MCC+MNC. 5位或6位. 如果没有SIM卡返回空
-        String simOperator = tm.getSimOperator();
-
-        String mcc = null;
-        if (!TextUtils.isEmpty(networkOperator)
-                && networkOperator.length() >= 5) {
-            mcc = networkOperator.substring(0, 3);
-        }
-
-        if (TextUtils.isEmpty(mcc)) {
-            if (!TextUtils.isEmpty(simOperator) && simOperator.length() >= 5) {
-                mcc = simOperator.substring(0, 3);
-            }
-        }
-
-        return mcc;
-    }
-
-    /**
-     * 注册回调接口
-     */
-    public void onResume() {
-        SMSSDK.registerEventHandler(handler);
     }
 
     /**
      * 注销回调接口
      */
-    public void onPause() {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         SMSSDK.unregisterEventHandler(handler);
     }
 
@@ -404,53 +358,35 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     /**
      * 检查密码
      */
-    @SuppressLint("NewApi")
     public boolean checkPwd() {
         String pwd1 = etPwd.getText().toString();
         String pwd2 = etPwd2.getText().toString();
         if (pwd1.isEmpty() || pwd2.isEmpty()) {
             // 密码为空
-            int resId = getStringRes(activity,
-                    "smssdk_modify_password_empty_hint");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint, 100);
             return false;
 
         } else if (pwd1.length() < 6 || pwd2.length() < 6) {
             // 密码小于6位
-            int resId = getStringRes(activity, "smssdk_notify_password_hint");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_notify_password_hint, 100);
             return false;
 
         } else if (!pwd1.equals(pwd2)) {
             // 密码两次不一致
-            int resId = getStringRes(activity, "smssdk_pw_is_inconsistency");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_pw_is_inconsistency, 100);
             return false;
 
         } else if (!pwd1.isEmpty() && pwd1.trim().isEmpty()) {
             // 密码全部为空格
-            int resId = getStringRes(activity, "smssdk_pwd_no_all_space");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_pwd_no_all_space, 100);
             return false;
 
         } else if (pwd1.trim().length() < pwd1.length()) {
             // 密码首尾有空格
-            int resId = getStringRes(activity, "smssdk_pwd_head_or_foot_space");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_pwd_head_or_foot_space, 100);
             return false;
 
         }
-
         return true;
     }
 
@@ -461,25 +397,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         int id_btn_next = getIdRes(activity, "btn_next");
         int id_btnSubmit = getIdRes(activity, "sure");
 
-        if (id == id_btnSubmit) {
-            if (isForgetPwdPage) {
-                //忘记密码的提交
-                String pwd = etPwd.getText().toString();
-                // 验证密码的合法性
-                if (!checkPwd()) {
-                    return;
-                }
-                // 结果_完整
-                HashMap<String, Object> res = new HashMap<String, Object>();
-                res.put("res", true);
-                res.put("phone", forgetPhoto);
-                res.put("pwd", pwd);
-                if (callback != null) {
-                    callback.afterEvent(
-                            SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE,
-                            SMSSDK.RESULT_COMPLETE, res);
-                }
-                finish();
+        if (id == id_btnSubmit) {//注册的“提交”按钮 ，忘记密码的“下一步”
+
+            if (!isForgetPwdPage){//注册
+                if (!checkPwd())// 验证密码的合法性
                 return;
             }
             submitEvent();
@@ -541,6 +462,9 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         System.out.println("提交按钮————————手机号为 ：" + phone);
         System.out.println("提交按钮————————区号 ：" + countryCode);
 
+        myToast.setTextAndShow(R.string.smssdk_virificaition_code_wrong, 100);
+
+
         if (!TextUtils.isEmpty(countryCode)) {
             if (pd != null && pd.isShowing()) {
                 pd.dismiss();
@@ -549,9 +473,14 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             if (pd != null) {
                 pd.show();
             }
-            // 提交 区号，手机号，验证码
-            SMSSDK.submitVerificationCode(countryCode, phone,
+            try {
+                // 提交 区号，手机号，验证码
+                SMSSDK.submitVerificationCode(countryCode, phone,
                     verificationCode);
+            }catch (Exception e) {
+                myToast.setTextAndShow(R.string.smssdk_virificaition_code_wrong, 100);
+            }
+
         } else {
             int resId = getStringRes(activity, "smssdk_write_identify_code");// 填写验证码
             if (resId > 0) {
@@ -616,8 +545,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
      */
     public void afterSubmit(final int result, final Object data) {
         System.out.println("提交验证码成功后的执行事件————————afterSubmit:参数1:" + result);
-        System.out.println("提交验证码成功后的执行事件————————afterSubmit:参数2:"
-                + data.toString());
+        System.out.println("提交验证码成功后的执行事件————————afterSubmit:参数2:" + data.toString());
 
         runOnUIThread(new Runnable() {
             @SuppressWarnings("unchecked")
@@ -631,15 +559,18 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                  * 忘记密码：先验证验证码
                  */
                 if (type == 0) {//注册
+                    isForgetPwdPage = false;
                     // 验证密码的合法性
                     if (!checkPwd()) {
                         return;
                     }
+
                     //验证码
                     if (result == SMSSDK.RESULT_COMPLETE) {// 当验证码成功的时候
                         resultComplete((HashMap<String, Object>) data);
                     } else {//验证码不正确
                         resultFail((Throwable) data);
+//                        myToast.setTextAndShow(R.string.smssdk_virificaition_code_wrong, 100);
                     }
                 } else { //忘记密码
                     if (result == SMSSDK.RESULT_COMPLETE) {// 当验证码成功的时候
@@ -648,7 +579,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                         forgetPhoto = resultHashMap.get("country").toString() + resultHashMap.get("phone").toString();
 
                         llPwdConten.setVisibility(View.VISIBLE);
-                        btnSubmit.setText(getStringRes(activity, "smssdk_submit"));// 设置标题
+                        btnSubmit.setText(R.string.smssdk_submit);// 设置标题
                         llPutIdentifyCenten.setVisibility(View.GONE);
                         llMobileCenten.setVisibility(View.GONE);
                         viewCountry.setVisibility(View.GONE);
@@ -657,7 +588,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                         resultFail((Throwable) data);
                     }
                 }
-
 
             }
         });
@@ -670,11 +600,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
      */
     private void resultFail(Throwable data) {
         data.printStackTrace();
-        int resId = getStringRes(activity,
-                "smssdk_virificaition_code_wrong");
-        if (resId > 0) {
-            myToast.setTextAndShow(resId, 100);
-        }
+        myToast.setTextAndShow(R.string.smssdk_virificaition_code_wrong, 100);
     }
 
     /**
@@ -707,20 +633,15 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 if (time == 0) {
                     // 倒计时完毕后
                     countdownIn = false;
-                    int resId = getStringRes(activity, "smssdk_send_code2");// 再次发送验证码
-                    if (resId > 0) {
-                        btnNext.setText(resId);
-                    }
+                    btnNext.setText(R.string.smssdk_send_code2);// 再次发送验证码
 
                     btnNext.setEnabled(true);
 
                     time = RETRY_INTERVAL;// time30秒
                 } else {
-                    int resId = getStringRes(activity, "smssdk_receive_msg");// 倒计时
-                    if (resId > 0) {
-                        String unReceive = getContext().getString(resId, time);
-                        btnNext.setText(Html.fromHtml(unReceive));
-                    }
+                    String unReceive = getContext().getString(R.string.smssdk_receive_msg, time);// 倒计时
+                    btnNext.setText(Html.fromHtml(unReceive));
+
                     btnNext.setEnabled(false);
                     runOnUIThread(this, 1000);
                 }
@@ -743,7 +664,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             }
 
             if (countryRules == null) {
-                countryRules = new HashMap<String, String>();
+                countryRules = new HashMap<>();
             }
             countryRules.put(code, rule);
         }
@@ -777,23 +698,17 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         }
         // 如果手机号为空，就提示手机号不能为空
         if (TextUtils.isEmpty(phone)) {
-            int resId = getStringRes(activity, "smssdk_write_mobile_phone");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_write_mobile_phone, 100);
             return;
         }
         String rule = countryRules.get(code);
         System.out.println("rule:" + rule);
         Pattern p = Pattern.compile(rule);
         Matcher m = p.matcher(phone);
-        int resId = 0;
+//        int resId = 0;
         // 如果手机号验证不通过。则弹出“请填写正确的手机号码”
         if (!m.matches()) {
-            resId = getStringRes(activity, "smssdk_write_right_mobile_phone");
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, 100);
             return;
         }
         System.out.println("手机号验证成功phone:" + phone + ",code:" + code);
@@ -816,11 +731,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 ((TextView) dialog.findViewById(resId)).setText(phoneNum);
                 resId = getIdRes(activity, "tv_dialog_hint");// 提示语
                 TextView tv = (TextView) dialog.findViewById(resId);
-                resId = getStringRes(activity, "smssdk_make_sure_mobile_detail");// 我们将发送～等这些提示语
-                if (resId > 0) {
-                    String text = getContext().getString(resId);
-                    tv.setText(Html.fromHtml(text));
-                }
+
+                String text = getContext().getString(R.string.smssdk_make_sure_mobile_detail);// 我们将发送～等这些提示语
+                tv.setText(Html.fromHtml(text));
+
                 resId = getIdRes(activity, "btn_dialog_ok");
                 // 选择发送短信
                 if (resId > 0) {
@@ -906,4 +820,41 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         }
     }
 
+    //    private String[] getCurrentCountry() {
+//        String mcc = getMCC();
+//        String[] country = null;
+//        if (!TextUtils.isEmpty(mcc)) {
+//            country = SMSSDK.getCountryByMCC(mcc);
+//        }
+//
+//        if (country == null) {
+//            Log.w("SMSSDK", "no country found by MCC: " + mcc);
+//            country = SMSSDK.getCountry(DEFAULT_COUNTRY_ID);
+//        }
+//        return country;
+//    }
+
+//    private String getMCC() {
+//        TelephonyManager tm = (TelephonyManager) activity
+//                .getSystemService(Context.TELEPHONY_SERVICE);
+//        // 返回当前手机注册的网络运营商所在国家的MCC+MNC. 如果没注册到网络就为空.
+//        String networkOperator = tm.getNetworkOperator();
+//
+//        // 返回SIM卡运营商所在国家的MCC+MNC. 5位或6位. 如果没有SIM卡返回空
+//        String simOperator = tm.getSimOperator();
+//
+//        String mcc = null;
+//        if (!TextUtils.isEmpty(networkOperator)
+//                && networkOperator.length() >= 5) {
+//            mcc = networkOperator.substring(0, 3);
+//        }
+//
+//        if (TextUtils.isEmpty(mcc)) {
+//            if (!TextUtils.isEmpty(simOperator) && simOperator.length() >= 5) {
+//                mcc = simOperator.substring(0, 3);
+//            }
+//        }
+//
+//        return mcc;
+//    }
 }
