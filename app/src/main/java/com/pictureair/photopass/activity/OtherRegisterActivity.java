@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -30,7 +29,6 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.EditTextWithClear;
 import cn.smssdk.gui.country.SelectCountryActivity;
 

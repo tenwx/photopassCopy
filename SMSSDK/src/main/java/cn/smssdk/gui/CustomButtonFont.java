@@ -16,9 +16,7 @@ public class CustomButtonFont extends Button {
     public CustomButtonFont(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (CustomFontManager.IS_CUSOTM_FONT) {
-            if (null == typeface) {
-                typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_NAME);
-            }
+            Typeface typeface = FontResource.getInstance().loadingFout(context);
             setTypeface(typeface);
         }
     }

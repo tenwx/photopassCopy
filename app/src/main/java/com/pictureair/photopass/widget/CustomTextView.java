@@ -10,6 +10,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import cn.smssdk.gui.CustomFontManager;
+import cn.smssdk.gui.FontResource;
 
 /**
  * 由于Fragment中字体不受chlligraphy框架的影响
@@ -31,14 +32,7 @@ public class CustomTextView extends TextView {
 
     private void init(Context context) {
         if (CustomFontManager.IS_CUSOTM_FONT) {
-            Typeface typeface;
-            if (null == MyApplication.getInstance().typeface) {
-                PictureAirLog.v(TAG, "Myapplication typeface is null");
-                typeface = Typeface.createFromAsset(context.getAssets(), CustomFontManager.CUSOTM_FONT_NAME);
-            } else {
-                PictureAirLog.v(TAG, "Myapplication typeface is not null");
-                typeface = MyApplication.getInstance().typeface;
-            }
+            Typeface typeface = FontResource.getInstance().loadingFout(context);
             setTypeface(typeface);
         }
     }

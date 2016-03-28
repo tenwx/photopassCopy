@@ -27,7 +27,6 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 import java.lang.ref.WeakReference;
 
 import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.CountryPage;
 import cn.smssdk.gui.CustomProgressDialog;
 import cn.smssdk.gui.country.SelectCountryActivity;
 

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.smssdk.gui.CustomFontManager;
+import cn.smssdk.gui.FontResource;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -85,8 +86,9 @@ public class MyApplication extends Application {
         super.onCreate();
         if (CustomFontManager.IS_CUSOTM_FONT) {
             CalligraphyConfig.initDefault(CustomFontManager.CUSOTM_FONT_NAME, R.attr.fontPath);
-            typeface = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_NAME);//初始化字体
-            typefaceBold = Typeface.createFromAsset(getAssets(), CustomFontManager.CUSOTM_FONT_BOLD_NAME);
+            FontResource.getInstance().initFout(this);
+            typeface = FontResource.getInstance().loadingFout(this);
+            typefaceBold = FontResource.getInstance().loadingBoldFout(this);
         }
         if (!Common.DEBUG) {
             CrashHandler handler = CrashHandler.getInstance();
