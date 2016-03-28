@@ -120,6 +120,7 @@ public class PayUtils {
                 break;
 
             case -1:// 微信支付取消
+            case -3:
                 handler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
                 break;
 
