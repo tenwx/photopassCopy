@@ -27,6 +27,7 @@ import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
@@ -445,7 +446,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             Intent intent = new Intent();
             intent.putExtra("text",text);
             intent.putExtra("type", getIntent().getStringExtra("type"));
-            intent.setClass(this, InputCodeActivity.class);
+            intent.setClass(this, PPPCodeActivity.class);
+            PictureAirLog.out("text" + text);
             startActivity(intent);
 //            this.finish();
         }

@@ -36,7 +36,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 手动输入条码的页面
  */
-public class InputCodeActivity extends BaseActivity implements OnClickListener, View.OnKeyListener{
+public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private String[] resultList;
     private TextView tvConfirmHint, tvManulInputIntro;
 
@@ -45,7 +45,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
     private LinearLayout lvButtom;
 
     private Button ok;
-    private EditText input1, input2, input3, input4;
     private SharedPreferences sp;
     private MyToast newToast;
     private String inputValue1, inputValue2, inputValue3, inputValue4;
@@ -142,214 +141,17 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
 
     private void initview() {
         tvManulInputIntro = (TextView) findViewById(R.id.tv_manul_input_intro);
-        tvConfirmHint = (TextView) findViewById(R.id.tv_confirm_hint);
-        ivShowResult = (ImageView) findViewById(R.id.iv_show_result);
-        btnConfirmScanPppCode = (Button) findViewById(R.id.btn_confirm_scan_ppp_code);
-        btnConfirmScanPppCode.setOnClickListener(this);
-        btnReScanPppCode = (Button) findViewById(R.id.btn_re_scan_ppp_code);
-        btnReScanPppCode.setOnClickListener(this);
-        lvButtom = (LinearLayout) findViewById(R.id.lv_buttom);
 
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         ok = (Button) findViewById(R.id.sure);
 
-        input1 = (EditText) findViewById(R.id.input1);
-        input2 = (EditText) findViewById(R.id.input2);
-        input3 = (EditText) findViewById(R.id.input3);
-        input4 = (EditText) findViewById(R.id.input4);
-
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);
-        comfirmPPPLayout = (LinearLayout) findViewById(R.id.comfirm_ppp_layout);
 
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
 
-        codeCount = new int[]{0, 0, 0, 0};
-
-        if (getIntent().getStringExtra("text") == null) {
-            lvButtom.setVisibility(View.GONE);
-            btnConfirmScanPppCode.setVisibility(View.GONE);
-            btnReScanPppCode.setVisibility(View.GONE);
-
-            tvManulInputIntro.setVisibility(View.VISIBLE);
-            ivShowResult.setVisibility(View.GONE);
-            ok.setVisibility(View.VISIBLE);
-            tvConfirmHint.setVisibility(View.INVISIBLE);
-            setTopTitleShow(R.string.manual);
-            comfirmPPPLayout.setVisibility(View.GONE);
-        } else {
-            tvManulInputIntro.setVisibility(View.GONE);
-            ivShowResult.setVisibility(View.VISIBLE);
-            ivShowResult.setImageBitmap(MipCaptureActivity.tempBitmap);
-            MipCaptureActivity.tempBitmap = null;
-            inputCodeEdit.setVisibility(View.GONE);
-            ok.setVisibility(View.GONE);
-            tvConfirmHint.setVisibility(View.VISIBLE);
-            setTopTitleShow(R.string.scan_ppp_code);
-            resultList = getIntent().getStringExtra("text").split("-");
-            input1.setText(resultList[0]);
-            input2.setText(resultList[1]);
-            input3.setText(resultList[2]);
-            input4.setText(resultList[3]);
-            codeCount[0] = resultList[0].length();
-            codeCount[1] = resultList[1].length();
-            codeCount[2] = resultList[2].length();
-            codeCount[3] = resultList[3].length();
-        }
-
-        input1.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                codeCount[0] = arg0.length();
-                if (!AppUtil.isInputCodeEditing(codeCount, input1.getSelectionStart(), 0)) {//非编辑
-                    if (AppUtil.inputCodeEditJump(input1.getSelectionStart(), 0) == 1) {//往后
-                        input2.setEnabled(true);
-                        input2.requestFocus();
-                        input1.clearFocus();
-                    }
-                }
-            }
-        });
-
-        input2.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                codeCount[1] = arg0.length();
-                if (!AppUtil.isInputCodeEditing(codeCount, input2.getSelectionStart(), 1)) {//非编辑
-                    if (AppUtil.inputCodeEditJump(input2.getSelectionStart(), 1) == 1) {//往后
-                        input3.setEnabled(true);
-                        input3.requestFocus();
-                        input2.clearFocus();
-                    } else if (AppUtil.inputCodeEditJump(input2.getSelectionStart(), 1) == -1) {//往前
-                        input1.setEnabled(true);
-                        input1.requestFocus();
-                        input1.setSelection(4);
-                        input2.clearFocus();
-                    }
-                }
-            }
-        });
-
-        input3.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                codeCount[2] = arg0.length();
-                if (!AppUtil.isInputCodeEditing(codeCount, input3.getSelectionStart(), 2)) {//非编辑
-                    if (AppUtil.inputCodeEditJump(input3.getSelectionStart(), 2) == 1) {//往后
-                        input4.setEnabled(true);
-                        input4.requestFocus();
-                        input3.clearFocus();
-                    } else if (AppUtil.inputCodeEditJump(input3.getSelectionStart(), 2) == -1) {//往前
-                        input2.setEnabled(true);
-                        input2.requestFocus();
-                        input2.setSelection(4);
-                        input3.clearFocus();
-                    }
-                }
-            }
-        });
-
-        input4.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                codeCount[3] = arg0.length();
-                if (!AppUtil.isInputCodeEditing(codeCount, input4.getSelectionStart(), 3)) {//非编辑
-                    if (AppUtil.inputCodeEditJump(input4.getSelectionStart(), 3) == -1) {//往前
-                        input3.setEnabled(true);
-                        input3.requestFocus();
-                        input3.setSelection(4);
-                        input4.clearFocus();
-                    }
-                }
-            }
-        });
-
-        input2.setOnKeyListener(this);
-        input3.setOnKeyListener(this);
-        input4.setOnKeyListener(this);
-
+        setTopTitleShow(R.string.manual);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), true, inputCodeHandler);
-
-    }
-
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        PictureAirLog.out("keycode-->" + keyCode);
-        /**
-         * 处理光标处于输入框最前面的时候的回删操作
-         */
-        if (keyCode == KeyEvent.KEYCODE_DEL) {
-            switch (v.getId()) {
-                case R.id.input2:
-                    if (!AppUtil.isInputCodeEditing(codeCount, 0, 1)) {
-                        input1.setEnabled(true);
-                        input1.requestFocus();
-                        input1.setText(input1.getText().toString().substring(0, 3));
-                        input1.setSelection(3);
-                    }
-                    break;
-
-                case R.id.input3:
-                    if (!AppUtil.isInputCodeEditing(codeCount, 0, 2)) {
-                        input2.setEnabled(true);
-                        input2.requestFocus();
-                        input2.setText(input2.getText().toString().substring(0, 3));
-                        input2.setSelection(3);
-                    }
-                    break;
-
-                case R.id.input4:
-                    if (!AppUtil.isInputCodeEditing(codeCount, 0, 3)) {
-                        input3.setEnabled(true);
-                        input3.requestFocus();
-                        input3.setText(input3.getText().toString().substring(0, 3));
-                        input3.setSelection(3);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        return false;
     }
 
     private void hideInputMethodManager(View v) {
@@ -366,28 +168,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener, 
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.btn_confirm_scan_ppp_code://ppp确认页面的确定按钮
-                inputValue1 = input1.getText().toString();
-                inputValue2 = input2.getText().toString();
-                inputValue3 = input3.getText().toString();
-                inputValue4 = input4.getText().toString();
-
-                if ("".equals(inputValue1 + inputValue2 + inputValue3 + inputValue4)) {
-                    //				Toast.makeText(InputCodeAct.this, R.string.nocontext, Common.TOAST_SHORT_TIME).show();
-                    newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
-                } else if (inputValue1.trim().length() + inputValue2.trim().length() + inputValue3.trim().length() + inputValue4.trim().length() != 16) {//长度不一致
-                    PictureAirLog.out("=======> length" + (inputValue1.trim().length() + inputValue2.trim().length() + inputValue3.trim().length() + inputValue4.trim().length()));
-                    newToast.setTextAndShow(R.string.wrong_length, Common.TOAST_SHORT_TIME);
-                } else {
-                    //如果有键盘显示，把键盘取消掉
-                    hideInputMethodManager(v);
-                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                    PictureAirLog.out("code is --->" + input1.getText().toString());
-//				dealCodeUtil.startDealCode("DPPPRU6CC7M5J6MM");
-                    dealCodeUtil.startDealCode(inputValue1.trim().toUpperCase() + inputValue2.trim().toUpperCase() + inputValue3.trim().toUpperCase() + inputValue4.trim().toUpperCase());
-                }
-                break;
-
             case R.id.sure://手动输入页面的确定
                 if ("".equals(inputCodeEdit.getText().toString())) {
                     newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
