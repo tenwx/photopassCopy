@@ -411,7 +411,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 	 * @param id
 	 */
 	private void startShare(int id){
-		UmengUtil.onEvent(context, shareType);
+
 		switch (id) {
 			case R.id.wechat_moments:
 				shareType = Common.EVENT_ONCLICK_SHARE_WECHAT_MOMENTS;
@@ -472,6 +472,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			default:
 				break;
 		}
+		//友盟统计分享。
+		UmengUtil.onEvent(context, shareType);
 	}
 
 	@Override
