@@ -12,6 +12,7 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -766,6 +767,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
 		} else if (typeName.equals("Twitter")) {
 			eventName = Common.EVENT_SHARE_TWITTER_FINISH;
+		} else if (typeName.equals("Qq")) {
+			eventName = Common.EVENT_SHARE_QQ_FINISH;
 		}
 
 		// 分享完成统计事件

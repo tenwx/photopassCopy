@@ -344,38 +344,31 @@ public class Common {
 
     // 友盟参数
     public static final String UMENG_CHANNEL = "360";// 打包渠道
-    //		public static final String CHANNEL = "tencent";// 渠道
+    //	public static final String CHANNEL = "tencent";// 渠道
 //		public static final String CHANNEL = "baidu";// 渠道
 //		public static final String CHANNEL = "PICTUREAIRCOM_HOME";// 渠道
 //		public static final String CHANNEL = "PICTUREAIRCOM_PHOTO";// 渠道
 
-    // 友盟自定义事件
-
-    // 纪录点击的是  单张下载 还是 全部下载。
-    public static String DOWNLOAD_TYPE = Common.ONE_PHOTO_DOWNLOAD;
-    public static final String ONE_PHOTO_DOWNLOAD = "OnePhotoDownload";
-    public static final String ONE_PHOTO_DOWNLOAD_SUCCESS = "OnePhotoDownloadSuccess";
-
-    public static final String ALL_PHOTOS_DOWNLOAD = "allPhotosDownload";
-    public static final String ALL_PHOTOS_DOWNLOAD_SUCCESS = "allPhotosDownloadSuccess";
-    public static final String EVENT_CONTAIN_PICTURE_PEOPLES = "event_contain_picture_peoples";// 有图片的总人数
-    public static final String EVENT_TOTAL_PICTURES = "event_total_pictures";// 图片总数
+    // 友盟自定义事件, 目前所有的事件都是 ，计数事件。 (循环纪录)
     public static final String EVENT_ONCLICK_DOWNLOAD = "event_onclick_dwonload";// 点击下载
     public static final String EVENT_DOWNLOAD_FINISH = "event_dwonload_finish";// 下载成功
+
+    public static final String EVENT_PHOTO_SLIDE = "event_photo_slide";// 图片总数
+    public static final String EVENT_TOTAL_PICTURES = "event_total_pictures";// 图片总数
+    public static final String EVENT_CONTAIN_PICTURE_PEOPLES = "event_contain_picture_peoples";
+
+
     public static final String EVENT_ONCLICK_SHARE_QQ = "event_onclick_share_qq";// 点击qq分享
     public static final String EVENT_SHARE_QQ_FINISH = "event_share_qq_finish";// qq分享成功
 
-
     public static final String EVENT_ONCLICK_SHARE_QQZONE = "event_onclick_share_qqzone";// 点击qqzone分享
     public static final String EVENT_SHARE_QQZONE_FINISH = "event_share_qqzone_finish";// qqzone分享成功
-
 
     public static final String EVENT_ONCLICK_SHARE_WECHAT = "event_onclick_share_wechat";// 点击微信好友分享
     public static final String EVENT_SHARE_WECHAT_FINISH = "event_share_wechat_finish";// 微信好友分享成功
 
     public static final String EVENT_ONCLICK_SHARE_WECHAT_MOMENTS = "event_onclick_share_wechat_moments";// 点击微信朋友圈分享
     public static final String EVENT_SHARE_WECHAT_MOMENTS_FINISH = "event_share_wechat_moments_finish";// 微信朋友圈分享成功
-
 
     public static final String EVENT_ONCLICK_SHARE_SINA_WEIBO = "event_onclick_share_sina_weibo";// 点击新浪微博分享
     public static final String EVENT_SHARE_SINA_WEIBO_FINISH = "event_share_sina_weibo_finish";// 新浪微博分享成功
@@ -385,10 +378,6 @@ public class Common {
 
     public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
     public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
-
-    public static final String ALL_PHOTO_COUNT = "AllPhotoCount";
-
-    public static final String HAVE_PHOTO_USERS_COUNT = "HavePhotoUsersCount";
 
     // 友盟sharedPreferences
 
