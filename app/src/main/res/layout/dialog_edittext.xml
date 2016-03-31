@@ -8,6 +8,8 @@
     android:imeOptions="actionDone"
     android:hint="@string/conpon_input_hint"
     android:singleLine="true"
+    android:digits="@string/input_content"
     android:padding="@dimen/pp_padding_10"
+    android:maxLength="200"
     android:textColor="@color/gray"
     android:textSize="@dimen/text_size_14" />

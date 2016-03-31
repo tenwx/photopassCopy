@@ -2,7 +2,9 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -11,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -50,6 +53,29 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
         ibSave.setTypeface(MyApplication.getInstance().getFontBold());
         ibSave.setOnClickListener(this);
         bgUpdateInfo.setOnClickListener(this);
+        etUserInfo.addTextChangedListener(new TextWatcher() {
+            int cou = 0;
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                cou = before + count;
+                String editable = etUserInfo.getText().toString();
+                String str = AppUtil.inputTextFilter(editable); //过滤特殊字符
+                if (!editable.equals(str)) {
+                    etUserInfo.setText(str);
+                }
+                etUserInfo.setSelection(etUserInfo.length());
+                cou = etUserInfo.length();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     private void hideInputMethodManager(View v) {

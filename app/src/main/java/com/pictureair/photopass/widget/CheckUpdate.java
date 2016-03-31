@@ -29,7 +29,7 @@ public class CheckUpdate implements BaseCheckUpdate{
 	@Override
 	public void checkUpdate(Context context, Handler handler, String versionName, String currentLanguage) {
 		// TODO Auto-generated method stub
-		API1.checkUpdate(handler, versionName, currentLanguage);
+		API1.checkUpdate(context, handler, versionName, currentLanguage);
 	}
 
 	@Override

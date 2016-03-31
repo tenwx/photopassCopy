@@ -53,6 +53,7 @@
             android:imeOptions="actionGo"
             android:inputType="textPassword"
             android:paddingBottom="@dimen/pp_padding_16"
+            android:maxLength="200"
             android:paddingLeft="@dimen/pp_padding_10"
             android:paddingRight="@dimen/pp_padding_5"
             android:textColor="@color/pp_gray"

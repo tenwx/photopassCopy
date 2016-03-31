@@ -21,7 +21,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
@@ -31,6 +31,33 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
+    }
+
+    productFlavors {
+
+        wandoujia {}
+        baidu {}
+        qh360 {}
+        tencent {}
+        xiaomi {}
+        googleplay {}
+        PICTUREAIRCOM_HOME {}
+        PICTUREAIRCOM_PHOTO {}
+        pw_test {}
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = outputFile.name.replace(".apk", "-${defaultConfig.versionName}.apk")
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
     }
 }
 

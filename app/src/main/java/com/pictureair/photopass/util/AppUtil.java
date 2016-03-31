@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -72,6 +73,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import cn.smssdk.gui.EditTextWithClear;
 
@@ -1149,7 +1151,39 @@ public class AppUtil {
             }
 
         }
-        return value; }
+        return value;
+    }
+
+    /**
+     * str过滤，验证输入str，不允许特殊字符
+     * @param str
+     */
+    public static String inputTextFilter(String str) throws PatternSyntaxException {
+        String regEx = "[/\\:*?<>|\"\n\t]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        return m.replaceAll("");
+    }
+
+    /**
+     * 获取manifest中meta值
+     * @param context
+     * @return
+     * @throws PackageManager.NameNotFoundException
+     */
+    public static String getMetaData(Context context, String key){
+        String result = "";
+        try {
+            ApplicationInfo appInfo = context.getPackageManager()
+                    .getApplicationInfo(context.getPackageName(),
+                            PackageManager.GET_META_DATA);
+            result = appInfo.metaData.get(key).toString();
+            PictureAirLog.out("channel---->" + appInfo.metaData.get(key));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 
 }

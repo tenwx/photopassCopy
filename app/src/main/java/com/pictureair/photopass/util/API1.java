@@ -1460,7 +1460,9 @@ public class API1 {
      * @param thisVerName
      * @param language
      */
-    public static void checkUpdate(final Handler handler, final String thisVerName, final String language) {
+    public static void checkUpdate(Context context, final Handler handler, final String thisVerName, final String language) {
+        final String channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
+        PictureAirLog.out("channel------>" + channelStr);
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1488,7 +1490,7 @@ public class API1 {
                     JSONArray array = versionObject.getJSONArray("downloadChannel");
                     for (int i = 0; i < array.size(); i++) {
                         channel = array.getJSONObject(i).getString("channel");
-                        if (Common.UMENG_CHANNEL.equals(channel)) {
+                        if (channelStr.equals(channel)) {
                             downloadUrl = array.getJSONObject(i).getString("downloadUrl");
                             break;
                         }

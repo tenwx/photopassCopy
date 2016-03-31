@@ -27,6 +27,7 @@
             android:paddingLeft="@dimen/pp_padding_10"
             android:paddingRight="@dimen/pp_padding_10"
             android:layout_marginTop="@dimen/pp_margin_60"
+            android:maxLength="200"
             android:singleLine="true"
             android:textColor="@color/pp_gray"
             android:textColorHint="@color/pp_gray"

@@ -61,7 +61,7 @@ public class DownloadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
+        PictureAirLog.out("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
@@ -69,13 +69,13 @@ public class DownloadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //		serviceIntent = intent;
-        System.out.println("DownloadService ----------> onStartCommand");
+        PictureAirLog.out("DownloadService ----------> onStartCommand");
         Bundle b = intent.getExtras();
         photos = b.getParcelableArrayList("photos");
         //将新的数据放入到下载队列的末尾
         for (int i = 0; i < photos.size(); i++) {
             downloadList.add(photos.get(i));
-            System.out.println("downloadlist size =" + downloadList.size());
+            PictureAirLog.out("downloadlist size =" + downloadList.size());
         }
         if (!isDownloading) {//如果当前不在下载
             prepareDownload();
@@ -87,14 +87,14 @@ public class DownloadService extends Service {
 
     private void prepareDownload() {
         // TODO Auto-generated method stub
-        System.out.println("DownloadService ----------> preparedownload");
-        System.out.println("DownloadService ----------> before notification");
+        PictureAirLog.out("DownloadService ----------> preparedownload");
+        PictureAirLog.out("DownloadService ----------> before notification");
         Notification notification = new NotificationCompat.Builder(mContext).
                 setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.downloading)).setWhen(System.currentTimeMillis()).setTicker(mContext.getString(R.string.downloading)).build();
         notification.flags = Notification.FLAG_ONGOING_EVENT;//通知栏可以自动删除
         manager.notify(0, notification);
-        System.out.println("DownloadService ----------> after notification");
+        PictureAirLog.out("DownloadService ----------> after notification");
         handler.sendEmptyMessage(START_DOWNLOAD);
     }
 
@@ -104,17 +104,17 @@ public class DownloadService extends Service {
             switch (msg.what) {
                 case START_DOWNLOAD:
                     if (downloadList.size() > 0) {//开始下载
-                        System.out.println("start download----------------->");
+                        PictureAirLog.out("start download----------------->");
                         photoId = downloadList.get(0).photoId;
                         downLoad(downloadList.get(0).photoPathOrURL, downloadList.get(0).photoId, downloadList.get(0).isVideo);
                     } else {//说明列表已经全部下载完,要对完成的结果进行处理
-                        System.out.println("finish download-------------->");
+                        PictureAirLog.out("finish download-------------->");
                         handler.sendEmptyMessage(FINISH_DOWNLOAD);
                     }
                     break;
                 case FINISH_DOWNLOAD:
                     //如果下载数目一致，提示用户下载完毕，并且让service停止掉
-                    System.out.println("下载完毕,共下载了" + downed_num + "张照片，失败了" + failed_num + "张");
+                    PictureAirLog.out("下载完毕,共下载了" + downed_num + "张照片，失败了" + failed_num + "张");
                     String notificationDetail = String.format(mContext.getString(R.string.download_detail1), downed_num);
                     if (failed_num >0) {
                         notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
@@ -164,7 +164,7 @@ public class DownloadService extends Service {
      */
     private void downLoad(String originalUrl, String id, int isVideo) {
         String fileName = ScreenUtil.getReallyFileName(originalUrl,isVideo);
-        System.out.println("filename=" + fileName);
+        PictureAirLog.out("filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();
         file = new File(filedir + "/" + fileName);
@@ -173,7 +173,7 @@ public class DownloadService extends Service {
             UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
             downloadImgOrVideo(file, isVideo);
         } else {
-            System.out.println("file exist");
+            PictureAirLog.out("file exist");
             ++downed_num;
             exist_num++;
             downloadList.remove(0);
@@ -256,7 +256,7 @@ public class DownloadService extends Service {
         MediaScannerConnection.scanFile(this, new String[]{file}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
-                        System.out.println("okdsffads");
+                        PictureAirLog.out("okdsffads");
                         //				stopSelf();//下载服务停止
                         //				stopService(serviceIntent);
                         scan_num++;
@@ -269,7 +269,7 @@ public class DownloadService extends Service {
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
-        System.out.println("downloadService-----------> ondestroy");
+        PictureAirLog.out("downloadService-----------> ondestroy");
         super.onDestroy();
     }
 
