@@ -34,6 +34,7 @@
 -keepattributes Signature
 -keepattributes Signture
 
+
 #将api自带的设置避免混淆
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -51,30 +52,12 @@
 -keep public class * extends android.support.v4.**
 -keep public class * extends android.app.Fragment
 
-#支付宝避免混淆
--keep class com.alipay.android.app.IAlixPay{*;}
--keep class com.alipay.android.app.IAlixPay$Stub{*;}
--keep class com.alipay.android.app.IRemoteServiceCallback{*;}
--keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
--keep class com.alipay.sdk.app.PayTask{ public *;}
--keep class com.alipay.sdk.app.AuthTask{ public *;}
-
-#微信支付避免混淆
--keep class com.tencent.mm.sdk.** { *;}
-
-#避免混淆银联支付
--keep class com.unionpay.** {*;}
-
-#短信验证和分享避免混淆
+#短信验证避免混淆
 -keep class android.net.http.SslError
 -keep class android.webkit.**{*;}
 -keep class cn.sharesdk.**{*;}
--keep class m.framework.**{*;}
+-keep class cn.smssdk.**{*;}
 -keep class com.mob.**{*;}
--keep class com.sina.**{*;}
--keep class **.R{*;}
--dontwarn cn.sharesdk.**
--dontwarn **.R$*
 
 #保持 native 的方法不去混淆
 -keepclasseswithmembernames class * {
@@ -137,46 +120,3 @@
 }
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
-
-#友盟混淆
--keepclassmembers class * {
-   	public <init>(org.json.JSONObject);
-}
-
-# universal-image-loader 混淆
--dontwarn com.nostra13.universalimageloader.**
--keep class com.nostra13.universalimageloader.** { *; }
-
-##异步网络请求避免混淆
--dontwarn android-async-http-1.4.8.jar.**
--keep class android-async-http-1.4.8.jar.**{*;}
-
- # fastjson 混淆
--dontwarn com.alibaba.fastjson.**
--keep class com.alibaba.fastjson.** { *; }
--keepclassmembers class * {
-    public <methods>;
-}
-
-# OCR文字识别 混淆
--keep class com.pictureair.photopass.zxing.**{*;}
--keep class com.googlecode.**{*;}
-
-
-# sqlcipher混淆
--keep class net.sqlcipher.database.* extends java.lang.Exception {
-   *;
-}
--keepclasseswithmembers class net.sqlcipher.** {
-    native <methods>;
-}
--keep class net.sqlcipher.database.SQLite* {
-    int nHandle;
-    int nStatement;
-}
--keep class net.sqlcipher.CursorWindow {
-    int nWindow;
-}
--keep class net.sqlcipher.database.SQLiteDatabase {
-    int mNativeHandle;
-}

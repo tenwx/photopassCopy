@@ -10,16 +10,37 @@ android {
     }
 
     buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
+        debug {
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META_INF/dependencies.txt'
+        exclude '.readme'
     }
 }
 
 dependencies {
-
-    compile files('libs/SMSSDK-2.0.1.jar')
-    compile files('libs/MobTools-2016.0131.1739.jar')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/MobCommons-2016.0303.1229.jar')
+    compile files('libs/MobTools-2016.0303.1229.jar')
+    compile files('libs/SMSSDK-2.0.2.jar')
 }
