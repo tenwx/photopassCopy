@@ -1092,7 +1092,7 @@ public class AppUtil {
         // 国家名称集合
         //		Map<String, String> countryMap = new HashMap<String, String>();
         /** 读取国家简码 */
-        codeStrings = context.getResources().getStringArray(R.array.country_code);
+        codeStrings = context.getResources().getStringArray(R.array.smssdk_country);
         if (null != codeStrings) {
 
             for (int i = 0; i < codeStrings.length; i++) {
@@ -1100,7 +1100,7 @@ public class AppUtil {
                 //bb[0]:国家
                 //bb[1]:简码
                 //				countryMap.put(bb[1].trim(), bb[0].trim());
-                if (countryCode.trim().equals(bb[1].trim())) {
+                if (countryCode.trim().equals(bb[4].trim())) {
                     country = bb[0].trim();
                     break;
                 }

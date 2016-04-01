@@ -57,6 +57,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
+import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
@@ -516,10 +517,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     public void onPageScrollStateChanged(int arg0) {
                         // TODO Auto-generated method stub
                         //				PictureAirLog.v(TAG,"--------onPageScrollStateChanged-------"+arg0);
+
                         PictureAirLog.v(TAG, "----------------------->initing...5");
                         if (arg0 == 0) {//结束滑动
                             //					PictureAirLog.v(TAG,"--------scroll end-------");
                             updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
+                            setUmengPhotoSlide();//统计滑动图片次数
                         }
                     }
                 });
@@ -1196,8 +1199,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.v(TAG, "--------->last");
                 lastPhotoImageView.setEnabled(false);
                 nextPhotoImageView.setEnabled(false);
-
                 changeTab(false);
+                setUmengPhotoSlide();//统计滑动图片次数
                 break;
 
             case R.id.index_next://下一张
@@ -1205,6 +1208,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 changeTab(true);
                 lastPhotoImageView.setEnabled(false);
                 nextPhotoImageView.setEnabled(false);
+                setUmengPhotoSlide();//统计滑动图片次数
                 break;
 
             default:
@@ -1598,6 +1602,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         });
             }
         }
+    }
+
+
+    private void setUmengPhotoSlide(){
+        UmengUtil.onEvent(PreviewPhotoActivity.this, Common.EVENT_PHOTO_SLIDE);
     }
 
 }

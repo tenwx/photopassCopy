@@ -141,7 +141,7 @@ public class StoryFragment extends Fragment {
 			int countLocal = countShare.getInt("count", 0);
 			boolean isCount = countShare.getBoolean("isCount", false);
 			if (!isCount) {
-				UmengUtil.onEvent(getContext(), Common.HAVE_PHOTO_USERS_COUNT);
+				UmengUtil.onEvent(getContext(), Common.EVENT_CONTAIN_PICTURE_PEOPLES);
 				Editor editor = countShare.edit();
 				editor.putBoolean("isCount", true);
 			    editor.commit();
@@ -156,7 +156,7 @@ public class StoryFragment extends Fragment {
 					 editor.commit();
 					 int i = Math.abs((photoInfoArrayList.size() - countLocal));
 					 for (int j = 0; j < i; j++) {
-						 UmengUtil.onEvent(getContext(), Common.ALL_PHOTO_COUNT);
+						 UmengUtil.onEvent(getContext(), Common.EVENT_TOTAL_PICTURES);
 					}
 				}
 			}
