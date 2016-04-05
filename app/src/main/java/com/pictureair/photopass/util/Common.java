@@ -7,16 +7,14 @@ import android.os.Environment;
  */
 public class Common {
     public static final String APP_NAME = "appName";
-    public static final String APP_KEY = "photoPass";
-    public static final String APP_SECRET = "pictureworks";
     public static final String APPLICATION_NAME = "photoPass";// app英文名字
     public static final String SHARE_APP_NAME = "PhotoPass";
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static final String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
-    public static final String SMS_APPKEY = "fb89235e227b"; // SMSS 2.0版本
-    public static final String SMS_APPSECRET = "61ff606c6dfef8517e2bbc9ce559b678"; // SMSS 2.0版本
-//    public static final String SMS_APPKEY = "d082b4315aed"; // SMSS，公司的账号
-//    public static final String SMS_APPSECRET = "0cdee8a0b0b554574a0ada56bf02c650"; // SMSS
+
+    public static final String APP_TYPE_PA = "pa";
+    public static final String APP_TYPE_SHDRPP = "shdrpp";
+    public static final String APP_TYPE_HKDLPP = "hkdlpp";
 
 
 
@@ -279,13 +277,10 @@ public class Common {
     public static final String PHOTOPASS_INFO_NAME = "photopass_info.db3";
     public static final String PHOTOPASS_INFO_TABLE = "photopassinfo";
     public static final String FAVORITE_INFO_TABLE = "favoriteinfo";
-    public static final String PHOTOPASS_CODE_INFO_TABLE = "photopass_code";
     public static final String FIRST_START_ACTIVITY_INFO_TABLE = "first_start_activity";
     public static final String HELP_QUESTION_TABLE = "help_question";
     public static final String FRAME_STICKER_TABLES = "frame_sticker";
     public static final int PHOTOPASS_INFO_VERSION = 1;
-    public static final String AES_ENCRYPTION_KEY = "80ab912ad5392557";//(pictureAir-android)
-    public static final String SQLCIPHER_KEY = "d8b8a0ad80ab912ad53925576cd10676";//(pictureAir-android)
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
     public static final String AD_LOCATION = "ad_location";
     public static final String THREAD_INFO = "thread_info";

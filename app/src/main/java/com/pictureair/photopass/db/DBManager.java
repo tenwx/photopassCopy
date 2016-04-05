@@ -1,6 +1,7 @@
 package com.pictureair.photopass.db;
 
 
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.util.Common;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -49,7 +50,7 @@ public class DBManager {
     public synchronized SQLiteDatabase writData() {
         if (mOpenCounter.incrementAndGet() == 1) {
             // Opening new database
-            db = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
+            db = dbHelper.getWritableDatabase(PWJniUtil.getSqlCipherKey(Common.APP_TYPE_SHDRPP));
         }
         return db;
     }
@@ -64,7 +65,7 @@ public class DBManager {
             // Opening new database
             //db = dbHelper.getReadableDatabase();
             //API原文：This will be the same object returned by getWritableDatabase() unless some problem, such as a full disk, requires the database to be opened read-only.
-            db = dbHelper.getWritableDatabase(Common.SQLCIPHER_KEY);
+            db = dbHelper.getWritableDatabase(PWJniUtil.getSqlCipherKey(Common.APP_TYPE_SHDRPP));
         }
         return db;
     }

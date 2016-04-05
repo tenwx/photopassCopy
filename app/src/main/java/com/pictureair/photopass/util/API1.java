@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.HttpBaseJson;
@@ -36,8 +37,6 @@ import java.util.ArrayList;
 public class API1 {
 
     private static final String TAG = "API";
-    private static final String APP_KEY = "photoPass";
-    private static final String APP_SECRET = "pictureworks";
 
     /**
      * 启动
@@ -246,7 +245,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.TERMINAL, "android");
         params.put(Common.UUID, Installation.id(context));
-        params.put(Common.APP_ID, AppUtil.md5(APP_KEY + APP_SECRET));
+        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP)));
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_TOKENID, params, new HttpCallback() {
 
             @Override

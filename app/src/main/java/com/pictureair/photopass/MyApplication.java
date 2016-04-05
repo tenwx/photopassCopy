@@ -15,11 +15,12 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.pictureair.photopass.util.CrashHandler;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.CrashHandler;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
 
 import java.io.File;
@@ -98,20 +99,15 @@ public class MyApplication extends Application {
         userInfosharedPreferences = this.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         // 初始化友盟
         UmengUtil.initUmeng();
-        if (getCurProcessName(getApplicationContext()).equals(
-                Common.PACKGE_NAME)) {
-            System.err.println("application on create----->");
-            initImageLoader(getApplicationContext());
-            codeList = new ArrayList<HashMap<String, String>>();
-            photoPassPicList = new ArrayList<PhotoInfo>();
-            photoPassVideoList = new ArrayList<>();
-            allPicList = new ArrayList<PhotoItemInfo>();
-            magicPicList = new ArrayList<PhotoInfo>();
-            boughtPicList = new ArrayList<PhotoItemInfo>();
-            photoPassCodeList = new ArrayList<PPinfo>();
-        } else {
-            System.err.println("application not on create------>");
-        }
+        initImageLoader(getApplicationContext());
+        codeList = new ArrayList<HashMap<String, String>>();
+        photoPassPicList = new ArrayList<PhotoInfo>();
+        photoPassVideoList = new ArrayList<>();
+        allPicList = new ArrayList<PhotoItemInfo>();
+        magicPicList = new ArrayList<PhotoInfo>();
+        boughtPicList = new ArrayList<PhotoItemInfo>();
+        photoPassCodeList = new ArrayList<PPinfo>();
+        PictureAirLog.out("application on create--->");
     }
 
     /**

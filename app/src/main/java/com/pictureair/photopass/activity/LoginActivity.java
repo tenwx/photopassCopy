@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
@@ -336,7 +337,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
      * 初始化发短信 *
      */
     private void initSSMSSDK() {
-        SMSSDK.initSDK(this, Common.SMS_APPKEY, Common.SMS_APPSECRET);
+        SMSSDK.initSDK(this, PWJniUtil.getSMSSDKAppKey(Common.APP_TYPE_SHDRPP), PWJniUtil.getSMSSDKAppSecret(Common.APP_TYPE_SHDRPP));
     }
 
     /**

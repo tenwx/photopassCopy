@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
@@ -218,7 +219,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
      * 初始化SMSSDK才能使用国家
      */
     private void initSSMSSDK() {
-        SMSSDK.initSDK(this, Common.SMS_APPKEY, Common.SMS_APPSECRET);
+        SMSSDK.initSDK(this, PWJniUtil.getSMSSDKAppKey(Common.APP_TYPE_SHDRPP), PWJniUtil.getSMSSDKAppSecret(Common.APP_TYPE_SHDRPP));
     }
 
     private void initData() {

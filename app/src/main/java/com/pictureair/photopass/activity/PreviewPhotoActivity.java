@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
@@ -59,7 +60,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.MyToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
@@ -549,7 +549,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case LOAD_FROM_LOCAL:
                 byte[] arg2 = null;
                 try {
-                    arg2 = AESKeyHelper.decrypt(dirFile.toString(), Common.AES_ENCRYPTION_KEY);
+                    arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
                 } catch (InvalidKeyException | NoSuchAlgorithmException
                         | NoSuchPaddingException | IOException e) {
                     // TODO Auto-generated catch block
@@ -742,7 +742,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 public void onSuccess(byte[] binaryData) {
                     super.onSuccess(binaryData);
                     try {
-                        AESKeyHelper.encrypt(binaryData, dirFile.toString(), Common.AES_ENCRYPTION_KEY);
+                        AESKeyHelper.encrypt(binaryData, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
                     } catch (InvalidKeyException
                             | NoSuchAlgorithmException
                             | NoSuchPaddingException | IOException e) {
