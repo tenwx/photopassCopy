@@ -272,11 +272,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                                     e.printStackTrace();
                                 }
                                 // 如果木有找到资源，默认提示
-                                int resId = getStringRes(activity,
-                                        "smssdk_network_error");
-                                if (resId > 0) {
-                                    myToast.setTextAndShow(resId, 100);
-                                }
+                                    myToast.setTextAndShow(R.string.smssdk_network_error, 100);
                             }
                         }
                     });
@@ -460,9 +456,6 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         System.out.println("提交按钮————————手机号为 ：" + phone);
         System.out.println("提交按钮————————区号 ：" + countryCode);
 
-        myToast.setTextAndShow(R.string.smssdk_virificaition_code_wrong, 100);
-
-
         if (!TextUtils.isEmpty(countryCode)) {
             if (pd != null && pd.isShowing()) {
                 pd.dismiss();
@@ -480,10 +473,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             }
 
         } else {
-            int resId = getStringRes(activity, "smssdk_write_identify_code");// 填写验证码
-            if (resId > 0) {
-                myToast.setTextAndShow(resId, 100);
-            }
+            myToast.setTextAndShow(R.string.smssdk_write_identify_code, 100);// 填写验证码
         }
     }
 
