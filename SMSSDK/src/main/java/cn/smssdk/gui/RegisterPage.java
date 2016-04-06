@@ -217,7 +217,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 tv_otherRegistered.setVisibility(View.GONE);
                 tvExplain.setVisibility(View.GONE);
                 btnSubmit.setText(R.string.smssdk_next);
-            }else{//注册页面
+            } else {//注册页面
                 isForgetPwdPage = false;
             }
 
@@ -272,7 +272,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                                     e.printStackTrace();
                                 }
                                 // 如果木有找到资源，默认提示
-                                    myToast.setTextAndShow(R.string.smssdk_network_error, 100);
+                                myToast.setTextAndShow(R.string.smssdk_network_error, 100);
                             }
                         }
                     });
@@ -393,11 +393,17 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
         if (id == id_btnSubmit) {//注册的“提交”按钮 ，忘记密码的“下一步”
 
-            if (!isForgetPwdPage){//注册
+            if (!isForgetPwdPage) {//注册
                 if (!checkPwd())// 验证密码的合法性
-                return;
+                    return;
             }
-            submitEvent();
+            if (btnSubmit.getText().toString().equals(activity.getResources().getString(R.string.smssdk_submit))) {//忘记密码的最后一次提交
+                if (!checkPwd())// 验证密码的合法性
+                    return;
+                resultCompleteForget();
+                    return;
+            }
+            submitEvent();//验证验证码
         } else if (id == id_ll_back) {
             finish();
         } else if (id == id_rl_country) {
@@ -467,8 +473,8 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
             try {
                 // 提交 区号，手机号，验证码
                 SMSSDK.submitVerificationCode(countryCode, phone,
-                    verificationCode);
-            }catch (Exception e) {
+                        verificationCode);
+            } catch (Exception e) {
                 myToast.setTextAndShow(R.string.smssdk_virificaition_code_wrong, 100);
             }
 
@@ -605,6 +611,24 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         HashMap<String, Object> res = new HashMap<String, Object>();
         res.put("res", true);
         res.put("phone", phone);
+        res.put("pwd", pwd);
+        if (callback != null) {
+            callback.afterEvent(
+                    SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE,
+                    SMSSDK.RESULT_COMPLETE, res);
+        }
+        finish();
+    }
+
+    /**
+     * 忘记密码的最后一步，提交
+     */
+    private void resultCompleteForget() {
+        String pwd = etPwd.getText().toString();
+        // 结果_完整
+        HashMap<String, Object> res = new HashMap<String, Object>();
+        res.put("res", true);
+        res.put("phone", forgetPhoto);
         res.put("pwd", pwd);
         if (callback != null) {
             callback.afterEvent(
