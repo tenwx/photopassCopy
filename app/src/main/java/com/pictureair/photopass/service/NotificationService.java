@@ -191,7 +191,7 @@ public class NotificationService extends android.app.Service {
                         @Override
                         public void onConnect() {
                             // TODO Auto-generated method stub
-                            socket.emit("getNewPhotosCountOfUser", preferences.getString(Common.USERINFO_TOKENID, null));
+                            socket.emit("getNewPhotosCountOfUser", MyApplication.getTokenId());
                             isConnected = true;
                             PictureAirLog.d(TAG, "Connection established");
                             notificationHandler.sendEmptyMessage(SOCKET_CONNECT_SUCCESS);

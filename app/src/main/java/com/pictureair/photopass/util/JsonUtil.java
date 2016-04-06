@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfo1;
@@ -237,7 +238,7 @@ public class JsonUtil {
     public static void getUserInfo(final Context context, JSONObject object, String account, Handler handler) throws JSONException {
         SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
-        e.putString(Common.USERINFO_TOKENID, object.getString("tokenId"));
+        e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(object.getString("tokenId"), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
         PictureAirLog.out("get user info---->" + object.toString());
         JSONObject obj = object.getJSONObject("user");
         if (obj.containsKey("_id")) {

@@ -192,9 +192,8 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     }
                     try {
                         // 需要更新服务器中用户头像图片信息
-                        String tokenId = sp.getString(Common.USERINFO_TOKENID, null);
                         RequestParams params = new RequestParams();
-                        params.put(Common.USERINFO_TOKENID, tokenId);
+                        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
                         params.put("updateType", "avatar");
                         params.put("file", headPhoto);
                         API1.updateUserImage(params, setHeadPhotoHandler, 0, dialog);

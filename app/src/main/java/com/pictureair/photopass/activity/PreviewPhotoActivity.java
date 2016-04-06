@@ -63,16 +63,11 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.crypto.NoSuchPaddingException;
 
 import cn.smssdk.gui.CustomProgressDialog;
 
@@ -550,8 +545,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 byte[] arg2 = null;
                 try {
                     arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
-                } catch (InvalidKeyException | NoSuchAlgorithmException
-                        | NoSuchPaddingException | IOException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -743,9 +737,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     super.onSuccess(binaryData);
                     try {
                         AESKeyHelper.encrypt(binaryData, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
-                    } catch (InvalidKeyException
-                            | NoSuchAlgorithmException
-                            | NoSuchPaddingException | IOException e) {
+                    } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }

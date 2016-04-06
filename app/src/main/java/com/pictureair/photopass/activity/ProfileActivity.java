@@ -109,7 +109,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 birthdayString = bundle.getString("year") + "-" + bundle.getString("month") + "-" + bundle.getString("day");
                 dialog = CustomProgressDialog.show(ProfileActivity.this,
                         getString(R.string.connecting), false, null);
-                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""), birthdayString,
+                API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""), birthdayString,
                         sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""),
                         "", API1.UPDATE_PROFILE_BIRTHDAY, profileHandler);
                 break;
@@ -121,7 +121,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 }
                 dialog = CustomProgressDialog.show(ProfileActivity.this,
                         getString(R.string.connecting), false, null);
-                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
+                API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""),
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), genderString,
                         sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_GENDER, profileHandler);
                 break;
@@ -349,7 +349,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 }
                 dialog = CustomProgressDialog.show(this,
                         getString(R.string.connecting), false, null);
-                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
+                API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""),
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
                         countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
             }
@@ -364,7 +364,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 nickNameString = data.getStringExtra("nickName");
                 dialog = CustomProgressDialog.show(this,
                         getString(R.string.connecting), false, null);
-                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), nickNameString,
+                API1.updateProfile(MyApplication.getTokenId(), nickNameString,
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
                         sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);
                 break;

@@ -337,9 +337,9 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             } else if (clickIndex == LOVE) {
                 mHandler.sendEmptyMessage(STOPLOCATION);
                 if (list.get(position).islove == 1) {
-                    API1.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "remove", position, mHandler);
+                    API1.editFavoriteLocations(MyApplication.getTokenId(), list.get(position).locationId, "remove", position, mHandler);
                 } else {
-                    API1.editFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), list.get(position).locationId, "add", position, mHandler);
+                    API1.editFavoriteLocations(MyApplication.getTokenId(), list.get(position).locationId, "add", position, mHandler);
                 }
             } else {
                 final Message msg = new Message();

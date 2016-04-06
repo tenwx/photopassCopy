@@ -70,7 +70,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private TextView counTextView;
 
     private CustomProgressBarPop dialog;
-    private String tokenId;
     private BannerView_PreviewCompositeProduct bannerView_Preview;
     private boolean isbuynow = false;
 
@@ -121,8 +120,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                 RequestParams params = new RequestParams();
                                 try {
                                     params.put("file", new File(photourl), "application/octet-stream");
-                                    params.put(Common.USERINFO_TOKENID, tokenId);
-                                    PictureAirLog.v(TAG, tokenId + "tokenid");
+                                    params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
                                     API1.SetPhoto(params, handler, upload_index, dialog);
                                 } catch (FileNotFoundException e) {
                                     // TODO Auto-generated catch block
@@ -267,7 +265,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
 
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-        tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, null);
         recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             counTextView.setVisibility(View.INVISIBLE);

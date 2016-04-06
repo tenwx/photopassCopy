@@ -9,6 +9,7 @@ import android.os.Message;
 
 import com.alibaba.fastjson.JSONArray;
 import com.loopj.android.http.RequestParams;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 
 import cn.smssdk.gui.MyToast;
 
@@ -173,20 +174,20 @@ public class DealCodeUtil {
 	 */
 	public void startDealCode(final String code){
 		this.code = code;
-		API1.checkCodeAvailable(code, sharedPreferences.getString(Common.USERINFO_TOKENID, ""), handler2);
+		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)), handler2);
 	}
 
 	private void getInfo(String code, final String type){
 		RequestParams params = new RequestParams();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
-		params.put(Common.USERINFO_TOKENID, sharedPreferences.getString(Common.USERINFO_TOKENID, ""));
+		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
 		String urlString = null;
 		if ("pp".equals(type)) {
 			if (null != needBind && "false".equals(needBind)) {//如果是通过pp界面扫描的时候，此处不需要绑定pp到用户
 				JSONArray pps = new JSONArray();
 				pps.add(code);
 
-				API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null),pps, bindData, pppId, handler2);
+				API1.bindPPsToPPP(AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)), pps, bindData, pppId, handler2);
 				PictureAirLog.out("return");
 				return;
 			}else {//其他界面过来的话，需要绑定到user

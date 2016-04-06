@@ -624,11 +624,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 String photourl = updatephotolist.get(0).photoPathOrURL;
                 // 需要上传选择的图片
                 RequestParams params = new RequestParams();
-                String tokenId = sharedPreferences.getString(Common.USERINFO_TOKENID, null);
                 PictureAirLog.v(TAG, "上传的图片URL" + photourl);
                 try {
                     params.put("file", new File(photourl), "application/octet-stream");
-                    params.put(Common.USERINFO_TOKENID, tokenId);
+                    params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
                     API1.SetPhoto(params, submitOrderHandler, requestCode, customProgressBarPop);
 //					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
                     customProgressBarPop.show(0);

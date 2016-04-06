@@ -305,7 +305,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 dialog.dismiss();
                 JSONArray pps = new JSONArray();
                 pps.add(PPCode);
-                API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
+                API1.bindPPsToPPP(MyApplication.getTokenId(), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
 
                 break;
             case API1.ADD_CODE_TO_USER_FAILED:
@@ -399,7 +399,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private void getData() {
         if (API1.PPPlist.size() == 0) {//没有数据，需要重新获取
             PictureAirLog.v(TAG, "ppp = 0");
-            API1.getPPPSByUserId(sharedPreferences.getString(Common.USERINFO_TOKENID, null), myPPPHandler);
+            API1.getPPPSByUserId(MyApplication.getTokenId(), myPPPHandler);
         } else {//有数据
             PictureAirLog.v(TAG, "ppp != 0");
             for (int i = 0; i < API1.PPPlist.size(); i++) {
@@ -624,7 +624,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                             //已经被绑定了，所以直接绑定ppp
                             JSONArray pps = new JSONArray();
                             pps.add(PPCode);
-                            API1.bindPPsToPPP(sharedPreferences.getString(Common.USERINFO_TOKENID, null), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
+                            API1.bindPPsToPPP(MyApplication.getTokenId(), pps, "", list1.get(currentPosition).PPPCode, myPPPHandler);
                         } else {
                             //没有被绑定，则先绑到user，再绑到ppp
                             API1.addCodeToUser(PPCode, myPPPHandler);

@@ -81,7 +81,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private ViewGroup anim_mask_layout;//动画层
     private ImageView buyImg;// 这是在界面上跑的小图片
     private SharedPreferences sp;
-    private String tokenId;
     private Editor editor;
     private boolean isbuynow = false;
     private BannerView_PreviewCompositeProduct bannerView_Makegift;
@@ -223,8 +222,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                             RequestParams params = new RequestParams();
                             try {
                                 params.put("file", new File(photourl), "application/octet-stream");
-                                params.put(Common.USERINFO_TOKENID, tokenId);
-                                System.out.println(tokenId + "tokenid");
+                                params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
                                 API1.SetPhoto(params, makeGiftHandler, upload_index, progressBarPop);
                             } catch (FileNotFoundException e) {
                                 // TODO Auto-generated catch block
@@ -345,7 +343,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private void init() {
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 
-        tokenId = sp.getString(Common.USERINFO_TOKENID, null);
         newToast = new MyToast(this);
         currencytextview = (TextView) findViewById(R.id.textView2);
         currencytextview.setText(sp.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));

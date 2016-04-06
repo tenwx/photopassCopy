@@ -15,9 +15,11 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -117,7 +119,7 @@ public class MyApplication extends Application {
      */
     public static String getTokenId() {
         if (tokenId == null) {
-            tokenId = userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null);
+            tokenId = AESKeyHelper.decryptString(userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
         }
         return tokenId;
     }

@@ -153,7 +153,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
-                API1.getFavoriteLocations(sharedPreferences.getString(Common.USERINFO_TOKENID, null), fragmentPageDiscoverHandler);
+                API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
                 break;
 
             //获取收藏地址成功
