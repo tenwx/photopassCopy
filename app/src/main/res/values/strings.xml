@@ -8,17 +8,17 @@
     <string name="forget_pwd">忘记密码？</string>
     <string name="login">登录</string>
     <string name="sign">注册</string>
-    <string name="otherLogin">其他方式</string>
+    <string name="otherLogin">其他方式登录</string>
     <string name="pwd_no_all_space">密码首或尾不能为空格!</string>
     <string name="pwd_head_or_foot_space">密码首或尾不能为空格!</string>
     <string name="modify_password_empty_hint">请输入密码</string>
     <string name="notify_password_hint">密码不能小于6位!</string>
-    <string name="connecting">请稍后...</string>
+    <string name="connecting">请稍后&#8230;</string>
     <string name="input_mobile">请输入手机号</string>
     <!-- login activity end-->
 
     <!-- email login start -->
-    <string name="email">邮箱</string>
+    <string name="email">邮箱地址</string>
     <string name="email_error">邮箱不可用</string>
     <!-- email login end-->
 
@@ -82,8 +82,8 @@
     <string name="story_tab_photopass">乐拍通</string>
     <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
-    <string name="story_tab_favorite">已收藏</string>
-    <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者迪士尼乐拍通卡上的二维码, 更快获得你们的游玩照片。</string>
+    <string name="story_tab_favorite">收藏</string>
+    <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者迪士尼乐拍通卡预览您的照片。</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
     <string name="no_photo_in_magiccam">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
@@ -121,7 +121,7 @@
     <!-- manual input start -->
     <string name="manual">手动输入</string>
     <string name="ok">确定</string>
-    <string name="manul_input_intro">请输入你的迪士尼乐拍通卡背面16位数字条码信息，即可获得您的照片信息</string>
+    <string name="manul_input_intro">请输入你的迪士尼乐园门票或迪士尼乐拍通卡背后的数字码</string>
     <string name="nocontext">输入你的编码</string>
     <string name="wrong_length">请检查你的迪士尼乐拍通卡片</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
@@ -157,7 +157,7 @@
 
     <!-- me start -->
     <string name="mypage_message">信息</string>
-    <string name="mypage_coupons">优惠券</string>
+    <string name="mypage_coupons">抵用券</string>
     <string name="mypage_myprofile">个人信息</string>
     <string name="mypage_myorder">我的订单</string>
     <string name="mypage_pp">迪士尼乐拍通</string>
@@ -195,7 +195,7 @@
     <!-- blur start -->
     <string name="blur_intro">只需购买迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
     <string name="up_ppp_money">升级成为迪士尼乐拍通一卡通</string>
-    <string name="buythisphoto">购买数码照片</string>
+    <string name="buythisphoto">购买单张数码照片</string>
     <string name="cancel1">取消</string>
     <!-- blur end -->
 
@@ -209,14 +209,14 @@
 
     <!-- edit start -->
     <string name="save">保存</string>
-    <string name="frames">边框</string>
+    <string name="frames">相框</string>
     <string name="magicbrush">滤镜</string>
     <string name="decoration">饰品</string>
     <string name="rotate">旋转</string>
     <string name="rotate_left">左转90</string>
     <string name="rotate_right">右转90</string>
-    <string name="saving">正在保存...</string>
-    <string name="dealing">正在处理...</string>
+    <string name="saving">正在保存&#8230;</string>
+    <string name="dealing">正在处理&#8230;</string>
     <string name="exit_hint">是否保存？</string>
     <string name="button_cancel">取消</string>
     <string name="button_ok">确认</string>
@@ -230,15 +230,15 @@
     <!-- edit end -->
 
     <!-- detail product start -->
-    <string name="choosephoto">选择照片</string>
+    <string name="choosephoto">选择照片制作</string>
     <string name="add_to_cart">加入购物车</string>
-    <string name="address_digital_goods">数码下载</string>
-    <string name="self_collect">自提</string>
+    <string name="address_digital_goods">数码照片下载</string>
+    <string name="self_collect">可前往上海迪士尼度假区指定地点获取。</string>
     <string name="buy_good">立即购买</string>
     <!-- detail product end -->
 
     <!-- preview product & make gift start -->
-    <string name="preview">礼物预览</string>
+    <string name="preview">预览</string>
     <string name="confirm">确认</string>
     <string name="buy_good2">购买</string>
     <!-- preview product & make gift end -->
@@ -260,7 +260,7 @@
 
     <!-- submit order start -->
     <string name="submitorder">订单确认</string>
-    <string name="transport">配送方式</string>
+    <string name="transport">照片获取处</string>
     <string name="goods_info">商品信息</string>
     <string name="all_goods">共%1$d件商品</string>
     <string name="checkout">确认</string>
@@ -273,17 +273,19 @@
     <string name="payment_ways">支付方式</string>
     <string name="zfbzf">支付宝</string>
     <string name="yhkzf">银联</string>
-    <string name="paypalzf">国际银行</string>
+    <string name="paypalzf">Visa</string>
     <string name="zfbsm">推荐使用支付宝账号</string>
     <string name="yhksm">支持银联卡</string>
     <string name="paypalsm">支持国际信用卡支付</string>
     <string name="wxzf">微信支付</string>
     <string name="weixinsm">推荐安装5.0及以上的版本使用</string>
-    <string name="submitpayment">付款</string>
+    <string name="submitpayment">支付</string>
     <string name="cancel_deal">您取消了支付</string>
     <string name="alipay_error">支付错误</string>
     <string name="pay_failed">付款失败</string>
     <string name="pay_unsuccesss">未成功支付，请重试</string>
+    <string name="submit_order">订单已提交</string>
+    <string name="no_pay_tips">您不用额外支付任何费用</string>
     <!-- payment end -->
 
     <!-- set header start -->
@@ -309,7 +311,7 @@
     <string name="order_unpaid">未付款</string>
     <string name="order_paid">已付款</string>
     <string name="all_order">已完成</string>
-    <string name="order_completed">已完成</string>
+    <string name="order_completed">已取</string>
     <string name="order_status">订单状态:</string>
     <string name="payment_order_btn">付款</string>
     <string name="order_no">订单编号:</string>
@@ -385,7 +387,7 @@
     <!-- about start -->
     <string name="about_tips">奇妙时光, 完美定格</string>
     <string name="copyright">迪彩公司 版权所有</string>
-    <string name="copyright1">Copyright © 2016 Pictureworks</string>
+    <string name="copyright1">Copyright © Disney</string>
     <string name="copyright2">All Rights Reserved.</string>
     <string name="develop_version">调试版 </string>
     <string name="testing_version">公测版 </string>
@@ -394,7 +396,7 @@
     <!-- check update start -->
     <string name="generate_apk_failed">下载失败</string>
     <string name="update_version">新版本: %1$s</string>
-    <string name="generate_apk">正在处理...</string>
+    <string name="generate_apk">正在处理&#8230;</string>
     <!-- check update end -->
 
     <!-- socket start -->
@@ -442,10 +444,9 @@
     <string name="delete_percent">正在删除%1$d/%2$d</string>
     <!-- edit story end -->
 
-
     <!-- 我的优惠卷 start-->
-    <string name="my_coupon">我的优惠卷</string>
-    <string name="coupon">优惠卷</string>
+    <string name="my_coupon">我的抵用卷</string>
+    <string name="coupon">抵用券</string>
     <string name="coupon_exchange_use">添加</string>
     <string name="coupon_scan">扫描</string>
     <string name="shop_price">商品金额</string>
@@ -457,9 +458,7 @@
     <string name="expired">已过期</string>
     <string name="discount">折</string>
     <string name="yuan">元</string>
-    <string name="conpon_input_hint">请输入优惠卷，体验卡等，优惠卷兑换码</string>
-    <string name="submit_order">订单已提交</string>
-    <string name="no_pay_tips">您不用额外支付任何费用</string>
+    <string name="conpon_input_hint">请输入抵用卷兑换码</string>
     <!-- 我的优惠卷 end-->
 
 

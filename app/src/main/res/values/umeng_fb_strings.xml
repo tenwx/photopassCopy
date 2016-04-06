@@ -11,7 +11,7 @@
     <string name="umeng_fb_notification_ticker_text">有新的回复</string>
     <string name="umeng_fb_notification_content_formatter_single_msg">新回复: %s</string>
     <string name="umeng_fb_notification_content_formatter_multiple_msg">收到来自开发者的 %d 条回复。</string>
-    <string name="umeng_fb_feedback">输入意见</string>
+    <string name="umeng_fb_feedback">请输入</string>
     <string name="umeng_fb_contact_save">保存</string>
     <string name="umeng_fb_time_right_now">刚刚</string>
     <string name="umeng_fb_time_minutes_ago">%d分钟前</string>
