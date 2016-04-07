@@ -34,14 +34,14 @@ import cn.smssdk.gui.CustomProgressDialog;
  * 优惠卷view
  * bass
  */
-public class CouponActivity extends BaseActivity implements CouponViewInterface, View.OnClickListener {
+public class CouponActivity extends BaseActivity implements CouponViewInterface{
     private final String TAG = "CouponActivity";
 
     private RecyclerView mRecyclerView;
     private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
-    private CustomTextView mBtnSubmit, mBtnScan;
+//    private CustomTextView mBtnSubmit, mBtnScan;
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
     private Context context;
@@ -63,13 +63,14 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private void initViews() {
         myToast = new MyToast(context);
         setTopLeftValueAndShow(R.drawable.back_white, true);
-        setTopTitleShow(R.string.my_coupon);
+        setTopTitleShow("");
+        setTopRightValueAndShow(R.drawable.coupon_add2, true);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
-        mBtnSubmit = (CustomTextView) findViewById(R.id.btn_submit);
-        mBtnScan = (CustomTextView) findViewById(R.id.btn_scan);
+//        mBtnSubmit = (CustomTextView) findViewById(R.id.btn_submit);
+//        mBtnScan = (CustomTextView) findViewById(R.id.btn_scan);
+//        mBtnSubmit.setOnClickListener(this);
+//        mBtnScan.setOnClickListener(this);
         llNoCoupon = (LinearLayout) findViewById(R.id.ll_no_coupon);
-        mBtnSubmit.setOnClickListener(this);
-        mBtnScan.setOnClickListener(this);
 
         mSelectData = new ArrayList<>();
         mAllData = new ArrayList<>();
@@ -103,6 +104,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
         switch (view.getId()) {
             case R.id.topLeftView:
                 onBackPressed();
+                break;
+            case R.id.topRightView:
+                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,R.layout.dialog_edittext,myHandler).show();
                 break;
             default:
                 break;
@@ -153,23 +157,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
                 break;
         }
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_submit:
-                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,R.layout.dialog_edittext,myHandler).show();
-                break;
-
-            case R.id.btn_scan:
-                //进入扫描页面
-                //扫到码之后调用 couponTool.insertCoupon(优惠卷码);
-                myToast.setTextAndShow("扫描页面", Common.TOAST_SHORT_TIME);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -246,6 +233,13 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     @Override
     public void getWhatPege(String whatPege) {
         this.whatPege = whatPege;
+        if(whatPege.equals(couponTool.ACTIVITY_ME)){//me页面
+            setTopTitleShow(R.string.my_coupon);
+        }
+        else if (whatPege.equals(couponTool.ACTIVITY_ORDER)){//订单页面
+            setTopTitleShow(R.string.select_cpupon);
+        }else{
+        }
     }
 
     /**
