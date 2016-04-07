@@ -62,7 +62,7 @@
     <string name="wechatmoments">微信朋友圈</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
-    <string name="qq">QQ</string>
+    <string name="qq">QQ好友</string>
     <string name="share_text">我愿和你分享每一刻在迪士尼乐拍通的美妙体验!</string>
     <string name="share_not_open">请在应用上线后使用此功能！</string>
     <!-- 分享字段 end-->
@@ -273,7 +273,7 @@
     <string name="payment_ways">支付方式</string>
     <string name="zfbzf">支付宝</string>
     <string name="yhkzf">银联</string>
-    <string name="paypalzf">Visa</string>
+    <string name="paypalzf">VISA</string>
     <string name="zfbsm">推荐使用支付宝账号</string>
     <string name="yhksm">支持银联卡</string>
     <string name="paypalsm">支持国际信用卡支付</string>

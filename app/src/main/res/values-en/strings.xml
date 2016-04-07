@@ -62,7 +62,7 @@
     <string name="wechatmoments">Wechat Moments</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
-    <string name="qq">QQ</string>
+    <string name="qq">QQ Friends</string>
     <string name="share_text">I would like to share my magical experience through Disney PhotoPass APP with you!</string>
     <string name="share_not_open">This feature will be available after app goes live.</string>
     <!-- 分享字段 end-->
@@ -273,7 +273,7 @@
     <string name="payment_ways">Payment Methods</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
-    <string name="paypalzf">Visa</string>
+    <string name="paypalzf">VISA</string>
     <string name="zfbsm">Recommended</string>
     <string name="yhksm">Supported</string>
     <string name="paypalsm">Supported</string>
@@ -452,7 +452,7 @@
     <string name="shop_price">Total</string>
     <string name="coupon_price">Discount</string>
     <string name="pay_price">Pay</string>
-    <string name="coupon_count">有%1$d张优惠券可用</string>
+    <string name="coupon_count">%1$d Coupons</string>
     <string name="no_coupon">You do not have any coupons in your account.</string>
     <string name="has_been_used">Used</string>
     <string name="expired">Expired</string>

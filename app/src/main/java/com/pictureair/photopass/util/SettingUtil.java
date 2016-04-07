@@ -1,7 +1,5 @@
 package com.pictureair.photopass.util;
 
-import android.content.Context;
-
 import com.pictureair.photopass.db.PictureAirDbManager;
 
 
@@ -16,9 +14,9 @@ public class SettingUtil {
     private final String TAG = "SettingUtil";
 	private PictureAirDbManager pictureAirDbManager;
 
-	public SettingUtil(Context context) {
+	public SettingUtil(PictureAirDbManager pictureAirDbManager) {
 		super();
-		pictureAirDbManager = new PictureAirDbManager(context);
+		this.pictureAirDbManager = pictureAirDbManager;
 	}
 	
 	//     tips 1 , 网络下载模式流程。 start

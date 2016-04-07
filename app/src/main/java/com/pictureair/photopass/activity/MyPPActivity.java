@@ -356,7 +356,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
-        settingUtil = new SettingUtil(this);
+        pictureAirDbManager = new PictureAirDbManager(this);
+        settingUtil = new SettingUtil(pictureAirDbManager);
         myToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 MODE_PRIVATE);
@@ -365,7 +366,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         back = (ImageView) findViewById(R.id.back);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
-        pictureAirDbManager = new PictureAirDbManager(this);
         back.setOnClickListener(this);
     }
 
