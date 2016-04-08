@@ -594,11 +594,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void init() {
         // TODO Auto-generated method stub
         previewPhotoHandler = new Handler(this);
-        settingUtil = new SettingUtil(this);
+        pictureAirDbManager = new PictureAirDbManager(this);
+        settingUtil = new SettingUtil(pictureAirDbManager);
         newToast = new MyToast(this);
         sharePop = new SharePop(this);
         matrix = new Matrix();
-        pictureAirDbManager = new PictureAirDbManager(this);
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);

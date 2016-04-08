@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -91,7 +92,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         ibWifiOnlyDownload.setOnClickListener(this);
         ibAutoUpdate.setOnClickListener(this);
 
-        settingUtil = new SettingUtil(this);
+        settingUtil = new SettingUtil(new PictureAirDbManager(this));
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
         currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, "");

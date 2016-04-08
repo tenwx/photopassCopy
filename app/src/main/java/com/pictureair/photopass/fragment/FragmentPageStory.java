@@ -88,6 +88,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private static final int DEAL_FAVORITE_DATA_SUCCESS = 1000;
     private static final int SYNC_BOUGHT_PHOTOS = 1001;
     private static final int SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE = 1002;
+    private static final int LOAD_PHOTO_FROM_DB = 1003;
 
     private static final String TAG = "FragmentPageStory";
 
@@ -246,15 +247,27 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 app.photoPassVideoList.clear();
 
                 if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
-                    PictureAirLog.d(TAG, "---------> load data from databases");
-                    loadDataFromDataBase();
-
                     //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
                     if (settingUtil.isFirstPP10(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
                         //第一次 PP数量到 10 。
                         API1.getPPPSByUserId(MyApplication.getTokenId(), fragmentPageStoryHandler);
                     }
+
+                    PictureAirLog.d(TAG, "---------> load data from databases");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            loadDataFromDataBase();
+                            fragmentPageStoryHandler.sendEmptyMessage(LOAD_PHOTO_FROM_DB);
+                        }
+                    }.start();
+                } else {
+                    fragmentPageStoryHandler.sendEmptyMessage(LOAD_PHOTO_FROM_DB);
                 }
+                break;
+
+            case LOAD_PHOTO_FROM_DB:
                 if (app.photoPassPicList.size() == 0 || needfresh) {
                     //数据为0，需要从网上下载
                     System.out.println("photolist size = 0");
@@ -671,12 +684,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         indicator = (TabPageIndicator) view.findViewById(R.id.indicator);
         indicator.setOnPageChangeListener(this);
         //初始化控件
+        PictureAirLog.out("dialog-----> in story");
+        dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
         context = getActivity();
-        settingUtil = new SettingUtil(context);
+        pictureAirDbManager = new PictureAirDbManager(getActivity());
+        settingUtil = new SettingUtil(pictureAirDbManager);
         app = (MyApplication) getActivity().getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
-        pictureAirDbManager = new PictureAirDbManager(getActivity());
         sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         photoPassPictureList = new ArrayList<>();
         magicPicList = new ArrayList<>();
@@ -706,7 +721,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             editor.commit();
         }
         //获取API
-        dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
         isLoading = true;
         //获取地点信息
         if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
@@ -1020,6 +1034,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void onDetach() {
         super.onDetach();
+        PictureAirLog.out("story-----> detach");
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
@@ -1029,6 +1044,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        PictureAirLog.out("story-----> destroy");
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
@@ -1569,7 +1585,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * @param lists
      */
     private void downLoadPhoto(ArrayList<PhotoInfo> lists) {
-        if (new SettingUtil(getContext()).isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+        if (new SettingUtil(pictureAirDbManager).isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
             for (int i = 0; i < lists.size(); i++) {
                 if (lists.get(i).isPayed == 1) {
                     download(lists);
