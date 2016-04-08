@@ -101,10 +101,10 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
          * 显示价格 还是折扣
          */
         if (mDatas.get(position).getCpType().equals("discount")){//折扣
-            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
+//            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
         }else if (mDatas.get(position).getCpType().equals("full")){//满
             //目前不知如何显示
-            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
+//            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
         }else if (mDatas.get(position).getCpType().equals("subtract")){//减
             holder.tvNumber.setText(Company+" -"+(int)mDatas.get(position).getCpNumber());//这里是价格或者是折扣需要单位
         }

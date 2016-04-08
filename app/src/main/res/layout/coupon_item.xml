@@ -73,7 +73,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/pp_margin_10"
             android:layout_marginTop="@dimen/pp_margin_10"
-            android:text="价格？折扣？"
+            android:text=" "
             android:textColor="@color/gray"
             android:textSize="@dimen/text_size_20" />
 

@@ -16,6 +16,9 @@ import java.util.List;
 /**
  * 此类负责与Coupon的UI对接与数据逻辑
  * Created by bass on 16/3/11.
+ *
+ * 需求改动：
+ * 2016/4/7 从me中进入（获取抵用劵访问lisa接口，字段与之前不一样）
  */
 public class CouponTool {
     private static final String TAG = "CouponTool";
@@ -39,12 +42,15 @@ public class CouponTool {
                     couponView.fail(id);
                     break;
 
-                case API1.GET_COUPON_SUCCESS://获取所有优惠卷成功
+                case API1.GET_COUPON_SUCCESS://从订单页面获取所有优惠卷成功
                     getApiReturnDatas((JSONObject) msg.obj);
                     break;
 
                 case API1.INSERT_COUPON_SUCCESS://添加一张优惠卷成功
                     insertCouponSuccess((JSONObject) msg.obj);
+                    break;
+
+                default:
                     break;
             }
             return false;
@@ -94,7 +100,7 @@ public class CouponTool {
      */
     public void queryCouponOrderPage(JSONArray cartItemIds) {
         couponView.showProgressBar();
-        API1.getCoupons(mHandler, cartItemIds);
+        API1.getCartItemCoupons(mHandler, cartItemIds);
     }
 
     /**
@@ -102,12 +108,12 @@ public class CouponTool {
      * 查询当前用户的所有优惠卷
      * 也可作为刷新数据用
      * 1. 需要TokenId
+     * LISA接口
      */
     public void queryCouponMePage() {
         couponView.showProgressBar();
         PictureAirLog.out("从Me界面进入queryCouponMePage");
-        API1.getCoupons(mHandler, null);//从me中进来的
-
+        API1.getCoupons(mHandler);//从me中进来的
         /**
          * test
          */
@@ -150,7 +156,12 @@ public class CouponTool {
      */
     private void getApiReturnDatas(JSONObject jsonObject) {
         mDatas = null;
-        mDatas = getJsonToObj(jsonObject);
+        if (whatPege.equals(ACTIVITY_ME)){//从me中进来的
+            mDatas = getJsonToObj2(jsonObject);
+
+        }else{
+            mDatas = getJsonToObj(jsonObject);
+        }
         couponView.goneProgressBar();
         if (null == mDatas || mDatas.size() < 0) {
             couponView.noCoupon();//无优惠卷
@@ -195,6 +206,7 @@ public class CouponTool {
     }
 
     /**
+     * 齐超的接口
      * 解析优惠卷的json
      */
     private List<CouponInfo> getJsonToObj(JSONObject jsonObject) {
@@ -220,6 +232,61 @@ public class CouponTool {
             //有效期
             effectiveTime = array.getJSONObject(i).getString("effectiveTime");//有效开始时间
             failureTime = array.getJSONObject(i).getString("failureTime");//有效结束时间
+            couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+            list.add(couponInfo);
+        }
+        return list;
+    }
+
+    /**
+     * lisa接口的解析json
+     * 解析成功即可
+     */
+    private List<CouponInfo> getJsonToObj2(JSONObject jsonObject) {
+        PictureAirLog.e(TAG, "解析优惠卷的json" + jsonObject);
+
+        JSONArray array = jsonObject.getJSONArray("couponList");
+        if (null == array || array.size() == 0) {
+            return null;
+        }
+        List<CouponInfo> list = new ArrayList<>();
+        CouponInfo couponInfo = null;
+        String effectiveTime;
+        String failureTime;
+        String cnDesc = "";//中文描述
+        String enDesc = "";//英文描述
+        String cnName = "";//中文name
+        String enName = "";//英文name
+        String PPPType = "";
+
+        boolean isCn = MyApplication.getInstance().getLanguageType().equals("zh")? true:false;
+        PictureAirLog.e("getJsonToObj2","getLanguageType:"+MyApplication.getInstance().getLanguageType());
+
+        for (int i = 0; i < array.size(); i++) {
+            couponInfo = new CouponInfo();
+
+            couponInfo.setCpStatus(array.getJSONObject(i).getBoolean("isExpired") ? "failure" : "active");//是否已经过期
+            couponInfo.setCpCode(array.getJSONObject(i).getString("PPPCode"));
+            couponInfo.setCpNumber(0);//LISA接口暂时没有这个
+            PPPType = array.getJSONObject(i).getString("PPPType");//PP+的类型，PPPType为“5”时说明是PP+体验卡， 暂时没有做操作的
+            couponInfo.setCpType("full");//优惠卷类型（discount,full,subtract）折扣，满，减
+
+            enDesc = array.getJSONObject(i).getJSONObject("codeDesc").getString("EN");
+            cnDesc = array.getJSONObject(i).getJSONObject("codeDesc").getString("CN");
+            couponInfo.setCpDescribe(isCn ? cnDesc : enDesc);//描述
+
+            enName = array.getJSONObject(i).getJSONObject("codeName").getString("EN");
+            cnName = array.getJSONObject(i).getJSONObject("codeName").getString("CN");
+            couponInfo.setCpName(isCn?cnName:enName);//优惠卷名称
+
+            //有效期
+            effectiveTime = array.getJSONObject(i).getString("effectiveOn");//有效开始时间
+            effectiveTime = effectiveTime.split("T")[0];
+
+            failureTime = array.getJSONObject(i).getString("expiredOn");//有效结束时间
+            failureTime = failureTime.split("T")[0];
+
+
             couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
             list.add(couponInfo);
         }

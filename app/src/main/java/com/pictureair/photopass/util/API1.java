@@ -223,7 +223,7 @@ public class API1 {
     public static final int FIND_PWD_SUCCESS = 6051;
     public static final int FIND_PWD_FAILED = 6050;
 
-    //获取所有优惠卷
+    //从订单中获取所有优惠卷
     public static final int GET_COUPON_SUCCESS = 6061;
     public static final int GET_COUPON_FAILED = 6060;
 
@@ -545,8 +545,10 @@ public class API1 {
                 PictureAirLog.out("add scan code success---->" + type);
                 if ("pp".equals(type)) {
                     handler.obtainMessage(ADD_PP_CODE_TO_USER_SUCCESS).sendToTarget();
-                } else {//ppp or coupon
+                } else if ("ppp".equals(type)){//ppp
                     handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS).sendToTarget();
+                } else {//coupon
+                    handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS, jsonObject).sendToTarget();
                 }
             }
 
@@ -1925,14 +1927,11 @@ public class API1 {
     }
 
     /**
-     * 两个业务处理AB
-     * A根据用户查询所有优惠卷
-     * 1. tokenId
-     * B根据商品查询所有可以使用的优惠卷
+     * 根据商品查询所有可以使用的优惠卷
      * 1. tokenId
      * 2. cartItemIds:array<string>,用户选中的购物项(可选)
      */
-    public static void getCoupons(final Handler handler, JSONArray cartItemIds) {
+    public static void getCartItemCoupons(final Handler handler, JSONArray cartItemIds) {
         final RequestParams params = new RequestParams();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
@@ -1954,8 +1953,6 @@ public class API1 {
                 PictureAirLog.e(TAG, "============" + status);
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
-
-
         });
     }
 
@@ -2021,6 +2018,33 @@ public class API1 {
                 handler.obtainMessage(PREVIEW_COUPON_FAILED, status, 0).sendToTarget();
             }
 
+        });
+    }
+
+    /**
+     * 从me中进入查询抵用劵
+     * @param handler
+     */
+    public static void getCoupons(final Handler handler) {
+        final RequestParams params = new RequestParams();
+
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
+
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_ME_COUPONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.e(TAG, "============" + jsonObject);
+                handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "============" + status);
+                handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
+            }
         });
     }
 }

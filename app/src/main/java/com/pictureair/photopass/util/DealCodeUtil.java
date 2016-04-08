@@ -143,14 +143,26 @@ public class DealCodeUtil {
 				case API1.ADD_PPP_CODE_TO_USER_SUCCESS://绑定ppp成功
 					Bundle bundle3 = new Bundle();
 					PictureAirLog.out("add ppp code or coupon to user success--->" + dealWay);
-					if (dealWay != null) {//从ppp进入
-						bundle3.putInt("status", 5);
-						bundle3.putString("result", "pppOK");
-						PictureAirLog.out("scan ppp ok 555");
-						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
-					}else {
+					if (msg.obj == null) {//ppp
+						if (dealWay != null) {//从ppp进入
+							bundle3.putInt("status", 5);
+							bundle3.putString("result", "pppOK");
+							PictureAirLog.out("scan ppp ok 555");
+							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
+						}else {
+							bundle3.putInt("status", 3);
+							PictureAirLog.out("scan ppp ok 333");
+							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
+						}
+					} else {//coupon
+						//1.ppp,不会出现
+						//2.scan，直接绑定，也可以返回数据，scan页面也不会处理
+						//3.coupon，直接绑定，并且返回数据
+						//解析json
+						//将对象放入bundle3中
 						bundle3.putInt("status", 3);
-						PictureAirLog.out("scan ppp ok 333");
+
+						PictureAirLog.out("scan coupon ok");
 						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
 					}
 					break;
