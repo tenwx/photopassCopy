@@ -19,12 +19,12 @@ import com.pictureair.photopass.adapter.CouponAdapter;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
+import com.pictureair.photopass.util.DealCodeUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CouponViewInterface;
-import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +49,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
 
     private CouponTool couponTool;
     private String whatPege = "";//是从什么页面进来的
+    private PictureWorksDialog pictureWorksDialog;
+    private DealCodeUtil dealCodeUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
         setContentView(R.layout.activity_coupon);
         context = this;
         couponTool = new CouponTool(this);
+        dealCodeUtil = new DealCodeUtil(this, getIntent(), false, myHandler);
         initViews();
         couponTool.getIntentActivity(getIntent());
     }
@@ -105,9 +108,14 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
             case R.id.topLeftView:
                 onBackPressed();
                 break;
+
             case R.id.topRightView:
-                new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,R.layout.dialog_edittext,myHandler).show();
+                if (pictureWorksDialog == null) {
+                    pictureWorksDialog = new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,R.layout.dialog_edittext,myHandler);
+                }
+                pictureWorksDialog.show();
                 break;
+
             default:
                 break;
         }
@@ -129,35 +137,36 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
         finish();
     }
 
-    private final Handler myHandler = new MyHandler(this);
-
-
-    private static class MyHandler extends Handler {
-        private final WeakReference<CouponActivity> mActivity;
-
-        public MyHandler(CouponActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
+    private Handler myHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
+        public boolean handleMessage(Message msg) {
+            switch (msg.what){
+                case DialogInterface.BUTTON_POSITIVE://点击确定，添加code
+                    if (msg.obj.toString().length() == 0) {
+                        myToast.setTextAndShow(R.string.conpon_input_hint, Common.TOAST_SHORT_TIME);
+                    } else {
+                        showProgressBar();
+                        dealCodeUtil.startDealCode(msg.obj.toString());
+                    }
+                    break;
+
+                case DealCodeUtil.DEAL_CODE_FAILED:
+                    if (customProgressDialog.isShowing()) {
+                        customProgressDialog.dismiss();
+                    }
+                    break;
+
+                case DealCodeUtil.DEAL_CODE_SUCCESS:
+                    if (customProgressDialog.isShowing()) {
+                        customProgressDialog.dismiss();
+                    }
+                    PictureAirLog.out("coupon----> add success");
+                    break;
+
             }
-            mActivity.get().dealHandler(msg);
+            return false;
         }
-    }
-
-
-    private void dealHandler(Message msg) {
-        switch (msg.what){
-            case DialogInterface.BUTTON_POSITIVE:
-                couponTool.insertCoupon(""+msg.obj);
-                break;
-        }
-
-    }
+    });
 
     @Override
     protected void onDestroy() {

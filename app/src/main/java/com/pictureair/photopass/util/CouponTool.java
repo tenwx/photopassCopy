@@ -28,10 +28,9 @@ public class CouponTool {
 
     private String whatPege = "";//是从什么页面进来的
 
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case API1.GET_COUPON_FAILED://获取所有优惠卷失败
                 case API1.INSERT_COUPON_FAILED://添加一张优惠卷失败
@@ -48,8 +47,9 @@ public class CouponTool {
                     insertCouponSuccess((JSONObject) msg.obj);
                     break;
             }
+            return false;
         }
-    };
+    });
 
 
     public CouponTool(CouponViewInterface couponView) {
@@ -191,10 +191,7 @@ public class CouponTool {
      * 是否有网络
      */
     private boolean getNetwork() {
-        if (AppUtil.NETWORKTYPE_INVALID == AppUtil.getNetWorkType(MyApplication.getInstance().getApplicationContext())) {
-            return false;
-        }
-        return true;
+        return AppUtil.NETWORKTYPE_INVALID != AppUtil.getNetWorkType(MyApplication.getInstance().getApplicationContext());
     }
 
     /**

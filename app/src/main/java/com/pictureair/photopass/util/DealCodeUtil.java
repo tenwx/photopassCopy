@@ -10,6 +10,7 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.photopass.R;
 
 import cn.smssdk.gui.MyToast;
 
@@ -85,14 +86,20 @@ public class DealCodeUtil {
 					break;
 
 				case API1.CHECK_CODE_SUCCESS://检查code成功
-					PictureAirLog.out("----------->check code success");
+					PictureAirLog.out("----------->check code success" + msg.obj);
 					if ("photoPass".equals(msg.obj.toString())) {
 						codeType = "pp";
 					} else if ("photoPassPlus".equals(msg.obj.toString())) {
 						codeType = "ppp";
+					} else if ("invalid".equals(msg.obj.toString())) {//不可用
+						myToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
+						handler.sendEmptyMessage(DEAL_CODE_FAILED);
+						break;
+					} else if ("coupon".equals(msg.obj.toString())) {
+						codeType = "coupon";
 					}
 					if (dealWay != null) {//如果从ppp页面进来，卡的类型不一致，直接返回，退出
-						System.out.println("--------->need call back");
+						PictureAirLog.out("--------->need call back");
 						Bundle bundle = new Bundle();
 						if (!dealWay.equals(codeType)) {//卡类型不一致
 							bundle.putInt("status", 1);
@@ -135,7 +142,7 @@ public class DealCodeUtil {
 
 				case API1.ADD_PPP_CODE_TO_USER_SUCCESS://绑定ppp成功
 					Bundle bundle3 = new Bundle();
-					PictureAirLog.out("add ppp code to user success--->" + dealWay);
+					PictureAirLog.out("add ppp code or coupon to user success--->" + dealWay);
 					if (dealWay != null) {//从ppp进入
 						bundle3.putInt("status", 5);
 						bundle3.putString("result", "pppOK");
@@ -196,7 +203,7 @@ public class DealCodeUtil {
 				urlString = Common.BASE_URL_TEST+Common.ADD_CODE_TO_USER;
 			}
 		}else {
-			PictureAirLog.out("ppp");
+			PictureAirLog.out("ppp or coupon");
 			params.put(Common.PPPCode, code);
 			urlString = Common.BASE_URL_TEST+Common.BIND_PPP_TO_USER;
 		}
