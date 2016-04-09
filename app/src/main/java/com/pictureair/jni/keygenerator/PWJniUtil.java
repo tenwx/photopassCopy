@@ -20,4 +20,9 @@ public class PWJniUtil {
     public native static String getSMSSDKAppSecret(String appType);
 
     public native static String getSqlCipherKey(String appType);
+
+    public native static String getOcrStr1();
+
+    public native static String getOcrStr2();
+
 }
