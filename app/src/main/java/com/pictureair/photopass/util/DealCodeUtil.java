@@ -14,8 +14,6 @@ import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
 
-import java.util.List;
-
 import cn.smssdk.gui.MyToast;
 
 /**
@@ -163,10 +161,12 @@ public class DealCodeUtil {
 						//2.scan，直接绑定，也可以返回数据，scan页面也不会处理
 						//3.coupon，直接绑定，并且返回数据
 						//解析json
-						List<CouponInfo> mDatas = JsonUtil.getJsonToObj2((JSONObject) msg.obj);
+						PictureAirLog.out("coupon---->" + msg.obj.toString());
+						CouponInfo couponInfo = JsonUtil.getCouponInfo(((JSONObject) msg.obj).getJSONObject("PPP"));
 						//将对象放入bundle3中
 						bundle3.putInt("status", 3);
-						bundle3.putSerializable("coupon", mDatas != null ? mDatas.get(0) : null);
+						PictureAirLog.out("coupon---->" + couponInfo == null ? " null " : "not null");
+						bundle3.putSerializable("coupon", couponInfo);
 						PictureAirLog.out("scan coupon ok");
 						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
 					}

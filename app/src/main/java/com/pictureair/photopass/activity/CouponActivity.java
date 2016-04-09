@@ -161,9 +161,12 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
                         customProgressDialog.dismiss();
                     }
                     PictureAirLog.out("coupon----> add success");
-                    CouponInfo couponInfo = (CouponInfo) getIntent().getSerializableExtra("coupon");
+                    Bundle bundle = (Bundle) msg.obj;
+                    CouponInfo couponInfo = (CouponInfo) bundle.getSerializable("coupon");
                     if (couponInfo != null) {
+                        PictureAirLog.out("coupon no null" + mAllData.size());
                         mAllData.add(couponInfo);
+                        PictureAirLog.out("coupon no null" + mAllData.size());
                         sortCoupon(mAllData);
                     }
                     break;
@@ -203,14 +206,17 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
 
     @Override
     public void sortCoupon(List<CouponInfo> sortDatas) {
+        PictureAirLog.out("start sort coupon" + sortDatas.size());
         couponAdapter.setPage(whatPege);//设置显示界面
         mRecyclerView.setVisibility(View.VISIBLE);
         llNoCoupon.setVisibility(View.GONE);
         if (couponAdapter == null) {
+            PictureAirLog.out("couponadapter null");
             couponAdapter = new CouponAdapter(context, sortDatas);
             mRecyclerView.setAdapter(couponAdapter);
             listview();
         } else {
+            PictureAirLog.out("couponadapter not null");
             couponAdapter.setDatas(sortDatas);
             couponAdapter.notifyDataSetChanged();
         }

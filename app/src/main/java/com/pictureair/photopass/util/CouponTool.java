@@ -157,13 +157,13 @@ public class CouponTool {
     private void getApiReturnDatas(JSONObject jsonObject) {
         mDatas = null;
         if (whatPege.equals(ACTIVITY_ME)){//从me中进来的
-            mDatas = JsonUtil.getJsonToObj2(jsonObject);
+            mDatas = JsonUtil.getCouponListFromJson2(jsonObject);
 
         }else{
-            mDatas = JsonUtil.getJsonToObj(jsonObject);
+            mDatas = JsonUtil.getCouponListFromJson(jsonObject);
         }
         couponView.goneProgressBar();
-        if (null == mDatas || mDatas.size() < 0) {
+        if (null == mDatas || mDatas.size() <= 0) {
             couponView.noCoupon();//无优惠卷
         } else {
             couponView.sortCoupon(mDatas);
