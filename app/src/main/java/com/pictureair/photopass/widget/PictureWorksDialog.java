@@ -136,6 +136,7 @@ public class PictureWorksDialog {
 					handler.obtainMessage(DialogInterface.BUTTON_POSITIVE,
 							editTextWithClear.getText().toString().trim()).sendToTarget();
 					editTextWithClear.setText("");
+
 				} else {
 					handler.sendEmptyMessage(DialogInterface.BUTTON_POSITIVE);
 				}

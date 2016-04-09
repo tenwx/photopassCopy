@@ -210,6 +210,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
         couponAdapter.setPage(whatPege);//设置显示界面
         mRecyclerView.setVisibility(View.VISIBLE);
         llNoCoupon.setVisibility(View.GONE);
+
+        mAllData = sortDatas;
         if (couponAdapter == null) {
             PictureAirLog.out("couponadapter null");
             couponAdapter = new CouponAdapter(context, sortDatas);
