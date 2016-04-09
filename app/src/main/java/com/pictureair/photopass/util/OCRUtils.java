@@ -74,6 +74,8 @@ public class OCRUtils {
             String[] reStr = codeStr.split("-");
             if (codeStr.substring(0,4).equals("Q6FV")){
                 codeStr = "SHDP" + reStr[1] + reStr[2] + reStr[3].substring(0, reStr[3].length() - 1);
+            }else{
+                codeStr = reStr[0] + reStr[1] + reStr[2] + reStr[3].substring(0, reStr[3].length() - 1);
             }
             if (strList[getCheckNum(codeStr)].equals(String.valueOf(reStr[3].charAt(3)))) {
                 return true;

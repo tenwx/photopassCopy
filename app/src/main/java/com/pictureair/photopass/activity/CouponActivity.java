@@ -161,6 +161,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
                         customProgressDialog.dismiss();
                     }
                     PictureAirLog.out("coupon----> add success");
+                    CouponInfo couponInfo = (CouponInfo) getIntent().getSerializableExtra("coupon");
+                    if (couponInfo != null) {
+                        mAllData.add(couponInfo);
+                        sortCoupon(mAllData);
+                    }
                     break;
 
             }
