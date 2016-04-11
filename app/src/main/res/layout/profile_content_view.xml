@@ -204,10 +204,23 @@
             android:layout_height="match_parent"
             android:background="@color/line_color" />
 
-        <View
+
+        <com.pictureair.photopass.widget.CustomTextView
+            android:id="@+id/me_opinions"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/help"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_opinions"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
 
     </LinearLayout>
 

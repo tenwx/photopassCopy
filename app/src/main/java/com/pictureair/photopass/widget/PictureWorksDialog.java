@@ -132,8 +132,11 @@ public class PictureWorksDialog {
 			case DialogInterface.BUTTON_POSITIVE:
 				PictureAirLog.out("click ok");
 				if (contentView instanceof EditTextWithClear) {
+					EditTextWithClear editTextWithClear = (EditTextWithClear) contentView.findViewById(R.id.et_text);
 					handler.obtainMessage(DialogInterface.BUTTON_POSITIVE,
-							((EditTextWithClear) contentView.findViewById(R.id.et_text)).getText().toString().trim()).sendToTarget();
+							editTextWithClear.getText().toString().trim()).sendToTarget();
+					editTextWithClear.setText("");
+
 				} else {
 					handler.sendEmptyMessage(DialogInterface.BUTTON_POSITIVE);
 				}

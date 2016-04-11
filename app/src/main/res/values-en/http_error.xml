@@ -202,4 +202,11 @@
     <string name="http_error_code_6155">Chosen dates should be within three consecutive days</string>
     <string name="http_error_code_6156">This Disney PhotoPass+ is not available Disney PhotoPass+ Type</string>
     <string name="http_error_code_6157">query PhotoPassPlus Type error</string>
+    <string name="http_error_code_6158">can\'t modify register email or mobile</string>
+    <string name="http_error_code_6159">the current user can\'t use the coupon</string>
+    <string name="http_error_code_6160">the coupon has been bounded!</string>
+    <string name="http_error_code_6161">Can\'t add this type of coupons!</string>
+    <string name="http_error_code_6162">the coupon is invalid!</string>
+    <string name="http_error_code_6163">the coupon have expired!</string>
+    <string name="http_error_code_6164">the coupon has been used!</string>
 </resources>

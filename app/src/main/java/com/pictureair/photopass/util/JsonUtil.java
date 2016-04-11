@@ -11,11 +11,13 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.maps.model.LatLng;
 import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.HelpInfo;
@@ -874,5 +876,97 @@ public class JsonUtil {
             }
         }
         return ppInfoArrayList;
+    }
+
+
+    /**
+     * 齐超的接口
+     * 解析优惠卷的json
+     */
+    public static List<CouponInfo> getCouponListFromJson(JSONObject jsonObject) {
+        PictureAirLog.v("getJsonToObj", "解析优惠卷的json" + jsonObject);
+
+        int amount = jsonObject.getIntValue("amount");
+        if (amount == 0) {
+            return null;
+        }
+        List<CouponInfo> list = new ArrayList<>();
+        JSONArray array = jsonObject.getJSONArray("data");
+        CouponInfo couponInfo = null;
+        String effectiveTime;
+        String failureTime;
+        for (int i = 0; i < array.size(); i++) {
+            couponInfo = new CouponInfo();
+
+            couponInfo.setCpStatus(array.getJSONObject(i).getString("status"));
+            couponInfo.setCpCode(array.getJSONObject(i).getString("code"));
+            couponInfo.setCpNumber(array.getJSONObject(i).getDouble("money"));
+            couponInfo.setCpType(array.getJSONObject(i).getString("genre"));//优惠卷类型（discount,full,subtract）折扣，满，减
+            couponInfo.setCpDescribe(array.getJSONObject(i).getString("description"));//描述
+            couponInfo.setCpName(array.getJSONObject(i).getString("name"));//优惠卷名称
+            //有效期
+            effectiveTime = array.getJSONObject(i).getString("effectiveTime");//有效开始时间
+            failureTime = array.getJSONObject(i).getString("failureTime");//有效结束时间
+            couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+            list.add(couponInfo);
+        }
+        return list;
+    }
+
+    /**
+     * lisa接口的解析json
+     * 解析成功即可
+     */
+    public static List<CouponInfo> getCouponListFromJson2(JSONObject jsonObject) {
+        PictureAirLog.v("getJsonToObj2", "解析优惠卷的json" + jsonObject);
+
+        JSONArray array = jsonObject.getJSONArray("couponList");
+        if (null == array || array.size() == 0) {
+            return null;
+        }
+        List<CouponInfo> list = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            list.add(getCouponInfo(array.getJSONObject(i)));
+        }
+        return list;
+    }
+
+    /**
+     * 获取coupon对象
+     * @param jsonObject
+     * @return
+     */
+    public static CouponInfo getCouponInfo(JSONObject jsonObject) {
+        String effectiveTime;
+        String failureTime;
+        String cnDesc = "";//中文描述
+        String enDesc = "";//英文描述
+        String cnName = "";//中文name
+        String enName = "";//英文name
+        boolean isCn = MyApplication.getInstance().getLanguageType().equals("zh");
+        CouponInfo couponInfo = new CouponInfo();
+
+        couponInfo.setCpStatus(jsonObject.getBoolean("isExpired") ? "failure" : "active");//是否已经过期
+        couponInfo.setCpCode(jsonObject.getString("PPPCode"));
+        couponInfo.setCpNumber(0);//LISA接口暂时没有这个
+        couponInfo.setCpType("full");//优惠卷类型（discount,full,subtract）折扣，满，减
+
+        enDesc = jsonObject.getJSONObject("codeDesc").getString("EN");
+        cnDesc = jsonObject.getJSONObject("codeDesc").getString("CN");
+        couponInfo.setCpDescribe(isCn ? cnDesc : enDesc);//描述
+
+        enName = jsonObject.getJSONObject("codeName").getString("EN");
+        cnName = jsonObject.getJSONObject("codeName").getString("CN");
+        couponInfo.setCpName(isCn ? cnName : enName);//优惠卷名称
+
+        //有效期
+        effectiveTime = jsonObject.getString("effectiveOn");//有效开始时间
+        effectiveTime = effectiveTime.split("T")[0];
+
+        failureTime = jsonObject.getString("expiredOn");//有效结束时间
+        failureTime = failureTime.split("T")[0];
+
+        couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+        return couponInfo;
     }
 }

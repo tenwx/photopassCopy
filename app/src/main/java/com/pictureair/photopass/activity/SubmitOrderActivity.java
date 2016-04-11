@@ -320,7 +320,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      */
     public void getCoupons() {
         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-        API1.getCoupons(submitOrderHandler, cartItemIds);
+        API1.getCartItemCoupons(submitOrderHandler, cartItemIds);
     }
 
     /**
