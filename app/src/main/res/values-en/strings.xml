@@ -459,6 +459,7 @@
     <string name="discount">% off</string>
     <string name="conpon_input_hint">Please enter your coupon code</string>
     <string name="select_cpupon">Select Coupon</string>
+    <string name="discount_price">Deduct</string>
     <!-- 优惠卷end-->
 
 </resources>

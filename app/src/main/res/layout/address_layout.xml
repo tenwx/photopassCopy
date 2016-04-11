@@ -209,6 +209,45 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/discount_price"
+                        android:textColor="@color/pp_gray" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/discount_price_unit_tv"
+                        android:text="-"
+                        android:textColor="@color/pp_orange" />
+
+                    <TextView
+                        android:id="@+id/discount_price_unit_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/pp_margin_5"
+                        android:layout_toLeftOf="@+id/discount_price_tv"
+                        android:text="$"
+                        android:textColor="@color/pp_orange" />
+
+                    <TextView
+                        android:id="@+id/discount_price_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="@dimen/pp_margin_5"
+                        android:text="0"
+                        android:textColor="@color/pp_orange" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/pp_margin_16"
+                    android:layout_marginTop="@dimen/pp_margin_8">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/pay_price"
                         android:textColor="@color/pp_gray" />
 

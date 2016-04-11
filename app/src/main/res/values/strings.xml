@@ -459,6 +459,7 @@
     <string name="discount">折</string>
     <string name="conpon_input_hint">请输入抵用卷兑换码</string>
     <string name="select_cpupon">使用抵用劵</string>
+    <string name="discount_price">优惠立减</string>
     <!-- 我的优惠卷 end-->
 
 
