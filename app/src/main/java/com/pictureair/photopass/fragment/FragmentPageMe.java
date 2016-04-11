@@ -37,6 +37,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
 
 /**
@@ -47,7 +48,7 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, aboutTV, couponTV;
+    private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, aboutTV, couponTV,opinionsTV;
     private LinearLayout linearLayout1, linearLayout2, linearLayout3;
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
@@ -60,11 +61,13 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private DisplayImageOptions headOptions;
 
     private PullToZoomScrollViewEx scrollView;
+    private Context context;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, null);
+        this.context = container.getContext();
         scrollView = (PullToZoomScrollViewEx) view.findViewById(R.id.scroll_view);
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_head_view, null, false);
         View zoomView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_zoom_view, null, false);
@@ -86,6 +89,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         settingTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_setting);
         aboutTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_about);
         couponTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_coupon);
+        opinionsTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_opinions);
+
         linearLayout1 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line1_ll);
         linearLayout2 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line2_ll);
         linearLayout3 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line3_ll);
@@ -107,6 +112,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         settingTV.setOnClickListener(this);
         aboutTV.setOnClickListener(this);
         couponTV.setOnClickListener(this);
+        opinionsTV.setOnClickListener(this);
 
         code_pic.setOnClickListener(new OnClickListener() {
             @Override
@@ -263,6 +269,12 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 i.putExtra(CouponTool.ACTIVITY_ME, CouponTool.ACTIVITY_ME);
                 i.setClass(MyApplication.getInstance(), CouponActivity.class);
                 startActivity(i);
+                break;
+
+            case R.id.me_opinions:
+                //意见反馈弹出框
+                PictureAirLog.v(TAG, "me_opinions");
+                UmengUtil.startFeedbackActivity(context);
                 break;
 
             default:
