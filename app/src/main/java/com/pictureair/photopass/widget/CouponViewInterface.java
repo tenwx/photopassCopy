@@ -22,7 +22,7 @@ public interface CouponViewInterface {
     /**
      * 给UI显示的数据，排序后的数据
      */
-    void sortCoupon(List<CouponInfo> sortDatas);
+    void sortCoupon(List<CouponInfo> sortDatas, boolean needClear);
 
     /**
      * 读取输入的code

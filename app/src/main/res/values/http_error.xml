@@ -202,4 +202,11 @@
     <string name="http_error_code_6155">您所选的迪士尼乐拍通升级日期不符合条件，请选择连续三天的日期</string>
     <string name="http_error_code_6156">不能使用当前的迪士尼乐拍通一卡通类型</string>
     <string name="http_error_code_6157">查询PP+卡类型出错</string>
+    <string name="http_error_code_6158">不能修改注册的邮箱或手机号</string>
+    <string name="http_error_code_6159">当前用户不能适用该抵用券</string>
+    <string name="http_error_code_6160">抵用券已经被绑定过</string>
+    <string name="http_error_code_6161">不能再添加此类抵用券</string>
+    <string name="http_error_code_6162">无效的抵用券</string>
+    <string name="http_error_code_6163">抵用券失效</string>
+    <string name="http_error_code_6164">抵用券已经被使用</string>
 </resources>
