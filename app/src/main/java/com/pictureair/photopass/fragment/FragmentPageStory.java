@@ -91,6 +91,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private static final int LOAD_PHOTO_FROM_DB = 1003;
 
     private static final String TAG = "FragmentPageStory";
+    private String[] titleStrings;
 
     //申明变量
     private int refreshDataCount = 0;//记录刷新数据的数量
@@ -666,6 +667,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PictureAirLog.out("on create----->");
         View view = inflater.inflate(R.layout.fragment_story, null);
+        titleStrings = new String[] {getActivity().getResources().getString(R.string.story_tab_all),
+                getActivity().getResources().getString(R.string.story_tab_photopass),
+                getActivity().getResources().getString(R.string.story_tab_magic),
+                getActivity().getResources().getString(R.string.story_tab_bought),
+                getActivity().getResources().getString(R.string.story_tab_favorite) };
         //获取控件
         more = (ImageView) view.findViewById(R.id.story_more);
         scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
@@ -787,7 +793,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             fragments.add(StoryFragment.getInstance(magicPhotoList, app.magicPicList, 2, fragmentPageStoryHandler));
             fragments.add(StoryFragment.getInstance(boughtPhotoList, app.magicPicList, 3, fragmentPageStoryHandler));
             fragments.add(StoryFragment.getInstance(favouritePhotoList, app.magicPicList, 4, fragmentPageStoryHandler));
-            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
+            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments, titleStrings);
             storyViewPager.setAdapter(fragmentAdapter);
 
             indicator.setViewPager(storyViewPager);
