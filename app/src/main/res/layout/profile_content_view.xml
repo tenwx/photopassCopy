@@ -212,7 +212,7 @@
             android:layout_centerVertical="true"
             android:layout_weight="1"
             android:drawablePadding="@dimen/pp_padding_8"
-            android:drawableTop="@drawable/help"
+            android:drawableTop="@drawable/icon_contact_us"
             android:gravity="center"
             android:paddingBottom="@dimen/pp_padding_16"
             android:paddingLeft="@dimen/pp_padding_8"
