@@ -1,30 +1,26 @@
 package com.pictureair.photopass.adapter;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.ViewGroup;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentAdapter extends FragmentStatePagerAdapter {
-	private Context context = MyApplication.getInstance().getBaseContext();
-	private final String[] CONTENT = new String[] { context.getResources().getString(R.string.story_tab_all), context.getResources().getString(R.string. story_tab_photopass), context.getResources().getString(R.string. story_tab_magic),context.getResources().getString(R.string. story_tab_bought), context.getResources().getString(R.string. story_tab_favorite) };
+	private String[] titleStrings;
 	private List<Fragment> mFragments;
 	private List<String> tagList;
 	private FragmentManager fragmentManager;
 
-	public FragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
+	public FragmentAdapter(FragmentManager fm, List<Fragment> fragments, String[] titleStrings) {
 		super(fm);
 		fragmentManager = fm;
 		mFragments = fragments;
 		tagList = new ArrayList<>();
+		this.titleStrings = titleStrings;
 	}
 
 	@Override
@@ -35,7 +31,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return CONTENT.length;
+		return titleStrings.length;
 	}
 	
 	@Override
@@ -52,7 +48,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return CONTENT[position % CONTENT.length];
+		return titleStrings[position % titleStrings.length];
 	}
 
 	@Override

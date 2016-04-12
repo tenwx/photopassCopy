@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -300,13 +299,16 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             inactivityTimer.onActivity();
             playBeepSoundAndVibrate();
             String resultString = result.getText();
-            System.out.println("scan result = " + resultString);
+            PictureAirLog.out("scan result = " + resultString);
             if (resultString.equals("")) {
                 //			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            } else if (!resultString.contains("vid=")) {//错误的码
+                newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
+                finish();
             } else {
-                code = resultString.substring(resultString.lastIndexOf("?") + 1, resultString.length());  //截取字符串。
-                Log.e("=====", "code：：：" + code);
+                code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+                PictureAirLog.out("code：：：" + code);
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 dealCodeUtil.startDealCode(code);
             }
