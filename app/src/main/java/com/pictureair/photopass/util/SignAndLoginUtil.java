@@ -179,7 +179,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 }
                 PictureAirLog.v(TAG, "start get cart");
                 PictureAirLog.out("start get cart");
-                API1.getCarts(handler);
+                API1.getCarts(null,handler);
                 break;
 
             case API1.GET_CART_SUCCESS://获取购物车成功

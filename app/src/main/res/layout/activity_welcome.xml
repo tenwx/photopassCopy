@@ -39,11 +39,11 @@
             android:layout_marginRight="@dimen/pp_margin_10"
             android:src="@drawable/page_indicator_bg" />
 
-        <ImageView
-            android:layout_width="@dimen/pp_height_10"
-            android:layout_height="@dimen/pp_height_10"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/page_indicator_bg" />
+        <!--<ImageView-->
+            <!--android:layout_width="@dimen/pp_height_10"-->
+            <!--android:layout_height="@dimen/pp_height_10"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:src="@drawable/page_indicator_bg" />-->
     </LinearLayout>
 
 </RelativeLayout>

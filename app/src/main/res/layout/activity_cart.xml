@@ -56,7 +56,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:background="@color/pp_light_gray_background"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/cartSelectAllImageView"
@@ -103,11 +103,11 @@
                 android:textSize="@dimen/text_size_16" />
 
             <TextView
-                android:fontFamily=""
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_2"
+                android:fontFamily=""
                 android:textColor="@color/orange"
                 android:textSize="@dimen/text_size_16" />
         </LinearLayout>
@@ -145,10 +145,45 @@
         android:dividerHeight="0dp"
         android:scrollbars="none" />
 
+    <LinearLayout
+        android:id="@+id/discountPriceLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout1"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_margin_20"
+            android:text="@string/discount_price"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/discount_currency_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_margin_5"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/discount_price_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pp_margin_2"
+            android:fontFamily=""
+            android:textColor="@color/orange"
+            android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
+
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/noNetWorkView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tt"
         android:visibility="invisible" />
 

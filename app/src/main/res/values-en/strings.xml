@@ -167,6 +167,7 @@
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
+    <string name="mypage_opinions">Feedback</string>
     <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
 
@@ -459,6 +460,7 @@
     <string name="discount">% off</string>
     <string name="conpon_input_hint">Please enter your coupon code</string>
     <string name="select_cpupon">Select Coupon</string>
+    <string name="discount_price">Deduct</string>
     <!-- 优惠卷end-->
 
 </resources>

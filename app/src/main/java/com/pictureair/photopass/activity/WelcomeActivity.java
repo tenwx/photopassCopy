@@ -1,6 +1,7 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	private int lastY = 0;
 	private TextView startNow;
 	private static String TAG = "WelcomeActivity";
+	private String currentLanguage;// en表示英语，zh表示简体中文。
+	private SharedPreferences appSharedPreferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,30 +65,45 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		mViewPager.setOnTouchListener(this);
 		LayoutInflater inflater = LayoutInflater.from(WelcomeActivity.this);
 		list = new ArrayList<View>();
+		appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+		currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, "");
 		initpage(inflater);
+
 	}
 
 
 
 	//初始化viewpager
 	public void initpage(LayoutInflater flater) {
-		view1 = flater.inflate(R.layout.activity_start, null);
-		view1.setBackgroundResource(R.drawable.loding_1);
-		view2 = flater.inflate(R.layout.activity_start, null);
-		view2.setBackgroundResource(R.drawable.loding_2);
-		view3 = flater.inflate(R.layout.activity_start, null);
-		view3.setBackgroundResource(R.drawable.loding_3);
+//		view1 = flater.inflate(R.layout.loading_start, null);
+		view2 = flater.inflate(R.layout.loading_start, null);
+		view3 = flater.inflate(R.layout.loading_start, null);
 		view4 = flater.inflate(R.layout.loading_start, null);
+
+		if (currentLanguage.equals("zh")){
+			//中文
+//			view1.setBackgroundResource(R.drawable.loading_zh_1);
+			view2.setBackgroundResource(R.drawable.loading_zh_1);
+			view3.setBackgroundResource(R.drawable.loading_zh_2);
+			view4.setBackgroundResource(R.drawable.loading_zh_3);
+		}else {
+			//英文
+//			view1.setBackgroundResource(R.drawable.loading_en_1);
+			view2.setBackgroundResource(R.drawable.loading_en_1);
+			view3.setBackgroundResource(R.drawable.loading_en_2);
+			view4.setBackgroundResource(R.drawable.loading_en_3);
+		}
+
 		startNow = (TextView)view4.findViewById(R.id.startNow);
 		startNow.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "start now-------->");
 				startJump();
 			}
 		});
-		list.add(view1);
+//		list.add(view1);
 		list.add(view2);
 		list.add(view3);
 		list.add(view4);

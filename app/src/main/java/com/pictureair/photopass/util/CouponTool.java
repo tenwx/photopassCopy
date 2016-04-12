@@ -10,7 +10,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.widget.CouponViewInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -166,7 +165,7 @@ public class CouponTool {
         if (null == mDatas || mDatas.size() <= 0) {
             couponView.noCoupon();//无优惠卷
         } else {
-            couponView.sortCoupon(mDatas);
+            couponView.sortCoupon(mDatas, true);
         }
     }
 
@@ -225,39 +224,5 @@ public class CouponTool {
         mDatas = null;
         couponView = null;
     }
-
-    /**
-     * 测试数据
-     */
-    public List<CouponInfo> testData() {
-        List<CouponInfo> datas = new ArrayList<>();
-        CouponInfo couponInfo = new CouponInfo(1, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "subtract", "描述：pp＋卡专用", 1, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo2 = new CouponInfo(2, "1234-1333-2333-2222", "有效期 20130405～2016年", "failure", "subtract", "描述：pp＋卡专用", 3, "1246527681767538712653671253875", 8, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo3 = new CouponInfo(3, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 4, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo4 = new CouponInfo(4, "1234-1333-2333-2222", "有效期 20130405～2018年", "active", "subtract", "描述：pp＋卡专用", 5, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo5 = new CouponInfo(5, "1234-1333-2333-2222", "有效期 20130405～2014年", "active", "subtract", "描述：pp＋卡专用", 7, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo6 = new CouponInfo(6, "1234-1333-2333-2222", "有效期 20130405～2013年", "active", "discount", "描述：pp＋卡专用", 10, "1246527681767538712653671253875", 8, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo7 = new CouponInfo(7, "1234-1333-2333-2222", "有效期 20130405～2012年", "failure", "subtract", "描述：pp＋卡专用", 11, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo8 = new CouponInfo(8, "1234-1333-2333-2222", "有效期 20130405～2011年", "active", "discount", "描述：pp＋卡专用", 14, "1246527681767538712653671253875", 7, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo9 = new CouponInfo(9, "1234-1333-2333-2222", "有效期 20130405～2019年", "failure", "subtract", "描述：pp＋卡专用", 17, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo10 = new CouponInfo(10, "1234-1333-2333-2222", "有效期 20130405～2017年", "active", "discount", "描述：pp＋卡专用", 19, "1246527681767538712653671253875", 3, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo11 = new CouponInfo(11, "1234-1333-2333-2222", "有效期 20130405～2017年", "used", "discount", "描述：pp＋卡专用", 21, "1246527681767538712653671253875", 100, false, 0, "pp＋卡优惠卷");
-        CouponInfo couponInfo12 = new CouponInfo(12, "1234-1333-2333-2222", "有效期 20130405～2017年", "used", "discount", "描述：pp＋卡专用", 23, "1246527681767538712653671253875", 2, false, 0, "pp＋卡优惠卷");
-
-        datas.add(couponInfo);
-        datas.add(couponInfo2);
-        datas.add(couponInfo3);
-        datas.add(couponInfo4);
-        datas.add(couponInfo5);
-        datas.add(couponInfo6);
-        datas.add(couponInfo7);
-        datas.add(couponInfo8);
-        datas.add(couponInfo9);
-        datas.add(couponInfo10);
-        datas.add(couponInfo11);
-        datas.add(couponInfo12);
-        return datas;
-    }
-
 
 }

@@ -26,7 +26,9 @@ import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
+
 import cn.smssdk.gui.AppManager;
+
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
@@ -51,10 +53,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private ListView listView;
     private ImageView rtButton;
     private Button paymentButton;
-    private TextView totalTextView, currencyTextView;
+    private TextView totalTextView, currencyTextView, discountPriceTv, discountCurrencyTv, tvCurrency;
     private ImageView cartSelectAllImageView;
     private TextView editTextView;
-    private LinearLayout cartPriceLinearLayout;
+    private LinearLayout cartPriceLinearLayout, discountPriceLinearLayout;
     private RelativeLayout bottomRelativeLayout;
     private View line;
 
@@ -63,6 +65,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private ArrayList<PhotoInfo> updatephotolist;
 
     private float totalPrice = 0;//总价格
+    private float discountPrice = 0;//优惠费用
     private boolean isEdit = false;
     private boolean isDelete = false;
     private int disSelectedCount = 0;//记录已经取消选中的个数
@@ -79,6 +82,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private CartItemInfoJson cartItemInfoJson;//存放返回的数据
+    private ArrayList<CartItemInfo1> selectCartInfoList;//存放勾选的购物车
     private List<CartItemInfo1> deleteCartItemInfoList;//存放删除的购物车
     private int position = 0;//记录当前操作项位置（10 + n）
 
@@ -110,30 +114,64 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_CART_SUCCESS:
-                PictureAirLog.v(TAG, "GET_CART_SUCCESS");
-                cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                PictureAirLog.v(TAG, "GET_CART_SUCCESS arg1: " + msg.arg1);
+                PictureAirLog.v(TAG, "GET_CART_SUCCESS obg: " + msg.obj);
+                CartItemInfoJson json = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 customProgressDialog.dismiss();
-                int cartCount = 0;
-                if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
-                    PictureAirLog.v(TAG, "GET_CART_SUCCESS cart size: " + cartItemInfoJson.getItems().size());
-                    cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新底部计算条
-                    cartInfoList.addAll(cartItemInfoJson.getItems());
-                    cartCount = cartItemInfoJson.getTotalCount();
-                    totalTextView.setText(cartItemInfoJson.getTotalPrice() + "");
+                if (json != null && json.getItems() != null && json.getItems().size() > 0) {
+                    PictureAirLog.v(TAG, "GET_CART_SUCCESS cart size: " + json.getItems().size());
+                    //初始化请求返回
+                    if (msg.arg1 == -1) {
+                        //初始化
+                        cartItemInfoJson = json;
+                        cartInfoList.addAll(cartItemInfoJson.getItems());
+                        selectCartInfoList.addAll(cartItemInfoJson.getItems());//默认第一次全部选中
+                        cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新每个item是否选中
+
+                        editTextView.setEnabled(true);
+                        netWorkOrNoCountView.setVisibility(View.GONE);
+                        bottomRelativeLayout.setVisibility(View.VISIBLE);
+                        listView.setVisibility(View.VISIBLE);
+                        line.setVisibility(View.VISIBLE);
+
+                        //保存购物车数量
+                        Editor cartEditor = sPreferences.edit();
+                        cartEditor.putInt(Common.CART_COUNT, cartItemInfoJson.getTotalCount());
+                        cartEditor.commit();
+                    } else {
+                        cartItemInfoJson.setPreferentialPrice(json.getPreferentialPrice());
+                        cartItemInfoJson.setTotalPrice(json.getTotalPrice());
+                    }
+                    discountPrice = cartItemInfoJson.getPreferentialPrice();
+                    discountPriceTv.setText((int) discountPrice + "");
+
                     paymentButton.setVisibility(View.VISIBLE);
-                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size()));
-                    editTextView.setEnabled(true);
-                    netWorkOrNoCountView.setVisibility(View.GONE);
-                    bottomRelativeLayout.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.VISIBLE);
-                    line.setVisibility(View.VISIBLE);
+                    cartPriceLinearLayout.setVisibility(View.VISIBLE);
+
+                    if (disSelectedCount == cartItemInfoJson.getItems().size()) {
+                        totalTextView.setText(0 + "");
+                    } else {
+                        totalTextView.setText(cartItemInfoJson.getTotalPrice() + "");
+                    }
+
+                    if (isEdit) {
+                        paymentButton.setBackgroundResource(R.color.red);
+                    } else {
+
+                        if (disSelectedCount < cartItemInfoJson.getItems().size()) {
+                            //显示价格
+                            discountPriceLinearLayout.setVisibility(discountPrice == 0 ? View.GONE : View.VISIBLE);
+                            paymentButton.setBackgroundResource(R.color.pp_blue);
+                        } else {
+                            paymentButton.setBackgroundResource(R.color.gray_light3);
+                        }
+                        //设置数量
+                        paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
+                    }
+
                 } else {
                     ShowNoNetOrNoCountView();
                 }
-                //保存购物车数量
-                Editor cartEditor = sPreferences.edit();
-                cartEditor.putInt(Common.CART_COUNT, cartCount);
-                cartEditor.commit();
                 break;
 
             case API1.GET_CART_FAILED://请求失败
@@ -206,7 +244,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 //重新加载购物车数据
                 PictureAirLog.v(TAG, "onclick with reload");
                 customProgressDialog = CustomProgressDialog.show(CartActivity.this, getString(R.string.is_loading), false, null);
-                API1.getCarts(cartHandler);
+                API1.getCarts(null, cartHandler);
                 cartInfoList.clear();
                 break;
 
@@ -258,58 +296,18 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case CartInfoAdapter.SELECTED:// 选中item
-                totalPrice = Float.parseFloat(totalTextView.getText().toString());
-                totalPrice += Float.parseFloat(msg.obj.toString());
-                totalTextView.setText((int) totalPrice + "");
                 disSelectedCount--;
-                if (disSelectedCount == 0) {
-                    cartSelectAllImageView.setImageResource(R.drawable.cart_select);
-                    if (isEdit) {
-                        paymentButton.setBackgroundResource(R.color.red);
-
-                    } else {//购买状态
-                        if (cartItemInfoJson.getItems().size() == disSelectedCount) {//没有选中任何
-                            paymentButton.setBackgroundResource(R.color.gray_light3);
-                        } else {//选中
-                            paymentButton.setBackgroundResource(R.color.pp_blue);
-                        }
-                    }
-                } else {
-                    cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
-                    if (!isEdit) {
-                        paymentButton.setBackgroundResource(R.color.pp_blue);
-                    } else {
-                        paymentButton.setBackgroundResource(R.color.red);
-                    }
-                }
-
+                updatePayStateUI();//更新底部支付栏UI
                 if (!isEdit) {
-                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
+                    //非编辑状态不需要请求优惠信息
+                    getDiscountPrice();
                 }
                 break;
             case CartInfoAdapter.NOSELECTED:// 取消选中item
-                totalPrice = Float.parseFloat(totalTextView.getText().toString());
-                totalPrice -= Float.parseFloat(msg.obj.toString());
-                totalTextView.setText((int) totalPrice + "");
                 disSelectedCount++;
-                if (disSelectedCount == 0) {
-                    cartSelectAllImageView.setImageResource(R.drawable.cart_select);
-                    if (isEdit) {
-
-                        paymentButton.setBackgroundResource(R.color.red);
-                    } else {
-                        paymentButton.setBackgroundResource(R.color.gray_light3);
-
-                    }
-                } else {
-                    cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
-                }
-                if (disSelectedCount == cartItemInfoJson.getItems().size()) {
-                    paymentButton.setBackgroundResource(R.color.gray_light3);
-                }
+                updatePayStateUI();//更新底部支付栏UI
                 if (!isEdit) {
-                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
-
+                    getDiscountPrice();
                 }
                 break;
 
@@ -320,6 +318,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             default:
                 break;
         }
+
     }
 
 
@@ -337,11 +336,16 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         totalTextView = (TextView) findViewById(R.id.textView3);
         currencyTextView = (TextView) findViewById(R.id.textView_currency);
         cartSelectAllImageView = (ImageView) findViewById(R.id.cartSelectAllImageView);
+
         cartSelectAllImageView.setOnClickListener(this);
         editTextView = (TextView) findViewById(R.id.cart_edit);
         editTextView.setOnClickListener(this);
         editTextView.setEnabled(false);
         cartPriceLinearLayout = (LinearLayout) findViewById(R.id.cartPriceLinearLayout);
+        discountPriceLinearLayout = (LinearLayout) findViewById(R.id.discountPriceLinearLayout);
+        discountPriceTv = (TextView) findViewById(R.id.discount_price_tv);
+        discountCurrencyTv = (TextView) findViewById(R.id.discount_currency_tv);
+
         cartInfoList = new ArrayList<>();
         line = findViewById(R.id.line);
         bottomRelativeLayout = (RelativeLayout) findViewById(R.id.linearLayout1);
@@ -350,13 +354,15 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         sPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         userId = sPreferences.getString(Common.USERINFO_ID, "");
         currencyTextView.setText(sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        discountCurrencyTv.setText("-" + sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-        API1.getCarts(cartHandler);
+        API1.getCarts(null, cartHandler);
         totalTextView.setText((int) totalPrice + "");
         listView = (ListView) findViewById(R.id.cartListView);
         cartAdapter = new CartInfoAdapter(this, sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), cartInfoList, userId, cartHandler);
         listView.setAdapter(cartAdapter);
         cartItemInfoJson = new CartItemInfoJson();
+        selectCartInfoList = new ArrayList<>();
     }
 
     /**
@@ -400,6 +406,37 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             }
         }
         return cartItemInfoJson;
+    }
+
+
+    /**
+     * 更新支付底部栏UI
+     */
+    public void updatePayStateUI() {
+        if (disSelectedCount == 0) {
+            cartSelectAllImageView.setImageResource(R.drawable.cart_select);
+            if (isEdit) {
+                paymentButton.setBackgroundResource(R.color.red);
+                discountPriceLinearLayout.setVisibility(View.GONE);
+            } else {//购买状态
+                if (cartItemInfoJson.getItems().size() == disSelectedCount) {//没有选中任何
+                    paymentButton.setBackgroundResource(R.color.gray_light3);
+                } else {//选中
+                    paymentButton.setBackgroundResource(R.color.pp_blue);
+                }
+            }
+        } else {
+            cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
+            if (!isEdit) {
+                paymentButton.setBackgroundResource(R.color.pp_blue);
+            } else {
+                discountPriceLinearLayout.setVisibility(View.GONE);
+                paymentButton.setBackgroundResource(R.color.red);
+            }
+        }
+        if (!isEdit) {
+            paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
+        }
     }
 
     @Override
@@ -451,7 +488,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 } else {//支付操作
                     //获取选中的购物项
-                    ArrayList<CartItemInfo1> selectCartInfoList = new ArrayList<>();
+                    selectCartInfoList.clear();
                     for (int i = 0; i < cartInfoList.size(); i++) {//查找键值对中select为true的值，并将它放入orderinfo2中
                         if (cartInfoList.get(i).getIsSelect()) {
                             selectCartInfoList.add(cartInfoList.get(i));
@@ -486,6 +523,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         }
                         intent = new Intent(this, SubmitOrderActivity.class);
                         intent.putExtra("orderinfo", selectCartInfoList);
+                        intent.putExtra("discountPrice", discountPrice);
+                        PictureAirLog.out("discount=========" + discountPrice);
                         startActivity(intent);
                         finish();
                     } else {
@@ -505,6 +544,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     isEdit = true;
                     editTextView.setText(R.string.ok);
                     cartPriceLinearLayout.setVisibility(View.GONE);
+                    discountPriceLinearLayout.setVisibility(View.GONE);
 
                     if (cartInfoList == null || cartInfoList.size() == 0 || disSelectedCount == cartItemInfoJson.getItems().size()) {
                         paymentButton.setBackgroundResource(R.color.gray_light3);
@@ -513,7 +553,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     }
                     paymentButton.setText(R.string.delete);
                     rtButton.setVisibility(View.INVISIBLE);
-
                 }
                 cartAdapter.notifyDataSetChanged();
                 break;
@@ -525,25 +564,29 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     totalPrice += cartInfoList.get(i).getPrice();
                 }
                 cartAdapter.notifyDataSetChanged();
+
                 if (disSelectedCount == 0) {
                     disSelectedCount = cartItemInfoJson.getItems().size();
                     cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
                     totalPrice = 0;
+                    totalTextView.setText((int) totalPrice + "");
+                    discountPriceLinearLayout.setVisibility(View.GONE);
                     paymentButton.setBackgroundResource(R.color.gray_light3);
+                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
+
                 } else {
                     cartSelectAllImageView.setImageResource(R.drawable.cart_select);
+
                     if (isEdit) {
                         paymentButton.setBackgroundResource(R.color.red);
                     } else {
                         paymentButton.setBackgroundResource(R.color.pp_blue);
-
+                        //非编辑状态不需要请求优惠信息
+                        getDiscountPrice();
                     }
                     disSelectedCount = 0;
                 }
-                totalTextView.setText((int) totalPrice + "");
-                if (!isEdit) {
-                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
-                }
+
                 break;
 
             default:
@@ -553,18 +596,26 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     }
 
     /**
-     * 获取总价格
-     *
-     * @return
+     * 请求优惠信息
      */
-    public float getTotalPrice() {
-        float price = 0;
-        for (CartItemInfo1 cartItemInfo : cartInfoList) {
-            if (cartItemInfo.getIsSelect()) {
-                price += cartItemInfo.getPrice();
+    public void getDiscountPrice() {
+        if (cartInfoList == null) {
+            return;
+        }
+        selectCartInfoList.clear();
+        for (int i = 0; i < cartInfoList.size(); i++) {
+            if (cartInfoList.get(i).getIsSelect()) {
+                selectCartInfoList.add(cartInfoList.get(i));
             }
         }
-        return price;
+        JSONArray jsonArray = new JSONArray(selectCartInfoList.size());
+        //构建数组
+        for (int i = 0; i < selectCartInfoList.size(); i++) {
+            jsonArray.add(selectCartInfoList.get(i).getCartId());
+        }
+        PictureAirLog.out("jsonArray" + jsonArray);
+        API1.getCarts(jsonArray, cartHandler);
+        customProgressDialog.show();
     }
 
     /**
@@ -574,19 +625,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         isEdit = false;
         editTextView.setText(R.string.edit);
-        cartPriceLinearLayout.setVisibility(View.VISIBLE);
-        paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
-
-        for (CartItemInfo1 cartItemInfo : cartInfoList) {
-            if (cartItemInfo.getIsSelect()) {
-                paymentButton.setBackgroundResource(R.color.pp_blue);
-                break;
-            } else {
-                paymentButton.setBackgroundResource(R.color.gray_light3);
-            }
-        }
-        totalTextView.setText((int) getTotalPrice() + "");
         rtButton.setVisibility(View.VISIBLE);
+        // 请求优惠信息
+        getDiscountPrice();
     }
 
     /**
