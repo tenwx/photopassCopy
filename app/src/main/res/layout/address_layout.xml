@@ -148,7 +148,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/shop_price_tv"
                         android:text="$"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                     <TextView
                         android:id="@+id/shop_price_tv"
@@ -157,7 +157,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                 </RelativeLayout>
 
@@ -217,7 +217,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/discount_price_unit_tv"
                         android:text="-"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                     <TextView
                         android:id="@+id/discount_price_unit_tv"
@@ -226,7 +226,7 @@
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:layout_toLeftOf="@+id/discount_price_tv"
                         android:text="$"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                     <TextView
                         android:id="@+id/discount_price_tv"
@@ -235,7 +235,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                 </RelativeLayout>
 
@@ -257,7 +257,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/pay_price_tv"
                         android:text="$"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                     <TextView
                         android:id="@+id/pay_price_tv"
@@ -266,7 +266,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_gray" />
 
                 </RelativeLayout>
 
