@@ -232,7 +232,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        checkUpdateManager.unregisterReceiver();
+        checkUpdateManager.onDestroy();
         CoverManager.getInstance().destroy();
         clearCache();
         if (EventBus.getDefault().isRegistered(this)) {
