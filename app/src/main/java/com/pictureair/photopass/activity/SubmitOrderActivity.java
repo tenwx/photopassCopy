@@ -75,6 +75,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private JSONObject cartItemId;
     private String orderId = "";
     private String deliveryType = "3";//物流方式 (1和3拼接在一起的)
+    private float disPrice = 0;
     private List<Address> addressList;
     private ListView transportListView;
     private AddressAdapter addressAdapter;
@@ -83,7 +84,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
 
     private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
-            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv;
+            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv,discountPriceUnitTv,discountPriceTv;
 
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
@@ -286,6 +287,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 deliveryType += 1 + ",";
             }
         }
+        Intent intent = getIntent();
+        disPrice = intent.getFloatExtra("discountPrice", disPrice);
+        PictureAirLog.v(TAG, "discountPrice：" + disPrice);
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
         payPrice = totalprice;//默认总金额和实际支付金额相等
         //获取优惠码数量
@@ -303,7 +307,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             infoListView.addFooterView(initHeaderAndFooterView(false, false, null));
         }
         updateShopPriceUI(true);
-        totalpriceTextView.setText((int) payPrice + "");
+
+        totalpriceTextView.setText(((int) payPrice - (int)disPrice) + "");
+        PictureAirLog.out("==========" + ((int) payPrice - (int) disPrice) + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
 
@@ -363,6 +369,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         shopPriceTv = (TextView) view.findViewById(R.id.shop_price_tv);
         payPriceUnitTv = (TextView) view.findViewById(R.id.pay_price_unit_tv);
         payPriceTv = (TextView) view.findViewById(R.id.pay_price_tv);
+        discountPriceTv = (TextView) view.findViewById(R.id.discount_price_tv);
+        discountPriceUnitTv = (TextView) view.findViewById(R.id.discount_price_unit_tv);
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
         if (isHeader) {
@@ -412,6 +420,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         couponPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         shopPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         payPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        discountPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         if (isCount) {
             couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
         } else {
@@ -419,9 +428,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         couponPriceTv.setText((int) depletePrice + "");
         shopPriceTv.setText((int) totalprice + "");
-        payPriceTv.setText((int) payPrice + "");
+        payPriceTv.setText(((int) payPrice - (int)disPrice)+ "");
+        discountPriceTv.setText((int)disPrice + "");
 
-        totalpriceTextView.setText((int) payPrice + "");
+        totalpriceTextView.setText(((int) payPrice - (int)disPrice )+ "");
     }
 
     /**

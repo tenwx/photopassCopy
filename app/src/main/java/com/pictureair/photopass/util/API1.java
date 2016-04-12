@@ -1121,18 +1121,28 @@ public class API1 {
     /**
      * 获取用户购物车信息
      *
-     * @param handler handler
+     * @param cartIdsArray
+     * @param handler      handler
      */
-    public static void getCarts(final Handler handler) {
+    public static void getCarts(JSONArray cartIdsArray, final Handler handler) {
         PictureAirLog.out("getCarts---》" + MyApplication.getTokenId());
+        final int flag;//表示请求类型： 初始化/选中取消选中
         RequestParams params = new RequestParams();
+        if (cartIdsArray == null) {
+            flag = -1;
+        } else {
+            if (cartIdsArray.size() > 0) {
+                params.put("cartItemIds", cartIdsArray.toString());
+            }
+            flag = GET_CART_SUCCESS;
+        }
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_CART_SUCCESS, jsonObject).sendToTarget();
+                handler.obtainMessage(GET_CART_SUCCESS, flag, flag, jsonObject).sendToTarget();
 
             }
 

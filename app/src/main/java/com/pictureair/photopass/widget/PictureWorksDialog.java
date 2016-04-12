@@ -119,6 +119,12 @@ public class PictureWorksDialog {
 		customDialog.show();
 	}
 
+	public void dismiss(){
+		if (null != customDialog){
+			customDialog.dismiss();
+		}
+	}
+
 	/**
 	 * 对话框按钮的监听
 	 * @author bauer_bao

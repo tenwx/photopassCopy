@@ -54,6 +54,7 @@ public class CheckUpdateManager {
     private final int UPDATE_PB = 203;
     private PictureAirDbManager dbDAO = null;
 
+
     /**
      * 接受广播
      */
@@ -128,15 +129,18 @@ public class CheckUpdateManager {
     };
 
     /**
-     * 询问是否更新APK Dialog
+     * 询问是否更新APK Dialog。
      * @param msg
      */
     private void showUpdateApkDialog(Message msg) {
+
         String objsString[] = (String[]) msg.obj;
         downloadURL = objsString[3];
         forceUpdate = objsString[1];
         version = objsString[0];
-
+        if (null == context){
+            return;
+        }
         pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), objsString[2],
                 forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
         pictureWorksDialog.show();
@@ -214,28 +218,6 @@ public class CheckUpdateManager {
     }
 
     /**
-     * 注销广播
-     */
-    public void unregisterReceiver() {
-        if (null != receiver && isRegisterReceiver){
-            try{
-            context.unregisterReceiver(receiver);
-            }catch (Exception e){
-            }
-        }
-    }
-
-    /**
-     * 注册广播
-     */
-    public void registerReceiver() {
-        isRegisterReceiver = true;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BreakpointDownloadService.ACTION_UPDATE);
-        context.registerReceiver(receiver, filter);
-    }
-
-    /**
      * 确定下载
      */
     public void dialogButtonPositive() {
@@ -299,6 +281,49 @@ public class CheckUpdateManager {
                 "application/vnd.android.package-archive");
         context.startActivity(intent);
         AppManager.getInstance().AppExit(context);
+    }
+
+    /**
+     * 注册广播
+     */
+    public void registerReceiver() {
+        isRegisterReceiver = true;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BreakpointDownloadService.ACTION_UPDATE);
+        context.registerReceiver(receiver, filter);
+    }
+
+    /**
+     * 销毁CheckUpdateManager
+     */
+    public void onDestroy(){
+        unregisterReceiver();
+        dismissDialog();
+    }
+
+    /**
+     * 注销广播
+     */
+    public void unregisterReceiver() {
+        if (null != receiver && isRegisterReceiver){
+            try{
+                context.unregisterReceiver(receiver);
+            }catch (Exception e){
+            }
+        }
+    }
+
+    /**
+     * 注销dialog
+     */
+    public void dismissDialog(){
+        if (null != pictureWorksDialog){
+            pictureWorksDialog.dismiss();
+            pictureWorksDialog = null;
+        }
+        if ( null != context){
+            context = null;
+        }
     }
 
 }
