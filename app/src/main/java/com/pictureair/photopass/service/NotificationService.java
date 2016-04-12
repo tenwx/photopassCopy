@@ -2,7 +2,7 @@ package com.pictureair.photopass.service;
 
 import android.content.Intent;
 import android.os.IBinder;
-import com.pictureair.photopass.util.NotificationUtil;
+
 /**
  * 推送的服务。
  *
@@ -10,7 +10,7 @@ import com.pictureair.photopass.util.NotificationUtil;
  */
 public class NotificationService extends android.app.Service {
     private final String TAG = "NotificationService";
-    NotificationUtil notificationUtil;
+    NotificationServiceHelp notificationServiceHelp;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -27,12 +27,12 @@ public class NotificationService extends android.app.Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
-        notificationUtil = new NotificationUtil(this);
-        if (notificationUtil.isRequireDisconnect(intent)){ //是否接受到断开的信号。
-            notificationUtil.disconnectSocket(); //断开socket
+        notificationServiceHelp = new NotificationServiceHelp(this);
+        if (notificationServiceHelp.isRequireDisconnect(intent)){ //是否接受到断开的信号。
+            notificationServiceHelp.disconnectSocket(); //断开socket
             stopSelf();//停止服务
         }else{
-            notificationUtil.connectSocket(); // 开启推送。
+            notificationServiceHelp.connectSocket(); // 开启推送。
         }
         return START_STICKY;
         /*
@@ -48,7 +48,7 @@ public class NotificationService extends android.app.Service {
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        notificationUtil.destoryService();
+        notificationServiceHelp.destoryService();
     }
 
 }

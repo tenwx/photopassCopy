@@ -1,4 +1,4 @@
-package com.pictureair.photopass.util;
+package com.pictureair.photopass.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,6 +16,9 @@ import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
+import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,8 +37,8 @@ import io.socket.SocketIOException;
  * NotificationService 的辅助类
  * Created by talon on 16/4/11.
  */
-public class NotificationUtil {
-    private final String TAG = "NotificationUtil";
+public class NotificationServiceHelp {
+    private final String TAG = "NotificationServiceHelp";
     private final int SOCKET_CONNECT_SUCCESS = 1111;
     private final int SOCKET_RECEIVE_DATA = 3333;
     private Context mContext;
@@ -66,7 +69,7 @@ public class NotificationUtil {
         }
     }
 
-    public NotificationUtil(Context context) {
+    public NotificationServiceHelp(Context context) {
         mContext = context;
         preferences = mContext.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         userId = preferences.getString(Common.USERINFO_ID, null);
