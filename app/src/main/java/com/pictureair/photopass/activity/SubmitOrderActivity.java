@@ -89,6 +89,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
     private float depletePrice = 0;//优惠减免费用
+    private float straightwayPreferentialPrice = 0;//优惠立减
+    private float promotionPreferentialPrice = 0;//优惠抵扣
+    private float preferentialPrice = 0;//优惠减免总费用
+    private float resultPrice = 0;//初始总费用
+    private float totalPrice = 0;//实际支付总价
 
     private static final int PAY_SUCCESS = 10001;//支付成功
     private static final int PAY_FAILED = 10002;//失败
@@ -141,8 +146,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 //使用优惠码成功 -- 解析数据
                 JSONObject json = (JSONObject) msg.obj;
                 PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： " + json);
-                depletePrice = Float.valueOf(json.getString("depletePrice"));
-                payPrice = Float.valueOf(json.getString("resultPrice"));
+//                depletePrice = Float.valueOf(json.getString("depletePrice"));
+//                payPrice = Float.valueOf(json.getString("resultPrice"));
+
+                straightwayPreferentialPrice = Float.valueOf(json.getString("straightwayPreferentialPrice"));//优惠立减
+                promotionPreferentialPrice = Float.valueOf(json.getString("promotionPreferentialPrice"));//优惠折扣
+                preferentialPrice = Float.valueOf(json.getString("preferentialPrice"));//优惠减免总费用
+                resultPrice = Float.valueOf(json.getString("resultPrice"));//优惠减免总费用
+                totalPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
+
                 //更新界面
                 customProgressDialog.dismiss();
                 updateShopPriceUI(false);
@@ -426,12 +438,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         } else {
             couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) depletePrice);
         }
-        couponPriceTv.setText((int) depletePrice + "");
-        shopPriceTv.setText((int) totalprice + "");
-        payPriceTv.setText(((int) payPrice - (int)disPrice)+ "");
-        discountPriceTv.setText((int)disPrice + "");
+        couponPriceTv.setText((int) promotionPreferentialPrice + "");
+        shopPriceTv.setText((int) resultPrice + "");
+        payPriceTv.setText((int) totalPrice + "");
+        discountPriceTv.setText((int)straightwayPreferentialPrice + "");
 
-        totalpriceTextView.setText(((int) payPrice - (int)disPrice )+ "");
+        totalpriceTextView.setText((int) totalPrice + "");
     }
 
     /**

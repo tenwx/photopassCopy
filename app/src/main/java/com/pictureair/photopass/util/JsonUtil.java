@@ -541,6 +541,11 @@ public class JsonUtil {
             orderInfo.deliveryShipping = priceJsonObject.getDouble("shipping");//运费
 //            orderInfo.productPrice = priceJsonObject.getDouble("productPrice");//商品价格
             orderInfo.orderTotalPrice = priceJsonObject.getDouble("totalPrice");//商品总价
+            orderInfo.straightwayPreferentialPrice = priceJsonObject.getDouble("straightwayPreferentialPrice");//优惠立减
+            orderInfo.promotionPreferentialPrice = priceJsonObject.getDouble("promotionPreferentialPrice");//优惠折扣
+            orderInfo.preferentialPrice = priceJsonObject.getDouble("preferentialPrice");//优惠减免总费用
+            orderInfo.resultPrice = priceJsonObject.getDouble("resultPrice");//初始总费用
+            orderInfo.actualotalPrice = priceJsonObject.getDouble("totalPrice");//实际支付总价
 
             //deliveryInfo
             JSONObject deliveryJsonObject = orderJsonObject.getJSONObject("deliveryInfo");
