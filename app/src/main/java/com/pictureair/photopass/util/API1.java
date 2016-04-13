@@ -1946,21 +1946,22 @@ public class API1 {
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
         }
+        PictureAirLog.v(TAG, "===========getCartItemCoupons cartItemIds:" + cartItemIds.toString());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        PictureAirLog.e(TAG, "===========" + MyApplication.getTokenId());
+        PictureAirLog.v(TAG, "===========getCartItemCoupons" + MyApplication.getTokenId());
 
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_COUPONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                PictureAirLog.e(TAG, "============" + jsonObject);
+                PictureAirLog.v(TAG, "============getCartItemCoupons" + jsonObject);
                 handler.obtainMessage(GET_COUPON_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "============" + status);
+                PictureAirLog.e(TAG, "============getCartItemCoupons" + status);
                 handler.obtainMessage(GET_COUPON_FAILED, status, 0).sendToTarget();
             }
         });

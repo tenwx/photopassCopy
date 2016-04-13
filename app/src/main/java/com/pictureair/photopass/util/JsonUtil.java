@@ -897,23 +897,23 @@ public class JsonUtil {
         }
         List<CouponInfo> list = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("data");
-        CouponInfo couponInfo = null;
-        String effectiveTime;
-        String failureTime;
+//        CouponInfo couponInfo = null;
+//        String effectiveTime;
+//        String failureTime;
         for (int i = 0; i < array.size(); i++) {
-            couponInfo = new CouponInfo();
-
-            couponInfo.setCpStatus(array.getJSONObject(i).getString("status"));
-            couponInfo.setCpCode(array.getJSONObject(i).getString("code"));
-            couponInfo.setCpNumber(array.getJSONObject(i).getDouble("money"));
-            couponInfo.setCpType(array.getJSONObject(i).getString("genre"));//优惠卷类型（discount,full,subtract）折扣，满，减
-            couponInfo.setCpDescribe(array.getJSONObject(i).getString("description"));//描述
-            couponInfo.setCpName(array.getJSONObject(i).getString("name"));//优惠卷名称
-            //有效期
-            effectiveTime = array.getJSONObject(i).getString("effectiveTime");//有效开始时间
-            failureTime = array.getJSONObject(i).getString("failureTime");//有效结束时间
-            couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
-            list.add(couponInfo);
+//            couponInfo = new CouponInfo();
+//
+//            couponInfo.setCpStatus(array.getJSONObject(i).getString("status"));
+//            couponInfo.setCpCode(array.getJSONObject(i).getString("code"));
+////            couponInfo.setCpNumber(array.getJSONObject(i).getDouble("money"));
+//            couponInfo.setCpType(array.getJSONObject(i).getString("genre"));//优惠卷类型（discount,full,subtract）折扣，满，减
+//            couponInfo.setCpDescribe(array.getJSONObject(i).getString("description"));//描述
+//            couponInfo.setCpName(array.getJSONObject(i).getString("name"));//优惠卷名称
+//            //有效期
+//            effectiveTime = array.getJSONObject(i).getString("effectiveTime");//有效开始时间
+//            failureTime = array.getJSONObject(i).getString("failureTime");//有效结束时间
+//            couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+            list.add(getCouponInfo(array.getJSONObject(i)));
         }
         return list;
     }

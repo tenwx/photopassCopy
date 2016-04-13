@@ -98,7 +98,7 @@ public class Common {
     public static final String ADD_COMMENT = "/p/addCpmment";// 评论照片
     public static final String SHARE_TO_SOCIAL = "/p/shareToSocial";// 分享照片
     public static final String FORGET_PWD = "/user/forgotPwd";// 忘记密码（手机号）
-    public static final String GET_COUPONS = "/api/coupons";// 从订单中查询优惠卷
+    public static final String GET_COUPONS = "/api/getAvailableCoupon";// 从订单中查询优惠卷
     public static final String GET_ME_COUPONS = "/ppp/getCouponsByUserId";// 从me中查询优惠卷
     public static final String ADD_COUPONS = "/api/coupons";//添加优惠卷
     public static final String PREVIEW_COUPONS = "/api/previewCoupon";//使用优惠券
