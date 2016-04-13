@@ -890,7 +890,7 @@ public class JsonUtil {
         if (amount == 0) {
             return null;
         }
-        List<CouponInfo> list = new ArrayList<>(amount);
+        List<CouponInfo> list = new ArrayList<>();
         JSONArray array = jsonObject.getJSONArray("data");
 //        CouponInfo couponInfo = null;
 //        String effectiveTime;
@@ -908,8 +908,7 @@ public class JsonUtil {
 //            effectiveTime = array.getJSONObject(i).getString("effectiveTime");//有效开始时间
 //            failureTime = array.getJSONObject(i).getString("failureTime");//有效结束时间
 //            couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
-
-//            list.add(getCouponInfo(array.getJSONObject(i)));
+            list.add(getCouponInfo(array.getJSONObject(i)));
         }
         return list;
     }

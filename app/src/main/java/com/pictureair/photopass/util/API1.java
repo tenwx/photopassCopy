@@ -1945,7 +1945,6 @@ public class API1 {
         final RequestParams params = new RequestParams();
         if (null != cartItemIds) {//订单页面发来的请求
             params.put(Common.CART_ITEM_IDS, cartItemIds);
-            return;
         }
         PictureAirLog.v(TAG, "===========getCartItemCoupons cartItemIds:" + cartItemIds.toString());
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
