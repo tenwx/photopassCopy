@@ -26,6 +26,12 @@ public class OrderInfo implements Parcelable {
     public String deliveryCompany;//快递公司
     public String deliveryPostNumber;//快递收货地址邮编
     public double productPrice;//商品价格
+    public double resultPrice;//初始总费用
+    public double straightwayPreferentialPrice;//优惠抵扣
+    public double promotionPreferentialPrice;//优惠立减
+    public double preferentialPrice;//优惠减免总费用
+    public double actualotalPrice;//实际支付总价
+
 
     public OrderInfo() {
 
@@ -62,6 +68,11 @@ public class OrderInfo implements Parcelable {
         deliveryCompany = source.readString();
         deliveryPostNumber = source.readString();
         productPrice = source.readDouble();
+        resultPrice = source.readDouble();
+        straightwayPreferentialPrice = source.readDouble();
+        promotionPreferentialPrice = source.readDouble();
+        preferentialPrice = source.readDouble();
+        actualotalPrice = source.readDouble();
     }
 
     @Override
@@ -88,7 +99,11 @@ public class OrderInfo implements Parcelable {
         dest.writeString(deliveryCompany);
         dest.writeString(deliveryPostNumber);
         dest.writeDouble(productPrice);
-
+        dest.writeDouble(resultPrice);
+        dest.writeDouble(straightwayPreferentialPrice);
+        dest.writeDouble(promotionPreferentialPrice);
+        dest.writeDouble(preferentialPrice);
+        dest.writeDouble(actualotalPrice);
     }
 
 }

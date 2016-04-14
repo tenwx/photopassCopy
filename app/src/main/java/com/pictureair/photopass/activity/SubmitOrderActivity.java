@@ -84,11 +84,16 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
 
     private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
-            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv,discountPriceUnitTv,discountPriceTv;
+            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv;
 
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
     private float depletePrice = 0;//优惠减免费用
+    private float straightwayPreferentialPrice = 0;//优惠立减
+    private float promotionPreferentialPrice = 0;//优惠抵扣
+    private float preferentialPrice = 0;//优惠减免总费用
+    private float resultPrice = 0;//初始总费用
+    private float totalPrice = 0;//实际支付总价
 
     private static final int PAY_SUCCESS = 10001;//支付成功
     private static final int PAY_FAILED = 10002;//失败
@@ -141,8 +146,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 //使用优惠码成功 -- 解析数据
                 JSONObject json = (JSONObject) msg.obj;
                 PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： " + json);
-                depletePrice = Float.valueOf(json.getString("depletePrice"));
-                payPrice = Float.valueOf(json.getString("resultPrice"));
+//                depletePrice = Float.valueOf(json.getString("depletePrice"));
+//                payPrice = Float.valueOf(json.getString("resultPrice"));
+
+                straightwayPreferentialPrice = Float.valueOf(json.getString("straightwayPreferentialPrice"));//优惠折扣
+                promotionPreferentialPrice = Float.valueOf(json.getString("promotionPreferentialPrice"));//优惠立减
+                preferentialPrice = Float.valueOf(json.getString("preferentialPrice"));//优惠减免总费用
+                resultPrice = Float.valueOf(json.getString("resultPrice"));//优惠减免总费用
+                totalPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
+
                 //更新界面
                 customProgressDialog.dismiss();
                 updateShopPriceUI(false);
@@ -308,7 +320,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         updateShopPriceUI(true);
 
-        totalpriceTextView.setText(((int) payPrice - (int)disPrice) + "");
+        totalpriceTextView.setText(((int) payPrice - (int) disPrice) + "");
         PictureAirLog.out("==========" + ((int) payPrice - (int) disPrice) + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
@@ -351,14 +363,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         couponCountRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (couponCount > 0) {
-                    //进入优惠券选择界面
-                    Intent intent = new Intent();
-                    intent.setClass(SubmitOrderActivity.this, CouponActivity.class);
-                    intent.putExtra(CouponTool.ACTIVITY_ORDER, CouponTool.ACTIVITY_ORDER);
-                    intent.putExtra(CouponTool.ACTIVITY_ORDER_CART_DATAS, cartItemIds.toString());
-                    startActivityForResult(intent, PREVIEW_COUPON_CODE);
-                }
+                //进入优惠券选择界面
+                Intent intent = new Intent();
+                intent.setClass(SubmitOrderActivity.this, CouponActivity.class);
+                intent.putExtra(CouponTool.ACTIVITY_ORDER, CouponTool.ACTIVITY_ORDER);
+                intent.putExtra(CouponTool.ACTIVITY_ORDER_CART_DATAS, cartItemIds.toString());
+                startActivityForResult(intent, PREVIEW_COUPON_CODE);
             }
         });
 
@@ -649,6 +659,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if (resultCode == RESULT_OK && requestCode == PREVIEW_COUPON_CODE) {
             //选择优惠码返回 请求API使用优惠券
             JSONArray couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
+
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
                 customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
