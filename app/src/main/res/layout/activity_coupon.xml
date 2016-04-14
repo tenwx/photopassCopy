@@ -21,11 +21,12 @@
 
     <LinearLayout
         android:id="@+id/ll_no_coupon"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
+        android:gravity="center"
         android:visibility="gone">
 
         <ImageView
@@ -39,8 +40,8 @@
 
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/pp_margin_10"
             android:text="@string/no_coupon"
             android:textColor="@color/gray"
