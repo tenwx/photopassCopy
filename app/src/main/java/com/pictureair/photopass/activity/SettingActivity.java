@@ -24,7 +24,7 @@ import com.pictureair.photopass.util.UmengUtil;
 
 /**
  * @author talon
- * 用户功能设置
+ *         用户功能设置
  */
 public class SettingActivity extends BaseActivity implements OnClickListener {
     private SettingUtil settingUtil;
@@ -42,8 +42,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     private SharedPreferences sharedPreferences;
     private SharedPreferences appSharedPreferences;
     private String currentLanguage;
-    private static final String TAG = "SettingActivity";
+    private final String TAG = "SettingActivity";
 
+    //纪录是否自动更新的变量。
+    private boolean isAutoUpdate = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -141,37 +143,61 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 break;
             case R.id.ib_gprs_wifi_download:
             case R.id.rl_gprs_wifi_download: // 4g/3g/wifi 下载
-                if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-                    settingUtil.deleteSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                } else {
 
-                }
-                judgeSettingStatus();
+                ibGprWifiDownload.setImageResource(R.drawable.sele);
+                ibWifiOnlyDownload.setImageResource(R.drawable.nosele);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                            settingUtil.deleteSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                        } else {
+
+                        }
+                    }
+                }.start();
                 break;
             case R.id.ib_wifi_only_download:
             case R.id.rl_wifi_only_download: // 仅wifi下载
-                if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                ibGprWifiDownload.setImageResource(R.drawable.nosele);
+                ibWifiOnlyDownload.setImageResource(R.drawable.sele);
 
-                } else {
-                    settingUtil.insertSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                }
-                judgeSettingStatus();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                        } else {
+                            settingUtil.insertSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                        }
+                    }
+                }.start();
                 break;
             case R.id.ib_auto_update:
             case R.id.rl_auto_update: // 自动更新。  选择框提示。
-                if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                    judgeSettingStatus();
-                } else {
+                if (isAutoUpdate == true){ //如果是自动更新
+                    ibAutoUpdate.setImageResource(R.drawable.nosele);
+                    isAutoUpdate = false;
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                        }
+                    }.start();
+                }else{
                     new CustomDialog(SettingActivity.this, R.string.confirm_sync_msg, R.string.confirm_sync_no, R.string.confirm_sync_yes, new CustomDialog.MyDialogInterface() {
-
                         @Override
                         public void yes() {
                             // TODO Auto-generated method stub // 确认同步更新后，修改更新设置状态
-                            settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                            judgeSettingStatus();
+                            ibAutoUpdate.setImageResource(R.drawable.sele);
+                            isAutoUpdate = true;
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                                }
+                            }.start();
                         }
-
                         @Override
                         public void no() {
                             // TODO Auto-generated method stub // 取消：不做操作
@@ -198,8 +224,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         }
 
         if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+            isAutoUpdate = true;
             ibAutoUpdate.setImageResource(R.drawable.sele);
         } else {
+            isAutoUpdate = false;
             ibAutoUpdate.setImageResource(R.drawable.nosele);
         }
     }
