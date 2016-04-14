@@ -29,9 +29,9 @@
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="name_is_empty">昵称不能为空</string>
-    <string name="terms">迪士尼乐拍通软件许可及服务协议</string>
-    <string name="policy">隐私声明</string>
-    <string name="terms_and_policy"><a href = "2">《迪士尼乐拍通软件许可及服务协议》</a>\n\n和<a href = "1">《隐私声明》</a></string>
+    <string name="terms">补充条款及细则</string>
+    <string name="policy">隐私政策</string>
+    <string name="terms_and_policy"><a href = "2">《补充条款及细则》</a>\n\n和<a href = "1">《隐私政策》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -461,6 +461,7 @@
     <string name="conpon_input_hint">请输入抵用卷兑换码</string>
     <string name="select_cpupon">使用抵用劵</string>
     <string name="discount_price">优惠立减</string>
+    <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
     <!-- 我的优惠卷 end-->
 
 

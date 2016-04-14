@@ -78,10 +78,13 @@ public class DealCodeUtil {
 							break;
 					}
 
-					if (dealWay != null && //如果从ppp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
+					if (dealWay != null && dealWay.equals("ppp") && //如果从ppp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
 							!isInputAct) {//如果不是手动输入页面
 						handler.obtainMessage(DEAL_CODE_FAILED, id).sendToTarget();
 					}else {//弹出错误提示
+						if (dealWay != null && dealWay.equals("coupon")) {
+							id = R.string.incorrect_coupon;
+						}
 						myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
 						handler.sendEmptyMessage(DEAL_CODE_FAILED);
 					}
@@ -89,37 +92,46 @@ public class DealCodeUtil {
 
 				case API1.CHECK_CODE_SUCCESS://检查code成功
 					PictureAirLog.out("----------->check code success" + msg.obj);
-					if ("photoPass".equals(msg.obj.toString())) {
+					if (msg.obj == null || "invalid".equals(msg.obj.toString())) {
+						if (dealWay != null && dealWay.equals("coupon")) {
+							id = R.string.incorrect_coupon;
+						} else {
+							id = R.string.http_error_code_6136;
+						}
+						myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+						handler.sendEmptyMessage(DEAL_CODE_FAILED);
+						break;
+					} else if ("photoPass".equals(msg.obj.toString())) {
 						codeType = "pp";
 					} else if ("photoPassPlus".equals(msg.obj.toString())) {
 						codeType = "ppp";
-					} else if ("invalid".equals(msg.obj.toString())) {//不可用
-						myToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
-						handler.sendEmptyMessage(DEAL_CODE_FAILED);
-						break;
 					} else if ("coupon".equals(msg.obj.toString())) {
 						codeType = "coupon";
 					}
-					if (dealWay != null) {//如果从ppp页面进来，卡的类型不一致，直接返回，退出
-						PictureAirLog.out("--------->need call back");
-						Bundle bundle = new Bundle();
-						if (!dealWay.equals(codeType)) {//卡类型不一致
-							bundle.putInt("status", 1);
-							bundle.putString("result", "notSame");
-							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle).sendToTarget();
-
-						} else {//类型一致。如果是ppp的话，直接绑定，如果是pp的话，提示并返回，让用户去确认
-							if (codeType.equals("ppp")) {
-								getInfo(code, codeType);
-							} else {//如果是pp，返回信息
-								bundle.putInt("status", 2);
-								bundle.putString("result", code);
-								bundle.putBoolean("hasBind", false);
+					if (dealWay != null) {//如果从ppp或者coupon页面进来，卡的类型不一致，直接返回，退出，一致，则添加
+						if (!dealWay.equals(codeType)) {//类型不一致
+							if (dealWay.equals("ppp")) {//ppp
+								PictureAirLog.out("--------->need call back");
+								Bundle bundle = new Bundle();
+								bundle.putInt("status", 1);
+								bundle.putString("result", "notSame");
 								handler.obtainMessage(DEAL_CODE_SUCCESS, bundle).sendToTarget();
+							} else {//coupon
+								id = R.string.incorrect_coupon;
+								myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+								handler.sendEmptyMessage(DEAL_CODE_FAILED);
+								break;
 							}
+						} else {//卡类型一致
+							getInfo(code, codeType);
 						}
-					} else {//其他页面
-						getInfo(code, codeType);
+					} else {//故事页面
+						if (codeType.equals("coupon")) {//故事页面扫了coupon，提示无效的卡
+							myToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
+							handler.sendEmptyMessage(DEAL_CODE_FAILED);
+						} else {
+							getInfo(code, codeType);
+						}
 					}
 					break;
 
@@ -146,7 +158,7 @@ public class DealCodeUtil {
 					Bundle bundle3 = new Bundle();
 					PictureAirLog.out("add ppp code or coupon to user success--->" + dealWay);
 					if (msg.obj == null) {//ppp
-						if (dealWay != null) {//从ppp进入
+						if (dealWay != null && dealWay.equals("ppp")) {//从ppp进入
 							bundle3.putInt("status", 5);
 							bundle3.putString("result", "pppOK");
 							PictureAirLog.out("scan ppp ok 555");

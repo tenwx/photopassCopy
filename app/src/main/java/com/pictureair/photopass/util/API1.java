@@ -1275,12 +1275,12 @@ public class API1 {
      * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
      * @param handler      handler
      */
-    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId,JSONArray couponCodes, final Handler handler) {
+    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId, JSONArray couponCodes, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("cartItemIds", cartItemIds.toString());
         params.put("deliveryType", deliveryType);
-        params.put("coupons",couponCodes.toString());
+        params.put("coupons", couponCodes == null ? null : couponCodes.toString());
         if (deliveryType == 0) {
             //物流
             params.put("addressId", addressId);

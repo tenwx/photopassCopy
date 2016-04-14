@@ -48,7 +48,8 @@
             android:drawablePadding="@dimen/pp_padding_8"
             android:drawableTop="@drawable/my_ppp1"
             android:gravity="center"
-            android:padding="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_padding_8"
+            android:paddingBottom="@dimen/pp_padding_8"
             android:text="@string/mypage_ppp1"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />

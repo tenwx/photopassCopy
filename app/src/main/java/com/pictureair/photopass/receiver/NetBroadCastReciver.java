@@ -20,7 +20,7 @@ public class NetBroadCastReciver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
-		if (!MyApplication.getTokenId().equals("")) {
+		if (MyApplication.getTokenId() != null && !MyApplication.getTokenId().equals("")) {
 			// 没有退出的时候
 			//如果是在开启wifi连接和有网络状态下
 			if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {

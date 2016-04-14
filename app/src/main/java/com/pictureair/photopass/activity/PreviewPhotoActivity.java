@@ -239,12 +239,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 /**
                  * 重新计算curRadius
                  */
-                if (curRadius > curShowBmpWidth / 2) {
-                    curRadius = curShowBmpWidth / 2;
-                }
-                if (curRadius > curShowBmpHeight / 2) {
-                    curRadius = curShowBmpHeight / 2;
-                }
+                curRadius = BlurUtil.caculateRadius(curRadius, curShowBmpWidth, curShowBmpHeight);
 
                 PictureAirLog.out("larger bmp h---->" + curShowBmpHeight);
                 PictureAirLog.out("larger bmp w---->" + curShowBmpWidth);
@@ -273,30 +268,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     out = true;
                 }
 
-                if (x1 > curShowBmpWidth - Math.min(curShowBmpWidth, zoomW)) {
-                    x1 = curShowBmpWidth - Math.min(curShowBmpWidth, zoomW);
-                }
-
-                if (y1 > curShowBmpHeight - Math.min(curShowBmpHeight, zoomH)) {
-                    y1 = curShowBmpHeight - Math.min(curShowBmpHeight, zoomH);
-                }
-
-                PictureAirLog.out("bit1 w-" + oriBlurBmp.getWidth() + "h--" + oriBlurBmp.getHeight());
-                PictureAirLog.out("bit2 w-" + oriClearBmp.getWidth() + "h--" + oriClearBmp.getHeight());
-
-                if (x1 > oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth())) {
-                    x1 = oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth());
-                }
-                if (y1 > oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight())) {
-                    y1 = oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight());
-                }
-
-                if (x1 < 0) {
-                    x1 = 0;
-                }
-                if (y1 < 0) {
-                    y1 = 0;
-                }
+                x1 = BlurUtil.caculateStartCropXOrY(x1, curShowBmpWidth, zoomW, oriBlurBmp.getWidth(), true);
+                y1 = BlurUtil.caculateStartCropXOrY(y1, curShowBmpHeight, zoomH, oriBlurBmp.getHeight(), true);
 
                 PictureAirLog.out("oriblur---?" + oriBlurBmp.getWidth() + " ---  " + oriBlurBmp.getHeight());
                 PictureAirLog.out("x1---" + x1 + " y1---  " + y1);
@@ -304,12 +277,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 if (flag) {//放大
                     if (out) {//超出屏幕
-                        zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
-                        zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
-                        matrix.reset();
-                        matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
-                        zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
-                        zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
+                        cropNewBmt();
                     }
                     image01.setImageBitmap(zoomBlurBmp);
                 }
@@ -342,26 +310,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 x1 = msg.arg1 - zoomW / 2;
                 y1 = msg.arg2 - zoomH / 2;
                 PictureAirLog.v(TAG, "current xy = " + x1 + "+" + y1);
-                if (x1 > oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth())) {
-                    x1 = oriBlurBmp.getWidth() - Math.min(zoomW, oriBlurBmp.getWidth());
-                }
-                if (x1 < 0) {
-                    x1 = 0;
-                }
-                if (y1 > oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight())) {
-                    y1 = oriBlurBmp.getHeight() - Math.min(zoomH, oriBlurBmp.getHeight());
-                }
-                if (y1 < 0) {
-                    y1 = 0;
-                }
+                x1 = BlurUtil.caculateStartCropXOrY(x1, curShowBmpWidth, zoomW, oriBlurBmp.getWidth(), false);
+                y1 = BlurUtil.caculateStartCropXOrY(y1, curShowBmpHeight, zoomH, oriBlurBmp.getHeight(), false);
                 PictureAirLog.v(TAG, "after currnet xy = " + x1 + "_" + y1);
+
                 if (!flag) {
-                    zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
-                    zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
-                    matrix.reset();
-                    matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
-                    zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
-                    zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
+                    cropNewBmt();
                     image01.setImageBitmap(zoomBlurBmp);
                     curShowBmpWidth = zoomClearBmp.getWidth();
                     curShowBmpHeight = zoomClearBmp.getHeight();
@@ -405,12 +359,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 //                intent.putExtra("isBack", "1");//取消付款后是否回到当前页面
                 startActivity(intent);
                 break;
+
             case API1.BUY_PHOTO_FAILED:
                 //购买失败
                 progressDialog.dismiss();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-
                 break;
+
             case API1.GET_GOODS_SUCCESS:
                 GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
                 if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
@@ -841,66 +796,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
-
-    /**
-     * 根据照片的购买情况确定布局和显示模式
-     */
-    private void initBlur() {
-        PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
-        if (!loadFailed) {//加载成功
-            int w = oriClearBmp.getWidth();
-            int h = oriClearBmp.getHeight();
-            PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
-            parentPreviewW = ScreenUtil.getScreenWidth(this);
-            parentPreviewH = photoFraRelativeLayout.getHeight();
-            int[] location = new int[2];
-            photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
-            marginTop = location[1];
-            PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
-            float sw = 0f;
-            if (h / (float) w > parentPreviewH / parentPreviewW) {//左右留白
-                sw = parentPreviewH / (float) h;
-            } else {//上下留白
-                sw = parentPreviewW / (float) w;
-            }
-            matrix.reset();
-            matrix.postScale(sw, sw);
-            oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
-            PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
-            zoomW = (int) (parentPreviewW / 2);
-            zoomH = (int) (parentPreviewH / 2);
-            if (photoInfo.isPayed == 0) {// 未购买的照片
-                if (maskBmp != null) {
-                    maskBmp.recycle();
-                }
-                maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
-                oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
-                PictureAirLog.v(TAG, "oriBlurBmp = " + oriBlurBmp.getWidth() + "_" + oriBlurBmp.getHeight());
-                image01.setImageBitmap(oriBlurBmp);
-            }
-            image01.setVisibility(View.VISIBLE);
-
-        } else {
-            touchtoclean.setText(R.string.http_error_code_401);
-        }
-        mViewPager.setVisibility(View.GONE);
-        curShowBmpWidth = oriClearBmp.getWidth();
-        curShowBmpHeight = oriClearBmp.getHeight();
-        curRadius = originalRadius;
-
-        if (flag) {//放大模式
-            flag = false;
-            if (zoomBlurBmp != null) {
-                zoomBlurBmp.recycle();
-            }
-            if (zoomClearBmp != null) {
-                zoomClearBmp.recycle();
-            }
-        }
-        PictureAirLog.out("larger bmp h after init---->" + curShowBmpHeight);
-        PictureAirLog.out("larger bmp w after init---->" + curShowBmpWidth);
-    }
-
     public boolean onTouchEvent(MotionEvent event) {
         if (!loadFailed) {
             if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {// 未购买状态
@@ -1049,6 +944,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 }
                 break;
+
             case R.id.preview_share:
                 if (leadView.isShown()) {
                     return;
@@ -1181,6 +1077,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 getALlGoods();
                 dia.dismiss();
                 break;
+
             case R.id.leadknow:
             case R.id.blur_lead_view:
                 PictureAirLog.v(TAG, "know");
@@ -1421,31 +1318,55 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         touchtoclean.setShadowLayer(2, 2, 2, getResources().getColor(R.color.pp_dark_blue));
     }
 
+
+    /**
+     * 根据照片的购买情况确定布局和显示模式
+     */
+    private void initBlur() {
+        PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
+        if (!loadFailed) {//加载成功
+            createOriginalClearBit(true);
+            PictureAirLog.v(TAG, "ori clear bitmap" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
+            zoomW = (int) (parentPreviewW / 2);
+            zoomH = (int) (parentPreviewH / 2);
+            if (photoInfo.isPayed == 0) {// 未购买的照片
+                if (maskBmp != null) {
+                    maskBmp.recycle();
+                }
+                maskBmp = BitmapFactory.decodeResource(getResources(), R.drawable.round_meitu_1).copy(Config.ARGB_8888, true);
+                oriBlurBmp = BlurUtil.blur(oriClearBmp);//添加模糊度
+                PictureAirLog.v(TAG, "oriBlurBmp = " + oriBlurBmp.getWidth() + "_" + oriBlurBmp.getHeight());
+                image01.setImageBitmap(oriBlurBmp);
+            }
+            image01.setVisibility(View.VISIBLE);
+
+        } else {
+            touchtoclean.setText(R.string.http_error_code_401);
+        }
+        mViewPager.setVisibility(View.GONE);
+        curShowBmpWidth = oriClearBmp.getWidth();
+        curShowBmpHeight = oriClearBmp.getHeight();
+        curRadius = originalRadius;
+
+        if (flag) {//放大模式
+            flag = false;
+            if (zoomBlurBmp != null) {
+                zoomBlurBmp.recycle();
+            }
+            if (zoomClearBmp != null) {
+                zoomClearBmp.recycle();
+            }
+        }
+        PictureAirLog.out("larger bmp h after init---->" + curShowBmpHeight);
+        PictureAirLog.out("larger bmp w after init---->" + curShowBmpWidth);
+    }
+
     /**
      * 根据照片的购买情况确定布局和显示模式
      */
     private void resizeBlurImage() {
         PictureAirLog.v(TAG, "initBlur " + currentPosition + "___" + mViewPager.getCurrentItem());
-        int w = oriClearBmp.getWidth();
-        int h = oriClearBmp.getHeight();
-        PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
-        parentPreviewW = ScreenUtil.getScreenWidth(this);
-        parentPreviewH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
-        if (parentPreviewH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
-            parentPreviewH = ScreenUtil.getScreenHeight(this);
-        }
-        PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
-        PictureAirLog.v(TAG, "scale width, height" + parentPreviewW + "?" + parentPreviewH);
-        float sw = 0f;
-        if (h / (float) w > parentPreviewH / (float) parentPreviewW) {//左右留白
-            sw = parentPreviewH / (float) h;
-        } else {//上下留白
-            sw = parentPreviewW / (float) w;
-        }
-
-        matrix.reset();
-        matrix.postScale(sw, sw);
-        oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+        createOriginalClearBit(false);
         PictureAirLog.v(TAG, "oriClearBmp--->" + oriClearBmp.getWidth() + "----" + oriClearBmp.getHeight());
         zoomW = (int) (parentPreviewW / 2);
         zoomH = (int) (parentPreviewH / 2);
@@ -1465,6 +1386,47 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         curRadius = originalRadius;
         PictureAirLog.out("larger bmp h after resize---->" + curShowBmpHeight);
         PictureAirLog.out("larger bmp w after resize---->" + curShowBmpWidth);
+    }
+
+    private void createOriginalClearBit(boolean isInit){
+        int w = oriClearBmp.getWidth();
+        int h = oriClearBmp.getHeight();
+        PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
+        parentPreviewW = ScreenUtil.getScreenWidth(this);
+        parentPreviewH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
+
+        if (isInit) {
+            int[] location = new int[2];
+            photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
+            marginTop = location[1];
+            PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
+        } else {
+            if (parentPreviewH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
+                parentPreviewH = ScreenUtil.getScreenHeight(this);
+            }
+            PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
+            PictureAirLog.v(TAG, "scale width, height" + parentPreviewW + "?" + parentPreviewH);
+        }
+
+        float sw = 0f;
+        if (h / (float) w > parentPreviewH / parentPreviewW) {//左右留白
+            sw = parentPreviewH / (float) h;
+        } else {//上下留白
+            sw = parentPreviewW / (float) w;
+        }
+
+        matrix.reset();
+        matrix.postScale(sw, sw);
+        oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+    }
+
+    private void cropNewBmt() {
+        zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
+        zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
+        matrix.reset();
+        matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
+        zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
+        zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
     }
 
     //直接下载

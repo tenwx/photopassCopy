@@ -29,9 +29,9 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="name_is_empty">Please enter your Nickname</string>
-    <string name="terms">Terms and Conditions</string>
+    <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
-    <string name="terms_and_policy"><a href = "2">《Disney PhotoPass Terms and Conditions》</a>\n\nand<a href = "1">《Disney PhotoPass Privacy Policy》</a></string>
+    <string name="terms_and_policy"><a href = "2">《Supplemental Terms and Conditions》</a>\n\nand<a href = "1">《Privacy Policy》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -461,6 +461,7 @@
     <string name="conpon_input_hint">Please enter your coupon code</string>
     <string name="select_cpupon">Select Coupon</string>
     <string name="discount_price">Deduct</string>
+    <string name="incorrect_coupon">Incorrect Coupon</string>
     <!-- 优惠卷end-->
 
 </resources>

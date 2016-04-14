@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -42,9 +44,21 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	private int lastX = 0;// 获得当前X坐标
 	private int lastY = 0;
 	private TextView startNow;
-	private static String TAG = "WelcomeActivity";
+	private static final String TAG = "WelcomeActivity";
 	private String currentLanguage;// en表示英语，zh表示简体中文。
 	private SharedPreferences appSharedPreferences;
+	private static final int START_JUMP = 1001;
+	private Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+				case START_JUMP:
+					startJump();
+					break;
+			}
+			return false;
+		}
+	});
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -167,22 +181,14 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 			lastX = (int) arg1.getX();
 			lastY = (int) arg1.getY();
 			if (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1 && lastX > ScreenUtil.getScreenWidth(this) / 3 && lastX < ScreenUtil.getScreenWidth(this) * 2 / 3 && lastY > ScreenUtil.getScreenHeight(this) * 5 / 7 && lastY < ScreenUtil.getScreenHeight(this) * 6 / 7) {
-				new Handler().postDelayed(new Runnable() {
-					public void run() {
-						startJump();
-					};
-				}, 0);
+				handler.sendEmptyMessage(START_JUMP);
 			}
 			break;
 
 		case MotionEvent.ACTION_UP:
 			if (!flag) {
 				if ((lastX - arg1.getX() > 100) && (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1)) {// 从最后一页向右滑动
-					new Handler().postDelayed(new Runnable() {
-						public void run() {
-							startJump();
-						};
-					}, 0);
+					handler.sendEmptyMessage(START_JUMP);
 				}
 			}
 		}
@@ -193,6 +199,7 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	 * 跳转到登录页面
 	 */
 	private void startJump(){
+		PictureAirLog.out("start jump---->");
 		Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
 		startActivity(intent);
 		finish();
