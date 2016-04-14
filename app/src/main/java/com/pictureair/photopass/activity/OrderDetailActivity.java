@@ -57,8 +57,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         payMethod = (TextView) findViewById(R.id.order_detail_paymethod);
         orderStatus = (TextView) findViewById(R.id.order_status);
         productPrice = (TextView) findViewById(R.id.order_productprice);
-        preferentialPrice = (TextView) findViewById(R.id.preferential_tv);
-        straightwayPreferentialPrice = (TextView) findViewById(R.id.straightwaypreferentia_tv);
+        preferentialPrice = (TextView) findViewById(R.id.promotionPreferentialPrice_tv);
+        straightwayPreferentialPrice = (TextView) findViewById(R.id.straightwayPreferentialPrice_tv);
 
         payTotalPrice = (TextView) findViewById(R.id.pay_total_price);
 
@@ -127,8 +127,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         productPrice.setText(currency + (int) orderInfo.productPrice + "");
         payTotalPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
-        preferentialPrice.setText("-" + currency + (int)orderInfo.straightwayPreferentialPrice);
-        straightwayPreferentialPrice.setText("-" + currency + (int)orderInfo.promotionPreferentialPrice);
+        preferentialPrice.setText("-" + currency + (int)orderInfo.promotionPreferentialPrice);
+        straightwayPreferentialPrice.setText("-" + currency + (int)orderInfo.straightwayPreferentialPrice);
 
 
         switch (orderInfo.deliveryMethod) {
