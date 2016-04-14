@@ -26,9 +26,6 @@ import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
-
-import cn.smssdk.gui.AppManager;
-
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
@@ -41,6 +38,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
 
 /**
@@ -414,27 +412,32 @@ public class CartActivity extends BaseActivity implements OnClickListener {
      */
     public void updatePayStateUI() {
         if (disSelectedCount == 0) {
+            //全部选中
             cartSelectAllImageView.setImageResource(R.drawable.cart_select);
             if (isEdit) {
+                //编辑
                 paymentButton.setBackgroundResource(R.color.red);
                 discountPriceLinearLayout.setVisibility(View.GONE);
-            } else {//购买状态
-                if (cartItemInfoJson.getItems().size() == disSelectedCount) {//没有选中任何
-                    paymentButton.setBackgroundResource(R.color.gray_light3);
-                } else {//选中
-                    paymentButton.setBackgroundResource(R.color.pp_blue);
-                }
-            }
-        } else {
-            cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
-            if (!isEdit) {
-                paymentButton.setBackgroundResource(R.color.pp_blue);
             } else {
+                paymentButton.setBackgroundResource(R.color.pp_blue);
+            }
+        } else if (cartItemInfoJson.getItems().size() == disSelectedCount) {
+            //全部取消
+            discountPriceLinearLayout.setVisibility(View.GONE);
+            paymentButton.setBackgroundResource(R.color.gray_light3);
+        } else {
+            //部分选中
+            cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
+            if (isEdit) {
                 discountPriceLinearLayout.setVisibility(View.GONE);
                 paymentButton.setBackgroundResource(R.color.red);
+            } else {
+                paymentButton.setBackgroundResource(R.color.pp_blue);
             }
         }
-        if (!isEdit) {
+        if (isEdit) {
+            paymentButton.setText(R.string.delete);
+        } else {
             paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
         }
     }
@@ -566,25 +569,32 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 cartAdapter.notifyDataSetChanged();
 
                 if (disSelectedCount == 0) {
+                    //全部取消
                     disSelectedCount = cartItemInfoJson.getItems().size();
                     cartSelectAllImageView.setImageResource(R.drawable.cart_not_select);
                     totalPrice = 0;
                     totalTextView.setText((int) totalPrice + "");
                     discountPriceLinearLayout.setVisibility(View.GONE);
-                    paymentButton.setBackgroundResource(R.color.gray_light3);
-                    paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
+                    if (isEdit) {
+                        paymentButton.setBackgroundResource(R.color.gray_light3);
+                        paymentButton.setText(R.string.delete);
+                    } else {
+                        paymentButton.setBackgroundResource(R.color.gray_light3);
+                        paymentButton.setText(String.format(getString(R.string.go_pay), cartItemInfoJson.getItems().size() - disSelectedCount));
+                    }
 
                 } else {
+                    //全部选中
                     cartSelectAllImageView.setImageResource(R.drawable.cart_select);
-
+                    disSelectedCount = 0;
                     if (isEdit) {
                         paymentButton.setBackgroundResource(R.color.red);
+                        paymentButton.setText(R.string.delete);
                     } else {
                         paymentButton.setBackgroundResource(R.color.pp_blue);
                         //非编辑状态不需要请求优惠信息
                         getDiscountPrice();
                     }
-                    disSelectedCount = 0;
                 }
 
                 break;
