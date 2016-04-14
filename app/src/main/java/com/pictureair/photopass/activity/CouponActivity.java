@@ -34,14 +34,14 @@ import cn.smssdk.gui.CustomProgressDialog;
  * 优惠卷view
  * bass
  */
-public class CouponActivity extends BaseActivity implements CouponViewInterface{
+public class CouponActivity extends BaseActivity implements CouponViewInterface {
     private final String TAG = "CouponActivity";
 
     private RecyclerView mRecyclerView;
     private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
-//    private CustomTextView mBtnSubmit, mBtnScan;
+    //    private CustomTextView mBtnSubmit, mBtnScan;
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
     private Context context;
@@ -51,6 +51,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
     private String whatPege = "";//是从什么页面进来的
     private PictureWorksDialog pictureWorksDialog;
     private DealCodeUtil dealCodeUtil;
+    public static int PREVIEW_COUPON_CODE = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +91,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
                             mSelectData.remove(data);
                         }
                         data.setCpIsSelect(false);
-                        ((ImageView)view.findViewById(R.id.iv_select)).setImageResource(R.drawable.nosele);
+                        ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.nosele);
                     } else {//选中
-                            mSelectData.add(data);
-                            data.setCpIsSelect(true);
-                            ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.sele);
+                        mSelectData.add(data);
+                        data.setCpIsSelect(true);
+                        ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.sele);
                     }
                 }
             }
@@ -111,7 +112,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
 
             case R.id.topRightView:
                 if (pictureWorksDialog == null) {
-                    pictureWorksDialog = new PictureWorksDialog(context,null,null,getResources().getString(R.string.cancel1),getResources().getString(R.string.ok),false,R.layout.dialog_edittext,myHandler);
+                    pictureWorksDialog = new PictureWorksDialog(context, null, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), false, R.layout.dialog_edittext, myHandler);
                 }
                 pictureWorksDialog.show();
                 break;
@@ -126,11 +127,13 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
 //        myToast.setTextAndShow(mSelectData.size() + "", Common.TOAST_SHORT_TIME);
         if (whatPege.equals(CouponTool.ACTIVITY_ME)) {
         } else if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//返回到订单页面 ，给jsonArray的优惠code
+
             Intent intent = new Intent();
             JSONArray array = new JSONArray();
             for (int i = 0; i < mSelectData.size(); i++) {
                 array.add(mSelectData.get(i).getCpCode());
             }
+            PictureAirLog.out("array.toString()" + array.toString());
             intent.putExtra("couponCodes", array.toString());
             setResult(RESULT_OK, intent);
         }
@@ -140,7 +143,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
     private Handler myHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case DialogInterface.BUTTON_POSITIVE://点击确定，添加code
                     if (msg.obj.toString().length() == 0) {
                         myToast.setTextAndShow(R.string.conpon_input_hint, Common.TOAST_SHORT_TIME);
@@ -248,12 +251,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface{
     @Override
     public void getWhatPege(String whatPege) {
         this.whatPege = whatPege;
-        if(whatPege.equals(couponTool.ACTIVITY_ME)){//me页面
+        if (whatPege.equals(couponTool.ACTIVITY_ME)) {//me页面
             setTopTitleShow(R.string.my_coupon);
-        }
-        else if (whatPege.equals(couponTool.ACTIVITY_ORDER)){//订单页面
+        } else if (whatPege.equals(couponTool.ACTIVITY_ORDER)) {//订单页面
             setTopTitleShow(R.string.select_cpupon);
-        }else{
+        } else {
         }
     }
 
