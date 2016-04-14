@@ -27,8 +27,8 @@ public class OrderInfo implements Parcelable {
     public String deliveryPostNumber;//快递收货地址邮编
     public double productPrice;//商品价格
     public double resultPrice;//初始总费用
-    public double straightwayPreferentialPrice;//优惠立减
-    public double promotionPreferentialPrice;//优惠抵扣
+    public double straightwayPreferentialPrice;//优惠抵扣
+    public double promotionPreferentialPrice;//优惠立减
     public double preferentialPrice;//优惠减免总费用
     public double actualotalPrice;//实际支付总价
 

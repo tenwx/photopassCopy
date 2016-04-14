@@ -84,7 +84,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
 
     private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
-            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv,discountPriceUnitTv,discountPriceTv;
+            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv;
 
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
@@ -149,8 +149,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 //                depletePrice = Float.valueOf(json.getString("depletePrice"));
 //                payPrice = Float.valueOf(json.getString("resultPrice"));
 
-                straightwayPreferentialPrice = Float.valueOf(json.getString("straightwayPreferentialPrice"));//优惠立减
-                promotionPreferentialPrice = Float.valueOf(json.getString("promotionPreferentialPrice"));//优惠折扣
+                straightwayPreferentialPrice = Float.valueOf(json.getString("straightwayPreferentialPrice"));//优惠折扣
+                promotionPreferentialPrice = Float.valueOf(json.getString("promotionPreferentialPrice"));//优惠立减
                 preferentialPrice = Float.valueOf(json.getString("preferentialPrice"));//优惠减免总费用
                 resultPrice = Float.valueOf(json.getString("resultPrice"));//优惠减免总费用
                 totalPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
@@ -320,7 +320,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         updateShopPriceUI(true);
 
-        totalpriceTextView.setText(((int) payPrice - (int)disPrice) + "");
+        totalpriceTextView.setText(((int) payPrice - (int) disPrice) + "");
         PictureAirLog.out("==========" + ((int) payPrice - (int) disPrice) + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
@@ -363,14 +363,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         couponCountRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (couponCount > 0) {
-                    //进入优惠券选择界面
-                    Intent intent = new Intent();
-                    intent.setClass(SubmitOrderActivity.this, CouponActivity.class);
-                    intent.putExtra(CouponTool.ACTIVITY_ORDER, CouponTool.ACTIVITY_ORDER);
-                    intent.putExtra(CouponTool.ACTIVITY_ORDER_CART_DATAS, cartItemIds.toString());
-                    startActivityForResult(intent, PREVIEW_COUPON_CODE);
-                }
+                //进入优惠券选择界面
+                Intent intent = new Intent();
+                intent.setClass(SubmitOrderActivity.this, CouponActivity.class);
+                intent.putExtra(CouponTool.ACTIVITY_ORDER, CouponTool.ACTIVITY_ORDER);
+                intent.putExtra(CouponTool.ACTIVITY_ORDER_CART_DATAS, cartItemIds.toString());
+                startActivityForResult(intent, PREVIEW_COUPON_CODE);
             }
         });
 
@@ -438,12 +436,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         } else {
             couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) depletePrice);
         }
-        couponPriceTv.setText((int) promotionPreferentialPrice + "");
-        shopPriceTv.setText((int) resultPrice + "");
-        payPriceTv.setText((int) totalPrice + "");
-        discountPriceTv.setText((int)straightwayPreferentialPrice + "");
+        couponPriceTv.setText((int) depletePrice + "");
+        shopPriceTv.setText((int) totalprice + "");
+        payPriceTv.setText(((int) payPrice - (int)disPrice)+ "");
+        discountPriceTv.setText((int)disPrice + "");
 
-        totalpriceTextView.setText((int) totalPrice + "");
+        totalpriceTextView.setText(((int) payPrice - (int)disPrice )+ "");
     }
 
     /**
@@ -661,6 +659,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if (resultCode == RESULT_OK && requestCode == PREVIEW_COUPON_CODE) {
             //选择优惠码返回 请求API使用优惠券
             JSONArray couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
+
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
                 customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);

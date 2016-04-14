@@ -125,10 +125,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         }
         orderStatus.setText(orderstatus);
 
-        productPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
+        productPrice.setText(currency + (int) orderInfo.productPrice + "");
         payTotalPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
-        preferentialPrice.setText("-" + currency + (int)orderInfo.preferentialPrice);
-        straightwayPreferentialPrice.setText("-" + currency + (int)orderInfo.straightwayPreferentialPrice);
+        preferentialPrice.setText("-" + currency + (int)orderInfo.straightwayPreferentialPrice);
+        straightwayPreferentialPrice.setText("-" + currency + (int)orderInfo.promotionPreferentialPrice);
 
 
         switch (orderInfo.deliveryMethod) {
