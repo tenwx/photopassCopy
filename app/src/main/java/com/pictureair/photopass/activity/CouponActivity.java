@@ -131,8 +131,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
             Intent intent = new Intent();
             JSONArray array = new JSONArray();
             for (int i = 0; i < mSelectData.size(); i++) {
-                array.add(mSelectData.get(i).getCpCode());
+//                array.add(mSelectData.get(i).getCpCode());
             }
+            array.add("HARY3X56KYEMH5FB");
             PictureAirLog.out("array.toString()" + array.toString());
             intent.putExtra("couponCodes", array.toString());
             setResult(RESULT_OK, intent);
