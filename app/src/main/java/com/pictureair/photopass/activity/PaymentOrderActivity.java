@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -91,6 +92,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private final String mMode = "01";
 
     private boolean isNeedPay = true;//是否需要支付
+    private JSONArray couponCodes;//优惠券
 
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
@@ -268,6 +270,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             orderid = getIntent().getStringExtra("orderId");
             outletId = getIntent().getStringExtra("outletId");
             cartItemIds = JSONArray.parseArray(getIntent().getStringExtra("cartItemIds"));
+            String couponCodesStr = getIntent().getStringExtra("couponCodes");
+            couponCodes = !TextUtils.isEmpty(couponCodesStr) ? JSONArray.parseArray(getIntent().getStringExtra("couponCodes")) : null;
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -317,10 +321,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (cartItemIds != null) {
             if (productType == 1) {
                 //获取收货地址
-                API1.addOrder(cartItemIds, 1, outletId, "", null,paymentOrderHandler);
+                API1.addOrder(cartItemIds, 1, outletId, "", couponCodes, paymentOrderHandler);
             } else {
                 //PP+/数码商品不需要地址
-                API1.addOrder(cartItemIds, 3, "", "",null, paymentOrderHandler);
+                API1.addOrder(cartItemIds, 3, "", "", couponCodes, paymentOrderHandler);
             }
         }
     }
