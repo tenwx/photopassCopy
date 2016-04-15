@@ -1804,7 +1804,7 @@ public class API1 {
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.SHARE_ID, shareId);
         params.put(Common.SHARE_PLATFORM, platform);
-
+        PictureAirLog.out("tokenid----->" + MyApplication.getTokenId());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {

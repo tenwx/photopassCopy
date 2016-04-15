@@ -1,13 +1,6 @@
 
 package com.pictureair.photopass.editPhoto;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -23,6 +16,15 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.pictureair.photopass.util.PictureAirLog;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class EditPhotoUtil {
 	
@@ -43,14 +45,14 @@ public class EditPhotoUtil {
                int length;   
                while ( (byteread = inStream.read(buffer)) != -1) {   
                    bytesum += byteread; //字节数 文件大小   
-                   System.out.println(bytesum);   
+                   PictureAirLog.out(bytesum + "");
                    fs.write(buffer, 0, byteread);   
                }   
                inStream.close();   
            }   
        }   
        catch (Exception e) {   
-           System.out.println("复制单个文件操作出错");   
+           PictureAirLog.out("复制单个文件操作出错");
            e.printStackTrace();   
   
        }   
@@ -85,7 +87,7 @@ public class EditPhotoUtil {
 			} else {// 图片是竖着的
 				m.postScale((float) requestH / bitH, (float) requestH / bitH);
 			}
-			System.out.println("size=" + "_" + widthRatio + "_" + heightRatio);
+			PictureAirLog.out("size=" + "_" + widthRatio + "_" + heightRatio);
 		}
 
 		Bitmap b = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
@@ -162,7 +164,7 @@ public class EditPhotoUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// System.out.println("保存文件--->" + f.getAbsolutePath());
+		// PictureAirLog.out("保存文件--->" + f.getAbsolutePath());
 	}
 	
 	//清空 temp 文件夹中的所有内容。
@@ -211,7 +213,7 @@ public class EditPhotoUtil {
 //		canvas.drawColor(Color.BLUE);
 
 		layout.draw(canvas);
-		Log.e("textAsBitmap",
+		PictureAirLog.d("textAsBitmap",
 				String.format("1:%d %d", layout.getWidth(), layout.getHeight()));
 		return bitmap;
 	}

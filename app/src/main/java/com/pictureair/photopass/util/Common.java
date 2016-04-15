@@ -67,7 +67,7 @@ public class Common {
     public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
 
 
-    public final static String VERSION_CODE = "V1.3.0";//开发版
+    public final static String VERSION_CODE = "V1.0.0";//开发版
     public final static boolean DEBUG = true;// true，打印log， false，不打印log
     public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 

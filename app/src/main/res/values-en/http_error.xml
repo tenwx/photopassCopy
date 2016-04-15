@@ -209,4 +209,10 @@
     <string name="http_error_code_6162">the coupon is invalid!</string>
     <string name="http_error_code_6163">the coupon have expired!</string>
     <string name="http_error_code_6164">the coupon has been used!</string>
+    <string name="http_error_code_6165">query userMsg error</string>
+    <string name="http_error_code_6166">userMsg is invalid</string>
+    <string name="http_error_code_6167">validateCode has been expired</string>
+    <string name="http_error_code_6168">send Email occurs error!</string>
+    <string name="http_error_code_6169">save userMsg error</string>
+    <string name="http_error_code_6170">forgot password email has been sent ,please operate in 15mins</string>
 </resources>

@@ -92,10 +92,10 @@ public class BlurUtil {
 	public static Bitmap compressImage(Bitmap image) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		image.compress(Bitmap.CompressFormat.JPEG, 100, baos);// 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-		System.out.println("3---------"+baos.toByteArray().length/1024);
+		PictureAirLog.out("3---------"+baos.toByteArray().length/1024);
 		int options = 90;
 		while (baos.toByteArray().length / 1024 > 100) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
-			System.out.println("4-------"+baos.toByteArray().length/1024);
+			PictureAirLog.out("4-------"+baos.toByteArray().length/1024);
 			options -= 10;// 每次都减少10
 			baos.reset();// 重置baos即清空baos
 			image.compress(Bitmap.CompressFormat.JPEG, options, baos);// 这里压缩options%，把压缩后的数据存放到baos中

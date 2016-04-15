@@ -6,13 +6,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.ViewConfiguration;
+
+import com.pictureair.photopass.util.PictureAirLog;
 
 public class ImageViewTouch extends ImageViewTouchBase{
 	static final float SCROLL_DELTA_THRESHOLD = 1.0f;
@@ -109,7 +110,7 @@ public class ImageViewTouch extends ImageViewTouchBase{
 	protected void onZoomAnimationCompleted(float scale) {
 
 		if (LOG_ENABLED) {
-			Log.d(LOG_TAG, "onZoomAnimationCompleted. scale: " + scale
+			PictureAirLog.d(LOG_TAG, "onZoomAnimationCompleted. scale: " + scale
 					+ ", minZoom: " + getMinScale());
 		}
 
@@ -249,7 +250,7 @@ public class ImageViewTouch extends ImageViewTouchBase{
 
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			Log.i(LOG_TAG, "onDoubleTap. double tap enabled? "
+			PictureAirLog.d(LOG_TAG, "onDoubleTap. double tap enabled? "
 					+ mDoubleTapEnabled);
 			if (mDoubleTapEnabled) {
 				mUserScaled = true;

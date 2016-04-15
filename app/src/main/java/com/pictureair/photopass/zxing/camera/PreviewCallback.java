@@ -16,23 +16,12 @@
 
 package com.pictureair.photopass.zxing.camera;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.hardware.Camera;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
-import com.pictureair.photopass.activity.MipCaptureActivity;
-import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
-
-import java.io.ByteArrayOutputStream;
 
 
 final class PreviewCallback implements Camera.PreviewCallback {
@@ -63,7 +52,7 @@ final class PreviewCallback implements Camera.PreviewCallback {
             message.sendToTarget();
             previewHandler = null;
         } else {
-            Log.d(TAG, "Got preview callback, but no handler for it");
+            PictureAirLog.d(TAG, "Got preview callback, but no handler for it");
         }
     }
 }

@@ -2,7 +2,8 @@ package com.pictureair.photopass.filter;
 
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
-import android.util.Log;
+
+import com.pictureair.photopass.util.PictureAirLog;
 
 
 /**
@@ -17,8 +18,8 @@ public class Amaro extends Filter {
     }
 
     public Bitmap transform(Bitmap image) {
-        Log.i(AMARO, String.valueOf(image.getWidth()));
-        Log.i(AMARO, String.valueOf(image.getHeight()));
+        PictureAirLog.d(AMARO, String.valueOf(image.getWidth()));
+        PictureAirLog.d(AMARO, String.valueOf(image.getHeight()));
 
         width = image.getWidth();
         height = image.getHeight();

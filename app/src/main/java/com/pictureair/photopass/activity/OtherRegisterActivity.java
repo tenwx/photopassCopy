@@ -25,6 +25,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
@@ -110,7 +111,7 @@ public class OtherRegisterActivity extends BaseActivity implements
                 etMonth.setText(mMonth_Str);
                 etDay.setText(mDay_Str);
                 birthday = mYear_Str + "-" + mMonth_Str + "-" + mDay_Str;
-                System.out.println("birthday " + birthday);
+                PictureAirLog.out("birthday " + birthday);
                 break;
 
             default:

@@ -17,7 +17,8 @@
 package com.pictureair.photopass.zxing.camera;
 
 import android.os.IBinder;
-import android.util.Log;
+
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,9 +45,9 @@ final class FlashlightManager {
     iHardwareService = getHardwareService();
     setFlashEnabledMethod = getSetFlashEnabledMethod(iHardwareService);
     if (iHardwareService == null) {
-      Log.v(TAG, "This device does supports control of a flashlight");
+      PictureAirLog.d(TAG, "This device does supports control of a flashlight");
     } else {
-      Log.v(TAG, "This device does not support control of a flashlight");
+      PictureAirLog.d(TAG, "This device does not support control of a flashlight");
     }
   }
 
@@ -106,7 +107,7 @@ final class FlashlightManager {
       // OK
       return null;
     } catch (RuntimeException re) {
-      Log.w(TAG, "Unexpected error while finding class " + name, re);
+      PictureAirLog.d(TAG, "Unexpected error while finding class " + name + re.toString());
       return null;
     }
   }
@@ -118,7 +119,7 @@ final class FlashlightManager {
       // OK
       return null;
     } catch (RuntimeException re) {
-      Log.w(TAG, "Unexpected error while finding method " + name, re);
+      PictureAirLog.d(TAG, "Unexpected error while finding method " + name + re);
       return null;
     }
   }
@@ -127,13 +128,13 @@ final class FlashlightManager {
     try {
       return method.invoke(instance, args);
     } catch (IllegalAccessException e) {
-      Log.w(TAG, "Unexpected error while invoking " + method, e);
+      PictureAirLog.d(TAG, "Unexpected error while invoking " + method + e);
       return null;
     } catch (InvocationTargetException e) {
-      Log.w(TAG, "Unexpected error while invoking " + method, e.getCause());
+      PictureAirLog.d(TAG, "Unexpected error while invoking " + method + e.getCause());
       return null;
     } catch (RuntimeException re) {
-      Log.w(TAG, "Unexpected error while invoking " + method, re);
+      PictureAirLog.d(TAG, "Unexpected error while invoking " + method + re);
       return null;
     }
   }
