@@ -95,9 +95,14 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
                         data.setCpIsSelect(false);
                         ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.nosele);
                     } else {//选中
+                        for (int i = 0; i <mAllData.size();i++){
+                            mAllData.get(i).setCpIsSelect(false);
+                        }
+                        mSelectData.clear();
                         mSelectData.add(data);
                         data.setCpIsSelect(true);
-                        ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.sele);
+                        couponAdapter.notifyDataSetChanged();
+//                        ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.sele);
                     }
                 }
             }
