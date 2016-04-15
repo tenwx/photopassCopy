@@ -10,6 +10,7 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.asm.Type;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
@@ -1886,13 +1887,13 @@ public class API1 {
      * @param email
      * @param language
      */
-    public static void findPwdEmail(final Handler handler, String email, String language) {
+    public static void findPwdEmail(final Handler handler, String email, String language,String type) {
         final RequestParams params = new RequestParams();
         if (null != language){
             params.put(Common.LANGUAGE, language.equals("cn") ? "CN" : "EN");
         }
 
-        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP)));
+        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(type) + PWJniUtil.getAppSecret(type)));
         params.put(Common.USERINFO_EMAIL, email);
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
