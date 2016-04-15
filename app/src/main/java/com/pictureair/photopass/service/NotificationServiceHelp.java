@@ -127,21 +127,15 @@ public class NotificationServiceHelp {
      * @param message
      */
     private void eventDoneOrderPay(JSONObject message) {
-        try {
-            message = (JSONObject) message.get("c");
-            showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_order_completed_msg));
-            EventBus.getDefault().post(new AsyncPayResultEvent(message));
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_order_completed_msg));
+        EventBus.getDefault().post(new AsyncPayResultEvent(message));
     }
 
     /**
      * 升级PP＋与购买照片后发送的事件 的处理事件。
-     * @param message
+     * @param updateJsonObject
      */
-    private void eventUpgradedPhotos(JSONObject message) {
+    private void eventUpgradedPhotos(JSONObject updateJsonObject) {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -151,7 +145,6 @@ public class NotificationServiceHelp {
         String ppCode = null, shootDate = null, photoId = null;
         //1.更新数据库
         try {
-            JSONObject updateJsonObject = message.getJSONObject("c");
             if (updateJsonObject.toString().equals(syncMessage)) {//和上次的数据相同，直接返回
                 return;
             } else {
@@ -258,34 +251,32 @@ public class NotificationServiceHelp {
     /**
      * 状态链接上之后，监听的事件。 socket on 方法
      * @param envenStr
-     * @param arg2
+     * @param message
+     * @param isSocketReceive   是否是socket接收。
      */
-    private void socketOn(String envenStr, Object... arg2){
-        JSONObject message = (JSONObject) arg2[0];
+    public void socketOn(String envenStr, JSONObject message, boolean isSocketReceive) throws JSONException {
         if (envenStr.equals("doneOrderPay")){
-            sendType = "doneOrderPay";
-            notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA); //清空推送，不能移动位置。
+            if (isSocketReceive){
+                sendType = "doneOrderPay";
+                notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA); //清空推送，不能移动位置。
+                message = (JSONObject) message.get("c");
+            }
             eventDoneOrderPay(message);
-        }
-
-        if(envenStr.equals("upgradedPhotos")){
-            sendType = "upgradedPhoto";
-            notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+        }else if(envenStr.equals("upgradedPhotos")){
+            if (isSocketReceive){
+                sendType = "upgradedPhoto";
+                notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
+                message = message.getJSONObject("c");
+            }
             eventUpgradedPhotos(message);
-        }
-
-        if(envenStr.equals("catchOrderInfoOf" + userId)){
+        }else if(envenStr.equals("catchOrderInfoOf" + userId)){
             sendType = "orderSend";
             notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventCatchOrderInfoOf(message);
-        }
-
-        if(envenStr.equals("sendNewPhotosCountOf" + userId)){
+        }else if(envenStr.equals("sendNewPhotosCountOf" + userId)){
             sendType = "photoSend";
             eventSendNewPhotosCountOf(message);
-        }
-
-        if(envenStr.equals("videoGenerate")){
+        }else if(envenStr.equals("videoGenerate")){
             sendType = "videoGenerate";
             notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventVideoGenerate(message);
@@ -350,7 +341,13 @@ public class NotificationServiceHelp {
                             // TODO Auto-generated method stub
                             PictureAirLog.d("  ====  arg2", " :" + arg2);
                             PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
-                            socketOn(event.toString(),arg2);
+
+                            try {
+                                socketOn(event.toString(),(JSONObject) arg2[0],true);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     });
 
