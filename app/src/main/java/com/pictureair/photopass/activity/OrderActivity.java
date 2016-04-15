@@ -136,6 +136,16 @@ public class OrderActivity extends BaseActivity {
                     cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
                     PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
 
+                    //添加订单实虚体类型
+                    for (int j = 0; j < cartItemInfo.size(); j++) {
+                        if (cartItemInfo.get(j).cart_productType == 1) {
+                            orderInfo.productEntityType = 1;
+                            break;
+                        } else {
+                            orderInfo.productEntityType = 0;
+                        }
+                    }
+
                     OrderProductInfo orderProductInfo = new OrderProductInfo();
                     orderProductInfo.setOrderTime(orderInfo.orderTime);
                     orderProductInfo.setCartItemInfos(cartItemInfo);
@@ -153,9 +163,8 @@ public class OrderActivity extends BaseActivity {
                         paymentOrderArrayList.add(orderInfo);
                         paymentOrderChildArrayList.add(orderProductInfo);
                     } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-                        //暂时模拟数据
-                        if (orderInfo.deliveryMethod == 3) {
-                            //3为虚拟商品
+                        if (orderInfo.productEntityType == 0) {
+                            //0为虚拟商品
                             downOrderArrayList.add(orderInfo);
                             downOrderChildArrayList.add(orderProductInfo);
                         } else {

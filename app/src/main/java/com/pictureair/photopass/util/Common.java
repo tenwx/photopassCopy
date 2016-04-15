@@ -150,6 +150,8 @@ public class Common {
     public static final String APNS_CONNECT = "/socket/APNSConnect"; // 链接时
     public static final String APNS_DISCONNECT = "/socket/APNSDisconnect"; // 退出登陆时
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
+    public static final String GET_SOCKET_DATA= "/socket/getSocketData"; // 返回用户未接收到的推送消息
+
 
     public static final String ME_HELP = "/help/getHelpList";
     public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频

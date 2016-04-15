@@ -210,6 +210,9 @@ public class API1 {
     public static final int SOCKET_DISCONNECT_FAILED = 6020;
     public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
 
+    //手动拉取推送
+    public static final int GET_SOCKET_DATA_FAILED = 6120;
+    public static final int GET_SOCKET_DATA_SUCCESS = 6121;
 
     //分享
     public static final int GET_SHARE_URL_SUCCESS = 6031;
@@ -545,7 +548,7 @@ public class API1 {
                 PictureAirLog.out("add scan code success---->" + type);
                 if ("pp".equals(type)) {
                     handler.obtainMessage(ADD_PP_CODE_TO_USER_SUCCESS).sendToTarget();
-                } else if ("ppp".equals(type)){//ppp
+                } else if ("ppp".equals(type)) {//ppp
                     handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS).sendToTarget();
                 } else {//coupon
                     handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS, jsonObject).sendToTarget();
@@ -1689,6 +1692,31 @@ public class API1 {
         });
     }
 
+
+    /**
+     * 返回用户未接收到的推送消息
+     */
+    public static void getSocketData(final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.v(TAG, "getSocketData onSuccess() jsonObject: " + jsonObject.toString());
+                handler.obtainMessage(GET_SOCKET_DATA_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.v(TAG, "getSocketData onFailure() status: " + status);
+                handler.obtainMessage(GET_SOCKET_DATA_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
     /***************************************
      * 推送 End
      **************************************/
@@ -2035,6 +2063,7 @@ public class API1 {
 
     /**
      * 从me中进入查询抵用劵
+     *
      * @param handler
      */
     public static void getCoupons(final Handler handler) {
