@@ -97,12 +97,11 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case API1.GET_SHARE_URL_SUCCESS:
+
 					//拿到shareUrl
 					JSONObject shareInfo = JSONObject.parseObject(msg.obj.toString());
 					shareUrl = shareInfo.getString("shareUrl");
 					shareId = shareInfo.getString("shareId");
-					PictureAirLog.e(TAG,"拿到了分享链接："+shareUrl);
-
 //					//测试回调代码
 //					API1.shareCallBack(shareId, "qq");
 //
