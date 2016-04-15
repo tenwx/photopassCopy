@@ -59,7 +59,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         setContentView(R.layout.activity_coupon);
         context = this;
         couponTool = new CouponTool(this);
-        dealCodeUtil = new DealCodeUtil(this, getIntent(), false, myHandler);
+        Intent intent = new Intent();
+        intent.putExtra("type", "coupon");//只扫描coupon
+        dealCodeUtil = new DealCodeUtil(this, intent, false, myHandler);
         initViews();
         couponTool.getIntentActivity(getIntent());
     }

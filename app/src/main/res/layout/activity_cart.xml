@@ -132,13 +132,13 @@
         android:layout_height="1px"
         android:layout_above="@id/linearLayout1"
         android:background="@color/gray_light5"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/cartListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/line"
+        android:layout_above="@+id/discountPriceLinearLayout"
         android:layout_below="@id/tt"
         android:background="@color/white"
         android:divider="@color/pp_light_gray_normal"
@@ -149,8 +149,8 @@
         android:id="@+id/discountPriceLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout1"
         android:orientation="horizontal"
+        android:layout_above="@+id/line"
         android:visibility="gone">
 
         <TextView

@@ -384,19 +384,6 @@ public class BlurUtil {
 		maskBmp = Bitmap.createBitmap(maskBmp, 0, 0, w, h, matrix, true);
 		PictureAirLog.out("maskBmp w--?" + maskBmp.getWidth() + "__h-" + maskBmp.getHeight());
 
-//        w = resultBitmap.getWidth();//获取mask蒙板的宽
-//        h = resultBitmap.getHeight();//获取高
-//        PictureAirLog.out("result w---" + w + "———h———" + h);
-//        sw = (float) b.getWidth() / w;
-//        sh = (float) b.getHeight() / h;
-//
-//        if (sw != 1 || sh != 1) {//原来的resultBitmap和目标大小不一样，需要重新缩放resultBmp
-//            matrix.reset();
-//            matrix.postScale(sw, sh);
-//            resultBitmap = Bitmap.createBitmap(resultBitmap, 0, 0, w, h, matrix, true);
-//            PictureAirLog.out("result w-->" + resultBitmap.getWidth() + "---h--->" + resultBitmap.getHeight());
-//        }
-
 		//创建数组
 		int[] pixels_b = new int[b.getWidth() * b.getHeight()];
 		int[] pixels_bm = new int[maskBmp.getWidth() * maskBmp.getHeight()];
@@ -423,5 +410,41 @@ public class BlurUtil {
 		PictureAirLog.out("maskBmp w--?" + maskBmp.getWidth() + "__h-" + maskBmp.getHeight());
 		resultBitmap.setPixels(pixels_b, 0, maskBmp.getWidth(), 0, 0, maskBmp.getWidth(), maskBmp.getHeight());
 		return resultBitmap;
+	}
+
+	/**
+	 *
+	 * 计算当前圆半径
+	 * @param curRadius 当前半径
+	 * @param curShowBitW 当前显示的bit宽
+	 * @param curShowBitH 当前显示的bit高
+     * @return
+     */
+	public static int caculateRadius(int curRadius, int curShowBitW, int curShowBitH){
+		return Math.min(curRadius, Math.min(curShowBitW, curShowBitH) / 2);
+	}
+
+	/**
+	 * 计算当前截取的X坐标
+	 * @param currentCropX 当前x或者y
+	 * @param curShowBmpWidth 当前显示的bit宽或者高
+	 * @param zoomW 缩放区域的宽或者高
+	 * @param oriBitW 原始图宽或者高
+	 * @param isMove 是否移动中
+     * @return
+     */
+	public static int caculateStartCropXOrY(int currentCropX, int curShowBmpWidth, int zoomW, int oriBitW, boolean isMove){
+		if (isMove && currentCropX > curShowBmpWidth - Math.min(curShowBmpWidth, zoomW)) {
+			currentCropX = curShowBmpWidth - Math.min(curShowBmpWidth, zoomW);
+		}
+
+		if (currentCropX > oriBitW - Math.min(zoomW, oriBitW)) {
+			currentCropX = oriBitW - Math.min(zoomW, oriBitW);
+		}
+
+		if (currentCropX < 0) {
+			currentCropX = 0;
+		}
+		return currentCropX;
 	}
 }

@@ -162,8 +162,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 try {
                     JSONObject favoriteJsonObject = JSONObject.parseObject(msg.obj.toString());
                     JSONArray jsonArray = favoriteJsonObject.getJSONArray("favoriteLocations");
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        favoriteList.add(jsonArray.getString(i));
+                    if (jsonArray != null) {
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            favoriteList.add(jsonArray.getString(i));
+                        }
                     }
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block

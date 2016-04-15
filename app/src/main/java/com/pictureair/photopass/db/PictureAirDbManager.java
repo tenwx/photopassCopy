@@ -15,7 +15,6 @@ import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.PinYin;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -282,26 +281,26 @@ public class PictureAirDbManager {
      *
      * @param questionArrayList
      */
-    public void insertIntoQuestionTable(ArrayList<QuestionInfo> questionArrayList) {
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        try {
-            database.delete(Common.HELP_QUESTION_TABLE, null, null);
-
-            System.out.println("title size" + questionArrayList.size());
-            String addsql = "insert into " + Common.HELP_QUESTION_TABLE + " values(null,?,?,?,?)";
-            for (int i = 0; i < questionArrayList.size(); i++) {
-                System.out.println("inserting data into database:" + i);
-                database.execSQL(addsql, new String[]{i + "", questionArrayList.get(i).questionName, questionArrayList.get(i).answer, PinYin.getPinYin(questionArrayList.get(i).questionName)});
-            }
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            // TODO: handle exception
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-        }
-    }
+//    public void insertIntoQuestionTable(ArrayList<QuestionInfo> questionArrayList) {
+//        database = DBManager.getInstance().writData();
+//        database.beginTransaction();
+//        try {
+//            database.delete(Common.HELP_QUESTION_TABLE, null, null);
+//
+//            System.out.println("title size" + questionArrayList.size());
+//            String addsql = "insert into " + Common.HELP_QUESTION_TABLE + " values(null,?,?,?,?)";
+//            for (int i = 0; i < questionArrayList.size(); i++) {
+//                System.out.println("inserting data into database:" + i);
+//                database.execSQL(addsql, new String[]{i + "", questionArrayList.get(i).questionName, questionArrayList.get(i).answer, PinYin.getPinYin(questionArrayList.get(i).questionName)});
+//            }
+//            database.setTransactionSuccessful();
+//        } catch (Exception e) {
+//            // TODO: handle exception
+//        } finally {
+//            database.endTransaction();
+//            DBManager.getInstance().closeDatabase();
+//        }
+//    }
 
     /**
      * 在问题答案表中查询所有信息

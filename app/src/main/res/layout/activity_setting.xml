@@ -203,7 +203,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/pp_margin_16"
                         android:text="@string/auto_sync"
                         android:textColor="@color/pp_gray"
                         android:textSize="@dimen/text_size_14" />

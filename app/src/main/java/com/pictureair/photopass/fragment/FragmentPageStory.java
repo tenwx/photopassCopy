@@ -808,6 +808,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             EventBus.getDefault().post(new StoryFragmentEvent(boughtPhotoList, app.magicPicList, 3));
             EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
             if (app.getPushPhotoCount() + app.getPushViedoCount() == 0){
+                PictureAirLog.out("need gone the badgeview");
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
         } else {//没有图片
@@ -1591,7 +1592,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * @param lists
      */
     private void downLoadPhoto(ArrayList<PhotoInfo> lists) {
-        if (new SettingUtil(pictureAirDbManager).isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+        if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
             for (int i = 0; i < lists.size(); i++) {
                 if (lists.get(i).isPayed == 1) {
                     download(lists);

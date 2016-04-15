@@ -98,6 +98,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private static final int PAY_SUCCESS = 10001;//支付成功
     private static final int PAY_FAILED = 10002;//失败
 
+    private JSONArray couponCodes;//优惠券
+
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
 
@@ -154,7 +156,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 preferentialPrice = Float.valueOf(json.getString("preferentialPrice"));//优惠减免总费用
                 resultPrice = Float.valueOf(json.getString("resultPrice"));//优惠减免总费用
                 totalPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
-
                 //更新界面
                 customProgressDialog.dismiss();
                 updateShopPriceUI(false);
@@ -320,7 +321,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         updateShopPriceUI(true);
 
-        totalpriceTextView.setText(((int) payPrice - (int) disPrice) + "");
+        totalpriceTextView.setText(((int) payPrice - (int) disPrice - (int) straightwayPreferentialPrice) + "");
         PictureAirLog.out("==========" + ((int) payPrice - (int) disPrice) + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
@@ -434,14 +435,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if (isCount) {
             couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
         } else {
-            couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) depletePrice);
+            couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) straightwayPreferentialPrice);
         }
-        couponPriceTv.setText((int) depletePrice + "");
+        couponPriceTv.setText((int) straightwayPreferentialPrice + "");
         shopPriceTv.setText((int) totalprice + "");
-        payPriceTv.setText(((int) payPrice - (int)disPrice)+ "");
+        payPriceTv.setText(((int) payPrice - (int)disPrice - (int) straightwayPreferentialPrice )+ "");
         discountPriceTv.setText((int)disPrice + "");
 
-        totalpriceTextView.setText(((int) payPrice - (int)disPrice )+ "");
+        totalpriceTextView.setText(((int) payPrice - (int)disPrice - (int) straightwayPreferentialPrice  )+ "");
     }
 
     /**
@@ -574,12 +575,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", submitOrderHandler);
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,submitOrderHandler);
                         }
                     } else {
                         //PP+/数码商品不需要地址
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                        API1.addOrder(cartItemIds, 3, "", "", submitOrderHandler);
+                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,submitOrderHandler);
                     }
                 } else {
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
@@ -658,7 +659,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         if (resultCode == RESULT_OK && requestCode == PREVIEW_COUPON_CODE) {
             //选择优惠码返回 请求API使用优惠券
-            JSONArray couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
+            couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
 
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
                 customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
