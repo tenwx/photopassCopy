@@ -1807,6 +1807,8 @@ public class API1 {
         params.put(Common.SHARE_ID, shareId);
         params.put(Common.SHARE_PLATFORM, platform);
 
+        PictureAirLog.e("----shareCallBack:",""+params.toString());
+
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1887,13 +1889,13 @@ public class API1 {
      * @param email
      * @param language
      */
-    public static void findPwdEmail(final Handler handler, String email, String language,String type) {
+    public static void findPwdEmail(final Handler handler, String email, String language,String tokenId) {
         final RequestParams params = new RequestParams();
         if (null != language){
             params.put(Common.LANGUAGE, language.equals("cn") ? "CN" : "EN");
         }
 
-        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(type) + PWJniUtil.getAppSecret(type)));
+        params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.USERINFO_EMAIL, email);
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
