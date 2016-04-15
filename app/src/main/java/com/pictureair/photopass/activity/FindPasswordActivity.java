@@ -19,6 +19,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.MyToast;
 
 import cn.smssdk.gui.CustomButtonFont;
@@ -58,9 +59,17 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                     break;
 
                 case API1.FIND_PWD_FAILED:
+                    int id;
+                    switch (msg.arg1) {
+                        case 6031://用户名不存在
+                            id = ReflectionUtil.getStringId(FindPasswordActivity.this, msg.arg1);
+                            break;
 
-
-                    myToast.setTextAndShow(R.string.http_error_code_401,Common.TOAST_SHORT_TIME);
+                        default:
+                            id = ReflectionUtil.getStringId(FindPasswordActivity.this, msg.arg1);
+                            break;
+                    }
+                    myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                     break;
 
                 default:
@@ -150,10 +159,8 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                     return;
                 }
 
-                finish();
-                //邮箱的API还没做好
-//                customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-//                API1.findPwd(mHandler, etEmailStr, null, null);
+                customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                API1.findPwdEmail(mHandler, etEmailStr, MyApplication.getInstance().getLanguageType(),Common.APP_TYPE_SHDRPP);
                 break;
 
             default:

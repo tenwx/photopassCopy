@@ -93,7 +93,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private float promotionPreferentialPrice = 0;//优惠抵扣
     private float preferentialPrice = 0;//优惠减免总费用
     private float resultPrice = 0;//初始总费用
-    private float totalPrice = 0;//实际支付总价
 
     private static final int PAY_SUCCESS = 10001;//支付成功
     private static final int PAY_FAILED = 10002;//失败
@@ -148,14 +147,16 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 //使用优惠码成功 -- 解析数据
                 JSONObject json = (JSONObject) msg.obj;
                 PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： " + json);
-//                depletePrice = Float.valueOf(json.getString("depletePrice"));
-//                payPrice = Float.valueOf(json.getString("resultPrice"));
 
                 straightwayPreferentialPrice = Float.valueOf(json.getString("straightwayPreferentialPrice"));//优惠折扣
                 promotionPreferentialPrice = Float.valueOf(json.getString("promotionPreferentialPrice"));//优惠立减
                 preferentialPrice = Float.valueOf(json.getString("preferentialPrice"));//优惠减免总费用
-                resultPrice = Float.valueOf(json.getString("resultPrice"));//优惠减免总费用
-                totalPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
+                totalprice = Float.valueOf(json.getString("resultPrice"));//初始总费用
+                payPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
+
+                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： straightwayPreferentialPrice： " + straightwayPreferentialPrice);
+                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： totalprice： " + totalprice);
+                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： payPrice： " + payPrice);
                 //更新界面
                 customProgressDialog.dismiss();
                 updateShopPriceUI(false);
@@ -321,7 +322,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         updateShopPriceUI(true);
 
-        totalpriceTextView.setText(((int) payPrice - (int) disPrice - (int) straightwayPreferentialPrice) + "");
+        totalpriceTextView.setText(((int) payPrice + ""));
         PictureAirLog.out("==========" + ((int) payPrice - (int) disPrice) + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
@@ -439,10 +440,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         couponPriceTv.setText((int) straightwayPreferentialPrice + "");
         shopPriceTv.setText((int) totalprice + "");
-        payPriceTv.setText(((int) payPrice - (int)disPrice - (int) straightwayPreferentialPrice )+ "");
-        discountPriceTv.setText((int)disPrice + "");
+        payPriceTv.setText(((int) payPrice + ""));
+        discountPriceTv.setText((int) disPrice + "");
 
-        totalpriceTextView.setText(((int) payPrice - (int)disPrice - (int) straightwayPreferentialPrice  )+ "");
+        totalpriceTextView.setText(((int) payPrice + ""));
     }
 
     /**
@@ -523,6 +524,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         intent2.putExtra("introduce", orderIntroduce);
         intent2.putExtra("orderId", orderId);
         intent2.putExtra("cartItemIds", cartItemIds.toString());
+        intent2.putExtra("couponCodes", couponCodes != null ? couponCodes.toString() : "");
         //传递商品类型，用于成功后返回订单
         if (deliveryType.contains("1")) {
             //实体商品
@@ -575,12 +577,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,submitOrderHandler);
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, submitOrderHandler);
                         }
                     } else {
                         //PP+/数码商品不需要地址
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,submitOrderHandler);
+                        API1.addOrder(cartItemIds, 3, "", "", couponCodes, submitOrderHandler);
                     }
                 } else {
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
@@ -597,6 +599,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
+                    intent2.putExtra("couponCodes", couponCodes.toString());
                     //传递商品类型，用于成功后返回订单
                     if (deliveryType.contains("1")) {
                         //实体商品
