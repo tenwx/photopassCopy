@@ -1,5 +1,7 @@
 package com.pictureair.photopass.editPhoto;
 
+import com.pictureair.photopass.util.PictureAirLog;
+
 /**
  * 3x3
  * 
@@ -79,11 +81,11 @@ public class Matrix3 {
 	}
 
 	public void println() {
-		System.out.println("data--->" + data[0] + "  " + data[1] + "  "
+		PictureAirLog.out("data--->" + data[0] + "  " + data[1] + "  "
 				+ data[2]);
-		System.out.println("              " + data[3] + "  " + data[4] + "  "
+		PictureAirLog.out("              " + data[3] + "  " + data[4] + "  "
 				+ data[5]);
-		System.out.println("              " + data[6] + "  " + data[7] + "  "
+		PictureAirLog.out("              " + data[6] + "  " + data[7] + "  "
 				+ data[8]);
 	}
 }// end class

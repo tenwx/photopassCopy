@@ -52,7 +52,7 @@ public class JsonUtil {
         info.placeUrl = (Common.PHOTO_URL + object.getString("defaultPhoto")).trim();
         if (object.containsKey("GPS")) {
             JSONObject obj = (JSONObject) object.get("GPS");
-//			System.out.println("转换之前的坐标"+obj.toString());
+//			PictureAirLog.out("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
             if (obj != null) {
                 LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
@@ -60,7 +60,7 @@ public class JsonUtil {
                 info.longitude = latLng.longitude;
             }
 
-//			System.out.println("转换之后的坐标"+latLng.toString());
+//			PictureAirLog.out("转换之后的坐标"+latLng.toString());
         }
         if (object.containsKey("description")) {
             info.placeDetailCHIntroduce = object.getString("description");
@@ -284,7 +284,7 @@ public class JsonUtil {
 
         String headUrl;
         if (obj.containsKey("avatarUrl")) {
-            System.out.println("");
+            PictureAirLog.out("");
             headUrl = obj.getString("avatarUrl");
             e.putString(Common.USERINFO_HEADPHOTO, headUrl);
         }
@@ -473,7 +473,7 @@ public class JsonUtil {
 //			}
             /****临时添加*****/
             if (0 == embedphotoArray.size()) {
-                System.out.println("0000000000000");
+                PictureAirLog.out("0000000000000");
                 final int count = quantity;
                 cartPhotosInfo = new CartPhotosInfo();
                 cartPhotosInfo.cart_photoUrl = "";
@@ -482,7 +482,7 @@ public class JsonUtil {
                 gridviewphotolist.add(cartPhotosInfo);
                 cartInfo.hasPhoto = false;
             } else {
-                System.out.println("---------buwei000000000");
+                PictureAirLog.out("---------buwei000000000");
                 JSONObject embedphotoObject = embedphotoArray.getJSONObject(0);//一般一个svg文件只有一个孔去添加图片
                 JSONArray photosidJsonArray = embedphotoObject.getJSONArray("photosIds");
                 for (int j = 0; j < photosidJsonArray.size(); j++) {
@@ -500,14 +500,14 @@ public class JsonUtil {
             if (cartInfo.cart_productType != 1) {//如果是虚拟商品，则不需要加图片
                 cartInfo.isFullPhotos = true;
                 cartInfo.hasPhoto = true;
-                System.out.println("type!=1");
+                PictureAirLog.out("type!=1");
             } else if (gridviewphotolist.size() < cartInfo.cart_embedPhotoCount) {//如果是正常商品，判断已经加的图品数量和需要数量是否一致
                 cartInfo.isFullPhotos = false;
-                System.out.println("size < count");
+                PictureAirLog.out("size < count");
             } else {
                 cartInfo.isFullPhotos = true;
                 cartInfo.hasPhoto = true;
-                System.out.println("others");
+                PictureAirLog.out("others");
             }
             cartInfo.isSelect = true;
             cartInfo.show_edit = 0;

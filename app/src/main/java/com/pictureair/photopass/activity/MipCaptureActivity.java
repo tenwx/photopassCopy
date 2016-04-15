@@ -236,7 +236,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("resume==============");
+        PictureAirLog.out("resume==============");
 
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
@@ -261,7 +261,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("----------pause");
+        PictureAirLog.out("----------pause");
         if (handler != null) {
             handler.quitSynchronously();
             handler = null;
@@ -272,7 +272,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("-----------destroy");
+        PictureAirLog.out("-----------destroy");
         inactivityTimer.shutdown();
         if (mediaPlayer != null) {
 
@@ -320,7 +320,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         try {
             CameraManager.get().openDriver(surfaceHolder);
         } catch (IOException ioe) {
-            System.out.println("meiyou dakai xiangji1");
+            PictureAirLog.out("meiyou dakai xiangji1");
             return;
         } catch (RuntimeException e) {
             newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
@@ -346,7 +346,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        System.out.println("----------holder create");
+        PictureAirLog.out("----------holder create");
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
@@ -356,7 +356,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        System.out.println("---------holder destroy");
+        PictureAirLog.out("---------holder destroy");
         hasSurface = false;
 
     }

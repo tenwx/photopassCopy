@@ -10,6 +10,7 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.asm.Type;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
@@ -21,6 +22,7 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import org.apache.http.Header;
 
@@ -1832,7 +1834,7 @@ public class API1 {
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.SHARE_ID, shareId);
         params.put(Common.SHARE_PLATFORM, platform);
-
+        PictureAirLog.out("tokenid----->" + MyApplication.getTokenId());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1905,6 +1907,40 @@ public class API1 {
             }
         });
     }
+
+    /**
+     * 忘记密码
+     *
+     * @param handler
+     * @param email
+     * @param language
+     */
+    public static void findPwdEmail(final Handler handler, String email, String language,String type) {
+        final RequestParams params = new RequestParams();
+        if (null != language){
+            params.put(Common.LANGUAGE, language.equals("cn") ? "CN" : "EN");
+        }
+
+        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(type) + PWJniUtil.getAppSecret(type)));
+        params.put(Common.USERINFO_EMAIL, email);
+
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.sendEmptyMessage(FIND_PWD_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(FIND_PWD_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+
 
 
     /**

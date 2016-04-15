@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -188,7 +187,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                             if (locationUtil.locationChanged) {
                                 Looper.prepare();
                                 isLoading = true;
-                                Log.d(TAG, "location is ready");
+                                PictureAirLog.d(TAG, "location is ready");
                                 discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
                                 discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
                                 fragmentPageDiscoverHandler.sendEmptyMessage(FINISH_LOADING);
@@ -244,7 +243,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载购物车数据
-                System.out.println("onclick with reload");
+                PictureAirLog.out("onclick with reload");
                 locationList.clear();
                 favoriteList.clear();
 //				dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
@@ -344,7 +343,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public void onStop() {
-        Log.d(TAG, "stop============");
+        PictureAirLog.d(TAG, "stop============");
         stopService();
         super.onStop();
 
@@ -363,14 +362,14 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     public void onPause() {
         locationStart = false;
 //		if(dialog.isShowing()){
-//			dialog.dismiss();
+//			diaPictureAirLog.dismiss();
 //		}
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        Log.d(TAG, "ondestroy===========");
+        PictureAirLog.d(TAG, "ondestroy===========");
         locationStart = false;
         isLoading = false;
         fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
@@ -461,7 +460,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
      * 关闭定位服务
      */
     private void stopService() {
-        Log.d(TAG, "stop location------->");
+        PictureAirLog.d(TAG, "stop location------->");
         locationUtil.stopLocation();
     }
 
@@ -494,7 +493,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         public void onSensorChanged(SensorEvent event) {
             if (Sensor.TYPE_ORIENTATION == event.sensor.getType()) {
                 rotate_degree = event.values[0];
-//				System.out.println("--------->sensor changed");
+//				PictureAirLog.out("--------->sensor changed");
             }
         }
     }
@@ -513,7 +512,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             discoverLocationAdapter.setLastVisibleCount(firstVisibleItem + visibleItemCount);
             if (locationActivatedIndex != -1) {//说明有激活的position
                 if (locationActivatedIndex < firstVisibleItem || locationActivatedIndex > discoverListView.getLastVisiblePosition()) {//超出屏幕
-//					Log.d(TAG, "out of window------->");
+//					PictureAirLog.d(TAG, "out of window------->");
                     locationStart = false;
                 }
             }
@@ -523,10 +522,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public void startLocation(final int position, final View view) {
-        Log.d(TAG, "start location---------->");
+        PictureAirLog.d(TAG, "start location---------->");
         //获取已经激活定位的arrylist
         final HashMap<String, Integer> activatedHashMap = discoverLocationAdapter.getActivatedLocationMap();
-        Log.d(TAG, "start location---------->" + activatedHashMap.get(position + ""));
+        PictureAirLog.d(TAG, "start location---------->" + activatedHashMap.get(position + ""));
         if (locationActivatedIndex != -1) {//说明之前有item激活过定位服务
             //将arraylist中已激活过的值改为0；
             discoverLocationAdapter.disableLocationActivated(locationActivatedIndex);
@@ -596,7 +595,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     @Override
     public void inOrOutPlace(String locationIds, boolean in) {
         // TODO Auto-generated method stub
-        System.out.println("in or out special location......");
+        PictureAirLog.out("in or out special location......");
     }
 
 

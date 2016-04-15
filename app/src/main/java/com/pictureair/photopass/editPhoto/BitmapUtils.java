@@ -27,9 +27,10 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
+
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -304,7 +305,7 @@ public class BitmapUtils {
 			File SDCardRoot = Environment.getExternalStorageDirectory();
 			if (SDCardRoot.getFreeSpace() < 10000) {
 				// 弹出对话框提示用户空间不够
-				Log.e("Utils", "存储空间不够");
+				PictureAirLog.d("Utils", "存储空间不够");
 				return false;
 			}
 

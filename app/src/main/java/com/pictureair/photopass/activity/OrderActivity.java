@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +113,7 @@ public class OrderActivity extends BaseActivity {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_ORDER_SUCCESS:
-                Log.d(TAG, "get success----");
+                PictureAirLog.d(TAG, "get success----");
                 viewPager.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setVisibility(View.INVISIBLE);
                 customProgressDialog.dismiss();

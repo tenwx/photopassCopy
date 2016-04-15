@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -888,12 +887,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photoInfo = photolist.get(mViewPager.getCurrentItem());
                 }
                 if (photoInfo.isLove == 1) {
-                    Log.d(TAG, "cancel love");
+                    PictureAirLog.d(TAG, "cancel love");
                     pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), false);
                     photoInfo.isLove = 0;
                     loveImageButton.setImageResource(R.drawable.discover_no_like);
                 } else {
-                    Log.d(TAG, "add love");
+                    PictureAirLog.d(TAG, "add love");
                     pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), true);
                     photoInfo.isLove = 1;
                     loveImageButton.setImageResource(R.drawable.discover_like);

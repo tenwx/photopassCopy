@@ -277,7 +277,7 @@ public class AppUtil {
         Matrix matrix = new Matrix();
         ;
         matrix.postRotate(angle);
-        System.out.println("angle2=" + angle);
+        PictureAirLog.out("angle2=" + angle);
         // 创建新的图片
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -292,7 +292,7 @@ public class AppUtil {
      * @throws WriterException
      */
     public static Bitmap Create2DCode(String str) throws WriterException {
-        System.out.println("start create a new QRcode bitmap" + str);
+        PictureAirLog.out("start create a new QRcode bitmap" + str);
         Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         //图像数据转换，使用了矩阵转换
@@ -392,24 +392,24 @@ public class AppUtil {
                 String line = null;
                 while ((line = reader.readLine()) != null)
                     strber.append(line + "\n");
-                // System.out.println("net ip before mathcer is "+ strber);
+                // PictureAirLog.out("net ip before mathcer is "+ strber);
                 //                Pattern pattern = Pattern
                 //                        .compile("((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))");
                 //                Matcher matcher = pattern.matcher(strber.toString());
                 //                if (matcher.find()) {
-                //                	System.out.println("------> net ip find");
+                //                	PictureAirLog.out("------> net ip find");
                 //                    ipLine = matcher.group();
                 //                }
                 //从反馈的结果中提取出IP地址
-                //                System.out.println("-------->"+strber);
+                //                PictureAirLog.out("-------->"+strber);
                 int start = strber.indexOf("<code>");
                 int end = strber.indexOf("</code>", start + 1);
                 ipLine = strber.substring(start + 6, end);
-                //                System.out.println("ipLine is "+ ipLine);
+                //                PictureAirLog.out("ipLine is "+ ipLine);
                 //                return line;
             } else {
                 //				ipLine = "failed";
-                System.out.println("net ip failed");
+                PictureAirLog.out("net ip failed");
             }
 
         } catch (MalformedURLException e) {
@@ -600,7 +600,7 @@ public class AppUtil {
                         isFirstBlackPoint = true;
                         startX = x;
                         startY = y;
-                        Log.d("createQRCode", "x y = " + x + " " + y);
+                        PictureAirLog.d("createQRCode", "x y = " + x + " " + y);
                     }
                     pixels[y * width + x] = BLACK;
                 }
@@ -698,9 +698,9 @@ public class AppUtil {
         GeoPoint geoPoint = CoordinateConvert.fromGpsToAMap(lat, lng);
         LatLng latLng = new LatLng(geoPoint.getLatitudeE6() * 1e-6, geoPoint.getLongitudeE6() * 1e-6);
 
-        System.out.println("latlng:" + lat + "___" + lng);
-        System.out.println("latlng:" + Double.valueOf(obj.getString("GPSLatitude")) + "____" + Double.valueOf(obj.getString("GPSLongitude")));
-        System.out.println("latlng:" + latLng.toString());
+        PictureAirLog.out("latlng:" + lat + "___" + lng);
+        PictureAirLog.out("latlng:" + Double.valueOf(obj.getString("GPSLatitude")) + "____" + Double.valueOf(obj.getString("GPSLongitude")));
+        PictureAirLog.out("latlng:" + latLng.toString());
         return latLng;
     }
 
@@ -733,7 +733,7 @@ public class AppUtil {
 
             messageDigest.update(str.getBytes("UTF-8"));
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithmException caught!");
+            PictureAirLog.out("NoSuchAlgorithmException caught!");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -750,7 +750,7 @@ public class AppUtil {
         }
         // 16位加密，从第9位到25位
 //		return md5StrBuff.substring(8, 24).toString().toUpperCase();
-        System.out.println("md5 password------->" + md5StrBuff.toString());
+        PictureAirLog.out("md5 password------->" + md5StrBuff.toString());
         //32位
         return md5StrBuff.toString();
     }

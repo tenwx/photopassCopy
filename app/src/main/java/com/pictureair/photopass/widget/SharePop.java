@@ -12,7 +12,6 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +24,7 @@ import com.mob.tools.utils.UIHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
@@ -101,6 +101,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 					JSONObject shareInfo = JSONObject.parseObject(msg.obj.toString());
 					shareUrl = shareInfo.getString("shareUrl");
 					shareId = shareInfo.getString("shareId");
+					PictureAirLog.out("tokenid----->" + MyApplication.getTokenId());
 					PictureAirLog.e(TAG,"拿到了分享链接："+shareUrl);
 
 //					//测试回调代码
@@ -137,7 +138,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		setContentView(defaultView);
 		setWidth(LayoutParams.MATCH_PARENT);
 		setHeight(LayoutParams.WRAP_CONTENT);
-		setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+		setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
 		setAnimationStyle(R.style.from_bottom_anim);
 		setFocusable(true);
 		setOutsideTouchable(true);

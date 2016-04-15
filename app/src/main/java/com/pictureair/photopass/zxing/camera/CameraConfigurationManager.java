@@ -20,14 +20,14 @@ import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Build;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ScreenUtil;
+
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
-
-import com.pictureair.photopass.util.ScreenUtil;
 
 final class CameraConfigurationManager {
 
@@ -56,7 +56,7 @@ final class CameraConfigurationManager {
     Camera.Parameters parameters = camera.getParameters();
     previewFormat = parameters.getPreviewFormat();
     previewFormatString = parameters.get("preview-format");
-    Log.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
+    PictureAirLog.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
     WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     Display display = manager.getDefaultDisplay();
     
@@ -65,7 +65,7 @@ final class CameraConfigurationManager {
 //    
 //    List<Size> previewsizes = parameters.getSupportedPreviewSizes();// 获取系统可支持的预览尺寸
 //	for (Size size : previewsizes) {
-//		System.out.println("previewSize"+"width:" + size.width + " height "
+//		PictureAirLog.out("previewSize"+"width:" + size.width + " height "
 //				+ size.height);// 查询所有的预览尺寸
 //		if (size.height == screenWidth) {
 //			screenResolution = new Point(size.width, size.height);
@@ -74,7 +74,7 @@ final class CameraConfigurationManager {
 //    
     
     screenResolution = new Point(display.getWidth(), display.getHeight());
-    Log.d(TAG, "Screen resolution: " + screenResolution);
+    PictureAirLog.d(TAG, "Screen resolution: " + screenResolution);
     
     Point screenResolutionForCamera = new Point();
     screenResolutionForCamera.x = screenResolution.x;
@@ -87,7 +87,7 @@ final class CameraConfigurationManager {
     cameraResolution = getCameraResolution(parameters, screenResolutionForCamera);
     
 //    cameraResolution = getCameraResolution(parameters, screenResolution);
-    Log.d(TAG, "Camera resolution: " + screenResolution);
+    PictureAirLog.d(TAG, "Camera resolution: " + screenResolution);
   }
 
   /**
@@ -99,9 +99,9 @@ final class CameraConfigurationManager {
   void setDesiredCameraParameters(Camera camera) {
     Camera.Parameters parameters = camera.getParameters();
     
-    Log.d(TAG, "Setting preview size: " + cameraResolution);
-    System.out.println("Setting preview size: " + cameraResolution);
-    System.out.println("screen widi"+ScreenUtil.getScreenWidth(context)+"___"+ScreenUtil.getScreenHeight(context));
+    PictureAirLog.d(TAG, "Setting preview size: " + cameraResolution);
+    PictureAirLog.out("Setting preview size: " + cameraResolution);
+    PictureAirLog.out("screen widi"+ScreenUtil.getScreenWidth(context)+"___"+ScreenUtil.getScreenHeight(context));
     parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
     setFlash(parameters);
     setZoom(parameters);
@@ -140,7 +140,7 @@ final class CameraConfigurationManager {
     Point cameraResolution = null;
 
     if (previewSizeValueString != null) {
-      Log.d(TAG, "preview-size-values parameter: " + previewSizeValueString);
+      PictureAirLog.d(TAG, "preview-size-values parameter: " + previewSizeValueString);
       cameraResolution = findBestPreviewSizeValue(previewSizeValueString, screenResolution);
     }
 
@@ -163,7 +163,7 @@ final class CameraConfigurationManager {
       previewSize = previewSize.trim();
       int dimPosition = previewSize.indexOf('x');
       if (dimPosition < 0) {
-        Log.w(TAG, "Bad preview-size: " + previewSize);
+        PictureAirLog.d(TAG, "Bad preview-size: " + previewSize);
         continue;
       }
 
@@ -173,7 +173,7 @@ final class CameraConfigurationManager {
         newX = Integer.parseInt(previewSize.substring(0, dimPosition));
         newY = Integer.parseInt(previewSize.substring(dimPosition + 1));
       } catch (NumberFormatException nfe) {
-        Log.w(TAG, "Bad preview-size: " + previewSize);
+        PictureAirLog.d(TAG, "Bad preview-size: " + previewSize);
         continue;
       }
 
@@ -246,7 +246,7 @@ final class CameraConfigurationManager {
           tenDesiredZoom = tenMaxZoom;
         }
       } catch (NumberFormatException nfe) {
-        Log.w(TAG, "Bad max-zoom: " + maxZoomString);
+        PictureAirLog.d(TAG, "Bad max-zoom: " + maxZoomString);
       }
     }
 
@@ -258,7 +258,7 @@ final class CameraConfigurationManager {
           tenDesiredZoom = tenMaxZoom;
         }
       } catch (NumberFormatException nfe) {
-        Log.w(TAG, "Bad taking-picture-zoom-max: " + takingPictureZoomMaxString);
+        PictureAirLog.d(TAG, "Bad taking-picture-zoom-max: " + takingPictureZoomMaxString);
       }
     }
 

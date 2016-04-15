@@ -1,7 +1,6 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,7 +140,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	@Override
 	public View getHeaderView(int position, View convertView, ViewGroup parent) {
-		Log.d(TAG, "section--------->" + position);
+		PictureAirLog.d(TAG, "section--------->" + position);
 		HeaderViewHolder viewHolder = null;
 
 		if (convertView == null) {

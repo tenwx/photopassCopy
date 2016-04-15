@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import com.google.zxing.WriterException;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.PictureAirLog;
+
 /**
  * 显示pp二维码生成图的类
  * @author bauer_bao
@@ -104,7 +106,7 @@ public class CompositePPCodeView extends RelativeLayout{
 				//先确定预览图片的宽和高
 				int previewPhotoW = photoWidth * goodW / goodWidth;
 				int previewPhotoH = photoHeight * goodH / goodHeight;
-				System.out.println("size="+previewPhotoW+"___"+previewPhotoH);
+				PictureAirLog.out("size="+previewPhotoW+"___"+previewPhotoH);
 				//预览图片左边留白和上边留白
 				int marginL = marginLeft * goodW / goodWidth;
 				int marginT = marginTop * goodH / goodHeight;
@@ -128,7 +130,7 @@ public class CompositePPCodeView extends RelativeLayout{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("fsdljk"+photoImageView.getWidth()+"___"+photoImageView.getHeight());
+				PictureAirLog.out("fsdljk"+photoImageView.getWidth()+"___"+photoImageView.getHeight());
 				break;
 
 			default:

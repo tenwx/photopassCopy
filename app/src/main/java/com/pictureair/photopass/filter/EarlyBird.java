@@ -8,8 +8,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
-import android.util.Log;
 
+import com.pictureair.photopass.util.PictureAirLog;
 
 
 /**
@@ -100,7 +100,7 @@ public class EarlyBird extends Filter{
 
         LevelsFilter levelsFilter = new LevelsFilter();
         float highLevelValue = (237 * 100 / 255) * 100 / 100;
-        Log.i(EARLYBIRD, String.valueOf(highLevelValue/100));
+        PictureAirLog.d(EARLYBIRD, String.valueOf(highLevelValue/100));
         levelsFilter.setHighLevel(highLevelValue/100);
         levelsFilter.setLowLevel(0.086f);
 

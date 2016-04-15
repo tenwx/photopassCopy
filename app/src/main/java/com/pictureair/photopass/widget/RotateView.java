@@ -9,10 +9,11 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.ThumbnailUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.pictureair.photopass.util.PictureAirLog;
 
 /**
  * A @{code ImageView} which can rotate it's content.
@@ -94,7 +95,7 @@ public class RotateView extends ImageView implements Rotatable {
     protected void onDraw(Canvas canvas) {
         Drawable drawable = getDrawable();
         if (drawable == null) {
-            Log.e(TAG, "drawable == null, return");
+            PictureAirLog.d(TAG, "drawable == null, return");
             return;
         }
 
@@ -103,7 +104,7 @@ public class RotateView extends ImageView implements Rotatable {
         int h = bounds.bottom - bounds.top;
 
         if (w == 0 || h == 0) {
-            Log.e(TAG, "w == 0 || h == 0, return");
+            PictureAirLog.d(TAG, "w == 0 || h == 0, return");
             return; // nothing to draw
         }
 

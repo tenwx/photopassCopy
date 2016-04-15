@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		this.mContext = context;
 		mInflater = LayoutInflater.from(context);
 		this.mDatas = mDatas;
-		System.out.println("========="+mDatas.size());
+		PictureAirLog.out("========="+mDatas.size());
 		imageLoader = ImageLoader.getInstance();
 	}
 

@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.service.NotificationService;
+import com.pictureair.photopass.util.PictureAirLog;
 
 /**
  * 网络连接的监听
@@ -29,12 +29,12 @@ public class NetBroadCastReciver extends BroadcastReceiver {
 				Intent intent1;
 				if (NetworkInfo.State.CONNECTED == info.getState()) {
 					// 连接状态
-					Log.e(" ＝＝＝＝＝ ", "有网络连接");
+					PictureAirLog.d(" ＝＝＝＝＝ ", "有网络连接");
 					intent1 = new Intent(context,
 							com.pictureair.photopass.service.NotificationService.class);
 					context.startService(intent1);
 				} else {
-					Log.e(" ＝＝＝＝＝ ", "无网络连接");
+					PictureAirLog.d(" ＝＝＝＝＝ ", "无网络连接");
 					intent1 = new Intent(context, NotificationService.class);
 					intent1.putExtra("status", "disconnect");
 					context.startService(intent1);
