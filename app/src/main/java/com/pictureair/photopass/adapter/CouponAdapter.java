@@ -133,11 +133,11 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
      * @param holder
      */
     private void setMyTextViewColor(MyViewHolder holder){
-        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.white));
-        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.white));
-        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.white));
-        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.white));
-        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.gray_cover));
+//        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.white));
+//        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.white));
+//        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.white));
+//        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.white));
+        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.line_color));
     }
 
     /**

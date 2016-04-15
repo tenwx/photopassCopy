@@ -26,6 +26,8 @@
     <!-- 进度条预加载的进度-->
     <color name="secondary_progress">#9fE25B3C</color>
     <color name="red">#FF451A</color>
+    <!--优惠卷状态的颜色-->
+    <color name="coupon_status">#AFB7BE</color>
 
 
     <color name="possible_result_points">#c0ffbd21</color>
