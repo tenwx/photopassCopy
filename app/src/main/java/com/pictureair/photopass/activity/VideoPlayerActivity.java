@@ -12,7 +12,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -298,7 +297,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                     showController();
                 }
                 int i = videoPlayerView.getDuration();
-                Log.d("onCompletion", "" + i);
+                PictureAirLog.d("onCompletion", "" + i);
                 seekBar.setMax(i);
                 i /= 1000;
                 int minute = i / 60;
@@ -633,12 +632,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
      */
     public boolean isLoveEvent() {
         if (videoInfo.isLove == 1) {
-            Log.d(TAG, "cancel love");
+            PictureAirLog.d(TAG, "cancel love");
             pictureAirDbManager.setPictureLove(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), false);
             videoInfo.isLove = 0;
             ivIsLove.setImageResource(R.drawable.discover_no_like);
         } else {
-            Log.d(TAG, "add love");
+            PictureAirLog.d(TAG, "add love");
             pictureAirDbManager.setPictureLove(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), true);
             videoInfo.isLove = 1;
             ivIsLove.setImageResource(R.drawable.discover_like);

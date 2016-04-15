@@ -27,9 +27,9 @@ public class UniversalImageLoadTool {
 	 */
 	public static void loadImage(final String uri, final ImageView imageView){
 		if (imageView.getTag() == null || !imageView.getTag().toString().equals(uri)) {
-			System.out.println("no tag"+"___"+uri);
+			PictureAirLog.out("no tag"+"___"+uri);
 			if (imageView.getTag() != null) {
-				System.out.println("old tag is "+imageView.getTag().toString());
+				PictureAirLog.out("old tag is "+imageView.getTag().toString());
 			}
 			imageLoader.displayImage(uri, imageView, new ImageLoadingListener() {
 
@@ -60,7 +60,7 @@ public class UniversalImageLoadTool {
 
 			});
 		}else {
-			System.out.println("tag--"+imageView.getTag().toString()+"___"+uri);
+			PictureAirLog.out("tag--"+imageView.getTag().toString()+"___"+uri);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class UniversalImageLoadTool {
 	 */
 	public static void loadDiscoverImage(final String uri, final ImageView imageView, DisplayImageOptions option){
 		if (imageView.getTag() == null || !imageView.getTag().toString().equals(uri)) {
-			System.out.println("no tag" + imageView.getTag());
+			PictureAirLog.out("no tag" + imageView.getTag());
 			imageLoader.displayImage(uri, imageView, option, new ImageLoadingListener() {
 
 				@Override
@@ -101,7 +101,7 @@ public class UniversalImageLoadTool {
 				}
 			});
 		}else {
-			System.out.println("tag--"+imageView.getTag().toString()+"___"+uri);
+			PictureAirLog.out("tag--"+imageView.getTag().toString()+"___"+uri);
 		}
 	}
 
@@ -111,9 +111,9 @@ public class UniversalImageLoadTool {
 	 * @param imageView
 	 */
 	public static void loadBlurImage(final String uri, final ImageView imageView, DisplayImageOptions options){
-		Log.d(TAG, "url-->"+uri);
+		PictureAirLog.d(TAG, "url-->"+uri);
 		if (imageView.getTag() == null || !imageView.getTag().toString().equals(uri)) {
-			System.out.println("blur no tag");
+			PictureAirLog.out("blur no tag");
 			imageLoader.displayImage(uri, imageView, options, new ImageLoadingListener() {
 
 				@Override
@@ -143,7 +143,7 @@ public class UniversalImageLoadTool {
 				}
 			});
 		}else {
-			System.out.println("blur tag--"+imageView.getTag().toString()+"___"+uri);
+			PictureAirLog.out("blur tag--"+imageView.getTag().toString()+"___"+uri);
 		}
 	}
 

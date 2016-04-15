@@ -51,7 +51,7 @@ public class NotificationServiceHelp {
     private String sendType; // 受到的socket 事件名，用于接受之后清空相应的消息。
     private String syncMessage = "";
 
-    private Handler notificationHandler = new NotificationHandler(application) ;
+    private Handler notificationHandler = new NotificationHandler(application);
 
     private class NotificationHandler extends Handler {
         private WeakReference<MyApplication> myApplication;
@@ -59,6 +59,7 @@ public class NotificationServiceHelp {
         public NotificationHandler(MyApplication application) {
             myApplication = new WeakReference<>(application);
         }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -78,15 +79,16 @@ public class NotificationServiceHelp {
 
 
     /**
-     *  是否接受到断开的信号。
+     * 是否接受到断开的信号。
+     *
      * @param intent
      * @return
      */
-    public boolean isRequireDisconnect(Intent intent){
+    public boolean isRequireDisconnect(Intent intent) {
         if (intent != null && intent.getStringExtra("status") != null) {// 要求断开的情况
             if ("disconnect".equals(intent.getStringExtra("status"))) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } else {// 要求链接的情况
@@ -106,10 +108,10 @@ public class NotificationServiceHelp {
     }
 
     /**
-     *  请求链接 socket
-     *  启用 socket
+     * 请求链接 socket
+     * 启用 socket
      */
-    public void connectSocket(){
+    public void connectSocket() {
         if (!isConnected) {
             dealSocket();
         }
@@ -118,12 +120,13 @@ public class NotificationServiceHelp {
     /**
      * notification 中的destory方法。removeCallbacksAndMessages
      */
-    public void destoryService(){
+    public void destoryService() {
         notificationHandler.removeCallbacksAndMessages(null);
     }
 
     /**
      * 订单完成状态 的处理事件。
+     *
      * @param message
      */
     private void eventDoneOrderPay(JSONObject message) {
@@ -133,6 +136,7 @@ public class NotificationServiceHelp {
 
     /**
      * 升级PP＋与购买照片后发送的事件 的处理事件。
+     *
      * @param updateJsonObject
      */
     private void eventUpgradedPhotos(JSONObject updateJsonObject) {
@@ -176,9 +180,10 @@ public class NotificationServiceHelp {
 
     /**
      * 下订单 的处理事件。
+     *
      * @param message
      */
-    private void eventCatchOrderInfoOf(JSONObject message){
+    private void eventCatchOrderInfoOf(JSONObject message) {
 
         try {
             String info = message.getString("info");
@@ -196,9 +201,10 @@ public class NotificationServiceHelp {
 
     /**
      * 收到新照片 的处理事件。
+     *
      * @param message
      */
-    private void eventSendNewPhotosCountOf(JSONObject message){
+    private void eventSendNewPhotosCountOf(JSONObject message) {
         int photoCount;
         try {
             photoCount = Integer.valueOf(message.getString("c"));
@@ -230,9 +236,10 @@ public class NotificationServiceHelp {
 
     /**
      * 收到新视频 的处理事件。
+     *
      * @param message
      */
-    private void eventVideoGenerate(JSONObject message){
+    private void eventVideoGenerate(JSONObject message) {
 
         try {
             int videoCount = message.getInt("c");
@@ -250,33 +257,35 @@ public class NotificationServiceHelp {
 
     /**
      * 状态链接上之后，监听的事件。 socket on 方法
+     *
      * @param envenStr
      * @param message
-     * @param isSocketReceive   是否是socket接收。
+     * @param isSocketReceive 是否是socket接收。
      */
     public void socketOn(String envenStr, JSONObject message, boolean isSocketReceive) throws JSONException {
-        if (envenStr.equals("doneOrderPay")){
-            if (isSocketReceive){
+        PictureAirLog.e(TAG, "socketOn: envenStr: " + envenStr);
+        if (envenStr.equals("doneOrderPay")) {
+            if (isSocketReceive) {
                 sendType = "doneOrderPay";
                 notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA); //清空推送，不能移动位置。
                 message = (JSONObject) message.get("c");
             }
             eventDoneOrderPay(message);
-        }else if(envenStr.equals("upgradedPhotos")){
-            if (isSocketReceive){
+        } else if (envenStr.equals("upgradedPhotos")) {
+            if (isSocketReceive) {
                 sendType = "upgradedPhoto";
                 notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
                 message = message.getJSONObject("c");
             }
             eventUpgradedPhotos(message);
-        }else if(envenStr.equals("catchOrderInfoOf" + userId)){
+        } else if (envenStr.equals("catchOrderInfoOf" + userId)) {
             sendType = "orderSend";
             notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventCatchOrderInfoOf(message);
-        }else if(envenStr.equals("sendNewPhotosCountOf" + userId)){
+        } else if (envenStr.equals("sendNewPhotosCountOf" + userId)) {
             sendType = "photoSend";
             eventSendNewPhotosCountOf(message);
-        }else if(envenStr.equals("videoGenerate")){
+        } else if (envenStr.equals("videoGenerate")) {
             sendType = "videoGenerate";
             notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventVideoGenerate(message);
@@ -343,7 +352,7 @@ public class NotificationServiceHelp {
                             PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
 
                             try {
-                                socketOn(event.toString(),(JSONObject) arg2[0],true);
+                                socketOn(event.toString(), (JSONObject) arg2[0], true);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -381,21 +390,23 @@ public class NotificationServiceHelp {
     }
 
 
-    private Notification notification ;
+    private Notification notification;
     private Intent intent;
     private long exitTime = 0;
+
     /**
      * 初始化notification的数据
+     *
      * @param titleStr
      * @param contentStr
      */
     private void showNotification(String titleStr, String contentStr) {
         NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (intent == null){
+        if (intent == null) {
             intent = new Intent(mContext, MainTabActivity.class);
         }
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
-        if (notification == null){
+        if (notification == null) {
             notification = new NotificationCompat.Builder(mContext).
                     setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(titleStr).
                     setContentIntent(pendingIntent)

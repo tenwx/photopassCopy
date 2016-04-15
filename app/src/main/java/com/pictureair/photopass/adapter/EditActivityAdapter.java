@@ -331,11 +331,11 @@ public class EditActivityAdapter extends BaseAdapter {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_NEGATIVE://取消按钮
-                    System.out.println("negative button");
+                    PictureAirLog.out("negative button");
                     break;
 
                 case DialogInterface.BUTTON_POSITIVE://确定按钮
-                    System.out.println("positive button");
+                    PictureAirLog.out("positive button");
                     prepareDownload(holderView, position);
                     break;
 
@@ -394,7 +394,7 @@ public class EditActivityAdapter extends BaseAdapter {
         final File downloadFile = new File(file.toString(), downloadNameString);
         PictureAirLog.e("adapeter","downloadFile:"+downloadFile.toString());
         if (downloadFile.exists()) {//文件存在
-            System.out.println(downloadNameString + "file exist");
+            PictureAirLog.out(downloadNameString + "file exist");
             if (firstTime) {
                 firstFileFailOrExist = true;
             } else {

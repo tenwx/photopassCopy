@@ -32,6 +32,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.pictureair.photopass.util.PictureAirLog;
+
 import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -135,7 +137,7 @@ public class TouchImageView extends ImageView {
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
-                    	System.out.println("------------>down");
+                    	PictureAirLog.out("------------>down");
                         allowInert = false;
                         savedMatrix.set(matrix);
                         last.set(event.getX(), event.getY());
@@ -144,7 +146,7 @@ public class TouchImageView extends ImageView {
 
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
-                    	System.out.println("------------>action pointer down");
+                    	PictureAirLog.out("------------>action pointer down");
                         oldDist = spacing(event);
                         //Log.d(TAG, "oldDist=" + oldDist);
                         if (oldDist > 10f) {
@@ -155,7 +157,7 @@ public class TouchImageView extends ImageView {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                    	System.out.println("----------> up");
+                    	PictureAirLog.out("----------> up");
                         allowInert = true;
                         mode = NONE;
                         int xDiff = (int) Math.abs(event.getX() - start.x);
@@ -170,14 +172,14 @@ public class TouchImageView extends ImageView {
                                 if (mClickTimer != null) mClickTimer.cancel();
                                 if (saveScale == 1)
                                 {
-                                	System.out.println("----------> saveScale  = 1 ");
+                                	PictureAirLog.out("----------> saveScale  = 1 ");
                                     final float targetScale = maxScale / saveScale;
                                     matrix.postScale(targetScale, targetScale, start.x, start.y);
                                     saveScale = maxScale;
                                 }
                                 else
                                 {
-                                	System.out.println("----------> saveScale != 1");
+                                	PictureAirLog.out("----------> saveScale != 1");
                                     matrix.postScale(minScale / saveScale, minScale / saveScale, width / 2, height / 2);
                                     saveScale = minScale;
                                 }
@@ -198,7 +200,7 @@ public class TouchImageView extends ImageView {
                         break;
 
                     case MotionEvent.ACTION_POINTER_UP:
-                    	System.out.println("-----------> action pointer up");
+                    	PictureAirLog.out("-----------> action pointer up");
                         mode = NONE;
                         velocity = 0;
                         savedMatrix.set(matrix);
@@ -207,7 +209,7 @@ public class TouchImageView extends ImageView {
                         break;
 
                     case MotionEvent.ACTION_MOVE:
-                    	System.out.println("----------> action move");
+                    	PictureAirLog.out("----------> action move");
                         allowInert = false;
                         if (mode == DRAG) {
                             float deltaX = curr.x - last.x;

@@ -15,12 +15,13 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.EditTextWithClear;
 
 public class OtherLoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
@@ -122,7 +123,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                 break;
 
             case R.id.btnOtherLogin:
-                System.out.println("登录按钮");
+                PictureAirLog.out("登录按钮");
                 // 登录
                 hideInputMethodManager(v);
                 if (userName.getText().toString().trim().isEmpty()) {

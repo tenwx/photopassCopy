@@ -1,12 +1,12 @@
 package com.pictureair.photopass.util;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.UUID;
-
-import android.content.Context;
 
 /**
  * 获取应用的UUID作为tokenId传给服务器
@@ -26,7 +26,7 @@ public class Installation {
 				throw new RuntimeException(e);
 			}
 		}
-		System.out.println("uuid------------>"+sID);
+		PictureAirLog.out("uuid------------>"+sID);
 		
 		return sID;
 	}

@@ -203,10 +203,10 @@ public class UrlTouchImageView extends RelativeLayout {
                     }
                 });
                 bm = BitmapFactory.decodeStream(bis);
-                System.out.println("bitmap size w" + bm.getWidth() + "_" + bm.getHeight());
+                PictureAirLog.out("bitmap size w" + bm.getWidth() + "_" + bm.getHeight());
                 int width = bm.getWidth();
                 int height = bm.getHeight();
-                System.out.println("bitmap size w" + width + "_" + height);
+                PictureAirLog.out("bitmap size w" + width + "_" + height);
                 bis.close();
 
                 Matrix m = new Matrix();
@@ -215,17 +215,17 @@ public class UrlTouchImageView extends RelativeLayout {
                 if (width >= height && (width > 2400 || height > 1800)) {//如果是图片是横着的，
                     m.postScale((float) 2400 / width, (float) 2400 / width);
                     bm = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
-                    System.out.println("------> need zoom");
+                    PictureAirLog.out("------> need zoom");
                 } else if (width < height && (width > 1800 || height > 2400)) {//如果图片是竖着的
                     m.postScale((float) 1800 / height, (float) 1800 / height);
                     bm = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
-                    System.out.println("------> need zoom");
+                    PictureAirLog.out("------> need zoom");
                 } else {
 
-                    System.out.println("------> need not zoom");
+                    PictureAirLog.out("------> need not zoom");
                 }
-                System.out.println("bitmap size w" + bm.getWidth() + "_" + bm.getHeight());
-                System.out.println("--------> load success");
+                PictureAirLog.out("bitmap size w" + bm.getWidth() + "_" + bm.getHeight());
+                PictureAirLog.out("--------> load success");
             } catch (Exception e) {
                 e.printStackTrace();
             }

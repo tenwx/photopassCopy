@@ -71,7 +71,7 @@ public class PayUtils {
         // 完整的符合支付宝参数规范的订单信息
         final String payInfo = info + "&sign=\"" + sign + "\"&"
                 + AliPayUtil.getSignType();
-        Log.i("ExternalPartner", "start pay");
+        PictureAirLog.d("ExternalPartner", "start pay");
         // start the pay.
         new Thread() {
             public void run() {

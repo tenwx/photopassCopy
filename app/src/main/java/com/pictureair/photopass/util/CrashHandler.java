@@ -48,7 +48,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();      
 		//设置该CrashHandler为程序的默认处理器      
 		Thread.setDefaultUncaughtExceptionHandler(this);  
-		System.out.println("------------------>初始化CrashHandler");
+		PictureAirLog.out("------------------>初始化CrashHandler");
 	}      
 
 	/**   
@@ -56,15 +56,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	 */      
 	@Override      
 	public void uncaughtException(Thread thread, Throwable ex) { 
-		System.out.println("------------------>处理CrashHandler");
+		PictureAirLog.out("------------------>处理CrashHandler");
 		if (!handleException(ex) && mDefaultHandler != null) {      
 			//如果用户没有处理则让系统默认的异常处理器来处理      
 			mDefaultHandler.uncaughtException(thread, ex);      
 		} else {      
 			try {      
 				Thread.sleep(3000);      
-			} catch (InterruptedException e) {      
-				Log.e(TAG, "error : ", e);      
+			} catch (InterruptedException e) {
+				PictureAirLog.d(TAG, "error : " + e);
 			}      
 			//退出程序      
 			AppManager.getInstance().killAllActivity();

@@ -1,7 +1,6 @@
 package com.pictureair.photopass.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -58,7 +57,7 @@ public class PictureAirDbManager {
         database.beginTransaction();
         try {
             if (setLove) {//添加收藏
-                Log.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
+                PictureAirLog.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
                 database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
                                 photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
@@ -180,7 +179,7 @@ public class PictureAirDbManager {
                 if (photoInfos.size() > 0) {//有收藏图片
                     photoItemInfo.list = photoInfos;
                     resultArrayList.add(photoItemInfo);
-                    Log.d(TAG, "photo size " + photoItemInfo.list.size());
+                    PictureAirLog.d(TAG, "photo size " + photoItemInfo.list.size());
                 }
             }
         } catch (Exception e) {
@@ -369,7 +368,7 @@ public class PictureAirDbManager {
                 question.answer = cursor.getString(cursor.getColumnIndex("answer"));
                 resultArray.add(question);
             }
-            System.out.println("-------find the question and the size is " + resultArray.size());
+            PictureAirLog.out("-------find the question and the size is " + resultArray.size());
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -469,7 +468,7 @@ public class PictureAirDbManager {
             PictureAirLog.out("cursor open ---> getPhotoUrlByPhotoIDAndShootOn");
             cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ? and shootTime=? order by shootOn", new String[]{"%" + photoCode + "%", shootOn});
 
-            Log.e("查出来的数据。", "cursor.getCount(); ;" + cursor.getCount());
+            PictureAirLog.d("查出来的数据。", "cursor.getCount(); ;" + cursor.getCount());
             if (cursor.moveToFirst()) {
                 do {
                     PhotoInfo photoInfo = new PhotoInfo();
@@ -525,7 +524,7 @@ public class PictureAirDbManager {
                 if (type == 1) {
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
                             + " where photoCode like ? order by shootOn desc", new String[]{"%" + ppInfo.getPpCode() + "%"});
-                    Log.e("cursor cursor cursor ", "cursor :" + cursor.getCount());
+                    PictureAirLog.d("cursor cursor cursor ", "cursor :" + cursor.getCount());
                 } else {
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE +
                             " where photoCode like ? and shootTime=? order by shootOn", new String[]{"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
@@ -831,7 +830,7 @@ public class PictureAirDbManager {
         if (cursor.moveToFirst()) {//判断是否photo数据
             do {
                 photoInfo = new PhotoInfo();
-                System.out.println("load data from database = " + cursor.getInt(0));
+                PictureAirLog.out("load data from database = " + cursor.getInt(0));
                 photoInfo.photoId = cursor.getString(1);//photoId
                 photoInfo.photoPassCode = cursor.getString(2);//photopassCode
                 photoInfo.shootTime = cursor.getString(3);//shootTime
@@ -914,7 +913,7 @@ public class PictureAirDbManager {
         FrameOrStikerInfo frameInfo = null;
         try {
             if (jsonArray.size() > 0) {
-                Log.d(TAG, "frames or sticker length is " + jsonArray.size());
+                PictureAirLog.d(TAG, "frames or sticker length is " + jsonArray.size());
                 //开始解析数据，并且将数据写入数据库
                 for (int i = 0; i < jsonArray.size(); i++) {
                     //解析json
@@ -936,7 +935,7 @@ public class PictureAirDbManager {
                     }
                 }
             } else {
-                Log.d(TAG, "has no any frames or stickers");
+                PictureAirLog.d(TAG, "has no any frames or stickers");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,7 +3,6 @@ package net.sourceforge.simcpux;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -72,7 +71,7 @@ public class Util {
 
 	public static byte[] httpGet(final String url) {
 		if (url == null || url.length() == 0) {
-			Log.e(TAG, "httpGet, url is null");
+			PictureAirLog.d(TAG, "httpGet, url is null");
 			return null;
 		}
 
@@ -82,14 +81,14 @@ public class Util {
 		try {
 			HttpResponse resp = httpClient.execute(httpGet);
 			if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				Log.e(TAG, "httpGet fail, status code = " + resp.getStatusLine().getStatusCode());
+				PictureAirLog.d(TAG, "httpGet fail, status code = " + resp.getStatusLine().getStatusCode());
 				return null;
 			}
 
 			return EntityUtils.toByteArray(resp.getEntity());
 
 		} catch (Exception e) {
-			Log.e(TAG, "httpGet exception, e = " + e.getMessage());
+			PictureAirLog.d(TAG, "httpGet exception, e = " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
@@ -97,7 +96,7 @@ public class Util {
 	
 	public static byte[] httpPost(String url, String entity) {
 		if (url == null || url.length() == 0) {
-			Log.e(TAG, "httpPost, url is null");
+			PictureAirLog.d(TAG, "httpPost, url is null");
 			return null;
 		}
 
@@ -195,7 +194,7 @@ public class Util {
 
 		File file = new File(fileName);
 		if (!file.exists()) {
-			Log.i(TAG, "readFromFile: file not found");
+			PictureAirLog.d(TAG, "readFromFile: file not found");
 			return null;
 		}
 
@@ -203,18 +202,18 @@ public class Util {
 			len = (int) file.length();
 		}
 
-		Log.d(TAG, "readFromFile : offset = " + offset + " len = " + len + " offset + len = " + (offset + len));
+		PictureAirLog.d(TAG, "readFromFile : offset = " + offset + " len = " + len + " offset + len = " + (offset + len));
 
 		if(offset <0){
-			Log.e(TAG, "readFromFile invalid offset:" + offset);
+			PictureAirLog.d(TAG, "readFromFile invalid offset:" + offset);
 			return null;
 		}
 		if(len <=0 ){
-			Log.e(TAG, "readFromFile invalid len:" + len);
+			PictureAirLog.d(TAG, "readFromFile invalid len:" + len);
 			return null;
 		}
 		if(offset + len > (int) file.length()){
-			Log.e(TAG, "readFromFile invalid file len:" + file.length());
+			PictureAirLog.d(TAG, "readFromFile invalid file len:" + file.length());
 			return null;
 		}
 
@@ -227,7 +226,7 @@ public class Util {
 			in.close();
 
 		} catch (Exception e) {
-			Log.e(TAG, "readFromFile : errMsg = " + e.getMessage());
+			PictureAirLog.d(TAG, "readFromFile : errMsg = " + e.getMessage());
 			e.printStackTrace();
 		}
 		return b;
@@ -247,10 +246,10 @@ public class Util {
 				tmp = null;
 			}
 
-			Log.d(TAG, "extractThumbNail: round=" + width + "x" + height + ", crop=" + crop);
+			PictureAirLog.d(TAG, "extractThumbNail: round=" + width + "x" + height + ", crop=" + crop);
 			final double beY = options.outHeight * 1.0 / height;
 			final double beX = options.outWidth * 1.0 / width;
-			Log.d(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
+			PictureAirLog.d(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
 			options.inSampleSize = (int) (crop ? (beY > beX ? beX : beY) : (beY < beX ? beX : beY));
 			if (options.inSampleSize <= 1) {
 				options.inSampleSize = 1;
@@ -279,14 +278,14 @@ public class Util {
 
 			options.inJustDecodeBounds = false;
 
-			Log.i(TAG, "bitmap required size=" + newWidth + "x" + newHeight + ", orig=" + options.outWidth + "x" + options.outHeight + ", sample=" + options.inSampleSize);
+			PictureAirLog.d(TAG, "bitmap required size=" + newWidth + "x" + newHeight + ", orig=" + options.outWidth + "x" + options.outHeight + ", sample=" + options.inSampleSize);
 			Bitmap bm = BitmapFactory.decodeFile(path, options);
 			if (bm == null) {
-				Log.e(TAG, "bitmap decode failed");
+				PictureAirLog.d(TAG, "bitmap decode failed");
 				return null;
 			}
 
-			Log.i(TAG, "bitmap decoded size=" + bm.getWidth() + "x" + bm.getHeight());
+			PictureAirLog.d(TAG, "bitmap decoded size=" + bm.getWidth() + "x" + bm.getHeight());
 			final Bitmap scale = Bitmap.createScaledBitmap(bm, newWidth, newHeight, true);
 			if (scale != null) {
 				bm.recycle();
@@ -301,12 +300,12 @@ public class Util {
 
 				bm.recycle();
 				bm = cropped;
-				Log.i(TAG, "bitmap croped size=" + bm.getWidth() + "x" + bm.getHeight());
+				PictureAirLog.d(TAG, "bitmap croped size=" + bm.getWidth() + "x" + bm.getHeight());
 			}
 			return bm;
 
 		} catch (final OutOfMemoryError e) {
-			Log.e(TAG, "decode bitmap failed: " + e.getMessage());
+			PictureAirLog.d(TAG, "decode bitmap failed: " + e.getMessage());
 			options = null;
 		}
 

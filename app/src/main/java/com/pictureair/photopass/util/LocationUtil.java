@@ -3,7 +3,6 @@ package com.pictureair.photopass.util;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -46,10 +45,10 @@ public class LocationUtil implements AMapLocationListener{
 	}
 
 	private void initLocation() {
-		Log.d(TAG, "----------->init location");
+		PictureAirLog.d(TAG, "----------->init location");
 
 		if (mLocationManagerProxy != null) {
-			Log.d(TAG, "------->has started");
+			PictureAirLog.d(TAG, "------->has started");
 			return;
 		}
 		locationChanged = false;
@@ -64,12 +63,12 @@ public class LocationUtil implements AMapLocationListener{
 	}
 
 	public void startLocation() {
-		Log.d(TAG, "----------->start location");
+		PictureAirLog.d(TAG, "----------->start location");
 		initLocation();
 	}
 
 	public void stopLocation() {
-		Log.d(TAG, "----------->stop location");
+		PictureAirLog.d(TAG, "----------->stop location");
 
 		mLocationManagerProxy.removeUpdates(this);
 		mLocationManagerProxy.destroy();
@@ -131,7 +130,7 @@ public class LocationUtil implements AMapLocationListener{
 //	//进入或者离开通知区域
 //	private void inOrOutPlace(String locationIds) {
 //		// TODO Auto-generated method stub
-//		Log.d(TAG, "in or out of place");
+//		PictureAirLog.d(TAG, "in or out of place");
 //	}
 
 	/**
@@ -155,9 +154,9 @@ public class LocationUtil implements AMapLocationListener{
 							mapLocation.getLongitude(), mapLocation.getLatitude()) > radius) {//超过半径，离开后需要继续扫描其他地点，判断是否进入了其他区域
 						currentNotificationPosition = -1;
 						onLocationNotificationListener.inOrOutPlace(locationItemInfos.get(currentNotificationPosition).locationIds, false);
-						Log.d(TAG, "out of location notification");
+						PictureAirLog.d(TAG, "out of location notification");
 					}else {//说明还在当前区域中，无需做任何操作
-						Log.d(TAG, "still in location notification");
+						PictureAirLog.d(TAG, "still in location notification");
 						isScanFence = false;
 						return;
 					}
@@ -167,9 +166,9 @@ public class LocationUtil implements AMapLocationListener{
 					if (AppUtil.getDistance(locationItemInfos.get(i).longitude, 
 							locationItemInfos.get(i).latitude, 
 							mapLocation.getLongitude(), mapLocation.getLatitude()) > radius) {//超过半径
-						Log.d(TAG, "skip location notification");
+						PictureAirLog.d(TAG, "skip location notification");
 					}else {//进入通知区域后，其他区域不需要再计算，这样的问题，有可能有重叠区域无法准确判断
-						Log.d(TAG, "in location notification");
+						PictureAirLog.d(TAG, "in location notification");
 						currentNotificationPosition = i;
 						onLocationNotificationListener.inOrOutPlace(locationItemInfos.get(currentNotificationPosition).locationIds, true);
 						break;

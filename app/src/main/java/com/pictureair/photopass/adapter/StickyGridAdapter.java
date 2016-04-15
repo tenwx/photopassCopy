@@ -62,7 +62,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        System.out.println("get View------->" + position + "___" + list.size());
+        PictureAirLog.out("get View------->" + position + "___" + list.size());
         ViewHolder mViewHolder;
         if (convertView == null) {
             mViewHolder = new ViewHolder();

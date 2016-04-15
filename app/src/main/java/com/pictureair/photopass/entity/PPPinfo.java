@@ -130,7 +130,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 		// TODO Auto-generated method stub
 		try {
 			if (!"".equals(this.ownOn) && !"".equals(another.ownOn)) {
-				System.out.println(this.ownOn+"_"+another.ownOn);
+				PictureAirLog.out(this.ownOn+"_"+another.ownOn);
 				Date date1 = sdf.parse(this.ownOn);
 				Date date2 = sdf.parse(another.ownOn);
 				if (date1.after(date2))
@@ -138,10 +138,10 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 				else
 					return 1;
 			} else if (!"".equals(this.ownOn) && "".equals(another.ownOn)) {
-				System.out.println(this.ownOn+"_"+another.ownOn);
+				PictureAirLog.out(this.ownOn+"_"+another.ownOn);
 				return -1;
 			} else if ("".equals(this.ownOn) && !"".equals(another.ownOn)) {
-				System.out.println(this.ownOn+"_"+another.ownOn);
+				PictureAirLog.out(this.ownOn+"_"+another.ownOn);
 				return 1;
 			}
 		} catch (ParseException e) {

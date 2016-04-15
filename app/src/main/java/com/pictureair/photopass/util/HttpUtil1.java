@@ -222,7 +222,7 @@ public class HttpUtil1 {
             @Override
             protected HttpBaseJson parseResponse(String rawJsonData, boolean isFailure) throws Throwable {
                 //必须解析rawJsonData并返回。不然onSuccess 接收到的是null
-                PictureAirLog.v(TAG, "get data from " + url + " finished");
+                PictureAirLog.v(TAG, "get data from " + url + " finished" + rawJsonData);
                 return JsonTools.parseObject(rawJsonData);
             }
 

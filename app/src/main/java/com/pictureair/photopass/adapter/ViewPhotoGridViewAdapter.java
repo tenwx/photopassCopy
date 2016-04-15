@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 
@@ -41,7 +42,7 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
         c = context;
         arrayList = arraylist;
         for (int i = 0; i < arrayList.size(); i++) {
-            System.out.println("size = " + arrayList.size() + "_" + arrayList.get(i));
+            PictureAirLog.out("size = " + arrayList.size() + "_" + arrayList.get(i));
         }
     }
 
@@ -152,12 +153,12 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
         if (selectPhotoItemInfo.isChecked == 1) {//如果已经有点过了
             holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
             holderView.imageview_select.setVisibility(View.VISIBLE);
-            System.out.println(selectPhotoItemInfo.isChecked + "_______");
+            PictureAirLog.out(selectPhotoItemInfo.isChecked + "_______");
             if (selectPhotoItemInfo.isSelected == 1) {
                 holderView.imageview_select.setImageResource(R.drawable.sel2);
-                System.out.println("isSelected------>" + selectPhotoItemInfo.isSelected);
+                PictureAirLog.out("isSelected------>" + selectPhotoItemInfo.isSelected);
             } else {
-                System.out.println("no select--》" + selectPhotoItemInfo.isSelected);
+                PictureAirLog.out("no select--》" + selectPhotoItemInfo.isSelected);
                 holderView.imageview_select.setImageResource(R.drawable.sel3);
             }
             holderView.imageview_select.setBackgroundColor(Color.TRANSPARENT);
@@ -166,16 +167,16 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
             holderView.imageview_select.setVisibility(View.INVISIBLE);
         }
         if (selectPhotoItemInfo.onLine == 0) {
-            System.out.println("开始加载图片");
-            System.out.println("加载原图---------->" + selectPhotoItemInfo.photoPathOrURL);
+            PictureAirLog.out("开始加载图片");
+            PictureAirLog.out("加载原图---------->" + selectPhotoItemInfo.photoPathOrURL);
             UniversalImageLoadTool.loadImage("file://" + selectPhotoItemInfo.photoPathOrURL, holderView.imageView_photo);
-            System.out.println("-------->原图加载完毕");
+            PictureAirLog.out("-------->原图加载完毕");
         } else if (selectPhotoItemInfo.onLine == 1) {
             if (selectPhotoItemInfo.isPayed == 1) {//如果已经购买，显示512的缩略图
-                System.out.println("开始加载512图片" + selectPhotoItemInfo.photoThumbnail_512);
+                PictureAirLog.out("开始加载512图片" + selectPhotoItemInfo.photoThumbnail_512);
                 UniversalImageLoadTool.loadImage(Common.PHOTO_URL + selectPhotoItemInfo.photoThumbnail_512, holderView.imageView_photo);
             } else {//反之显示128的缩略图
-                System.out.println("开始加载128图片" + selectPhotoItemInfo.photoThumbnail);
+                PictureAirLog.out("开始加载128图片" + selectPhotoItemInfo.photoThumbnail);
                 UniversalImageLoadTool.loadImage(selectPhotoItemInfo.photoThumbnail, holderView.imageView_photo);
             }
         }

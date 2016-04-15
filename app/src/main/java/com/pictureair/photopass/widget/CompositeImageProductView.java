@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 /**
  * 显示商品合成图的类
@@ -90,7 +91,7 @@ public class CompositeImageProductView extends RelativeLayout{
 		this.maskTop = maskTop;
 		this.goodName = goodName;
 		this.context = context;
-		System.out.println("------------googURL--->"+goodURL);
+		PictureAirLog.out("------------googURL--->"+goodURL);
 		//如果以下商品需要加载商品图片
 		if (goodName.equals("canvas")||goodName.equals("iphone5Case")||goodName.equals("keyChain")||goodName.equals("mug")) {
 			onlySelectedImageView.setVisibility(View.INVISIBLE);
@@ -104,8 +105,8 @@ public class CompositeImageProductView extends RelativeLayout{
 					//判断网络获取的图片的大小，需要进行缩放操作
 					//loadedImage的大小和viewWidth、viewHeight做比较
 					Matrix matrix = new Matrix();
-					System.out.println("wh"+loadedImage.getWidth()+"___"+loadedImage.getHeight());
-					System.out.println("wh"+viewWidth+"___"+viewHeight);
+					PictureAirLog.out("wh"+loadedImage.getWidth()+"___"+loadedImage.getHeight());
+					PictureAirLog.out("wh"+viewWidth+"___"+viewHeight);
 //					if (loadedImage.getWidth() > viewWidth || loadedImage.getHeight() > viewHeight) {//大于预览框
 //						if (loadedImage.getWidth() / (float) viewWidth < loadedImage.getHeight() / (float) viewHeight) {//按照高度缩放比例
 //							scale = loadedImage.getHeight() / (float) viewHeight;
@@ -120,13 +121,13 @@ public class CompositeImageProductView extends RelativeLayout{
 						if (loadedImage.getWidth() / (float) viewWidth < loadedImage.getHeight() / (float) viewHeight) {//按照高度缩放比例
 							float scale =  viewHeight / (float) loadedImage.getHeight();
 							matrix.setScale(scale, scale);
-							System.out.println("scale-1>"+scale);
+							PictureAirLog.out("scale-1>"+scale);
 						}else {//根据宽度缩放比例
 							float scale =  viewWidth / (float) loadedImage.getWidth();
-							System.out.println("scale-2>"+scale);
+							PictureAirLog.out("scale-2>"+scale);
 							matrix.setScale(scale, scale);
 						}
-//						System.out.println("scale->"+scale);
+//						PictureAirLog.out("scale->"+scale);
 						loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
 					
 //					}
@@ -136,7 +137,7 @@ public class CompositeImageProductView extends RelativeLayout{
 					
 					//加载完商品图片之后，加载选择的照片
 					goodsImageView.setImageBitmap(loadedImage);
-					System.out.println("jjjooooooooj="+goodsImageView.getWidth()+"_"+goodsImageView.getHeight());
+					PictureAirLog.out("jjjooooooooj="+goodsImageView.getWidth()+"_"+goodsImageView.getHeight());
 					Message message = handler.obtainMessage();
 					message.what = LOAD_SELECTED_IMAGE;
 					message.obj = photoURL;
@@ -167,7 +168,7 @@ public class CompositeImageProductView extends RelativeLayout{
 				}else {
 					imageLoader.loadImage(msg.obj.toString(), new SimpleImageLoadingListener(){
 						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-							System.out.println("load success");
+							PictureAirLog.out("load success");
 							//对于获取成功的图片，进行截取
 							int clipStartX = 0;
 							int clipStartY = 0;
@@ -180,7 +181,7 @@ public class CompositeImageProductView extends RelativeLayout{
 									//直接显示
 									
 								}else {//需要截取
-									System.out.println("w&h"+bitmapWidht+"_"+bitmapHeight);
+									PictureAirLog.out("w&h"+bitmapWidht+"_"+bitmapHeight);
 									if (bitmapHeight > bitmapWidht) {//竖着
 										if (bitmapHeight / (float) bitmapWidht > 1.5) {//截取多余的高度
 											
@@ -189,7 +190,7 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipHeight = bitmapWidht * 3 / 2;
 											clipStartY = (bitmapHeight - clipHeight) / 2;
 										}else {//截取多余的宽度
-											System.out.println("-----lanscape");
+											PictureAirLog.out("-----lanscape");
 											clipStartY = 0;
 											clipHeight = bitmapHeight;
 											clipWidth = bitmapHeight * 2 / 3;
@@ -204,7 +205,7 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipHeight = bitmapWidht * 2 / 3;
 											clipStartY = (bitmapHeight - clipHeight) / 2;
 										}else {//截取多余的宽度
-											System.out.println("-----lanscape");
+											PictureAirLog.out("-----lanscape");
 											clipStartY = 0;
 											clipHeight = bitmapHeight;
 											clipWidth = bitmapHeight * 3 / 2;
@@ -212,7 +213,7 @@ public class CompositeImageProductView extends RelativeLayout{
 										}
 										
 									}
-									System.out.println("x:"+clipStartX+"y:"+clipStartY+"w:"+clipWidth+"h:"+clipHeight);
+									PictureAirLog.out("x:"+clipStartX+"y:"+clipStartY+"w:"+clipWidth+"h:"+clipHeight);
 									loadedImage = Bitmap.createBitmap(loadedImage, clipStartX, clipStartY, clipWidth, clipHeight);
 								}
 							}else if (goodName.equals(Common.GOOD_NAME_6R)||goodName.equals(Common.GOOD_NAME_COOK)||goodName.equals(Common.GOOD_NAME_TSHIRT)) {//4：3的截图
@@ -220,7 +221,7 @@ public class CompositeImageProductView extends RelativeLayout{
 									//直接显示
 									
 								}else {//需要截取
-									System.out.println("w&h"+bitmapWidht+"_"+bitmapHeight);
+									PictureAirLog.out("w&h"+bitmapWidht+"_"+bitmapHeight);
 									if (bitmapHeight > bitmapWidht) {//竖着
 										if (bitmapHeight / (float) bitmapWidht > 4 / 3.0) {//截取多余的高度
 											
@@ -229,7 +230,7 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipHeight = bitmapWidht * 4 / 3;
 											clipStartY = (bitmapHeight - clipHeight) / 2;
 										}else {//截取多余的宽度
-											System.out.println("-----lanscape");
+											PictureAirLog.out("-----lanscape");
 											clipStartY = 0;
 											clipHeight = bitmapHeight;
 											clipWidth = bitmapHeight * 3 / 4;
@@ -244,7 +245,7 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipHeight = bitmapWidht * 3 / 4;
 											clipStartY = (bitmapHeight - clipHeight) / 2;
 										}else {//截取多余的宽度
-											System.out.println("-----lanscape");
+											PictureAirLog.out("-----lanscape");
 											clipStartY = 0;
 											clipHeight = bitmapHeight;
 											clipWidth = bitmapHeight * 4 / 3;
@@ -252,7 +253,7 @@ public class CompositeImageProductView extends RelativeLayout{
 										}
 										
 									}
-									System.out.println("x:"+clipStartX+"y:"+clipStartY+"w:"+clipWidth+"h:"+clipHeight);
+									PictureAirLog.out("x:"+clipStartX+"y:"+clipStartY+"w:"+clipWidth+"h:"+clipHeight);
 									loadedImage = Bitmap.createBitmap(loadedImage, clipStartX, clipStartY, clipWidth, clipHeight);
 								}
 							}
@@ -268,7 +269,7 @@ public class CompositeImageProductView extends RelativeLayout{
 				//获取goodsImageView的宽和高
 				int goodW = goodsImageView.getWidth();
 				int goodH = goodsImageView.getHeight();
-				System.out.println("jjjj="+goodW+"_"+goodH);
+				PictureAirLog.out("jjjj="+goodW+"_"+goodH);
 				//获取goodsimageview在屏幕上的坐标
 				int [] location = new int[2];
 				goodsImageView.getLocationOnScreen(location);
@@ -294,7 +295,7 @@ public class CompositeImageProductView extends RelativeLayout{
 				photoImageView.setLayoutParams(params);
 				
 				addView(photoImageView);
-				System.out.println("------------->"+msg.obj.toString());
+				PictureAirLog.out("------------->"+msg.obj.toString());
 				if (goodName.equals("mug")) {//直接显示，同时处理mask层
 					imageLoader.displayImage(msg.obj.toString(), photoImageView);
 					//添加mask层
@@ -322,22 +323,22 @@ public class CompositeImageProductView extends RelativeLayout{
 				/*************************对添加的图片进行处理********************************/
 				imageLoader.loadImage(msg.obj.toString(), new SimpleImageLoadingListener(){
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-						System.out.println("load success");
+						PictureAirLog.out("load success");
 						//获取遮罩层图片
 						Bitmap mask = BitmapFactory.decodeResource(getResources(), maskBottom);
 						Bitmap result = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Config.ARGB_8888);
-						System.out.println("mask size = "+result.getWidth()+"_"+result.getHeight());
+						PictureAirLog.out("mask size = "+result.getWidth()+"_"+result.getHeight());
 						//将遮罩层的图片放到画布中
 						Canvas mCanvas = new Canvas(result);
 						Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 						paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));//参数的意思是，重叠的部分显示下面的
-						System.out.println("selected image width and height:"+loadedImage.getWidth()+"_"+loadedImage.getHeight());
+						PictureAirLog.out("selected image width and height:"+loadedImage.getWidth()+"_"+loadedImage.getHeight());
 						//对loadedimage进行缩放，使得高度和商品mask的高度一致
 						Matrix matrix = new Matrix();
 						float scale = (float)mask.getHeight()/loadedImage.getHeight();
 						matrix.setScale(scale, scale);
 						loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
-						System.out.println("selected image width and height:"+loadedImage.getWidth()+"_"+loadedImage.getHeight());
+						PictureAirLog.out("selected image width and height:"+loadedImage.getWidth()+"_"+loadedImage.getHeight());
 						//需要截取图片的中间部分
 						mCanvas.drawBitmap(loadedImage, (mask.getWidth() - loadedImage.getWidth())/2, 0, null);//最先画，所以在最下层
 						mCanvas.drawBitmap(mask, 0, 0, paint);//之后画的，所以在上层，所以重叠的部分显示original部分。

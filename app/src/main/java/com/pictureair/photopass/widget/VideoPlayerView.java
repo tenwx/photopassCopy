@@ -1,8 +1,6 @@
 package com.pictureair.photopass.widget;
 
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -12,7 +10,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -23,6 +20,8 @@ import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
 
 import com.pictureair.photopass.util.PictureAirLog;
+
+import java.io.IOException;
 
 /**
  * 播放器
@@ -197,10 +196,10 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
             mMediaPlayer.prepareAsync();
             attachMediaController();
         } catch (IOException ex) {
-            Log.w(TAG, "Unable to open content: " + mUri, ex);
+            PictureAirLog.d(TAG, "Unable to open content: " + mUri + ex);
             return;
         } catch (IllegalArgumentException ex) {
-            Log.w(TAG, "Unable to open content: " + mUri, ex);
+            PictureAirLog.d(TAG, "Unable to open content: " + mUri + ex);
             return;
         }
     }

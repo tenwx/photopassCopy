@@ -185,7 +185,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case API1.UPLOAD_PHOTO_SUCCESS:
-                System.out.println(msg.obj.toString() + "uploadphotosuccess");
+                PictureAirLog.out(msg.obj.toString() + "uploadphotosuccess");
                 if (!"start".equals(msg.obj.toString())) {//说明是调用接口之后返回的数据，需要更新photoId和photoURL
                     JSONObject result = JSONObject.parseObject(msg.obj.toString());
                     String photoUrlString = null;
@@ -193,7 +193,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     try {
                         photoUrlString = result.getString("photoUrl");
                         photoIdString = result.getString("photoId");
-                        System.out.println(photoUrlString + "_" + photoIdString);
+                        PictureAirLog.out(photoUrlString + "_" + photoIdString);
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -208,16 +208,16 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 if (upload_index < photoList.size()) {
                     if (photoList.get(upload_index).onLine == 0) {//需要将图片上传
                         if (photoList.get(upload_index).isUploaded == 1) {//已经上传过了
-                            System.out.println("has already uploaded");
+                            PictureAirLog.out("has already uploaded");
                             PhotoInfo selectPhotoItemInfo = photoList.get(upload_index);
                             selectPhotoItemInfo.photoId = photoList.get(upload_index).photoId;
                             selectPhotoItemInfo.photoPathOrURL = photoList.get(upload_index).photoPathOrURL;
                             photoList.set(upload_index, selectPhotoItemInfo);
                             makeGiftHandler.obtainMessage(API1.UPLOAD_PHOTO_SUCCESS, "start").sendToTarget();
                         } else {//还没有上传
-                            System.out.println("not uploaded, starting upload");
+                            PictureAirLog.out("not uploaded, starting upload");
                             String photourl = photoList.get(upload_index).photoPathOrURL;
-                            System.out.println("上传的图片URL" + photourl);
+                            PictureAirLog.out("上传的图片URL" + photourl);
                             // 需要上传选择的图片
                             RequestParams params = new RequestParams();
                             try {
@@ -265,10 +265,10 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
             case WAIT_DRAW_FINISH:
                 //此处，如果数据已经返回，但是控件还没有画好的话，会显示不出来。需要做判断
                 if (previewViewWidth != 0 && previewViewHeight != 0) {//onCreate已经执行完，显示图片
-                    System.out.println("--------->ok");
+                    PictureAirLog.out("--------->ok");
                     setProductImage(goodsInfo.getName(), (goodsInfo.getPictures().size() > 0) ? goodsInfo.getPictures().get(0).getUrl() : "");
                 } else {//onCreate还没执行完，需要等待
-                    System.out.println("---------->not ok, waiting.....");
+                    PictureAirLog.out("---------->not ok, waiting.....");
                     makeGiftHandler.sendMessageDelayed(msg, 500);
                 }
                 break;
@@ -400,13 +400,13 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 //			itemInfo.photoThumbnail_512 = photourl;
 //			itemInfo.photoId = idString;
 //			itemInfo.albumName = Common.ALBUM_PHOTOPASS;
-//			System.out.println(photourl+"____"+idString);
+//			PictureAirLog.out(photourl+"____"+idString);
 //		}else {//本地图片
 //			photourl = getIntent().getStringExtra("photopath");//获取照片路径
 ////			idString = getIntent().getStringExtra("id");
 //			itemInfo.photoPathOrURL = photourl;
 //			itemInfo.albumName = "notphotopass";
-//			System.out.println(photourl+"____"+idString);
+//			PictureAirLog.out(photourl+"____"+idString);
 //		}
         photoList.add(itemInfo);
         bannerView_Makegift = (BannerView_PreviewCompositeProduct) findViewById(R.id.bannerview_makegift_detail);
@@ -435,7 +435,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
                 if (allList.get(position).getName().equals("Album")) {
-                    System.out.println("album");
+                    PictureAirLog.out("album");
                     buyButton.setText("Buy (" + count + ")");
                     addphotoButton.setVisibility(View.VISIBLE);
                 } else {
@@ -503,7 +503,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
      * @param productURL  商品预览图的背景图片URL
      */
     private void setProductImage(String productName, String productURL) {
-        System.out.println("------->" + productURL);
+        PictureAirLog.out("------->" + productURL);
         if (productName.equals("canvas")) {
             //1.画布，商品宽 355
             //		 商品高 258
@@ -649,7 +649,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.addimage://添加图片按钮
-                System.out.println("addimage");
+                PictureAirLog.out("addimage");
                 intent = new Intent(this, SelectPhotoActivity.class);
                 intent.putExtra("photopath", photoList);
                 intent.putExtra("activity", "makegiftactivity");
@@ -675,9 +675,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 info.photoPathOrURL = list.get(i).photoPathOrURL;
 //				info.Id = list.get(i).Id;
                 photoList.add(info);
-                System.out.println("i=" + i);
+                PictureAirLog.out("i=" + i);
             }
-            System.out.println("photolist:" + photoList.size());
+            PictureAirLog.out("photolist:" + photoList.size());
             addphotoButton.setVisibility(View.INVISIBLE);
 
             buyButton.setText("Buy (" + photoList.size() + ")");

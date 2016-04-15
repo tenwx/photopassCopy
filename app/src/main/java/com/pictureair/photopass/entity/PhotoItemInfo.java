@@ -1,14 +1,16 @@
 package com.pictureair.photopass.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.pictureair.photopass.util.PictureAirLog;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 	public String locationId;// 地点ID
@@ -104,10 +106,10 @@ public class PhotoItemInfo implements Parcelable, Comparable<PhotoItemInfo> {
 	public int compareTo(PhotoItemInfo another) {
 		// TODO Auto-generated method stub
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println("sort photoItemInfo------->");
+		PictureAirLog.out("sort photoItemInfo------->");
 		try {
 			if (this.shootOn != null && another.shootOn != null) {
-				System.out.println("this---->" + this.shootOn + "another----->"+ another.shootOn);
+				PictureAirLog.out("this---->" + this.shootOn + "another----->"+ another.shootOn);
 				Date date1 = sdf.parse(this.shootOn);
 				Date date2 = sdf.parse(another.shootOn);
 				if (date1.after(date2))

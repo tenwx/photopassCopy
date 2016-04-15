@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
@@ -20,6 +19,7 @@ import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -61,7 +61,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	
 //	private Handler handler = new Handler(){
 //		public void handleMessage(android.os.Message msg) {
-//			Log.d(TAG, "photo on click");
+//			PictureAirLog.d(TAG, "photo on click");
 //			Bundle bundle = msg.getData();
 //			switch (bundle.getInt("flag")) {
 //			case 10://取消选中的时候
@@ -114,7 +114,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //						deleteTextView.setEnabled(false);
 //						buyTextView.setEnabled(false);
 //					}
-////					deleteFileDialog.dismiss();
+////					deleteFileDiaPictureAirLog.dismiss();
 //					customProgressBarPop.dismiss();
 ////					removeDialog(msg.arg2);//删除对应ID的dialog
 //				}
@@ -189,7 +189,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				// TODO Auto-generated method stub
 				editBarLinearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 				bottomBarHeight = editBarLinearLayout.getHeight();
-				System.out.println("editBarLinearLayout height is "+ editBarLinearLayout.getHeight());
+				PictureAirLog.out("editBarLinearLayout height is "+ editBarLinearLayout.getHeight());
 				LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, bottomBarHeight);
 				footerView.setLayoutParams(layoutParams);
 				if (!editMode) {
@@ -214,7 +214,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 									int position, long id) {
-				System.out.println("select" + position);
+				PictureAirLog.out("select" + position);
 				Intent i = new Intent();
 
 				i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
@@ -402,13 +402,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		 * @param bundle
 		 */
 		private void deletefromlist(Bundle bundle) {
-			Log.d(TAG, "删除列表中的项");
+			PictureAirLog.d(TAG, "删除列表中的项");
 			PhotoInfo info = bundle.getParcelable("photo");
 			if (photoURLlist.contains(info)) {
-				Log.d(TAG, "找到删除项");
+				PictureAirLog.d(TAG, "找到删除项");
 				photoURLlist.remove(info);
 			}else {
-				Log.d(TAG, "找不到删除项");
+				PictureAirLog.d(TAG, "找不到删除项");
 				
 			}
 			selectAllTextView.setVisibility(View.VISIBLE);
@@ -431,13 +431,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		 * @param b
 		 */
 		private void addtolist(Bundle b) {
-			Log.d(TAG, "添加到已选择的列表");
+			PictureAirLog.d(TAG, "添加到已选择的列表");
 			PhotoInfo info = b.getParcelable("photo");
 			if (photoURLlist.contains(info)) {
-				System.out.println("之前点过了");
+				PictureAirLog.out("之前点过了");
 			}else {
-				
-				System.out.println("之前没有点过了");
+
+				PictureAirLog.out("之前没有点过了");
 				photoURLlist.add(info);//加入到list中
 			}
 
@@ -522,14 +522,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		 * @param arraylist，传入对应的arraylist
 		 */
 		private void selectall(ArrayList<PhotoItemInfo> arraylist) {
-			Log.d(TAG, "select all");
-			System.out.println(photoURLlist.size());
+			PictureAirLog.d(TAG, "select all");
+			PictureAirLog.out(photoURLlist.size() + "");
 			photoURLlist.clear();//每次全选，清空全部数据
-			System.out.println(photoURLlist.size());
+			PictureAirLog.out(photoURLlist.size() + "");
 			for (int i = 0; i < arraylist.size(); i++) {
 				photoURLlist.addAll(arraylist.get(i).list);
 			}
-			System.out.println(photoURLlist.size());
+			PictureAirLog.out(photoURLlist.size() + "");
 		}
 		
 //		private class DialogOnClickListener implements DialogInterface.OnClickListener{
@@ -558,7 +558,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //				default:
 //					break;
 //				}
-//				dialog.dismiss();
+//				diaPictureAirLog.dismiss();
 //			}
 //
 //		}
