@@ -85,6 +85,7 @@ public class CouponTool {
             whatPege = ACTIVITY_ORDER;
             couponView.getWhatPege(ACTIVITY_ORDER);
             cartItemIds = JSONArray.parseArray(getIntent.getExtras().getString(ACTIVITY_ORDER_CART_DATAS));
+            couponView.showCouponFromOrderPage(JSONArray.parseArray(getIntent.getExtras().getString("couponCodes")));
             if (null == cartItemIds) {
                 return;
             }
@@ -157,8 +158,7 @@ public class CouponTool {
         mDatas = null;
         if (whatPege.equals(ACTIVITY_ME)){//从me中进来的
             mDatas = JsonUtil.getCouponListFromJson2(jsonObject);
-
-        }else{
+        }else{//从订单进来
             mDatas = JsonUtil.getCouponListFromJson(jsonObject);
         }
         couponView.goneProgressBar();

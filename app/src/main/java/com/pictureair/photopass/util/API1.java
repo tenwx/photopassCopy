@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -1919,9 +1920,8 @@ public class API1 {
     public static void findPwdEmail(final Handler handler, String email, String language, String tokenId) {
         final RequestParams params = new RequestParams();
         if (null != language) {
-            params.put(Common.LANGUAGE, language.equals("cn") ? "CN" : "EN");
+            params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
         }
-
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.USERINFO_EMAIL, email);
 
