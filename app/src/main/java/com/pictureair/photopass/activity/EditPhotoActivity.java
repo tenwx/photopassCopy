@@ -168,6 +168,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	// 记录旋转角度。
 	private int rotateAngle;
 
+	Matrix touchMatrix; //纪录图片的 Matrix
+	LinkedHashMap<Integer, StickerItem> addItems;
+
 	// 旋转图片组件
 
 	private final Handler editPhotoHandler = new EditPhotoHandler(this);
@@ -722,7 +725,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				SaveStickersTask task = new SaveStickersTask();
 				if (editType == 2) { //滤镜处理过的
 					task.execute(newImage);
-				}else if(editType == 3 || editType == 4 || editType == 1){
+				}else if(editType == 4 || editType == 1){
+					task.execute(mainBitmap);
+				}else if (editType == 3){
+					touchMatrix = mainImage.getImageMatrix();
+					addItems = mStickerView.getBank();
 					task.execute(mainBitmap);
 				}
 
@@ -1021,7 +1028,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			}else if(editType == 3){//饰品
 				//				Matrix touchMatrix = mainImage.getImageViewMatrix();
 				List<StikerInfo> stikerInfoList = new ArrayList<StikerInfo>();
-				Matrix touchMatrix = mainImage.getImageMatrix();
+
 				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
 						Bitmap.Config.ARGB_8888, true);
 				Canvas canvas = new Canvas(resultBit);
@@ -1032,7 +1039,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
 				Matrix m = new Matrix();
 				m.setValues(inverseMatrix.getValues());
-				LinkedHashMap<Integer, StickerItem> addItems = mStickerView.getBank();
+
 				for (Integer id : addItems.keySet()) {
 					StickerItem item = addItems.get(id);
 					item.matrix.postConcat(m);// 乘以底部图片变化矩阵

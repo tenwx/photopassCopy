@@ -45,7 +45,7 @@ public class NotificationServiceHelp {
     private SharedPreferences preferences;
     private String userId;
     private PictureAirDbManager pictureAirDbManager;
-    private SocketIO socket;
+    private static SocketIO socket;
     private MyApplication application = MyApplication.getInstance();
     private boolean isConnected = false; // socket是否链接的状态。（ 如果判断socket 是否为空，这个变量是不是可以不要 ）
     private String sendType; // 受到的socket 事件名，用于接受之后清空相应的消息。
