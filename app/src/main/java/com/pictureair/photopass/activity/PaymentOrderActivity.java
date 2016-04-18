@@ -185,7 +185,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 //获取推送成功，后面逻辑按照之前走
                 PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
                 JSONObject jsonObject = (JSONObject) msg.obj;
-                boolean isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
+                boolean isSuccess = false;
+                if (jsonObject.size() > 0) {
+                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
+                }
                 if (!isSuccess) {
                     if (dialog.isShowing()) {
                         dialog.dismiss();

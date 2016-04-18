@@ -141,13 +141,15 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                 if (grouplist.get(groupPosition).productEntityType == 0) {
                     //3为虚拟类商品无须快递
                     groupHolderView.orderStatesTextView.setText(R.string.order_completed);
+                    groupHolderView.paymentButton.setVisibility(View.VISIBLE);
+                    groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.red));
+                    groupHolderView.paymentButton.setText(R.string.delete_order_btn);
+                    groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
                 } else {
                     groupHolderView.orderStatesTextView.setText(R.string.order_paid);
+                    groupHolderView.paymentButton.setVisibility(View.GONE);
                 }
-                groupHolderView.paymentButton.setVisibility(View.VISIBLE);
-                groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.red));
-                groupHolderView.paymentButton.setText(R.string.delete_order_btn);
-                groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
+
 
                 groupHolderView.paymentButton.setClickable(true);
                 break;

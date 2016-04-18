@@ -10,7 +10,6 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.asm.Type;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
@@ -22,7 +21,6 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import org.apache.http.Header;
 
@@ -1382,6 +1380,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTO_ID, photoId);
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BUY_PHOTO, params,
                 new HttpCallback() {
                     @Override
@@ -1835,7 +1834,7 @@ public class API1 {
         params.put(Common.SHARE_ID, shareId);
         params.put(Common.SHARE_PLATFORM, platform);
 
-        PictureAirLog.e("----shareCallBack:",""+params.toString());
+        PictureAirLog.e("----shareCallBack:", "" + params.toString());
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
             @Override
@@ -1917,9 +1916,9 @@ public class API1 {
      * @param email
      * @param language
      */
-    public static void findPwdEmail(final Handler handler, String email, String language,String tokenId) {
+    public static void findPwdEmail(final Handler handler, String email, String language, String tokenId) {
         final RequestParams params = new RequestParams();
-        if (null != language){
+        if (null != language) {
             params.put(Common.LANGUAGE, language.equals("cn") ? "CN" : "EN");
         }
 
@@ -1941,8 +1940,6 @@ public class API1 {
             }
         });
     }
-
-
 
 
     /**

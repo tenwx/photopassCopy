@@ -154,12 +154,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 totalprice = Float.valueOf(json.getString("resultPrice"));//初始总费用
                 payPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
 
-                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： straightwayPreferentialPrice： " + straightwayPreferentialPrice);
-                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： totalprice： " + totalprice);
-                PictureAirLog.v(TAG, "PREVIEW_COUPON_SUCCESS json： payPrice： " + payPrice);
                 //更新界面
                 customProgressDialog.dismiss();
-                updateShopPriceUI(false);
+                if (straightwayPreferentialPrice == 0) {
+                    updateShopPriceUI(true);
+                } else {
+                    updateShopPriceUI(false);
+                }
                 break;
             case API1.PREVIEW_COUPON_FAILED:
                 //使用优惠码失败
@@ -305,7 +306,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         disPrice = intent.getFloatExtra("discountPrice", disPrice);
         PictureAirLog.v(TAG, "discountPrice：" + disPrice);
         PictureAirLog.v(TAG, "initView deliveryType：" + deliveryType);
-        payPrice = totalprice;//默认总金额和实际支付金额相等
+        payPrice = totalprice - disPrice;//实际支付等于默认价格减去优惠立减价格
         //获取优惠码数量
         getCoupons();
         if (deliveryType.contains("1")) {
@@ -323,7 +324,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         updateShopPriceUI(true);
 
         totalpriceTextView.setText(((int) payPrice + ""));
-        PictureAirLog.out("==========" + ((int) payPrice - (int) disPrice) + "");
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
 
@@ -370,6 +370,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 intent.setClass(SubmitOrderActivity.this, CouponActivity.class);
                 intent.putExtra(CouponTool.ACTIVITY_ORDER, CouponTool.ACTIVITY_ORDER);
                 intent.putExtra(CouponTool.ACTIVITY_ORDER_CART_DATAS, cartItemIds.toString());
+                intent.putExtra("couponCodes", couponCodes == null ? "" : couponCodes.toString());
                 startActivityForResult(intent, PREVIEW_COUPON_CODE);
             }
         });
@@ -662,11 +663,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         if (resultCode == RESULT_OK && requestCode == PREVIEW_COUPON_CODE) {
             //选择优惠码返回 请求API使用优惠券
+            customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
             couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
-
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
-                customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
+            } else {
+                //取消使用优惠券，couponCodes为空数组
+                API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
             }
         }
 
