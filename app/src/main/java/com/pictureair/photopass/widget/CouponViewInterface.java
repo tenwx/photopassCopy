@@ -1,5 +1,6 @@
 package com.pictureair.photopass.widget;
 
+import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.entity.CouponInfo;
 
 import java.util.List;
@@ -55,6 +56,11 @@ public interface CouponViewInterface {
      * 是什么页面进来的
      */
     void getWhatPege(String whatPege);
+
+    /**
+     * 从订单页面传入过来的优惠卷（是上一次选择过的）需要标记打勾
+     */
+    void showCouponFromOrderPage(JSONArray jsonArray);
 
 
 }

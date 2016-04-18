@@ -940,8 +940,8 @@ public class JsonUtil {
         boolean isCn = MyApplication.getInstance().getLanguageType().equals("zh");
         CouponInfo couponInfo = new CouponInfo();
 
-        status = jsonObject.getBoolean("isUsed") ? "used" : "active";//已使用？
-        status = jsonObject.getBoolean("isExpired") ? "failure" : status;//已过期？
+        status = jsonObject.getBoolean("isExpired") ? "failure" : "active";//已过期？
+        status = jsonObject.getBoolean("isUsed") ? "used" : status;//已使用？
         couponInfo.setCpStatus(status);//优惠卷状态
 
         couponInfo.setCpCode(jsonObject.getString("PPPCode"));
@@ -964,6 +964,8 @@ public class JsonUtil {
         failureTime = failureTime.split("T")[0];
 
         couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+
+
         return couponInfo;
     }
 
