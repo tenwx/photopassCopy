@@ -333,9 +333,11 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (isNeedPay) {
             paySv.setVisibility(View.VISIBLE);
             noPayLl.setVisibility(View.GONE);
+            sbmtButton.setText(R.string.submitpayment);
         } else {
             paySv.setVisibility(View.GONE);
             noPayLl.setVisibility(View.VISIBLE);
+            sbmtButton.setText(R.string.confirm);
         }
 
     }
@@ -634,8 +636,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         switch (view.getId()) {
             case R.id.topLeftView:
                 //返回键
-                PictureAirLog.v(TAG, "TopViewClick topLeftView");
-                CancelInPayment(true);
+                if (isNeedPay) {
+                    PictureAirLog.v(TAG, "TopViewClick topLeftView");
+                    CancelInPayment(true);
+                } else {
+                    finish();
+                }
+
                 break;
             default:
                 break;
@@ -646,8 +653,12 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     public void onBackPressed() {
         super.onBackPressed();
         //返回键
-        PictureAirLog.v(TAG, "TopViewClick onBackPressed");
-        CancelInPayment(true);
+        if (isNeedPay) {
+            PictureAirLog.v(TAG, "TopViewClick onBackPressed");
+            CancelInPayment(true);
+        } else {
+            finish();
+        }
     }
 
     @Subscribe
