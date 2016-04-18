@@ -5,6 +5,9 @@ import android.content.Context;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.utils.DiskCacheUtils;
+import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -592,14 +595,42 @@ public class PictureAirDbManager {
      */
     public void updatePhotoBought(String selectedPhotoId) {
         database = DBManager.getInstance().writData();
-        database.beginTransaction();
+        Cursor cursor = null;
+        String photoUrl;
         try {
+            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
+                    + " where photoId = ?", new String[]{selectedPhotoId});
+
+            PictureAirLog.out("cursor count---->" + cursor.getCount());
+            if (cursor.moveToFirst()) {
+                photoUrl = cursor.getString(cursor.getColumnIndex("originalUrl"));
+                PictureAirLog.out("photourl---->" + photoUrl);
+                MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
+                DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
+
+                photoUrl = cursor.getString(cursor.getColumnIndex("previewUrl"));
+                PictureAirLog.out("photourl---->" + photoUrl);
+                MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
+                DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
+
+                photoUrl = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
+                PictureAirLog.out("photourl---->" + photoUrl);
+                MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
+                DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
+
+                photoUrl = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
+                PictureAirLog.out("photourl---->" + photoUrl);
+                MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
+                DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
+            }
+
             database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
-            database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            database.endTransaction();
+            if (cursor != null) {
+                cursor.close();
+            }
             DBManager.getInstance().closeDatabase();
         }
     }

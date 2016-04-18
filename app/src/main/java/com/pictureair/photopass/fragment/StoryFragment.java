@@ -214,6 +214,7 @@ public class StoryFragment extends Fragment {
 				intent.putExtra(DisneyVideoTool.FROM_STORY, info);
 				startActivity(intent);
 			} else {
+				PictureAirLog.v(TAG,"点击了照片");
 				Intent i = new Intent();
 				i.setClass(getContext(), PreviewPhotoActivity.class);
 				i.putExtra("activity", "storyFragment");

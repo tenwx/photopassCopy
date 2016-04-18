@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import cn.smssdk.gui.AppManager;
 import de.greenrobot.event.EventBus;
@@ -49,7 +50,7 @@ public class NotificationServiceHelp {
     private MyApplication application = MyApplication.getInstance();
     private boolean isConnected = false; // socket是否链接的状态。（ 如果判断socket 是否为空，这个变量是不是可以不要 ）
     private String sendType; // 受到的socket 事件名，用于接受之后清空相应的消息。
-    private String syncMessage = "";
+    private ArrayList<String> syncMessageList = new ArrayList<>();
 
     private Handler notificationHandler = new NotificationHandler(application);
 
@@ -140,6 +141,7 @@ public class NotificationServiceHelp {
      * @param updateJsonObject
      */
     private void eventUpgradedPhotos(JSONObject updateJsonObject) {
+        PictureAirLog.out("upgrade photo---->" + updateJsonObject.toString());
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -149,10 +151,12 @@ public class NotificationServiceHelp {
         String ppCode = null, shootDate = null, photoId = null;
         //1.更新数据库
         try {
-            if (updateJsonObject.toString().equals(syncMessage)) {//和上次的数据相同，直接返回
+            if (syncMessageList.contains(updateJsonObject.toString())) {//和上次的数据相同，直接返回
+                PictureAirLog.out("same and return" + updateJsonObject.toString());
                 return;
             } else {
-                syncMessage = updateJsonObject.toString();
+                PictureAirLog.out("a new notifycation" + updateJsonObject.toString());
+                syncMessageList.add(updateJsonObject.toString());
             }
             if (updateJsonObject.has("customerId")) {//ppp升级pp
                 socketType = SocketEvent.SOCKET_PHOTOPASS;
@@ -264,28 +268,28 @@ public class NotificationServiceHelp {
      */
     public void socketOn(String envenStr, JSONObject message, boolean isSocketReceive) throws JSONException {
         PictureAirLog.e(TAG, "socketOn: envenStr: " + envenStr);
-        if (envenStr.equals("doneOrderPay")) {
+        if (envenStr.equals("doneOrderPay")) {//订单完成支付推送
             if (isSocketReceive) {
                 sendType = "doneOrderPay";
                 notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA); //清空推送，不能移动位置。
                 message = (JSONObject) message.get("c");
             }
             eventDoneOrderPay(message);
-        } else if (envenStr.equals("upgradedPhotos")) {
+        } else if (envenStr.equals("upgradedPhotos")) {//升级照片推送
             if (isSocketReceive) {
                 sendType = "upgradedPhoto";
                 notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
                 message = message.getJSONObject("c");
             }
             eventUpgradedPhotos(message);
-        } else if (envenStr.equals("catchOrderInfoOf" + userId)) {
+        } else if (envenStr.equals("catchOrderInfoOf" + userId)) {//下单推送
             sendType = "orderSend";
             notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventCatchOrderInfoOf(message);
-        } else if (envenStr.equals("sendNewPhotosCountOf" + userId)) {
+        } else if (envenStr.equals("sendNewPhotosCountOf" + userId)) {//新照片推送
             sendType = "photoSend";
             eventSendNewPhotosCountOf(message);
-        } else if (envenStr.equals("videoGenerate")) {
+        } else if (envenStr.equals("videoGenerate")) {//视频生成推送
             sendType = "videoGenerate";
             notificationHandler.sendEmptyMessage(SOCKET_RECEIVE_DATA);
             eventVideoGenerate(message);
