@@ -161,21 +161,18 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
                     break;
 
                 case DealCodeUtil.DEAL_CODE_FAILED:
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
+                    goneProgressBar();
                     break;
 
                 case DealCodeUtil.DEAL_CODE_SUCCESS:
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
+                    goneProgressBar();
+
                     PictureAirLog.out("coupon----> add success");
                     Bundle bundle = (Bundle) msg.obj;
                     CouponInfo couponInfo = (CouponInfo) bundle.getSerializable("coupon");
                     if (couponInfo != null) {
                         PictureAirLog.out("coupon no null" + mAllData.size());
-                        mAllData.add(couponInfo);
+                        mAllData.add(0,couponInfo);
                         PictureAirLog.out("coupon no null" + mAllData.size());
                         sortCoupon(mAllData, false);
                     }
