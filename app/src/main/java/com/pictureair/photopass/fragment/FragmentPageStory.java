@@ -1096,7 +1096,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                 photoPassPictureList.get(j).shootOn = info.shootOn;
                             }
                             clone_contains = true;
-                            addToBoughtList(info, i);
+                            addToBoughtList(info, i, photoPassPictureList.get(j).locationIds);
                             break;
                         }
                     }
@@ -1123,7 +1123,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         photoItemInfo.islove = 0;
                         photoItemInfo.shootOn = info.shootOn;
                         photoPassPictureList.add(photoItemInfo);
-                        addToBoughtList(info, i);
+                        addToBoughtList(info, i, photoItemInfo.locationIds);
                     } else {
                         clone_contains = false;
                     }
@@ -1231,7 +1231,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      *
      * @param info
      */
-    private void addToBoughtList(PhotoInfo info, int position) {
+    private void addToBoughtList(PhotoInfo info, int position, String locationIds) {
         PhotoItemInfo photoItemInfo;
         boolean isContains = false;
         //判断是否已经购买
@@ -1239,7 +1239,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //			PictureAirLog.d(TAG, "add to bought list");
             for (int j = 0; j < app.boughtPicList.size(); j++) {
                 //				PictureAirLog.d(TAG, "检查之前的是否存在");
-                if (info.shootTime.equals(app.boughtPicList.get(j).shootTime) && info.locationId.equals(app.boughtPicList.get(j).locationId)) {
+                if (info.shootTime.equals(app.boughtPicList.get(j).shootTime) &&
+                        (info.locationId.equals(app.boughtPicList.get(j).locationId) || locationIds.contains(info.locationId))) {
                     //					PictureAirLog.d(TAG, "已经存在于bought列表");
                     info.locationName = app.boughtPicList.get(j).place;
                     app.boughtPicList.get(j).list.add(info);
@@ -1252,6 +1253,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //初始化item的信息
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = info.locationId;
+                photoItemInfo.locationIds = locationIds;
                 photoItemInfo.shootTime = info.shootTime;
                 if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
                     photoItemInfo.place = locationList.get(position).placeCHName;
