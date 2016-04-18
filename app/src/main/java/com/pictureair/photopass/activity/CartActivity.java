@@ -125,7 +125,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         cartInfoList.addAll(cartItemInfoJson.getItems());
                         selectCartInfoList.addAll(cartItemInfoJson.getItems());//默认第一次全部选中
                         cartItemInfoJson = setIsSelect(cartItemInfoJson);//更新每个item是否选中
-
+                        editTextView.setVisibility(View.VISIBLE);
                         editTextView.setEnabled(true);
                         netWorkOrNoCountView.setVisibility(View.GONE);
                         bottomRelativeLayout.setVisibility(View.VISIBLE);
