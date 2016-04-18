@@ -187,7 +187,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 boolean isSuccess = false;
                 if (jsonObject.size() > 0) {
-                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
+                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid, sPreferences);
                 }
                 if (!isSuccess) {
                     if (dialog.isShowing()) {

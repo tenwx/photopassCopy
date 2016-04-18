@@ -407,13 +407,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- 更新内容 -->
-        <receiver android:name=".receiver.UpdateUiRecriver">
-            <intent-filter android:priority="500">
-                <action android:name="com.receiver.UpdateUiRecriver" />
-            </intent-filter>
-        </receiver>
-
         <!-- 广播 不需要在 配置文件中注册，否则无法取消。 -->
         <receiver android:name=".receiver.NetBroadCastReciver">
             <intent-filter>

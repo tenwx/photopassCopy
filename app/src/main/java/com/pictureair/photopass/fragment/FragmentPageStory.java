@@ -145,7 +145,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     /**
      * 同步已经购买的照片
      */
-    private boolean syncBoughtPhotos = false;
+    private boolean syncingBoughtPhotos = false;
 
     private SettingUtil settingUtil;
     private LinearLayout storyLeadBarLinearLayout;
@@ -407,8 +407,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case SORT_COMPLETED_ALL:
-                if (syncBoughtPhotos) {//同步购买照片操作
-                    syncBoughtPhotos = false;
+                if (syncingBoughtPhotos) {//同步购买照片操作
+                    syncingBoughtPhotos = false;
                     EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
                     EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
                     EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
@@ -479,7 +479,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (!dialog.isShowing()){
                     dialog.show();
                 }
-                syncBoughtPhotos = true;
 
                 new Thread(){
                     @Override
@@ -1579,10 +1578,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         if (baseBusEvent instanceof SocketEvent) {
             SocketEvent socketEvent = (SocketEvent) baseBusEvent;
-            if (!noPhotoView.isShown()) {
-                fragmentPageStoryHandler.obtainMessage(SYNC_BOUGHT_PHOTOS).sendToTarget();
+            if (!noPhotoView.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
+                syncingBoughtPhotos = true;
+                PictureAirLog.out("start sync------->");
+                fragmentPageStoryHandler.sendEmptyMessageDelayed(SYNC_BOUGHT_PHOTOS, 2000);
+            } else {
+                PictureAirLog.out("still waiting sync");
             }
-
             //刷新列表
             EventBus.getDefault().removeStickyEvent(socketEvent);
         }

@@ -25,7 +25,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.service.NotificationServiceHelp;
+import com.pictureair.photopass.service.SocketUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -977,10 +977,10 @@ public class JsonUtil {
      * @param isMainPage    是否是主页面拉取信息
      * @param orderId       当前提交的订单
      */
-    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId) {
+    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId, SharedPreferences sharedPreferences) {
         PictureAirLog.e("dealGetSocketData: " ,"jsonObjectStr: " + jsonObjectStr);
         boolean isdonePayOrder = false;
-        NotificationServiceHelp notificationServiceHelp = new NotificationServiceHelp(context);
+        SocketUtil socketUtil = new SocketUtil(context, null, sharedPreferences);
         try {
             org.json.JSONObject jsonObject = new org.json.JSONObject(jsonObjectStr);
             //支付完成的推送donePayOrders
@@ -990,7 +990,7 @@ public class JsonUtil {
                     org.json.JSONObject donePayOrdersObject = donePayOrdersArray.getJSONObject(i);
                     if (donePayOrdersObject.optString("orderId").equals(orderId) && donePayOrdersObject.optBoolean("payDone", false)) {
                         //存在当前提交的orderId 并且支付状态为已支付则表示改orderId支付成功
-                        notificationServiceHelp.socketOn("donePayOrders", donePayOrdersObject, false);
+                        socketUtil.socketOn("donePayOrders", donePayOrdersObject, false);
                         isdonePayOrder = true;
                         break;
                     }
@@ -1002,7 +1002,7 @@ public class JsonUtil {
             if (upgradedPhotosArray != null) {
                 for (int i = 0; i < upgradedPhotosArray.length(); i++) {
                     org.json.JSONObject upgradedPhotosObject = upgradedPhotosArray.getJSONObject(i);
-                    notificationServiceHelp.socketOn("upgradedPhotos", upgradedPhotosObject, false);
+                    socketUtil.socketOn("upgradedPhotos", upgradedPhotosObject, false);
                 }
             }
 
