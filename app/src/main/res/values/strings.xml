@@ -464,6 +464,14 @@
     <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
     <!-- 我的优惠卷 end-->
 
+    <!-- postcard start-->
+    <string name="customized_postcard">定制明信片(三联套)</string>
+    <string name="postcard_type">款式</string>
+    <string name="preview_goods">预览商品(%1$d/%2$d)</string>
+    <string name="preview_goods_null">预览商品(0/3)</string>
+
+    <!-- postcard end-->
+
 
 
 </resources>
