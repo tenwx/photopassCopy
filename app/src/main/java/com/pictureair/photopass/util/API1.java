@@ -1484,9 +1484,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
-
-        if (!verson.equals(""))
-            params.put(Common.VERSION, verson);
+        params.put(Common.VERSION, verson);
 
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override

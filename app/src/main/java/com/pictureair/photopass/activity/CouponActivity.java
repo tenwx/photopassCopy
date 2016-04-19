@@ -177,7 +177,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
                         if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//从订单页面进行添加抵用劵
                             PictureAirLog.out("coupon----> add success （order page）");
                             newAddCoupon = couponInfo;
-                            couponTool.getIntentActivity(mOerderIntent);
+                            couponTool.getIntentActivity(mOerderIntent);//重新获取优惠卷
                         } else {//从me中进行添加抵用劵
                             PictureAirLog.out("coupon----> add success （me page）");
                             goneProgressBar();
@@ -274,6 +274,16 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
 
     @Override
     public void noCoupon() {
+        if (whatPege.equals(couponTool.ACTIVITY_ORDER) && null != newAddCoupon){
+            couponAdapter.setPage(whatPege);//设置显示界面
+            newAddCoupon.setApplyThisProduct(false);//不适用
+            mAllData.clear();
+            mAllData.add(newAddCoupon);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            llNoCoupon.setVisibility(View.GONE);
+            couponAdapter.notifyDataSetChanged();
+            return;
+        }
         mRecyclerView.setVisibility(View.GONE);
         llNoCoupon.setVisibility(View.VISIBLE);
     }
