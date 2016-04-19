@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -197,8 +196,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                                         if (isupgrade == 1) {
                                             ppCodeInfo.setIsUpgrade(1);
                                             ppCodeInfo.setPhotoCount(ppCodeInfo.getPhotoCount() + pplist.getIntValue("photoCount"));
-                                            System.out
-                                                    .println("changing------------");
+                                            PictureAirLog.out("changing------------");
                                         }
                                     }
                                     break;
@@ -468,7 +466,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     // 在删除状态下返回，不提交数据
                     back.setImageResource(R.drawable.back_white);
                     delete.setVisibility(View.VISIBLE);
-                    Log.v("===========", "取消删除......");
+                    PictureAirLog.d("===========", "取消删除......");
                     updateUI(UPDATE_UI);//更新界面
 
                 } else {
@@ -478,7 +476,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.cancel:// 删除按钮
-                Log.v("==============",
+                PictureAirLog.d("==============",
                         "点击删除按钮 showPPCodeList" + showPPCodeList.size());
                 if (isDeletePhoto) {
                     isDeletePhoto = false;
@@ -503,7 +501,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 for (int i = 0; i < map.size(); i++) {
-                    System.out.println("->" + map.get(i));
+                    PictureAirLog.out("->" + map.get(i));
                 }
                 JSONArray pps = new JSONArray();
                 tempPhotoLists = new ArrayList<>();
@@ -551,9 +549,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         if (dppp != null) {
 
         } else {
-            System.out.println("MyPPActivity----->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
+            PictureAirLog.out("MyPPActivity----->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
-                System.out.println("deal data after bought photo");
+                PictureAirLog.out("deal data after bought photo");
                 myApplication.setRefreshViewAfterBuyBlurPhoto("");
                 //找到之前选择的图片的索引值，并且更新购买信息
                 showPPCodeList.get(selectedCurrent).getSelectPhotoItemInfos().get(selectedTag).isPayed = 1;
@@ -561,7 +559,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 selectedTag = -1;
                 listPPAdapter.notifyDataSetChanged();
                 //根据photoId，更新数据库中的字段
-                pictureAirDbManager.updatePhotoBought(selectedPhotoId);
+                pictureAirDbManager.updatePhotoBought(selectedPhotoId, false);
                 selectedPhotoId = null;
             }
         }

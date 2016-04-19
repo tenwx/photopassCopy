@@ -145,7 +145,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     /**
      * 同步已经购买的照片
      */
-    private boolean syncBoughtPhotos = false;
+    private boolean syncingBoughtPhotos = false;
 
     private SettingUtil settingUtil;
     private LinearLayout storyLeadBarLinearLayout;
@@ -271,7 +271,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case LOAD_PHOTO_FROM_DB:
                 if (app.photoPassPicList.size() == 0 || needfresh) {
                     //数据为0，需要从网上下载
-                    System.out.println("photolist size = 0");
+                    PictureAirLog.out("photolist size = 0");
                     //判断是否之前有成功获取过
                     API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null);//获取全部图片
                     API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
@@ -329,6 +329,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 saveJsonToSQLite((JSONObject) msg.obj, false, true);
                 break;
 
+            case API1.GET_SOCKET_DATA_SUCCESS://手动刷新成功
+                //获取推送成功，后面逻辑按照之前走
+                PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                if (jsonObject.size() > 0) {
+                    JsonUtil.dealGetSocketData(getActivity(), jsonObject.toString(), true, null, sharedPreferences);
+                }
+                break;
+
             case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
                 PictureAirLog.d(TAG, "scan local photos success");
                 dealLocalRefreshedData();
@@ -338,6 +347,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
                 API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取最新视频信息
+                API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功
@@ -407,8 +417,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case SORT_COMPLETED_ALL:
-                if (syncBoughtPhotos) {//同步购买照片操作
-                    syncBoughtPhotos = false;
+                if (syncingBoughtPhotos) {//同步购买照片操作
+                    syncingBoughtPhotos = false;
                     EventBus.getDefault().post(new StoryFragmentEvent(allPhotoList, app.magicPicList, 0));
                     EventBus.getDefault().post(new StoryFragmentEvent(pictureAirPhotoList, app.magicPicList, 1));
                     EventBus.getDefault().post(new StoryFragmentEvent(magicPhotoList, app.magicPicList, 2));
@@ -432,7 +442,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载数据
-                System.out.println("onclick with reload");
+                PictureAirLog.out("onclick with reload");
                 if (!dialog.isShowing()){
                     dialog.show();
                 }
@@ -479,7 +489,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (!dialog.isShowing()){
                     dialog.show();
                 }
-                syncBoughtPhotos = true;
 
                 new Thread(){
                     @Override
@@ -568,7 +577,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 sortData(false);
 
             } else {
-                System.out.println("nomore");
+                PictureAirLog.out("nomore");
                 myToast.setTextAndShow(R.string.nomore, Common.TOAST_SHORT_TIME);
                 fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
             }
@@ -719,7 +728,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         locationList.clear();
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
+        //获取sp中的值
         needfresh = sharedPreferences.getBoolean(Common.NEED_FRESH, false);
+        //如果不是在story获取推送，需要从application中获取，并且全部刷新
+        if (app.getPushPhotoCount() + app.getPushViedoCount() > 0) {
+            if (!needfresh) {
+                needfresh = true;
+            }
+        }
         sharedNeedFresh = needfresh;
         if (needfresh) {//如果一开始就需要全部刷新，
             Editor editor = sharedPreferences.edit();
@@ -735,7 +751,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             Message message = fragmentPageStoryHandler.obtainMessage();
             message.what = API1.GET_ALL_LOCATION_SUCCESS;
             message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-            fragmentPageStoryHandler.sendMessage(message);
+            fragmentPageStoryHandler.sendMessageDelayed(message, 200);
         }
 
         return view;
@@ -809,6 +825,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
             if (app.getPushPhotoCount() + app.getPushViedoCount() == 0){
                 PictureAirLog.out("need gone the badgeview");
+                PictureAirLog.out("photocount---->" + app.getPushPhotoCount());
+                PictureAirLog.out("video count---->" + app.getPushViedoCount());
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
         } else {//没有图片
@@ -852,7 +870,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
         @Override
         public void run() {
-            System.out.println("------->run");
+            PictureAirLog.out("------->run");
             if (!app.scanMagicFinish) {
                 ScanPhotos(Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC, needCallBck);
                 Collections.sort(app.magicPicList);
@@ -866,7 +884,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     //获取Magic的照片
     private void ScanPhotos(String filePath, String albumName, boolean needCallBck) {
-        System.out.println("---------->scan" + albumName);
+        PictureAirLog.out("---------->scan" + albumName);
         if (!Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {//如果SD卡不存在
             app.scanMagicFinish = true;
             return;
@@ -906,7 +924,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     selectPhotoItemInfo.isVideo = 0;
                     selectPhotoItemInfo.isHasPreset = 0;
                     app.magicPicList.add(selectPhotoItemInfo);
-                    System.out.println("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+                    PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
                 }
             }
         }
@@ -972,7 +990,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * 检查数据库是否有数据
      */
     private void loadDataFromDataBase() {
-        System.out.println("load data from database");
+        PictureAirLog.out("load data from database");
         long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
         ArrayList<PhotoInfo> resultPhotoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
         ArrayList<PhotoInfo> resultVideoArrayList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true, sdf.format(new Date(cacheTime)));
@@ -990,7 +1008,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             EventBus.getDefault().register(this);
         }
         if (sharedPreferences.getBoolean(Common.NEED_FRESH, false)) {
-            System.out.println("need refresh");
+            PictureAirLog.out("need refresh");
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
             Editor editor = sharedPreferences.edit();
             editor.putBoolean(Common.NEED_FRESH, false);
@@ -1096,7 +1114,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                 photoPassPictureList.get(j).shootOn = info.shootOn;
                             }
                             clone_contains = true;
-                            addToBoughtList(info, i);
+                            addToBoughtList(info, i, photoPassPictureList.get(j).locationIds);
                             break;
                         }
                     }
@@ -1123,7 +1141,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         photoItemInfo.islove = 0;
                         photoItemInfo.shootOn = info.shootOn;
                         photoPassPictureList.add(photoItemInfo);
-                        addToBoughtList(info, i);
+                        addToBoughtList(info, i, photoItemInfo.locationIds);
                     } else {
                         clone_contains = false;
                     }
@@ -1211,12 +1229,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             getMagicData();
             //将magic和photopass列表放入all中
             if (!app.allPicList.containsAll(photoPassPictureList)) {
-                System.out.println("all lIst 不包含photopasspicturelist");
+                PictureAirLog.out("all lIst 不包含photopasspicturelist");
                 app.allPicList.addAll(photoPassPictureList);
             }
             app.allPicList.addAll(magicPicList);
             Collections.sort(app.allPicList);//对all进行排序
-            System.out.println("location is ready");
+            PictureAirLog.out("location is ready");
             fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
         } catch (ParseException e) {
             // TODO Auto-generated catch block
@@ -1231,7 +1249,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      *
      * @param info
      */
-    private void addToBoughtList(PhotoInfo info, int position) {
+    private void addToBoughtList(PhotoInfo info, int position, String locationIds) {
         PhotoItemInfo photoItemInfo;
         boolean isContains = false;
         //判断是否已经购买
@@ -1239,7 +1257,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //			PictureAirLog.d(TAG, "add to bought list");
             for (int j = 0; j < app.boughtPicList.size(); j++) {
                 //				PictureAirLog.d(TAG, "检查之前的是否存在");
-                if (info.shootTime.equals(app.boughtPicList.get(j).shootTime) && info.locationId.equals(app.boughtPicList.get(j).locationId)) {
+                if (info.shootTime.equals(app.boughtPicList.get(j).shootTime) &&
+                        (info.locationId.equals(app.boughtPicList.get(j).locationId) || locationIds.contains(info.locationId))) {
                     //					PictureAirLog.d(TAG, "已经存在于bought列表");
                     info.locationName = app.boughtPicList.get(j).place;
                     app.boughtPicList.get(j).list.add(info);
@@ -1252,6 +1271,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //初始化item的信息
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = info.locationId;
+                photoItemInfo.locationIds = locationIds;
                 photoItemInfo.shootTime = info.shootTime;
                 if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
                     photoItemInfo.place = locationList.get(position).placeCHName;
@@ -1294,7 +1314,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         Date date2;
         magicPicList.clear();//添加之前，先清除，防止添加pp/pp+造成数据重复添加
         for (int i = 0; i < app.magicPicList.size(); i++) {
-            System.out.println("photo shoot time is " + app.magicPicList.get(i).shootOn);
+            PictureAirLog.out("photo shoot time is " + app.magicPicList.get(i).shootOn);
             for (int j = 0; j < magicPicList.size(); j++) {
                 if (app.magicPicList.get(i).shootTime.equals(magicPicList.get(j).shootTime)) {
                     magicPicList.get(j).list.add(app.magicPicList.get(i));
@@ -1310,7 +1330,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //判断是否需要new
             if (!clone_contains) {//如果之前没有找到，说明需要new
                 photoItemInfo = new PhotoItemInfo();
-                System.out.println("shootTime:" + app.magicPicList.get(i).shootTime);
+                PictureAirLog.out("shootTime:" + app.magicPicList.get(i).shootTime);
                 photoItemInfo.shootTime = app.magicPicList.get(i).shootTime;
                 photoItemInfo.place = getString(R.string.story_tab_magic);
                 photoItemInfo.list.add(app.magicPicList.get(i));
@@ -1357,15 +1377,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         //比较时间，按照时间排序
                         for (int i = 0; i < p.list.size(); i++) {
                             try {
-                                //									System.out.println("date1--->"+p.list.get(i).shootOn);
-                                //									System.out.println("date2--->"+info.shootOn);
+                                //									PictureAirLog.out("date1--->"+p.list.get(i).shootOn);
+                                //									PictureAirLog.out("date2--->"+info.shootOn);
                                 Date date1 = sdf.parse(p.list.get(i).shootOn);
                                 Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
                                 Date date3 = sdf.parse(p.shootOn);
                                 info.locationName = p.place;
 
-                                //									System.out.println("date1--->"+date1);
-                                //									System.out.println("date2--->"+date2);
+                                //									PictureAirLog.out("date1--->"+date1);
+                                //									PictureAirLog.out("date2--->"+date2);
                                 if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
                                     PictureAirLog.out("the lastest time, need add");
                                     p.list.add(i, info);
@@ -1393,7 +1413,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                 e.printStackTrace();
                             }//获取列表中的时间
                         }
-                        //							System.out.println("after add new photo------>");
+                        //							PictureAirLog.out("after add new photo------>");
                         //记录当前的列表的索引
                         //							needmove = j;
                     } else {//时间不一致，新建列表
@@ -1405,7 +1425,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         itemInfo.place = p.place;
                         info.locationName = p.place;
                         itemInfo.list.add(0, info);
-                        System.out.println("size->" + itemInfo.list.size());
+                        PictureAirLog.out("size->" + itemInfo.list.size());
                         itemInfo.placeUrl = p.placeUrl;
                         itemInfo.latitude = p.latitude;
                         itemInfo.longitude = p.longitude;
@@ -1496,7 +1516,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 }
             }
             if (findLocation) {//如果之前已经找到了对应的位置
-                System.out.println("找到位置");
+                PictureAirLog.out("找到位置");
                 findLocation = false;
             } else {//如果之前没有找到对应的位置，遍历地址列表，需要新建一个item，并且放入到最上方
                 itemInfo = new PhotoItemInfo();
@@ -1577,10 +1597,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         if (baseBusEvent instanceof SocketEvent) {
             SocketEvent socketEvent = (SocketEvent) baseBusEvent;
-            if (!noPhotoView.isShown()) {
-                fragmentPageStoryHandler.obtainMessage(SYNC_BOUGHT_PHOTOS).sendToTarget();
+            if (!noPhotoView.isShown() && !syncingBoughtPhotos) {//延迟2秒，防止多次执行导致app异常
+                syncingBoughtPhotos = true;
+                PictureAirLog.out("start sync------->");
+                fragmentPageStoryHandler.sendEmptyMessageDelayed(SYNC_BOUGHT_PHOTOS, 2000);
+            } else {
+                PictureAirLog.out("still waiting sync");
             }
-
             //刷新列表
             EventBus.getDefault().removeStickyEvent(socketEvent);
         }

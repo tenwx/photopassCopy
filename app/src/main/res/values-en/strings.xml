@@ -381,7 +381,7 @@
     <!-- settings end -->
 
     <!-- change language start -->
-    <string name="Chinese">Chinese</string>
+    <string name="Chinese">简体中文</string>
     <string name="English">English</string>
     <!-- change language end -->
 
@@ -462,6 +462,7 @@
     <string name="select_cpupon">Select Coupon</string>
     <string name="discount_price">Deduct</string>
     <string name="incorrect_coupon">Incorrect Coupon</string>
+    <string name="coupon_incalid">此抵用券不适用当前商品</string>
     <!-- 优惠卷end-->
 
 </resources>

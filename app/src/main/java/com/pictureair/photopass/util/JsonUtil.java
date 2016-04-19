@@ -25,6 +25,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.service.SocketUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class JsonUtil {
         info.placeUrl = (Common.PHOTO_URL + object.getString("defaultPhoto")).trim();
         if (object.containsKey("GPS")) {
             JSONObject obj = (JSONObject) object.get("GPS");
-//			System.out.println("转换之前的坐标"+obj.toString());
+//			PictureAirLog.out("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
             if (obj != null) {
                 LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
@@ -59,7 +60,7 @@ public class JsonUtil {
                 info.longitude = latLng.longitude;
             }
 
-//			System.out.println("转换之后的坐标"+latLng.toString());
+//			PictureAirLog.out("转换之后的坐标"+latLng.toString());
         }
         if (object.containsKey("description")) {
             info.placeDetailCHIntroduce = object.getString("description");
@@ -154,14 +155,14 @@ public class JsonUtil {
         }
 
         //是否添加过 模版
-        if(object.containsKey("presetId")){
+        if (object.containsKey("presetId")) {
             String presetId = object.getString("presetId");
-            if (presetId.equals("000000000000000000000000")){
+            if (presetId.equals("000000000000000000000000")) {
                 info.isHasPreset = 0;
-            }else {
+            } else {
                 info.isHasPreset = 1;
             }
-        }else{
+        } else {
             info.isHasPreset = 0;
         }
 
@@ -283,7 +284,7 @@ public class JsonUtil {
 
         String headUrl;
         if (obj.containsKey("avatarUrl")) {
-            System.out.println("");
+            PictureAirLog.out("");
             headUrl = obj.getString("avatarUrl");
             e.putString(Common.USERINFO_HEADPHOTO, headUrl);
         }
@@ -472,7 +473,7 @@ public class JsonUtil {
 //			}
             /****临时添加*****/
             if (0 == embedphotoArray.size()) {
-                System.out.println("0000000000000");
+                PictureAirLog.out("0000000000000");
                 final int count = quantity;
                 cartPhotosInfo = new CartPhotosInfo();
                 cartPhotosInfo.cart_photoUrl = "";
@@ -481,7 +482,7 @@ public class JsonUtil {
                 gridviewphotolist.add(cartPhotosInfo);
                 cartInfo.hasPhoto = false;
             } else {
-                System.out.println("---------buwei000000000");
+                PictureAirLog.out("---------buwei000000000");
                 JSONObject embedphotoObject = embedphotoArray.getJSONObject(0);//一般一个svg文件只有一个孔去添加图片
                 JSONArray photosidJsonArray = embedphotoObject.getJSONArray("photosIds");
                 for (int j = 0; j < photosidJsonArray.size(); j++) {
@@ -499,14 +500,14 @@ public class JsonUtil {
             if (cartInfo.cart_productType != 1) {//如果是虚拟商品，则不需要加图片
                 cartInfo.isFullPhotos = true;
                 cartInfo.hasPhoto = true;
-                System.out.println("type!=1");
+                PictureAirLog.out("type!=1");
             } else if (gridviewphotolist.size() < cartInfo.cart_embedPhotoCount) {//如果是正常商品，判断已经加的图品数量和需要数量是否一致
                 cartInfo.isFullPhotos = false;
-                System.out.println("size < count");
+                PictureAirLog.out("size < count");
             } else {
                 cartInfo.isFullPhotos = true;
                 cartInfo.hasPhoto = true;
-                System.out.println("others");
+                PictureAirLog.out("others");
             }
             cartInfo.isSelect = true;
             cartInfo.show_edit = 0;
@@ -638,6 +639,7 @@ public class JsonUtil {
                 cartItemInfo.cart_productImageUrl = productJsonObject.getString("productImage");//商品预览图URL
                 cartItemInfo.cart_quantity = productJsonObject.getIntValue("qty");//商品数量
                 cartItemInfo.cart_promotionPrice = productJsonObject.getDouble("unitPrice");//商品单价
+                cartItemInfo.cart_productType = productJsonObject.getIntValue("productEntityType");//商品虚拟／实体类型（0,1）
                 //获取添加照片的信息
                 usePhotosArray = productJsonObject.getJSONArray("usePhotos");
                 if (usePhotosArray.size() == 0) {//如果为0，不赋值
@@ -797,7 +799,7 @@ public class JsonUtil {
                     ppPinfo.PPP_ID = ppplist.getString("_id");
                     ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10).toString();
                     if (ppplist.containsKey("PPPType")) {
-                        if (ppplist.getString("PPPType").equals("5")){
+                        if (ppplist.getString("PPPType").equals("5")) {
                             ppPinfo.expericePPP = 1;
                         } else {
                             ppPinfo.expericePPP = 0;
@@ -923,10 +925,11 @@ public class JsonUtil {
 
     /**
      * 获取coupon对象
+     *
      * @param jsonObject
      * @return
      */
-    public static CouponInfo getCouponInfo(JSONObject jsonObject) throws JSONException{
+    public static CouponInfo getCouponInfo(JSONObject jsonObject) throws JSONException {
         String effectiveTime;
         String failureTime;
         String cnDesc = "";//中文描述
@@ -937,8 +940,8 @@ public class JsonUtil {
         boolean isCn = MyApplication.getInstance().getLanguageType().equals("zh");
         CouponInfo couponInfo = new CouponInfo();
 
-        status = jsonObject.getBoolean("isUsed") ? "used" : "active";//已使用？
-        status = jsonObject.getBoolean("isExpired") ? "failure" : status;//已过期？
+        status = jsonObject.getBoolean("isExpired") ? "failure" : "active";//已过期？
+        status = jsonObject.getBoolean("isUsed") ? "used" : status;//已使用？
         couponInfo.setCpStatus(status);//优惠卷状态
 
         couponInfo.setCpCode(jsonObject.getString("PPPCode"));
@@ -961,7 +964,63 @@ public class JsonUtil {
         failureTime = failureTime.split("T")[0];
 
         couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+
+
         return couponInfo;
+    }
+
+    /**
+     * 处理手动拉取推送消息
+     *
+     * @param context       上下文
+     * @param jsonObjectStr 返回的字符串
+     * @param isMainPage    是否是主页面拉取信息
+     * @param orderId       当前提交的订单
+     */
+    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId, SharedPreferences sharedPreferences) {
+        PictureAirLog.v("dealGetSocketData: ", "jsonObjectStr: " + jsonObjectStr);
+        boolean isdonePayOrder = false;
+        SocketUtil socketUtil = new SocketUtil(context, null, sharedPreferences);
+        try {
+            org.json.JSONObject jsonObject = new org.json.JSONObject(jsonObjectStr);
+            //支付完成的推送donePayOrders
+            org.json.JSONArray donePayOrdersArray = jsonObject.optJSONArray("donePayOrders");
+            if (donePayOrdersArray != null && !isMainPage) {
+                for (int i = 0; i < donePayOrdersArray.length(); i++) {
+                    org.json.JSONObject donePayOrdersObject = donePayOrdersArray.getJSONObject(i);
+                    if (donePayOrdersObject.optString("orderId").equals(orderId) && donePayOrdersObject.optBoolean("payDone", false)) {
+                        //存在当前提交的orderId 并且支付状态为已支付则表示改orderId支付成功
+                        socketUtil.socketOn("doneOrderPay", donePayOrdersObject, false);
+                        isdonePayOrder = true;
+                        break;
+                    }
+                }
+            }
+
+            //购买照片、pp升级的推送
+            org.json.JSONArray upgradedPhotosArray = jsonObject.optJSONArray("upgradedPhotos");
+            if (upgradedPhotosArray != null) {
+                for (int i = 0; i < upgradedPhotosArray.length(); i++) {
+                    org.json.JSONObject upgradedPhotosObject = upgradedPhotosArray.getJSONObject(i);
+                    socketUtil.socketOn("upgradedPhotos", upgradedPhotosObject, false);
+                }
+            }
+
+            //删除图片，或者删除pp对应的推送
+            org.json.JSONArray deletePhotosArray = jsonObject.optJSONArray("delPhotos");
+            if (deletePhotosArray != null) {
+                for (int i = 0; i < deletePhotosArray.length(); i++) {
+                    org.json.JSONObject deletePhotosObject = deletePhotosArray.getJSONObject(i);
+                    socketUtil.socketOn("delPhotos", deletePhotosObject, false);
+                }
+            }
+
+
+        } catch (org.json.JSONException e) {
+            PictureAirLog.v("dealGetSocketData: ", "JSONException e: " + e.toString());
+            e.printStackTrace();
+        }
+        return isdonePayOrder;
     }
 
 }

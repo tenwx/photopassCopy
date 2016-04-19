@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -21,7 +22,6 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import org.apache.http.Header;
 
@@ -211,6 +211,9 @@ public class API1 {
     public static final int SOCKET_DISCONNECT_FAILED = 6020;
     public static final int SOCKET_DISCONNECT_SUCCESS = 6021;
 
+    //手动拉取推送
+    public static final int GET_SOCKET_DATA_FAILED = 6120;
+    public static final int GET_SOCKET_DATA_SUCCESS = 6121;
 
     //分享
     public static final int GET_SHARE_URL_SUCCESS = 6031;
@@ -546,7 +549,7 @@ public class API1 {
                 PictureAirLog.out("add scan code success---->" + type);
                 if ("pp".equals(type)) {
                     handler.obtainMessage(ADD_PP_CODE_TO_USER_SUCCESS).sendToTarget();
-                } else if ("ppp".equals(type)){//ppp
+                } else if ("ppp".equals(type)) {//ppp
                     handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS).sendToTarget();
                 } else {//coupon
                     handler.obtainMessage(ADD_PPP_CODE_TO_USER_SUCCESS, jsonObject).sendToTarget();
@@ -1378,6 +1381,7 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTO_ID, photoId);
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BUY_PHOTO, params,
                 new HttpCallback() {
                     @Override
@@ -1476,9 +1480,12 @@ public class API1 {
     public static void checkUpdate(Context context, final Handler handler, final String thisVerName, final String language) {
         final String channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
         PictureAirLog.out("channel------>" + channelStr);
+        String verson = context.getSharedPreferences(Common.APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+        params.put(Common.VERSION, verson);
+
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1690,6 +1697,31 @@ public class API1 {
         });
     }
 
+
+    /**
+     * 返回用户未接收到的推送消息
+     */
+    public static void getSocketData(final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_SOCKET_DATA, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.v(TAG, "getSocketData onSuccess() jsonObject: " + jsonObject.toString());
+                handler.obtainMessage(GET_SOCKET_DATA_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.v(TAG, "getSocketData onFailure() status: " + status);
+                handler.obtainMessage(GET_SOCKET_DATA_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
     /***************************************
      * 推送 End
      **************************************/
@@ -1806,6 +1838,8 @@ public class API1 {
         params.put(Common.SHARE_ID, shareId);
         params.put(Common.SHARE_PLATFORM, platform);
 
+        PictureAirLog.e("----shareCallBack:", "" + params.toString());
+
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SHARE_CALL_BACK, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1886,13 +1920,12 @@ public class API1 {
      * @param email
      * @param language
      */
-    public static void findPwdEmail(final Handler handler, String email, String language) {
+    public static void findPwdEmail(final Handler handler, String email, String language, String tokenId) {
         final RequestParams params = new RequestParams();
-        if (null != language){
-            params.put(Common.LANGUAGE, language.equals("cn") ? "CN" : "EN");
+        if (null != language) {
+            params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
         }
-
-        params.put(Common.APP_ID, AppUtil.md5(PWJniUtil.getAPPKey(Common.APP_TYPE_SHDRPP) + PWJniUtil.getAppSecret(Common.APP_TYPE_SHDRPP)));
+        params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.USERINFO_EMAIL, email);
 
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.FORGET_PWD_EMAIL, params, new HttpCallback() {
@@ -1910,8 +1943,6 @@ public class API1 {
             }
         });
     }
-
-
 
 
     /**
@@ -2070,6 +2101,7 @@ public class API1 {
 
     /**
      * 从me中进入查询抵用劵
+     *
      * @param handler
      */
     public static void getCoupons(final Handler handler) {

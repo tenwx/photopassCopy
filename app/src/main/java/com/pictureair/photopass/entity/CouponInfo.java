@@ -24,7 +24,7 @@ public class CouponInfo implements Serializable {
     private boolean cpIsSelect = false;//是否选中 （选择优惠卷的时候，选择标识）
     private int cpColor = 0;//颜色  （目前没用到，可能以后用到优惠卷的颜色）
     private List<String> usingScope = null;//可用范围(齐超说待定)
-//    private //优惠商品对象 （优惠pp＋卡？还是优惠其他商品？）齐超说待定
+    private boolean applyThisProduct = true;//该优惠卷适用当前商品？ true适用，false不适用
 
     public CouponInfo() {
     }
@@ -42,6 +42,14 @@ public class CouponInfo implements Serializable {
         this.cpNumber = cpNumber;
         this.cpIsSelect = cpIsSelect;
         this.cpColor = cpColor;
+    }
+
+    public boolean isApplyThisProduct() {
+        return applyThisProduct;
+    }
+
+    public void setApplyThisProduct(boolean applyThisProduct) {
+        this.applyThisProduct = applyThisProduct;
     }
 
     public String getCpName() {

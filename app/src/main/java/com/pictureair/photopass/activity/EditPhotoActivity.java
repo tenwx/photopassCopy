@@ -66,6 +66,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.HorizontalListView;
 
@@ -167,6 +168,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	// 记录旋转角度。
 	private int rotateAngle;
 
+	Matrix touchMatrix; //纪录图片的 Matrix
+	LinkedHashMap<Integer, StickerItem> addItems;
+
 	// 旋转图片组件
 
 	private final Handler editPhotoHandler = new EditPhotoHandler(this);
@@ -232,7 +236,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				break;
 
 			case API1.GET_LAST_CONTENT_SUCCESS://获取更新包成功
-				Log.d(TAG, "get lastest info success" + msg.obj);
+				PictureAirLog.d(TAG, "get lastest info success" + msg.obj);
 				try {
 					com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
 					if (resultJsonObject.containsKey("assets")) {
@@ -242,26 +246,26 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //						if (assetsObject.has("frames")) {
 //							JSONArray framesArray = assetsObject.getJSONArray("frames");
 //							if (framesArray.length() > 0 ) {
-//								Log.d(TAG, "frames length is " + framesArray.length());
+//								PictureAirLog.d(TAG, "frames length is " + framesArray.length());
 //								//开始解析数据，并且将数据写入数据库
 //								pictureAirDbManager.insertFrameAndStickerIntoDB(framesArray);
 //							}else {
-//								Log.d(TAG, "has no any frames");
+//								PictureAirLog.d(TAG, "has no any frames");
 //							}
 //						}
 //						if (assetsObject.has("cliparts")) {
 //							JSONArray stickersArray = assetsObject.getJSONArray("cliparts");
 //							if (stickersArray.length() > 0) {
-//								Log.d(TAG, "stickers length is " + stickersArray.length());
+//								PictureAirLog.d(TAG, "stickers length is " + stickersArray.length());
 //							}else {
-//								Log.d(TAG, "has no any stickers");
+//								PictureAirLog.d(TAG, "has no any stickers");
 //							}
 //						}
 
 					}
 
 					if (resultJsonObject.containsKey("time")) {
-						Log.d(TAG, "lastest time is " + resultJsonObject.getString("time"));
+						PictureAirLog.d(TAG, "lastest time is " + resultJsonObject.getString("time"));
 						Editor editor = appPreferences.edit();
 						editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
 						editor.commit();
@@ -721,7 +725,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				SaveStickersTask task = new SaveStickersTask();
 				if (editType == 2) { //滤镜处理过的
 					task.execute(newImage);
-				}else if(editType == 3 || editType == 4 || editType == 1){
+				}else if(editType == 4 || editType == 1){
+					task.execute(mainBitmap);
+				}else if (editType == 3){
+					touchMatrix = mainImage.getImageMatrix();
+					addItems = mStickerView.getBank();
 					task.execute(mainBitmap);
 				}
 
@@ -914,7 +922,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
-			Log.e("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
+			PictureAirLog.d("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
 			editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
 			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
@@ -934,7 +942,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		// 2、判断文件是否存在sd卡中
 		File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
 		if (file.exists()) {// 3、如果存在SD卡，则从SD卡获取图片信息
-			System.out.println("file exists");
+			PictureAirLog.out("file exists");
 			loadImage(file.toString());
 		}else{
 			//如果sd卡不存在，判断是否在缓存种。
@@ -988,7 +996,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						Intent intent = new Intent();
 						intent.putExtra("photoUrl", file);
 						setResult(11, intent);
-						System.out.println("set result--------->");
+						PictureAirLog.out("set result--------->");
 						finish();
 					}
 				});
@@ -1020,7 +1028,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			}else if(editType == 3){//饰品
 				//				Matrix touchMatrix = mainImage.getImageViewMatrix();
 				List<StikerInfo> stikerInfoList = new ArrayList<StikerInfo>();
-				Matrix touchMatrix = mainImage.getImageMatrix();
+
 				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
 						Bitmap.Config.ARGB_8888, true);
 				Canvas canvas = new Canvas(resultBit);
@@ -1031,7 +1039,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
 				Matrix m = new Matrix();
 				m.setValues(inverseMatrix.getValues());
-				LinkedHashMap<Integer, StickerItem> addItems = mStickerView.getBank();
+
 				for (Integer id : addItems.keySet()) {
 					StickerItem item = addItems.get(id);
 					item.matrix.postConcat(m);// 乘以底部图片变化矩阵
@@ -1321,7 +1329,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	@Override
 	public void inOrOutPlace(final String locationIds, final boolean in) {//位置改变之后就要改变边框的内容
 		// TODO Auto-generated method stub
-		Log.d(TAG, "in or out special location..." + locationIds);
+		PictureAirLog.d(TAG, "in or out special location..." + locationIds);
 		new Thread(){
 			public void run() {
 				while (!loadingFrame) {//等待边框处理完毕
@@ -1332,7 +1340,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				//1.根据locationIds来判断需要显示或者隐藏的边框
 //				frameInfos.addAll(frameFromDBInfos);
 				for (int i = 0; i < frameFromDBInfos.size(); i++) {
-					System.out.println("locationIds:"+locationIds+":locationId:"+frameFromDBInfos.get(i).locationId);
+					PictureAirLog.out("locationIds:"+locationIds+":locationId:"+frameFromDBInfos.get(i).locationId);
 					if (locationIds.contains(frameFromDBInfos.get(i).locationId)) {//有属于特定地点的边框
 						if (in) {//进入
 							frameInfos.add(frameFromDBInfos.get(i));
@@ -1343,7 +1351,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 //				stikerInfos.addAll(stickerFromDBInfos);
 				for (int j = 0; j < stickerFromDBInfos.size(); j++) {
-					System.out.println("locationIds:"+locationIds+":locationId:"+stickerFromDBInfos.get(j).locationId);
+					PictureAirLog.out("locationIds:"+locationIds+":locationId:"+stickerFromDBInfos.get(j).locationId);
 					if (locationIds.contains(stickerFromDBInfos.get(j).locationId)) {//有属于特定地点的边框
 						if (in) {//进入
 							stikerInfos.add(stickerFromDBInfos.get(j));

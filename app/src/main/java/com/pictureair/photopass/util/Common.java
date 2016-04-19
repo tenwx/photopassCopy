@@ -67,7 +67,7 @@ public class Common {
     public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
 
 
-    public final static String VERSION_CODE = "V1.3.0";//开发版
+    public final static String VERSION_CODE = "V1.0.0";//开发版
     public final static boolean DEBUG = true;// true，打印log， false，不打印log
     public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
@@ -151,6 +151,8 @@ public class Common {
     public static final String APNS_CONNECT = "/socket/APNSConnect"; // 链接时
     public static final String APNS_DISCONNECT = "/socket/APNSDisconnect"; // 退出登陆时
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
+    public static final String GET_SOCKET_DATA= "/socket/getSocketData"; // 返回用户未接收到的推送消息
+
 
     public static final String ME_HELP = "/help/getHelpList";
     public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
@@ -253,6 +255,7 @@ public class Common {
     public static final String EPPP = "ePPP";
     public static final String EPPP_IDS = "ids";
     public static final String couponCode = "couponCode";//优惠code
+    public static final String VERSION = "version";
 
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
@@ -307,6 +310,7 @@ public class Common {
     public static final String APP = "app";
     public static final String BLUR_LEAD = "blurlead";
     public static final String APP_VERSION_CODE = "version_code";
+    public static final String APP_VERSION_NAME = "version_name";
     public static final String DEFAULT_ADDRESS = "default_address";
     public static final String NEED_FRESH = "need_fresh";
     public static final String LANGUAGE_TYPE = "languageType";

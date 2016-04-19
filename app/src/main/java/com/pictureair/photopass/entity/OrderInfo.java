@@ -31,6 +31,7 @@ public class OrderInfo implements Parcelable {
     public double promotionPreferentialPrice;//优惠立减
     public double preferentialPrice;//优惠减免总费用
     public double actualotalPrice;//实际支付总价
+    public int productEntityType;//商品虚拟／实体类型（0,1）
 
 
     public OrderInfo() {
@@ -73,6 +74,7 @@ public class OrderInfo implements Parcelable {
         promotionPreferentialPrice = source.readDouble();
         preferentialPrice = source.readDouble();
         actualotalPrice = source.readDouble();
+        productEntityType = source.readInt();
     }
 
     @Override
@@ -104,6 +106,7 @@ public class OrderInfo implements Parcelable {
         dest.writeDouble(promotionPreferentialPrice);
         dest.writeDouble(preferentialPrice);
         dest.writeDouble(actualotalPrice);
+        dest.writeInt(productEntityType);
     }
 
 }

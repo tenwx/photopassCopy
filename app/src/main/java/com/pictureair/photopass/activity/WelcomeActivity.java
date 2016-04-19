@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -113,7 +112,7 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "start now-------->");
+				PictureAirLog.d(TAG, "start now-------->");
 				startJump();
 			}
 		});

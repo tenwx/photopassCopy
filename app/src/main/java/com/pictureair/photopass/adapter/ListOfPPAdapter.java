@@ -28,6 +28,7 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.MyToast;
@@ -572,7 +573,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                 switch (v.getId()) {
                     case R.id.img:
                     case R.id.pp_item:
-                        System.out.println("adapter---size=" + map.size());
+                        PictureAirLog.out("adapter---size=" + map.size());
                         if (null != mHandler) {
                             Message msg = mHandler.obtainMessage();
                             if (ppInfo.isSelected == 0) {

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -24,6 +25,7 @@ import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -151,22 +153,16 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 paymentOrderHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        PictureAirLog.v(TAG, "onFinish ");
-                        if (dialog.isShowing()) {
-                            dialog.dismiss();
-                        }
-
-                        if (payAsyncResultJsonObject == null) {
-                            pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
-                        }
-
-                        SuccessAfterPayment();
-                        finish();
+                        PictureAirLog.v(TAG, "run");
+                        //手动拉取信息
+                        API1.getSocketData(paymentOrderHandler);
                     }
                 }, 5000);
+
                 break;
 
             case ASYNC_PAY_SUCCESS:
+                PictureAirLog.v(TAG, "ASYNC_PAY_SUCCESS: " + payAsyncResultJsonObject);
                 if (paySyncResult) {//很有可能先收到异步通知，然后才返回同步通知，所以要做判断
                     paySyncResult = false;
                     dealData(payAsyncResultJsonObject);
@@ -184,6 +180,40 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 } else {
                     UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, msg.obj.toString(), mMode);
                 }
+                break;
+
+            case API1.GET_SOCKET_DATA_SUCCESS:
+                //获取推送成功，后面逻辑按照之前走
+                PictureAirLog.v(TAG, "GET_SOCKET_DATA_SUCCESS: ");
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                boolean isSuccess = false;
+                if (jsonObject.size() > 0) {
+                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid, sPreferences);
+                }
+                if (!isSuccess) {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    if (payAsyncResultJsonObject == null) {
+                        pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                    }
+                    SuccessAfterPayment();
+                    finish();
+                }
+
+                break;
+            case API1.GET_SOCKET_DATA_FAILED:
+                //获取推送失败
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                PictureAirLog.v(TAG, "GET_SOCKET_DATA_FAILED: " + msg.arg1);
+                if (payAsyncResultJsonObject == null) {
+                    pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                }
+                SuccessAfterPayment();
+                finish();
+
                 break;
 
             case API1.UNIONPAY_GET_TN_FAILED://获取银联TN失败
@@ -304,9 +334,11 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (isNeedPay) {
             paySv.setVisibility(View.VISIBLE);
             noPayLl.setVisibility(View.GONE);
+            sbmtButton.setText(R.string.submitpayment);
         } else {
             paySv.setVisibility(View.GONE);
             noPayLl.setVisibility(View.VISIBLE);
+            sbmtButton.setText(R.string.confirm);
         }
 
     }
@@ -605,8 +637,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         switch (view.getId()) {
             case R.id.topLeftView:
                 //返回键
-                PictureAirLog.v(TAG, "TopViewClick topLeftView");
-                CancelInPayment(true);
+                if (isNeedPay) {
+                    PictureAirLog.v(TAG, "TopViewClick topLeftView");
+                    CancelInPayment(true);
+                } else {
+                    finish();
+                }
+
                 break;
             default:
                 break;
@@ -617,12 +654,17 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     public void onBackPressed() {
         super.onBackPressed();
         //返回键
-        PictureAirLog.v(TAG, "TopViewClick onBackPressed");
-        CancelInPayment(true);
+        if (isNeedPay) {
+            PictureAirLog.v(TAG, "TopViewClick onBackPressed");
+            CancelInPayment(true);
+        } else {
+            finish();
+        }
     }
 
     @Subscribe
     public void onUserEvent(BaseBusEvent baseBusEvent) {
+        PictureAirLog.v(TAG, "onUserEvent（）");
         if (baseBusEvent instanceof AsyncPayResultEvent) {
             AsyncPayResultEvent asyncPayResultEvent = (AsyncPayResultEvent) baseBusEvent;
             PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult());

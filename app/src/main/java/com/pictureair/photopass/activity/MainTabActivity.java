@@ -160,7 +160,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      */
     public void loadFragment(int count) {
         for (int i = 0; i < count; i++) {
-            System.out.println("count --------->" + i);
+            PictureAirLog.out("count --------->" + i);
             // 为每一个Tab按钮设置图标、文字和内容
             TabSpec tabSpec = mTabHost.newTabSpec(getString(mTextviewArray[i])).setIndicator(getTabItemView(i));
             // 将Tab按钮添加进Tab选项卡中
@@ -211,9 +211,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             currentLanguage = MyApplication.getInstance().getLanguageType();
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
-        if (application.getPushPhotoCount() > 0) {//显示红点
+        if (application.getPushPhotoCount() + application.getPushViedoCount() > 0) {//显示红点
             waterDropView.setVisibility(View.VISIBLE);
-            application.setPushPhotoCount(0);
         }
 
         // 接收消息回复
@@ -253,7 +252,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         public void onClick(View v) {
             switch (currentTab) {
                 case 0:
-                    System.out.println("photo tab on click");
+                    PictureAirLog.out("photo tab on click");
                     if (mTabHost.getCurrentTab() == 0) {//获取最新数据
                         PictureAirLog.d(TAG, "need refresh");
                         EventBus.getDefault().post(new StoryRefreshOnClickEvent(true));
@@ -266,7 +265,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     break;
 
                 case 2:
-                    System.out.println("camera tab on click");
+                    PictureAirLog.out("camera tab on click");
                     Common.TAB_HEIGHT = mTabHost.getHeight();
                     mTabHost.setCurrentTab(2);
                     application.setIsStoryTab(false);
@@ -275,7 +274,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 case 1:
                 case 3:
                 case 4:
-                    System.out.println(currentTab + " tab on click");
+                    PictureAirLog.out(currentTab + " tab on click");
                     mTabHost.setCurrentTab(currentTab);
                     last_tab = currentTab;
                     application.setIsStoryTab(false);

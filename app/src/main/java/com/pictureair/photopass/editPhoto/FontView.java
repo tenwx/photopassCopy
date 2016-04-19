@@ -1,17 +1,18 @@
 package com.pictureair.photopass.editPhoto;
 
 
-import java.util.LinkedHashMap;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+
+import com.pictureair.photopass.util.PictureAirLog;
+
+import java.util.LinkedHashMap;
 
 /**
  * 贴图操作控件
@@ -80,11 +81,11 @@ public class FontView extends ImageView{
 //		bank.put(++imageCount, item);
 //		this.invalidate();// 重绘视图
 		if (currentItem == null) {
-			Log.e("＝＝＝＝＝＝＝", "currentItem is null");
-			System.out.println("currentItem is null");
+			PictureAirLog.d("＝＝＝＝＝＝＝", "currentItem is null");
+			PictureAirLog.out("currentItem is null");
 		}else {
-			Log.e("＝＝＝＝＝＝＝", "currentItem is not null");
-			System.out.println("currentItem is not null");
+			PictureAirLog.d("＝＝＝＝＝＝＝", "currentItem is not null");
+			PictureAirLog.out("currentItem is not null");
 		}
 		currentItem.setBitmap(bitmap,this); //在当前的bitmap进行操作。
 		this.invalidate();// 重绘视图

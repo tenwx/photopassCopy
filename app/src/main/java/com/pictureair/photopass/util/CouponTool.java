@@ -27,7 +27,6 @@ public class CouponTool {
     public static final String ACTIVITY_ORDER = "activity_order";
     public static final String ACTIVITY_ORDER_CART_DATAS = "activity_order_cart_datas";//从订单页面传来的 cartItemIds:array<string>,用户选中的购物项
     private JSONArray cartItemIds = null;
-
     private String whatPege = "";//是从什么页面进来的
 
     private Handler mHandler = new Handler(new Handler.Callback() {
@@ -85,6 +84,7 @@ public class CouponTool {
             whatPege = ACTIVITY_ORDER;
             couponView.getWhatPege(ACTIVITY_ORDER);
             cartItemIds = JSONArray.parseArray(getIntent.getExtras().getString(ACTIVITY_ORDER_CART_DATAS));
+            couponView.showCouponFromOrderPage(JSONArray.parseArray(getIntent.getExtras().getString("couponCodes")));
             if (null == cartItemIds) {
                 return;
             }
@@ -157,8 +157,7 @@ public class CouponTool {
         mDatas = null;
         if (whatPege.equals(ACTIVITY_ME)){//从me中进来的
             mDatas = JsonUtil.getCouponListFromJson2(jsonObject);
-
-        }else{
+        }else{//从订单进来
             mDatas = JsonUtil.getCouponListFromJson(jsonObject);
         }
         couponView.goneProgressBar();

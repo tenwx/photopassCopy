@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -330,7 +329,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("resultCode", " " + resultCode);
+        PictureAirLog.d("resultCode", " " + resultCode);
 
         if (resultCode!=0 && requestCode == SelectCountryActivity.requestCountry) {
             String[] strs = data.getExtras().getStringArray("country");

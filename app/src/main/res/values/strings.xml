@@ -382,7 +382,7 @@
 
     <!-- change language start -->
     <string name="Chinese">简体中文</string>
-    <string name="English">英语</string>
+    <string name="English">English</string>
     <!-- change language end -->
 
     <!-- about start -->
@@ -462,6 +462,9 @@
     <string name="select_cpupon">使用抵用劵</string>
     <string name="discount_price">优惠立减</string>
     <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
+    <string name="coupon_incalid">此抵用券不适用当前商品</string>
+
+
     <!-- 我的优惠卷 end-->
 
     <!-- postcard start-->

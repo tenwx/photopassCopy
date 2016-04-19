@@ -41,6 +41,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     private LinearLayout llNoCoupon;
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
+    private ArrayList<String> mCouponCodeFromOrderPage;
     //    private CustomTextView mBtnSubmit, mBtnScan;
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
@@ -53,6 +54,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     private DealCodeUtil dealCodeUtil;
     public static int PREVIEW_COUPON_CODE = 10000;
 
+    private Intent mOerderIntent = null;
+    private CouponInfo newAddCoupon = null;//在订单页面进入优惠卷页面添加的新优惠卷
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +67,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         intent.putExtra("type", "coupon");//只扫描coupon
         dealCodeUtil = new DealCodeUtil(this, intent, false, myHandler);
         initViews();
-        couponTool.getIntentActivity(getIntent());
+        mOerderIntent = getIntent();
+        couponTool.getIntentActivity(mOerderIntent);
     }
 
     private void initViews() {
@@ -72,10 +77,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         setTopTitleShow("");
         setTopRightValueAndShow(R.drawable.coupon_add2, true);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
-//        mBtnSubmit = (CustomTextView) findViewById(R.id.btn_submit);
-//        mBtnScan = (CustomTextView) findViewById(R.id.btn_scan);
-//        mBtnSubmit.setOnClickListener(this);
-//        mBtnScan.setOnClickListener(this);
         llNoCoupon = (LinearLayout) findViewById(R.id.ll_no_coupon);
 
         mSelectData = new ArrayList<>();
@@ -88,6 +89,10 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
             @Override
             public void onItemClick(View view, CouponInfo data) {
                 if (whatPege.equals(CouponTool.ACTIVITY_ORDER) && data.getCpStatus().equals("active")) {//当订单页面进来 ，状态为可使用，取消注释
+                    if (!data.isApplyThisProduct()){
+                        myToast.setTextAndShow(R.string.coupon_incalid,Common.TOAST_SHORT_TIME);
+                        return;
+                    }
                     if (data.getCpIsSelect()) {//取消选中
                         if (!mSelectData.isEmpty() && mSelectData.contains(data)) {
                             mSelectData.remove(data);
@@ -95,7 +100,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
                         data.setCpIsSelect(false);
                         ((ImageView) view.findViewById(R.id.iv_select)).setImageResource(R.drawable.nosele);
                     } else {//选中
-                        for (int i = 0; i <mAllData.size();i++){
+                        for (int i = 0; i < mAllData.size(); i++) {
                             mAllData.get(i).setCpIsSelect(false);
                         }
                         mSelectData.clear();
@@ -161,23 +166,28 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
                     break;
 
                 case DealCodeUtil.DEAL_CODE_FAILED:
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
+                    goneProgressBar();
                     break;
 
                 case DealCodeUtil.DEAL_CODE_SUCCESS:
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
-                    PictureAirLog.out("coupon----> add success");
                     Bundle bundle = (Bundle) msg.obj;
                     CouponInfo couponInfo = (CouponInfo) bundle.getSerializable("coupon");
+
                     if (couponInfo != null) {
-                        PictureAirLog.out("coupon no null" + mAllData.size());
-                        mAllData.add(couponInfo);
-                        PictureAirLog.out("coupon no null" + mAllData.size());
-                        sortCoupon(mAllData, false);
+                        if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {//从订单页面进行添加抵用劵
+                            PictureAirLog.out("coupon----> add success （order page）");
+                            newAddCoupon = couponInfo;
+                            couponTool.getIntentActivity(mOerderIntent);//重新获取优惠卷
+                        } else {//从me中进行添加抵用劵
+                            PictureAirLog.out("coupon----> add success （me page）");
+                            goneProgressBar();
+                            PictureAirLog.out("coupon no null" + mAllData.size());
+                            mAllData.add(0, couponInfo);
+                            PictureAirLog.out("coupon no null" + mAllData.size());
+                            sortCoupon(mAllData, false);
+                        }
+                    } else {
+                        goneProgressBar();
                     }
                     break;
 
@@ -190,8 +200,11 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     protected void onDestroy() {
         super.onDestroy();
         couponTool.onDestroyCouponTool();
+        mAllData.clear();
+        mAllData = null;
         mSelectData.clear();
         mSelectData = null;
+        mCouponCodeFromOrderPage = null;
         myHandler.removeCallbacksAndMessages(null);
     }
 
@@ -221,6 +234,32 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         mRecyclerView.setVisibility(View.VISIBLE);
         llNoCoupon.setVisibility(View.GONE);
 
+        if (whatPege.equals(CouponTool.ACTIVITY_ORDER)) {
+            if (null != mCouponCodeFromOrderPage) {
+                for (int i = 0; i < mCouponCodeFromOrderPage.size(); i++) {
+                    for (int j = 0; j < sortDatas.size(); j++) {
+                        if (sortDatas.get(j).getCpCode().equals(mCouponCodeFromOrderPage.get(i))) {
+                            sortDatas.get(j).setCpIsSelect(true);
+                            if (!mSelectData.contains(sortDatas.get(j))) {
+                                mSelectData.add(sortDatas.get(j));
+                            }
+                        }
+                    }
+                }
+            }
+            if (null != newAddCoupon) {//订单页面中新添加的优惠卷
+                for (int k = 0; k < sortDatas.size(); k++) {
+                    if (newAddCoupon.getCpCode().equals(sortDatas.get(k).getCpCode())){
+                        sortDatas.remove(k);
+                        newAddCoupon.setApplyThisProduct(true);//适用
+                        break;
+                    }else{
+                        newAddCoupon.setApplyThisProduct(false);//不适用
+                    }
+                }
+                sortDatas.add(0,newAddCoupon);
+            }
+        }
         if (needClear) {
             mAllData.clear();
             mAllData.addAll(sortDatas);
@@ -235,6 +274,16 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
 
     @Override
     public void noCoupon() {
+        if (whatPege.equals(couponTool.ACTIVITY_ORDER) && null != newAddCoupon){
+            couponAdapter.setPage(whatPege);//设置显示界面
+            newAddCoupon.setApplyThisProduct(false);//不适用
+            mAllData.clear();
+            mAllData.add(newAddCoupon);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            llNoCoupon.setVisibility(View.GONE);
+            couponAdapter.notifyDataSetChanged();
+            return;
+        }
         mRecyclerView.setVisibility(View.GONE);
         llNoCoupon.setVisibility(View.VISIBLE);
     }
@@ -266,9 +315,21 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         }
     }
 
+    @Override
+    public void showCouponFromOrderPage(JSONArray jsonArray) {
+        mCouponCodeFromOrderPage = null;
+        if (null != jsonArray && !jsonArray.toString().equals("")) {
+            mCouponCodeFromOrderPage = new ArrayList<>();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                mCouponCodeFromOrderPage.add(jsonArray.get(i).toString());
+            }
+        }
+    }
+
     /**
      * ListView样式
      */
+
     private void listview() {
         //设置RecycerView的布局管理
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);

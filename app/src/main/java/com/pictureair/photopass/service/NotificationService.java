@@ -3,14 +3,16 @@ package com.pictureair.photopass.service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.pictureair.photopass.util.PictureAirLog;
+
 /**
  * 推送的服务。
  *
  * @author talon
  */
 public class NotificationService extends android.app.Service {
-    private final String TAG = "NotificationService";
-    NotificationServiceHelp notificationServiceHelp;
+    private static final String TAG = "NotificationService";
+    private NotificationServiceHelp notificationServiceHelp;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -27,7 +29,12 @@ public class NotificationService extends android.app.Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
-        notificationServiceHelp = new NotificationServiceHelp(this);
+        if (notificationServiceHelp == null) {
+            PictureAirLog.out("notification----> null need new");
+            notificationServiceHelp = new NotificationServiceHelp(this);
+        } else {
+            PictureAirLog.out("notification----> not null");
+        }
         if (notificationServiceHelp.isRequireDisconnect(intent)){ //是否接受到断开的信号。
             notificationServiceHelp.disconnectSocket(); //断开socket
             stopSelf();//停止服务

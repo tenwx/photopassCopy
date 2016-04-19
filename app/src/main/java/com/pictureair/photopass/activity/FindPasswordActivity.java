@@ -160,7 +160,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                 }
 
                 customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-                API1.findPwdEmail(mHandler, etEmailStr, MyApplication.getInstance().getLanguageType());
+                API1.findPwdEmail(mHandler, etEmailStr, MyApplication.getInstance().getLanguageType(),MyApplication.getTokenId());
                 break;
 
             default:

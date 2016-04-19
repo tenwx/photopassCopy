@@ -2,6 +2,9 @@ package com.pictureair.photopass.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.pictureair.photopass.util.PictureAirLog;
+
 /**
  * 图片封装类
  * @author bauer_bao
@@ -126,16 +129,16 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	@Override
 	public int compareTo(PhotoInfo another) {
 		if (another.lastModify == 0 && this.lastModify != 0) {
-			System.out.println("----->1");
+			PictureAirLog.out("----->1");
 			return 1;//排后面
 		}else if (this.lastModify > another.lastModify) {
-			System.out.println("----->2");
+			PictureAirLog.out("----->2");
 			return -1;//排前面
 		}else if (this.lastModify < another.lastModify) {
-			System.out.println("----->3");
+			PictureAirLog.out("----->3");
 			return 1;//排后面
 		}else {
-			System.out.println("----->4");
+			PictureAirLog.out("----->4");
 		}
 		
 		return 0;

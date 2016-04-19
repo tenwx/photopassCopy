@@ -3,7 +3,6 @@ package com.pictureair.photopass.widget;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.util.PictureAirLog;
 
 /**
  * Story页面中menu下拉菜单的内容 
@@ -73,7 +73,7 @@ public class StoryMenuPop extends PopupWindow implements OnClickListener{
 		
 		setWidth(LayoutParams.WRAP_CONTENT);
 		setHeight(LayoutParams.WRAP_CONTENT);
-		setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+		setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
 		setFocusable(true);
 		setOutsideTouchable(true);
 
@@ -110,7 +110,7 @@ public class StoryMenuPop extends PopupWindow implements OnClickListener{
 		case R.id.storyEditTextView:
 //			editImageView.performClick();
 //			editTextView.performClick();
-			Log.d(TAG, "edit on click");
+			PictureAirLog.d(TAG, "edit on click");
 			mHandler.sendEmptyMessage(EDIT);
 			break;
 			
@@ -118,14 +118,14 @@ public class StoryMenuPop extends PopupWindow implements OnClickListener{
 //			selectImageView.performClick();
 //			selectTextView.performClick();
 			mHandler.sendEmptyMessage(SELECTION);
-			Log.d(TAG, "select on click");
+			PictureAirLog.d(TAG, "select on click");
 			break;
 			
 		case R.id.storyCollectTextView:
 //			collectImageView.performClick();
 //			collectTextView.performClick();
 			mHandler.sendEmptyMessage(COLLECT);
-			Log.d(TAG, "collect on click");
+			PictureAirLog.d(TAG, "collect on click");
 			break;
 			
 		default:
