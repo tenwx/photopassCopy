@@ -213,6 +213,8 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
 
             if (type == 1) {//忘记密码页面
                 isForgetPwdPage = true;
+                etPwd.setHint(R.string.smssdk_pwd_forget);
+                etPwd2.setHint(R.string.smssdk_pwd2_forget);
                 llPwdConten.setVisibility(View.GONE);
                 tv_otherRegistered.setVisibility(View.GONE);
                 tvExplain.setVisibility(View.GONE);

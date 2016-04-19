@@ -274,7 +274,7 @@
     <string name="payment_ways">Payment Methods</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
-    <string name="paypalzf">VISA</string>
+    <string name="paypalzf">VISA, MasterCard, JCB</string>
     <string name="zfbsm">Recommended</string>
     <string name="yhksm">Supported</string>
     <string name="paypalsm">Supported</string>

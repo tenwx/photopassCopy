@@ -62,7 +62,8 @@
                     android:layout_marginLeft="@dimen/pp_margin_16"
                     android:background="@color/white"
                     android:paddingBottom="@dimen/pp_padding_8"
-                    android:paddingTop="@dimen/pp_padding_8">
+                    android:paddingTop="@dimen/pp_padding_8"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/imageView2"
@@ -197,7 +198,8 @@
                     android:layout_marginLeft="@dimen/pp_margin_16"
                     android:background="@color/white"
                     android:paddingBottom="@dimen/pp_padding_8"
-                    android:paddingTop="@dimen/pp_padding_8">
+                    android:paddingTop="@dimen/pp_padding_8"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/imageView3"

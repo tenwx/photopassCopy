@@ -6,6 +6,8 @@
     <string name="smssdk_pwd_no">密码不一致</string>
     <string name="smssdk_pwd">密码</string>
     <string name="smssdk_pwd2">密码确认</string>
+    <string name="smssdk_pwd_forget">请输入新密码</string>
+    <string name="smssdk_pwd2_forget">请再次输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_sign_up">注册</string>
     <string name="smssdk_other_sign_up">其他方式注册</string>
@@ -18,7 +20,7 @@
     <string name="smssdk_write_mobile_phone">手机号码</string>
     <string name="smssdk_write_right_mobile_phone">请填写正确的手机号码</string>
     <string name="smssdk_write_identify_code">填写验证码</string>
-    <string name="smssdk_submit">提交</string>
+    <string name="smssdk_submit">确认</string>
     <string name="smssdk_identify_code">验证码</string>
     <string name="smssdk_receive_msg"><Data>倒计时&lt;font color=#ffffff>%s&lt;/font>秒</Data></string>
     <string name="smssdk_choose_country">选择国家</string>
