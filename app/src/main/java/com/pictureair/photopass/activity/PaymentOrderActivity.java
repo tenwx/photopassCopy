@@ -587,9 +587,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 intent.putExtra("orderType", productType);
             }
         }
-        SharedPreferences.Editor editor = sPreferences.edit();
-        editor.putBoolean(Common.NEED_FRESH, true);
-        editor.commit();
+//        SharedPreferences.Editor editor = sPreferences.edit();
+//        editor.putBoolean(Common.NEED_FRESH, true);
+//        editor.commit();
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
