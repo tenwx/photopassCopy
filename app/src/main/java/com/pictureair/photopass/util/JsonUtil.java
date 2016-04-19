@@ -978,7 +978,7 @@ public class JsonUtil {
      * @param orderId       当前提交的订单
      */
     public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId, SharedPreferences sharedPreferences) {
-        PictureAirLog.e("dealGetSocketData: " ,"jsonObjectStr: " + jsonObjectStr);
+        PictureAirLog.v("dealGetSocketData: ", "jsonObjectStr: " + jsonObjectStr);
         boolean isdonePayOrder = false;
         SocketUtil socketUtil = new SocketUtil(context, null, sharedPreferences);
         try {
@@ -990,7 +990,7 @@ public class JsonUtil {
                     org.json.JSONObject donePayOrdersObject = donePayOrdersArray.getJSONObject(i);
                     if (donePayOrdersObject.optString("orderId").equals(orderId) && donePayOrdersObject.optBoolean("payDone", false)) {
                         //存在当前提交的orderId 并且支付状态为已支付则表示改orderId支付成功
-                        socketUtil.socketOn("donePayOrders", donePayOrdersObject, false);
+                        socketUtil.socketOn("doneOrderPay", donePayOrdersObject, false);
                         isdonePayOrder = true;
                         break;
                     }
@@ -1017,9 +1017,9 @@ public class JsonUtil {
 
 
         } catch (org.json.JSONException e) {
+            PictureAirLog.v("dealGetSocketData: ", "JSONException e: " + e.toString());
             e.printStackTrace();
         }
-
         return isdonePayOrder;
     }
 

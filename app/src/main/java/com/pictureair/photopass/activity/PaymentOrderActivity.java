@@ -162,6 +162,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 break;
 
             case ASYNC_PAY_SUCCESS:
+                PictureAirLog.v(TAG, "ASYNC_PAY_SUCCESS: " + payAsyncResultJsonObject);
                 if (paySyncResult) {//很有可能先收到异步通知，然后才返回同步通知，所以要做判断
                     paySyncResult = false;
                     dealData(payAsyncResultJsonObject);
@@ -183,7 +184,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
             case API1.GET_SOCKET_DATA_SUCCESS:
                 //获取推送成功，后面逻辑按照之前走
-                PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
+                PictureAirLog.v(TAG, "GET_SOCKET_DATA_SUCCESS: ");
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 boolean isSuccess = false;
                 if (jsonObject.size() > 0) {
@@ -663,6 +664,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     @Subscribe
     public void onUserEvent(BaseBusEvent baseBusEvent) {
+        PictureAirLog.v(TAG, "onUserEvent（）");
         if (baseBusEvent instanceof AsyncPayResultEvent) {
             AsyncPayResultEvent asyncPayResultEvent = (AsyncPayResultEvent) baseBusEvent;
             PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult());
