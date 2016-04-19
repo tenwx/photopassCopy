@@ -506,6 +506,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 }
                 initBlur();
+                lastPhotoImageView.setEnabled(true);
+                nextPhotoImageView.setEnabled(true);
                 break;
 
             case LOAD_FROM_LOCAL:
@@ -517,12 +519,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     e.printStackTrace();
                 }
                 oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
                 if (null != oriClearBmp) {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
                     initBlur();
                 }
+                lastPhotoImageView.setEnabled(true);
+                nextPhotoImageView.setEnabled(true);
                 break;
 
             case API1.GET_AD_LOCATIONS_SUCCESS:
@@ -790,8 +794,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             nextPhotoImageView.setVisibility(View.VISIBLE);
         }
-        lastPhotoImageView.setEnabled(true);
-        nextPhotoImageView.setEnabled(true);
 
         //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
@@ -806,8 +808,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             loadPhotoPassPhoto(photoInfo, isOnCreate);
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
             previewPhotoHandler.sendEmptyMessage(GET_LOCATION_AD);
+            lastPhotoImageView.setEnabled(true);
+            nextPhotoImageView.setEnabled(true);
         } else {
             currentPhotoADTextView.setVisibility(View.GONE);
+            lastPhotoImageView.setEnabled(true);
+            nextPhotoImageView.setEnabled(true);
         }
 
         if (isLandscape) {//横屏模式

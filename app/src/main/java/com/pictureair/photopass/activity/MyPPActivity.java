@@ -559,7 +559,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 selectedTag = -1;
                 listPPAdapter.notifyDataSetChanged();
                 //根据photoId，更新数据库中的字段
-                pictureAirDbManager.updatePhotoBought(selectedPhotoId);
+                pictureAirDbManager.updatePhotoBought(selectedPhotoId, false);
                 selectedPhotoId = null;
             }
         }

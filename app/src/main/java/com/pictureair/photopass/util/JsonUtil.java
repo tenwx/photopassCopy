@@ -997,7 +997,7 @@ public class JsonUtil {
                 }
             }
 
-            //购买照片、pp升级的推送donePayOrders
+            //购买照片、pp升级的推送
             org.json.JSONArray upgradedPhotosArray = jsonObject.optJSONArray("upgradedPhotos");
             if (upgradedPhotosArray != null) {
                 for (int i = 0; i < upgradedPhotosArray.length(); i++) {
@@ -1005,6 +1005,16 @@ public class JsonUtil {
                     socketUtil.socketOn("upgradedPhotos", upgradedPhotosObject, false);
                 }
             }
+
+            //删除图片，或者删除pp对应的推送
+            org.json.JSONArray deletePhotosArray = jsonObject.optJSONArray("delPhotos");
+            if (deletePhotosArray != null) {
+                for (int i = 0; i < deletePhotosArray.length(); i++) {
+                    org.json.JSONObject deletePhotosObject = deletePhotosArray.getJSONObject(i);
+                    socketUtil.socketOn("delPhotos", deletePhotosObject, false);
+                }
+            }
+
 
         } catch (org.json.JSONException e) {
             e.printStackTrace();

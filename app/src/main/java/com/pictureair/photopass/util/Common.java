@@ -309,6 +309,7 @@ public class Common {
     public static final String APP = "app";
     public static final String BLUR_LEAD = "blurlead";
     public static final String APP_VERSION_CODE = "version_code";
+    public static final String APP_VERSION_NAME = "version_name";
     public static final String DEFAULT_ADDRESS = "default_address";
     public static final String NEED_FRESH = "need_fresh";
     public static final String LANGUAGE_TYPE = "languageType";

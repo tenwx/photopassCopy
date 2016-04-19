@@ -329,6 +329,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 saveJsonToSQLite((JSONObject) msg.obj, false, true);
                 break;
 
+            case API1.GET_SOCKET_DATA_SUCCESS://手动刷新成功
+                //获取推送成功，后面逻辑按照之前走
+                PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
+                JSONObject jsonObject = (JSONObject) msg.obj;
+                if (jsonObject.size() > 0) {
+                    JsonUtil.dealGetSocketData(getActivity(), jsonObject.toString(), true, null, sharedPreferences);
+                }
+                break;
+
             case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
                 PictureAirLog.d(TAG, "scan local photos success");
                 dealLocalRefreshedData();
@@ -338,6 +347,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
                 API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
                 API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取最新视频信息
+                API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
                 break;
 
             case DEAL_ALL_PHOTO_DATA_DONE://处理照片成功

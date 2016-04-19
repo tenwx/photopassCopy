@@ -100,6 +100,7 @@ public class StartActivity extends BaseActivity implements Callback {
 //				API1.getTokenId(this, null);
                 editor = spApp.edit();
                 editor.putInt(Common.APP_VERSION_CODE, versionCode);
+                editor.putString(Common.APP_VERSION_NAME, info.versionName);
                 editor.commit();
                 handler.postDelayed(new Runnable() {
                     @Override
