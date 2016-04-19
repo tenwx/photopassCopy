@@ -1480,9 +1480,14 @@ public class API1 {
     public static void checkUpdate(Context context, final Handler handler, final String thisVerName, final String language) {
         final String channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
         PictureAirLog.out("channel------>" + channelStr);
+        String verson = context.getSharedPreferences(Common.APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
+
+        if (!verson.equals(""))
+            params.put(Common.VERSION, verson);
+
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {

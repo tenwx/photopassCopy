@@ -255,6 +255,7 @@ public class Common {
     public static final String EPPP = "ePPP";
     public static final String EPPP_IDS = "ids";
     public static final String couponCode = "couponCode";//优惠code
+    public static final String VERSION = "version";
 
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
