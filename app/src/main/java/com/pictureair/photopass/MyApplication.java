@@ -265,6 +265,7 @@ public class MyApplication extends Application {
      * @param count
      */
     public void setPushPhotoCount(int count) {
+        PictureAirLog.out("application---set photo count---->" + count);
         this.pushPhotoCount = count;
     }
 

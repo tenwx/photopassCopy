@@ -412,6 +412,7 @@ public class HttpUtil1 {
                     case 6153://未授权
                     case 6034://please login
                     case 5030://not login
+                    case 5011://not login
                         if (AppExitUtil.isAppExit){
                             httpCallback.onFailure(httpBaseJson.getStatus());
                         }else {

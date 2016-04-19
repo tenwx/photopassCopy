@@ -728,7 +728,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         locationList.clear();
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
+        //获取sp中的值
         needfresh = sharedPreferences.getBoolean(Common.NEED_FRESH, false);
+        //如果不是在story获取推送，需要从application中获取，并且全部刷新
+        if (app.getPushPhotoCount() + app.getPushViedoCount() > 0) {
+            if (!needfresh) {
+                needfresh = true;
+            }
+        }
         sharedNeedFresh = needfresh;
         if (needfresh) {//如果一开始就需要全部刷新，
             Editor editor = sharedPreferences.edit();
@@ -818,6 +825,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, app.magicPicList, 4));
             if (app.getPushPhotoCount() + app.getPushViedoCount() == 0){
                 PictureAirLog.out("need gone the badgeview");
+                PictureAirLog.out("photocount---->" + app.getPushPhotoCount());
+                PictureAirLog.out("video count---->" + app.getPushViedoCount());
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
         } else {//没有图片
