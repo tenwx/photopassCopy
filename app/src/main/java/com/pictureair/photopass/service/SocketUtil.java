@@ -82,6 +82,7 @@ public class SocketUtil {
      * @param message
      */
     private void eventDoneOrderPay(JSONObject message) {
+        PictureAirLog.v(TAG, "eventDoneOrderPay（）: " + message);
         showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_order_completed_msg));
         EventBus.getDefault().post(new AsyncPayResultEvent(message));
     }
@@ -231,12 +232,13 @@ public class SocketUtil {
     /**
      * 状态链接上之后，监听的事件。 socket on 方法
      *
-     * @param envenStr
-     * @param message
+     * @param envenStr        事件名
+     * @param message         内容
      * @param isSocketReceive 是否是socket接收。
      */
     public void socketOn(String envenStr, JSONObject message, boolean isSocketReceive) throws JSONException {
-        PictureAirLog.e(TAG, "socketOn: envenStr: " + envenStr);
+        PictureAirLog.v(TAG, "socketOn: envenStr: " + envenStr);//注意事件名要对应
+        PictureAirLog.v(TAG, "socketOn: message: " + message);
         if (envenStr.equals("doneOrderPay")) {//订单完成支付推送
             if (isSocketReceive) {
                 handler.obtainMessage(SOCKET_RECEIVE_DATA, "doneOrderPay").sendToTarget();//清空推送，不能移动位置。
