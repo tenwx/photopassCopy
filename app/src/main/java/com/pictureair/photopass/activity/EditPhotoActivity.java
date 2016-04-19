@@ -126,6 +126,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private SimpleDateFormat dateFormat;
 	// 保存图片路径的集合。
 	private ArrayList<EditPhotoInfo> editPhotoInfoArrayList;
+	private ArrayList<EditPhotoInfo> tempEditPhotoInfoArrayList = new ArrayList<EditPhotoInfo>(); // 用于后退前进
 	private int index = -1; // 索引。   控制图片步骤 前进后退。
 
 	private SharedPreferences sharedPreferences;
@@ -542,14 +543,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //					newImage.recycle();
 					}
 //					mainImage.setImageBitmap(mainBitmap);
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+					if (tempEditPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 						if (photoInfo.onLine == 1) {
 							loadOnlineImg(photoURL);
 						}else{
 							loadImage(photoURL);
 						}
 					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+						loadImage(tempEditPhotoInfoArrayList.get(tempEditPhotoInfoArrayList.size() - 1).getPhotoPath());
 					}
 				}
 
@@ -732,7 +733,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					addItems = mStickerView.getBank();
 					task.execute(mainBitmap);
 				}
-
 				break;
 			case R.id.preview_save: //真正的保存按钮。
 				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
@@ -765,6 +765,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if (editPhotoInfoArrayList.size() > index + 1) {
 					index++;
 					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
 				}
 				check();
 				break;
@@ -781,11 +782,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					if (index == 0) {
 						if (isOnlinePic) {
 							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
+							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
 						}else{
 							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
 						}
 					}else{
 						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
 					}
 				}
 				check();
@@ -1107,6 +1111,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //				pathList.add(url);
 				addEditPhotoInfo(url, editType, frameBitmap, null, "",0);
 				index = editPhotoInfoArrayList.size() - 1;
+
+				tempEditPhotoInfoArrayList.clear();
+				tempEditPhotoInfoArrayList.addAll(editPhotoInfoArrayList);
 				return heBitmap;
 //				}else{
 //					.
@@ -1414,21 +1421,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 * 针对 添加滤镜，不对照片与边框有效 的方法。 线程中。
 	 */
 	private Bitmap savaFitlerAfter(Bitmap bitmap){
-		if (editPhotoInfoArrayList.size() == 1){
+		if (tempEditPhotoInfoArrayList.size() == 1){
 
 		}else{
-			for (int i = 0; i < editPhotoInfoArrayList.size(); i++){
-				if (editPhotoInfoArrayList.get(i).getEditType() == 1){  //为边框时
+			for (int i = 0; i < tempEditPhotoInfoArrayList.size(); i++){
+				if (tempEditPhotoInfoArrayList.get(i).getEditType() == 1){  //为边框时
 					//合成边框
 					bitmap = saveFrame(bitmap);
 				}
-				if(editPhotoInfoArrayList.get(i).getEditType() == 3){  // 为饰品 时
+				if(tempEditPhotoInfoArrayList.get(i).getEditType() == 3){  // 为饰品 时
 					// 合成饰品。
-					bitmap = saveStiker(bitmap, editPhotoInfoArrayList.get(i).getStikerInfoList());
+					bitmap = saveStiker(bitmap, tempEditPhotoInfoArrayList.get(i).getStikerInfoList());
 				}
-				if(editPhotoInfoArrayList.get(i).getEditType() == 4){  // 为饰品 时
+				if(tempEditPhotoInfoArrayList.get(i).getEditType() == 4){  // 为饰品 时
 					// 旋转图片。
-					bitmap = saveRotate(bitmap,editPhotoInfoArrayList.get(i).getRotateAngle());
+					bitmap = saveRotate(bitmap,tempEditPhotoInfoArrayList.get(i).getRotateAngle());
 				}
 			}
 		}

@@ -201,7 +201,7 @@ public class EditActivityAdapter extends BaseAdapter {
                 layoutParam1.width = ScreenUtil.dip2px(mContext, 80);
             } else {
                 layoutParams.height = LayoutParams.MATCH_PARENT;
-                layoutParams.width = ScreenUtil.dip2px(mContext, 60);
+                layoutParams.width = ScreenUtil.dip2px(mContext, 65*3/4);
 
                 layoutParam1.height = ScreenUtil.dip2px(mContext, 80);
                 layoutParam1.width = ScreenUtil.dip2px(mContext, 60);
