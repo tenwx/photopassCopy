@@ -48,25 +48,31 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/shopListView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:cacheColorHint="@color/white"
-            android:divider="@color/gray_light"
-            android:dividerHeight="@dimen/pp_height_5"
-            android:scrollbars="none" />
+            android:layout_height="match_parent">
 
-        <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
-            android:id="@+id/shopNoNetWorkView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/tt"
-            android:visibility="invisible" />
-    </RelativeLayout>
+            <ListView
+                android:id="@+id/shopListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@color/white"
+                android:divider="@color/gray_light"
+                android:dividerHeight="@dimen/pp_height_5"
+                android:scrollbars="none" />
+
+            <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+                android:id="@+id/shopNoNetWorkView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tt"
+                android:visibility="invisible" />
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

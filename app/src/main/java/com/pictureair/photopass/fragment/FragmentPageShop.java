@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,13 +36,14 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
-import cn.smssdk.gui.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * shop类
@@ -54,6 +56,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     //申明控件
     private ImageView shoppingBag;
     private TextView cartCountTextView;
+    private SwipeRefreshLayout refreshLayout;
     private ListView xListView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private CustomProgressDialog customProgressDialog;
@@ -74,10 +77,10 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
     private final Handler fragmentPageShopHandler = new FragmentPageShopHandler(this);
 
-    private static class FragmentPageShopHandler extends Handler{
+    private static class FragmentPageShopHandler extends Handler {
         private final WeakReference<FragmentPageShop> mActivity;
 
-        public FragmentPageShopHandler(FragmentPageShop activity){
+        public FragmentPageShopHandler(FragmentPageShop activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -93,12 +96,16 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_GOODS_SUCCESS://成功获取商品
                 customProgressDialog.dismiss();
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                }
                 allGoodsList.clear();
                 PictureAirLog.v(TAG, "GET_GOODS_SUCCESS");
                 GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
@@ -154,7 +161,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 PictureAirLog.v(TAG, "onclick with reload");
                 customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
                 //重新加载数据
-                initData();
+                initData(true);
                 break;
 
             default:
@@ -169,6 +176,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         //找控件
         shoppingBag = (ImageView) view.findViewById(R.id.frag3_cart);
         cartCountTextView = (TextView) view.findViewById(R.id.textview_cart_count);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         xListView = (ListView) view.findViewById(R.id.shopListView);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.shopNoNetWorkView);
 
@@ -188,6 +196,16 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
         xListView.setAdapter(shopGoodListViewAdapter);
         //绑定监听
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        refreshLayout.setEnabled(true);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                PictureAirLog.out("start refresh");
+                initData(true);
+            }
+        });
+
         shoppingBag.setOnClickListener(this);
         cartCountTextView.setOnClickListener(this);
         xListView.setOnItemClickListener(new OnItemClickListener() {
@@ -212,16 +230,23 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             }
         });
         xListView.setOnScrollListener(new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true));
-        initData();//初始化数据
+        initData(false);//初始化数据
         return view;
     }
 
     /**
      * 初始化数据
      */
-    public void initData() {
-        //从缓层中获取数据
-        String goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
+    public void initData(boolean isClearCache) {
+        String goodsByACache = "";
+        if (isClearCache) {
+            //清空緩存，重新拉取数据
+            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, "");
+            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, "");
+        } else {
+            //从缓层中获取数据
+            goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
+        }
         PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
         if (goodsByACache != null && !goodsByACache.equals("")) {
             fragmentPageShopHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
@@ -233,7 +258,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 showNetWorkView();
             }
         }
-
     }
 
     /**
