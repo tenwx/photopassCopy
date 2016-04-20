@@ -462,7 +462,7 @@
     <string name="select_cpupon">Select Coupon</string>
     <string name="discount_price">Deduct</string>
     <string name="incorrect_coupon">Incorrect Coupon</string>
-    <string name="coupon_incalid">此抵用券不适用当前商品</string>
+    <string name="coupon_incalid">This coupon cannot support for this good</string>
     <!-- 优惠卷end-->
 
 </resources>
