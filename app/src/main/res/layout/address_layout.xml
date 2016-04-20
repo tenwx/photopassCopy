@@ -174,10 +174,12 @@
                         android:textColor="@color/pp_gray" />
 
                     <TextView
+                        android:id="@+id/coupon_subtract_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/coupon_price_unit_tv"
                         android:text="-"
+                        android:visibility="gone"
                         android:textColor="@color/pp_orange" />
 
                     <TextView
@@ -213,10 +215,12 @@
                         android:textColor="@color/pp_gray" />
 
                     <TextView
+                        android:id="@+id/discount_subtract_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/discount_price_unit_tv"
                         android:text="-"
+                        android:visibility="gone"
                         android:textColor="@color/pp_gray" />
 
                     <TextView

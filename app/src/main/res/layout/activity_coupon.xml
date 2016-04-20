@@ -43,6 +43,7 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/pp_margin_10"
+            android:padding="@dimen/pp_padding_10"
             android:text="@string/no_coupon"
             android:textColor="@color/gray"
             android:textSize="@dimen/text_size_18" />

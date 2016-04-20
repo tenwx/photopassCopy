@@ -211,9 +211,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             currentLanguage = MyApplication.getInstance().getLanguageType();
         }
         PictureAirLog.out("pushcount-->" + application.getPushPhotoCount());
-        if (application.getPushPhotoCount() > 0) {//显示红点
+        if (application.getPushPhotoCount() + application.getPushViedoCount() > 0) {//显示红点
             waterDropView.setVisibility(View.VISIBLE);
-            application.setPushPhotoCount(0);
         }
 
         // 接收消息回复

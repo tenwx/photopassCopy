@@ -6,6 +6,8 @@
     <string name="smssdk_pwd_no">Password inconsistency</string>
     <string name="smssdk_pwd">Password</string>
     <string name="smssdk_pwd2">Retype your password</string>
+    <string name="smssdk_pwd_forget">Please enter new password</string>
+    <string name="smssdk_pwd2_forget">Retype your password</string>
     <string name="smssdk_send_verification_code">Verification</string>
     <string name="smssdk_sign_up">Sign Up</string>
     <string name="smssdk_other_sign_up">Register in other ways</string>
@@ -18,7 +20,7 @@
     <string name="smssdk_write_mobile_phone">Mobile Number</string>
     <string name="smssdk_write_right_mobile_phone">Please input the correct phone number</string>
     <string name="smssdk_write_identify_code">Verification</string>
-    <string name="smssdk_submit">Submit</string>
+    <string name="smssdk_submit">OK</string>
     <string name="smssdk_identify_code">Verification code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
     <string name="smssdk_choose_country">Choose country</string>

@@ -69,6 +69,7 @@ public class AppExitUtil {
 
                     MyApplication.getInstance().photoPassPicList.clear();
                     MyApplication.getInstance().setPushPhotoCount(0);
+                    MyApplication.getInstance().setPushViedoCount(0);
                     MyApplication.getInstance().scanMagicFinish = false;
                     MyApplication.getInstance().fragmentStoryLastSelectedTab = 0;
                     pictureAirDbManager.deleteAllInfoFromTable(Common.PHOTOPASS_INFO_TABLE);

@@ -83,7 +83,7 @@
     <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">收藏</string>
-    <string name="story_no_pp">请扫描您的上海迪士尼主题乐园门票或者迪士尼乐拍通卡预览您的照片。</string>
+    <string name="story_no_pp">请扫描您的上海迪士尼乐园门票或者迪士尼乐拍通卡预览您的照片。</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
     <string name="no_photo_in_magiccam">没有照片, 赶快去寻找乐园摄影师拍照吧!</string>
@@ -110,7 +110,7 @@
     <string name="auto">扫描</string>
     <string name="scan_qr_code">二维码</string>
     <string name="scan_ppp_code">迪士尼乐拍通一卡通</string>
-    <string name="scan_intro">请扫描您的上海迪士尼主题乐园门票或者迪士尼乐拍通卡上的二维码，更快获得你们的游玩照片。</string>
+    <string name="scan_intro">请扫描您的上海迪士尼乐园门票或者迪士尼乐拍通卡上的二维码，更快获得你们的游玩照片。</string>
     <string name="re_scan">重扫</string>
     <string name="textview_center_hint">请将迪士尼乐拍通一卡通卡背面置于此区域，尝试对齐边缘</string>
     <string name="camera_closed">请先在设置中打开相机权限</string>
@@ -274,7 +274,7 @@
     <string name="payment_ways">支付方式</string>
     <string name="zfbzf">支付宝</string>
     <string name="yhkzf">银联</string>
-    <string name="paypalzf">VISA</string>
+    <string name="paypalzf">VISA, MasterCard, JCB</string>
     <string name="zfbsm">推荐使用支付宝账号</string>
     <string name="yhksm">支持银联卡</string>
     <string name="paypalsm">支持国际信用卡支付</string>
@@ -445,27 +445,35 @@
     <string name="delete_percent">正在删除%1$d/%2$d</string>
     <!-- edit story end -->
 
-    <!-- 我的优惠卷 start-->
-    <string name="my_coupon">我的抵用卷</string>
+    <!-- 我的优惠券 start-->
+    <string name="my_coupon">我的抵用券</string>
     <string name="coupon">抵用券</string>
     <string name="coupon_exchange_use">添加</string>
     <string name="coupon_scan">扫描</string>
     <string name="shop_price">商品金额</string>
-    <string name="coupon_price">优惠券抵用</string>
+    <string name="coupon_price">抵用券抵用</string>
     <string name="pay_price">实际支付</string>
-    <string name="coupon_count">有%1$d张优惠券可用</string>
-    <string name="no_coupon">您还没有可使用的优惠卷</string>
+    <string name="coupon_count">有%1$d张抵用券可用</string>
+    <string name="no_coupon">您还没有可使用的抵用券</string>
     <string name="has_been_used">已使用</string>
     <string name="expired">已过期</string>
     <string name="discount">折</string>
-    <string name="conpon_input_hint">请输入抵用卷兑换码</string>
+    <string name="conpon_input_hint">请输入抵用券兑换码</string>
     <string name="select_cpupon">使用抵用劵</string>
     <string name="discount_price">优惠立减</string>
     <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
     <string name="coupon_incalid">此抵用券不适用当前商品</string>
 
 
-    <!-- 我的优惠卷 end-->
+    <!-- 我的优惠券 end-->
+
+    <!-- postcard start-->
+    <string name="customized_postcard">定制明信片(三联套)</string>
+    <string name="postcard_type">款式</string>
+    <string name="preview_goods">预览商品(%1$d/%2$d)</string>
+    <string name="preview_goods_null">预览商品(0/3)</string>
+
+    <!-- postcard end-->
 
 
 

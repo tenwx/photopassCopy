@@ -38,8 +38,8 @@ public class Common {
 //    public static final String ALIPAY_NOTIFY = "http://211.144.223.226:3006/api/alipayNotify";//alipay的异步通知URL
 //    public static final String WECHAT_NOTIFY = "http://211.144.223.226:3006/api/weChatNotify";//wechat的异步通知URL
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
-//    public final static String POLICY_AGREEMENT = "http://211.144.223.224:3000/policy.html";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://211.144.223.224:3000/terms.html";  //条款 2
+//    public final static String POLICY_AGREEMENT = "http://211.144.223.224:3000/policy.html?source=outer";  //政策 1
+//    public final static String TERMS_AGREEMENT = "http://211.144.223.224:3000/terms.html?source=outer";  //条款 2
 
     /**
      * 外网可访问的8.3测试服务器

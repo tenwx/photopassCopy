@@ -84,7 +84,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
 
     private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
-            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv;
+            shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv, couponSubtractTv, discountSubtractTv;
 
     private int couponCount = 0;//优惠券数量
     private float payPrice = 0;//优惠后总费
@@ -384,6 +384,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         payPriceTv = (TextView) view.findViewById(R.id.pay_price_tv);
         discountPriceTv = (TextView) view.findViewById(R.id.discount_price_tv);
         discountPriceUnitTv = (TextView) view.findViewById(R.id.discount_price_unit_tv);
+        couponSubtractTv = (TextView) view.findViewById(R.id.coupon_subtract_tv);
+        discountSubtractTv = (TextView) view.findViewById(R.id.discount_subtract_tv);
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
         if (isHeader) {
@@ -439,6 +441,22 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         } else {
             couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) straightwayPreferentialPrice);
         }
+
+        PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice );
+        if ((int) straightwayPreferentialPrice == 0){
+            couponSubtractTv.setVisibility(View.GONE);
+        }else {
+            couponSubtractTv.setVisibility(View.VISIBLE);
+        }
+
+        PictureAirLog.out("(int) disPrice " + (int) disPrice );
+
+        if ((int) disPrice == 0 ){
+            discountSubtractTv.setVisibility(View.GONE);
+        }else {
+            discountSubtractTv.setVisibility(View.VISIBLE);
+        }
+
         couponPriceTv.setText((int) straightwayPreferentialPrice + "");
         shopPriceTv.setText((int) totalprice + "");
         payPriceTv.setText(((int) payPrice + ""));

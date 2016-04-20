@@ -274,7 +274,7 @@
     <string name="payment_ways">Payment Methods</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
-    <string name="paypalzf">VISA</string>
+    <string name="paypalzf">VISA, MasterCard, JCB</string>
     <string name="zfbsm">Recommended</string>
     <string name="yhksm">Supported</string>
     <string name="paypalsm">Supported</string>
@@ -462,7 +462,15 @@
     <string name="select_cpupon">Select Coupon</string>
     <string name="discount_price">Deduct</string>
     <string name="incorrect_coupon">Incorrect Coupon</string>
-    <string name="coupon_incalid">此抵用券不适用当前商品</string>
+    <string name="coupon_incalid">This coupon cannot support for this good</string>
     <!-- 优惠卷end-->
+
+    <!-- postcard start-->
+    <string name="customized_postcard">定制明信片(三联套)</string>
+    <string name="postcard_type">款式</string>
+    <string name="preview_goods">预览商品(%1$d/%2$d)</string>
+    <string name="preview_goods_null">预览商品(0/3)</string>
+
+    <!-- postcard end-->
 
 </resources>

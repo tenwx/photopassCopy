@@ -506,6 +506,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 }
                 initBlur();
+                PictureAirLog.out("set enable in network");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
                 break;
@@ -525,6 +526,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (null != oriClearBmp) {
                     initBlur();
                 }
+                PictureAirLog.out("set enable in local");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
                 break;
@@ -808,10 +810,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             loadPhotoPassPhoto(photoInfo, isOnCreate);
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
             previewPhotoHandler.sendEmptyMessage(GET_LOCATION_AD);
+            PictureAirLog.out("set enable in get ad");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);
         } else {
             currentPhotoADTextView.setVisibility(View.GONE);
+            PictureAirLog.out("set enable in other conditions");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);
         }
