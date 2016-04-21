@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -112,6 +113,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
                     allGoodsList = goodsInfoJson.getGoods();
                     PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
+                    refreshLayout.setVisibility(View.VISIBLE);
                     noNetWorkOrNoCountView.setVisibility(View.GONE);
                     //更新界面
                     shopGoodListViewAdapter.refresh(allGoodsList);
@@ -131,6 +133,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
             case API1.GET_GOODS_FAILED://获取商品失败
                 //显示重新加载界面
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                }
                 customProgressDialog.dismiss();
                 showNetWorkView();
                 break;
@@ -229,7 +234,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 FragmentPageShop.this.startActivity(intent);
             }
         });
-        xListView.setOnScrollListener(new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true));
+//        xListView.setOnScrollListener(new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true));
+        xListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
+
         initData(false);//初始化数据
         return view;
     }
@@ -255,6 +262,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
                 API1.getGoods(fragmentPageShopHandler);
             } else {
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                }
                 showNetWorkView();
             }
         }
@@ -264,6 +274,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
      * 重新加载View
      */
     public void showNetWorkView() {
+        refreshLayout.setVisibility(View.GONE);
         customProgressDialog.dismiss();
         noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
         noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageShopHandler, true);
@@ -304,6 +315,45 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         fragmentPageShopHandler.removeCallbacksAndMessages(null);
         if (customProgressDialog != null && customProgressDialog.isShowing()) {
             customProgressDialog.dismiss();
+        }
+    }
+
+    /**
+     * 解决SwipeRefreshLayout下拉刷新冲突
+     */
+    public static class SwipeListViewOnScrollListener implements AbsListView.OnScrollListener {
+
+        private SwipeRefreshLayout mSwipeView;
+        private AbsListView.OnScrollListener mOnScrollListener;
+
+        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView) {
+            mSwipeView = swipeView;
+        }
+
+        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView,
+                                             AbsListView.OnScrollListener onScrollListener) {
+            mSwipeView = swipeView;
+            mOnScrollListener = onScrollListener;
+        }
+
+        @Override
+        public void onScrollStateChanged(AbsListView absListView, int i) {
+        }
+
+        @Override
+        public void onScroll(AbsListView absListView, int firstVisibleItem,
+                             int visibleItemCount, int totalItemCount) {
+            View firstView = absListView.getChildAt(firstVisibleItem);
+
+            // 当firstVisibleItem是第0位。如果firstView==null说明列表为空，需要刷新;或者top==0说明已经到达列表顶部, 也需要刷新
+            if (firstVisibleItem == 0 && (firstView == null || firstView.getTop() == 0)) {
+                mSwipeView.setEnabled(true);
+            } else {
+                mSwipeView.setEnabled(false);
+            }
+            if (null != mOnScrollListener) {
+                mOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
+            }
         }
     }
 }

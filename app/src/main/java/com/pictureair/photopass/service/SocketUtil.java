@@ -268,7 +268,7 @@ public class SocketUtil {
 
         } else if (envenStr.equals("delPhotos")) {//删除图片，以及删除pp对应的逻辑
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "delPhoto").sendToTarget();//清空推送，不能移动位置。
+                handler.obtainMessage(SOCKET_RECEIVE_DATA, "delPhotos").sendToTarget();//清空推送，不能移动位置。
                 message = (JSONObject) message.get("c");
             }
             //处理删除照片的逻辑

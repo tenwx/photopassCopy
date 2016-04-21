@@ -25,8 +25,8 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
 import com.pictureair.photopass.adapter.StickyGridAdapter;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.StoryFragmentEvent;
 import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
@@ -217,15 +217,25 @@ public class StoryFragment extends Fragment {
 				PictureAirLog.v(TAG,"点击了照片");
 				Intent i = new Intent();
 				i.setClass(getContext(), PreviewPhotoActivity.class);
-				i.putExtra("activity", "storyFragment");
-				i.putExtra("position", position);//在那个相册中的位置
-				i.putExtra("photoId", photoInfoArrayList.get(position).photoId);
-				i.putExtra("targetphotos", targetArrayList);
-				i.putExtra("photos", photoInfoArrayList);//那个相册的全部图片路径
+				Bundle bundle = new Bundle();
+				bundle.putInt("position", position);
+				bundle.putParcelableArrayList("photos", photoInfoArrayList);
+				i.putExtra("bundle", bundle);
 				getContext().startActivity(i);
 			}
 		}
 	}
+
+	//				Bundle bundle = new Bundle();
+//				PhotoPreviewInfo photoPreviewInfo = new PhotoPreviewInfo();
+//				photoPreviewInfo.activity = "storyFragment";
+//				photoPreviewInfo.position = position;//在那个相册中的位置
+//				photoPreviewInfo.photoId = photoInfoArrayList.get(position).photoId;
+//				photoPreviewInfo.targetphotos = targetArrayList;
+//				photoPreviewInfo.photos = photoInfoArrayList;//那个相册的全部图片路径
+//				bundle.putParcelable("photopreviewinfo", photoPreviewInfo);
+//				i.putExtra("bundle", bundle);
+//				getContext().startActivity(i);
 	
 	@Override
 	public void onResume() {

@@ -34,7 +34,6 @@ import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
@@ -45,6 +44,7 @@ import com.pictureair.photopass.widget.MyToast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
 
 /**
@@ -157,11 +157,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 photoURLlist.get(0).isPayed = 1;
 
                 Intent intent = new Intent(SelectPhotoActivity.this, PreviewPhotoActivity.class);
-                intent.putExtra("activity", "selectphotoactivity");
-                intent.putExtra("position", 0);// 在那个相册中的位置
-                intent.putExtra("photoId", photoURLlist.get(0).photoId);
-                intent.putExtra("photos", photoURLlist);// 那个相册的全部图片路径
-                intent.putExtra("targetphotos", myApplication.magicPicList);
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", 0);
+                bundle.putParcelableArrayList("photos", photoURLlist);
+                intent.putExtra("bundle", bundle);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(Common.NEED_FRESH, true);
                 editor.commit();

@@ -998,6 +998,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         PictureAirLog.out("video from db ---->" + resultVideoArrayList.size());
         ppPhotoCount = resultPhotoArrayList.size();
         app.photoPassPicList.addAll(resultPhotoArrayList);
+//        app.photoPassPicList.addAll(resultPhotoArrayList);
+//        app.photoPassPicList.addAll(resultPhotoArrayList);
         app.photoPassVideoList.addAll(resultVideoArrayList);
     }
 

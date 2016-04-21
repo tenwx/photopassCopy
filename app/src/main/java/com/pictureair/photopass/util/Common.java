@@ -42,6 +42,17 @@ public class Common {
 //    public final static String TERMS_AGREEMENT = "http://211.144.223.224:3000/terms.html?source=outer";  //条款 2
 
     /**
+     *  域名线上服务器
+     */
+    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
+    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
+    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
+    public final static String POLICY_AGREEMENT = "http://www.disneyphotopass.com.cn/policy.html?source=outer";  //政策 1
+    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+
+    /**
      * 外网可访问的8.3测试服务器
      */
 //    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
@@ -53,35 +64,23 @@ public class Common {
 //    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
 
 
-//    public static final String BASE_URL_TEST = "http://172.16.30.225:3006";
-
     /**
      * 内网8.3测试服务器
      */
-    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
-    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
-    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
-
-
-    /**
-     *  域名线上服务器
-     */
-//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
-//    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
 //    public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
-//    public final static String POLICY_AGREEMENT = "http://www.disneyphotopass.com.cn/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+//    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
+//    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
+
+
 
 
     public final static String VERSION_CODE = "V1.0.0";//开发版
     public final static boolean DEBUG = true;// true，打印log， false，不打印log
-    public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
+    public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
 
 
     //接口

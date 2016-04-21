@@ -563,11 +563,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.v("photoId---->", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
 
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
-                intent.putExtra("activity", "paymentorderactivity");
-                intent.putExtra("position", myApplication.getIsBuyingIndex());// 在那个相册中的位置
-                intent.putExtra("photoId", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
-                intent.putExtra("photos", photopassArrayList);// 那个相册的全部图片路径
-                intent.putExtra("targetphotos", myApplication.magicPicList);
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", myApplication.getIsBuyingIndex());
+                bundle.putParcelableArrayList("photos", photopassArrayList);
+                intent.putExtra("bundle", bundle);
 
                 // 清空标记
                 myApplication.clearIsBuyingPhotoList();

@@ -500,12 +500,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (null != oriClearBmp) {
                     PictureAirLog.v(TAG, "bitmap 2 not null");
+                    initBlur();
                 } else {
                     PictureAirLog.v(TAG, "oriClearBmp null-->");
                     loadFailed = true;
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 }
-                initBlur();
                 PictureAirLog.out("set enable in network");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
@@ -650,13 +650,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         lastPhotoImageView.setOnClickListener(this);
         nextPhotoImageView.setOnClickListener(this);
         PictureAirLog.v(TAG, "----------------------->initing...1");
-        PictureAirLog.v(TAG, "photoid ===== " + getIntent().getStringExtra("photoId"));
 
         //获取intent传递过来的信息
         photolist = new ArrayList<>();
-        photolist.addAll((ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photos"));//获取图片路径list
-        targetphotolist = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("targetphotos");
-        currentPosition = getIntent().getIntExtra("position", 0);
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
+        photolist.addAll(temp);
+        currentPosition = bundle.getInt("position", 0);
+        targetphotolist = new ArrayList<>();
+        targetphotolist.addAll(myApplication.magicPicList);
 
         PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
 

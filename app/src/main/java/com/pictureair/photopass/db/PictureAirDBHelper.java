@@ -19,10 +19,8 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 public class PictureAirDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "PhotoInfoDBHelper";
-    private static PictureAirDBHelper photoInfoDBHelper;
     private final String SQL_CREATE_TABLE_THREAD = "create table if not exists " + Common.THREAD_INFO + "(_id integer primary key autoincrement," +
             "thread_id integer,url text,start integer,end integer,finished integer)";
-    private final String SQL_DELETE_TABLE_THREAD = "drop table if exists " + Common.THREAD_INFO;
 
 
     public PictureAirDBHelper(Context context) {
@@ -77,20 +75,20 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + Common.PHOTOPASS_INFO_TABLE +
                         "(_id integer primary key autoincrement, " +
-                        "photoId varchar(30)," +
-                        "photoCode varchar(180)," +
-                        "shootTime varchar(12), " +
-                        "originalUrl varchar(100), " +
-                        "previewUrl varchar(100), " +
-                        "previewUrl_512 varchar(100), " +
-                        "previewUrl_1024 varchar(100)," +
-                        "locationId varchar(10), " +
-                        "shootOn varchar(30), " +
+                        "photoId text," +
+                        "photoCode text," +
+                        "shootTime text, " +
+                        "originalUrl text, " +
+                        "previewUrl text, " +
+                        "previewUrl_512 text, " +
+                        "previewUrl_1024 text," +
+                        "locationId text, " +
+                        "shootOn text, " +
                         "isLove integer, " +
                         "isPay integer, " +
-                        "locationName varchar(100), " +
-                        "locationCountry varchar(100), " +
-                        "shareURL varchar(100), " +
+                        "locationName text, " +
+                        "locationCountry text, " +
+                        "shareURL text, " +
                         "isVideo integer, " +
                         "fileSize integer, " +
                         "videoWidth integer, " +
@@ -125,21 +123,21 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + Common.FAVORITE_INFO_TABLE +
                         "(_id integer primary key autoincrement, " +
-                        "userId varchar(30), " +
-                        "photoId varchar(30), " +
-                        "photoCode varchar(180), " +
-                        "shootTime varchar(12), " +
-                        "originalUrl varchar(100), " +
-                        "previewUrl varchar(100), " +
-                        "previewUrl_512 varchar(100), " +
-                        "previewUrl_1024 varchar(100)," +
-                        "locationId varchar(10), " +
-                        "shootOn varchar(30), " +
+                        "userId text, " +
+                        "photoId text, " +
+                        "photoCode text, " +
+                        "shootTime text, " +
+                        "originalUrl text, " +
+                        "previewUrl text, " +
+                        "previewUrl_512 text, " +
+                        "previewUrl_1024 text," +
+                        "locationId text, " +
+                        "shootOn text, " +
                         "isLove integer, " +
                         "isPay integer, " +
-                        "locationName varchar(100), " +
-                        "locationCountry varchar(100), " +
-                        "shareURL varchar(100), " +
+                        "locationName text, " +
+                        "locationCountry text, " +
+                        "shareURL text, " +
                         "isVideo integer, " +
                         "fileSize integer, " +
                         "videoWidth integer, " +
@@ -156,8 +154,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + Common.FIRST_START_ACTIVITY_INFO_TABLE +
                 "(_id integer primary key autoincrement, " +
-                "activity varchar(40), " +
-                "userId varchar(30))");
+                "activity text, " +
+                "userId text)");
 
         /**
          * 创建help页面的问题表
@@ -170,9 +168,9 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         db.execSQL("create table if not exists " + Common.HELP_QUESTION_TABLE
                 + "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "questionId INTEGER, " +
-                "question varchar(255), " +
-                "answer varchar(255), " +
-                "pinyin varchar(255))");
+                "question text, " +
+                "answer text, " +
+                "pinyin text)");
 
         /**
          * 创建边框以及饰品的表
@@ -192,14 +190,14 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + Common.FRAME_STICKER_TABLES
                 + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "frameName varchar(40), " +
-                "originalPathLandscape varchar(100), " +
-                "originalPathPortrait varchar(100), " +
-                "thumbnailPathLandscape400 varchar(100), " +
-                "thumbnailPathPortrait400 varchar(100), " +
-                "thumbnailPathH160 varchar(100)," +
-                "thumbnailPathV160 varchar(100), " +
-                "locationId varchar(20), " +
+                "frameName text, " +
+                "originalPathLandscape text, " +
+                "originalPathPortrait text, " +
+                "thumbnailPathLandscape400 text, " +
+                "thumbnailPathPortrait400 text, " +
+                "thumbnailPathH160 text," +
+                "thumbnailPathV160 text, " +
+                "locationId text, " +
                 "isActive integer, " +
                 "onLine integer, " +
                 "isDownload integer, " +
@@ -214,8 +212,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + Common.PAYMENT_ORDER
                 + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "userId varchar(255), " +
-                "orderId varchar(255))");
+                "userId text, " +
+                "orderId text)");
 
         /**
          * 广告地点信息
@@ -225,7 +223,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + Common.AD_LOCATION
                 + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "locationId varchar(255), " +
+                "locationId text, " +
                 "descriptionCH text, " +
                 "descriptionEN text)");
 

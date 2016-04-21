@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
@@ -218,11 +217,17 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				Intent i = new Intent();
 
 				i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
-				i.putExtra("activity", "EditStoryAlbumActivity");
-				i.putExtra("position", position);//在那个相册中的位置
-				i.putExtra("photoId", albumArrayList.get(position).photoId);
-				i.putExtra("photos", albumArrayList);//那个相册的全部图片路径
-				i.putExtra("targetphotos", ((MyApplication) getApplication()).magicPicList);
+//				i.putExtra("activity", "EditStoryAlbumActivity");
+//				i.putExtra("position", position);//在那个相册中的位置
+//				i.putExtra("photoId", albumArrayList.get(position).photoId);
+//				i.putExtra("photos", albumArrayList);//那个相册的全部图片路径
+//				i.putExtra("targetphotos", ((MyApplication) getApplication()).magicPicList);
+//				startActivity(i);
+
+				Bundle bundle = new Bundle();
+				bundle.putInt("position", position);
+				bundle.putParcelableArrayList("photos", albumArrayList);
+				i.putExtra("bundle", bundle);
 				startActivity(i);
 			}
 		});

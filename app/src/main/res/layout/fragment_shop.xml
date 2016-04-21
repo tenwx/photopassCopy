@@ -48,14 +48,15 @@
 
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clickable="false">
 
             <ListView
                 android:id="@+id/shopListView"
@@ -65,14 +66,15 @@
                 android:divider="@color/gray_light"
                 android:dividerHeight="@dimen/pp_height_5"
                 android:scrollbars="none" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
-            <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
-                android:id="@+id/shopNoNetWorkView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/tt"
-                android:visibility="invisible" />
-        </RelativeLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+            android:id="@+id/shopNoNetWorkView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tt"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
 
 </LinearLayout>

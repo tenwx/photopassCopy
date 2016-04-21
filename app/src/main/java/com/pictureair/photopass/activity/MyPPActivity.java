@@ -446,12 +446,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             photopassArrayList.get(j).onLine = 1;
         }
         i.setClass(this, PreviewPhotoActivity.class);
-        i.putExtra("activity", "myPPActivity");
-        i.putExtra("position", photopassArrayList.indexOf(photoInfo) + "");//在那个相册中的位置
-        i.putExtra("photoId", photoInfo.photoId);
-        i.putExtra("photos", photopassArrayList);//那个相册的全部图片路径
-        i.putExtra("targetphotos", MyApplication.getInstance().magicPicList);
-
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", photopassArrayList.indexOf(photoInfo));
+        bundle.putParcelableArrayList("photos", photopassArrayList);
+        i.putExtra("bundle", bundle);
         startActivity(i);
 
     }
