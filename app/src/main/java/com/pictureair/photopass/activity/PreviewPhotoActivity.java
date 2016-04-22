@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
@@ -41,6 +43,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -53,6 +56,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.JsonTools;
+import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -62,8 +66,10 @@ import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -108,6 +114,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     //图片显示框架
     private ArrayList<PhotoInfo> photolist;
     private ArrayList<PhotoInfo> targetphotolist;
+    private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
     private int currentPosition;//记录当前预览照片的索引值
 
 
@@ -339,6 +346,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.BUY_PHOTO_SUCCESS:
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->buy photo success");
                     dialog.dismiss();
                 }
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
@@ -367,6 +375,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case API1.BUY_PHOTO_FAILED:
                 //购买失败
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->by foto fild");
                     dialog.dismiss();
                 }
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
@@ -399,6 +408,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.GET_GOODS_FAILED:
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->get gds fild");
                     dialog.dismiss();
                 }
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
@@ -406,6 +416,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.ADD_TO_CART_FAILED:
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->add to crt fild");
                     dialog.dismiss();
                 }
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
@@ -414,6 +425,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.ADD_TO_CART_SUCCESS:
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->add cart succe");
                     dialog.dismiss();
                 }
                 JSONObject jsonObject = (JSONObject) msg.obj;
@@ -496,6 +508,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case LOAD_FROM_NETWORK:
                 //添加模糊
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->network");
                     dialog.dismiss();
                 }
                 if (null != oriClearBmp) {
@@ -521,6 +534,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
                 if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->local");
                     dialog.dismiss();
                 }
                 if (null != oriClearBmp) {
@@ -573,6 +587,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else {
                     //从网络获取
                     API1.getADLocations(previewPhotoHandler);
+                }
+                if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->ad");
+                    dialog.dismiss();
                 }
                 break;
 
@@ -651,37 +669,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         nextPhotoImageView.setOnClickListener(this);
         PictureAirLog.v(TAG, "----------------------->initing...1");
 
-        //获取intent传递过来的信息
-        photolist = new ArrayList<>();
-        Bundle bundle = getIntent().getBundleExtra("bundle");
-        ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
-        photolist.addAll(temp);
-        currentPosition = bundle.getInt("position", 0);
-        targetphotolist = new ArrayList<>();
-        targetphotolist.addAll(myApplication.magicPicList);
-
-        PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
-
-        PictureAirLog.out("photolist size ---->" + photolist.size());
-        Iterator<PhotoInfo> photoInfoIterator = photolist.iterator();
-        while (photoInfoIterator.hasNext()) {
-            PhotoInfo info = photoInfoIterator.next();
-            if (info.isVideo == 1) {
-                photoInfoIterator.remove();
-            }
-        }
-        PictureAirLog.out("photolist size ---->" + photolist.size());
-        PictureAirLog.out("currentPosition ---->" + currentPosition);
-        currentPosition = photolist.indexOf(currentPhotoInfo);
-        PictureAirLog.out("currentPosition ---->" + currentPosition);
-
-
-        PictureAirLog.v(TAG, "photo size is " + photolist.size());
-        PictureAirLog.v(TAG, "thumbnail is " + photolist.get(currentPosition).photoThumbnail);
-        PictureAirLog.v(TAG, "thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);
-        PictureAirLog.v(TAG, "thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
-        PictureAirLog.v(TAG, "original is " + photolist.get(currentPosition).photoPathOrURL);
-        PictureAirLog.v(TAG, "----------------------->initing...2");
         Configuration cf = getResources().getConfiguration();
         int ori = cf.orientation;
         if (ori == Configuration.ORIENTATION_LANDSCAPE) {
@@ -692,7 +679,104 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             originalRadius = (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
         }
         curRadius = originalRadius;
-        previewPhotoHandler.sendEmptyMessage(7);
+        dialog.show();
+        getPreviewPhotos();
+    }
+
+    private void getLocation(){
+        try {
+            JSONObject response = JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
+            JSONArray resultArray = response.getJSONArray("locations");
+            for (int i = 0; i < resultArray.size(); i++) {
+                JSONObject object = resultArray.getJSONObject(i);
+                DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
+                locationList.add(locationInfo);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getPreviewPhotos() {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                //获取本地图片
+                targetphotolist = new ArrayList<>();
+                targetphotolist.addAll(AppUtil.getLocalPhotos(PreviewPhotoActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
+                Collections.sort(targetphotolist);
+
+                //获取intent传递过来的信息
+                photolist = new ArrayList<>();
+                Bundle bundle = getIntent().getBundleExtra("bundle");
+                currentPosition = bundle.getInt("position", 0);
+                String tabName = bundle.getString("tab");
+                long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+
+                if (tabName.equals("all")) {//获取全部照片
+                    getLocation();
+                    try {
+                        photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
+                                pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
+                                simpleDateFormat, MyApplication.getInstance().getLanguageType()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (tabName.equals("photopass")) {//获取pp图片
+                    getLocation();
+                    try {
+                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
+                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (tabName.equals("local")) {//获取本地图片
+                    photolist.addAll(targetphotolist);
+
+                } else if (tabName.equals("bought")) {//获取已经购买的图片
+                    getLocation();
+                    try {
+                        photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
+                                simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (tabName.equals("favourite")) {//获取收藏图片
+                    photolist.addAll(AppUtil.insterSortFavouritePhotos(
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)))));
+
+                } else {//获取列表图片
+                    ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
+                    photolist.addAll(temp);
+                }
+
+                PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
+
+                PictureAirLog.out("photolist size ---->" + photolist.size());
+                Iterator<PhotoInfo> photoInfoIterator = photolist.iterator();
+                while (photoInfoIterator.hasNext()) {
+                    PhotoInfo info = photoInfoIterator.next();
+                    if (info.isVideo == 1) {
+                        photoInfoIterator.remove();
+                    }
+                }
+                PictureAirLog.out("photolist size ---->" + photolist.size());
+                PictureAirLog.out("currentPosition ---->" + currentPosition);
+                currentPosition = photolist.indexOf(currentPhotoInfo);
+                PictureAirLog.out("currentPosition ---->" + currentPosition);
+                PictureAirLog.v(TAG, "photo size is " + photolist.size());
+                PictureAirLog.v(TAG, "thumbnail is " + photolist.get(currentPosition).photoThumbnail);
+                PictureAirLog.v(TAG, "thumbnail 512 is " + photolist.get(currentPosition).photoThumbnail_512);
+                PictureAirLog.v(TAG, "thumbnail 1024 is " + photolist.get(currentPosition).photoThumbnail_1024);
+                PictureAirLog.v(TAG, "original is " + photolist.get(currentPosition).photoPathOrURL);
+                PictureAirLog.v(TAG, "----------------------->initing...2");
+                previewPhotoHandler.sendEmptyMessage(7);
+            }
+        }.start();
     }
 
     private void createBlurDialog(){
@@ -820,6 +904,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             PictureAirLog.out("set enable in other conditions");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);
+            if (dialog.isShowing()) {
+                PictureAirLog.out("dismiss--->other");
+                dialog.dismiss();
+            }
         }
 
         if (isLandscape) {//横屏模式

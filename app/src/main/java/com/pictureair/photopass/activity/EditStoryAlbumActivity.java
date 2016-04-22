@@ -226,6 +226,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", position);
+				bundle.putString("tab", "other");
 				bundle.putParcelableArrayList("photos", albumArrayList);
 				i.putExtra("bundle", bundle);
 				startActivity(i);

@@ -683,6 +683,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             //选择优惠码返回 请求API使用优惠券
             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
             couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
+            couponCount = data.getExtras().getInt("couponCount", 0);
+            couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
             } else {

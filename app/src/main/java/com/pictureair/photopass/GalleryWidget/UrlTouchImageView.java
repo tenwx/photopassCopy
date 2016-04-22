@@ -147,6 +147,7 @@ public class UrlTouchImageView extends RelativeLayout {
                 // TODO Auto-generated method stub
                 super.onLoadingComplete(imageUri, view, loadedImage);
 //                bitmap = loadedImage;
+                progressImageView.setImageResource(getImageResource(100));
                 bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
                 handler.sendEmptyMessage(LOAD_FILE_DONE);
 

@@ -139,15 +139,15 @@
                 android:paddingBottom="@dimen/pp_padding_5"
                 android:text="&lt;"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_20"/>
+                android:textSize="@dimen/text_size_20"
+                android:visibility="invisible"/>
 
             <TextView
                 android:id="@+id/current_index"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/photo_index"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_16"/>
 
             <TextView
                 android:id="@+id/index_next"
@@ -159,7 +159,8 @@
                 android:paddingBottom="@dimen/pp_padding_5"
                 android:text="&gt;"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_20"/>
+                android:textSize="@dimen/text_size_20"
+                android:visibility="invisible"/>
         </LinearLayout>
 
         <TextView

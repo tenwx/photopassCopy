@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -10,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
 
@@ -34,10 +34,10 @@ public class WebViewActivity extends BaseActivity {
         webView.setWebViewClient(new MyWebViewClient()); // 监听 进度条 事件。
         initWebSettings();// 初始化webViewsetting
         if (key == 1){
-            webView.loadUrl(Common.POLICY_AGREEMENT);
+            webView.loadUrl(Common.POLICY_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
             setTopTitleShow(R.string.policy); // 设置标题
         }else if(key == 2){
-            webView.loadUrl(Common.TERMS_AGREEMENT);
+            webView.loadUrl(Common.TERMS_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
             setTopTitleShow(R.string.terms); // 设置标题
         }
     }

@@ -448,6 +448,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         i.setClass(this, PreviewPhotoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("position", photopassArrayList.indexOf(photoInfo));
+        bundle.putString("tab", "other");
         bundle.putParcelableArrayList("photos", photopassArrayList);
         i.putExtra("bundle", bundle);
         startActivity(i);

@@ -565,6 +565,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", myApplication.getIsBuyingIndex());
+                bundle.putString("tab", "other");
                 bundle.putParcelableArrayList("photos", photopassArrayList);
                 intent.putExtra("bundle", bundle);
 

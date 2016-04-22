@@ -145,8 +145,15 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
             for (int i = 0; i < mSelectData.size(); i++) {
                 array.add(mSelectData.get(i).getCpCode());
             }
+            int availableCount = 0;
+            for (int i = 0; i < mAllData.size(); i++) {
+                if (mAllData.get(i).isApplyThisProduct()){
+                    availableCount++;
+                }
+            }
             PictureAirLog.out("array.toString()" + array.toString());
             intent.putExtra("couponCodes", array.toString());
+            intent.putExtra("couponCount", availableCount);
             setResult(RESULT_OK, intent);
         }
         finish();

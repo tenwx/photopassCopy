@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,6 +35,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 
@@ -64,6 +67,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -1183,6 +1187,239 @@ public class AppUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 判断是否有sd卡
+     * @return
+     */
+    public static boolean hasSDCard() {
+        return Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+    }
+
+    /**
+     * 扫描本地文件夹
+     * @param context
+     * @param filePath
+     * @param albumName
+     * @return
+     */
+    public static ArrayList<PhotoInfo> getLocalPhotos(Context context, String filePath, String albumName) {
+        PictureAirLog.out("---------->scan" + albumName);
+        ArrayList<PhotoInfo> resultList = new ArrayList<>();
+        PhotoInfo selectPhotoItemInfo;
+        if (!hasSDCard()) {//如果SD卡不存在
+            return resultList;
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {//如果文件不存在，创建文件夹
+            file.mkdirs();
+            return  resultList;
+        }
+        File[] files = file.listFiles();
+        Date date;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
+                if (files[i].length() > 0) {//扫描到文件
+                    selectPhotoItemInfo = new PhotoInfo();
+                    selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
+                    selectPhotoItemInfo.lastModify = files[i].lastModified();
+                    date = new Date(selectPhotoItemInfo.lastModify);
+                    selectPhotoItemInfo.shootOn = sdf.format(date);
+                    selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
+                    selectPhotoItemInfo.isChecked = 0;
+                    selectPhotoItemInfo.isSelected = 0;
+                    selectPhotoItemInfo.showMask = 0;
+                    selectPhotoItemInfo.locationName = context.getString(R.string.story_tab_magic);
+                    selectPhotoItemInfo.isPayed = 1;
+                    selectPhotoItemInfo.onLine = 0;
+                    selectPhotoItemInfo.isVideo = 0;
+                    selectPhotoItemInfo.isHasPreset = 0;
+                    resultList.add(selectPhotoItemInfo);
+                    PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+                }
+            }
+        }
+        return resultList;
+    }
+
+    /**
+     * 获取预览图片需要的图片列表
+     * @param locationList
+     * @param pictureAirDbManager
+     * @param deleteTime
+     * @param sdf
+     * @param language
+     * @return
+     * @throws ParseException
+     */
+    public static ArrayList<PhotoInfo> getSortedPhotoPassPhotos(ArrayList<DiscoverLocationItemInfo> locationList,
+                                                                PictureAirDbManager pictureAirDbManager, String deleteTime,
+                                                                SimpleDateFormat sdf, String language, boolean isBought) throws ParseException {
+        //从数据库获取图片
+        ArrayList<PhotoInfo> photoList;
+        if (isBought) {//获取已经购买的pp照片
+            photoList = pictureAirDbManager.getPhotoFromPhotoPassInfo(deleteTime, true);
+        } else {//获取全部照片
+            photoList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
+        }
+        //将图片按照地点组合
+        ArrayList<PhotoItemInfo> photoItemInfoArrayList = getPhotoItemInfoList(locationList, photoList, sdf, language);
+        //将新的数据进行排序
+        Collections.sort(photoItemInfoArrayList);
+        return AppUtil.startSortForPinnedListView(photoItemInfoArrayList);
+    }
+
+    /**
+     * 获取预览页面的所有排序好的图片列表
+     * @param context
+     * @param locationList
+     * @param targetList
+     * @param pictureAirDbManager
+     * @param deleteTime
+     * @param sdf
+     * @param language
+     * @return
+     * @throws ParseException
+     */
+    public static ArrayList<PhotoInfo> getSortedAllPhotos(Context context, ArrayList<DiscoverLocationItemInfo> locationList,
+                                                          ArrayList<PhotoInfo> targetList, PictureAirDbManager pictureAirDbManager, String deleteTime,
+                                                          SimpleDateFormat sdf, String language) throws ParseException {
+        //从数据库获取图片
+        ArrayList<PhotoInfo> photoList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, deleteTime);
+        //将图片按照地点组合
+        ArrayList<PhotoItemInfo> photoItemInfoArrayList = getPhotoItemInfoList(locationList, photoList, sdf, language);
+        //将本地图片按照地点组合
+        ArrayList<PhotoItemInfo> magicPhotoItemInfoArrayList = getMagicItemInfoList(context, sdf, targetList);
+
+        ArrayList<PhotoItemInfo> allPhotoItemInfoArrayList = new ArrayList<>();
+        //将组合后的列表连接
+        allPhotoItemInfoArrayList.addAll(photoItemInfoArrayList);
+        allPhotoItemInfoArrayList.addAll(magicPhotoItemInfoArrayList);
+
+        //将新的数据进行排序
+        Collections.sort(allPhotoItemInfoArrayList);
+        return AppUtil.startSortForPinnedListView(allPhotoItemInfoArrayList);
+    }
+
+    /**
+     * 遍历所有magic图片信息
+     * 1.判断现有列表是否已经存在
+     * 2.如果存在，直接添加在item列表后面，并且将shootOn的值更新为最大的
+     * 3.如果不存在，新建item
+     *
+     * @throws ParseException
+     */
+    public static ArrayList<PhotoItemInfo> getMagicItemInfoList(Context context, SimpleDateFormat sdf, ArrayList<PhotoInfo> targetMagicPhotoList) throws ParseException {
+        ArrayList<PhotoItemInfo> magicItemInfoList = new ArrayList<>();
+        PictureAirLog.d(TAG, "----------->get magic photos" + targetMagicPhotoList.size() + "____" + magicItemInfoList.size());
+        PhotoItemInfo photoItemInfo;
+        boolean clone_contains = false;
+        Date date1;
+        Date date2;
+        for (int i = 0; i < targetMagicPhotoList.size(); i++) {
+            PictureAirLog.out("photo shoot time is " + targetMagicPhotoList.get(i).shootOn);
+            for (int j = 0; j < magicItemInfoList.size(); j++) {
+                if (targetMagicPhotoList.get(i).shootTime.equals(magicItemInfoList.get(j).shootTime)) {
+                    magicItemInfoList.get(j).list.add(targetMagicPhotoList.get(i));
+                    date1 = sdf.parse(targetMagicPhotoList.get(i).shootOn);
+                    date2 = sdf.parse(magicItemInfoList.get(j).shootOn);
+                    if (date1.after(date2)) {
+                        magicItemInfoList.get(j).shootOn = targetMagicPhotoList.get(i).shootOn;
+                    }
+                    clone_contains = true;
+                    break;
+                }
+            }
+            //判断是否需要new
+            if (!clone_contains) {//如果之前没有找到，说明需要new
+                photoItemInfo = new PhotoItemInfo();
+                PictureAirLog.out("shootTime:" + targetMagicPhotoList.get(i).shootTime);
+                photoItemInfo.shootTime = targetMagicPhotoList.get(i).shootTime;
+                photoItemInfo.place = context.getString(R.string.story_tab_magic);
+                photoItemInfo.list.add(targetMagicPhotoList.get(i));
+                photoItemInfo.shootOn = targetMagicPhotoList.get(i).shootOn;
+                magicItemInfoList.add(photoItemInfo);
+            } else {
+                clone_contains = false;
+            }
+        }
+        return magicItemInfoList;
+    }
+
+    /**
+     * 将图片按照地点重新组合
+     * @param locationList
+     * @param photoList
+     * @param sdf
+     * @param language
+     * @return
+     * @throws ParseException
+     */
+    public static ArrayList<PhotoItemInfo> getPhotoItemInfoList(ArrayList<DiscoverLocationItemInfo> locationList, ArrayList<PhotoInfo> photoList,
+                                                                SimpleDateFormat sdf, String language) throws ParseException {
+        ArrayList<PhotoItemInfo> photoPassItemInfoList = new ArrayList<>();
+        //遍历所有photopass信息
+        PhotoItemInfo photoItemInfo;
+        boolean clone_contains = false;
+        Date date1;
+        Date date2;
+        //处理网络图片
+        for (int l = 0; l < photoList.size(); l++) {
+            PhotoInfo info = photoList.get(l);
+            //			PictureAirLog.d(TAG, "scan photo list:"+l);
+            //先挑选出相同的locationid信息
+            for (int i = 0; i < locationList.size(); i++) {
+                //				PictureAirLog.d(TAG, "scan location:"+i);
+                if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
+                    //					PictureAirLog.d(TAG, "find the location");
+                    //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
+                    for (int j = 0; j < photoPassItemInfoList.size(); j++) {
+                        //						PictureAirLog.d(TAG, "weather already exists:"+j);
+                        if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
+                                && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                            info.locationName = photoPassItemInfoList.get(j).place;
+                            photoPassItemInfoList.get(j).list.add(info);
+                            date1 = sdf.parse(info.shootOn);
+                            date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
+                            if (date1.after(date2)) {
+                                photoPassItemInfoList.get(j).shootOn = info.shootOn;
+                            }
+                            clone_contains = true;
+                            break;
+                        }
+                    }
+                    if (!clone_contains) {
+                        //初始化item的信息
+                        photoItemInfo = new PhotoItemInfo();
+                        photoItemInfo.locationId = locationList.get(i).locationId;
+                        photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
+                        photoItemInfo.shootTime = info.shootTime;
+                        if (language.equals(Common.SIMPLE_CHINESE)) {
+                            photoItemInfo.place = locationList.get(i).placeCHName;
+                            info.locationName = locationList.get(i).placeCHName;
+
+                        } else {
+                            photoItemInfo.place = locationList.get(i).placeENName;
+                            info.locationName = locationList.get(i).placeENName;
+
+                        }
+                        photoItemInfo.list.add(info);
+                        photoItemInfo.placeUrl = locationList.get(i).placeUrl;
+                        photoItemInfo.latitude = locationList.get(i).latitude;
+                        photoItemInfo.longitude = locationList.get(i).longitude;
+                        photoItemInfo.islove = 0;
+                        photoItemInfo.shootOn = info.shootOn;
+                        photoPassItemInfoList.add(photoItemInfo);
+                    } else {
+                        clone_contains = false;
+                    }
+                    break;
+                }
+            }
+        }
+        return photoPassItemInfoList;
     }
 
 

@@ -67,7 +67,6 @@ public class AppExitUtil {
                     ACache.get(MyApplication.getInstance()).remove(Common.PPP_GOOD);
                     ACache.get(MyApplication.getInstance()).remove(Common.LOCATION_INFO);
 
-                    MyApplication.getInstance().photoPassPicList.clear();
                     MyApplication.getInstance().setPushPhotoCount(0);
                     MyApplication.getInstance().setPushViedoCount(0);
                     MyApplication.getInstance().scanMagicFinish = false;

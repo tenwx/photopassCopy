@@ -906,6 +906,62 @@ public class PictureAirDbManager {
     }
 
     /**
+     * 查询数据库中的图片信息
+     *
+     * @return
+     */
+    public ArrayList<PhotoInfo> getPhotoFromPhotoPassInfo(String deleteTime, boolean hasBought) {
+        ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
+        database = DBManager.getInstance().writData();
+        //根据当前时间，删除超过30天并且未支付的数据信息
+        /**
+         * 1.获取当前时间，以毫秒为单位
+         * 2.删除数据库数据，条件1.未购买的图片，2.当前时间 - 30天的时间 > 数据库的时间
+         */
+        database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = 0 and shootOn < datetime(?)", new String[]{deleteTime});
+
+        //删除过期的数据之后，再查询photo表的信息
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isPay = ? and isVideo = 0 order by shootOn desc", new String[]{hasBought ? "1" : "0"});
+        PhotoInfo photoInfo;
+        if (cursor.moveToFirst()) {//判断是否photo数据
+            do {
+                photoInfo = new PhotoInfo();
+                PictureAirLog.out("load data from database = " + cursor.getInt(0));
+                photoInfo.photoId = cursor.getString(1);//photoId
+                photoInfo.photoPassCode = cursor.getString(2);//photopassCode
+                photoInfo.shootTime = cursor.getString(3);//shootTime
+                photoInfo.photoPathOrURL = cursor.getString(4);//originalUrl
+                photoInfo.photoThumbnail = cursor.getString(5);//previewUrl
+                photoInfo.photoThumbnail_512 = cursor.getString(6);//previewUrl_512
+                photoInfo.photoThumbnail_1024 = cursor.getString(7);//previewUrl_1024
+                photoInfo.locationId = cursor.getString(8);//locationId
+                photoInfo.shootOn = cursor.getString(9);//shootOn
+                photoInfo.isLove = cursor.getInt(10);//islove
+                photoInfo.isPayed = cursor.getInt(11);//ispay
+                photoInfo.locationName = cursor.getString(12);//locationName
+                photoInfo.locationCountry = cursor.getString(13);//locationCountry
+                photoInfo.shareURL = cursor.getString(14);//shareURL
+                photoInfo.isVideo = cursor.getInt(15);//isVideo
+                photoInfo.fileSize = cursor.getInt(16);//fileSize
+                photoInfo.videoWidth = cursor.getInt(17);//videoWidth
+                photoInfo.videoHeight = cursor.getInt(18);//videoHeight
+                photoInfo.onLine = 1;
+                photoInfo.isChecked = 0;
+                photoInfo.isSelected = 0;
+                photoInfo.isUploaded = 0;
+                photoInfo.showMask = 0;
+                photoInfo.lastModify = 0l;
+                photoInfo.index = "";
+                photoInfo.isHasPreset = cursor.getInt(19); // isHasPreset
+                resultArrayList.add(photoInfo);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        DBManager.getInstance().closeDatabase();
+        return resultArrayList;
+    }
+
+    /**
      * 从数据库中查询边框和饰品信息
      *
      * @param frame 边框的话为1，饰品的话为0

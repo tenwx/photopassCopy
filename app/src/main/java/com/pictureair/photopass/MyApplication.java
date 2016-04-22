@@ -16,9 +16,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.pictureair.jni.keygenerator.PWJniUtil;
-import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
@@ -45,13 +43,11 @@ public class MyApplication extends Application {
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
     private int pushViedoCount = 0; // 推送视频的数量。
     private ArrayList<HashMap<String, String>> codeList;// 记录登录之前扫描的pp或者ppp
-    public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
-    public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
-    public ArrayList<PhotoInfo> magicPicList;// 所有的使用magic相机拍出来的图片的信息
-    public ArrayList<PhotoItemInfo> boughtPicList;// 所有已经购买的图片的信息
-    public ArrayList<PhotoItemInfo> allPicList;// 所有的图片信息
-    public ArrayList<PPinfo> photoPassCodeList;// 保存所有的pp信息
-    // private boolean locationIsRunning = false;//当前定位是否在运行之中
+//    public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
+//    public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
+//    public ArrayList<PhotoInfo> magicPicList;// 所有的使用magic相机拍出来的图片的信息
+//    public ArrayList<PhotoItemInfo> boughtPicList;// 所有已经购买的图片的信息
+//    public ArrayList<PhotoItemInfo> allPicList;// 所有的图片信息
     private boolean needRefreshPPPList = false;// 记录是否需要更新ppp列表
     public boolean scanMagicFinish = false;// 记录是否已经扫面过magic相册
     public boolean needScanFavoritePhotos = false;//记录是否需要扫描收藏图片
@@ -103,12 +99,11 @@ public class MyApplication extends Application {
         UmengUtil.initUmeng();
         initImageLoader(getApplicationContext());
         codeList = new ArrayList<HashMap<String, String>>();
-        photoPassPicList = new ArrayList<PhotoInfo>();
-        photoPassVideoList = new ArrayList<>();
-        allPicList = new ArrayList<PhotoItemInfo>();
-        magicPicList = new ArrayList<PhotoInfo>();
-        boughtPicList = new ArrayList<PhotoItemInfo>();
-        photoPassCodeList = new ArrayList<PPinfo>();
+//        photoPassPicList = new ArrayList<PhotoInfo>();
+//        photoPassVideoList = new ArrayList<>();
+//        allPicList = new ArrayList<PhotoItemInfo>();
+//        magicPicList = new ArrayList<PhotoInfo>();
+//        boughtPicList = new ArrayList<PhotoItemInfo>();
         PictureAirLog.out("application on create--->");
     }
 

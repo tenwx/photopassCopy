@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.GoodsInfo1;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
@@ -42,7 +43,9 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
@@ -72,6 +75,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private String activity = null;
 
     private ArrayList<PhotoInfo> photoURLlist = new ArrayList<>();//选择的图片的list
+    private ArrayList<PhotoInfo> photopassList;
     private int photocount = 1;//需要添加的图片数量，以后要改这个数值
     private int selectedCount = 0;//已经选择了的图片数量
     private GoodsInfo1 goodsInfo;//存放商品信息
@@ -88,6 +92,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private boolean isDisneyVideo = false;
     private SharedPreferences sharedPreferences;
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
+
+    private PictureAirDbManager pictureAirDbManager;
 
 
     private static class SelectPhotoHandler extends Handler {
@@ -159,6 +165,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 Intent intent = new Intent(SelectPhotoActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", 0);
+                bundle.putString("tab", "other");
                 bundle.putParcelableArrayList("photos", photoURLlist);
                 intent.putExtra("bundle", bundle);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -237,6 +244,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
+        pictureAirDbManager = new PictureAirDbManager(this);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+        photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
         photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
         PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
 
@@ -403,10 +414,9 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     /**
      * 将photoItemInfo的列表转成photoInfo的列表
      */
-    public ArrayList<PhotoInfo> transferPhotoItemInfoToPhotoInfo(boolean isBuy) {
+    private ArrayList<PhotoInfo> transferPhotoItemInfoToPhotoInfo(boolean isBuy) {
         ArrayList<PhotoInfo> list = new ArrayList<>();
-        PictureAirLog.v(TAG, "myApplication pp photo size: " + myApplication.photoPassPicList.size());
-        for (PhotoInfo photoInfo : myApplication.photoPassPicList) {
+        for (PhotoInfo photoInfo : photopassList) {
             photoInfo.isChecked = 1;
             photoInfo.isSelected = 0;
             photoInfo.showMask = 0;
