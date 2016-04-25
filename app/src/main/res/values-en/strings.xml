@@ -43,6 +43,7 @@
     <string name="send_emal">Send a verification email</string>
     <string name="back_login_page">Back to Login</string>
     <string name="email_is_empty">Please enter your email address</string>
+    <string name="email_sent">Send Successful</string>
     <!-- forget pwd end -->
 
     <!-- 分享字段 start-->

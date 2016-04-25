@@ -43,6 +43,7 @@
     <string name="send_emal">发送验证邮件</string>
     <string name="back_login_page">返回登录页面</string>
     <string name="email_is_empty">邮箱不能为空</string>
+    <string name="email_sent">验证邮件已发送</string>
     <!-- forget pwd end -->
 
     <!-- 分享字段 start-->

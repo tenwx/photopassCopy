@@ -1054,21 +1054,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //处理网络图片
         for (int l = 0; l < photoPassPicList.size(); l++) {
             PhotoInfo info = photoPassPicList.get(l);
-            //			PictureAirLog.d(TAG, "scan photo list:"+l);
+            PictureAirLog.d(TAG, "scan photo list:"+l);
             //先挑选出相同的locationid信息
             for (int i = 0; i < locationList.size(); i++) {
-                //				PictureAirLog.d(TAG, "scan location:"+i);
+                PictureAirLog.d(TAG, "scan location:"+i);
                 if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-                    //					PictureAirLog.d(TAG, "find the location");
+                    PictureAirLog.d(TAG, "find the location");
                     //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
                     for (int j = 0; j < photoPassItemInfoList.size(); j++) {
-                        //						PictureAirLog.d(TAG, "weather already exists:"+j);
+                        PictureAirLog.d(TAG, "weather already exists:"+j);
                         if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
                                 && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
-                            //							PictureAirLog.d(TAG, "photo location id "+ info.locationId + "____"+ info.shootTime);
-                            //							PictureAirLog.d(TAG, "location id:"+locationList.get(i).locationId +"___"+ locationList.get(i).locationIds);
-                            //							PictureAirLog.d(TAG, "location id:"+photoPassItemInfoList.get(j).locationId +"___"+ photoPassItemInfoList.get(j).locationIds);
-                            //							PictureAirLog.d(TAG, "already exist");
+                            PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
+                            PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
+                            PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);
+                            PictureAirLog.d(TAG, "already exist");
                             info.locationName = photoPassItemInfoList.get(j).place;
                             photoPassItemInfoList.get(j).list.add(info);
                             date1 = sdf.parse(info.shootOn);
@@ -1083,7 +1083,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                     if (!clone_contains) {
                         //初始化item的信息
-                        //						PictureAirLog.d(TAG, "not exist");
+                        PictureAirLog.d(TAG, "not exist");
                         photoItemInfo = new PhotoItemInfo();
                         photoItemInfo.locationId = locationList.get(i).locationId;
                         photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
@@ -1217,20 +1217,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         boolean isContains = false;
         //判断是否已经购买
         if (info.isPayed == 1) {//已购买状态，需要将图片放到bought列表中
-            //			PictureAirLog.d(TAG, "add to bought list");
+            PictureAirLog.d(TAG, "add to bought list");
             for (int j = 0; j < boughtItemInfoList.size(); j++) {
-                //				PictureAirLog.d(TAG, "检查之前的是否存在");
+                PictureAirLog.d(TAG, "检查之前的是否存在");
+
                 if (info.shootTime.equals(boughtItemInfoList.get(j).shootTime) &&
-                        (info.locationId.equals(boughtItemInfoList.get(j).locationId) || locationIds.contains(info.locationId))) {
-                    //					PictureAirLog.d(TAG, "已经存在于bought列表");
-                    info.locationName = boughtItemInfoList.get(j).place;
+                        (info.locationId.equals(boughtItemInfoList.get(j).locationId) || boughtItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                    PictureAirLog.d(TAG, "已经存在于bought列表");
+//                    info.locationName = boughtItemInfoList.get(j).place;
                     boughtItemInfoList.get(j).list.add(info);
                     isContains = true;
                     break;
                 }
             }
             if (!isContains) {//没有
-                //				PictureAirLog.d(TAG, "不存在于之前的已购买的列表");
+                PictureAirLog.d(TAG, "不存在于之前的已购买的列表");
                 //初始化item的信息
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = info.locationId;
@@ -1238,11 +1239,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 photoItemInfo.shootTime = info.shootTime;
                 if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
                     photoItemInfo.place = locationList.get(position).placeCHName;
-                    info.locationName = locationList.get(position).placeCHName;
 
                 } else {
                     photoItemInfo.place = locationList.get(position).placeENName;
-                    info.locationName = locationList.get(position).placeENName;
 
                 }
                 photoItemInfo.list.add(info);
@@ -1256,7 +1255,90 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 isContains = false;
             }
         } else {
-            //			PictureAirLog.d(TAG, "not add to bought list");
+
+        }
+    }
+
+    /**
+     * 添加到已购买的列表
+     *
+     * @param info
+     */
+    private void addRefreshDataToBoughtList(PhotoInfo info, String locationIds, String placeName, String placeUrl, double latitude, double longitude) {
+        PhotoItemInfo photoItemInfo;
+        boolean isContains = false;
+        //判断是否已经购买
+        if (info.isPayed == 1) {//已购买状态，需要将图片放到bought列表中
+            PictureAirLog.d(TAG, "add to bought list");
+            for (int j = 0; j < boughtItemInfoList.size(); j++) {
+                PictureAirLog.d(TAG, "检查之前的是否存在");
+
+                if (info.shootTime.equals(boughtItemInfoList.get(j).shootTime) &&
+                        (info.locationId.equals(boughtItemInfoList.get(j).locationId) || boughtItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                    PictureAirLog.d(TAG, "已经存在于bought列表");
+
+                    //比较时间，按照时间排序
+                    for (int i = 0; i < boughtItemInfoList.get(j).list.size(); i++) {
+                        try {
+                            Date date1 = sdf.parse(boughtItemInfoList.get(j).list.get(i).shootOn);
+                            Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                            Date date3 = sdf.parse(boughtItemInfoList.get(j).shootOn);
+                            info.locationName = boughtItemInfoList.get(j).place;
+
+                            if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
+                                PictureAirLog.out("the lastest time, need add");
+                                boughtItemInfoList.get(j).list.add(i, info);
+                                if (date2.after(date3)) {//当前时间date3之后
+                                    boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
+                                }
+                                break;
+                            } else {
+                                if (i == (boughtItemInfoList.get(j).list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
+                                    PictureAirLog.out("the last position, need add");
+                                    boughtItemInfoList.get(j).list.add(info);
+                                    if (date2.after(date3)) {//当前时间date3之后
+                                        boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
+                                    }
+                                    break;
+                                } else {
+
+                                    PictureAirLog.out("scan next------>");
+                                }
+                            }
+                        } catch (ParseException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }//获取列表中的时间
+                    }
+                    isContains = true;
+                    break;
+                }
+            }
+            if (!isContains) {//没有
+                PictureAirLog.d(TAG, "不存在于之前的已购买的列表");
+                //初始化item的信息
+                photoItemInfo = new PhotoItemInfo();
+                photoItemInfo.locationId = info.locationId;
+                photoItemInfo.locationIds = locationIds;
+                photoItemInfo.shootTime = info.shootTime;
+//                if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+//                    photoItemInfo.place = locationList.get(position).placeCHName;
+//
+//                } else {
+                    photoItemInfo.place = placeName;
+
+//                }
+                photoItemInfo.list.add(info);
+                photoItemInfo.placeUrl = placeUrl;
+                photoItemInfo.latitude = latitude;
+                photoItemInfo.longitude = longitude;
+                photoItemInfo.islove = 0;
+                photoItemInfo.shootOn = info.shootOn;
+                boughtItemInfoList.add(photoItemInfo);
+            } else {
+                isContains = false;
+            }
+        } else {
 
         }
     }
@@ -1357,6 +1439,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                     if (date2.after(date3)) {//当前时间date3之后
                                         p.shootOn = info.shootOn;//更新shootOn的时间
                                     }
+                                    addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
                                     break;
                                 } else {
                                     if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
@@ -1366,6 +1449,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                         if (date2.after(date3)) {//当前时间date3之后
                                             p.shootOn = info.shootOn;//更新shootOn的时间
                                         }
+                                        addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
                                         break;
                                     } else {
 
@@ -1397,6 +1481,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         //							itemInfo.gps = p.gps;
                         itemInfo.islove = p.islove;
                         photoPassItemInfoList.add(0, itemInfo);//放置到列表的顶部
+
+                        addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
                     }
                     //					}
                     break;
@@ -1430,6 +1516,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         itemInfo.islove = 0;
                         itemInfo.shootOn = info.shootOn;
                         photoPassItemInfoList.add(0, itemInfo);
+                        addRefreshDataToBoughtList(info, itemInfo.locationIds, itemInfo.place, itemInfo.placeUrl, itemInfo.latitude, itemInfo.longitude);
                         break;
                     }
 

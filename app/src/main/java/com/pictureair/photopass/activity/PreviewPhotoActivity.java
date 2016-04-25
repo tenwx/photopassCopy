@@ -120,6 +120,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean isEdited = false;
 
+    private boolean getPhotoInfoSuccess = false;
+
+    private String tabName;
+
     /**
      * 是否是横屏模式
      */
@@ -177,6 +181,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int CHECK_FAVORITE = 666;
     private static final int GET_LOCATION_AD = 777;
     private static final int CREATE_BLUR_DIALOG = 888;
+    private final int RESIZE_BLUR_IMAGE = 999;
 
     private CustomDialog customdialog; //  对话框
 
@@ -352,7 +357,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
-                myApplication.setIsBuyingPhotoInfo(photolist, currentPosition);
+                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName);
                 if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                 } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                 } else {
@@ -463,6 +468,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case 7://操作比较耗时，会影响oncreate绘制
+                getPhotoInfoSuccess = true;
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
                 mViewPager.setOffscreenPageLimit(2);
@@ -598,6 +604,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 createBlurDialog();
                 break;
 
+            case RESIZE_BLUR_IMAGE:
+                if (!getPhotoInfoSuccess) {
+                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
+                } else {
+                    if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
+                        resizeBlurImage();
+                    }
+                }
+                break;
+
             default:
                 break;
         }
@@ -711,7 +727,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 photolist = new ArrayList<>();
                 Bundle bundle = getIntent().getBundleExtra("bundle");
                 currentPosition = bundle.getInt("position", 0);
-                String tabName = bundle.getString("tab");
+                tabName = bundle.getString("tab");
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
 
                 if (tabName.equals("all")) {//获取全部照片
@@ -752,6 +768,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
                     photolist.addAll(temp);
+                }
+
+                if (currentPosition == -1) {//购买图片后返回
+                    String photoId = bundle.getString("photoId");
+                    for (int i = 0; i < photolist.size(); i++) {
+                        if (photolist.get(i).photoId.equals(photoId)){
+                            photolist.get(i).isPayed = 1;
+                            currentPosition = i;
+                            break;
+                        }
+                    }
                 }
 
                 PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
@@ -1395,9 +1422,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             portraitOrientation();
         }
 
-        if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
-            resizeBlurImage();
-        }
+        previewPhotoHandler.sendEmptyMessage(RESIZE_BLUR_IMAGE);
 
         if (dia.isShowing()) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();

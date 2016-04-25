@@ -19,7 +19,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.util.API1;
@@ -33,7 +32,6 @@ import com.pictureair.photopass.widget.MyToast;
 import com.unionpay.UPPayAssistEx;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
@@ -555,18 +553,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
                 PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
                 myApplication.setPhotoIsPaid(true);
-                ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-                photopassArrayList.addAll(myApplication.getIsBuyingPhotoInfoList());
-                // 找出购买的info，并且将购买属性改为1
-                photopassArrayList.get(myApplication.getIsBuyingIndex()).isPayed = 1;
-                PictureAirLog.v("position--->", myApplication.getIsBuyingIndex() + "");
-                PictureAirLog.v("photoId---->", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
+                PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
 
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("position", myApplication.getIsBuyingIndex());
-                bundle.putString("tab", "other");
-                bundle.putParcelableArrayList("photos", photopassArrayList);
+                bundle.putInt("position", -1);
+                bundle.putString("tab", myApplication.getIsBuyingTabName());
+                bundle.putString("photoId", myApplication.getIsBuyingPhotoId());
                 intent.putExtra("bundle", bundle);
 
                 // 清空标记
