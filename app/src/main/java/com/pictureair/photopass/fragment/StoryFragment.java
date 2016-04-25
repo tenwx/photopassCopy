@@ -221,7 +221,6 @@ public class StoryFragment extends Fragment {
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", position);
 				bundle.putString("tab", tabName[tab]);
-				bundle.putParcelableArrayList("photos", photoInfoArrayList);
 				i.putExtra("bundle", bundle);
 				getContext().startActivity(i);
 			}
