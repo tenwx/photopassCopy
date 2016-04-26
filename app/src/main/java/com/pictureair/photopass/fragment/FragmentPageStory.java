@@ -280,12 +280,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     photoPassItemInfoList.clear();
                     allItemInfoList.clear();
                     boughtItemInfoList.clear();
-                    try {
-                        getData();
-                    } catch (ParseException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    getData();
                 }
                 break;
 
@@ -506,12 +501,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE:
-                try {
-                    getData();
-                } catch (ParseException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                getData();
                 break;
 
             default:
@@ -554,12 +544,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             photoPassItemInfoList.clear();
             allItemInfoList.clear();
             boughtItemInfoList.clear();
-            try {
-                getData();
-            } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            getData();
         }
     }
 
@@ -904,25 +889,27 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         localPhotoList.clear();
         PhotoInfo localPhotoInfo;
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
-                if (files[i].length() > 0) {//扫描到文件
-                    PictureAirLog.out("scan local photo");
-                    localPhotoInfo = new PhotoInfo();
-                    localPhotoInfo.photoPathOrURL = files[i].getPath();
-                    localPhotoInfo.lastModify = files[i].lastModified();
-                    date = new Date(localPhotoInfo.lastModify);
-                    localPhotoInfo.shootOn = sdf.format(date);
-                    localPhotoInfo.shootTime = localPhotoInfo.shootOn.substring(0, 10);
-                    localPhotoInfo.isChecked = 0;
-                    localPhotoInfo.isSelected = 0;
-                    localPhotoInfo.showMask = 0;
-                    localPhotoInfo.locationName = getString(R.string.story_tab_magic);
-                    localPhotoInfo.isPayed = 1;
-                    localPhotoInfo.onLine = 0;
-                    localPhotoInfo.isVideo = 0;
-                    localPhotoInfo.isHasPreset = 0;
-                    localPhotoList.add(localPhotoInfo);
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
+                    if (files[i].length() > 0) {//扫描到文件
+                        PictureAirLog.out("scan local photo");
+                        localPhotoInfo = new PhotoInfo();
+                        localPhotoInfo.photoPathOrURL = files[i].getPath();
+                        localPhotoInfo.lastModify = files[i].lastModified();
+                        date = new Date(localPhotoInfo.lastModify);
+                        localPhotoInfo.shootOn = sdf.format(date);
+                        localPhotoInfo.shootTime = localPhotoInfo.shootOn.substring(0, 10);
+                        localPhotoInfo.isChecked = 0;
+                        localPhotoInfo.isSelected = 0;
+                        localPhotoInfo.showMask = 0;
+                        localPhotoInfo.locationName = getString(R.string.story_tab_magic);
+                        localPhotoInfo.isPayed = 1;
+                        localPhotoInfo.onLine = 0;
+                        localPhotoInfo.isVideo = 0;
+                        localPhotoInfo.isHasPreset = 0;
+                        localPhotoList.add(localPhotoInfo);
+                    }
                 }
             }
         }
@@ -1045,115 +1032,119 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      *
      * @throws ParseException
      */
-    private void getData() throws ParseException {
-        //遍历所有photopass信息
-        PhotoItemInfo photoItemInfo;
-        boolean clone_contains = false;
-        Date date1;
-        Date date2;
-        //处理网络图片
-        for (int l = 0; l < photoPassPicList.size(); l++) {
-            PhotoInfo info = photoPassPicList.get(l);
-            PictureAirLog.d(TAG, "scan photo list:"+l);
-            //先挑选出相同的locationid信息
-            for (int i = 0; i < locationList.size(); i++) {
-                PictureAirLog.d(TAG, "scan location:"+i);
-                if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-                    PictureAirLog.d(TAG, "find the location");
-                    //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
-                    for (int j = 0; j < photoPassItemInfoList.size(); j++) {
-                        PictureAirLog.d(TAG, "weather already exists:"+j);
-                        if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
-                                && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
-                            PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
-                            PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
-                            PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);
-                            PictureAirLog.d(TAG, "already exist");
-                            info.locationName = photoPassItemInfoList.get(j).place;
-                            photoPassItemInfoList.get(j).list.add(info);
-                            date1 = sdf.parse(info.shootOn);
-                            date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
-                            if (date1.after(date2)) {
-                                photoPassItemInfoList.get(j).shootOn = info.shootOn;
-                            }
-                            clone_contains = true;
-                            addToBoughtList(info, i, photoPassItemInfoList.get(j).locationIds);
-                            break;
-                        }
-                    }
-                    if (!clone_contains) {
-                        //初始化item的信息
-                        PictureAirLog.d(TAG, "not exist");
-                        photoItemInfo = new PhotoItemInfo();
-                        photoItemInfo.locationId = locationList.get(i).locationId;
-                        photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
-                        photoItemInfo.shootTime = info.shootTime;
-                        if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
-                            photoItemInfo.place = locationList.get(i).placeCHName;
-                            info.locationName = locationList.get(i).placeCHName;
-
-                        } else {
-                            photoItemInfo.place = locationList.get(i).placeENName;
-                            info.locationName = locationList.get(i).placeENName;
-
-                        }
-                        photoItemInfo.list.add(info);
-                        photoItemInfo.placeUrl = locationList.get(i).placeUrl;
-                        photoItemInfo.latitude = locationList.get(i).latitude;
-                        photoItemInfo.longitude = locationList.get(i).longitude;
-                        photoItemInfo.islove = 0;
-                        photoItemInfo.shootOn = info.shootOn;
-                        photoPassItemInfoList.add(photoItemInfo);
-                        addToBoughtList(info, i, photoItemInfo.locationIds);
-                    } else {
-                        clone_contains = false;
-                    }
-                    break;
-                }
-            }
-        }
-
-        //处理视频信息
-        for (int i = 0; i < photoPassVideoList.size(); i++) {
-            PhotoInfo info = photoPassVideoList.get(i);
-//            PictureAirLog.out("video shoot time is " + info.shootOn);
-            for (int j = 0; j < photoPassItemInfoList.size(); j++) {
-//                PictureAirLog.out("j-->" + j + ", info shootTime-->" + info.shootTime + ", picList-->" + photoPassItemInfoList.get(j).shootTime);
-                if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
-//                    PictureAirLog.out("j-->" + j + ", info.isVideo-->" + info.isVideo + ", picList-->" + photoPassItemInfoList.get(j).list.get(0).isVideo);
-                    if (info.isVideo == photoPassItemInfoList.get(j).list.get(0).isVideo) {
-                        photoPassItemInfoList.get(j).list.add(info);
-                        date1 = sdf.parse(info.shootOn);
-                        date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
-//                        PictureAirLog.out("date--->" + date1 + ";2-->" + date2);
-                        if (date1.after(date2)) {
-                            photoPassItemInfoList.get(j).shootOn = info.shootOn;
-                        }
-                        clone_contains = true;
-                        break;
-                    }
-                }
-            }
-            //判断是否需要new
-            if (!clone_contains) {//如果之前没有找到，说明需要new
-                photoItemInfo = new PhotoItemInfo();
-//                PictureAirLog.out("need new shootTime:" + info.shootTime);
-                photoItemInfo.shootTime = info.shootTime;
-                photoItemInfo.place = getString(R.string.video_location);
-                photoItemInfo.list.add(info);
-                photoItemInfo.shootOn = info.shootOn;
-                photoPassItemInfoList.add(photoItemInfo);
-            } else {
-                clone_contains = false;
-            }
-        }
-
-        //如果网络图片先处理完，magic相册还没处理完的话，需要等待magic处理完
+    private void getData() {
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 // TODO Auto-generated method stub
+                try {
+                    //遍历所有photopass信息
+                    PhotoItemInfo photoItemInfo;
+                    boolean clone_contains = false;
+                    Date date1;
+                    Date date2;
+                    //处理网络图片
+                    for (int l = 0; l < photoPassPicList.size(); l++) {
+                        PhotoInfo info = photoPassPicList.get(l);
+                        PictureAirLog.d(TAG, "scan photo list:" + l);
+                        //先挑选出相同的locationid信息
+                        for (int i = 0; i < locationList.size(); i++) {
+                            PictureAirLog.d(TAG, "scan location:" + i);
+                            if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
+                                PictureAirLog.d(TAG, "find the location");
+                                //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
+                                for (int j = 0; j < photoPassItemInfoList.size(); j++) {
+                                    PictureAirLog.d(TAG, "weather already exists:" + j);
+                                    if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
+                                            && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                                        PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
+                                        PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
+                                        PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);
+                                        PictureAirLog.d(TAG, "already exist");
+                                        info.locationName = photoPassItemInfoList.get(j).place;
+                                        photoPassItemInfoList.get(j).list.add(info);
+                                        date1 = sdf.parse(info.shootOn);
+                                        date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
+                                        if (date1.after(date2)) {
+                                            photoPassItemInfoList.get(j).shootOn = info.shootOn;
+                                        }
+                                        clone_contains = true;
+                                        addToBoughtList(info, i, photoPassItemInfoList.get(j).locationIds);
+                                        break;
+                                    }
+                                }
+                                if (!clone_contains) {
+                                    //初始化item的信息
+                                    PictureAirLog.d(TAG, "not exist");
+                                    photoItemInfo = new PhotoItemInfo();
+                                    photoItemInfo.locationId = locationList.get(i).locationId;
+                                    photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
+                                    photoItemInfo.shootTime = info.shootTime;
+                                    if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
+                                        photoItemInfo.place = locationList.get(i).placeCHName;
+                                        info.locationName = locationList.get(i).placeCHName;
+
+                                    } else {
+                                        photoItemInfo.place = locationList.get(i).placeENName;
+                                        info.locationName = locationList.get(i).placeENName;
+
+                                    }
+                                    photoItemInfo.list.add(info);
+                                    photoItemInfo.placeUrl = locationList.get(i).placeUrl;
+                                    photoItemInfo.latitude = locationList.get(i).latitude;
+                                    photoItemInfo.longitude = locationList.get(i).longitude;
+                                    photoItemInfo.islove = 0;
+                                    photoItemInfo.shootOn = info.shootOn;
+                                    photoPassItemInfoList.add(photoItemInfo);
+                                    addToBoughtList(info, i, photoItemInfo.locationIds);
+                                } else {
+                                    clone_contains = false;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    //处理视频信息
+                    for (int i = 0; i < photoPassVideoList.size(); i++) {
+                        PhotoInfo info = photoPassVideoList.get(i);
+                        //            PictureAirLog.out("video shoot time is " + info.shootOn);
+                        for (int j = 0; j < photoPassItemInfoList.size(); j++) {
+                            //                PictureAirLog.out("j-->" + j + ", info shootTime-->" + info.shootTime + ", picList-->" + photoPassItemInfoList.get(j).shootTime);
+                            if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)) {
+                                //                    PictureAirLog.out("j-->" + j + ", info.isVideo-->" + info.isVideo + ", picList-->" + photoPassItemInfoList.get(j).list.get(0).isVideo);
+                                if (info.isVideo == photoPassItemInfoList.get(j).list.get(0).isVideo) {
+                                    photoPassItemInfoList.get(j).list.add(info);
+                                    date1 = sdf.parse(info.shootOn);
+                                    date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
+                                    //                        PictureAirLog.out("date--->" + date1 + ";2-->" + date2);
+                                    if (date1.after(date2)) {
+                                        photoPassItemInfoList.get(j).shootOn = info.shootOn;
+                                    }
+                                    clone_contains = true;
+                                    break;
+                                }
+                            }
+                        }
+                        //判断是否需要new
+                        if (!clone_contains) {//如果之前没有找到，说明需要new
+                            photoItemInfo = new PhotoItemInfo();
+                            //                PictureAirLog.out("need new shootTime:" + info.shootTime);
+                            photoItemInfo.shootTime = info.shootTime;
+                            photoItemInfo.place = getString(R.string.video_location);
+                            photoItemInfo.list.add(info);
+                            photoItemInfo.shootOn = info.shootOn;
+                            photoPassItemInfoList.add(photoItemInfo);
+                        } else {
+                            clone_contains = false;
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } finally {
+                }
+
+                //如果网络图片先处理完，magic相册还没处理完的话，需要等待magic处理完
                 while (isLoading) {
                     //如果magic相册已经处理完毕
 //                    PictureAirLog.d(TAG, "waiting for scanning local photo completed");

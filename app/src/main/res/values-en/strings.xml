@@ -8,30 +8,30 @@
     <string name="forget_pwd">Forgot Password?</string>
     <string name="login">Sign In</string>
     <string name="sign">Sign Up</string>
-    <string name="otherLogin">Login in other ways</string>
-    <string name="pwd_no_all_space">Password cannot include space</string>
-    <string name="pwd_head_or_foot_space">Password cannot include space</string>
+    <string name="otherLogin">Email Account Login</string>
+    <string name="pwd_no_all_space">Please omit any space</string>
+    <string name="pwd_head_or_foot_space">Please omit any space</string>
     <string name="modify_password_empty_hint">Please enter a password.</string>
     <string name="notify_password_hint">Password must be at least 6 characters</string>
     <string name="connecting">Connecting&#8230;</string>
-    <string name="input_mobile">Please input mobile number</string>
+    <string name="input_mobile">Please enter your mobile number</string>
     <!-- login activity end-->
 
     <!-- email login start -->
     <string name="email">Email Address</string>
-    <string name="email_error">Email is not available</string>
+    <string name="email_error">Incorrect Email Address</string>
     <!-- email login end-->
 
     <!-- email register start -->
     <string name="nn">Nickname</string>
     <string name="gender">Gender</string>
-    <string name="date_of_birth">Date of Birth</string>
+    <string name="date_of_birth">Birthday</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="name_is_empty">Please enter your Nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
-    <string name="terms_and_policy"><a href = "2">《Supplemental Terms and Conditions》</a>\n\nand<a href = "1">《Privacy Policy》</a></string>
+    <string name="terms_and_policy"><a href = "2">《Supplemental Terms and Conditions》</a>\n\n&amp;<a href = "1">《Privacy Policy》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -59,8 +59,8 @@
     <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
     <string name="sinaweibo">Sina Weibo</string>
     <string name="qzone">QZone</string>
-    <string name="wechat">Wechat</string>
-    <string name="wechatmoments">Wechat Moments</string>
+    <string name="wechat">Friends</string>
+    <string name="wechatmoments">Moments</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
     <string name="qq">QQ Friends</string>
@@ -90,8 +90,8 @@
     <string name="no_photo_in_magiccam">Store all your edited photos here!</string>
     <string name="no_photo_in_bought">Start to purchase your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
-    <string name="storypage_no_photo">There is no photo in your Disney PhotoPass!</string>
-    <string name="storypage_no_pp">There is no Disney PhotoPass added to your account.</string>
+    <string name="storypage_no_photo">There are no photos in your Disney PhotoPass account!</string>
+    <string name="storypage_no_pp">Your PhotoPass photos will appear here</string>
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_network">Please check your network</string>
     <string name="click_button_reload">Click button to reload</string>
@@ -122,7 +122,7 @@
     <!-- manual input start -->
     <string name="manual">Manual</string>
     <string name="ok">OK</string>
-    <string name="manul_input_intro">Please input the digit number on the back of your Shanghai Disneyland Park Ticket / Disney PhotoPass card</string>
+    <string name="manul_input_intro">Please input the number on the back of your Shanghai Disneyland Park Ticket / Disney PhotoPass card</string>
     <string name="nocontext">Input your code</string>
     <string name="wrong_length">Please check your card</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
@@ -181,13 +181,13 @@
 
     <!-- preview photo start -->
     <string name="edit">Edit</string>
-    <string name="makegift">Shop</string>
+    <string name="makegift">Gift</string>
     <string name="touchtoclean">Touch to preview your photo</string>
     <string name="know">I know</string>
     <string name="like_and_buy">Touch to preview your photo</string>
     <string name="reloadphoto">Please reload this photo</string>
     <string name="neednotdownload">The photo is already in your album</string>
-    <string name="local_photo_not_support_makegift">Sorry we can\'t make gift from your edited photos.</string>
+    <string name="local_photo_not_support_makegift">Sorry we cannot make gift from your edited photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">Sorry, your this PhotoPass picture does not support editing!</string>
     <string name="photo_cannot_edit_no">Cancel</string>
@@ -232,21 +232,21 @@
     <!-- edit end -->
 
     <!-- detail product start -->
-    <string name="choosephoto">Select photo</string>
+    <string name="choosephoto">Select Photo to Make Gift</string>
     <string name="add_to_cart">Add to Cart</string>
-    <string name="address_digital_goods">Digital download</string>
+    <string name="address_digital_goods">Digital Download</string>
     <string name="self_collect">Pick up at Select Shanghai Disney Resort Locations</string>
     <string name="buy_good">Buy</string>
     <!-- detail product end -->
 
     <!-- preview product & make gift start -->
     <string name="preview">Preview</string>
-    <string name="confirm">Check out</string>
+    <string name="confirm">Confirm</string>
     <string name="buy_good2">Buy</string>
     <!-- preview product & make gift end -->
 
     <!-- cart start -->
-    <string name="cart">Cart</string>
+    <string name="cart">Shopping Cart</string>
     <string name="select_all">Select All</string>
     <string name="totalprice">Total:</string>
     <string name="go_pay">Pay(%1$d)</string>
@@ -265,7 +265,7 @@
     <string name="transport">Pick-Up Location</string>
     <string name="goods_info">Products Information</string>
     <string name="all_goods">%1$d item(s)</string>
-    <string name="checkout">Confirm</string>
+    <string name="checkout">OK</string>
     <string name="multi_goods">Multiple Products</string>
     <string name="select_address">Please Select Address</string>
     <!-- submit order end -->
@@ -297,7 +297,7 @@
     <!-- profile start -->
     <string name="profile">Personal Profile</string>
     <string name="account">Account</string>
-    <string name="modify">Modify Password</string>
+    <string name="modify">Change Password</string>
     <string name="add">Add</string>
     <!-- profile end -->
 
@@ -305,21 +305,21 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="modify_password_success">Modify Password Success</string>
-    <string name="show_password">Show password</string>
+    <string name="show_password">Show Password</string>
     <!-- modify pwd end -->
 
     <!-- order start -->
-    <string name="my_order">My Orders</string>
+    <string name="my_order">Orders</string>
     <string name="order_unpaid">Unpaid</string>
     <string name="order_paid">Paid</string>
-    <string name="all_order">Done</string>
+    <string name="all_order">Pick Up</string>
     <string name="order_completed">Pick Up</string>
     <string name="order_status">Order Status:</string>
     <string name="payment_order_btn">Payment</string>
-    <string name="order_no">Order Number:</string>
+    <string name="order_no">Order ID:</string>
     <string name="orderprice">Order Price:</string>
     <string name="order_time">Order Time:</string>
-    <string name="order_detail">Order Products:</string>
+    <string name="order_detail">Ordered Products:</string>
     <string name="delete_order_btn">Delete</string>
     <string name="order_empty_resultString">No orders</string>
     <string name="order_empty_buttonString">Go Shopping</string>
@@ -329,12 +329,12 @@
 
     <!-- order detail start -->
     <string name="order_information">Order Detail</string>
-    <string name="product_information">Product Information</string>
-    <string name="productprice">Product Price:</string>
+    <string name="product_information">Product Detail</string>
+    <string name="productprice">Price:</string>
     <string name="preferential">Preferential:</string>
     <string name="paymethod">Payment Method:</string>
-    <string name="order_info">Order Information</string>
-    <string name="self_collect_address">Self-Collect:</string>
+    <string name="order_info">Order Detail</string>
+    <string name="self_collect_address">Collection:</string>
     <string name="waitpay">Waiting for payment</string>
     <!-- order detail end -->
 
@@ -370,15 +370,15 @@
 
     <!-- settings start -->
     <string name="setting">Settings</string>
-    <string name="logout">Log Out</string>
+    <string name="logout">Sign Out</string>
     <string name="submit_opinions">Feedback</string>
     <string name="download_tpye">Download Mode</string>
-    <string name="gprs_wifi_download">4G/3G/WIFI</string>
-    <string name="wifi_only_download">WIFI Only</string>
+    <string name="gprs_wifi_download">4G/3G/WiFi</string>
+    <string name="wifi_only_download">WiFi Only</string>
     <string name="updata_pictures">Synchronize with Photo Album</string>
     <string name="auto_sync">Auto Sync</string>
     <string name="setting_language">Change Language</string>
-    <string name="comfirm_logout">Do you want to Log Out?</string>
+    <string name="comfirm_logout">Do you want to Sign Out?</string>
     <!-- settings end -->
 
     <!-- change language start -->

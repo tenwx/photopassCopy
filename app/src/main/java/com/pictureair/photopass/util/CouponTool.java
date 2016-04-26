@@ -35,9 +35,11 @@ public class CouponTool {
             switch (msg.what) {
                 case API1.GET_COUPON_FAILED://获取所有优惠卷失败
                 case API1.INSERT_COUPON_FAILED://添加一张优惠卷失败
-                    couponView.goneProgressBar();
                     int id = ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1);
-                    couponView.fail(id);
+                    if (couponView != null) {
+                        couponView.goneProgressBar();
+                        couponView.fail(id);
+                    }
                     break;
 
                 case API1.GET_COUPON_SUCCESS://从订单页面获取所有优惠卷成功

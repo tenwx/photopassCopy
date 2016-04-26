@@ -14,18 +14,18 @@
     <string name="modify_password_empty_hint">请输入密码</string>
     <string name="notify_password_hint">密码不能小于6位!</string>
     <string name="connecting">请稍后&#8230;</string>
-    <string name="input_mobile">请输入手机号</string>
+    <string name="input_mobile">手机号未输入</string>
     <!-- login activity end-->
 
     <!-- email login start -->
     <string name="email">邮箱地址</string>
-    <string name="email_error">邮箱不可用</string>
+    <string name="email_error">邮箱格式错误</string>
     <!-- email login end-->
 
     <!-- email register start -->
     <string name="nn">昵称</string>
     <string name="gender">性别</string>
-    <string name="date_of_birth">出生日期</string>
+    <string name="date_of_birth">生日</string>
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="name_is_empty">昵称不能为空</string>
@@ -91,8 +91,8 @@
     <string name="no_photo_in_bought">没有照片,赶快来购买吧!</string>
     <string name="no_photo_in_favourite">没有照片,赶快去收藏吧!</string>
     <string name="storypage_no_photo">您的迪士尼乐拍通相册中还没有游玩的照片哦！</string>
-    <string name="storypage_no_pp">您还没绑定您的的迪士尼乐拍通！</string>
-    <string name="story_no_photo">嗨！赶快去找您的摄影师为您拍照吧！</string>
+    <string name="storypage_no_pp">您的乐拍通照片将在此显示</string>
+    <string name="story_no_photo">嗨！赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
     <string name="no_network">加载失败，请检查您当前的网络环境</string>
     <string name="click_button_reload">您可以点击按钮重新加载</string>
     <string name="reload">重新加载</string>
@@ -265,7 +265,7 @@
     <string name="transport">照片获取处</string>
     <string name="goods_info">商品信息</string>
     <string name="all_goods">共%1$d件商品</string>
-    <string name="checkout">确认</string>
+    <string name="checkout">确定</string>
     <string name="multi_goods">迪士尼乐拍通多项商品</string>
     <string name="select_address">请选择自提地址</string>
     <!-- submit order end -->
@@ -298,7 +298,7 @@
     <string name="profile">个人资料</string>
     <string name="account">账号</string>
     <string name="modify">修改密码</string>
-    <string name="add">增加</string>
+    <string name="add">添加</string>
     <!-- profile end -->
 
     <!-- modify pwd start -->
@@ -312,7 +312,7 @@
     <string name="my_order">我的订单</string>
     <string name="order_unpaid">未付款</string>
     <string name="order_paid">已付款</string>
-    <string name="all_order">已完成</string>
+    <string name="all_order">已取</string>
     <string name="order_completed">已取</string>
     <string name="order_status">订单状态:</string>
     <string name="payment_order_btn">付款</string>

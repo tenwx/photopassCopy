@@ -5,7 +5,7 @@
     <string name="smssdk_country">国家</string>
     <string name="smssdk_pwd_no">密码不一致</string>
     <string name="smssdk_pwd">密码</string>
-    <string name="smssdk_pwd2">密码确认</string>
+    <string name="smssdk_pwd2">再次输入密码</string>
     <string name="smssdk_pwd_forget">请输入新密码</string>
     <string name="smssdk_pwd2_forget">请再次输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>

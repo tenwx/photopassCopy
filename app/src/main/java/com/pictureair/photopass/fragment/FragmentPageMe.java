@@ -127,7 +127,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
         //初始化控件
         sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        userPP = sp.getString(Common.USERINFO_USER_PP, "");
+        userPP = Common.BARCODEURL + sp.getString(Common.USERINFO_USER_PP, "");
         //设置头像ImageLoader参数
         headOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.default_photo)

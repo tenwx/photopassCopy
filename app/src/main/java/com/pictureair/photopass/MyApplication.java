@@ -333,6 +333,9 @@ public class MyApplication extends Application {
      */
     public String getLanguageType() {
 
+        if (languageType == null) {
+            languageType = "";
+        }
         return languageType;
 
     }

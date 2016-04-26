@@ -781,6 +781,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                 }
 
+                if (currentPosition < 0) {
+                    currentPosition = 0;
+                }
                 PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
 
                 PictureAirLog.out("photolist size ---->" + photolist.size());
@@ -1362,7 +1365,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onPause();
         //如果手指在上面的时候，如果同时休眠，在唤醒之后，页面上有个清晰圈
         //需要通知handler释放清晰圈
-        if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
+        if (photoInfo != null && photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
             previewPhotoHandler.sendEmptyMessage(2);
         }
     }

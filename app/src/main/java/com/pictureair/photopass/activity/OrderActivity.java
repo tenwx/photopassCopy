@@ -116,7 +116,9 @@ public class OrderActivity extends BaseActivity {
                 PictureAirLog.d(TAG, "get success----");
                 viewPager.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setVisibility(View.INVISIBLE);
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 paymentOrderArrayList.clear();
                 paymentOrderChildArrayList.clear();
                 deliveryOrderArrayList.clear();
@@ -185,7 +187,9 @@ public class OrderActivity extends BaseActivity {
 
             case API1.GET_ORDER_FAILED:
 //				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
                 viewPager.setVisibility(View.INVISIBLE);
@@ -207,8 +211,9 @@ public class OrderActivity extends BaseActivity {
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
-                customProgressDialog.show();
+                if (!customProgressDialog.isShowing()) {
+                    customProgressDialog.show();
+                }
                 API1.getOrderInfo(orderActivityHandler);
                 break;
 
