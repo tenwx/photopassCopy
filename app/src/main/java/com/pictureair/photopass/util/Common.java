@@ -1,7 +1,6 @@
 package com.pictureair.photopass.util;
 
 import android.os.Environment;
-
 /**
  * 常量类
  */
@@ -174,6 +173,7 @@ public class Common {
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
     public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
     public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
+    public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
 
 
     //user的SharedPreferences    以及   接口参数
@@ -268,6 +268,7 @@ public class Common {
     public static final String EPPP_IDS = "ids";
     public static final String couponCode = "couponCode";//优惠code
     public static final String VERSION = "version";
+    public static final String SHOOTDATE = "shootDate";
 
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";

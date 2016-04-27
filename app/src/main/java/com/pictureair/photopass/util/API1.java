@@ -239,6 +239,10 @@ public class API1 {
     public static final int PREVIEW_COUPON_SUCCESS = 6081;
     public static final int PREVIEW_COUPON_FAILED = 6080;
 
+    //选择已有PP＋
+    public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 6091;
+    public static final int GET_PPPS_BY_SHOOTDATE_FAILED = 6090;
+
     /**
      * 发送设备ID获取tokenId
      *
@@ -2126,4 +2130,33 @@ public class API1 {
             }
         });
     }
+
+    /**
+     * 根据照片的拍摄时间获取PP+卡列表
+     * 用于预览图片页面，“使用已有的迪斯尼乐拍通一卡通”
+     * @param handler
+     * @param shootDate
+     */
+    public static void getPPPsByShootDate(final Handler handler, String shootDate) {
+        final RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.SHOOTDATE, shootDate);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PPPS_BY_SHOOTDATE, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+//                PictureAirLog.e(TAG, "============" + jsonObject);
+                PPPlist = JsonUtil.getPPPSByUserIdNHavedPPP(jsonObject);
+                handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+//                PictureAirLog.e(TAG, "============" + status);
+                handler.obtainMessage(GET_PPPS_BY_SHOOTDATE_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
+
 }

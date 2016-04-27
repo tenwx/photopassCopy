@@ -196,8 +196,10 @@
     <!-- blur start -->
     <string name="blur_intro">Disney PhotoPass+ allows you to view and download all your photos taken by our professional Disney PhotoPass Photographers in a single day.</string>
     <string name="up_ppp_money">Upgrade to Disney PhotoPass+</string>
+    <string name="use_ppp">Have PhotoPass+ to Upgrade</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
+    <string name="no_ppp_tips">Have not PhotoPass+ !</string>
     <!-- blur end -->
 
     <!-- download start -->
@@ -366,6 +368,10 @@
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->
+
+    <!-- select ppp start -->
+    <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
+    <!-- select ppp end -->
 
     <!-- settings start -->
     <string name="setting">Settings</string>
