@@ -31,6 +31,7 @@ import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.OrderActivity;
 import com.pictureair.photopass.activity.ProfileActivity;
 import com.pictureair.photopass.activity.SettingActivity;
+import com.pictureair.photopass.activity.WebViewActivity;
 import com.pictureair.photopass.selectHeadorBg.SetHeadPhotoAct;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -274,7 +275,10 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             case R.id.me_opinions:
                 //意见反馈弹出框
                 PictureAirLog.v(TAG, "me_opinions");
-                UmengUtil.startFeedbackActivity(context);
+//                UmengUtil.startFeedbackActivity(context);
+                i.setClass(MyApplication.getInstance(), WebViewActivity.class);
+                i.putExtra("key",3);
+                startActivity(i);
                 break;
 
             default:
