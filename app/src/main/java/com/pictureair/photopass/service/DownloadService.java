@@ -170,6 +170,7 @@ public class DownloadService extends Service {
      * @param id          对应文件的id
      */
     private void downLoad(String originalUrl, String id, int isVideo) {
+        PictureAirLog.out("downloadurl--->" + originalUrl);
         String fileName = ScreenUtil.getReallyFileName(originalUrl,isVideo);
         PictureAirLog.out("filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);

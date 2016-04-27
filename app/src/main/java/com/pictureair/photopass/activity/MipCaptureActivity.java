@@ -303,11 +303,15 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             if (resultString.equals("")) {
                 //			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-            } else if (!resultString.contains("vid=")) {//错误的码
+            } else if (!resultString.contains("vid=") && !resultString.contains("VID=")) {//错误的码
                 newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 finish();
             } else {
-                code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+                if (resultString.contains("vid=")) {
+                    code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+                } else if (resultString.contains("VID=")) {
+                    code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
+                }
                 PictureAirLog.out("code：：：" + code);
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 dealCodeUtil.startDealCode(code);

@@ -329,7 +329,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             newToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);
             exitTime = System.currentTimeMillis();
         } else {
-            newToast.cancel();
+            newToast.cancelToast();
             mTabHost.removeAllViews();
             finish();
             clearCache();

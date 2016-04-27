@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/pp_orange"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
             android:layout_alignBaseline="@+id/good_price"
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/good_price"
-            android:textColor="@color/pp_orange"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 

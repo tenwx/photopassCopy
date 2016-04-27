@@ -1,13 +1,13 @@
 <resources>
     <string name="smssdk_regist">New Account</string>
-    <string name="smssdk_forget">Forgot password</string>
+    <string name="smssdk_forget">Reset Password</string>
     <string name="smssdk_make_sure_country_mobile">Please confirm country and input phone number</string>
     <string name="smssdk_country">Country</string>
     <string name="smssdk_pwd_no">Password inconsistency</string>
     <string name="smssdk_pwd">Password</string>
-    <string name="smssdk_pwd2">Retype password</string>
+    <string name="smssdk_pwd2">Retype Password</string>
     <string name="smssdk_pwd_forget">Please enter new password</string>
-    <string name="smssdk_pwd2_forget">Retype password</string>
+    <string name="smssdk_pwd2_forget">Retype Password</string>
     <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_sign_up">Sign Up</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>

@@ -10,8 +10,8 @@
     <string name="smssdk_pwd2_forget">请再次输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_sign_up">注册</string>
-    <string name="smssdk_other_sign_up">其他方式注册</string>
-    <string name="smssdk_explain_briefly">点击上面的‘注册’按钮，即表示您同意<a href = "2">《补充条款及细则》</a>和<a href = "1">《隐私政策》</a></string>
+    <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
+    <string name="smssdk_explain_briefly">点击上面的注册按钮，即表示您同意<a href = "2">《补充条款及细则》</a>和<a href = "1">《隐私政策》</a></string>
     <string name="smssdk_send_code2">再次发送验证码</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>

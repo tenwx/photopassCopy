@@ -96,7 +96,7 @@
                 android:background="@drawable/button_blue_shape_and_selector"
                 android:padding="@dimen/pp_padding_10"
                 android:text="@string/confirm"
-                android:textColor="@color/pp_blue"
+                android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/pp_margin_16" />
 
             <Button

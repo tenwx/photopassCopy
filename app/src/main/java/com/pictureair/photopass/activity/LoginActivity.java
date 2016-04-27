@@ -381,10 +381,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
     @Override
     public void onBackPressed() {
-        if (System.currentTimeMillis() - i > 2000) {
+        if (System.currentTimeMillis() - i > 1000) {
             myToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);
             i = System.currentTimeMillis();
         } else {
+            myToast.cancelToast();
             finish();
         }
     }

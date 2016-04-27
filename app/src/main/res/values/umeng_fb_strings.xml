@@ -18,7 +18,7 @@
     <string name="umeng_fb_time_this_year_format">MM/dd HH:mm:ss</string>
     <string name="umeng_fb_time_pre_year_format">yy/MM/dd HH:mm:ss</string>
     <string name="umeng_fb_contact_qq">QQ</string>
-    <string name="umeng_fb_contact_email">邮箱</string>
+    <string name="umeng_fb_contact_email">电子邮箱</string>
     <string name="umeng_fb_contact_phone">手机</string>
     <string name="umeng_fb_contact_other">其他</string>
     <string name="umeng_fb_send_fail">发送失败</string>
