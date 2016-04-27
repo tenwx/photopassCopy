@@ -73,6 +73,7 @@ public class Common {
     public static final String BARCODEURL = "http://140.206.125.194:3001/downloadApp.html?";
     public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
     public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
+    public final static String CONTACT_AGREEMENT = "http://192.168.8.3:3004/contact.html?source=outer"; // 联系我们
 
 
 
