@@ -40,11 +40,11 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.blur.BlurUtil;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
@@ -207,8 +207,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean loadFailed = false;
 
-    private List<GoodsInfo1> allGoodsList;//全部商品
-    private GoodsInfo1 pppGoodsInfo;
+    private List<GoodsInfo> allGoodsList;//全部商品
+    private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
 
     /**
@@ -358,10 +358,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else {
                     myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
                 }
-                List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
+                List<CartItemInfo> cartItemInfoList = cartItemInfoJson.getItems();
                 Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo1> orderinfo = new ArrayList<>();
-                CartItemInfo1 cartItemInfo = cartItemInfo1List.get(0);
+                ArrayList<CartItemInfo> orderinfo = new ArrayList<>();
+                CartItemInfo cartItemInfo = cartItemInfoList.get(0);
                 cartItemInfo.setCartProductType(2);
                 orderinfo.add(cartItemInfo);
                 Editor editor = sharedPreferences.edit();
@@ -387,7 +387,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     allGoodsList = goodsInfoJson.getGoods();
                     PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                     //获取PP+
-                    for (GoodsInfo1 goodsInfo : allGoodsList) {
+                    for (GoodsInfo goodsInfo : allGoodsList) {
                         if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
                             pppGoodsInfo = goodsInfo;
                             //封装购物车宣传图
@@ -436,13 +436,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 //生成订单
                 Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
+                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo cartItemInfo1 = new CartItemInfo();
                 cartItemInfo1.setCartId(cartId);
                 cartItemInfo1.setProductName(pppGoodsInfo.getName());
                 cartItemInfo1.setProductNameAlias(pppGoodsInfo.getNameAlias());
                 cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
-                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
                 cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
                 cartItemInfo1.setQty(1);
                 cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());

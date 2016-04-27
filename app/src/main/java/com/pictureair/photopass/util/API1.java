@@ -6,7 +6,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -1353,7 +1352,7 @@ public class API1 {
                 Message msg = handler.obtainMessage();
                 Bundle b = new Bundle();
                 b.putParcelable("group", groupInfo);
-                b.putParcelableArrayList("child", childInfo);
+                b.putSerializable("child", childInfo);
                 msg.what = DELETE_ORDER_SUCCESS;
                 msg.setData(b);
                 handler.sendMessage(msg);

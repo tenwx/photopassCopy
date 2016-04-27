@@ -16,7 +16,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -30,14 +30,14 @@ import java.util.List;
  */
 public class ShopGoodListViewAdapter extends BaseAdapter {
     private final static String TAG = "ShopGoodListViewAdapter";
-    private List<GoodsInfo1> goodList;
+    private List<GoodsInfo> goodList;
     private LayoutInflater layoutInflater;
     private String currency;
     private int width = 0;
     private DisplayImageOptions options;
     private ImageLoader imageLoader;
 
-    public ShopGoodListViewAdapter(List<GoodsInfo1> list, Context c, String currency) {
+    public ShopGoodListViewAdapter(List<GoodsInfo> list, Context c, String currency) {
         goodList = list;
         layoutInflater = LayoutInflater.from(c);
         this.currency = currency;
@@ -59,7 +59,7 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
      *
      * @param list data
      */
-    public void refresh(List<GoodsInfo1> list) {
+    public void refresh(List<GoodsInfo> list) {
         this.goodList = list;
         notifyDataSetChanged();
     }
@@ -98,26 +98,26 @@ public class ShopGoodListViewAdapter extends BaseAdapter {
         layoutParams.width = width;
         layoutParams.height = width / 2;
         viewHolder.goodImageView.setLayoutParams(layoutParams);
-        GoodsInfo1 goodsInfo1 = goodList.get(position);
-        if (goodsInfo1 == null) {
+        GoodsInfo goodsInfo = goodList.get(position);
+        if (goodsInfo == null) {
             PictureAirLog.v(TAG, "getView goodInfo == null");
             return convertView;
         }
-        PictureAirLog.v(TAG, "getView goodInfo name: " + goodsInfo1.getName());
+        PictureAirLog.v(TAG, "getView goodInfo name: " + goodsInfo.getName());
         //初始化数据
         viewHolder.goodNameAlias.setTypeface(MyApplication.getInstance().getFontBold());
         viewHolder.goodPrice.setTypeface(MyApplication.getInstance().getFontBold());
         viewHolder.goodCurrency.setTypeface(MyApplication.getInstance().getFontBold());
 
-        viewHolder.goodNameAlias.setText(goodsInfo1.getNameAlias());
-        viewHolder.goodPrice.setText(goodsInfo1.getPrice() + "");
+        viewHolder.goodNameAlias.setText(goodsInfo.getNameAlias());
+        viewHolder.goodPrice.setText(goodsInfo.getPrice() + "");
         viewHolder.goodCurrency.setText(currency);
-        viewHolder.goodDetailIntroduce.setText(goodsInfo1.getCopywriter());
+        viewHolder.goodDetailIntroduce.setText(goodsInfo.getCopywriter());
         ImageAware imageAware = new ImageViewAware(viewHolder.goodImageView, false);
-        if (goodsInfo1.getPictures() != null && goodsInfo1.getPictures().size() > 0) {
-            if (viewHolder.goodImageView.getTag() == null || !viewHolder.goodImageView.getTag().equals(goodsInfo1.getPictures().get(0).getUrl())) {
-                imageLoader.displayImage(Common.PHOTO_URL + goodsInfo1.getPictures().get(0).getUrl(), imageAware, options);
-                viewHolder.goodImageView.setTag(goodsInfo1.getPictures().get(0).getUrl());
+        if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
+            if (viewHolder.goodImageView.getTag() == null || !viewHolder.goodImageView.getTag().equals(goodsInfo.getPictures().get(0).getUrl())) {
+                imageLoader.displayImage(Common.PHOTO_URL + goodsInfo.getPictures().get(0).getUrl(), imageAware, options);
+                viewHolder.goodImageView.setTag(goodsInfo.getPictures().get(0).getUrl());
             }
         } else {
             imageLoader.displayImage("", imageAware, options);

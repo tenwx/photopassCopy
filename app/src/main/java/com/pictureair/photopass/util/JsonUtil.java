@@ -14,9 +14,7 @@ import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.CartItemInfo1;
 import com.pictureair.photopass.entity.CartPhotosInfo;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
@@ -307,13 +305,13 @@ public class JsonUtil {
      * @param cartItem       每一项的item对象，里面会包含price参数
      * @return
      */
-    public static JSONArray addAndModifyCartItemJsonArray(ArrayList<PhotoInfo> photoArrayList, CartItemInfo1 cartItem) {
+    public static JSONArray addAndModifyCartItemJsonArray(ArrayList<PhotoInfo> photoArrayList, CartItemInfo cartItem) {
         if (photoArrayList == null) {
             return null;
         }
         JSONArray photoIdArray = new JSONArray();//放入图片的json数组
         try {
-            List<CartPhotosInfo1> photoslist;
+            List<CartPhotosInfo> photoslist;
             if (cartItem.getEmbedPhotos() != null && cartItem.getEmbedPhotos().size() > 0) {
                 photoslist = cartItem.getEmbedPhotos();//获取每一个item中的图片数组
             } else {
@@ -425,100 +423,6 @@ public class JsonUtil {
     }
 
     /**
-     * 解析购物车信息
-     *
-     * @param itemObject
-     * @return cartItemInfo
-     */
-    public static CartItemInfo getCartItemInfo(JSONObject itemObject) {
-        CartItemInfo cartInfo = new CartItemInfo();
-        int quantity;
-        try {
-            quantity = itemObject.getIntValue("qty");
-            cartInfo.cart_quantity = quantity;
-            cartInfo.cart_promotionPrice = itemObject.getDouble("price");
-            cartInfo.cart_id = itemObject.getString("_id");
-            JSONArray productsArray = itemObject.getJSONArray("products");
-            JSONObject productJsonObject = productsArray.getJSONObject(0);//默认一个商品只有一个svg文件
-            cartInfo.cart_originalPrice = productJsonObject.getDouble("price");
-            cartInfo.cart_storeId = productJsonObject.getString("storeId");
-            cartInfo.cart_productName = productJsonObject.getString("name");
-            if (cartInfo.cart_productName.equals(Common.GOOD_NAME_PPP)) {//ppp
-                cartInfo.cart_productType = 3;
-            } else if (cartInfo.cart_productName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//pp
-                cartInfo.cart_productType = 2;
-            } else {//other goods
-                cartInfo.cart_productType = 1;
-            }
-            cartInfo.cart_productId = productJsonObject.getString("productId");
-            if (productJsonObject.containsKey("productDescription")) {
-                cartInfo.cart_productIntroduce = productJsonObject.getString("productDescription");
-            } else {
-                cartInfo.cart_productIntroduce = "Made by PictureAir";
-            }
-            cartInfo.cart_productImageUrl = productJsonObject.getString("productImage");
-//			cartInfo.cart_embedPhotoCount = productJsonObject.getInt("embedPhotosCount");
-            cartInfo.cart_embedPhotoCount = 2;//暂时写死，应该是1，但是后面空的购物车也会加个空白的项，所以为2
-            JSONArray embedphotoArray = productJsonObject.getJSONArray("embedPhotos");
-            ArrayList<CartPhotosInfo> gridviewphotolist = new ArrayList<CartPhotosInfo>();
-            CartPhotosInfo cartPhotosInfo;
-            /****临时添加*****/
-//			if (cartInfo.cart_productType == 2) {//如果是pp商品
-//				
-//				if (0 == embedphotoArray.length()) {//应该没有添加图片的商品
-//					
-//				}else {//数码商品
-//					cartInfo.cart_productType = 1;
-//				}
-//			}
-            /****临时添加*****/
-            if (0 == embedphotoArray.size()) {
-                PictureAirLog.out("0000000000000");
-                final int count = quantity;
-                cartPhotosInfo = new CartPhotosInfo();
-                cartPhotosInfo.cart_photoUrl = "";
-                cartPhotosInfo.cart_photoId = "";
-                cartPhotosInfo.cart_photoCount = count + "";
-                gridviewphotolist.add(cartPhotosInfo);
-                cartInfo.hasPhoto = false;
-            } else {
-                PictureAirLog.out("---------buwei000000000");
-                JSONObject embedphotoObject = embedphotoArray.getJSONObject(0);//一般一个svg文件只有一个孔去添加图片
-                JSONArray photosidJsonArray = embedphotoObject.getJSONArray("photosIds");
-                for (int j = 0; j < photosidJsonArray.size(); j++) {
-                    JSONObject photoidJsonObject = photosidJsonArray.getJSONObject(j);
-                    final int count = quantity;
-                    cartPhotosInfo = new CartPhotosInfo();
-                    cartPhotosInfo.cart_photoUrl = photoidJsonObject.getString("photoUrl");
-                    cartPhotosInfo.cart_photoId = photoidJsonObject.getString("photoId");
-                    cartPhotosInfo.cart_photoCount = count + "";
-                    gridviewphotolist.add(cartPhotosInfo);
-                }
-                cartInfo.hasPhoto = true;
-            }
-            cartInfo.cart_photoUrls = gridviewphotolist;
-            if (cartInfo.cart_productType != 1) {//如果是虚拟商品，则不需要加图片
-                cartInfo.isFullPhotos = true;
-                cartInfo.hasPhoto = true;
-                PictureAirLog.out("type!=1");
-            } else if (gridviewphotolist.size() < cartInfo.cart_embedPhotoCount) {//如果是正常商品，判断已经加的图品数量和需要数量是否一致
-                cartInfo.isFullPhotos = false;
-                PictureAirLog.out("size < count");
-            } else {
-                cartInfo.isFullPhotos = true;
-                cartInfo.hasPhoto = true;
-                PictureAirLog.out("others");
-            }
-            cartInfo.isSelect = true;
-            cartInfo.show_edit = 0;
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return cartInfo;
-    }
-
-    /**
      * 获取订单信息的Group信息的json解析方法
      *
      * @param orderJsonObject
@@ -625,7 +529,7 @@ public class JsonUtil {
      * @return
      */
     public static ArrayList<CartItemInfo> getOrderChildInfo(JSONObject orderJsonObject) {
-        ArrayList<CartItemInfo> orderDetailsArrayList = new ArrayList<CartItemInfo>();
+        ArrayList<CartItemInfo> orderDetailsArrayList = new ArrayList<>();
         CartItemInfo cartItemInfo;
         try {
             JSONArray productsArray = orderJsonObject.getJSONArray("productInfo");
@@ -635,24 +539,27 @@ public class JsonUtil {
             for (int i = 0; i < productsArray.size(); i++) {
                 cartItemInfo = new CartItemInfo();
                 JSONObject productJsonObject = productsArray.getJSONObject(i);
-                cartItemInfo.cart_productName = productJsonObject.getString("productNameAilas");//商品名字
-                cartItemInfo.cart_productImageUrl = productJsonObject.getString("productImage");//商品预览图URL
-                cartItemInfo.cart_quantity = productJsonObject.getIntValue("qty");//商品数量
-                cartItemInfo.cart_promotionPrice = productJsonObject.getDouble("unitPrice");//商品单价
-                cartItemInfo.cart_productType = productJsonObject.getIntValue("productEntityType");//商品虚拟／实体类型（0,1）
+
+                cartItemInfo.setProductName(productJsonObject.getString("productNameAilas"));//商品名字
+                cartItemInfo.setCartProductImageUrl(productJsonObject.getString("productImage"));//商品预览图URL
+                cartItemInfo.setQty(productJsonObject.getIntValue("qty"));//商品数量
+                cartItemInfo.setUnitPrice(productJsonObject.getIntValue("unitPrice"));//商品单价
+                cartItemInfo.setCartProductType(productJsonObject.getIntValue("productEntityType"));//商品虚拟／实体类型（0,1）
+
+
                 //获取添加照片的信息
-                usePhotosArray = productJsonObject.getJSONArray("usePhotos");
+                usePhotosArray = productJsonObject.getJSONArray("usePhotos");//商品名字
                 if (usePhotosArray.size() == 0) {//如果为0，不赋值
 
                 } else {
-                    ArrayList<CartPhotosInfo> photourlsArrayList = new ArrayList<CartPhotosInfo>();
+                    ArrayList<CartPhotosInfo> photourlsArrayList = new ArrayList<>();
                     for (int j = 0; j < usePhotosArray.size(); j++) {
                         JSONObject usePhotoObject = usePhotosArray.getJSONObject(j);
                         cartPhotosInfo = new CartPhotosInfo();
-                        cartPhotosInfo.cart_photoUrl = usePhotoObject.getString("photoUrl");//商品添加图片的URL
+                        cartPhotosInfo.setPhotoUrl(usePhotoObject.getString("photoUrl"));//商品添加图片的URL
                         photourlsArrayList.add(cartPhotosInfo);
                     }
-                    cartItemInfo.cart_photoUrls = photourlsArrayList;
+                    cartItemInfo.setEmbedPhotos(photourlsArrayList);
                 }
                 orderDetailsArrayList.add(cartItemInfo);
             }

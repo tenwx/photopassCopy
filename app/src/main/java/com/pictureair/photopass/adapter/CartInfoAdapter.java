@@ -21,8 +21,8 @@ import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo1;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
@@ -41,10 +41,10 @@ import java.util.List;
  * @author bauer_bao
  */
 public class CartInfoAdapter extends BaseAdapter {
-    private List<CartPhotosInfo1> gridviewlist;
+    private List<CartPhotosInfo> gridviewlist;
     private LayoutInflater layoutInflater;
     private ArrayList<ImageView> gridlayoutList;
-    private ArrayList<CartItemInfo1> goodArrayList;
+    private ArrayList<CartItemInfo> goodArrayList;
     private Context context;
     private Handler handler;
     private String currency;
@@ -61,7 +61,7 @@ public class CartInfoAdapter extends BaseAdapter {
     private static final String TAG = "CartInfoAdapter";
 
 
-    public CartInfoAdapter(Context context, String currency, ArrayList<CartItemInfo1> goodArrayList, String userId, Handler handler) {
+    public CartInfoAdapter(Context context, String currency, ArrayList<CartItemInfo> goodArrayList, String userId, Handler handler) {
         this.context = context;
         this.goodArrayList = goodArrayList;
         this.handler = handler;
@@ -78,7 +78,7 @@ public class CartInfoAdapter extends BaseAdapter {
      *
      * @param cartInfoList
      */
-    public void refresh(ArrayList<CartItemInfo1> cartInfoList) {
+    public void refresh(ArrayList<CartItemInfo> cartInfoList) {
         this.goodArrayList = cartInfoList;
         notifyDataSetChanged();
     }
@@ -271,10 +271,10 @@ public class CartInfoAdapter extends BaseAdapter {
 
     //选择按键监听， 取消选中的时候，需要将对应列的价格减去，同时更新总的订单信息
     private class SelectOnClick implements OnClickListener {
-        private CartItemInfo1 cartItemInfo;
+        private CartItemInfo cartItemInfo;
         private ViewHolder viewHolder;
 
-        public SelectOnClick(ViewHolder holderView, CartItemInfo1 cartItemInfo) {
+        public SelectOnClick(ViewHolder holderView, CartItemInfo cartItemInfo) {
             this.viewHolder = holderView;
             this.cartItemInfo = cartItemInfo;
         }
@@ -301,12 +301,12 @@ public class CartInfoAdapter extends BaseAdapter {
      */
     private class ChangeCountOnclick implements OnClickListener {
         private ViewHolder holderView;
-        private List<CartPhotosInfo1> arraylist;
+        private List<CartPhotosInfo> arraylist;
         private boolean ishandle = false;
-        private CartItemInfo1 cartItemInfo;
+        private CartItemInfo cartItemInfo;
         private int position;
 
-        public ChangeCountOnclick(ViewHolder holderView, List<CartPhotosInfo1> arraylist, CartItemInfo1 cartItemInfo, int position) {
+        public ChangeCountOnclick(ViewHolder holderView, List<CartPhotosInfo> arraylist, CartItemInfo cartItemInfo, int position) {
             // TODO Auto-generated constructor stub
             this.holderView = holderView;
             this.arraylist = arraylist;
@@ -365,7 +365,7 @@ public class CartInfoAdapter extends BaseAdapter {
          * @param cartItemInfo 购物车项id参数(可选,不填时为移除全部)
          * @param handler      handler
          */
-        public void modifyCart(final boolean addOrminus, final int count, final CartItemInfo1 cartItemInfo, final Handler handler) {
+        public void modifyCart(final boolean addOrminus, final int count, final CartItemInfo cartItemInfo, final Handler handler) {
             PictureAirLog.v(TAG, "modifyCart");
             RequestParams params = new RequestParams();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -381,7 +381,7 @@ public class CartInfoAdapter extends BaseAdapter {
                     holderView.cartGoodCountTextView.setText(String.valueOf(count));
                     holderView.cartGoodProductQuentityTextView.setText("x" + String.valueOf(count));
                     for (int i = 0; i < arraylist.size(); i++) {
-                        CartPhotosInfo1 map = arraylist.get(i);
+                        CartPhotosInfo map = arraylist.get(i);
                         map.setCartPhotoCount(String.valueOf(count));
                         arraylist.set(i, map);
                     }

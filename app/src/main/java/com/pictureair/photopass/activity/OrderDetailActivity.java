@@ -156,7 +156,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private void getData() {
         Bundle bundle = getIntent().getExtras();
         orderInfo = bundle.getParcelable("groupitem");
-        orderDetailArrayList = bundle.getParcelableArrayList("childitemlist");
+        orderDetailArrayList = (ArrayList<CartItemInfo>) bundle.getSerializable("childitemlist");
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 MODE_PRIVATE);
         currency = sharedPreferences.getString(Common.CURRENCY,
@@ -180,8 +180,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                     orderName = getString(R.string.multi_goods);
                     orderIntroduce = getString(R.string.multi_goods);
                 } else {//1
-                    orderName = orderDetailArrayList.get(0).cart_productName;
-                    orderIntroduce = orderDetailArrayList.get(0).cart_productIntroduce;
+                    orderName = orderDetailArrayList.get(0).getProductName();
+                    orderIntroduce = orderDetailArrayList.get(0).getDescription();
                 }
                 intent.putExtra("name", orderName);
                 intent.putExtra("introduce", orderIntroduce);

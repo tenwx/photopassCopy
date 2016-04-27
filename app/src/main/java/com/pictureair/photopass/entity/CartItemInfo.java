@@ -1,111 +1,217 @@
 package com.pictureair.photopass.entity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.List;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+/**
+ * Created by milo on 15/12/14.
+ * 购物车实体类
+ */
+public class CartItemInfo implements Serializable {
+    private String cartId = ""; //string,购物项主键
+    private String storeId = ""; //string,商城编号
+    private String goodsKey = ""; //string,商品项key
+    private String productName = ""; //string,商品名称
+    private String productNameAlias = ""; //商品名称别称
+    private String description = ""; //string,商品描述
+    private int entityType;//int 商品虚拟／实体类型（0,1）
+    private int embedPhotosCount = 0; //number,商品合成所需照片数
+    private int unitPrice = 0; //number,商品单价
+    private int qty = 0; //number,商品数量
+    private int price = 0; //number,商品项价格
+    private String[] pictures = null; //array<string>商品宣传图地址数组
+    private List<CartPhotosInfo> embedPhotos = null;//购物项内配备的照片数据
+    private boolean isSelect = false;//商品是否应该被选中
+    private boolean hasPhoto = false;//商品有没有添加图片
+    private int showEdit = 0;//1，开始编辑数量，0，不需要编辑数量
+    private int showPhotos = 0;//1,展示照片，0，不展示照片
+    private boolean isFullPhotos = false;//商品是否加满照片
+    private int cartProductType = 3;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品(自己添加)
+    private String cartProductImageUrl = "";//自己添加，购物车商品预览图
 
-public class CartItemInfo implements Parcelable{
-	public String cart_productName;//商品名字
-	public String cart_productId;//商品ID
-	public int cart_productType;//商品类型 1:正常商品；2:照片类型商品；3:PP+商品
-	public double cart_originalPrice;//商品原价
-	public double cart_promotionPrice;//商品现价
-	public String cart_productIntroduce;//商品介绍
-	public String cart_productImageUrl;//商品预览图URL
-	public int cart_quantity;//商品数量
-	public String cart_id;//购物车对应的ID
-	public String cart_storeId;//购物车对应的StoreId
-	public boolean isSelect;//商品是否应该被选中
-	public boolean hasPhoto;//商品有没有添加图片
-	public boolean isFullPhotos;//商品是否加满照片
-	public int cart_embedPhotoCount;//最多可以加的图片数量
-	public int show_edit;//1，开始编辑数量，0，不需要编辑数量
-	public int showPhotos;//1,展示照片，0，不展示照片
-	public List<CartPhotosInfo> cart_photoUrls;//商品添加图片的详情列表
-	
-	public static final Parcelable.Creator<CartItemInfo> CREATOR = new Creator<CartItemInfo>() {
+    public CartItemInfo() {
+    }
 
-		@Override
-		public CartItemInfo[] newArray(int size) {
-			// TODO Auto-generated method stub
-			return new CartItemInfo[size];
-		}
+    public CartItemInfo(String cartId, String storeId, String goodsKey, String productName, String productNameAlias, String description, int entityType, int embedPhotosCount, int unitPrice, int qty, int price, String[] pictures, List<CartPhotosInfo> embedPhotos, boolean isSelect, boolean hasPhoto, int showEdit, int showPhotos, boolean isFullPhotos, int cartProductType, String cartProductImageUrl) {
+        this.cartId = cartId;
+        this.storeId = storeId;
+        this.goodsKey = goodsKey;
+        this.productName = productName;
+        this.productNameAlias = productNameAlias;
+        this.description = description;
+        this.entityType = entityType;
+        this.embedPhotosCount = embedPhotosCount;
+        this.unitPrice = unitPrice;
+        this.qty = qty;
+        this.price = price;
+        this.pictures = pictures;
+        this.embedPhotos = embedPhotos;
+        this.isSelect = isSelect;
+        this.hasPhoto = hasPhoto;
+        this.showEdit = showEdit;
+        this.showPhotos = showPhotos;
+        this.isFullPhotos = isFullPhotos;
+        this.cartProductType = cartProductType;
+        this.cartProductImageUrl = cartProductImageUrl;
+    }
 
-		@Override
-		public CartItemInfo createFromParcel(Parcel source) {
-			// TODO Auto-generated method stub
-			return new CartItemInfo(source);
-		}
-	};
+    public String getCartId() {
+        return cartId;
+    }
 
-	public CartItemInfo() {
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
+    }
 
-	}
+    public String getStoreId() {
+        return storeId;
+    }
 
-	private int length = 0;
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
 
-	private CartItemInfo(Parcel source) {
-		cart_productName = source.readString();
-		cart_productId = source.readString();
-		cart_productType = source.readInt();
-		cart_originalPrice = source.readDouble();
-		cart_promotionPrice = source.readDouble();
-		cart_productIntroduce = source.readString();
-		cart_productImageUrl = source.readString();
-		cart_quantity = source.readInt();
-		cart_id = source.readString();
-		cart_storeId = source.readString();
-		cart_embedPhotoCount = source.readInt();
-		show_edit = source.readInt();
-		showPhotos = source.readInt();
-		isSelect = (source.readInt() == 1)?true:false;
-		hasPhoto = (source.readInt() == 1)?true:false;
-		isFullPhotos = (source.readInt() == 1)?true:false;
-		
-		length = source.readInt();
-		if (length > 0) {
-			cart_photoUrls = new ArrayList<CartPhotosInfo>();
-			Parcelable[] parcelables = source.readParcelableArray(CartPhotosInfo.class.getClassLoader());
-			cart_photoUrls = Arrays.asList(Arrays.asList(parcelables).toArray(new CartPhotosInfo[parcelables.length]));
-		}
-	}
+    public String getGoodsKey() {
+        return goodsKey;
+    }
 
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public void setGoodsKey(String goodsKey) {
+        this.goodsKey = goodsKey;
+    }
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-		dest.writeString(cart_productName);
-		dest.writeString(cart_productId);
-		dest.writeInt(cart_productType);
-		dest.writeDouble(cart_originalPrice);
-		dest.writeDouble(cart_promotionPrice);
-		dest.writeString(cart_productIntroduce);
-		dest.writeString(cart_productImageUrl);
-		dest.writeInt(cart_quantity);
-		dest.writeString(cart_id);
-		dest.writeString(cart_storeId);
-		dest.writeInt(cart_embedPhotoCount);
-		dest.writeInt(show_edit);
-		dest.writeInt(showPhotos);
-		dest.writeInt(isSelect?1:0);
-		dest.writeInt(hasPhoto?1:0);
-		dest.writeInt(isFullPhotos?1:0);
+    public String getProductName() {
+        return productName;
+    }
 
-		if (cart_photoUrls == null)
-			dest.writeInt(0);
-		else
-			dest.writeInt(cart_photoUrls.size());
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
-		if (cart_photoUrls != null)
-			dest.writeParcelableArray(cart_photoUrls.toArray(new CartPhotosInfo[cart_photoUrls.size()]), flags);
+    public String getProductNameAlias() {
+        return productNameAlias;
+    }
 
-	}
+    public void setProductNameAlias(String productNameAlias) {
+        this.productNameAlias = productNameAlias;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getEmbedPhotosCount() {
+        return embedPhotosCount;
+    }
+
+    public void setEmbedPhotosCount(int embedPhotosCount) {
+        this.embedPhotosCount = embedPhotosCount;
+    }
+
+    public int getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(int unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String[] getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(String[] pictures) {
+        this.pictures = pictures;
+    }
+
+    public boolean getIsSelect() {
+        return isSelect;
+    }
+
+    public void setIsSelect(boolean isSelect) {
+        this.isSelect = isSelect;
+    }
+
+    public boolean getHasPhoto() {
+        return hasPhoto;
+    }
+
+    public void setHasPhoto(boolean hasPhoto) {
+        this.hasPhoto = hasPhoto;
+    }
+
+    public int getShowEdit() {
+        return showEdit;
+    }
+
+    public void setShowEdit(int showEdit) {
+        this.showEdit = showEdit;
+    }
+
+    public List<CartPhotosInfo> getEmbedPhotos() {
+        return embedPhotos;
+    }
+
+    public void setEmbedPhotos(List<CartPhotosInfo> embedPhotos) {
+        this.embedPhotos = embedPhotos;
+    }
+
+    public int getShowPhotos() {
+        return showPhotos;
+    }
+
+    public void setShowPhotos(int showPhotos) {
+        this.showPhotos = showPhotos;
+    }
+
+    public boolean isFullPhotos() {
+        return isFullPhotos;
+    }
+
+    public void setIsFullPhotos(boolean isFullPhotos) {
+        this.isFullPhotos = isFullPhotos;
+    }
+
+    public int getCartProductType() {
+        return cartProductType;
+    }
+
+    public void setCartProductType(int cartProductType) {
+        this.cartProductType = cartProductType;
+    }
+
+    public String getCartProductImageUrl() {
+        return cartProductImageUrl;
+    }
+
+    public void setCartProductImageUrl(String cartProductImageUrl) {
+        this.cartProductImageUrl = cartProductImageUrl;
+    }
+
+    public int getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(int entityType) {
+        this.entityType = entityType;
+    }
 }

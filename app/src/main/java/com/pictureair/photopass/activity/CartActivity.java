@@ -20,10 +20,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CartInfoAdapter;
-import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -58,7 +58,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout bottomRelativeLayout;
     private View line;
 
-    private ArrayList<CartItemInfo1> cartInfoList;// 订单list
+    private ArrayList<CartItemInfo> cartInfoList;// 订单list
 
     private ArrayList<PhotoInfo> updatephotolist;
 
@@ -80,8 +80,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private CartItemInfoJson cartItemInfoJson;//存放返回的数据
-    private ArrayList<CartItemInfo1> selectCartInfoList;//存放勾选的购物车
-    private List<CartItemInfo1> deleteCartItemInfoList;//存放删除的购物车
+    private ArrayList<CartItemInfo> selectCartInfoList;//存放勾选的购物车
+    private List<CartItemInfo> deleteCartItemInfoList;//存放删除的购物车
     private int position = 0;//记录当前操作项位置（10 + n）
 
     private final Handler cartHandler = new CartHandler(this);
@@ -112,7 +112,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_CART_SUCCESS:
-                PictureAirLog.v(TAG, "GET_CART_SUCCESS arg1: " + msg.arg1);
                 PictureAirLog.v(TAG, "GET_CART_SUCCESS obg: " + msg.obj);
                 CartItemInfoJson json = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 customProgressDialog.dismiss();
@@ -168,8 +167,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     }
 
                 } else {
+                    //保存购物车数量
+                    Editor cartEditor = sPreferences.edit();
+                    cartEditor.putInt(Common.CART_COUNT, 0);
+                    cartEditor.commit();
                     ShowNoNetOrNoCountView();
                 }
+
                 break;
 
             case API1.GET_CART_FAILED://请求失败
@@ -196,7 +200,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 cartItemInfoJson.setItems(cartInfoList);
                 //获取删除的商品数
                 int deleteCount = 0;
-                for (CartItemInfo1 cartItemInfo : deleteCartItemInfoList) {
+                for (CartItemInfo cartItemInfo : deleteCartItemInfoList) {
                     deleteCount += cartItemInfo.getQty();
                 }
                 //清空数据
@@ -218,7 +222,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 JSONArray embedPhotos = (JSONArray) msg.obj;
                 PictureAirLog.v(TAG, "embedPhotos: " + embedPhotos);
                 position = msg.arg1;//位置
-                CartItemInfo1 cartItemInfo = cartInfoList.get(position / 10);
+                CartItemInfo cartItemInfo = cartInfoList.get(position / 10);
                 API1.modifyCart(cartItemInfo.getCartId(), cartItemInfo.getGoodsKey(), cartItemInfo.getQty(), embedPhotos, cartHandler, dialog);
 
                 break;
@@ -372,7 +376,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
      */
     public CartItemInfoJson setIsSelect(CartItemInfoJson cartItemInfoJson) {
         if (cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
-            for (CartItemInfo1 cartItemInfo : cartItemInfoJson.getItems()) {
+            for (CartItemInfo cartItemInfo : cartItemInfoJson.getItems()) {
                 //设置商品类型
                 if (cartItemInfo.getProductName().equals(Common.GOOD_NAME_PPP)) {
                     //ppp
@@ -384,7 +388,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     //other goods
                     cartItemInfo.setCartProductType(1);
                 }
-                List<CartPhotosInfo1> cartPhotosInfoList = cartItemInfo.getEmbedPhotos();
+                List<CartPhotosInfo> cartPhotosInfoList = cartItemInfo.getEmbedPhotos();
                 if (cartPhotosInfoList != null && cartPhotosInfoList.size() > 0) {
                     cartItemInfo.setHasPhoto(true);
                 } else {
@@ -505,7 +509,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     if (selectCartInfoList.size() > 0) {
                         PictureAirLog.v(TAG, "selectCartInfoList size: " + selectCartInfoList.size());
                         //判断是否有图片没有添加
-                        for (CartItemInfo1 cartItemInfo : selectCartInfoList) {
+                        for (CartItemInfo cartItemInfo : selectCartInfoList) {
                             //PP+不需要图片
                             if (cartItemInfo.getCartProductType() != 3) {
                                 if (cartItemInfo.getEmbedPhotos() == null || cartItemInfo.getEmbedPhotos().size() <= 0) {
@@ -513,7 +517,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                                     newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
                                     return;
                                 } else {
-                                    for (CartPhotosInfo1 cartPhotosInfo : cartItemInfo.getEmbedPhotos()) {
+                                    for (CartPhotosInfo cartPhotosInfo : cartItemInfo.getEmbedPhotos()) {
                                         if (cartPhotosInfo == null || cartPhotosInfo.getPhotoId() == null || cartPhotosInfo.getPhotoUrl() == null) {
                                             PictureAirLog.v(TAG, "no photo");
                                             newToast.setTextAndShow(R.string.addphoto, Common.TOAST_SHORT_TIME);
@@ -656,10 +660,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             return;
         }
         Intent intent = new Intent(CartActivity.this, SelectPhotoActivity.class);
-        GoodsInfo1 goodsInfo1 = new GoodsInfo1();
-        goodsInfo1.setName(cartInfoList.get(requestCode / 10).getProductName());
-        goodsInfo1.setEmbedPhotosCount(cartInfoList.get(requestCode / 10).getEmbedPhotosCount());
-        intent.putExtra("goodsInfo", goodsInfo1);
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setName(cartInfoList.get(requestCode / 10).getProductName());
+        goodsInfo.setEmbedPhotosCount(cartInfoList.get(requestCode / 10).getEmbedPhotosCount());
+        intent.putExtra("goodsInfo", goodsInfo);
         intent.putExtra("activity", "cartactivity");
         startActivityForResult(intent, requestCode);
     }
@@ -718,18 +722,18 @@ public class CartActivity extends BaseActivity implements OnClickListener {
      */
     private void changephoto(int position, ArrayList<PhotoInfo> photoList) {
         PictureAirLog.v(TAG, "并替换对应的图片");
-        List<CartPhotosInfo1> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
+        List<CartPhotosInfo> oriphoto = new ArrayList<>();//获取指定购物车的图片集合
         for (PhotoInfo photoInfo : photoList) {
             //构建购物车图片对象
             PictureAirLog.v(TAG, "update url: " + photoInfo.photoPathOrURL);
-            CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
+            CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
             cartPhotosInfo.setPhotoUrl(photoInfo.photoThumbnail);//缩略图
             cartPhotosInfo.setPhotoId(photoInfo.photoId);
             oriphoto.add(cartPhotosInfo);
         }
 
         //获取指定购物车项
-        CartItemInfo1 map = cartInfoList.get(position / 10);
+        CartItemInfo map = cartInfoList.get(position / 10);
         map.setEmbedPhotos(oriphoto);
         map.setHasPhoto(true);
         //替换指定item

@@ -95,6 +95,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private boolean isNeedPay = true;//是否需要支付
     private JSONArray couponCodes;//优惠券
+    private int cartCount = 0;//购物车数量
 
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
@@ -302,6 +303,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             cartItemIds = JSONArray.parseArray(getIntent().getStringExtra("cartItemIds"));
             String couponCodesStr = getIntent().getStringExtra("couponCodes");
             couponCodes = !TextUtils.isEmpty(couponCodesStr) ? JSONArray.parseArray(getIntent().getStringExtra("couponCodes")) : null;
+            cartCount = getIntent().getIntExtra("cartCount",0);
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -641,6 +643,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     PictureAirLog.v(TAG, "TopViewClick topLeftView");
                     CancelInPayment(true);
                 } else {
+                    //0元支付  购物车数量恢复
+                    SharedPreferences.Editor editor = sPreferences.edit();
+                    editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
+                    editor.commit();
                     finish();
                 }
 
@@ -659,6 +665,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             CancelInPayment(true);
         } else {
             finish();
+            //0元支付  购物车数量恢复
+            SharedPreferences.Editor editor = sPreferences.edit();
+            editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
+            editor.commit();
         }
     }
 
