@@ -2,9 +2,7 @@ package com.pictureair.photopass.widget;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
@@ -790,10 +788,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			final int id = Integer.MAX_VALUE / 13 + 1;
 			nm.cancel(id);
 
-			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
+//			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
 			Notification notification = new NotificationCompat.Builder(app).
 					setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(context.getString(R.string.app_name))
-					.setContentText(text).setWhen(System.currentTimeMillis()).setTicker(text).setContentIntent(pi).build();
+					.setContentText(text).setWhen(System.currentTimeMillis()).setTicker(text).build();//.setContentIntent(pi)
 			notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
 			nm.notify(id, notification);
 

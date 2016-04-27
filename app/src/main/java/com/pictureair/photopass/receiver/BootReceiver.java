@@ -8,7 +8,7 @@ public class BootReceiver extends BroadcastReceiver {
 	
 	public void onReceive(Context context, Intent intent) {
 
-		if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+		if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
 			
 			//到   定时器的广播中。
 			 Intent intent1 = new Intent();

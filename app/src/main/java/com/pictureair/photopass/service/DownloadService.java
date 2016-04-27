@@ -71,17 +71,24 @@ public class DownloadService extends Service {
         //		serviceIntent = intent;
         PictureAirLog.out("DownloadService ----------> onStartCommand");
         Bundle b = intent.getExtras();
-        photos = b.getParcelableArrayList("photos");
-        //将新的数据放入到下载队列的末尾
-        for (int i = 0; i < photos.size(); i++) {
-            downloadList.add(photos.get(i));
-            PictureAirLog.out("downloadlist size =" + downloadList.size());
+        if (b != null) {
+            photos = b.getParcelableArrayList("photos");
+            if (photos != null && photos.size() > 0) {
+                //将新的数据放入到下载队列的末尾
+                for (int i = 0; i < photos.size(); i++) {
+                    downloadList.add(photos.get(i));
+                    PictureAirLog.out("downloadlist size =" + downloadList.size());
+                }
+                if (!isDownloading) {//如果当前不在下载
+                    prepareDownload();
+                    isDownloading = true;
+                }
+            } else {
+                stopSelf();//下载服务停止
+            }
+        } else {
+            stopSelf();//下载服务停止
         }
-        if (!isDownloading) {//如果当前不在下载
-            prepareDownload();
-            isDownloading = true;
-        }
-
         return START_NOT_STICKY;//被系统kill之后，不会自动复活重新启动服务
     }
 
