@@ -46,6 +46,7 @@ import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
+import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
@@ -157,7 +158,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private boolean isFirst = false;//第一次进入标记
 
     private Dialog dia;
-    private TextView buy_ppp, cancel, buynow, touchtoclean;
+    private TextView buy_ppp, cancel, buynow, use_ppp, touchtoclean;
     private File dirFile;
 
     private Date date;
@@ -225,7 +226,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 当前图片的宽高
      */
-    private int curShowBmpWidth = 0 ;
+    private int curShowBmpWidth = 0;
     private int curShowBmpHeight = 0;
 
     /**
@@ -237,6 +238,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     @Override
@@ -598,6 +600,22 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 createBlurDialog();
                 break;
 
+            case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
+                if (API1.PPPlist.size() > 0) {
+                    intent = new Intent(PreviewPhotoActivity.this, MyPPActivity.class);
+                    intent.putExtra("photoPassCode",photoInfo.photoPassCode);
+                    intent.putExtra("shootTime",photoInfo.shootTime);
+                    intent.putExtra("isUseHavedPPP", true);
+                    startActivity(intent);
+                } else {
+                    newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
+                }
+                break;
+
+            case API1.GET_PPPS_BY_SHOOTDATE_FAILED:
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
             default:
                 break;
         }
@@ -683,7 +701,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         getPreviewPhotos();
     }
 
-    private void getLocation(){
+    private void getLocation() {
         try {
             JSONObject response = JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
             JSONArray resultArray = response.getJSONArray("locations");
@@ -698,7 +716,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     private void getPreviewPhotos() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -779,7 +797,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }.start();
     }
 
-    private void createBlurDialog(){
+    private void createBlurDialog() {
         dia = new Dialog(this, R.style.dialogTans);
         Window window = dia.getWindow();
         window.setGravity(Gravity.CENTER);
@@ -794,9 +812,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         buy_ppp = (TextView) dia.findViewById(R.id.buy_ppp);
         cancel = (TextView) dia.findViewById(R.id.cancel);
         buynow = (TextView) dia.findViewById(R.id.buynow);
+        use_ppp = (TextView) dia.findViewById(R.id.use_ppp);
         buynow.setOnClickListener(this);
         buy_ppp.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        use_ppp.setOnClickListener(this);
     }
 
     /**
@@ -993,7 +1013,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
 
-
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
@@ -1032,7 +1051,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (photoInfo.isPayed == 1) {
-                    if (photoInfo.isHasPreset == 0){ // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
+                    if (photoInfo.isHasPreset == 0) { // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
                         intent = new Intent(this, EditPhotoActivity.class);
                         if (isEdited) {//已经编辑过，取targetlist中的值
                             intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
@@ -1040,7 +1059,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
                         }
                         startActivityForResult(intent, 1);
-                    }else{
+                    } else {
 
 //                        new PictureWorksDialog(PreviewPhotoActivity.this,getString(R.string.photo_cannot_edit_title),getString(R.string.photo_cannot_edit_content),getString(R.string.photo_cannot_edit_no),getString(R.string.photo_cannot_edit_yes),true,null).show();
 //                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
@@ -1207,6 +1226,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 getALlGoods();
                 dia.dismiss();
                 break;
+            case R.id.use_ppp:
+                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    dia.dismiss();
+                    return;
+                }else{
+                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.shootTime);
+                }
+                break;
 
             case R.id.leadknow:
             case R.id.blur_lead_view:
@@ -1359,7 +1387,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         previewPhotoHandler.removeCallbacksAndMessages(null);
 
-        if (oriBlurBmp != null){
+        if (oriBlurBmp != null) {
             oriBlurBmp.recycle();
             oriBlurBmp = null;
         }
@@ -1410,7 +1438,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 垂直模式
      */
-    private void portraitOrientation(){
+    private void portraitOrientation() {
         isLandscape = false;
         titleBar.setVisibility(View.VISIBLE);
         toolsBar.setVisibility(View.VISIBLE);
@@ -1429,7 +1457,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 横屏模式
      */
-    private void landscapeOrientation(){
+    private void landscapeOrientation() {
         isLandscape = true;
         if (sharePop.isShowing()) {
             sharePop.dismiss();
@@ -1518,7 +1546,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.out("larger bmp w after resize---->" + curShowBmpWidth);
     }
 
-    private void createOriginalClearBit(boolean isInit){
+    private void createOriginalClearBit(boolean isInit) {
         int w = oriClearBmp.getWidth();
         int h = oriClearBmp.getHeight();
         PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
@@ -1689,8 +1717,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
 
-    private void setUmengPhotoSlide(){
+    private void setUmengPhotoSlide() {
         UmengUtil.onEvent(PreviewPhotoActivity.this, Common.EVENT_PHOTO_SLIDE);
     }
-
 }

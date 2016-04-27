@@ -39,6 +39,9 @@ public class WebViewActivity extends BaseActivity {
         }else if(key == 2){
             webView.loadUrl(Common.TERMS_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
             setTopTitleShow(R.string.terms); // 设置标题
+        }else if (key == 3){
+            webView.loadUrl(Common.CONTACT_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
+            setTopTitleShow(R.string.mypage_opinions); // 设置标题
         }
     }
 

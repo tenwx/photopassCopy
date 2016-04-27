@@ -5,6 +5,12 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+<LinearLayout
+    android:id="@+id/ppp_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:gravity="center"
+            android:layout_centerVertical="true"
             android:text="2015-22-20"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_16" />
@@ -26,9 +33,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:gravity="center"
+            android:layout_centerVertical="true"
             android:text="@string/no_activated"
             android:textColor="@color/pp_gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            />
+
+        <ImageView
+            android:id="@+id/iv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/pp_padding_10"
+            android:src="@drawable/nosele"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -128,5 +148,7 @@
             />
 
     </RelativeLayout>
+
+</LinearLayout>
 
 </LinearLayout>

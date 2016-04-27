@@ -720,6 +720,7 @@ public class JsonUtil {
                     if (ppplist.containsKey("isExpired")) {
                         ppPinfo.expired = ppplist.getBooleanValue("isExpired") ? 1 : 0;
                     }
+                    if (ppplist.containsKey("bindInfo")){
 
                     String str = ppplist.getString("bindInfo");
                     JSONArray bindInfos = JSON.parseArray(str);
@@ -732,11 +733,91 @@ public class JsonUtil {
                         bindInfo.bindDate = bindInfoObj.getString("bindDate");
                         ppPinfo.bindInfo.add(bindInfo);
                     }
+
+                    }
                     if (ppplist.containsKey("expiredOn")) { //如果存在有效日期，就取值，如果不存在，就为空
                         ppPinfo.expiredOn = ppplist.getString("expiredOn");
                     } else {
                         ppPinfo.expiredOn = "";
                     }
+                    ppPinfoArrayList.add(ppPinfo);
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+        return ppPinfoArrayList;
+
+    }
+
+
+    /**
+     * 选择
+     * @param jsonObject
+     * @return
+     */
+    public static ArrayList<PPPinfo> getPPPSByUserIdNHavedPPP(JSONObject jsonObject) {
+        ArrayList<PPPinfo> ppPinfoArrayList = new ArrayList<>();
+        if (jsonObject.containsKey("PPPList")) {
+            try {
+                JSONArray ppplists = jsonObject.getJSONArray("PPPList");
+                for (int i = 0; i < ppplists.size(); i++) {
+                    JSONObject ppplist = ppplists.getJSONObject(i);
+                    PPPinfo ppPinfo = new PPPinfo();
+//                    ppPinfo.PPPCode = ppplist.getString("PPPCode");
+//                    ppPinfo.capacity = ppplist.getIntValue("capacity");
+//                    ppPinfo.days = ppplist.getIntValue("days");
+//                    ppPinfo.PPP_ID = ppplist.getString("_id");
+                    ppPinfo.ownOn = AppUtil.GTMToLocal(ppplist.getString("ownOn")).substring(0, 10).toString();
+                    ppPinfo.PPPCode = ppplist.getString("PPPCode");
+                    ppPinfo.pppCardBg = ppplist.getString("cardBg");
+                    ppPinfo.expiredOn = ppplist.getString("expiredOn");
+                    ppPinfo.expired = ppplist.getIntValue("expired");
+                    ppPinfo.capacity = ppplist.getIntValue("capacity");
+                    String str = ppplist.getString("PPList");
+                    JSONArray PPList = JSON.parseArray(str);  // 解析可能会出问题
+                    for (int j = 0; j < PPList.size(); j++){
+                        BindPPInfo bindPPInfo = new BindPPInfo();
+                        bindPPInfo.customerId = PPList.getString(j);
+                        ppPinfo.bindInfo.add(bindPPInfo);
+                    }
+//                    if (ppplist.containsKey("PPPType")) {
+//                        if (ppplist.getString("PPPType").equals("5")) {
+//                            ppPinfo.expericePPP = 1;
+//                        } else {
+//                            ppPinfo.expericePPP = 0;
+//                        }
+//                    }
+//
+//                    if (ppplist.containsKey("cardBg")) {
+//                        ppPinfo.pppCardBg = ppplist.getString("cardBg");
+//                    }
+//
+//                    if (ppplist.containsKey("isExpired")) {
+//                        ppPinfo.expired = ppplist.getBooleanValue("isExpired") ? 1 : 0;
+//                    }
+//                    if (ppplist.containsKey("bindInfo")){
+//
+//                        String str = ppplist.getString("bindInfo");
+//                        JSONArray bindInfos = JSON.parseArray(str);
+//                        for (int j = 0; j < bindInfos.size(); j++) {
+//                            BindPPInfo bindInfo = new BindPPInfo();
+//                            JSONObject bindInfoObj = (JSONObject) bindInfos.get(j);
+//                            bindInfo.customerId = bindInfoObj.getString("customerId");
+//                            bindInfo.userids = bindInfoObj.getJSONArray("userIds").toString();  //分割成数组，暂时没有数据
+//                            //暂时 为空。 没有字段
+//                            bindInfo.bindDate = bindInfoObj.getString("bindDate");
+//                            ppPinfo.bindInfo.add(bindInfo);
+//                        }
+//
+//                    }
+//                    if (ppplist.containsKey("expiredOn")) { //如果存在有效日期，就取值，如果不存在，就为空
+//                        ppPinfo.expiredOn = ppplist.getString("expiredOn");
+//                    } else {
+//                        ppPinfo.expiredOn = "";
+//                    }
                     ppPinfoArrayList.add(ppPinfo);
                 }
             } catch (JSONException e) {
