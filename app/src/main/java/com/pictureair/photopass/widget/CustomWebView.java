@@ -36,9 +36,9 @@ public class CustomWebView extends WebView {
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(isSupportJavaScript);
         settings.setSavePassword(false);
-        if (isCache){//使用缓存
+        if (isCache) {//使用缓存
             settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        }else{//不使用缓存
+        } else {//不使用缓存
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         }
         setWebChromeClient();
@@ -77,7 +77,7 @@ public class CustomWebView extends WebView {
     /**
      * 是否显示滚动条
      */
-    public CustomWebView setShowScrollBarEnabled(boolean isShow){
+    public CustomWebView setShowScrollBarEnabled(boolean isShow) {
         this.isShowHorizontalScrollBarEnabled = isShow;
         this.isShowVerticalScrollBarEnabled = isShow;
         return this;
@@ -93,21 +93,25 @@ public class CustomWebView extends WebView {
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                myWebviewImp.webViewFailedToLoad();
+                if (null != myWebviewImp) {
+                    myWebviewImp.webViewFailedToLoad();
+                }
             }
         });
     }
 
-    private void setWebChromeClient(){
-        this.setWebChromeClient(new WebChromeClient(){
+    private void setWebChromeClient() {
+        this.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == 100) {
                     // 网页加载完成
-                    myWebviewImp.loadFinish();
+                    if (null != myWebviewImp)
+                        myWebviewImp.loadFinish();
                 } else {
                     // 加载中
-                    myWebviewImp.loading();
+                    if (null != myWebviewImp)
+                        myWebviewImp.loading();
                 }
             }
 
@@ -116,17 +120,20 @@ public class CustomWebView extends WebView {
 
     /**
      * 对外接口
+     *
      * @param myWebviewImp
      * @return
      */
-    public CustomWebView setMyWebViewImp(MyWebviewImp myWebviewImp){
+    public CustomWebView setMyWebViewImp(MyWebviewImp myWebviewImp) {
         this.myWebviewImp = myWebviewImp;
         return this;
     }
 
-    public interface MyWebviewImp{
+    public interface MyWebviewImp {
         void webViewFailedToLoad();//加载失败
+
         void loading();//加载中
+
         void loadFinish();//加载完成
     }
 }
