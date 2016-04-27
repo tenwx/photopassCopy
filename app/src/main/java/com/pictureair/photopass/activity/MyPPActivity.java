@@ -20,6 +20,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -47,6 +48,7 @@ import cn.smssdk.gui.CustomProgressDialog;
  */
 public class MyPPActivity extends BaseActivity implements OnClickListener {
     private final String TAG = "MyPPActivity";
+    private boolean isUseHavedPPP = false;
     private final int GET_SELECT_PP_SUCCESS = 2222;
     private final int REMOVE_PP_FROM_DB_FINISH = 3333;
     private ImageView back;
@@ -343,14 +345,21 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pp);
         initView();
-        dppp = getIntent().getParcelableExtra("ppp");
-        if (dppp != null) {
-            initView_selectPP();
+        isUseHavedPPP =  getIntent().getBooleanExtra("isUseHavedPPP",false);
+        if (isUseHavedPPP){
+            initView_selectPP1();
             tvTitle.setText(R.string.selectionpp);  //选择PP界面
-        } else {
-            initView_notSelectPP();
-            tvTitle.setText(R.string.mypage_pp); // PP 界面。
+        }else{
+            dppp = getIntent().getParcelableExtra("ppp");
+            if (dppp != null) {
+                initView_selectPP();
+                tvTitle.setText(R.string.selectionpp);  //选择PP界面
+            } else {
+                initView_notSelectPP();
+                tvTitle.setText(R.string.mypage_pp); // PP 界面。
+            }
         }
+
     }
 
     private void initView() {
@@ -365,6 +374,42 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         back.setOnClickListener(this);
+    }
+
+
+    /**
+     * 使用已有的迪斯尼乐拍通一卡通  情况下
+     */
+    private void initView_selectPP1(){
+        String photoPassCode = this.getIntent().getStringExtra("photoPassCode");
+        final String shootTime = this.getIntent().getStringExtra("shootTime");
+        String[] photoCode = null;
+        if (photoPassCode.contains(",")){
+            photoCode = photoPassCode.split(",");
+        }
+        ok = (TextView) findViewById(R.id.ok);
+        ok.setVisibility(View.VISIBLE);
+        ok.setOnClickListener(this);
+        ok.setText(formaStringPPP(0, 1));
+        final String[] finalPhotoCode = photoCode;
+        new Thread() {
+            public void run() {
+                ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>(); //创造一个List。
+                for (int i = 0; i< finalPhotoCode.length; i++){
+                    PPinfo pPinfo = new PPinfo();
+                    pPinfo.setPpCode(finalPhotoCode[i]);
+                    pPinfo.setShootDate(shootTime);
+                    PPlist.add(pPinfo);
+                }
+                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(PPlist, 2);
+
+                dppp = new PPPinfo();
+                dppp.capacity = 1;
+                dppp.bindInfo = new ArrayList<BindPPInfo>();
+
+                myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
+            }
+        }.start();
     }
 
     private void initView_selectPP() {
@@ -522,16 +567,22 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         pps.add(jsonObject);
                     }
                 }
-
                 if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
                         pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
                     pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
                             getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
                     pictureWorksDialog.show();
                 } else {
-                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
-                    API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
-
+                    if(isUseHavedPPP){
+                        Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
+                        intent.putExtra("ppsStr",pps.toString());
+                        intent.putExtra("isUseHavedPPP", true);
+                        startActivity(intent);
+                        this.finish();
+                    }else{
+                        dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+                        API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+                    }
                 }
 
                 break;
@@ -545,6 +596,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        if (isUseHavedPPP){
+
+        }else{
         if (dppp != null) {
 
         } else {
@@ -561,6 +615,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 pictureAirDbManager.updatePhotoBought(selectedPhotoId, false);
                 selectedPhotoId = null;
             }
+        }
         }
     }
 

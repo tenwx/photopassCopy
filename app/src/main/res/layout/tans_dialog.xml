@@ -51,6 +51,21 @@
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
 
+
+            <TextView
+                android:id="@+id/use_ppp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pp_margin_16"
+                android:layout_marginLeft="@dimen/pp_margin_16"
+                android:layout_marginRight="@dimen/pp_margin_16"
+                android:background="@drawable/button_blue_shape_and_selector"
+                android:gravity="center"
+                android:padding="@dimen/pp_padding_10"
+                android:text="@string/use_ppp"
+                android:textColor="@drawable/textview_selector_blue_white"
+                android:textSize="@dimen/text_size_16" />
+
             <TextView
                 android:id="@+id/buynow"
                 android:layout_width="match_parent"
