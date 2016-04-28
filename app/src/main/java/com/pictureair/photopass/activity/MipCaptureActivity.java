@@ -64,6 +64,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private boolean playBeep;
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
+    private RelativeLayout.LayoutParams rlp;
     private SurfaceView surfaceView;
     private SharedPreferences sp;
     private String code;
@@ -99,6 +100,19 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
             case R.id.tv_scan_ppp_code:
                 scanType = 2;
+
+                if (rlp == null) {
+                    int height = ((surfaceView.getHeight() - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
+                    int width = (int) (height / 85.0 * 54);
+                    PictureAirLog.out("height---->" + height);
+                    PictureAirLog.out("width---->" + width);
+                    rlp = new RelativeLayout.LayoutParams(width, height);
+                    rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    rlLight.setLayoutParams(rlp);
+                    ocrScanView.setWidth(rlp.width);
+                    ocrScanView.setHeight(rlp.height);
+                }
+
                 ocrScanView.setVisibility(View.VISIBLE);
                 rlMask.setVisibility(View.VISIBLE);
                 viewfinder_view.setVisibility(View.GONE);
@@ -228,9 +242,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
 
-        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(ScreenUtil.getScreenWidth(this)/3*2, (ScreenUtil.getScreenWidth(this)/3*2*85/54));
-        rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        rlLight.setLayoutParams(rlp);
     }
 
     @Override

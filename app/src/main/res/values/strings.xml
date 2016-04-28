@@ -73,7 +73,7 @@
     <string name="tab_story">故事</string>
     <string name="tab_discover">发现</string>
     <string name="tab_camera">相机</string>
-    <string name="tab_shops">记忆屋</string>
+    <string name="tab_shops">商店</string>
     <string name="tab_me">我的</string>
     <string name="please_relogin">请重新登录</string>
     <!-- maintab end -->
@@ -206,7 +206,7 @@
     <string name="downloading_percent">正在下载%1$d</string>
     <string name="finish_download">下载完成！</string>
     <string name="download_detail1">下载完成%1$d张！</string>
-    <string name="download_detail2">下载完成%1$d张，下载失败%2$d张！</string>
+    <string name="download_detail2">下载完成%1$d张，下载失败%2$d张，请稍后再试！</string>
     <!-- download end -->
 
     <!-- edit start -->

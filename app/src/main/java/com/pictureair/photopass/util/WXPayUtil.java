@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.StringReader;
 import java.net.URLDecoder;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,8 +27,10 @@ import java.util.Map;
  */
 public class WXPayUtil {
     StringBuffer sb;
+    private String seed;
 
-    public WXPayUtil() {
+    public WXPayUtil(String seed) {
+        this.seed = seed;
     }
 
     public PayReq getPayReq(StringBuffer sb, Map<String, String> resultunifiedorder) {
@@ -67,7 +70,13 @@ public class WXPayUtil {
     }
 
     private String genNonceStr() {
-        SecureRandom secureRandom = new SecureRandom();
+        SecureRandom secureRandom = null;
+        try {
+            secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(seed.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         return MD5.getMessageDigest(String.valueOf(secureRandom.nextInt(10000)).getBytes());
     }
 

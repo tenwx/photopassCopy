@@ -86,7 +86,7 @@
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_no_pp">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
-    <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo ! </string>
+    <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo!</string>
     <string name="no_photo_in_magiccam">Collect all your edited photos!</string>
     <string name="no_photo_in_bought">Start to purchase your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
@@ -206,7 +206,7 @@
     <string name="downloading_percent">Downloading %1$d</string>
     <string name="finish_download">Download Successful!</string>
     <string name="download_detail1">Downloaded %1$d photo(s)!</string>
-    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s)!</string>
+    <string name="download_detail2">Downloaded %1$d photo(s), failed to download %2$d photo(s), please try again later!</string>
     <!-- download end -->
 
     <!-- edit start -->
@@ -339,7 +339,7 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">Disney PhotoPass+ allows you to download all your photos taken by our professional Disney PhotoPass Photographers in a single day, on up to three Park Tickets or Disney PhotoPass cards</string>
+    <string name="instruction">Disney PhotoPass+ allows you to download all your photos taken by our professional Disney PhotoPass Photographers in a single day, on up to three Park Tickets or Disney PhotoPass cards.</string>
     <string name="select_pp_hasUpgraded">You have associated this Disney PhotoPass card</string>
     <string name="not_ppp_card">Invalid Disney PhotoPass+</string>
     <string name="bind_pp_now">You have one Disney PhotoPass, do you want to bind it now?</string>

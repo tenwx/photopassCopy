@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -429,7 +430,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
      */
     private void pay(String orderId) {
         // TODO Auto-generated method stub
-        payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString);
+        payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
         if (0 == payType) {// 支付宝支付方式
             try {
                 payUtils.aliPay();

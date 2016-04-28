@@ -214,5 +214,12 @@
     <string name="http_error_code_6167">验证信息已过期</string>
     <string name="http_error_code_6168">发送邮件成功</string>
     <string name="http_error_code_6169">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6170">找回密码的邮件已经发出，请在15分钟内修改密码</string>
+    <string name="http_error_code_6170">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6171">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6172">系统正在为您下载高清图片，请稍后再试</string>
+    <string name="http_error_code_6173">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6174">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6175">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6176">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6177">加载失败，请检查您当前的网络环境</string>
 </resources>
