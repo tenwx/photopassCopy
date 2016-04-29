@@ -22,10 +22,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:paddingBottom="@dimen/pp_padding_13"
-                android:paddingLeft="@dimen/pp_margin_16"
-                android:paddingRight="@dimen/pp_padding_10"
-                android:paddingTop="@dimen/pp_padding_13"
+                android:paddingBottom="@dimen/pp_padding_15"
+                android:paddingLeft="@dimen/pp_padding_14"
+                android:paddingRight="@dimen/pp_padding_14"
+                android:paddingTop="@dimen/pp_padding_15"
                 android:scaleType="centerInside"
                 android:src="@drawable/back_white" />
         </RelativeLayout>
@@ -36,14 +36,14 @@
             android:layout_centerInParent="true"
             android:text="@string/setting_language"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_20" />
+            android:textSize="@dimen/text_size_16" />
 
         <RelativeLayout
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:paddingRight="@dimen/pp_margin_16">
+            android:paddingRight="@dimen/pp_padding_14">
 
             <TextView
                 android:id="@+id/save_tv"

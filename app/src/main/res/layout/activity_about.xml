@@ -95,6 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/pp_margin_10"
                     android:textColor="@color/pp_gray"
+                    android:visibility="invisible"
                     android:textSize="@dimen/text_size_14"/>
 
                 <TextView

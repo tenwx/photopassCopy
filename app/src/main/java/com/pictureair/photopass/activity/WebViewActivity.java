@@ -34,7 +34,7 @@ public class WebViewActivity extends BaseActivity {
         webView.setWebViewClient(new MyWebViewClient()); // 监听 进度条 事件。
         initWebSettings();// 初始化webViewsetting
         if (key == 1){
-            webView.loadUrl(Common.POLICY_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
+            webView.loadUrl(String.format(Common.POLICY_AGREEMENT, (MyApplication.getInstance().getLanguageType().equals("en") ? "en/" : "")));
             setTopTitleShow(R.string.policy); // 设置标题
         }else if(key == 2){
             webView.loadUrl(Common.TERMS_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());

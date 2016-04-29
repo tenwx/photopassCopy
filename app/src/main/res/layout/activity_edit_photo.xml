@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -32,7 +32,7 @@
             android:layout_centerInParent="true"
             android:text="@string/edit"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_20"
+            android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
 
         <ImageView
@@ -41,10 +41,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:src="@drawable/back_white"
             android:visibility="gone" />
 
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:padding="@dimen/pp_padding_13"
+                android:padding="@dimen/pp_padding_15"
                 android:scaleType="centerInside"
                 android:src="@drawable/cancel1" />
 
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                android:padding="@dimen/pp_padding_13"
+                android:padding="@dimen/pp_padding_15"
                 android:scaleType="centerInside"
                 android:src="@drawable/forward1" />
         </LinearLayout>
@@ -93,7 +93,10 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
-            android:padding="@dimen/pp_padding_10"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_10"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/preview_save"
             android:visibility="gone"/>

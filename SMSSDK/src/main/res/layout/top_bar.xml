@@ -21,10 +21,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white"
             android:visibility="gone" />
@@ -34,6 +34,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_10"
+            android:paddingBottom="@dimen/pp_margin_10"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
@@ -46,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_20" />
+        android:textSize="@dimen/text_size_16" />
 
     <LinearLayout
         android:id="@+id/topRightView"
@@ -63,10 +66,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingTop="@dimen/pp_padding_13"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/preview_save"
             android:visibility="gone" />
@@ -75,7 +78,7 @@
             android:id="@+id/topRight_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_14"
             android:paddingTop="@dimen/pp_padding_10"
             android:paddingBottom="@dimen/pp_margin_10"
             android:clickable="false"

@@ -16,10 +16,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -34,7 +34,7 @@
             android:gravity="center"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_20" />
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:id="@+id/button_bag"
@@ -42,10 +42,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/cart" />
 
@@ -54,8 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/pp_margin_10"
-            android:layout_marginTop="@dimen/pp_margin_2"
+            android:layout_marginRight="@dimen/pp_margin_8"
+            android:layout_marginTop="@dimen/pp_padding_4"
             android:background="@drawable/bg1"
             android:gravity="center"
             android:padding="@dimen/pp_padding_1"

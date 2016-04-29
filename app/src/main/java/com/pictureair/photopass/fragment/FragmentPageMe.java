@@ -316,12 +316,15 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2, ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2));
+        ViewGroup.LayoutParams layoutParams1 = imageView.getLayoutParams();
+        layoutParams1.width = ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2;
+        layoutParams1.height = ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2;
+        imageView.setLayoutParams(layoutParams1);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         viewParams.gravity = Gravity.CENTER;
-        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(), 64), 0, ScreenUtil.dip2px(viewGroup.getContext(), 64), 0);
+        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(), 40), 0, ScreenUtil.dip2px(viewGroup.getContext(), 40), 0);
         layout.addView(view, viewParams);
 
         viewGroup.addView(layout, layoutParams);

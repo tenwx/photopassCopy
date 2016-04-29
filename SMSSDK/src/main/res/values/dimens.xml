@@ -36,6 +36,8 @@
     <dimen name="pp_margin_13">13dp</dimen>
     <dimen name="pp_margin_22">22dp</dimen>
     <dimen name="pp_padding_13">13dp</dimen>
+    <dimen name="pp_padding_14">14dp</dimen>
+    <dimen name="pp_padding_15">15dp</dimen>
 
     <dimen name="pp_radius_5">5dp</dimen>
 
