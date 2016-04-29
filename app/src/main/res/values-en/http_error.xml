@@ -217,7 +217,7 @@
     <string name="http_error_code_6170">Loading failed, Please check your network</string>
     <string name="http_error_code_6171">Loading failed, Please check your network</string>
     <string name="http_error_code_6172">System is to extract the hd pictures for you, please try again later to download</string>
-    <string name="http_error_code_6173">Loading failed, Please check your network</string>
+    <string name="http_error_code_6173">Sending failed, Please check again</string>
     <string name="http_error_code_6174">Loading failed, Please check your network</string>
     <string name="http_error_code_6175">Loading failed, Please check your network</string>
     <string name="http_error_code_6176">Loading failed, Please check your network</string>

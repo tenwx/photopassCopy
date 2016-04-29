@@ -24,6 +24,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:paddingRight="@dimen/pp_padding_8"
             android:background="@color/white"
             android:divider="@null"
             android:listSelector="@color/transparent"

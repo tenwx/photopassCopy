@@ -16,4 +16,5 @@ public class LocationItem {
 //	public TextView locationDetailNameTextView;//详情的地点名称
 	public TextView locationDetailInfoTextView;//地点的详情介绍
 	public ImageView locationBlurPhotoImageView;//高斯模糊背景图
+	public RelativeLayout photoFrameLayout;
 }

@@ -2,15 +2,12 @@ package cn.smssdk.gui.country;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import cn.smssdk.R;
 
@@ -34,6 +31,8 @@ public class SideBar extends View {
 
 	private TextView mTextDialog;
 
+	private Context context;
+
 	/**
 	 * 为SideBar设置显示字母的TextView
 	 * 
@@ -45,14 +44,17 @@ public class SideBar extends View {
 
 	public SideBar(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		this.context = context;
 	}
 
 	public SideBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 	}
 
 	public SideBar(Context context) {
 		super(context);
+		this.context = context;
 	}
 
 	/**
@@ -66,11 +68,11 @@ public class SideBar extends View {
 		int singleHeight = height / b.length;// 获取每一个字母的高度
 
 		for (int i = 0; i < b.length; i++) {
-			paint.setColor(getResources().getColor(R.color.blur_mask));
+			paint.setColor(getResources().getColor(R.color.pp_dark_blue));
 			// paint.setColor(Color.WHITE);
 //			paint.setTypeface(Typeface.DEFAULT_BOLD);
 			paint.setAntiAlias(true);
-			paint.setTextSize(40);
+			paint.setTextSize(ScreenUtil.dip2px(context, 16));
 			// 选中的状
 			if (i == choose) {
 				paint.setColor(getResources().getColor(R.color.pp_blue));
