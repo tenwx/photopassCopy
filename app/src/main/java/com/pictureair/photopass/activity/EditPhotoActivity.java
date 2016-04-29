@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +66,7 @@ import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.HorizontalListView;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,6 +97,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private HorizontalListView top_HorizontalListView;  //显示饰品的滑动条
 
 	private CustomProgressDialog dialog;
+
+	private PictureWorksDialog pictureWorksDialog;
 
 	//适配器
 	private EditActivityAdapter eidtAdapter; //通用的适配器
@@ -293,6 +294,17 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 			case API1.GET_LAST_CONTENT_FAILED://获取更新包失败
 
+				break;
+
+			case DialogInterface.BUTTON_POSITIVE:
+				String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
+				scan(url);
+				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+				break;
+
+			case DialogInterface.BUTTON_NEGATIVE:
+				finish();
 				break;
 
 			default:
@@ -1111,8 +1123,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				addEditPhotoInfo(url, editType, frameBitmap, null, "",0);
 				index = editPhotoInfoArrayList.size() - 1;
 
-				tempEditPhotoInfoArrayList.clear();
-				tempEditPhotoInfoArrayList.addAll(editPhotoInfoArrayList);
 				return heBitmap;
 //				}else{
 //					.
@@ -1138,6 +1148,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
+			tempEditPhotoInfoArrayList.clear();
+			tempEditPhotoInfoArrayList.addAll(editPhotoInfoArrayList);
 			mStickerView.clear();
 			frameImageView.setVisibility(View.INVISIBLE);
 			changeMainBitmap(result);
@@ -1294,29 +1306,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	// 没有保存的时候的对话框
 	private void createIsSaveDialog() {
-		AlertDialog.Builder builder = new Builder(EditPhotoActivity.this);
-		builder.setMessage(R.string.exit_hint);
-		builder.setTitle("");
-		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface arg0, int arg1) {
-				// TODO Auto-generated method stub
-				String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
-				scan(url);
-				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-			}
-		});
-		builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface arg0, int arg1) {
-				// TODO Auto-generated method stub
-				finish();
-			}
-		});
-		builder.create().show();
+		if (pictureWorksDialog == null) {
+			pictureWorksDialog = new PictureWorksDialog(this, null, getString(R.string.exit_hint), getString(R.string.button_cancel), getString(R.string.button_ok), true, editPhotoHandler);
+		}
+		pictureWorksDialog.show();
 	}
 
 	@Override
