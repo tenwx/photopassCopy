@@ -63,7 +63,7 @@
                     android:background="@color/white"
                     android:paddingBottom="@dimen/pp_padding_8"
                     android:paddingTop="@dimen/pp_padding_8"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/imageView2"
@@ -199,7 +199,7 @@
                     android:background="@color/white"
                     android:paddingBottom="@dimen/pp_padding_8"
                     android:paddingTop="@dimen/pp_padding_8"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/imageView3"

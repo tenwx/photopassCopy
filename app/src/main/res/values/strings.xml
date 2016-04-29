@@ -31,7 +31,7 @@
     <string name="name_is_empty">昵称不能为空</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href = "2">《补充条款及细则》</a>\n\n和<a href = "1">《隐私政策》</a></string>
+    <string name="terms_and_policy"><a href="2">《补充条款及细则》</a>\n\n和<a href="1">《隐私政策》</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -480,7 +480,6 @@
     <string name="preview_goods_null">预览商品(0/3)</string>
 
     <!-- postcard end-->
-
 
 
 </resources>

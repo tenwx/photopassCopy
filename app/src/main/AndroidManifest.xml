@@ -66,12 +66,10 @@
                     android:scheme="shanghaiphotopass" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.CouponActivity"
             android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.WelcomeActivity"
             android:configChanges="keyboard|orientation"
@@ -137,7 +135,6 @@
                 <data android:scheme="wxc3d2d4d75042f800" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.MyPPPActivity"
             android:configChanges="keyboard|orientation"
@@ -224,7 +221,7 @@
         <activity
             android:name=".activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <!-- Disney Video start -->
         <activity
@@ -249,8 +246,7 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <!-- alipay sdk end -->
 
 
@@ -262,12 +258,12 @@
         <activity
             android:name="com.unionpay.uppay.PayActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.unionpay.UPPayWapActivity"
             android:configChanges="orientation|keyboardHidden|fontScale"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <!-- 银联 -->
 
 
@@ -276,7 +272,7 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <receiver android:name="net.sourceforge.simcpux.AppRegister">
             <intent-filter>
@@ -355,7 +351,6 @@
             </intent-filter>
         </service>
 
-
         <!--
              微信分享回调
         <activity
@@ -415,7 +410,6 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
-
 
     </application>
 

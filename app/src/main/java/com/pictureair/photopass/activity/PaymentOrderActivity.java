@@ -1,6 +1,9 @@
 package com.pictureair.photopass.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -381,6 +384,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     //直接提交订单，等待推送
                     checkOut();
                 }
+                IntentFilter filter = new IntentFilter("com.payment.action");
+                registerReceiver(broadcastReceiver, filter);
                 break;
 
             case R.id.zfb:// 选择支付宝支付
@@ -448,7 +453,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             API1.getUnionPayTN(paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
-
+            Intent intent = new Intent(PaymentOrderActivity.this,WebViewActivity.class);
+            intent.putExtra("key",4);
+            intent.putExtra("orderId",orderId);
+            startActivity(intent);
         } else if (payType == 7) {
             weChatIsPaying = true;
             PictureAirLog.v(TAG, "wechat");
@@ -607,6 +615,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             EventBus.getDefault().unregister(this);
         }
         paymentOrderHandler.removeCallbacksAndMessages(null);
+        unregisterReceiver(broadcastReceiver); // 解除广播
     }
 
 
@@ -675,5 +684,29 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             EventBus.getDefault().removeStickyEvent(asyncPayResultEvent);
         }
     }
+
+
+    /**
+     * 广播 用于接受iPayLink的数据。
+     */
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            int payType = intent.getIntExtra("payType",-2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
+            switch (payType){
+                case 0:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+                    break;
+                case -1:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+                    break;
+                case -2:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
+                    break;
+            }
+        }
+    };
 
 }

@@ -174,6 +174,7 @@ public class Common {
     public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
     public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
+    public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
 
 
     //user的SharedPreferences    以及   接口参数
