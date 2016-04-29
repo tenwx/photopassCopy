@@ -33,7 +33,7 @@
             android:background="@color/transparent"
             android:text="@string/preview"
             android:textColor="@color/white"
-            android:textSize="@dimen/pp_margin_16" />
+            android:textSize="@dimen/text_size_20" />
 
         <ImageView
             android:id="@+id/button1_cart"

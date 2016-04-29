@@ -34,7 +34,7 @@
     <string name="http_error_code_6030">The mobile number has been used</string>
     <string name="http_error_code_6031">User does not exist</string>
     <string name="http_error_code_6032">Loading failed, Please check your network</string>
-    <string name="http_error_code_6033">Incorrect password</string>
+    <string name="http_error_code_6033">Password invalid</string>
     <string name="http_error_code_6034">Please login</string>
     <string name="http_error_code_6035">Current certification has expired, please login again</string>
     <string name="http_error_code_6036">Loading failed, Please check your network</string>

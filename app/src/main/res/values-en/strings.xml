@@ -31,11 +31,11 @@
     <string name="name_is_empty">Please enter your Nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
-    <string name="terms_and_policy"><a href = "2">《Supplemental Terms and Conditions》</a>\n\n&amp;<a href = "1">《Privacy Policy》</a></string>
+    <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>\n\n&amp;<a href = "1">Privacy Policy</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
-    <string name="select_a_country">Choose country</string>
+    <string name="select_a_country">Choose Country</string>
     <!-- select country end -->
 
     <!-- forget pwd start -->
@@ -146,7 +146,7 @@
     <string name="hasselectedphoto">OK(%1$d/%2$d)</string>
     <string name="no_photo_update">You haven\'t photos to upgrade!</string>
     <string name="photo_selected">The photo has been selected</string>
-    <string name="limit_photos">Cannot more than %1$d pictures!</string>
+    <string name="limit_photos">Cannot more than %1$d picture(s)!</string>
     <string name="select_photos">Please select your photos</string>
     <string name="magic_in_the_making">Magic in the making&#8230;</string>
     <string name="we_will_send_you_to">My Disney Story will be sent to you</string>
@@ -235,7 +235,7 @@
     <string name="choosephoto">Select Photo to Make Gift</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="address_digital_goods">Digital Download</string>
-    <string name="self_collect">Pick up at Select Shanghai Disney Resort Locations</string>
+    <string name="self_collect">Pickup at selected Shanghai Disney Resort Locations.</string>
     <string name="buy_good">Buy</string>
     <!-- detail product end -->
 
@@ -272,7 +272,7 @@
 
     <!-- payment start -->
     <string name="pay">Payment Method</string>
-    <string name="payment_ways">Payment Methods</string>
+    <string name="payment_ways">Payment Method</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
     <string name="paypalzf">VISA, MasterCard, JCB</string>
@@ -452,7 +452,7 @@
     <string name="coupon_exchange_use">Add</string>
     <string name="coupon_scan">Scan</string>
     <string name="shop_price">Total</string>
-    <string name="coupon_price">Discount</string>
+    <string name="coupon_price">Coupon Discount</string>
     <string name="pay_price">Pay</string>
     <string name="coupon_count">%1$d Coupons</string>
     <string name="no_coupon">You do not have any coupons in your account.</string>
@@ -461,9 +461,10 @@
     <string name="discount">% off</string>
     <string name="conpon_input_hint">Please enter your coupon code</string>
     <string name="select_cpupon">Select Coupon</string>
-    <string name="discount_price">Deduct</string>
+    <string name="discount_price">Discount</string>
     <string name="incorrect_coupon">Incorrect Coupon</string>
     <string name="coupon_incalid">This coupon cannot support for this good</string>
+    <string name="coupon_expireto">Expiration Date: %1$s</string>
     <!-- 优惠卷end-->
 
     <!-- postcard start-->

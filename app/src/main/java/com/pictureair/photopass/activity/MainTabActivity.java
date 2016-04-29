@@ -34,7 +34,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.dropview.CoverManager;
@@ -215,8 +214,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             waterDropView.setVisibility(View.VISIBLE);
         }
 
-        // 接收消息回复
-        UmengUtil.syncFeedback(this);
     }
 
 

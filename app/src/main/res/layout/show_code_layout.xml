@@ -27,10 +27,19 @@
             android:src="@drawable/code_pic" />
 
         <TextView
+            android:id="@+id/code_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/pp_margin_20"
+            android:textSize="@dimen/text_size_14"
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:textColor="@color/pp_blue"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/pp_margin_10"
             android:text="@string/code_tips"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />

@@ -283,8 +283,6 @@
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
-        <!-- 友盟反馈 -->
-        <activity android:name="com.umeng.fb.ConversationActivity" />
 
         <meta-data
             android:name="UMENG_APPKEY"

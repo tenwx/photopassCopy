@@ -23,7 +23,7 @@
             android:layout_width="@dimen/pp_height_60"
             android:layout_height="@dimen/pp_height_60"
             android:layout_alignParentLeft="true"
-            android:background="@color/pp_light_gray_normal"
+            android:background="@color/transparent"
             android:focusable="false"
             android:src="@drawable/ic_stub" />
 

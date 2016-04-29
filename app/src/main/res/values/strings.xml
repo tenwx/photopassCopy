@@ -31,7 +31,7 @@
     <string name="name_is_empty">昵称不能为空</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href = "2">《补充条款及细则》</a>\n\n和<a href = "1">《隐私政策》</a></string>
+    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a></string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -64,7 +64,7 @@
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
     <string name="qq">QQ好友</string>
-    <string name="share_text">我愿和你分享每一刻在迪士尼乐拍通的美妙体验！</string>
+    <string name="share_text">我愿和您分享每一刻在迪士尼乐拍通的美妙体验！</string>
     <string name="share_not_open">请在应用上线后使用此功能！</string>
     <!-- 分享字段 end-->
 
@@ -123,8 +123,8 @@
     <string name="manual">手动输入</string>
     <string name="ok">确定</string>
     <string name="manul_input_intro">请输入您的上海迪士尼乐园门票、迪士尼乐拍通卡或迪士尼乐拍通一卡通卡背后的数字码</string>
-    <string name="nocontext">输入你的编码</string>
-    <string name="wrong_length">请检查你的迪士尼乐拍通卡片</string>
+    <string name="nocontext">输入您的编码</string>
+    <string name="wrong_length">请检查您的迪士尼乐拍通卡片</string>
     <string name="input_content">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890</string>
     <!-- manual input end -->
 
@@ -136,7 +136,7 @@
     <!-- discover start -->
 
     <!-- disney story start -->
-    <string name="launching_camera">嗨，赶快去找你的摄影师为你拍照吧！</string>
+    <string name="launching_camera">嗨，赶快去找您的摄影师为您拍照吧！</string>
     <string name="select">选择照片</string>
     <string name="selected">选择(0/9)</string>
     <string name="disney_video_go_to_select_photo">买照片</string>
@@ -147,7 +147,7 @@
     <string name="no_photo_update">您还没有可升级的照片！</string>
     <string name="photo_selected">此照片已经被选择</string>
     <string name="limit_photos">不能超过%1$d张照片</string>
-    <string name="select_photos">请选择你的照片</string>
+    <string name="select_photos">请选择您的照片</string>
     <string name="magic_in_the_making">神奇的迪士尼故事正在制作中&#8230;</string>
     <string name="we_will_send_you_to">我们将立即发送给您！</string>
     <string name="my_disney_story_once_it_is_ready">当“我的迪士尼故事”制作完成后</string>
@@ -186,7 +186,7 @@
     <string name="know">我知道了</string>
     <string name="like_and_buy">点击查看清晰图，喜欢购买吧！</string>
     <string name="reloadphoto">请重新加载此照片</string>
-    <string name="neednotdownload">此图片早就在你的相册中</string>
+    <string name="neednotdownload">此图片早就在您的相册中</string>
     <string name="local_photo_not_support_makegift">本地照片不允许制作礼物</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">对不起，您的此张乐拍通照片暂不支持编辑！</string>
@@ -253,7 +253,7 @@
     <string name="delete">删除</string>
     <string name="no_cart">您的购物车为空</string>
     <string name="select_cart">请选择购物车</string>
-    <string name="selectyourcart">选择你的商品</string>
+    <string name="selectyourcart">选择您的商品</string>
     <string name="addphoto">请先添加照片</string>
     <string name="to_add_good">去添加商品</string>
     <string name="add_photo"> 添加照片 </string>
@@ -362,7 +362,7 @@
 
     <!-- select pp start -->
     <string name="selectionpp">选择迪士尼乐拍通卡</string>
-    <string name="select_your_pp">请选择你的迪士尼乐拍通</string>
+    <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
     <string name="outofrange">超出范围</string>
@@ -464,6 +464,7 @@
     <string name="discount_price">优惠立减</string>
     <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
     <string name="coupon_incalid">此抵用券不适用当前商品</string>
+    <string name="coupon_expireto">有效期至：%1$s</string>
 
 
     <!-- 我的优惠券 end-->

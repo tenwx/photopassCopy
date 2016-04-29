@@ -46,8 +46,7 @@
             android:background="@color/transparent"
             android:text="@string/select"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_20"/>
     </RelativeLayout>
 
     <LinearLayout

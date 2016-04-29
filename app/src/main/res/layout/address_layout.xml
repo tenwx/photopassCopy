@@ -39,10 +39,10 @@
         <ListView
             android:id="@+id/transport_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:divider="@null"
             android:padding="@dimen/pp_padding_8"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/shop_coupon_ll"
@@ -102,6 +102,7 @@
                         android:layout_centerVertical="true"
                         android:text="@string/coupon"
                         android:textSize="@dimen/text_size_14"
+                        android:visibility="invisible"
                         android:textColor="@color/pp_dark_blue" />
 
                     <TextView

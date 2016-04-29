@@ -27,7 +27,7 @@
         android:gravity="center"
         android:padding="@dimen/pp_margin_16"
         android:text="@string/scan_intro"
-        android:textColor="@color/pp_blue"
+        android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
 
 
@@ -42,8 +42,8 @@
         <!-- 蒙版中的高亮界面 -->
         <RelativeLayout
             android:id="@+id/rl_light"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@color/transparent">
 
@@ -55,6 +55,7 @@
                 android:gravity="center"
                 android:text="@string/textview_center_hint"
                 android:textColor="@color/white"
+                android:rotation="90"
                 android:textSize="@dimen/text_size_16" />
             <!--扫描线 -->
             <com.pictureair.photopass.zxing.view.ScanView

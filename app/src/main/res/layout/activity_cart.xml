@@ -34,7 +34,7 @@
             android:singleLine="true"
             android:text="@string/cart"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_20" />
 
         <TextView
             android:visibility="invisible"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/pp_margin_6"
-            android:padding="@dimen/pp_padding_10"
+            android:padding="@dimen/pp_padding_8"
             android:src="@drawable/cart_select" />
 
         <TextView
@@ -76,15 +76,15 @@
             android:layout_toRightOf="@id/cartSelectAllImageView"
             android:text="@string/select_all"
             android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_16" />
 
         <LinearLayout
             android:id="@+id/cartPriceLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/pp_margin_20"
-            android:layout_toRightOf="@id/cartSelectAllTextView"
+            android:layout_marginRight="@dimen/pp_margin_16"
+            android:layout_toLeftOf="@+id/button3_pm"
             android:orientation="horizontal">
 
             <TextView

@@ -11,7 +11,7 @@
     <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_sign_up">Sign Up</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
-    <string name="smssdk_explain_briefly">By signing up, you agree to <a href = "2">《Supplemental Terms and Conditions》</a> &amp; <a href = "1">《Privacy Policy》</a></string>
+    <string name="smssdk_explain_briefly">By signing up, you agree to <a href = "2">Supplemental Terms and Conditions</a> &amp; <a href = "1">Privacy Policy</a></string>
     <string name="smssdk_send_code2">Verify again</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>
@@ -23,7 +23,7 @@
     <string name="smssdk_submit">OK</string>
     <string name="smssdk_identify_code">Verification code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
-    <string name="smssdk_choose_country">Choose country</string>
+    <string name="smssdk_choose_country">Choose Country</string>
     <string name="smssdk_network_error">Network error, please try later</string>
     <string name="smssdk_country_not_support_currently">Incorrect Network, please back to check again.</string>
     <string name="smssdk_get_verifycode_frequentlly">Send verification code too frequently, please try later!</string>

@@ -110,7 +110,7 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
         }
         holder.tvName.setText(mDatas.get(position).getCpName());
         holder.tvDescribe.setText(mDatas.get(position).getCpDescribe());
-        holder.tvValiditPeriod.setText(mDatas.get(position).getCpValidityPeriod());
+        holder.tvValiditPeriod.setText(String.format(mContext.getResources().getString(R.string.coupon_expireto), mDatas.get(position).getCpValidityPeriod()));
 
         //将数据保存在itemView的Tag中，以便点击时进行获取
         holder.itemView.setTag(mDatas.get(position));

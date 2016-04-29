@@ -34,7 +34,7 @@
             android:layout_toRightOf="@id/button1_shop_rt"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_20" />
 
         <ImageButton
             android:id="@+id/preview_love"

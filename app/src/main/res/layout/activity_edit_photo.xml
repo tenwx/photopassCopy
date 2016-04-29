@@ -32,7 +32,7 @@
             android:layout_centerInParent="true"
             android:text="@string/edit"
             android:textColor="@color/white"
-            android:textSize="@dimen/pp_margin_16"
+            android:textSize="@dimen/text_size_20"
             android:visibility="gone" />
 
         <ImageView

@@ -10,7 +10,7 @@
 	        android:paddingLeft="11dip"
 	        android:gravity="center_vertical"
 	        android:text="@string/smssdk_regist"
-	        android:textSize="@dimen/text_size_16"
+	        android:textSize="@dimen/text_size_20"
 	        android:textColor="#999999"
     		android:background="#eae8ee"/>
 </RelativeLayout>

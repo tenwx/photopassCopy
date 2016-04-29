@@ -31,7 +31,7 @@
             android:layout_centerInParent="true"
             android:text="@string/select"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_20" />
 
         <TextView
             android:id="@+id/button1"

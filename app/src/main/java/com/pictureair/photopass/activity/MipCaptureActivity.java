@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -111,6 +112,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     rlLight.setLayoutParams(rlp);
                     ocrScanView.setWidth(rlp.width);
                     ocrScanView.setHeight(rlp.height);
+                    ViewGroup.LayoutParams layoutParams = tvCenterHint.getLayoutParams();
+                    layoutParams.width = rlp.height;
+                    layoutParams.height = rlp.width;
+                    tvCenterHint.setLayoutParams(layoutParams);
                 }
 
                 ocrScanView.setVisibility(View.VISIBLE);
@@ -217,7 +222,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
         ocrScanView = (ScanView) findViewById(R.id.scan_view_line_ocr);
         tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
-        tvCenterHint.setRotation(90);
+//        tvCenterHint.setRotation(90);
 
         newToast = new MyToast(this);
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);

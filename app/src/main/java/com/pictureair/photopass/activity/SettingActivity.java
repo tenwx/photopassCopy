@@ -20,7 +20,6 @@ import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SettingUtil;
-import com.pictureair.photopass.util.UmengUtil;
 
 /**
  * @author talon
@@ -126,12 +125,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
                     }
                 });
-
-                break;
-
-            case R.id.sub_opinions://消息回馈按钮
-                //意见反馈弹出框
-                UmengUtil.startFeedbackActivity(this);
 
                 break;
 

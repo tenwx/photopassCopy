@@ -198,6 +198,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         }
         allGoodsList = new ArrayList<>();//初始化商品列表
         customProgressDialog = CustomProgressDialog.show(getActivity(), getActivity().getString(R.string.is_loading), false, null);
+        PictureAirLog.out("currency---->" + currency);
         shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
         xListView.setAdapter(shopGoodListViewAdapter);
         //绑定监听

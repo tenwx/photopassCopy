@@ -51,6 +51,7 @@ public class Common {
     public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
     public final static String POLICY_AGREEMENT = "http://www.disneyphotopass.com.cn/policy.html?source=outer";  //政策 1
     public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
 
     /**
      * 外网可访问的8.3测试服务器

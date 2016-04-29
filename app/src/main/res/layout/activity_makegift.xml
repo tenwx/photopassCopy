@@ -30,7 +30,7 @@
                 android:text="@string/preview"
                 android:paddingRight="@dimen/pp_padding_8"
                 android:textColor="@color/white"
-                android:textSize="@dimen/pp_margin_16" />
+                android:textSize="@dimen/text_size_20" />
 
             <ImageView
                 android:id="@+id/button_selectproduct"
