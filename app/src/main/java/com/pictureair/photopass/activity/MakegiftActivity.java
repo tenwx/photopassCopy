@@ -39,9 +39,9 @@ import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.MakegiftGoodsAdapter;
-import com.pictureair.photopass.entity.CartItemInfo1;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.ACache;
@@ -66,9 +66,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     //选择商品的horizontalscrollview的popupwindow
     private ListView goodsGridView;
     private MakegiftGoodsAdapter mAdapter;
-    private List<GoodsInfo1> allList;
-    private List<GoodsInfo1> originalGoodsList;
-    private GoodsInfo1 goodsInfo;
+    private List<GoodsInfo> allList;
+    private List<GoodsInfo> originalGoodsList;
+    private GoodsInfo goodsInfo;
 
     private ImageView returnLayout;
     private ImageView cartButton;
@@ -88,7 +88,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private String photourl;
     private String idString;
     private ArrayList<PhotoInfo> photoList;
-    private ArrayList<CartPhotosInfo1> photoListAfterUpload;//图片上传之后的list
+    private ArrayList<CartPhotosInfo> photoListAfterUpload;//图片上传之后的list
     //选择商品popupwindow
     private PopupWindow selproductPopupWindow;
     private View selproductView_popwindow;
@@ -285,8 +285,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 String itemidString = addcart.getString("cartId");
                 if (isbuynow) {//获取订单信息，传送到下一界面
                     Intent intent = new Intent(MakegiftActivity.this, SubmitOrderActivity.class);
-                    ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                    CartItemInfo1 cartItemInfo = new CartItemInfo1();
+                    ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                    CartItemInfo cartItemInfo = new CartItemInfo();
                     cartItemInfo.setProductName(goodsInfo.getName());
                     cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
                     cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
@@ -295,7 +295,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     cartItemInfo.setCartProductType(1);
                     photoListAfterUpload.clear();
                     for (int i = 0; i < photoList.size(); i++) {
-                        CartPhotosInfo1 cartPhotosInfo = new CartPhotosInfo1();
+                        CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
                         cartPhotosInfo.setPhotoUrl(photoList.get(i).photoPathOrURL);
                         cartPhotosInfo.setPhotoId(photoList.get(i).photoId);
                         photoListAfterUpload.add(cartPhotosInfo);

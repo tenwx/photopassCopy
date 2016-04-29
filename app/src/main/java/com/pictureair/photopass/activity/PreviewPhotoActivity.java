@@ -40,11 +40,11 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.blur.BlurUtil;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
@@ -161,7 +161,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private boolean isFirst = false;//第一次进入标记
 
     private Dialog dia;
-    private TextView buy_ppp, cancel, buynow, touchtoclean;
+    private TextView buy_ppp, cancel, buynow, use_ppp, touchtoclean;
     private File dirFile;
 
     private Date date;
@@ -212,8 +212,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean loadFailed = false;
 
-    private List<GoodsInfo1> allGoodsList;//全部商品
-    private GoodsInfo1 pppGoodsInfo;
+    private List<GoodsInfo> allGoodsList;//全部商品
+    private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
 
     /**
@@ -230,7 +230,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 当前图片的宽高
      */
-    private int curShowBmpWidth = 0 ;
+    private int curShowBmpWidth = 0;
     private int curShowBmpHeight = 0;
 
     /**
@@ -242,6 +242,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     @Override
@@ -363,10 +364,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else {
                     myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
                 }
-                List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
+                List<CartItemInfo> cartItemInfoList = cartItemInfoJson.getItems();
                 Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo1> orderinfo = new ArrayList<>();
-                CartItemInfo1 cartItemInfo = cartItemInfo1List.get(0);
+                ArrayList<CartItemInfo> orderinfo = new ArrayList<>();
+                CartItemInfo cartItemInfo = cartItemInfoList.get(0);
                 cartItemInfo.setCartProductType(2);
                 orderinfo.add(cartItemInfo);
                 Editor editor = sharedPreferences.edit();
@@ -392,7 +393,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     allGoodsList = goodsInfoJson.getGoods();
                     PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                     //获取PP+
-                    for (GoodsInfo1 goodsInfo : allGoodsList) {
+                    for (GoodsInfo goodsInfo : allGoodsList) {
                         if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
                             pppGoodsInfo = goodsInfo;
                             //封装购物车宣传图
@@ -441,13 +442,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 //生成订单
                 Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
+                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo cartItemInfo1 = new CartItemInfo();
                 cartItemInfo1.setCartId(cartId);
                 cartItemInfo1.setProductName(pppGoodsInfo.getName());
                 cartItemInfo1.setProductNameAlias(pppGoodsInfo.getNameAlias());
                 cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
-                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
                 cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
                 cartItemInfo1.setQty(1);
                 cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
@@ -614,6 +615,22 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 break;
 
+            case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
+                if (API1.PPPlist.size() > 0) {
+                    intent = new Intent(PreviewPhotoActivity.this, MyPPActivity.class);
+                    intent.putExtra("photoPassCode",photoInfo.photoPassCode);
+                    intent.putExtra("shootTime",photoInfo.shootTime);
+                    intent.putExtra("isUseHavedPPP", true);
+                    startActivity(intent);
+                } else {
+                    newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
+                }
+                break;
+
+            case API1.GET_PPPS_BY_SHOOTDATE_FAILED:
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
             default:
                 break;
         }
@@ -699,7 +716,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         getPreviewPhotos();
     }
 
-    private void getLocation(){
+    private void getLocation() {
         try {
             JSONObject response = JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
             JSONArray resultArray = response.getJSONArray("locations");
@@ -714,7 +731,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
     private void getPreviewPhotos() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -809,7 +826,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }.start();
     }
 
-    private void createBlurDialog(){
+    private void createBlurDialog() {
         dia = new Dialog(this, R.style.dialogTans);
         Window window = dia.getWindow();
         window.setGravity(Gravity.CENTER);
@@ -824,9 +841,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         buy_ppp = (TextView) dia.findViewById(R.id.buy_ppp);
         cancel = (TextView) dia.findViewById(R.id.cancel);
         buynow = (TextView) dia.findViewById(R.id.buynow);
+        use_ppp = (TextView) dia.findViewById(R.id.use_ppp);
         buynow.setOnClickListener(this);
         buy_ppp.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        use_ppp.setOnClickListener(this);
     }
 
     /**
@@ -1023,7 +1042,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
 
-
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
@@ -1062,7 +1080,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
                 if (photoInfo.isPayed == 1) {
-                    if (photoInfo.isHasPreset == 0){ // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
+                    if (photoInfo.isHasPreset == 0) { // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
                         intent = new Intent(this, EditPhotoActivity.class);
                         if (isEdited) {//已经编辑过，取targetlist中的值
                             intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
@@ -1070,7 +1088,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
                         }
                         startActivityForResult(intent, 1);
-                    }else{
+                    } else {
 
 //                        new PictureWorksDialog(PreviewPhotoActivity.this,getString(R.string.photo_cannot_edit_title),getString(R.string.photo_cannot_edit_content),getString(R.string.photo_cannot_edit_no),getString(R.string.photo_cannot_edit_yes),true,null).show();
 //                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
@@ -1237,6 +1255,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 getALlGoods();
                 dia.dismiss();
                 break;
+            case R.id.use_ppp:
+                if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
+                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    dia.dismiss();
+                    return;
+                }else{
+                    API1.getPPPsByShootDate(previewPhotoHandler, photoInfo.shootTime);
+                }
+                break;
 
             case R.id.leadknow:
             case R.id.blur_lead_view:
@@ -1389,7 +1416,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         previewPhotoHandler.removeCallbacksAndMessages(null);
 
-        if (oriBlurBmp != null){
+        if (oriBlurBmp != null) {
             oriBlurBmp.recycle();
             oriBlurBmp = null;
         }
@@ -1438,7 +1465,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 垂直模式
      */
-    private void portraitOrientation(){
+    private void portraitOrientation() {
         isLandscape = false;
         titleBar.setVisibility(View.VISIBLE);
         toolsBar.setVisibility(View.VISIBLE);
@@ -1457,7 +1484,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     /**
      * 横屏模式
      */
-    private void landscapeOrientation(){
+    private void landscapeOrientation() {
         isLandscape = true;
         if (sharePop.isShowing()) {
             sharePop.dismiss();
@@ -1546,7 +1573,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         PictureAirLog.out("larger bmp w after resize---->" + curShowBmpWidth);
     }
 
-    private void createOriginalClearBit(boolean isInit){
+    private void createOriginalClearBit(boolean isInit) {
         int w = oriClearBmp.getWidth();
         int h = oriClearBmp.getHeight();
         PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
@@ -1717,8 +1744,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     }
 
 
-    private void setUmengPhotoSlide(){
+    private void setUmengPhotoSlide() {
         UmengUtil.onEvent(PreviewPhotoActivity.this, Common.EVENT_PHOTO_SLIDE);
     }
-
 }

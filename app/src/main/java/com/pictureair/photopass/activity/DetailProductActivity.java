@@ -25,9 +25,8 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodInfoPictures;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -38,6 +37,8 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import cn.smssdk.gui.AppManager;
 
 /**
  * 商品明细类，此页面可以加入购物车
@@ -59,7 +60,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
     private TextView receiveAdress;
 
     //申明实例类
-    private GoodsInfo1 goodsInfo;
+    private GoodsInfo goodsInfo;
     private SharedPreferences sharedPreferences;
     private Editor editor;
     private MyToast myToast;
@@ -147,7 +148,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         myToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 
-        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
+        goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
         name.setText(goodsInfo.getNameAlias());
         detail.setText(goodsInfo.getDescription());
         promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());

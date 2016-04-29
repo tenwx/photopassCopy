@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.List;
@@ -19,11 +19,11 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 
 	private Context mContext;
 	private LayoutInflater mInflater;
-	private List<GoodsInfo1> mDatas;
+	private List<GoodsInfo> mDatas;
 	private ImageLoader imageLoader;
 	private int width = 0;
 
-	public MakegiftGoodsAdapter(Context context, List<GoodsInfo1> mDatas)
+	public MakegiftGoodsAdapter(Context context, List<GoodsInfo> mDatas)
 	{
 		this.mContext = context;
 		mInflater = LayoutInflater.from(context);
@@ -32,11 +32,11 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		imageLoader = ImageLoader.getInstance();
 	}
 
-	public List<GoodsInfo1> getmDatas() {
+	public List<GoodsInfo> getmDatas() {
 		return mDatas;
 	}
 
-	public void setmDatas(List<GoodsInfo1> mDatas) {
+	public void setmDatas(List<GoodsInfo> mDatas) {
 		this.mDatas = mDatas;
 	}
 	

@@ -20,7 +20,6 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
-import cn.smssdk.gui.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OrderInfoDateSortUtil;
 import com.pictureair.photopass.util.OrderProductDateSortUtil;
@@ -32,6 +31,8 @@ import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import cn.smssdk.gui.AppManager;
 
 /**
  * 订单页面ViewPager的适配器
@@ -70,7 +71,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
                     // 移除第几个position。
                     Bundle b = msg.getData();
                     OrderInfo groupInfo = b.getParcelable("group");
-                    ArrayList<CartItemInfo> childInfo = b.getParcelableArrayList("child");
+                    ArrayList<CartItemInfo> childInfo = (ArrayList<CartItemInfo>) b.getSerializable("child");
                     //删除全部订单 中的对象
                     allOrderList.remove(groupInfo);
                     allChildlist.remove(childInfo);
@@ -300,17 +301,17 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         switch (index) {
             case 0:
                 bundle.putParcelable("groupitem", paymentOrderList.get(groupPosition));//传递对象
-                bundle.putParcelableArrayList("childitemlist", paymentChildlist.get(groupPosition).getCartItemInfos());//传递list
+                bundle.putSerializable("childitemlist", paymentChildlist.get(groupPosition).getCartItemInfos());
                 break;
 
             case 1:
                 bundle.putParcelable("groupitem", deliveryOrderList.get(groupPosition));
-                bundle.putParcelableArrayList("childitemlist", deliveryChildlist.get(groupPosition).getCartItemInfos());
+                bundle.putSerializable("childitemlist", deliveryChildlist.get(groupPosition).getCartItemInfos());
                 break;
 
             case 2:
                 bundle.putParcelable("groupitem", allOrderList.get(groupPosition));
-                bundle.putParcelableArrayList("childitemlist", allChildlist.get(groupPosition).getCartItemInfos());
+                bundle.putSerializable("childitemlist", allChildlist.get(groupPosition).getCartItemInfos());
                 break;
 
             default:

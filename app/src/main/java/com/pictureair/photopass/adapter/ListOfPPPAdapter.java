@@ -2,11 +2,15 @@ package com.pictureair.photopass.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -16,11 +20,14 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPPinfo;
+import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**pp+数据的适配器*/
 public class ListOfPPPAdapter extends BaseAdapter {
@@ -29,10 +36,17 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private String pppCode = null;
 	private ImageLoader imageLoader;
 	private DisplayImageOptions options;
+	private boolean isUseHavedPPP;
+	private OnItemChildClickListener childClickListener;
+	private HashMap<Integer, Boolean> map;//统计被勾选的子项 只能选一张PP+.
+	private int onclickPosition;
+	private Handler handler;
 	
-	public ListOfPPPAdapter(ArrayList<?> arrayList, Context mContext) {
+	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
+		this.isUseHavedPPP = isUseHavedPPP;
+		this.handler = handler;
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.ic_discover_loading)
 				.showImageOnFail(R.drawable.ic_discover_failed)
@@ -43,6 +57,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				.delayBeforeLoading(100)//载入图片前稍做延时可以提高整体滑动的流畅度
 				.build();
 		imageLoader = ImageLoader.getInstance();
+
+		if (isUseHavedPPP){
+			map = new HashMap<Integer, Boolean>();
+		}
 	}
 
 	public ArrayList<?> getArrayList() {
@@ -96,9 +114,36 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		//初始化数据
-		dpp = (PPPinfo) arrayList.get(position);
+		if (isUseHavedPPP){ // 如果是选择，注册监听事件
+			childClickListener = new OnItemChildClickListener(position);
+			holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
+			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.ppp_item);
+			holder.img_no_check.setOnClickListener(childClickListener);
+			holder.itemLayout.setOnClickListener(childClickListener);
+		}
 
+		dpp = (PPPinfo) arrayList.get(position);
+		setView(holder, dpp, position);
+
+
+		return convertView;
+	}
+
+	private class ViewHolder {
+		TextView time;//绑定的时间
+		TextView pppNumber;//ppp卡的序列号
+		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
+		TextView tvState; //状态
+		TextView tvExpired; //日期
+		ImageView ppp_imageView;//背景图
+		View pppCardCenterCover;
+		TextView pppName;
+		ImageView img_no_check; // 左边的选择框
+		LinearLayout itemLayout;
+	}
+
+
+	private void setView(ViewHolder holder, PPPinfo dpp, int position){
 		//初始化时间
 		if (null==dpp.ownOn||"".equals(dpp.ownOn)) {
 			holder.time.setText("");
@@ -187,20 +232,76 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				holder.tvState.setText(R.string.ppp_has_expired);
 			}
 
+			//如果是选择 pp＋的状态
+			if (isUseHavedPPP) {
+				//显示单选框，隐藏状态
+				holder.img_no_check.setVisibility(View.VISIBLE);
+				holder.tvState.setVisibility(View.GONE);
+
+				//判断 选择框的选中 和 非选中状态。
+				if (map.size() == 1) {
+					if (map.get(position) != null) {
+						if (map.get(position)) {
+							holder.img_no_check.setImageResource(R.drawable.sele);
+						}
+					}else{
+						holder.img_no_check.setImageResource(R.drawable.nosele);
+					}
+				} else {
+					holder.img_no_check.setImageResource(R.drawable.nosele);
+				}
+			}
+
+		}
+	}
+
+
+
+	//点击一个item的事件
+
+	private class OnItemChildClickListener implements View.OnClickListener {
+		private int position;
+
+		public OnItemChildClickListener(int position) {
+			this.position = position;
 		}
 
-		return convertView;
+		@Override
+		public void onClick(View v) {
+				switch (v.getId()) {
+					case R.id.iv_select:
+					case R.id.ppp_item:
+						if (map.size() == 0){ //增加
+							onclickPosition = position; //通过MyPPP获取它
+							map.put(position,true);
+						}else if (map.size() == 1){ //替换
+							map.clear();
+							map.put(position,true);
+						}
+						notifyDataSetChanged();
+						handler.sendEmptyMessage(2);
+						break;
+
+					default:
+						break;
+				}
+		}
 	}
 
-	private class ViewHolder {
-		TextView time;//绑定的时间
-		TextView pppNumber;//ppp卡的序列号
-		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
-		TextView tvState; //状态
-		TextView tvExpired; //日期
-		ImageView ppp_imageView;//背景图
-		View pppCardCenterCover;
-		TextView pppName;
+
+	public HashMap<Integer, Boolean> getMap() {
+		return map;
 	}
 
+	public void setMap(HashMap<Integer, Boolean> map) {
+		this.map = map;
+	}
+
+	public int getOnclickPosition() {
+		return onclickPosition;
+	}
+
+	public void setOnclickPosition(int onclickPosition) {
+		this.onclickPosition = onclickPosition;
+	}
 }

@@ -139,7 +139,7 @@ public class OrderActivity extends BaseActivity {
 
                     //添加订单实虚体类型
                     for (int j = 0; j < cartItemInfo.size(); j++) {
-                        if (cartItemInfo.get(j).cart_productType == 1) {
+                        if (cartItemInfo.get(j).getCartProductType() == 1) {
                             orderInfo.productEntityType = 1;
                             break;
                         } else {

@@ -197,8 +197,10 @@
     <!-- blur start -->
     <string name="blur_intro">只需购买迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
     <string name="up_ppp_money">升级成为迪士尼乐拍通一卡通</string>
+    <string name="use_ppp">使用已有的迪士尼乐拍通一卡通</string>
     <string name="buythisphoto">购买单张数码照片</string>
     <string name="cancel1">取消</string>
+    <string name="no_ppp_tips">您没有可用的迪士尼乐拍通一卡通哦！</string>
     <!-- blur end -->
 
     <!-- download start -->
@@ -367,6 +369,10 @@
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
     <string name="outofrange">超出范围</string>
     <!-- select pp end -->
+
+    <!-- select ppp start -->
+    <string name="select_your_ppp">请选择你的迪士尼乐拍通一卡通</string>
+    <!-- select ppp end -->
 
     <!-- settings start -->
     <string name="setting">设置</string>

@@ -28,7 +28,7 @@ import com.pictureair.photopass.activity.DetailProductActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.ShopGoodListViewAdapter;
 import com.pictureair.photopass.entity.AddressJson;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
@@ -67,7 +67,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private String currency = "";//货币种类
 
     //申明实例类
-    private List<GoodsInfo1> allGoodsList;//全部商品
+    private List<GoodsInfo> allGoodsList;//全部商品
     private ShopGoodListViewAdapter shopGoodListViewAdapter;
     private int i;
 
@@ -125,7 +125,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
                 //获取收货地址列表
                 String addressByACache = ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS);
-                PictureAirLog.v(TAG, "initData: addressByACache: " + addressByACache);
+                PictureAirLog.i(TAG, "initData: addressByACache: " + addressByACache);
                 if (addressByACache == null || addressByACache.equals("")) {
                     API1.getOutlets(fragmentPageShopHandler);
                 }
@@ -235,7 +235,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 FragmentPageShop.this.startActivity(intent);
             }
         });
-//        xListView.setOnScrollListener(new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true));
         xListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
 
         initData(false);//初始化数据

@@ -193,28 +193,28 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             hView = (ChildHolderView) convertView.getTag();
         }
         //初始化控件值
-        if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productImageUrl.contains("http")) {
-            imageLoader.displayImage(childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productImageUrl, hView.goodsImageView);
+        if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl().contains("http")) {
+            imageLoader.displayImage(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl(), hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productImageUrl, hView.goodsImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl(), hView.goodsImageView);
         }
-        hView.goodsName.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_productName);
-        hView.goodsCount.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_quantity + "");
+        hView.goodsName.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getProductName());
+        hView.goodsCount.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getQty() + "");
         hView.currency.setText(currency);
-        hView.priceTextView.setText((int) childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_promotionPrice + "");
+        hView.priceTextView.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getUnitPrice() + "");
         //初始化添加的图片信息
-        if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls == null || childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls.size() <= 0) {
+        if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos() == null || childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos().size() <= 0) {
             hView.gridLayout.setVisibility(View.GONE);
         } else {
             hView.gridLayout.removeAllViews();
             //依次添加照片
-            for (int i = 0; i < childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls.size(); i++) {
+            for (int i = 0; i < childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos().size(); i++) {
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = screenWight;
                 params.height = screenWight;
                 imageView.setLayoutParams(params);
-                imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).cart_photoUrls.get(i).cart_photoUrl, imageView);
+                imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos().get(i).getPhotoUrl(), imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(childPosition * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);
@@ -273,8 +273,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     //childlist
                     String orderName, orderIntroduce;
                     if (childlist.get(position).getCartItemInfos().size() == 1) {
-                        orderName = childlist.get(position).getCartItemInfos().get(0).cart_productName;
-                        orderIntroduce = childlist.get(position).getCartItemInfos().get(0).cart_productIntroduce;
+                        orderName = childlist.get(position).getCartItemInfos().get(0).getProductName();
+                        orderIntroduce = childlist.get(position).getCartItemInfos().get(0).getDescription();
                     } else {
                         orderName = context.getString(R.string.multi_goods);
                         orderIntroduce = context.getString(R.string.multi_goods);
