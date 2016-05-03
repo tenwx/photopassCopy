@@ -263,7 +263,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.forgot://忘记密码
-                sendSMS(1);
+                startActivity(new Intent(LoginActivity.this,
+                        RegisterOrForgetActivity.class).putExtra("activity","forget"));
+
                 break;
             case R.id.rl_country:
 
@@ -317,7 +319,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
             case R.id.sign:
                 PictureAirLog.v(TAG, "tap sign");
-                sendSMS(0);
+                startActivity(new Intent(LoginActivity.this,
+                        RegisterOrForgetActivity.class).putExtra("activity","sign"));
+
                 break;
 
             case R.id.otherLogin:
