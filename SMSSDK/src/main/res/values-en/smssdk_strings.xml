@@ -11,7 +11,8 @@
     <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_sign_up">Sign Up</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
-    <string name="smssdk_explain_briefly">By signing up, you agree to <a href = "2">Supplemental Terms and Conditions</a> &amp; <a href = "1">Privacy Policy</a></string>
+    <string name="smssdk_explain_briefly">By signing up, you agree to <a href = "2">Supplemental Terms and Conditions</a> &amp; <a href = "1">Privacy Policy</a> </string>
+    <string name="please_agree">Please confirm to agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
     <string name="smssdk_send_code2">Verify again</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>

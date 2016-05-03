@@ -8,7 +8,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/pp_gray" />
+        android:background="@color/pp_light_gray_press" />
 
     <TextView
         android:id="@+id/catalog"
@@ -18,13 +18,14 @@
         android:background="@color/white"
         android:paddingBottom="10dip"
         android:paddingTop="10dip"
+        android:textSize="@dimen/text_size_16"
         android:text="A"
-        android:textColor="@color/pp_gray" />
+        android:textColor="@color/pp_light_gray_press" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/pp_gray" />
+        android:background="@color/pp_light_gray_press" />
 
     <TextView
         android:id="@+id/title"
@@ -37,7 +38,7 @@
         android:paddingTop="10dip"
         android:text="hhhh"
         android:textColor="@color/pp_dark_blue"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_16" />
 
 
 </LinearLayout>

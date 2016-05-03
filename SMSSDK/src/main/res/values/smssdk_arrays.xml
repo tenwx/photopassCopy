@@ -232,6 +232,6 @@
 		<item>直布罗陀,350,103,266,GI</item>
 		<item>智利,56,29,730,CL</item>
 		<item>中非共和国,236,69,623,CF</item>
-		<item>中国,86,42,460|461,CN</item>
+		<item>中国大陆,86,42,460|461,CN</item>
     </string-array>
 </resources>

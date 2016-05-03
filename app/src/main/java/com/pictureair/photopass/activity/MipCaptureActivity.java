@@ -113,8 +113,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     ocrScanView.setWidth(rlp.width);
                     ocrScanView.setHeight(rlp.height);
                     ViewGroup.LayoutParams layoutParams = tvCenterHint.getLayoutParams();
-                    layoutParams.width = rlp.height;
-                    layoutParams.height = rlp.width;
+                    layoutParams.width = rlp.height - 20;
+                    layoutParams.height = rlp.width - 20;
+                    PictureAirLog.out("width---->" + layoutParams.width);
+                    PictureAirLog.out("height---->" + layoutParams.height);
                     tvCenterHint.setLayoutParams(layoutParams);
                 }
 

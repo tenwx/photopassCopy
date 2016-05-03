@@ -945,13 +945,13 @@ public class JsonUtil {
         couponInfo.setCpName(isCn ? cnName : enName);//优惠卷名称
 
         //有效期
-        effectiveTime = jsonObject.getString("effectiveOn");//有效开始时间
-        effectiveTime = effectiveTime.split("T")[0];
+//        effectiveTime = jsonObject.getString("effectiveOn");//有效开始时间
+//        effectiveTime = effectiveTime.split("T")[0];
 
-        failureTime = jsonObject.getString("expiredOn");//有效结束时间
-        failureTime = failureTime.split("T")[0];
+        failureTime = AppUtil.GTMToLocal(jsonObject.getString("expiredOn"));//有效结束时间
+        failureTime = failureTime.substring(0, 10).replace("-", "/");
 
-        couponInfo.setCpValidityPeriod(effectiveTime + "～" + failureTime);//有效期时间间隔
+        couponInfo.setCpValidityPeriod(failureTime);//有效期时间间隔
 
 
         return couponInfo;

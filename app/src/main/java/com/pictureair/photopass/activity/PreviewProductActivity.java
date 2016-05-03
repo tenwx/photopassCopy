@@ -287,6 +287,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 viewHeight = bannerView_Preview.getHeight();
                 viewWidth = bannerView_Preview.getWidth();
                 PictureAirLog.v(TAG, "-------------->" + goodsInfo.getEntityType());
+                PictureAirLog.v(TAG, "name-------------->" + goodsInfo.getName());
                 if (goodsInfo.getName().equals("canvas")) {
                     //1.画布，商品宽 355
                     //		 商品高 258
@@ -303,8 +304,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 //					//		 上边留白 0
 //					//		 预览图片宽 480
 //					//		 预览图片高 946
-                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
-                            480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
+//                    bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
+//                            480, 946, 0, 0, 480, 946, 0, R.drawable.iphone_case_mask_bottom, R.drawable.iphone_case_mask_top, "iphone5Case");//设置bannerview的图片
                 } else if (goodsInfo.getName().equals("4R Print")) {
                     //4.4r相框，商品宽 180
                     //		 商品高 120
@@ -323,7 +324,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //		 预览图片宽 240-10-10 = 220
                     //		 预览图片高 180-14-14 = 152
                     bannerView_Preview.initImageList(list, picUrl, viewWidth, viewHeight,
-                            750, 560, 10, 14, 220, 152, 0, 0, 0, goodsInfo.getNameAlias());//设置bannerview的图片
+                            240, 180, 10, 14, 220, 152, 0, 0, 0, goodsInfo.getNameAlias());//设置bannerview的图片
                 } else if (goodsInfo.getName().equals("keyChain")) {
                     //6.钥匙圈，商品宽 205
                     //		 商品高 89

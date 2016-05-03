@@ -47,7 +47,7 @@ public class StartActivity extends BaseActivity implements Callback {
         handler = new Handler(this);
 
         //获取手机设置的语言
-        languageType = spApp.getString(Common.LANGUAGE_TYPE, "");
+        languageType = spApp.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         if (!languageType.equals("")) {
             if (languageType.equals(Common.ENGLISH)) {
                 config.locale = Locale.US;

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -59,6 +60,9 @@ public class OtherRegisterActivity extends BaseActivity implements
     View view = null;
 
     private SelectDateWeidget selectDateWeidget;
+
+    private ImageView agreeIv;
+    private boolean isAgree = false;
 
     /*
      * 监听性别 性别只能是两种 male 或female
@@ -141,6 +145,7 @@ public class OtherRegisterActivity extends BaseActivity implements
     }
 
     private void initview() {
+        agreeIv = (ImageView) findViewById(R.id.iv_agreement);
         tvAgreement = (TextView) findViewById(R.id.tv_agreement);
         tvAgreement.setMovementMethod(LinkMovementMethod.getInstance());
         CharSequence text = tvAgreement.getText();
@@ -183,6 +188,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         // 日期选择器
         ll_brith = (LinearLayout) findViewById(R.id.ll_birth);
 
+        agreeIv.setOnClickListener(this);
         ll_brith.setOnClickListener(this);
         btn_submit_sign.setOnClickListener(this);
         etCounry.setOnClickListener(this);
@@ -250,6 +256,16 @@ public class OtherRegisterActivity extends BaseActivity implements
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_agreement:
+                if (isAgree) {
+                    isAgree = false;
+                    agreeIv.setImageResource(R.drawable.gender_normal);
+                } else {
+                    isAgree = true;
+                    agreeIv.setImageResource(R.drawable.gender_sele);
+                }
+                break;
+
             case R.id.btn_other_sign_submit:
 			/*
 			 * 1.先提交用户名和密码 2.根据修改用户来提交 个人信息。
@@ -278,8 +294,12 @@ public class OtherRegisterActivity extends BaseActivity implements
                             break;
 
                         case AppUtil.PWD_AVAILABLE:// 密码可用
-                            new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
+                            if (isAgree) {
+                                new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
                                     name, birthday, sex, countryCode, OtherRegisterActivity.this);
+                            } else {
+                                myToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
+                            }
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空

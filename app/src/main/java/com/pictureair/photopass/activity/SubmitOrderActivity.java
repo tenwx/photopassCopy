@@ -5,6 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -97,6 +102,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private static final int PAY_FAILED = 10002;//失败
 
     private JSONArray couponCodes;//优惠券
+
+    private ImageView btn_agreement;//条款按钮
+    private boolean isSelecteAgreement = false;//是否选中条款
 
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
@@ -384,6 +392,36 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         discountSubtractTv = (TextView) view.findViewById(R.id.discount_subtract_tv);
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
+
+        btn_agreement = (ImageView) view.findViewById(R.id.iv_agreement);
+        btn_agreement.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isSelecteAgreement) {
+                    isSelecteAgreement = true;
+                    btn_agreement.setImageResource(R.drawable.gender_sele);
+                } else {
+                    isSelecteAgreement = false;
+                    btn_agreement.setImageResource(R.drawable.gender_normal);
+                }
+            }
+        });
+        TextView tvAgreement = (TextView) view.findViewById(R.id.tv_agreement);
+        //条款
+        tvAgreement.setMovementMethod(LinkMovementMethod.getInstance());
+        CharSequence text = tvAgreement.getText();
+        if (text instanceof Spannable) {
+            int end = text.length();
+            Spannable sp = (Spannable) tvAgreement.getText();
+            URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(text);
+            style.clearSpans();// should clear old spans
+            for (URLSpan url : urls) {
+                MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            tvAgreement.setText(style);
+        }
         if (isHeader) {
             transportIv.setImageResource(R.drawable.icon_shop);
             transportTv.setText(R.string.goods_info);
@@ -569,6 +607,12 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
+
+                if(!isSelecteAgreement){
+                    newToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+
                 //确认订单后 减掉购物项
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - cartCount);
@@ -704,5 +748,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         submitOrderHandler.removeCallbacksAndMessages(null);
+    }
+
+    private class MyURLSpan extends ClickableSpan {
+        private String mUrl;
+
+        MyURLSpan(String url) {
+            mUrl = url;
+        }
+
+        @Override
+        public void onClick(View widget) {
+            Intent intent = new Intent();
+            intent.putExtra("key", Integer.valueOf(mUrl));
+            intent.setClass(SubmitOrderActivity.this, WebViewActivity.class);
+            startActivity(intent);
+        }
     }
 }

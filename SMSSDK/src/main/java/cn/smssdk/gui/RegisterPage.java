@@ -26,6 +26,7 @@ import android.text.style.URLSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -94,6 +95,8 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
     private Typeface typeface;
     private LinearLayout llPwdConten, llMobileCenten, llPutIdentifyCenten;
     private TextView tvExplain;//底部文案
+    private ImageView ivAgree;
+    private boolean isAgree = false;
     private View viewCountry;
     private String forgetPhoto;
     private boolean isForgetPwdPage = false;
@@ -173,6 +176,9 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 }
                 tvExplain.setText(style);
             }
+
+            ivAgree = (ImageView) activity.findViewById(getIdRes(activity, "iv_agreement"));
+            ivAgree.setOnClickListener(this);
             tv_otherRegistered = (TextView) activity.findViewById(getIdRes(activity, "tv_otherRegistered"));
             tv_otherRegistered.setOnClickListener(new OnClickListener() {
 
@@ -218,6 +224,8 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 llPwdConten.setVisibility(View.GONE);
                 tv_otherRegistered.setVisibility(View.GONE);
                 tvExplain.setVisibility(View.GONE);
+                ivAgree.setVisibility(View.GONE);
+                isAgree = true;
                 btnSubmit.setText(R.string.smssdk_next);
             } else {//注册页面
                 isForgetPwdPage = false;
@@ -392,6 +400,7 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
         int id_rl_country = getIdRes(activity, "rl_country");
         int id_btn_next = getIdRes(activity, "btn_next");
         int id_btnSubmit = getIdRes(activity, "sure");
+        int id_agree = getIdRes(activity, "iv_agreement");
 
         if (id == id_btnSubmit) {//注册的“提交”按钮 ，忘记密码的“下一步”
 
@@ -404,6 +413,10 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                     return;
                 resultCompleteForget();
                     return;
+            }
+            if (!isAgree) {
+                myToast.setTextAndShow(R.string.please_agree, 100);
+                return;
             }
             submitEvent();//验证验证码
         } else if (id == id_ll_back) {
@@ -432,6 +445,14 @@ public class RegisterPage extends FakeActivity implements OnClickListener,
                 String code = tvCountryNum.getText().toString().trim();
 
                 checkPhoneNum(phone, code);// 检查电话号码
+            }
+        } else if (id == id_agree) {
+            if (isAgree) {
+                isAgree = false;
+                ivAgree.setImageResource(R.drawable.gender_normal);
+            } else {
+                isAgree = true;
+                ivAgree.setImageResource(R.drawable.gender_sele);
             }
         }
     }

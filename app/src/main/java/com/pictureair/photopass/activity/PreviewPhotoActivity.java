@@ -780,7 +780,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)))));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
@@ -1454,11 +1454,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         previewPhotoHandler.sendEmptyMessage(RESIZE_BLUR_IMAGE);
 
-        if (dia.isShowing()) {
+//        if (dia.isShowing()) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             dia.getWindow().setAttributes(layoutParams);
-        }
+//        }
         super.onConfigurationChanged(newConfig);
     }
 

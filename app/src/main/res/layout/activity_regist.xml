@@ -6,9 +6,11 @@
     android:orientation="vertical">
 
     <include
-        layout="@layout/smssdk_title_layout"
+        android:id="@+id/head"
+        layout="@layout/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height" />
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true"></include>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -222,9 +224,9 @@
                     android:background="@drawable/textedit"
                     android:gravity="center"
                     android:hint="@string/smssdk_write_identify_code"
+                    android:maxLength="200"
                     android:imeOptions="actionGo"
                     android:inputType="number"
-                    android:maxLength="200"
                     android:paddingBottom="@dimen/pp_padding_16"
                     android:paddingTop="16dp"
                     android:singleLine="true"
@@ -258,7 +260,6 @@
                 android:text="@string/smssdk_sign_up"
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
-
 
             <RelativeLayout
                 android:layout_width="match_parent"

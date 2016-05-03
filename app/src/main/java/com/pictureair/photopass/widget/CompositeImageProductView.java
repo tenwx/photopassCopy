@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -77,7 +78,11 @@ public class CompositeImageProductView extends RelativeLayout{
 		goodsImageView = (ImageView)findViewById(R.id.goodImageView);
 		onlySelectedImageView = (ImageView)findViewById(R.id.selectedImageView);
 		photoImageView = new ImageView(context);
-		
+		ViewGroup.LayoutParams params = relativeLayout.getLayoutParams();
+		params.width = viewWidth - ScreenUtil.dip2px(context, 40);
+		params.height = viewHeight - ScreenUtil.dip2px(context, 40);
+		relativeLayout.setLayoutParams(params);
+
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.goodWidth = goodWidth;
@@ -92,6 +97,7 @@ public class CompositeImageProductView extends RelativeLayout{
 		this.goodName = goodName;
 		this.context = context;
 		PictureAirLog.out("------------googURL--->"+goodURL);
+		PictureAirLog.out("name---->" + goodName);
 		//如果以下商品需要加载商品图片
 		if (goodName.equals("canvas")||goodName.equals("iphone5Case")||goodName.equals("keyChain")||goodName.equals("mug")) {
 			onlySelectedImageView.setVisibility(View.INVISIBLE);
@@ -159,11 +165,11 @@ public class CompositeImageProductView extends RelativeLayout{
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
 			case LOAD_SELECTED_IMAGE_FOR_NO_PRODUCT_IMAGE://只显示照片的处理方式
+				android.view.ViewGroup.LayoutParams params = onlySelectedImageView.getLayoutParams();
+				params.width = viewWidth;
+				params.height = viewHeight;
+				onlySelectedImageView.setLayoutParams(params);
 				if (goodName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-					android.view.ViewGroup.LayoutParams params = onlySelectedImageView.getLayoutParams();
-					params.width = viewWidth;
-					params.height = viewHeight;
-					onlySelectedImageView.setLayoutParams(params);
 					imageLoader.displayImage(msg.obj.toString(), onlySelectedImageView);
 				}else {
 					imageLoader.loadImage(msg.obj.toString(), new SimpleImageLoadingListener(){
@@ -227,13 +233,13 @@ public class CompositeImageProductView extends RelativeLayout{
 											
 											clipStartX = 0;
 											clipWidth = bitmapWidht;
-											clipHeight = bitmapWidht * 4 / 3;
+											clipHeight = (int) (bitmapWidht * 4 / 3.0);
 											clipStartY = (bitmapHeight - clipHeight) / 2;
 										}else {//截取多余的宽度
 											PictureAirLog.out("-----lanscape");
 											clipStartY = 0;
 											clipHeight = bitmapHeight;
-											clipWidth = bitmapHeight * 3 / 4;
+											clipWidth = (int) (bitmapHeight * 3 / 4.0);
 											clipStartX = (bitmapWidht - clipWidth) / 2;
 										}
 										
@@ -242,13 +248,13 @@ public class CompositeImageProductView extends RelativeLayout{
 											
 											clipStartX = 0;
 											clipWidth = bitmapWidht;
-											clipHeight = bitmapWidht * 3 / 4;
+											clipHeight = (int) (bitmapWidht * 3 / 4.0);
 											clipStartY = (bitmapHeight - clipHeight) / 2;
 										}else {//截取多余的宽度
 											PictureAirLog.out("-----lanscape");
 											clipStartY = 0;
 											clipHeight = bitmapHeight;
-											clipWidth = bitmapHeight * 4 / 3;
+											clipWidth = (int) (bitmapHeight * 4 / 3.0);
 											clipStartX = (bitmapWidht - clipWidth) / 2;
 										}
 										
@@ -288,11 +294,11 @@ public class CompositeImageProductView extends RelativeLayout{
 				marginL += location[0] - ScreenUtil.dip2px(context, 20);//因为photoImageView是new出来的，所以需要减去布局中的marginLeft的20dp，也可以通过获取viewpager的x坐标，并且减去这个坐标（和20dp转换为px是一样的）
 				marginT += location[1] - toplocation[1];//因为margintop是本控件和父控件的上边边距，所以要减去标题栏和状态栏的高度
 				
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(previewPhotoW, previewPhotoH);
+				RelativeLayout.LayoutParams params3 = new RelativeLayout.LayoutParams(previewPhotoW, previewPhotoH);
 				//设置左边距和上边距
-				params.leftMargin = marginL;
-				params.topMargin = marginT;
-				photoImageView.setLayoutParams(params);
+				params3.leftMargin = marginL;
+				params3.topMargin = marginT;
+				photoImageView.setLayoutParams(params3);
 				
 				addView(photoImageView);
 				PictureAirLog.out("------------->"+msg.obj.toString());

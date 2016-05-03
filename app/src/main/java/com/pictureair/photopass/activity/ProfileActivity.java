@@ -183,7 +183,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.personal_profile);
+        setContentView(R.layout.activity_personal_profile);
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         newToast = new MyToast(this);
         initView();

@@ -56,6 +56,19 @@ public class API1 {
     public static final int GET_PPS_SUCCESS = 1041;
     public static final int GET_PPS_FAILED = 1040;
 
+    //忘记密码
+    public static final int FIND_PWD_SUCCESS = 1051;
+    public static final int FIND_PWD_FAILED = 1050;
+
+    //发送验证码
+    public static final int SEND_SMS_VALIDATE_CODE_SUCCESS = 1061;
+    public static final int SEND_SMS_VALIDATE_CODE_FAILED = 1060;
+
+    //验证码判断
+    public static final int VALIDATECODE_SUCCESS = 1071;
+    public static final int VALIDATECODE_FAILED = 1070;
+
+
     /**
      * Story
      */
@@ -196,6 +209,18 @@ public class API1 {
     public static final int REMOVE_PP_SUCCESS = 5131;
     public static final int REMOVE_PP_FAILED = 5130;
 
+    //从订单中获取所有优惠卷
+    public static final int GET_COUPON_SUCCESS = 5141;
+    public static final int GET_COUPON_FAILED = 5140;
+
+    //添加一张优惠卷
+    public static final int INSERT_COUPON_SUCCESS = 5151;
+    public static final int INSERT_COUPON_FAILED = 5150;
+
+    //使用优惠券
+    public static final int PREVIEW_COUPON_SUCCESS = 5161;
+    public static final int PREVIEW_COUPON_FAILED = 5160;
+
     //我的模块 end
 
 
@@ -222,21 +247,6 @@ public class API1 {
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
 
-    //忘记密码
-    public static final int FIND_PWD_SUCCESS = 6051;
-    public static final int FIND_PWD_FAILED = 6050;
-
-    //从订单中获取所有优惠卷
-    public static final int GET_COUPON_SUCCESS = 6061;
-    public static final int GET_COUPON_FAILED = 6060;
-
-    //添加一张优惠卷
-    public static final int INSERT_COUPON_SUCCESS = 6071;
-    public static final int INSERT_COUPON_FAILED = 6070;
-
-    //使用优惠券
-    public static final int PREVIEW_COUPON_SUCCESS = 6081;
-    public static final int PREVIEW_COUPON_FAILED = 6080;
 
     //选择已有PP＋
     public static final int GET_PPPS_BY_SHOOTDATE_SUCCESS = 6091;
@@ -407,6 +417,78 @@ public class API1 {
             }
         });
     }
+
+    /**
+     * 发送验证码
+     * SEND_SMS_VALIDATE_CODE
+     * <p/>
+     * note:手机号格式 “＋8615717737873”
+     * appID:string，必填，appID
+     * phone:string，必填，手机号，
+     * language:string,选填,语言，默认为CN，可填写值：CN或EN，
+     * msgType:string,选填，默认为register，可选值（forgotPassword,register）
+     */
+    public static void sendSMSValidateCode(final Handler handler, final String tokenId, String phone, String language, boolean isRegister) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.PHONE, "+" + phone);
+        params.put(Common.LANGUAGE, language.equals(Common.SIMPLE_CHINESE) ? "CN" : "EN");
+        params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
+
+        PictureAirLog.v(TAG, "sendSMSValidateCode params：" + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.SEND_SMS_VALIDATE_CODE, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.v(TAG, "sendSMSValidateCode onSuccess：" + jsonObject.toString());
+                handler.obtainMessage(SEND_SMS_VALIDATE_CODE_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.v(TAG, "sendSMSValidateCode onFailure：" + status);
+                handler.obtainMessage(SEND_SMS_VALIDATE_CODE_FAILED, status, 0).sendToTarget();
+            }
+
+        });
+    }
+
+    /**
+     * 判断验证信息是否有效 验证码
+     * validateCode
+     *
+     * tokenId:string，必填，tokenId
+     * validateCode:string,必填，验证信息
+     * sendTo:string,选填，email或mobile
+     * msgType:string,选填，可选值（register,forgotPassword）
+     */
+    public static void validateCode(final Handler handler, final String tokenId, String validateCode, String phoneOremail, boolean isRegister) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.VALIDATE_CODE, validateCode);
+        params.put(Common.SEND_TO, "+"+phoneOremail);
+        params.put(Common.MSG_TYPE, isRegister ? "register" : "forgotPassword");
+
+        PictureAirLog.v(TAG, "validateCode params：" + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.VALIDATE_CODE_URL, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.v(TAG, "validateCode onSuccess：" + jsonObject.toString());
+                handler.obtainMessage(VALIDATECODE_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.v(TAG, "validateCode onFailure：" + status);
+                handler.obtainMessage(VALIDATECODE_FAILED, status, 0).sendToTarget();
+            }
+
+        });
+    }
+
 
     /**
      * 获取所有的地址信息

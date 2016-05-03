@@ -96,7 +96,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         settingUtil = new SettingUtil(new PictureAirDbManager(this));
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
-        currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, "");
+        currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         judgeSettingStatus();
     }
 

@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">乐拍通</string>
+    <string name="share_app_name">上海迪士尼乐拍通</string>
     <!-- login activity start-->
     <string name="user_login">用户登录</string>
     <string name="country">国家</string>
-    <string name="china">中国</string>
+    <string name="china">中国大陆</string>
     <string name="pwd">密码</string>
     <string name="forget_pwd">忘记密码？</string>
     <string name="login">登录</string>
@@ -31,7 +32,7 @@
     <string name="name_is_empty">昵称不能为空</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a></string>
+    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -64,13 +65,13 @@
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
     <string name="qq">QQ好友</string>
-    <string name="share_text">我愿和您分享每一刻在迪士尼乐拍通的美妙体验！</string>
+    <string name="share_text">我愿和您分享每一刻在上海迪士尼度假区的美妙体验！</string>
     <string name="share_not_open">请在应用上线后使用此功能！</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->
     <string name="exit">再按一次退出迪士尼乐拍通</string>
-    <string name="tab_story">故事</string>
+    <string name="tab_story">照片</string>
     <string name="tab_discover">发现</string>
     <string name="tab_camera">相机</string>
     <string name="tab_shops">商店</string>
@@ -86,7 +87,7 @@
     <string name="story_tab_favorite">收藏</string>
     <string name="story_no_pp">请扫描您的上海迪士尼乐园门票或迪士尼乐拍通卡预览您的照片。</string>
     <string name="story_scan">扫一扫</string>
-    <string name="no_photo_in_airpass">没有照片，赶快去寻找乐园摄影师拍照吧！</string>
+    <string name="no_photo_in_airpass">没有照片，快去寻找乐拍通摄影师拍照吧！</string>
     <string name="no_photo_in_magiccam">收藏全部的已编辑图片</string>
     <string name="no_photo_in_bought">没有照片，赶快来购买吧！</string>
     <string name="no_photo_in_favourite">没有照片，赶快去收藏吧！</string>
@@ -95,7 +96,7 @@
     <string name="story_no_photo">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
     <string name="no_network">加载失败，请检查您当前的网络环境</string>
     <string name="click_button_reload">您可以点击按钮重新加载</string>
-    <string name="reload">重新加载</string>
+    <string name="reload">刷新</string>
     <string name="nomore">没有数据加载!</string>
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
@@ -136,7 +137,7 @@
     <!-- discover start -->
 
     <!-- disney story start -->
-    <string name="launching_camera">嗨，赶快去找您的摄影师为您拍照吧！</string>
+    <string name="launching_camera">赶快去找您的摄影师为您拍照吧！</string>
     <string name="select">选择照片</string>
     <string name="selected">选择(0/9)</string>
     <string name="disney_video_go_to_select_photo">买照片</string>
@@ -181,17 +182,17 @@
 
     <!-- preview photo start -->
     <string name="edit">编辑</string>
-    <string name="makegift">礼物</string>
+    <string name="makegift">打印</string>
     <string name="touchtoclean">亲，触摸即可马上预览您的高清图片哦！</string>
     <string name="know">我知道了</string>
     <string name="like_and_buy">点击查看清晰图，喜欢购买吧！</string>
     <string name="reloadphoto">请重新加载此照片</string>
-    <string name="neednotdownload">此图片早就在您的相册中</string>
-    <string name="local_photo_not_support_makegift">本地照片不允许制作礼物</string>
+    <string name="neednotdownload">此照片已被保存在本地相册</string>
+    <string name="local_photo_not_support_makegift">本地照片不允许打印</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">对不起，您的此张乐拍通照片暂不支持编辑！</string>
     <string name="photo_cannot_edit_no">取消</string>
-    <string name="photo_cannot_edit_yes">确认</string>
+    <string name="photo_cannot_edit_yes">确定</string>
     <!-- preview photo end -->
 
     <!-- blur start -->
@@ -221,9 +222,9 @@
     <string name="rotate_right">右转90</string>
     <string name="saving">正在保存&#8230;</string>
     <string name="dealing">正在处理&#8230;</string>
-    <string name="exit_hint">是否保存？</string>
+    <string name="exit_hint">是否保存图片？</string>
     <string name="button_cancel">取消</string>
-    <string name="button_ok">确认</string>
+    <string name="button_ok">确定</string>
     <string name="original">原图</string>
     <string name="lomo">LOMO</string>
     <string name="earlybird">流年</string>
@@ -238,7 +239,7 @@
     <string name="add_to_cart">加入购物车</string>
     <string name="address_digital_goods">数码照片下载</string>
     <string name="self_collect">可前往上海迪士尼度假区指定地点获取。</string>
-    <string name="buy_good">立即购买</string>
+    <string name="buy_good">购买</string>
     <!-- detail product end -->
 
     <!-- preview product & make gift start -->
@@ -437,7 +438,7 @@
     <string name="one_photo_download_no_msg2">停止下载</string>
     <string name="one_photo_download_yes_msg2">继续下载</string>
     <string name="confirm_sync_msg">开启后已付费的迪士尼乐拍通照片将自动下载，是否继续？</string>
-    <string name="confirm_sync_yes">确认</string>
+    <string name="confirm_sync_yes">确定</string>
     <string name="confirm_sync_no">取消</string>
     <!-- 删除pp的提示-->
     <string name="delete_pp">确认删除此迪士尼乐拍通？一旦删除，即该账户不会显示此迪士尼乐拍通的照片！</string>

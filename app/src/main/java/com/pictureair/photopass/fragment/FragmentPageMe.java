@@ -32,7 +32,6 @@ import com.pictureair.photopass.activity.OrderActivity;
 import com.pictureair.photopass.activity.ProfileActivity;
 import com.pictureair.photopass.activity.SettingActivity;
 import com.pictureair.photopass.activity.WebViewActivity;
-import com.pictureair.photopass.selectHeadorBg.SetHeadPhotoAct;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
@@ -104,7 +103,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         ViewGroup.LayoutParams params3 = linearLayout3.getLayoutParams();
         params3.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
         linearLayout3.setLayoutParams(params3);
-        headPhoto.setOnClickListener(this);
+//        headPhoto.setOnClickListener(this);
         profileTV.setOnClickListener(this);
         orderTV.setOnClickListener(this);
         ppTV.setOnClickListener(this);
@@ -223,11 +222,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //			startActivityForResult(getAlbum, 1);
 //			break;
 
-            case R.id.user_photo:
-                // 跳转到图片选择返回一张图片更新头像
-                i.setClass(MyApplication.getInstance(), SetHeadPhotoAct.class);
-                startActivity(i);
-                break;
+//            case R.id.user_photo:
+//                // 跳转到图片选择返回一张图片更新头像
+//                i.setClass(MyApplication.getInstance(), SetHeadPhotoAct.class);
+//                startActivity(i);
+//                break;
 
             case R.id.me_profile:
                 i.setClass(MyApplication.getInstance(), ProfileActivity.class);

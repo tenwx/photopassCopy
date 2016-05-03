@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
+import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -204,7 +205,7 @@ public class PictureAirDbManager {
      * @param userId
      * @return
      */
-    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId, String deleteTime) {
+    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId, String deleteTime, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         Cursor cursor = null;
         Cursor cursor1 = null;
@@ -235,7 +236,7 @@ public class PictureAirDbManager {
                 photoInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
                 photoInfo.isLove = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isLove")));
                 photoInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
-                photoInfo.locationName = cursor.getString(cursor.getColumnIndex("locationName"));
+//                photoInfo.locationName = cursor.getString(cursor.getColumnIndex("locationName"));
                 photoInfo.locationCountry = cursor.getString(cursor.getColumnIndex("locationCountry"));
                 photoInfo.shareURL = cursor.getString(cursor.getColumnIndex("shareURL"));
                 photoInfo.isVideo = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isVideo")));
@@ -257,6 +258,17 @@ public class PictureAirDbManager {
                     file = new File(photoInfo.photoPathOrURL);
                     if (!file.exists()) {
                         continue;
+                    }
+                }
+
+                for (int i = 0; i < locationItemInfos.size(); i++) {
+                    if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
+                        if (language.equals(Common.ENGLISH)) {
+                            photoInfo.locationName = locationItemInfos.get(i).placeENName;
+                        } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                            photoInfo.locationName = locationItemInfos.get(i).placeCHName;
+                        }
+                        break;
                     }
                 }
                 resultArrayList.add(photoInfo);

@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +66,7 @@ import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.HorizontalListView;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,6 +97,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private HorizontalListView top_HorizontalListView;  //显示饰品的滑动条
 
 	private CustomProgressDialog dialog;
+
+	private PictureWorksDialog pictureWorksDialog;
 
 	//适配器
 	private EditActivityAdapter eidtAdapter; //通用的适配器
@@ -153,6 +154,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private static final int INIT_DATA_FINISHED = 104;
 	private static final int LOAD_IMAGE_FINISH = 103;
+	private static final int START_ASYNC = 105;
 
 	private boolean loadingFrame = false;
 
@@ -216,6 +218,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if (dialog.isShowing()) {
 					dialog.dismiss();
 				}
+				break;
+
+			case START_ASYNC:
+				ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
+				excuteFilterTask.execute(mainBitmap);
 				break;
 
 			case 1111:
@@ -293,6 +300,17 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 			case API1.GET_LAST_CONTENT_FAILED://获取更新包失败
 
+				break;
+
+			case DialogInterface.BUTTON_POSITIVE:
+				String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
+				scan(url);
+				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+				break;
+
+			case DialogInterface.BUTTON_NEGATIVE:
+				finish();
 				break;
 
 			default:
@@ -542,14 +560,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //					newImage.recycle();
 					}
 //					mainImage.setImageBitmap(mainBitmap);
-					if (tempEditPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 						if (photoInfo.onLine == 1) {
 							loadOnlineImg(photoURL);
 						}else{
 							loadImage(photoURL);
 						}
 					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(tempEditPhotoInfoArrayList.get(tempEditPhotoInfoArrayList.size() - 1).getPhotoPath());
+						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
 					}
 				}
 
@@ -644,15 +662,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							default:
 								break;
 						}
-						ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
-//
-						if (photoInfo.onLine == 1) {
-							mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
-						}else{
-							mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
-									imageHeight);
-						}
-						excuteFilterTask.execute(mainBitmap);
+
+						new Thread() {
+							@Override
+							public void run() {
+								super.run();
+								if (photoInfo.onLine == 1) {
+									mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
+								}else{
+									mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
+											imageHeight);
+								}
+								editPhotoHandler.sendEmptyMessage(START_ASYNC);
+							}
+						}.start();
+
 					}
 				});
 				break;
@@ -1111,8 +1135,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				addEditPhotoInfo(url, editType, frameBitmap, null, "",0);
 				index = editPhotoInfoArrayList.size() - 1;
 
-				tempEditPhotoInfoArrayList.clear();
-				tempEditPhotoInfoArrayList.addAll(editPhotoInfoArrayList);
 				return heBitmap;
 //				}else{
 //					.
@@ -1138,6 +1160,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
+			tempEditPhotoInfoArrayList.clear();
+			tempEditPhotoInfoArrayList.addAll(editPhotoInfoArrayList);
 			mStickerView.clear();
 			frameImageView.setVisibility(View.INVISIBLE);
 			changeMainBitmap(result);
@@ -1294,29 +1318,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	// 没有保存的时候的对话框
 	private void createIsSaveDialog() {
-		AlertDialog.Builder builder = new Builder(EditPhotoActivity.this);
-		builder.setMessage(R.string.exit_hint);
-		builder.setTitle("");
-		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface arg0, int arg1) {
-				// TODO Auto-generated method stub
-				String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
-				scan(url);
-				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-			}
-		});
-		builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface arg0, int arg1) {
-				// TODO Auto-generated method stub
-				finish();
-			}
-		});
-		builder.create().show();
+		if (pictureWorksDialog == null) {
+			pictureWorksDialog = new PictureWorksDialog(this, null, getString(R.string.exit_hint), getString(R.string.button_cancel), getString(R.string.button_ok), true, editPhotoHandler);
+		}
+		pictureWorksDialog.show();
 	}
 
 	@Override

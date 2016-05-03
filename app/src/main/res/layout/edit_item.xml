@@ -56,7 +56,7 @@
         android:gravity="center"
         android:text="Lomo"
         android:textColor="@color/gray"
-        android:textSize="@dimen/text_size_12"
+        android:textSize="@dimen/text_size_8"
         android:visibility="gone" />
 
 </LinearLayout>
