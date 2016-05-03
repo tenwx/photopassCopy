@@ -154,6 +154,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private static final int INIT_DATA_FINISHED = 104;
 	private static final int LOAD_IMAGE_FINISH = 103;
+	private static final int START_ASYNC = 105;
 
 	private boolean loadingFrame = false;
 
@@ -217,6 +218,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if (dialog.isShowing()) {
 					dialog.dismiss();
 				}
+				break;
+
+			case START_ASYNC:
+				ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
+				excuteFilterTask.execute(mainBitmap);
 				break;
 
 			case 1111:
@@ -554,14 +560,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //					newImage.recycle();
 					}
 //					mainImage.setImageBitmap(mainBitmap);
-					if (tempEditPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 						if (photoInfo.onLine == 1) {
 							loadOnlineImg(photoURL);
 						}else{
 							loadImage(photoURL);
 						}
 					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(tempEditPhotoInfoArrayList.get(tempEditPhotoInfoArrayList.size() - 1).getPhotoPath());
+						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
 					}
 				}
 
@@ -656,15 +662,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							default:
 								break;
 						}
-						ExcuteFilterTask excuteFilterTask = new ExcuteFilterTask();
-//
-						if (photoInfo.onLine == 1) {
-							mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
-						}else{
-							mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
-									imageHeight);
-						}
-						excuteFilterTask.execute(mainBitmap);
+
+						new Thread() {
+							@Override
+							public void run() {
+								super.run();
+								if (photoInfo.onLine == 1) {
+									mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
+								}else{
+									mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
+											imageHeight);
+								}
+								editPhotoHandler.sendEmptyMessage(START_ASYNC);
+							}
+						}.start();
+
 					}
 				});
 				break;

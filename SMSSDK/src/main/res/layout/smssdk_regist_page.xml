@@ -259,15 +259,32 @@
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
 
-            <com.pictureair.photopass.widget.CustomTextView
-                android:id="@+id/tv_explain"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:text="@string/smssdk_explain_briefly"
-                android:textColor="@color/pp_blue"
-                android:textSize="@dimen/text_size_14" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_agreement"
+                    android:layout_width="20dp"
+                    android:layout_height="41dp"
+                    android:paddingTop="@dimen/pp_margin_13"
+                    android:paddingBottom="@dimen/pp_margin_13"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/gender_normal"/>
+
+                <com.pictureair.photopass.widget.CustomTextView
+                    android:id="@+id/tv_explain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/iv_agreement"
+                    android:layout_marginTop="13dp"
+                    android:text="@string/smssdk_explain_briefly"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_14" />
+
+            </RelativeLayout>
+
 
             <com.pictureair.photopass.widget.CustomTextView
                 android:id="@+id/tv_otherRegistered"

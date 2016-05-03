@@ -262,7 +262,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		if (platform.isClientValid()) {
 			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
 			cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
-			shareParams.title = Common.SHARE_APP_NAME;
+			shareParams.title = context.getString(R.string.share_app_name);
 			shareParams.text = context.getResources().getString(
 					R.string.share_text);
 			if ("local".equals(type)) {// 本地图片
@@ -274,7 +274,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 				shareParams.titleUrl = shareUrl;
 				shareParams.siteUrl = shareUrl;
 			}
-			shareParams.site = context.getString(R.string.app_name);
+			shareParams.site = context.getString(R.string.share_app_name);
 			platform.share(shareParams);
 		} else {
 			if (dialog.isShowing()) {
@@ -301,7 +301,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		if (platform.isClientValid()) {
 			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
 			cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
-			shareParams.title = Common.SHARE_APP_NAME;
+			shareParams.title = context.getString(R.string.share_app_name);
 			shareParams.text = context.getResources().getString(
 					R.string.share_text);
 			if ("local".equals(type)) {// 本地图片
@@ -367,7 +367,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		if (platform.isClientValid()) {
 			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
 			cn.sharesdk.facebook.Facebook.ShareParams shareParams = new cn.sharesdk.facebook.Facebook.ShareParams();
-			shareParams.text = Common.SHARE_APP_NAME;
+			shareParams.text = context.getString(R.string.share_app_name);
 			if ("local".equals(type)) {// 本地图片
 				shareParams.setImagePath(imagePath);
 			} else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来

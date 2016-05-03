@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">PhotoPass</string>
+    <string name="share_app_name">Shanghai Disney PhotoPass</string>
     <!-- login activity start-->
     <string name="user_login">Account</string>
     <string name="country">Country</string>
-    <string name="china">China</string>
+    <string name="china">China (mainland)</string>
     <string name="pwd">Password</string>
     <string name="forget_pwd">Forgot Password?</string>
     <string name="login">Sign In</string>
@@ -31,7 +32,7 @@
     <string name="name_is_empty">Please enter your Nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
-    <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>\n\n&amp;<a href = "1">Privacy Policy</a></string>
+    <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>\n\n&amp;<a href = "1">Privacy Policy</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -48,9 +49,9 @@
 
     <!-- 分享字段 start-->
     <string name="share">Share</string>
-    <string name="share_completed">Operation succeeded</string>
-    <string name="share_canceled">Operation canceled</string>
-    <string name="share_failed">Operation failed</string>
+    <string name="share_completed">Share Successful</string>
+    <string name="share_canceled">Share Canceled</string>
+    <string name="share_failed">Share Failed</string>
     <string name="weibo_oauth_regiseter">Authorization</string>
     <string name="share_failure_wechat">Please download and install WeChat before sharing!</string>
     <string name="share_failure_weibo">Please download and install SinaWeibo before sharing!</string>
@@ -64,13 +65,13 @@
     <string name="facebook">Facebook</string>
     <string name="twitter">Twitter</string>
     <string name="qq">QQ Friends</string>
-    <string name="share_text">I would like to share my magical experience through Disney PhotoPass APP with you!</string>
+    <string name="share_text">I would like to share my Magical Shanghai Disney Resort experience.</string>
     <string name="share_not_open">This feature will be available after app goes live.</string>
     <!-- 分享字段 end-->
 
     <!-- maintab start -->
     <string name="exit">Double tap to exit Disney PhotoPass</string>
-    <string name="tab_story">Story</string>
+    <string name="tab_story">Photo</string>
     <string name="tab_discover">Discover</string>
     <string name="tab_camera">Camera</string>
     <string name="tab_shops">Shop</string>
@@ -95,7 +96,7 @@
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_network">Please check your network</string>
     <string name="click_button_reload">Click button to reload</string>
-    <string name="reload">Reload</string>
+    <string name="reload">Refresh</string>
     <string name="nomore">No more data to load!</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
@@ -181,13 +182,13 @@
 
     <!-- preview photo start -->
     <string name="edit">Edit</string>
-    <string name="makegift">Gift</string>
+    <string name="makegift">Print</string>
     <string name="touchtoclean">Touch to preview your photo</string>
     <string name="know">I know</string>
     <string name="like_and_buy">Touch to preview your photo</string>
     <string name="reloadphoto">Please reload this photo</string>
-    <string name="neednotdownload">The photo is already in your album</string>
-    <string name="local_photo_not_support_makegift">Sorry we cannot make gift from your edited photos.</string>
+    <string name="neednotdownload">The photo has been saved in the local album!</string>
+    <string name="local_photo_not_support_makegift">Sorry we cannot print your edited photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">Sorry, your this PhotoPass picture does not support editing!</string>
     <string name="photo_cannot_edit_no">Cancel</string>
@@ -232,7 +233,7 @@
     <!-- edit end -->
 
     <!-- detail product start -->
-    <string name="choosephoto">Select Photo to Make Gift</string>
+    <string name="choosephoto">Select Photo</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="address_digital_goods">Digital Download</string>
     <string name="self_collect">Pickup at selected Shanghai Disney Resort Locations.</string>
@@ -363,7 +364,7 @@
     <!-- select pp start -->
     <string name="selectionpp">Select Disney PhotoPass</string>
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
-    <string name="no_photopass_update">You haven\'t permissive Disney PhotoPass to upgrade!</string>
+    <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->
@@ -434,7 +435,7 @@
     <string name="confirm_sync_yes">OK</string>
     <string name="confirm_sync_no">Cancel</string>
     <!-- 删除pp的提示-->
-    <string name="delete_pp">Do you want to delete this Disney PhotoPass? This Disney PhotoPass photos cannot be shown once deleted！</string>
+    <string name="delete_pp">This Disney PhotoPass photos will not be shown once deleted.</string>
     <string name="delete_pp_cancel">Cancel</string>
     <string name="delete_pp_ok">Delete</string>
     <!-- tips end -->

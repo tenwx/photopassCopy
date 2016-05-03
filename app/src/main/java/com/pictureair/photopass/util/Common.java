@@ -8,7 +8,6 @@ import android.os.Environment;
 public class Common {
     public static final String APP_NAME = "appName";
     public static final String APPLICATION_NAME = "photoPass";// app英文名字
-    public static final String SHARE_APP_NAME = "PhotoPass";
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
     public static final String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
 
@@ -80,8 +79,8 @@ public class Common {
 
 
     public final static String VERSION_CODE = "V1.0.1";//开发版
-    public final static boolean DEBUG = false;// true，打印log， false，不打印log
-    public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
+    public final static boolean DEBUG = true;// true，打印log， false，不打印log
+    public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
 
     //接口
@@ -351,7 +350,7 @@ public class Common {
 
     public static final String GOOD_NAME_PPP = "PhotoPass+";
     public static final String GOOD_NAME_SINGLE_DIGITAL = "Digital Photo";
-    public static final String GOOD_NAME_6R = "6R Print";
+    public static final String GOOD_NAME_6R = "6\" X 8\" Photo";
     public static final String GOOD_NAME_TSHIRT = "Duffy Bear Personalised T-Shirt";
     public static final String GOOD_NAME_COOK = "Your personal cookies gift";
 

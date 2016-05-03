@@ -35,7 +35,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 public class MyApplication extends Application {
     private static MyApplication instance;
-    private static SharedPreferences userInfosharedPreferences;
+    private static SharedPreferences userInfosharedPreferences, appSP;
     private static String tokenId;
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
@@ -94,6 +94,7 @@ public class MyApplication extends Application {
         }
         instance = this;
         userInfosharedPreferences = this.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        appSP = getSharedPreferences(Common.APP_NAME, Context.MODE_PRIVATE);
         // 初始化友盟
         UmengUtil.initUmeng();
         initImageLoader(getApplicationContext());
@@ -333,8 +334,8 @@ public class MyApplication extends Application {
      */
     public String getLanguageType() {
 
-        if (languageType == null) {
-            languageType = "";
+        if (languageType == null || languageType.equals("")) {
+            languageType = appSP.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         }
         return languageType;
 

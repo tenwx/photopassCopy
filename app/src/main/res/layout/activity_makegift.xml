@@ -187,7 +187,7 @@
             android:layout_weight="1"
             android:background="@drawable/button_blue_shape_and_selector"
             android:padding="@dimen/pp_padding_10"
-            android:text="@string/buy_good2"
+            android:text="@string/confirm"
             android:textColor="@drawable/textview_selector_blue_white"
             android:textSize="@dimen/pp_margin_16" />
 
