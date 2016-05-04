@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pp_margin_30"
             android:text="@string/email_sent"
-            android:textColor="@color/pp_blue"
+            android:textColor="@color/pp_light_gray_press"
             android:textSize="@dimen/text_size_18" />
 
 

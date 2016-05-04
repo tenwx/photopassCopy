@@ -1,9 +1,12 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -19,11 +22,17 @@ import android.widget.LinearLayout;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.RegisterOrForgetCallback;
+
+import java.lang.ref.WeakReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.smssdk.gui.CustomButtonFont;
 import cn.smssdk.gui.CustomFontManager;
@@ -57,6 +66,46 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private boolean isNext = false;
     private ImageView agreeIv;
     private boolean isAgree = false;
+    private PictureWorksDialog pictureWorksDialog;
+
+    private final Handler myHandler = new MyHandler(this);
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<RegisterOrForgetActivity> mActivity;
+
+        public MyHandler(RegisterOrForgetActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    /**
+     * 处理Message
+     *
+     * @param msg
+     */
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case DialogInterface.BUTTON_POSITIVE://点击确定
+                registerTool.sendSMSValidateCode(currentCode + phoneStr);
+                dismiss();
+                break;
+
+            case DialogInterface.BUTTON_NEGATIVE:
+                dismiss();
+                break;
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +189,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
     private void initData() {
         myToast = new MyToast(context);// 获取toast
-        tvCountry.setText(languageType.equals(Common.SIMPLE_CHINESE) ? "中国" : "China");
+        tvCountry.setText(R.string.china);
     }
 
     @Override
@@ -148,6 +197,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         if (null != registerTool)
             registerTool.onDestroy();
         registerTool = null;
+        myHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -206,6 +256,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         ll_pwd_centen.setVisibility(View.VISIBLE);
         sure.setText(R.string.ok);
         sure.setEnabled(false);
+        pwd.setHint(R.string.smssdk_pwd_forget);
+        pwd_again.setHint(R.string.smssdk_pwd2_forget);
     }
 
     @Override
@@ -239,17 +291,19 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
                 startActivityForResult(intent, SelectCountryActivity.requestCountry);
                 break;
             case R.id.btn_next:
-                if (!checkPhoneNumber())
+                if (!checkPhoneNumber()) {
+                    myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
                     return;
-                registerTool.sendSMSValidateCode(currentCode + phoneStr);
+                }
+                showPwDialog();
+//                registerTool.sendSMSValidateCode(currentCode + phoneStr);
                 break;
             case R.id.sure:
-                if (!isNext) {
+                if (!isNext) {//SIGN
                     if (!isAgree) {
                         myToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
                         return;
                     }
-
                     submitEvent();
                 } else {
                     if (!checkPwd())
@@ -269,8 +323,14 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
      * 点击发送验证码过后 检查电话号码
      */
     private boolean checkPhoneNumber() {
-        //TODO
-        return true;
+        boolean tem = true;
+        if (currentCode.equals("86")) {
+//            Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+            Pattern p = Pattern.compile("^1(3|5|7|8|4)\\d{9}");
+            Matcher matcher = p.matcher(phoneStr);
+            tem = matcher.matches();
+        }
+        return tem;
     }
 
     /**
@@ -280,8 +340,10 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         if (whatActivity.equals(signActivity))
             if (!checkPwd())
                 return;
-        if (!checkPhoneNumber())
+        if (!checkPhoneNumber()) {
+            myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
             return;
+        }
         registerTool.submit(identifyStr, currentCode + phoneStr, pwdStr);
     }
 
@@ -401,5 +463,20 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         }
     }
 
+    private void showPwDialog() {
+        String dialogMsg = String.format(getString(R.string.smssdk_make_sure_mobile_detail), "+" + currentCode + " " + phoneStr);
+        PictureAirLog.out("diamsg--->" + dialogMsg);
+
+        if (pictureWorksDialog == null) {
+            pictureWorksDialog = new PictureWorksDialog(context, null, dialogMsg, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), false, myHandler);
+        }
+        pictureWorksDialog.show();
+    }
+
+    private void dismiss() {
+        if (pictureWorksDialog != null) {
+            pictureWorksDialog.dismiss();
+        }
+    }
 
 }

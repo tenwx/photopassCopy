@@ -42,20 +42,20 @@
                 <View
                     android:layout_width="0dp"
                     android:layout_height="@dimen/pp_height_1dp"
-                    android:layout_weight="2" />
+                    android:layout_weight="3" />
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/no_photo_textView"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:adjustViewBounds="true"
                     android:src="@drawable/no_photos_img" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="@dimen/pp_height_1dp"
-                    android:layout_weight="2" />
+                    android:layout_weight="3" />
             </LinearLayout>
 
             <com.pictureair.photopass.widget.CustomTextView
@@ -68,7 +68,7 @@
                 android:paddingLeft="@dimen/pp_padding_20"
                 android:paddingRight="@dimen/pp_padding_20"
                 android:text="@string/no_photo_in_airpass"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
         </RelativeLayout>
 

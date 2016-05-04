@@ -475,7 +475,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         payPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         discountPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         if (isCount) {
-            couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+            if (couponCount == 0) {
+                couponCountTv.setText(R.string.no_coupon1);
+            } else {
+                couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+            }
         } else {
             couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) straightwayPreferentialPrice);
         }
@@ -728,7 +732,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
             couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
             couponCount = data.getExtras().getInt("couponCount", 0);
-            couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+            if (couponCount == 0) {
+                couponCountTv.setText(R.string.no_coupon1);
+            } else {
+                couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
+            }
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
             } else {

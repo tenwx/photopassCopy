@@ -210,7 +210,7 @@
     <string name="http_error_code_6163">此抵用券不支持，不可添加！</string>
     <string name="http_error_code_6164">您输入的抵用券已被使用！</string>
     <string name="http_error_code_6165">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6166">信息无效</string>
+    <string name="http_error_code_6166">验证码格式错误，请重新输入</string>
     <string name="http_error_code_6167">验证信息已过期</string>
     <string name="http_error_code_6168">发送邮件成功</string>
     <string name="http_error_code_6169">加载失败，请检查您当前的网络环境</string>

@@ -74,7 +74,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         getData();
 
         orderNumber.setText(orderInfo.orderNumber);
-        orderTime.setText(orderInfo.orderTime.substring(0, 10));
+        orderTime.setText(orderInfo.orderTime.substring(0, 19));
         switch (orderInfo.orderPayMentMethod) {
             //订单支付方式  支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
             case 0:
@@ -127,8 +127,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
         productPrice.setText(currency + (int) orderInfo.productPrice + "");
         payTotalPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
-        preferentialPrice.setText("-" + currency + (int)orderInfo.promotionPreferentialPrice);
-        straightwayPreferentialPrice.setText("-" + currency + (int)orderInfo.straightwayPreferentialPrice);
+        preferentialPrice.setText(currency + (int)orderInfo.promotionPreferentialPrice);
+        straightwayPreferentialPrice.setText(currency + (int)orderInfo.straightwayPreferentialPrice);
 
 
         switch (orderInfo.deliveryMethod) {

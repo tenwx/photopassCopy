@@ -168,6 +168,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                     }
 
                 } else {
+                    //保存购物车数量
+                    Editor cartEditor = sPreferences.edit();
+                    cartEditor.putInt(Common.CART_COUNT, 0);
+                    cartEditor.commit();
                     ShowNoNetOrNoCountView();
                 }
                 break;
