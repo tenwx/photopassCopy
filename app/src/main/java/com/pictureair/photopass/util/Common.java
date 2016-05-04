@@ -175,7 +175,8 @@ public class Common {
     public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
     public static final String SEND_SMS_VALIDATE_CODE = "/userMsg/sendSMSValidateCode" ;//发送短信验证码
     public static final String VALIDATE_CODE_URL = "/userMsg/validateCode";//验证短信验证
-
+    public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
+    public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
 
 
 
@@ -275,6 +276,7 @@ public class Common {
     public static final String SEND_TO = "sendTo";
     public static final String PHONE ="phone";
     public static final String MSG_TYPE ="msgType";
+    public static final String SHOOTDATE = "shootDate";
 
 
     //存放sdk的目录
