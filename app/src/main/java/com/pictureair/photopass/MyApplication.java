@@ -16,7 +16,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.pictureair.jni.keygenerator.PWJniUtil;
-import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
@@ -36,7 +35,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 public class MyApplication extends Application {
     private static MyApplication instance;
-    private static SharedPreferences userInfosharedPreferences;
+    private static SharedPreferences userInfosharedPreferences, appSP;
     private static String tokenId;
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
@@ -64,8 +63,8 @@ public class MyApplication extends Application {
     private String languageType;// 记录app选择的语言
     public int fragmentStoryLastSelectedTab = 0;// 记录story页面viewpager上次的页面序号
 
-    private ArrayList<PhotoInfo> isBuyingPhotoInfoList;// 记录正在购买的全部照片信息
-    private int isBuyingIndex;// 记录正在购买的图片的索引值
+    private String isBuyingPhotoId;
+    private String isBuyingTabName;
     // private HashMap<String, Boolean> isBuyingPhotoFromAlbumHashMap = new
     // HashMap<String,
     // Boolean>();//记录是否从相册页面购买的单张照片（此处的相册有两处，第一次ViewOrSelectActivity页面，第二处是LocationPhotosAct）
@@ -95,6 +94,7 @@ public class MyApplication extends Application {
         }
         instance = this;
         userInfosharedPreferences = this.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        appSP = getSharedPreferences(Common.APP_NAME, Context.MODE_PRIVATE);
         // 初始化友盟
         UmengUtil.initUmeng();
         initImageLoader(getApplicationContext());
@@ -334,6 +334,9 @@ public class MyApplication extends Application {
      */
     public String getLanguageType() {
 
+        if (languageType == null || languageType.equals("")) {
+            languageType = appSP.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
+        }
         return languageType;
 
     }
@@ -352,42 +355,38 @@ public class MyApplication extends Application {
     /**
      * 记录当前正在购买的photopass的图片信息
      *
-     * @param isBuyingPhotoInfoList
-     * @param isBuyingIndex
      */
-    public void setIsBuyingPhotoInfo(
-            ArrayList<PhotoInfo> isBuyingPhotoInfoList, int isBuyingIndex) {
-        this.isBuyingPhotoInfoList = isBuyingPhotoInfoList;
-        this.isBuyingIndex = isBuyingIndex;
+    public void setIsBuyingPhotoInfo(String photoId, String tabName) {
+        this.isBuyingPhotoId = photoId;
+        this.isBuyingTabName = tabName;
     }
 
     /**
-     * 获取当前正在购买的photopass的图片信息
+     * 获取当前正在购买的photopass的photoId
      *
      * @return
      */
-    public ArrayList<PhotoInfo> getIsBuyingPhotoInfoList() {
-        return isBuyingPhotoInfoList;
+    public String getIsBuyingPhotoId() {
+        return isBuyingPhotoId;
+    }
+
+    /**
+     * 获取当前正在购买的photopass的tabName
+     *
+     * @return
+     */
+    public String getIsBuyingTabName() {
+        return isBuyingTabName;
     }
 
     /**
      * 清空正在购买的图片信息
      */
     public void clearIsBuyingPhotoList() {
-        if (isBuyingPhotoInfoList != null) {
-            isBuyingPhotoInfoList.clear();
-        }
-        isBuyingIndex = -1;
+        isBuyingPhotoId = null;
+        isBuyingTabName = null;
     }
 
-    /**
-     * 获取当前正在购买的图片索引值
-     *
-     * @return
-     */
-    public int getIsBuyingIndex() {
-        return isBuyingIndex;
-    }
 
     /**
      * 设置对应的值

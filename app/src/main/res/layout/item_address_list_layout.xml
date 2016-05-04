@@ -3,46 +3,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/pp_padding_8">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="@dimen/pp_padding_8"
+        android:paddingRight="@dimen/pp_padding_8"
+        android:paddingTop="@dimen/pp_padding_8">
 
         <ImageView
             android:id="@+id/address_icon"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_weight="1"
             android:src="@drawable/icon_address" />
 
         <TextView
             android:id="@+id/address_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/pp_margin_16"
-            android:layout_toRightOf="@id/address_icon"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="7"
             android:text="@string/transport"
             android:textColor="@color/pp_gray" />
 
         <ImageView
             android:id="@+id/address_iv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_weight="1"
             android:src="@drawable/nosele" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_height_1"
-        android:layout_marginTop="@dimen/pp_margin_10"
+        android:layout_marginBottom="@dimen/pp_margin_8"
+        android:layout_marginTop="@dimen/pp_margin_16"
         android:background="@color/pp_light_gray_normal" />
 
 

@@ -20,7 +20,6 @@ import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SettingUtil;
-import com.pictureair.photopass.util.UmengUtil;
 
 /**
  * @author talon
@@ -97,7 +96,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         settingUtil = new SettingUtil(new PictureAirDbManager(this));
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
-        currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, "");
+        currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         judgeSettingStatus();
     }
 
@@ -126,12 +125,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
                     }
                 });
-
-                break;
-
-            case R.id.sub_opinions://消息回馈按钮
-                //意见反馈弹出框
-                UmengUtil.startFeedbackActivity(this);
 
                 break;
 

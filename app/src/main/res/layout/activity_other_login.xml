@@ -73,7 +73,7 @@
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_marginTop="@dimen/pp_margin_16"
             android:text="@string/forget_pwd"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:visibility="visible" />
 

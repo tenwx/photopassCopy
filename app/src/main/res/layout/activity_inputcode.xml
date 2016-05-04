@@ -40,9 +40,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_input"
-        android:padding="@dimen/pp_margin_40"
+        android:layout_marginTop="@dimen/pp_margin_20"
+        android:padding="@dimen/pp_margin_20"
         android:text="@string/manul_input_intro"
-        android:textColor="@color/pp_blue"
+        android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
 
     <Button

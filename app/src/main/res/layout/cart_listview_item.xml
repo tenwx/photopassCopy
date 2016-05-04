@@ -26,7 +26,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/pp_margin_5"
             android:layout_toRightOf="@id/cartSelectImageView"
-            android:background="@color/pp_light_gray_normal"
+            android:background="@color/transparent"
             android:src="@drawable/ic_stub" />
 
         <TextView

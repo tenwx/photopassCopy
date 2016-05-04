@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.zxing.camera.CameraManager;
 
 /**
  * @author talon
@@ -37,7 +36,9 @@ public final class ScanView extends View {
      */
     private int slideRight;
 
-    boolean isFirst;
+    private boolean isFirst;
+
+    private int width, height;
 
     public ScanView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,7 +48,7 @@ public final class ScanView extends View {
     @Override
     public void onDraw(Canvas canvas) {
         //中间的扫描框，你要修改扫描框的大小，去CameraManager里面修改
-        Rect frame = CameraManager.get().getOCRFrameRect();
+        Rect frame = getOCRFrameRect();
         if (frame == null) {
             return;
         }
@@ -72,6 +73,21 @@ public final class ScanView extends View {
         postInvalidateDelayed(ANIMATION_DELAY, frame.left, frame.top,
                 frame.right, frame.bottom);
 
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public Rect getOCRFrameRect(){
+        int topOffset = 0;
+        int leftOffset = 0;
+        Rect framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
+        return framingRect;
     }
 
 

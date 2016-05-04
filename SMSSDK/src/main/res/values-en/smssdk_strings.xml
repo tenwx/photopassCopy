@@ -1,29 +1,30 @@
 <resources>
     <string name="smssdk_regist">New Account</string>
-    <string name="smssdk_forget">Forgot password</string>
+    <string name="smssdk_forget">Reset Password</string>
     <string name="smssdk_make_sure_country_mobile">Please confirm country and input phone number</string>
     <string name="smssdk_country">Country</string>
     <string name="smssdk_pwd_no">Password inconsistency</string>
     <string name="smssdk_pwd">Password</string>
-    <string name="smssdk_pwd2">Retype your password</string>
+    <string name="smssdk_pwd2">Retype Password</string>
     <string name="smssdk_pwd_forget">Please enter new password</string>
-    <string name="smssdk_pwd2_forget">Retype your password</string>
-    <string name="smssdk_send_verification_code">Verification</string>
+    <string name="smssdk_pwd2_forget">Retype Password</string>
+    <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_sign_up">Sign Up</string>
-    <string name="smssdk_other_sign_up">Register in other ways</string>
-    <string name="smssdk_explain_briefly">By signing up, you agree to <a href = "2">《Supplemental Terms and Conditions》</a> &amp; <a href = "1">《Privacy Policy》</a></string>
-    <string name="smssdk_send_code2">Verification again</string>
+    <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
+    <string name="smssdk_explain_briefly">By signing up, you agree to <a href = "2">Supplemental Terms and Conditions</a> &amp; <a href = "1">Privacy Policy</a> </string>
+    <string name="please_agree">Please confirm to agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
+    <string name="smssdk_send_code2">Verify again</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>
     <string name="smssdk_ok">OK</string>
     <string name="smssdk_make_sure_mobile_detail"><Data>We will send &lt;font color=#3cac17>verification code&lt;/font> messages to this number:</Data></string>
     <string name="smssdk_write_mobile_phone">Mobile Number</string>
-    <string name="smssdk_write_right_mobile_phone">Please input the correct phone number</string>
-    <string name="smssdk_write_identify_code">Verification</string>
+    <string name="smssdk_write_right_mobile_phone">Incorrect Mobile Number</string>
+    <string name="smssdk_write_identify_code">Code</string>
     <string name="smssdk_submit">OK</string>
     <string name="smssdk_identify_code">Verification code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
-    <string name="smssdk_choose_country">Choose country</string>
+    <string name="smssdk_choose_country">Choose Country</string>
     <string name="smssdk_network_error">Network error, please try later</string>
     <string name="smssdk_country_not_support_currently">Incorrect Network, please back to check again.</string>
     <string name="smssdk_get_verifycode_frequentlly">Send verification code too frequently, please try later!</string>
@@ -31,7 +32,7 @@
     <string name="smssdk_connecting">Connecting&#8230;</string>
     <string name="smssdk_modify_password_empty_hint">Please enter a password.</string>
     <string name="smssdk_notify_password_hint">Password must be at least 6 characters!</string>
-    <string name="smssdk_pw_is_inconsistency">Input Passwords do not match!</string>
+    <string name="smssdk_pw_is_inconsistency">Password does not match!</string>
     <string name="smssdk_pwd_no_all_space">Password\'s first or last character cannot be space!</string>
     <string name="smssdk_pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
     <string name="is_loading">Loading&#8230;</string>

@@ -23,7 +23,7 @@ public class PictureAirLog {
      */
     public static void d(String tag, String log) {
         if (DEBUG) {
-            Log.d(BASE_TAG + tag, log);
+            Log.d(BASE_TAG + tag, log + "");
         }
     }
 
@@ -33,7 +33,7 @@ public class PictureAirLog {
      */
     public static void e(String tag, String log) {
         if (DEBUG) {
-            Log.e(BASE_TAG + tag, log);
+            Log.e(BASE_TAG + tag, log + "");
         }
     }
 
@@ -43,7 +43,7 @@ public class PictureAirLog {
      */
     public static void i(String tag, String log) {
         if (DEBUG) {
-            Log.i(BASE_TAG + tag, log);
+            Log.i(BASE_TAG + tag, log + "");
         }
     }
 
@@ -53,7 +53,7 @@ public class PictureAirLog {
      */
     public static void v(String tag, String log) {
         if (DEBUG) {
-            Log.v(BASE_TAG + tag, log);
+            Log.v(BASE_TAG + tag, log + "");
         }
     }
 
@@ -63,7 +63,7 @@ public class PictureAirLog {
      */
     public static void w(String tag, String log) {
         if (DEBUG) {
-            Log.w(BASE_TAG + tag, log);
+            Log.w(BASE_TAG + tag, log + "");
         }
     }
 

@@ -82,6 +82,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     private int lastVisibleCount;
 
+    private ViewGroup.LayoutParams layoutParams;
 
     public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Activity context, Handler hander, AMapLocation location, float x) {
         this.list = list;
@@ -189,6 +190,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.locationDetailLayout = (RelativeLayout) convertView.findViewById(R.id.discover_location_detail_info);//详情layout
             viewHolder.locationDetailInfoTextView = (TextView) convertView.findViewById(R.id.discover_place_introduce);//地点的详情介绍
             viewHolder.locationBlurPhotoImageView = (ImageView) convertView.findViewById(R.id.discover_location_blur_photo);
+            viewHolder.photoFrameLayout = (RelativeLayout) convertView.findViewById(R.id.photo_frame);
             viewHolder.locationNameTextView.setTypeface(MyApplication.getInstance().getFontBold());
             convertView.setTag(viewHolder);
         } else {
@@ -196,6 +198,10 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         }
         //初始化数据
         final View view = convertView;
+        layoutParams = viewHolder.photoFrameLayout.getLayoutParams();
+        layoutParams.width = screenWidth;
+        layoutParams.height = screenWidth / 2;
+        viewHolder.photoFrameLayout.setLayoutParams(layoutParams);
         info = list.get(position);
         if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             //设置地点名称

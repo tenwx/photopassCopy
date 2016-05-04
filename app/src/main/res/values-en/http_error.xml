@@ -34,7 +34,7 @@
     <string name="http_error_code_6030">The mobile number has been used</string>
     <string name="http_error_code_6031">User does not exist</string>
     <string name="http_error_code_6032">Loading failed, Please check your network</string>
-    <string name="http_error_code_6033">Incorrect password</string>
+    <string name="http_error_code_6033">Password invalid</string>
     <string name="http_error_code_6034">Please login</string>
     <string name="http_error_code_6035">Current certification has expired, please login again</string>
     <string name="http_error_code_6036">Loading failed, Please check your network</string>
@@ -214,5 +214,12 @@
     <string name="http_error_code_6167">Verification Expiry</string>
     <string name="http_error_code_6168">Successful</string>
     <string name="http_error_code_6169">Loading failed, Please check your network</string>
-    <string name="http_error_code_6170">forgot password email has been sent ,please operate in 15mins</string>
+    <string name="http_error_code_6170">Loading failed, Please check your network</string>
+    <string name="http_error_code_6171">Loading failed, Please check your network</string>
+    <string name="http_error_code_6172">System is to extract the hd pictures for you, please try again later to download</string>
+    <string name="http_error_code_6173">Sending failed, Please check again</string>
+    <string name="http_error_code_6174">Loading failed, Please check your network</string>
+    <string name="http_error_code_6175">Loading failed, Please check your network</string>
+    <string name="http_error_code_6176">Loading failed, Please check your network</string>
+    <string name="http_error_code_6177">Loading failed, Please check your network</string>
 </resources>

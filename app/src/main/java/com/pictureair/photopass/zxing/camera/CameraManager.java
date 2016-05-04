@@ -16,11 +16,6 @@
 
 package com.pictureair.photopass.zxing.camera;
 
-import java.io.IOException;
-
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
-
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -29,6 +24,11 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
 import android.view.SurfaceHolder;
+
+import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ScreenUtil;
+
+import java.io.IOException;
 
 /**
  * This object wraps the Camera service object and expects to be the only one talking to it. The
@@ -224,16 +224,6 @@ public final class CameraManager {
       framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + width);//正方形
 //      Log.d(TAG, "Calculated framing rect: " + framingRect);
     }
-    return framingRect;
-  }
-
-  public Rect getOCRFrameRect(){
-    int width = ScreenUtil.getScreenWidth(context)/3*2;
-//    int topOffset = ScreenUtil.getScreenHeight(context) - (ScreenUtil.getScreenWidth(context)*(ScreenUtil.getScreenWidth(context)/3*2*85/54) / width - (ScreenUtil.getScreenWidth(context)/3*2*85/54))/2 - (ScreenUtil.getScreenWidth(context)/3*2*85/54);
-    int topOffset = 0;
-//    int leftOffset = ScreenUtil.getScreenWidth(context)/3/2;
-    int leftOffset = 0;
-    Rect framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + ScreenUtil.getScreenWidth(context)/3*2*85/54);
     return framingRect;
   }
 

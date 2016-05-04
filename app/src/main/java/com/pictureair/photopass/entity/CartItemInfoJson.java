@@ -8,12 +8,12 @@ import java.util.List;
  * 获取用户购物车信息
  */
 public class CartItemInfoJson implements Serializable {
-    private List<CartItemInfo1> items = null;
+    private List<CartItemInfo> items = null;
     private int totalCount = 0; //number,购物车内总商品数
     private int totalPrice = 0; //number,购物车内商品总价
     private int preferentialPrice = 0; //number 优惠费用
 
-    public CartItemInfoJson(List<CartItemInfo1> items, int totalCount, int totalPrice, int preferentialPrice) {
+    public CartItemInfoJson(List<CartItemInfo> items, int totalCount, int totalPrice, int preferentialPrice) {
         this.items = items;
         this.totalCount = totalCount;
         this.totalPrice = totalPrice;
@@ -23,11 +23,11 @@ public class CartItemInfoJson implements Serializable {
     public CartItemInfoJson() {
     }
 
-    public List<CartItemInfo1> getItems() {
+    public List<CartItemInfo> getItems() {
         return items;
     }
 
-    public void setItems(List<CartItemInfo1> items) {
+    public void setItems(List<CartItemInfo> items) {
         this.items = items;
     }
 

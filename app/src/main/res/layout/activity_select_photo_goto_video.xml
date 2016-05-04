@@ -21,7 +21,7 @@
             android:padding="5dp"
             android:text="@string/disney_video_edit_photo"
             android:textColor="@color/gray_light5"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:id="@+id/rlrt"
@@ -29,10 +29,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_10"
-            android:paddingRight="@dimen/pp_padding_10"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -42,7 +42,7 @@
             android:layout_centerInParent="true"
             android:text="@string/story_tab_bought"
             android:textColor="#ffffff"
-            android:textSize="@dimen/text_large_size" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
     <GridView

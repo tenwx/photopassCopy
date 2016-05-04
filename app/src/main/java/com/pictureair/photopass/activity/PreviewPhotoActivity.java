@@ -40,13 +40,12 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.blur.BlurUtil;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.GoodsInfoJson;
-import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
@@ -121,6 +120,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean isEdited = false;
 
+    private boolean getPhotoInfoSuccess = false;
+
+    private String tabName;
+
     /**
      * 是否是横屏模式
      */
@@ -178,6 +181,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int CHECK_FAVORITE = 666;
     private static final int GET_LOCATION_AD = 777;
     private static final int CREATE_BLUR_DIALOG = 888;
+    private final int RESIZE_BLUR_IMAGE = 999;
 
     private CustomDialog customdialog; //  对话框
 
@@ -208,8 +212,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean loadFailed = false;
 
-    private List<GoodsInfo1> allGoodsList;//全部商品
-    private GoodsInfo1 pppGoodsInfo;
+    private List<GoodsInfo> allGoodsList;//全部商品
+    private GoodsInfo pppGoodsInfo;
     private String[] photoUrls;
 
     /**
@@ -354,16 +358,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
-                myApplication.setIsBuyingPhotoInfo(photolist, currentPosition);
+                myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName);
                 if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)) {
                 } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITY)) {
                 } else {
                     myApplication.setRefreshViewAfterBuyBlurPhoto(Common.FROM_PREVIEW_PHOTO_ACTIVITY);
                 }
-                List<CartItemInfo1> cartItemInfo1List = cartItemInfoJson.getItems();
+                List<CartItemInfo> cartItemInfoList = cartItemInfoJson.getItems();
                 Intent intent = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo1> orderinfo = new ArrayList<>();
-                CartItemInfo1 cartItemInfo = cartItemInfo1List.get(0);
+                ArrayList<CartItemInfo> orderinfo = new ArrayList<>();
+                CartItemInfo cartItemInfo = cartItemInfoList.get(0);
                 cartItemInfo.setCartProductType(2);
                 orderinfo.add(cartItemInfo);
                 Editor editor = sharedPreferences.edit();
@@ -389,7 +393,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     allGoodsList = goodsInfoJson.getGoods();
                     PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                     //获取PP+
-                    for (GoodsInfo1 goodsInfo : allGoodsList) {
+                    for (GoodsInfo goodsInfo : allGoodsList) {
                         if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
                             pppGoodsInfo = goodsInfo;
                             //封装购物车宣传图
@@ -438,13 +442,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 //生成订单
                 Intent intent1 = new Intent(PreviewPhotoActivity.this, SubmitOrderActivity.class);
-                ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                CartItemInfo1 cartItemInfo1 = new CartItemInfo1();
+                ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                CartItemInfo cartItemInfo1 = new CartItemInfo();
                 cartItemInfo1.setCartId(cartId);
                 cartItemInfo1.setProductName(pppGoodsInfo.getName());
                 cartItemInfo1.setProductNameAlias(pppGoodsInfo.getNameAlias());
                 cartItemInfo1.setUnitPrice(pppGoodsInfo.getPrice());
-                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                cartItemInfo1.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
                 cartItemInfo1.setDescription(pppGoodsInfo.getDescription());
                 cartItemInfo1.setQty(1);
                 cartItemInfo1.setStoreId(pppGoodsInfo.getStoreId());
@@ -465,6 +469,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case 7://操作比较耗时，会影响oncreate绘制
+                getPhotoInfoSuccess = true;
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
                 mViewPager.setOffscreenPageLimit(2);
@@ -600,6 +605,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 createBlurDialog();
                 break;
 
+            case RESIZE_BLUR_IMAGE:
+                if (!getPhotoInfoSuccess) {
+                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
+                } else {
+                    if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
+                        resizeBlurImage();
+                    }
+                }
+                break;
+
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
                     intent = new Intent(PreviewPhotoActivity.this, MyPPActivity.class);
@@ -729,7 +744,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 photolist = new ArrayList<>();
                 Bundle bundle = getIntent().getBundleExtra("bundle");
                 currentPosition = bundle.getInt("position", 0);
-                String tabName = bundle.getString("tab");
+                tabName = bundle.getString("tab");
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
 
                 if (tabName.equals("all")) {//获取全部照片
@@ -765,13 +780,27 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)))));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
                     photolist.addAll(temp);
                 }
 
+                if (currentPosition == -1) {//购买图片后返回
+                    String photoId = bundle.getString("photoId");
+                    for (int i = 0; i < photolist.size(); i++) {
+                        if (photolist.get(i).photoId.equals(photoId)){
+                            photolist.get(i).isPayed = 1;
+                            currentPosition = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (currentPosition < 0) {
+                    currentPosition = 0;
+                }
                 PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
 
                 PictureAirLog.out("photolist size ---->" + photolist.size());
@@ -1363,7 +1392,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onPause();
         //如果手指在上面的时候，如果同时休眠，在唤醒之后，页面上有个清晰圈
         //需要通知handler释放清晰圈
-        if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
+        if (photoInfo != null && photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
             previewPhotoHandler.sendEmptyMessage(2);
         }
     }
@@ -1423,15 +1452,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             portraitOrientation();
         }
 
-        if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
-            resizeBlurImage();
-        }
+        previewPhotoHandler.sendEmptyMessage(RESIZE_BLUR_IMAGE);
 
-        if (dia.isShowing()) {
+//        if (dia.isShowing()) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             dia.getWindow().setAttributes(layoutParams);
-        }
+//        }
         super.onConfigurationChanged(newConfig);
     }
 

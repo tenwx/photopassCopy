@@ -18,10 +18,10 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/view_photo_eidt" />
 
@@ -31,10 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -46,8 +46,7 @@
             android:background="@color/transparent"
             android:text="@string/select"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size_16"/>
     </RelativeLayout>
 
     <LinearLayout

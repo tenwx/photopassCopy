@@ -1,52 +1,52 @@
 package com.pictureair.photopass.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
-public class CartPhotosInfo implements Parcelable{
-	public String cart_photoUrl;//购物车添加图片的URL
-	public String cart_photoId;//购物车添加图片的ID
-	public String cart_photoCount;//购物车对应的数量
-	public String cart_photo_local_album;//购物车对应照片在本地属于的相册名称
+public class CartPhotosInfo implements Serializable {
+    private String photoId = "";//购物车添加图片的URL
+    private String photoUrl = "";//照片url地址
+    private String cartPhotoCount = "";//购物车对应的数量
+    private String cartPhotoLocalAlbum = "";//购物车对应照片在本地属于的相册名称
 
-	public static final Parcelable.Creator<CartPhotosInfo> CREATOR = new Creator<CartPhotosInfo>() {
+    public CartPhotosInfo() {
+    }
 
-		@Override
-		public CartPhotosInfo[] newArray(int size) {
-			// TODO Auto-generated method stub
-			return new CartPhotosInfo[size];
-		}
+    public CartPhotosInfo(String photoId, String photoUrl, String cartPhotoCount, String cartPhotoLocalAlbum) {
+        this.photoId = photoId;
+        this.photoUrl = photoUrl;
+        this.cartPhotoCount = cartPhotoCount;
+        this.cartPhotoLocalAlbum = cartPhotoLocalAlbum;
+    }
 
-		@Override
-		public CartPhotosInfo createFromParcel(Parcel source) {
-			// TODO Auto-generated method stub
-			return new CartPhotosInfo(source);
-		}
-	};
+    public String getPhotoId() {
+        return photoId;
+    }
 
-	public CartPhotosInfo() {
+    public void setPhotoId(String photoId) {
+        this.photoId = photoId;
+    }
 
-	}
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
 
-	private CartPhotosInfo(Parcel source) {
-		cart_photoUrl = source.readString();
-		cart_photoId = source.readString();
-		cart_photoCount = source.readString();
-		cart_photo_local_album = source.readString();
-	}
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public String getCartPhotoCount() {
+        return cartPhotoCount;
+    }
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-		dest.writeString(cart_photoUrl);
-		dest.writeString(cart_photoId);
-		dest.writeString(cart_photoCount);
-		dest.writeString(cart_photo_local_album);
-	}
+    public void setCartPhotoCount(String cartPhotoCount) {
+        this.cartPhotoCount = cartPhotoCount;
+    }
+
+    public String getCartPhotoLocalAlbum() {
+        return cartPhotoLocalAlbum;
+    }
+
+    public void setCartPhotoLocalAlbum(String cartPhotoLocalAlbum) {
+        this.cartPhotoLocalAlbum = cartPhotoLocalAlbum;
+    }
 }

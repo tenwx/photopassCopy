@@ -32,7 +32,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ViewPhotoGridViewAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -78,7 +78,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private ArrayList<PhotoInfo> photopassList;
     private int photocount = 1;//需要添加的图片数量，以后要改这个数值
     private int selectedCount = 0;//已经选择了的图片数量
-    private GoodsInfo1 goodsInfo;//存放商品信息
+    private GoodsInfo goodsInfo;//存放商品信息
 
     private boolean isBuy = false;//只显示已购买的照片
     private LinearLayout llNullPhoto;
@@ -190,7 +190,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         activity = getIntent().getStringExtra("activity");
         photocount = getIntent().getIntExtra("photoCount", 1);
         context = this;
-        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goodsInfo");
+        goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goodsInfo");
         if (goodsInfo != null) {
             photocount = goodsInfo.getEmbedPhotosCount();
         }

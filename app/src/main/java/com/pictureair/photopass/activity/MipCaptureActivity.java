@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -64,6 +65,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private boolean playBeep;
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
+    private RelativeLayout.LayoutParams rlp;
     private SurfaceView surfaceView;
     private SharedPreferences sp;
     private String code;
@@ -99,6 +101,25 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
             case R.id.tv_scan_ppp_code:
                 scanType = 2;
+
+                if (rlp == null) {
+                    int height = ((surfaceView.getHeight() - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
+                    int width = (int) (height / 85.0 * 54);
+                    PictureAirLog.out("height---->" + height);
+                    PictureAirLog.out("width---->" + width);
+                    rlp = new RelativeLayout.LayoutParams(width, height);
+                    rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    rlLight.setLayoutParams(rlp);
+                    ocrScanView.setWidth(rlp.width);
+                    ocrScanView.setHeight(rlp.height);
+                    ViewGroup.LayoutParams layoutParams = tvCenterHint.getLayoutParams();
+                    layoutParams.width = rlp.height - 20;
+                    layoutParams.height = rlp.width - 20;
+                    PictureAirLog.out("width---->" + layoutParams.width);
+                    PictureAirLog.out("height---->" + layoutParams.height);
+                    tvCenterHint.setLayoutParams(layoutParams);
+                }
+
                 ocrScanView.setVisibility(View.VISIBLE);
                 rlMask.setVisibility(View.VISIBLE);
                 viewfinder_view.setVisibility(View.GONE);
@@ -203,7 +224,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
         ocrScanView = (ScanView) findViewById(R.id.scan_view_line_ocr);
         tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
-        tvCenterHint.setRotation(90);
+//        tvCenterHint.setRotation(90);
 
         newToast = new MyToast(this);
         sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
@@ -228,9 +249,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
 
-        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(ScreenUtil.getScreenWidth(this)/3*2, (ScreenUtil.getScreenWidth(this)/3*2*85/54));
-        rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        rlLight.setLayoutParams(rlp);
     }
 
     @Override
@@ -303,11 +321,15 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             if (resultString.equals("")) {
                 //			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-            } else if (!resultString.contains("vid=")) {//错误的码
+            } else if (!resultString.contains("vid=") && !resultString.contains("VID=")) {//错误的码
                 newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 finish();
             } else {
-                code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+                if (resultString.contains("vid=")) {
+                    code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+                } else if (resultString.contains("VID=")) {
+                    code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
+                }
                 PictureAirLog.out("code：：：" + code);
                 dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                 dealCodeUtil.startDealCode(code);

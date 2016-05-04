@@ -55,5 +55,12 @@ public class MyToast extends Toast {
         toast.show();
     }
 
+    /**
+     * 取消toast
+     */
+    public void cancelToast(){
+        toast.cancel();
+    }
+
 
 }

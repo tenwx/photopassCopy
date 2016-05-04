@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo1;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -26,18 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubmitOrderListViewAdapter extends BaseAdapter {
-    private ArrayList<CartItemInfo1> arrayList;
+    private ArrayList<CartItemInfo> arrayList;
     private Context context;
     private LayoutInflater layoutInflater;
     private ImageLoader imageLoader;
     private ArrayList<ImageView> imageViews;
-    private List<CartPhotosInfo1> gridviewlist;
+    private List<CartPhotosInfo> gridviewlist;
     private ArrayList<ArrayList<ImageView>> gridLayoutLists;
     private Handler handler;
     private String currency;
     private static final String TAG = "SubmitOrderListViewAdapter";
 
-    public SubmitOrderListViewAdapter(Context context, ArrayList<CartItemInfo1> list, String currency, Handler handler) {
+    public SubmitOrderListViewAdapter(Context context, ArrayList<CartItemInfo> list, String currency, Handler handler) {
         this.context = context;
         this.handler = handler;
         this.currency = currency;
@@ -183,9 +183,9 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
 
     private class SubmitOrderOnClickListener implements OnClickListener {
         private ViewHolder viewHolder;
-        private CartItemInfo1 cartItemInfo;
+        private CartItemInfo cartItemInfo;
 
-        public SubmitOrderOnClickListener(ViewHolder viewHolder, CartItemInfo1 cartItemInfo) {
+        public SubmitOrderOnClickListener(ViewHolder viewHolder, CartItemInfo cartItemInfo) {
             this.cartItemInfo = cartItemInfo;
             this.viewHolder = viewHolder;
         }

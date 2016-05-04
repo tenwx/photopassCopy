@@ -37,7 +37,7 @@
             android:layout_marginLeft="@dimen/pp_margin_16"
             android:text="@string/all_goods"
             android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_16" />
 
         <TextView
             android:id="@+id/button2_submit"
@@ -59,7 +59,7 @@
             android:layout_marginRight="@dimen/pp_margin_16"
             android:layout_toLeftOf="@id/button2_submit"
             android:text="30.00"
-            android:textColor="@color/pp_orange"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/submitorder_textView3"
             android:text="$"
-            android:textColor="@color/pp_orange"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -84,7 +84,7 @@
             android:layout_toLeftOf="@id/textView_currency"
             android:text="@string/totalprice"
             android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
 </RelativeLayout>

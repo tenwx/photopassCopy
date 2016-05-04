@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 2
-        versionName "1.0.0"
+        versionName "1.0.1"
 
     }
 
@@ -54,6 +54,7 @@ android {
         PICTUREAIRCOM_HOME {}
         PICTUREAIRCOM_PHOTO {}
         pw_test {}
+        website {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
@@ -78,7 +79,6 @@ dependencies {
     compile files('libs/android-support-v4.jar')
     compile files('libs/Android_Location_V1.3.2.jar')
     compile files('libs/calligraphy-1.1.0.jar')
-    compile files('libs/com.umeng.fb.5.4.0.jar')
     compile files('libs/eventbus-3.0.0-beta1.jar')
     compile files('libs/libammsdk.jar')
     compile files('libs/MobLogCollector.jar')

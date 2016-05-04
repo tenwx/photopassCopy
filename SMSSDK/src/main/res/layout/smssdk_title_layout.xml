@@ -15,10 +15,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:src="@drawable/back_white" />
 
         <com.pictureair.photopass.widget.CustomTextView

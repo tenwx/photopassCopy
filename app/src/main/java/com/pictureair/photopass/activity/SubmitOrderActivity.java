@@ -5,6 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +32,7 @@ import com.pictureair.photopass.adapter.AddressAdapter;
 import com.pictureair.photopass.adapter.SubmitOrderListViewAdapter;
 import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.AddressJson;
-import com.pictureair.photopass.entity.CartItemInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
@@ -55,14 +60,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private TextView submitButton;
     private TextView totalpriceTextView, currencyTextView, allGoodsTextView;
 
-    private ArrayList<CartItemInfo1> list;
+    private ArrayList<CartItemInfo> list;
     private ListView infoListView;
     private SubmitOrderListViewAdapter submitorderAdapter;
 
     private SharedPreferences sharedPreferences;
     private ArrayList<PhotoInfo> updatephotolist;
     private float totalprice = 0;
-    private boolean needAddressGood = false;//是否有需要地址的商品
+    private int cartCount = 0;
     private static final int CHANGE_PHOTO = 1;//修改图片
     private int payType = 0;//支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
 
@@ -81,7 +86,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private AddressAdapter addressAdapter;
     private int curPositon = -1;//记录选择的地址
 
-    private int productType = 0;//商品类型 1-实体商品 2-虚拟商品
 
     private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
             shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv, couponSubtractTv, discountSubtractTv;
@@ -98,6 +102,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private static final int PAY_FAILED = 10002;//失败
 
     private JSONArray couponCodes;//优惠券
+
+    private ImageView btn_agreement;//条款按钮
+    private boolean isSelecteAgreement = false;//是否选中条款
 
     private final Handler submitOrderHandler = new SubmitOrderHandler(this);
 
@@ -199,14 +206,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 orderId = jsonObject.getString("orderId");
                 customProgressDialog.dismiss();
                 if (orderId != null && !orderId.isEmpty()) {
-                    //一旦成功，购物车已经被服务器删除，此处需要修改购物车数量
-//                    int count = 0;
-//                    for (int i = 0; i < list.size(); i++) {
-//                        count += list.get(i).getQty();
-//                    }
-//                    SharedPreferences.Editor editor = sharedPreferences.edit();
-//                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
-//                    editor.commit();
                     goToPayActivity(true);
                 }
 
@@ -216,6 +215,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
                 customProgressDialog.dismiss();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+
+                //提交订单失败，购物车数量恢复
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
+                editor.commit();
                 break;
 
             case API1.UPLOAD_PHOTO_FAILED:
@@ -275,7 +279,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         allGoodsTextView = (TextView) findViewById(R.id.good_count);
         submitButton.setOnClickListener(this);
         customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
-        list = (ArrayList<CartItemInfo1>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
+        list = (ArrayList<CartItemInfo>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
         infoListView.setHeaderDividersEnabled(false);
@@ -293,6 +297,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         for (int i = 0; i < list.size(); i++) {
             //获取总价格
             totalprice += list.get(i).getUnitPrice() * list.get(i).getQty();
+            //获取购物车商品数
+            cartCount += list.get(i).getQty();
             //获取购物车ID
             cartItemIds.add(list.get(i).getCartId());
             //根据商品名称，判断收货类型 0 -虚拟商品 1-实体商品（需要地址）
@@ -310,7 +316,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         //获取优惠码数量
         getCoupons();
         if (deliveryType.contains("1")) {
-            productType = 1;
             //需要显示自提地址列表
             addressList = new ArrayList<>();
             infoListView.addFooterView(initHeaderAndFooterView(false, true, addressList));
@@ -318,7 +323,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             getAddress();
         } else {
             //显示shop和商品优惠信息
-            productType = 2;
             infoListView.addFooterView(initHeaderAndFooterView(false, false, null));
         }
         updateShopPriceUI(true);
@@ -388,6 +392,36 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         discountSubtractTv = (TextView) view.findViewById(R.id.discount_subtract_tv);
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
+
+        btn_agreement = (ImageView) view.findViewById(R.id.iv_agreement);
+        btn_agreement.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isSelecteAgreement) {
+                    isSelecteAgreement = true;
+                    btn_agreement.setImageResource(R.drawable.gender_sele);
+                } else {
+                    isSelecteAgreement = false;
+                    btn_agreement.setImageResource(R.drawable.gender_normal);
+                }
+            }
+        });
+        TextView tvAgreement = (TextView) view.findViewById(R.id.tv_agreement);
+        //条款
+        tvAgreement.setMovementMethod(LinkMovementMethod.getInstance());
+        CharSequence text = tvAgreement.getText();
+        if (text instanceof Spannable) {
+            int end = text.length();
+            Spannable sp = (Spannable) tvAgreement.getText();
+            URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(text);
+            style.clearSpans();// should clear old spans
+            for (URLSpan url : urls) {
+                MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                style.setSpan(myURLSpan, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            tvAgreement.setText(style);
+        }
         if (isHeader) {
             transportIv.setImageResource(R.drawable.icon_shop);
             transportTv.setText(R.string.goods_info);
@@ -442,18 +476,18 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) straightwayPreferentialPrice);
         }
 
-        PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice );
-        if ((int) straightwayPreferentialPrice == 0){
+        PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice);
+        if ((int) straightwayPreferentialPrice == 0) {
             couponSubtractTv.setVisibility(View.GONE);
-        }else {
+        } else {
             couponSubtractTv.setVisibility(View.VISIBLE);
         }
 
-        PictureAirLog.out("(int) disPrice " + (int) disPrice );
+        PictureAirLog.out("(int) disPrice " + (int) disPrice);
 
-        if ((int) disPrice == 0 ){
+        if ((int) disPrice == 0) {
             discountSubtractTv.setVisibility(View.GONE);
-        }else {
+        } else {
             discountSubtractTv.setVisibility(View.VISIBLE);
         }
 
@@ -544,6 +578,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         intent2.putExtra("orderId", orderId);
         intent2.putExtra("cartItemIds", cartItemIds.toString());
         intent2.putExtra("couponCodes", couponCodes != null ? couponCodes.toString() : "");
+        intent2.putExtra("cartCount", cartCount);
         //传递商品类型，用于成功后返回订单
         if (deliveryType.contains("1")) {
             //实体商品
@@ -572,13 +607,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                //确认订单后 减掉购物项
-                int count = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    count += list.get(i).getQty();
+
+                if(!isSelecteAgreement){
+                    newToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
+                    return;
                 }
+
+                //确认订单后 减掉购物项
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - count);
+                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - cartCount);
                 editor.commit();
 
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
@@ -711,5 +748,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         submitOrderHandler.removeCallbacksAndMessages(null);
+    }
+
+    private class MyURLSpan extends ClickableSpan {
+        private String mUrl;
+
+        MyURLSpan(String url) {
+            mUrl = url;
+        }
+
+        @Override
+        public void onClick(View widget) {
+            Intent intent = new Intent();
+            intent.putExtra("key", Integer.valueOf(mUrl));
+            intent.setClass(SubmitOrderActivity.this, WebViewActivity.class);
+            startActivity(intent);
+        }
     }
 }

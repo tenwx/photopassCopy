@@ -3,7 +3,7 @@
     <string name="http_error_code_401">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6000">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6001">请输入您的用户名</string>
-    <string name="http_error_code_6002">请输入您的邮箱</string>
+    <string name="http_error_code_6002">请输入您的电子邮箱</string>
     <string name="http_error_code_6003">请输入您的手机号码</string>
     <string name="http_error_code_6004">请输入您的昵称</string>
     <string name="http_error_code_6005">请输入密码</string>
@@ -23,14 +23,14 @@
     <string name="http_error_code_6019">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6020">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6021">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6022">邮箱输入错误</string>
+    <string name="http_error_code_6022">电子邮箱输入错误</string>
     <string name="http_error_code_6023">密码输入错误</string>
     <string name="http_error_code_6024">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6025">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6026">电话号码输入错误</string>
     <string name="http_error_code_6027">邮编输入错误</string>
     <string name="http_error_code_6028">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6029">邮箱已经存在</string>
+    <string name="http_error_code_6029">电子邮箱已经存在</string>
     <string name="http_error_code_6030">手机号已经存在</string>
     <string name="http_error_code_6031">用户不存在</string>
     <string name="http_error_code_6032">加载失败，请检查您当前的网络环境</string>
@@ -214,5 +214,12 @@
     <string name="http_error_code_6167">验证信息已过期</string>
     <string name="http_error_code_6168">发送邮件成功</string>
     <string name="http_error_code_6169">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6170">找回密码的邮件已经发出，请在15分钟内修改密码</string>
+    <string name="http_error_code_6170">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6171">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6172">系统正在为您下载高清图片，请稍后再试</string>
+    <string name="http_error_code_6173">验证码发送失败，请重试</string>
+    <string name="http_error_code_6174">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6175">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6176">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6177">加载失败，请检查您当前的网络环境</string>
 </resources>

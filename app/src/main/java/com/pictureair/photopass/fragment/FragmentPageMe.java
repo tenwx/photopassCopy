@@ -32,13 +32,11 @@ import com.pictureair.photopass.activity.OrderActivity;
 import com.pictureair.photopass.activity.ProfileActivity;
 import com.pictureair.photopass.activity.SettingActivity;
 import com.pictureair.photopass.activity.WebViewActivity;
-import com.pictureair.photopass.selectHeadorBg.SetHeadPhotoAct;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
 
 /**
@@ -54,7 +52,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private SharedPreferences sp;
-    private String userPP = "";//用户PP号
+    private String userPPCode = "";//用户PP号
+    private String qrCodeUrl = "";
     private String avatarUrl = "";//用户头像url
     private boolean isCodePic = false;//是否已经生成二维码
     private boolean isShowCodePic = false;//二维码是否已经放大
@@ -104,7 +103,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         ViewGroup.LayoutParams params3 = linearLayout3.getLayoutParams();
         params3.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
         linearLayout3.setLayoutParams(params3);
-        headPhoto.setOnClickListener(this);
+//        headPhoto.setOnClickListener(this);
         profileTV.setOnClickListener(this);
         orderTV.setOnClickListener(this);
         ppTV.setOnClickListener(this);
@@ -128,7 +127,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
         //初始化控件
         sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        userPP = sp.getString(Common.USERINFO_USER_PP, "");
+        userPPCode = sp.getString(Common.USERINFO_USER_PP, "");
+        qrCodeUrl = Common.BARCODEURL + userPPCode;
         //设置头像ImageLoader参数
         headOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.default_photo)
@@ -197,10 +197,10 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      */
     public void setCodePic() {
         if (!isCodePic) {
-            if (!userPP.isEmpty()) {
+            if (!qrCodeUrl.isEmpty()) {
                 try {
                     //生成二维码
-                    code_pic.setImageBitmap(AppUtil.createQRCode(userPP, ScreenUtil.getScreenWidth(getActivity()) / 5));
+                    code_pic.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 5));
                     isCodePic = true;
                 } catch (WriterException e) {
                     // TODO Auto-generated catch block
@@ -222,11 +222,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 //			startActivityForResult(getAlbum, 1);
 //			break;
 
-            case R.id.user_photo:
-                // 跳转到图片选择返回一张图片更新头像
-                i.setClass(MyApplication.getInstance(), SetHeadPhotoAct.class);
-                startActivity(i);
-                break;
+//            case R.id.user_photo:
+//                // 跳转到图片选择返回一张图片更新头像
+//                i.setClass(MyApplication.getInstance(), SetHeadPhotoAct.class);
+//                startActivity(i);
+//                break;
 
             case R.id.me_profile:
                 i.setClass(MyApplication.getInstance(), ProfileActivity.class);
@@ -303,17 +303,27 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         //边框 存放二维码/文字
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.show_code_layout, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.code_pic_iv);
+        TextView textView = (TextView) view.findViewById(R.id.code_tv);
+        //初始化ppp号码
+        String ppCode = userPPCode.substring(0, 4);
+        for (int i = 0; i < 3; i++) {//4-7，8-11，12-15
+            ppCode += "-" + userPPCode.substring(4 * i + 4, 4 * i + 8);
+        }
+        textView.setText(ppCode);
         try {
-            imageView.setImageBitmap(AppUtil.createQRCode(userPP, ScreenUtil.getScreenWidth(getActivity()) / 5));
+            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 5));
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2, ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2));
+        ViewGroup.LayoutParams layoutParams1 = imageView.getLayoutParams();
+        layoutParams1.width = ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2;
+        layoutParams1.height = ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2;
+        imageView.setLayoutParams(layoutParams1);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         viewParams.gravity = Gravity.CENTER;
-        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(), 64), 0, ScreenUtil.dip2px(viewGroup.getContext(), 64), 0);
+        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(), 40), 0, ScreenUtil.dip2px(viewGroup.getContext(), 40), 0);
         layout.addView(view, viewParams);
 
         viewGroup.addView(layout, layoutParams);

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.sdk.app.PayTask;
@@ -39,14 +38,16 @@ public class PayUtils {
     private String nameString;
     private String introductString;
     private String priceString;
+    private String seed;
 
-    public PayUtils(Activity activity, Handler handler, String orderId, String nameString, String introductString, String priceString) {
+    public PayUtils(Activity activity, Handler handler, String orderId, String nameString, String introductString, String priceString, String seed) {
         this.activity = activity;
         this.handler = handler;
         this.orderId = orderId;
         this.nameString = nameString;
         this.introductString = introductString;
         this.priceString = priceString;
+        this.seed = seed;
     }
 
     /**
@@ -138,7 +139,7 @@ public class PayUtils {
         private CustomProgressDialog dialog;
         StringBuffer sb = new StringBuffer();
         Map<String, String> resultunifiedorder;
-        WXPayUtil wxPayUtil = new WXPayUtil();
+        WXPayUtil wxPayUtil = new WXPayUtil(seed);
         IWXAPI msgApi = WXAPIFactory.createWXAPI(activity, null);
 
         @Override

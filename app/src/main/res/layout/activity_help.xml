@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_height_1"
         android:layout_below="@+id/head"
-        android:layout_marginTop="@dimen/pp_margin_16"
         android:background="@color/pp_light_gray_press" />
 
     <ListView

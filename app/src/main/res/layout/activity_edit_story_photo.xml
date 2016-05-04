@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/pp_padding_13"
-            android:paddingLeft="@dimen/pp_margin_16"
-            android:paddingRight="@dimen/pp_padding_16"
-            android:paddingTop="@dimen/pp_padding_13"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
 
@@ -33,7 +33,7 @@
             android:background="@color/transparent"
             android:text="@string/mypage_pp"
             android:textColor="@color/white"
-            android:textSize="@dimen/pp_margin_16" />
+            android:textSize="@dimen/text_size_16" />
 
         <ImageView
             android:id="@+id/imageButton_edit"
@@ -42,8 +42,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_8"
-            android:paddingLeft="@dimen/pp_padding_16"
-            android:paddingRight="@dimen/pp_margin_16"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
             android:paddingTop="@dimen/pp_padding_8"
             android:scaleType="centerInside"
             android:src="@drawable/sel2"

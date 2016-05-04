@@ -7,20 +7,20 @@ import java.util.List;
  * Created by milo on 15/12/13.
  */
 public class GoodsInfoJson implements Serializable{
-    List<GoodsInfo1> goods = null;
+    List<GoodsInfo> goods = null;
 
     public GoodsInfoJson() {
     }
 
-    public GoodsInfoJson(List<GoodsInfo1> goods) {
+    public GoodsInfoJson(List<GoodsInfo> goods) {
         this.goods = goods;
     }
 
-    public List<GoodsInfo1> getGoods() {
+    public List<GoodsInfo> getGoods() {
         return goods;
     }
 
-    public void setGoods(List<GoodsInfo1> goods) {
+    public void setGoods(List<GoodsInfo> goods) {
         this.goods = goods;
     }
 }

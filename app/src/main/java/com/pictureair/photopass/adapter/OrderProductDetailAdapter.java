@@ -73,31 +73,31 @@ public class OrderProductDetailAdapter extends BaseAdapter {
             hView = (OrderHolderView) convertView.getTag();
         }
         //初始化控件值
-        if (list.get(position).cart_productImageUrl.contains("http")) {
-            imageLoader.displayImage(list.get(position).cart_productImageUrl, hView.goodsImageView);
+        if (list.get(position).getCartProductImageUrl().contains("http")) {
+            imageLoader.displayImage(list.get(position).getCartProductImageUrl(), hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.PHOTO_URL + list.get(position).cart_productImageUrl, hView.goodsImageView);
+            imageLoader.displayImage(Common.PHOTO_URL + list.get(position).getCartProductImageUrl(), hView.goodsImageView);
         }
-        hView.goodsName.setText(list.get(position).cart_productName);
-        hView.goodsCount.setText(list.get(position).cart_quantity + "");
+        hView.goodsName.setText(list.get(position).getProductName());
+        hView.goodsCount.setText(list.get(position).getQty() + "");
         hView.currency.setText(currency);
-        hView.priceTextView.setText((int) list.get(position).cart_promotionPrice + "");
+        hView.priceTextView.setText((int) list.get(position).getUnitPrice() + "");
 
         //初始化添加的图片信息
-        if (list.get(position).cart_photoUrls == null || list.get(position).cart_photoUrls.size() == 0) {
+        if (list.get(position).getEmbedPhotos() == null || list.get(position).getEmbedPhotos().size() == 0) {
             hView.gridLayout.setVisibility(View.GONE);
         } else {
             hView.gridLayout.setVisibility(View.VISIBLE);
             hView.gridLayout.removeAllViews();
             //依次添加照片
-            for (int i = 0; i < list.get(position).cart_photoUrls.size(); i++) {
+            for (int i = 0; i < list.get(position).getEmbedPhotos().size(); i++) {
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
                 params.height = params.width;
                 imageView.setLayoutParams(params);
 
-                imageLoader.displayImage(Common.PHOTO_URL + list.get(position).cart_photoUrls.get(i).cart_photoUrl, imageView);
+                imageLoader.displayImage(Common.PHOTO_URL + list.get(position).getEmbedPhotos().get(i).getPhotoUrl(), imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);

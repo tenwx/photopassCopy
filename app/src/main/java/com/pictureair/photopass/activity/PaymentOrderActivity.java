@@ -18,11 +18,11 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.util.API1;
@@ -36,7 +36,6 @@ import com.pictureair.photopass.widget.MyToast;
 import com.unionpay.UPPayAssistEx;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
@@ -98,6 +97,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private boolean isNeedPay = true;//是否需要支付
     private JSONArray couponCodes;//优惠券
+    private int cartCount = 0;//购物车数量
 
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
@@ -305,6 +305,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             cartItemIds = JSONArray.parseArray(getIntent().getStringExtra("cartItemIds"));
             String couponCodesStr = getIntent().getStringExtra("couponCodes");
             couponCodes = !TextUtils.isEmpty(couponCodesStr) ? JSONArray.parseArray(getIntent().getStringExtra("couponCodes")) : null;
+            cartCount = getIntent().getIntExtra("cartCount",0);
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -436,7 +437,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
      */
     private void pay(String orderId) {
         // TODO Auto-generated method stub
-        payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString);
+        payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
         if (0 == payType) {// 支付宝支付方式
             try {
                 payUtils.aliPay();
@@ -563,18 +564,13 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
                 PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
                 myApplication.setPhotoIsPaid(true);
-                ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-                photopassArrayList.addAll(myApplication.getIsBuyingPhotoInfoList());
-                // 找出购买的info，并且将购买属性改为1
-                photopassArrayList.get(myApplication.getIsBuyingIndex()).isPayed = 1;
-                PictureAirLog.v("position--->", myApplication.getIsBuyingIndex() + "");
-                PictureAirLog.v("photoId---->", photopassArrayList.get(myApplication.getIsBuyingIndex()).photoId);
+                PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
 
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("position", myApplication.getIsBuyingIndex());
-                bundle.putString("tab", "other");
-                bundle.putParcelableArrayList("photos", photopassArrayList);
+                bundle.putInt("position", -1);
+                bundle.putString("tab", myApplication.getIsBuyingTabName());
+                bundle.putString("photoId", myApplication.getIsBuyingPhotoId());
                 intent.putExtra("bundle", bundle);
 
                 // 清空标记
@@ -650,6 +646,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     PictureAirLog.v(TAG, "TopViewClick topLeftView");
                     CancelInPayment(true);
                 } else {
+                    //0元支付  购物车数量恢复
+                    SharedPreferences.Editor editor = sPreferences.edit();
+                    editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
+                    editor.commit();
                     finish();
                 }
 
@@ -668,6 +668,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             CancelInPayment(true);
         } else {
             finish();
+            //0元支付  购物车数量恢复
+            SharedPreferences.Editor editor = sPreferences.edit();
+            editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
+            editor.commit();
         }
     }
 

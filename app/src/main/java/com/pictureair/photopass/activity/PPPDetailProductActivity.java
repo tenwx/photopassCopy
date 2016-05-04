@@ -25,10 +25,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.CartItemInfo1;
-import com.pictureair.photopass.entity.CartPhotosInfo1;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodInfoPictures;
-import com.pictureair.photopass.entity.GoodsInfo1;
+import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -68,7 +68,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
     private boolean isBuyNow = false;
 
     //申明其他类
-    private GoodsInfo1 goodsInfo;
+    private GoodsInfo goodsInfo;
     private SharedPreferences sharedPreferences;
     private Editor editor;
     private MyToast myToast;
@@ -114,13 +114,13 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                 if (isBuyNow) {
                     //生成订单
                     Intent intent = new Intent(PPPDetailProductActivity.this, SubmitOrderActivity.class);
-                    ArrayList<CartItemInfo1> orderinfoArrayList = new ArrayList<>();
-                    CartItemInfo1 cartItemInfo = new CartItemInfo1();
+                    ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+                    CartItemInfo cartItemInfo = new CartItemInfo();
                     cartItemInfo.setCartId(cartId);
                     cartItemInfo.setProductName(goodsInfo.getName());
                     cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
                     cartItemInfo.setUnitPrice(goodsInfo.getPrice());
-                    cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo1>());
+                    cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
                     cartItemInfo.setDescription(goodsInfo.getDescription());
                     cartItemInfo.setQty(1);
                     cartItemInfo.setStoreId(goodsInfo.getStoreId());
@@ -163,6 +163,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         buyButton.setTypeface(MyApplication.getInstance().getFontBold());
         addToCartButton.setTypeface(MyApplication.getInstance().getFontBold());
 
+        addToCartButton.setVisibility(View.VISIBLE);
         //绑定监听
         returnLayout.setOnClickListener(this);
         cartCountTextView.setOnClickListener(this);
@@ -174,7 +175,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         myToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //获取传过来的值
-        goodsInfo = (GoodsInfo1) getIntent().getSerializableExtra("goods");
+        goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
         nameTextView.setText(goodsInfo.getNameAlias());
 
         promotionPriceTextView.setTypeface(MyApplication.getInstance().getFontBold());

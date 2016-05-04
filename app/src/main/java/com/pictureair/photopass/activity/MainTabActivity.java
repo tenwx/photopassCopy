@@ -34,7 +34,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.dropview.CoverManager;
@@ -131,7 +130,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         newToast = new MyToast(this);
         // 自动检查更新
         sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
-        currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, "");
+        currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
                 parentLayout);
         checkUpdateManager.startCheck();
@@ -215,8 +214,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             waterDropView.setVisibility(View.VISIBLE);
         }
 
-        // 接收消息回复
-        UmengUtil.syncFeedback(this);
     }
 
 
@@ -329,7 +326,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             newToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);
             exitTime = System.currentTimeMillis();
         } else {
-            newToast.cancel();
+            newToast.cancelToast();
             mTabHost.removeAllViews();
             finish();
             clearCache();

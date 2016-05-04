@@ -2,9 +2,7 @@ package com.pictureair.photopass.widget;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
@@ -264,7 +262,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		if (platform.isClientValid()) {
 			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
 			cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
-			shareParams.title = Common.SHARE_APP_NAME;
+			shareParams.title = context.getString(R.string.share_app_name);
 			shareParams.text = context.getResources().getString(
 					R.string.share_text);
 			if ("local".equals(type)) {// 本地图片
@@ -276,7 +274,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 				shareParams.titleUrl = shareUrl;
 				shareParams.siteUrl = shareUrl;
 			}
-			shareParams.site = context.getString(R.string.app_name);
+			shareParams.site = context.getString(R.string.share_app_name);
 			platform.share(shareParams);
 		} else {
 			if (dialog.isShowing()) {
@@ -303,7 +301,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		if (platform.isClientValid()) {
 			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
 			cn.sharesdk.tencent.qzone.QZone.ShareParams shareParams = new cn.sharesdk.tencent.qzone.QZone.ShareParams();
-			shareParams.title = Common.SHARE_APP_NAME;
+			shareParams.title = context.getString(R.string.share_app_name);
 			shareParams.text = context.getResources().getString(
 					R.string.share_text);
 			if ("local".equals(type)) {// 本地图片
@@ -369,7 +367,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 		if (platform.isClientValid()) {
 			platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
 			cn.sharesdk.facebook.Facebook.ShareParams shareParams = new cn.sharesdk.facebook.Facebook.ShareParams();
-			shareParams.text = Common.SHARE_APP_NAME;
+			shareParams.text = context.getString(R.string.share_app_name);
 			if ("local".equals(type)) {// 本地图片
 				shareParams.setImagePath(imagePath);
 			} else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
@@ -790,10 +788,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
 			final int id = Integer.MAX_VALUE / 13 + 1;
 			nm.cancel(id);
 
-			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
+//			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
 			Notification notification = new NotificationCompat.Builder(app).
 					setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(context.getString(R.string.app_name))
-					.setContentText(text).setWhen(System.currentTimeMillis()).setTicker(text).setContentIntent(pi).build();
+					.setContentText(text).setWhen(System.currentTimeMillis()).setTicker(text).build();//.setContentIntent(pi)
 			notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
 			nm.notify(id, notification);
 
