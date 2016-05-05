@@ -84,7 +84,7 @@
     <string name="http_error_code_6080">请重新登录</string>
     <string name="http_error_code_6081">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6082">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6083">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_6083">查询用户出错</string>
     <string name="http_error_code_6084">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6085">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6086">加载失败，请检查您当前的网络环境</string>

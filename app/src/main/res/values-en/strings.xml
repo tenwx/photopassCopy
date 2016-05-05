@@ -16,6 +16,7 @@
     <string name="notify_password_hint">Password must be at least 6 characters</string>
     <string name="connecting">Connecting&#8230;</string>
     <string name="input_mobile">Please enter your mobile number</string>
+    <string name="make_sure_mobile_detail">We will send verification code messages to this number:</string>
     <!-- login activity end-->
 
     <!-- email login start -->

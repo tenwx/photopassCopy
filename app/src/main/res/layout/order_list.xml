@@ -5,21 +5,27 @@
     android:background="@color/transparent"
     android:orientation="vertical">
 
-    <ExpandableListView
-        android:id="@+id/order_viewpager_listview1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/gray_light"
-        android:divider="@null"
-        android:focusable="false"
-        android:scrollbars="none"/>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ExpandableListView
+            android:id="@+id/order_viewpager_listview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/gray_light"
+            android:divider="@null"
+            android:focusable="false"
+            android:scrollbars="none" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
         android:id="@+id/nonetwork"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/cursor_layout"
-        android:visibility="invisible" />
+        android:visibility="invisible"></com.pictureair.photopass.widget.NoNetWorkOrNoCountView>
 
 </LinearLayout>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_dialog_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:text="@string/make_sure_mobile_detail"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/text_middle_size" />
+
+    <com.pictureair.photopass.widget.CustomTextView
+        android:id="@+id/tv_dialog_mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/text_middle_size" />
+
+</LinearLayout>

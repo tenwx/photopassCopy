@@ -21,11 +21,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.adapter.OrderViewPagerAdapter;
+import com.pictureair.photopass.adapter.OrderViewPagerAdapter2;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
+import com.pictureair.photopass.eventbus.OrderFragmentEvent;
+import com.pictureair.photopass.fragment.OrderFragment;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -35,22 +37,22 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.smssdk.gui.AppManager;
 import cn.smssdk.gui.CustomProgressDialog;
+import de.greenrobot.event.EventBus;
 
 /**
  * 订单页面，分三类，Payment，Delivery，All order
  *
  * @author bauer_bao
  */
-public class OrderActivity extends BaseActivity {
+public class OrderActivity extends BaseFragmentActivity {
 
     private ViewPager viewPager;
-    private OrderViewPagerAdapter orderAdapter;
+    private OrderViewPagerAdapter2 orderAdapter;
     private ArrayList<View> listViews;
     private ImageView cursorImageView;//动画图片
     private TextView paymentOrderTextView, deliveryOrderTextView, allOrderTextView;//选项卡
@@ -64,10 +66,10 @@ public class OrderActivity extends BaseActivity {
 
     private OrderInfo orderInfo;
     //child列表信息
-    private List<OrderProductInfo> paymentOrderChildArrayList;
-    private List<OrderProductInfo> deliveryOrderChildArrayList;
-    private List<OrderProductInfo> allOrderChildArrayList;
-    private List<OrderProductInfo> downOrderChildArrayList;
+    private ArrayList<OrderProductInfo> paymentOrderChildArrayList;
+    private ArrayList<OrderProductInfo> deliveryOrderChildArrayList;
+    private ArrayList<OrderProductInfo> allOrderChildArrayList;
+    private ArrayList<OrderProductInfo> downOrderChildArrayList;
     private ArrayList<CartItemInfo> cartItemInfo;
 
     private SharedPreferences sharedPreferences;
@@ -84,154 +86,174 @@ public class OrderActivity extends BaseActivity {
     private List<String> orderIds;
 
     private int orderType = 0;//订单类型 异步回调使用
+    private List<OrderFragment> mFragments;
+    public static final int REFRESH = 0X001;
+//    private SwipeRefreshLayout refreshLayout;
 
-    private final Handler orderActivityHandler = new OrderActivityHandler(this);
 
 
-    private static class OrderActivityHandler extends Handler {
-        private final WeakReference<OrderActivity> mActivity;
-
-        public OrderActivityHandler(OrderActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
+    private Handler orderActivityHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case API1.GET_ORDER_SUCCESS:
+
+                    getOrderData(msg);
+
+                    break;
+
+                case API1.GET_ORDER_FAILED:
+//				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
+                    OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
+                    orderFragmentEvent.setRequest(1);
+                    EventBus.getDefault().post(orderFragmentEvent);
+
+                    hideProgressDialog();
+                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                    netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
+                    viewPager.setVisibility(View.INVISIBLE);
+                    break;
+                case API1.DELETE_ORDER_SUCCESS:
+//				int deletePosition = msg.arg1;
+                    allOrderArrayList.remove(0);
+                    allOrderChildArrayList.remove(0);
+
+                    deliveryOrderArrayList.remove(0);
+                    deliveryOrderChildArrayList.remove(0);
+
+                    orderAdapter.notifyDataSetChanged();
+                    break;
+
+                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+//                    if (null != refreshLayout && refreshLayout.isRefreshing()) {
+//                        refreshLayout.setEnabled(true);
+//                        refreshLayout.setRefreshing(false);
+//                    }
+                    //重新加载购物车数据
+                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                        break;
+                    }
+                    showProgressDialog();
+                    API1.getOrderInfo(orderActivityHandler);
+                    break;
+
+                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
+                    //去跳转到商品页面
+                    //需要删除页面，保证只剩下mainTab页面，
+                    AppManager.getInstance().killOtherActivity(MainTabActivity.class);
+                    //同时将mainTab切换到shop Tab
+                    ((MyApplication) getApplication()).setMainTabIndex(3);
+
+                    break;
+                case REFRESH:
+                    //重新加载购物车数据
+                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                        break;
+                    }
+                    API1.getOrderInfo(orderActivityHandler);
+                    break;
+
+
+                default:
+                    break;
             }
-            mActivity.get().dealHandler(msg);
+            return false;
         }
-    }
+    });
 
     /**
-     * 处理Message
-     *
+     * 读取订单信息
      * @param msg
      */
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-            case API1.GET_ORDER_SUCCESS:
-                PictureAirLog.d(TAG, "get success----");
-                viewPager.setVisibility(View.VISIBLE);
-                netWorkOrNoCountView.setVisibility(View.INVISIBLE);
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
-                paymentOrderArrayList.clear();
-                paymentOrderChildArrayList.clear();
-                deliveryOrderArrayList.clear();
-                deliveryOrderChildArrayList.clear();
-                allOrderArrayList.clear();
-                allOrderChildArrayList.clear();
-                downOrderArrayList.clear();
-                downOrderChildArrayList.clear();
-                //解析数据
-                JSONObject resultJsonObject = (JSONObject) msg.obj;
-                JSONArray allOrdersArray = resultJsonObject.getJSONArray("orders");//得到所有的订单信息
-                PictureAirLog.v(TAG, "orderInfo" + allOrdersArray.toString());
-                for (int i = 0; i < allOrdersArray.size(); i++) {
-                    JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
-                    orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
-                    cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
-                    PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
+    private void getOrderData(Message msg) {
+        PictureAirLog.v(TAG, "get success----");
+        viewPager.setVisibility(View.VISIBLE);
+        netWorkOrNoCountView.setVisibility(View.INVISIBLE);
+        hideProgressDialog();
+        paymentOrderArrayList.clear();
+        paymentOrderChildArrayList.clear();
+        deliveryOrderArrayList.clear();
+        deliveryOrderChildArrayList.clear();
+        allOrderArrayList.clear();
+        allOrderChildArrayList.clear();
+        downOrderArrayList.clear();
+        downOrderChildArrayList.clear();
+        //解析数据
+        JSONObject resultJsonObject = (JSONObject) msg.obj;
+        JSONArray allOrdersArray = resultJsonObject.getJSONArray("orders");//得到所有的订单信息
+        for (int i = 0; i < allOrdersArray.size(); i++) {
+            JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
+            orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
+            cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
+            PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
 
-                    //添加订单实虚体类型
-                    for (int j = 0; j < cartItemInfo.size(); j++) {
-                        if (cartItemInfo.get(j).cart_productType == 1) {
-                            orderInfo.productEntityType = 1;
+            OrderProductInfo orderProductInfo = new OrderProductInfo();
+            orderProductInfo.setOrderTime(orderInfo.orderTime);
+            orderProductInfo.setCartItemInfos(cartItemInfo);
+            PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
+
+            if (orderInfo.orderStatus == 1) {//1等待买家付款
+                if (orderIds != null && orderIds.size() > 0) {
+                    for (String orderId : orderIds) {
+                        //判断orderId是否相同，且状态是否为1（未付款）
+                        if (orderId.equals(orderInfo.orderId + "")) {
+                            orderInfo.orderStatus = 6;
                             break;
-                        } else {
-                            orderInfo.productEntityType = 0;
-                        }
-                    }
-
-                    OrderProductInfo orderProductInfo = new OrderProductInfo();
-                    orderProductInfo.setOrderTime(orderInfo.orderTime);
-                    orderProductInfo.setCartItemInfos(cartItemInfo);
-                    PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
-                    if (orderInfo.orderStatus == 1) {//1等待买家付款
-                        if (orderIds != null && orderIds.size() > 0) {
-                            for (String orderId : orderIds) {
-                                //判断orderId是否相同，且状态是否为1（未付款）
-                                if (orderId.equals(orderInfo.orderId + "")) {
-                                    orderInfo.orderStatus = 6;
-                                    break;
-                                }
-                            }
-                        }
-                        paymentOrderArrayList.add(orderInfo);
-                        paymentOrderChildArrayList.add(orderProductInfo);
-                    } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-                        if (orderInfo.productEntityType == 0) {
-                            //0为虚拟商品
-                            downOrderArrayList.add(orderInfo);
-                            downOrderChildArrayList.add(orderProductInfo);
-                        } else {
-                            //需要买家自提
-                            deliveryOrderArrayList.add(orderInfo);
-                            deliveryOrderChildArrayList.add(orderProductInfo);
                         }
                     }
                 }
-
-                orderAdapter = new OrderViewPagerAdapter(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
-                        paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
-                        sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
-                viewPager.setAdapter(orderAdapter);
-                viewPager.setCurrentItem(orderType);
-//                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
-
-                break;
-
-            case API1.GET_ORDER_FAILED:
-//				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
+                paymentOrderArrayList.add(orderInfo);
+                paymentOrderChildArrayList.add(orderProductInfo);
+            } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
+//                        deliveryOrderArrayList.add(orderInfo);
+//                        deliveryOrderChildArrayList.add(orderProductInfo);
+            } else if (orderInfo.orderStatus == 4 || orderInfo.orderStatus == 5) {
+                //暂时模拟数据
+                if (orderInfo.deliveryMethod == 3) {
+                    //3为虚拟商品
+                    downOrderArrayList.add(orderInfo);
+                    downOrderChildArrayList.add(orderProductInfo);
+                } else {
+                    //需要买家自提
+                    deliveryOrderArrayList.add(orderInfo);
+                    deliveryOrderChildArrayList.add(orderProductInfo);
                 }
-                netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
-                viewPager.setVisibility(View.INVISIBLE);
-                break;
-            case API1.DELETE_ORDER_SUCCESS:
-//				int deletePosition = msg.arg1;
-                allOrderArrayList.remove(0);
-                allOrderChildArrayList.remove(0);
-
-                deliveryOrderArrayList.remove(0);
-                deliveryOrderChildArrayList.remove(0);
-
-                orderAdapter.notifyDataSetChanged();
-                break;
-
-            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                //重新加载购物车数据
-                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
-                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                    return;
-                }
-                if (!customProgressDialog.isShowing()) {
-                    customProgressDialog.show();
-                }
-                API1.getOrderInfo(orderActivityHandler);
-                break;
-
-            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
-                //去跳转到商品页面
-                //需要删除页面，保证只剩下mainTab页面，
-                AppManager.getInstance().killOtherActivity(MainTabActivity.class);
-                //同时将mainTab切换到shop Tab
-                ((MyApplication) getApplication()).setMainTabIndex(3);
-
-                break;
 
 
-            default:
-                break;
+            }
         }
-    }
 
+//                    orderAdapter = new OrderViewPagerAdapter2(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
+//                            paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
+//                            sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
+
+        if (null == mFragments || mFragments.size() == 0){
+            mFragments.add(OrderFragment.getInstance(orderActivityHandler,paymentOrderArrayList,deliveryOrderArrayList,downOrderArrayList,paymentOrderChildArrayList,deliveryOrderChildArrayList,downOrderChildArrayList,sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY),0));
+            mFragments.add(OrderFragment.getInstance(orderActivityHandler,paymentOrderArrayList,deliveryOrderArrayList,downOrderArrayList,paymentOrderChildArrayList,deliveryOrderChildArrayList,downOrderChildArrayList,sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY),1));
+            mFragments.add(OrderFragment.getInstance(orderActivityHandler,paymentOrderArrayList,deliveryOrderArrayList,downOrderArrayList,paymentOrderChildArrayList,deliveryOrderChildArrayList,downOrderChildArrayList,sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY),2));
+        }
+
+        if (null == orderAdapter){
+            orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(),mFragments);
+            viewPager.setAdapter(orderAdapter);
+            viewPager.setCurrentItem(orderType);
+        }else{
+            OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
+            orderFragmentEvent.setOrderChildlist1(paymentOrderChildArrayList);
+            orderFragmentEvent.setOrderChildlist2(deliveryOrderChildArrayList);
+            orderFragmentEvent.setOrderChildlist3(downOrderChildArrayList);
+
+            orderFragmentEvent.setCurrency(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+            orderFragmentEvent.setOrderInfos1(paymentOrderArrayList);
+            orderFragmentEvent.setOrderInfos2(deliveryOrderArrayList);
+            orderFragmentEvent.setOrderInfos3(downOrderArrayList);
+
+            EventBus.getDefault().post(orderFragmentEvent);
+        }
+//                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,20 +266,20 @@ public class OrderActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
     }
 
     //初始化
     private void initView() {
         //从网络获取数据
-        API1.getOrderInfo(orderActivityHandler);
+        mFragments = new ArrayList<>();
+        getData();
         //获取本地已付款为收到推送的order
         getLocalPaymentOrder();
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
         //获取订单接口
         // 显示进度条。
-        customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.is_loading), false, null);
+        showProgressDialog();
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         setTopTitleShow(R.string.my_order);
         setTopLeftValueAndShow(R.drawable.back_white, true);
@@ -270,6 +292,37 @@ public class OrderActivity extends BaseActivity {
         paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
         deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
         allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+
+//        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+//        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+//        refreshLayout.setEnabled(true);
+//        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                PictureAirLog.out("start refresh");
+//                refreshLayout.setEnabled(false);
+//                Message message = orderActivityHandler.obtainMessage();
+//                message.what = REFRESH;
+//                orderActivityHandler.sendMessage(message);
+//            }
+//        });
+
+//        viewPager.setOnTouchListener(new View.OnT
+// ouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_MOVE:
+//                        refreshLayout.setEnabled(false);
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                    case MotionEvent.ACTION_CANCEL:
+//                        refreshLayout.setEnabled(true);
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
 
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
@@ -305,9 +358,35 @@ public class OrderActivity extends BaseActivity {
         listViews.add(mInflater.inflate(R.layout.order_list, null));
 
         myToast = new MyToast(this);
-        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+        pictureAirDbManager = new PictureAirDbManager(this);
+    }
 
+    /**
+     * 从网络上获取信息
+     */
+    public void getData(){
+        API1.getOrderInfo(  orderActivityHandler);
+    }
 
+    /**
+     * 显示菊花
+     */
+    private void showProgressDialog(){
+        if (null != customProgressDialog && !customProgressDialog.isShowing()){
+            customProgressDialog.show();
+        }
+        if (null == customProgressDialog){
+            customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.connecting), false, null);
+        }
+    }
+
+    /**
+     * 隐藏菊花
+     */
+    private void hideProgressDialog(){
+        if (null != customProgressDialog && customProgressDialog.isShowing()){
+            customProgressDialog.dismiss();
+        }
     }
 
     /**
@@ -355,7 +434,15 @@ public class OrderActivity extends BaseActivity {
             animation.setDuration(300);
             cursorImageView.startAnimation(animation);
             //将expandablelistview展开
-            orderAdapter.expandGropu(arg0);
+
+            /**
+             * ---------------------------------
+             */
+//            orderAdapter.expandGropu(arg0);
+            /**
+             * ---------------------------------
+             */
+
             switch (arg0) {
                 case 0:
                     paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
@@ -395,8 +482,6 @@ public class OrderActivity extends BaseActivity {
         super.TopViewClick(view);
         switch (view.getId()) {
             case R.id.topLeftView://返回按钮
-
-
                 doBack();
                 break;
             default:
@@ -437,4 +522,5 @@ public class OrderActivity extends BaseActivity {
         super.onDestroy();
         orderActivityHandler.removeCallbacksAndMessages(null);
     }
+
 }

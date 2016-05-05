@@ -16,6 +16,7 @@
     <string name="notify_password_hint">密码不能小于6位！</string>
     <string name="connecting">请稍后&#8230;</string>
     <string name="input_mobile">手机号未输入</string>
+    <string name="make_sure_mobile_detail">我们将发送验证码短信到这个号码:</string>
     <!-- login activity end-->
 
     <!-- email login start -->

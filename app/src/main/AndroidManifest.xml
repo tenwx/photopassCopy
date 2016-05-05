@@ -70,7 +70,7 @@
         <activity
             android:name=".activity.CouponActivity"
             android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.WelcomeActivity"
@@ -173,11 +173,6 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.OrderActivity"
-            android:configChanges="keyboard|orientation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.OrderDetailActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
@@ -214,6 +209,11 @@
         <activity
             android:name="cn.smssdk.gui.country.SelectCountryActivity"
             android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OrderActivity"
+            android:configChanges="keyboard|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <!-- 扫描 -->
         <activity
@@ -255,8 +255,7 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <!-- alipay sdk end -->
 
 
@@ -282,7 +281,7 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <receiver android:name="net.sourceforge.simcpux.AppRegister">
             <intent-filter>

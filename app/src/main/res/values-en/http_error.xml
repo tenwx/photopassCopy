@@ -84,7 +84,7 @@
     <string name="http_error_code_6080">Current session has expired, please login again</string>
     <string name="http_error_code_6081">Loading failed, Please check your network</string>
     <string name="http_error_code_6082">Loading failed, Please check your network</string>
-    <string name="http_error_code_6083">Loading failed, Please check your network</string>
+    <string name="http_error_code_6083">query user error</string>
     <string name="http_error_code_6084">Loading failed, Please check your network</string>
     <string name="http_error_code_6085">Loading failed, Please check your network</string>
     <string name="http_error_code_6086">Loading failed, Please check your network</string>
