@@ -82,7 +82,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/pp_margin_5"
             android:layout_toLeftOf="@id/textView_currency"
-            android:text="@string/totalprice"
+            android:text="@string/totalprice1"
             android:textColor="@color/gray"
             android:textSize="@dimen/text_size_16" />
     </RelativeLayout>

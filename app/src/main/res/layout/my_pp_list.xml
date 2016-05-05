@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_40">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/my_pp_miqi"
@@ -24,15 +24,20 @@
                 android:layout_alignParentTop="true"
                 android:src="@drawable/my_pp_miqi" />
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="5dp"
+                android:layout_below="@id/my_pp_miqi"/>
+
             <TextView
                 android:id="@+id/pp_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/pp_margin_8"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_toRightOf="@+id/my_pp_miqi"
                 android:text="PP12345678"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
 
             <ImageView
@@ -41,20 +46,33 @@
                 android:layout_height="@dimen/pp_height_40"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pp_margin_8"
                 android:clickable="true"
                 android:padding="@dimen/pp_margin_8"
-                android:layout_marginRight="@dimen/pp_margin_8"
                 android:scaleType="centerInside"
                 android:src="@drawable/delete_my_pp_btn" />
 
             <ImageView
-                android:id="@+id/img"
                 android:layout_width="@dimen/pp_height_40"
                 android:layout_height="@dimen/pp_height_40"
-                android:layout_alignBottom="@id/pp_code"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pp_margin_8"
+                android:padding="@dimen/pp_margin_8"
+                android:scaleType="centerInside"
+                android:src="@drawable/delete_my_pp_btn"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pp_padding_10"
+                android:adjustViewBounds="true"
                 android:clickable="true"
-                android:paddingRight="@dimen/pp_padding_10"
+                android:scaleType="centerInside"
                 android:src="@drawable/nosele"
                 android:visibility="gone" />
 
@@ -62,13 +80,12 @@
                 android:id="@+id/tv_shoot_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/pp_margin_20"
                 android:layout_toLeftOf="@+id/img"
-                android:layout_alignParentBottom="true"
                 android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_14"
-                android:layout_marginRight="@dimen/pp_margin_2"
-                android:visibility="gone"
-               />
+                android:textSize="@dimen/text_size_12"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
@@ -77,7 +94,6 @@
             android:id="@+id/pp_image_layout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_10"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

@@ -192,6 +192,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                             String[] cartProductImageUrl = new String[goodsInfo.getPictures().size()];
                             for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
                                 cartProductImageUrl[i] = goodsInfo.getPictures().get(i).getUrl();
+                                PictureAirLog.out("imageurl--->" + goodsInfo.getPictures().get(i).getUrl());
                             }
                             cartItemInfo.setPictures(cartProductImageUrl);
                         }

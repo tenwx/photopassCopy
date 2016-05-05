@@ -187,8 +187,8 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         shopAddressTextView.setText(getString(R.string.address_digital_goods));
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo name: " + goodsInfo.getName());
-            List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();
-            goodInfoPicturesList.remove(0);
+            List<GoodInfoPictures> goodInfoPicturesList = new ArrayList<>();
+            goodInfoPicturesList.add(goodsInfo.getPictures().get(1));
             bannerViewDetail.findimagepath(goodInfoPicturesList);
             //封装购物车宣传图
             photoUrls = new String[goodsInfo.getPictures().size()];

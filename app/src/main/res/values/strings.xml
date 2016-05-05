@@ -45,6 +45,7 @@
     <string name="back_login_page">返回登录页面</string>
     <string name="email_is_empty">电子邮箱不能为空</string>
     <string name="email_sent">验证邮件已发送</string>
+    <string name="reset_pwd_ok">确认</string>
     <!-- forget pwd end -->
 
     <!-- 分享字段 start-->
@@ -216,8 +217,8 @@
     <string name="magicbrush">滤镜</string>
     <string name="decoration">贴纸</string>
     <string name="rotate">旋转</string>
-    <string name="rotate_left">左转90</string>
-    <string name="rotate_right">右转90</string>
+    <string name="rotate_left">左旋转90</string>
+    <string name="rotate_right">右旋转90</string>
     <string name="saving">正在保存&#8230;</string>
     <string name="dealing">正在处理&#8230;</string>
     <string name="exit_hint">是否保存图片？</string>
@@ -250,6 +251,7 @@
     <string name="cart">购物车</string>
     <string name="select_all">全选</string>
     <string name="totalprice">合计：</string>
+    <string name="totalprice1">合计：</string>
     <string name="go_pay">结算(%1$d)</string>
     <string name="delete">删除</string>
     <string name="no_cart">您的购物车为空</string>
@@ -454,6 +456,7 @@
     <string name="coupon_scan">扫描</string>
     <string name="shop_price">商品金额</string>
     <string name="coupon_price">抵用券抵用</string>
+    <string name="coupon_price1">抵用券抵用：</string>
     <string name="pay_price">实际支付</string>
     <string name="coupon_count">有%1$d张抵用券可用</string>
     <string name="no_coupon1">没有可用的抵用券</string>

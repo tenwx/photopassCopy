@@ -133,11 +133,11 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
      * @param holder
      */
     private void setMyTextViewColor(MyViewHolder holder){
-//        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.white));
-//        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.white));
-//        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.white));
-//        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.white));
-        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.line_color));
+        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
+        holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
+        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
+        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
+        holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.pp_light_gray_normal));
     }
 
     /**
@@ -145,10 +145,10 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
      * @param holder
      */
     private void setMyTextViewColor2(MyViewHolder holder){
-        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.gray));
+        holder.tvName.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
         holder.tvNumber.setTextColor(mContext.getResources().getColor(R.color.gray));
-        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.gray));
-        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.gray2));
+        holder.tvDescribe.setTextColor(mContext.getResources().getColor(R.color.pp_dark_blue));
+        holder.tvValiditPeriod.setTextColor(mContext.getResources().getColor(R.color.pp_gray));
         holder.tvStatus.setTextColor(mContext.getResources().getColor(R.color.white));
     }
 
@@ -171,7 +171,6 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
             ivSelect = (ImageView)itemView.findViewById(R.id.iv_select);
             tvStatus.setRotation(30);
             tvNumber.setTypeface(MyApplication.getInstance().getFontBold());
-            tvName.setTypeface(MyApplication.getInstance().getFontBold());
             rlRight = (RelativeLayout)itemView.findViewById(R.id.rl_right);
         }
     }

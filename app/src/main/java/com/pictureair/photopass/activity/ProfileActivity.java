@@ -254,6 +254,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
         if (!sp.getString(Common.USERINFO_ACCOUNT, "").equals("")) {// email
             accountTv.setText(sp.getString(Common.USERINFO_ACCOUNT, ""));
+            accountTv.setTextColor(getResources().getColor(R.color.pp_blue));
         }
     }
 
@@ -265,6 +266,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
             case R.id.item_nickname:
                 intent = new Intent(ProfileActivity.this, UpdateUserinfoActivity.class);
                 intent.putExtra(Common.USERINFOTYPE, Common.NICKNAMETYPE);
+                intent.putExtra("nickname", nickNameString);
                 startActivityForResult(intent, 0);
                 break;
 

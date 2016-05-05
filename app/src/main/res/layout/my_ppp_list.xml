@@ -17,7 +17,7 @@
             android:layout_alignParentLeft="true"
             android:gravity="center"
             android:text="2015-22-20"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_alignParentRight="true"
             android:gravity="center"
             android:text="@string/no_activated"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 
     </RelativeLayout>
@@ -58,8 +58,7 @@
                 android:layout_marginLeft="@dimen/pp_margin_20"
                 android:text="@string/mypage_ppp"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                android:textStyle="bold" />
+                android:textSize="@dimen/text_size_16" />
 
             <ImageView
                 android:id="@+id/ppp_imageView1"
@@ -113,7 +112,7 @@
                 android:padding="@dimen/pp_padding_10"
                 android:text="fadsfd"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18" />
+                android:textSize="@dimen/text_size_14" />
 
         </RelativeLayout>
 

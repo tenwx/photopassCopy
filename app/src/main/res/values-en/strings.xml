@@ -45,6 +45,7 @@
     <string name="back_login_page">Back to Login</string>
     <string name="email_is_empty">Please enter your email address</string>
     <string name="email_sent">Send Successful</string>
+    <string name="reset_pwd_ok">OK</string>
     <!-- forget pwd end -->
 
     <!-- 分享字段 start-->
@@ -250,6 +251,7 @@
     <string name="cart">Shopping Cart</string>
     <string name="select_all">Select All</string>
     <string name="totalprice">Total:</string>
+    <string name="totalprice1">Price:</string>
     <string name="go_pay">Pay(%1$d)</string>
     <string name="delete">Delete</string>
     <string name="no_cart">You do not have anything in the cart</string>
@@ -348,7 +350,7 @@
     <string name="dialog_ok">Yes, I do</string>
     <string name="dialog_ok1">OK, I know</string>
     <string name="no_activated">Inactive</string>
-    <string name="activated">activated</string>
+    <string name="activated">Activated</string>
     <string name="ppp_has_used">Used</string>
     <string name="ppp_has_expired">Expired</string>
     <string name="expired_on">Expiry Date:</string>
@@ -454,6 +456,7 @@
     <string name="coupon_scan">Scan</string>
     <string name="shop_price">Total</string>
     <string name="coupon_price">Coupon Discount</string>
+    <string name="coupon_price1">Coupon Discount:</string>
     <string name="pay_price">Pay</string>
     <string name="coupon_count">%1$d Coupons</string>
     <string name="no_coupon1">No Coupon</string>

@@ -59,7 +59,7 @@
             android:paddingTop="@dimen/pp_margin_5"
             android:text="@string/order_unpaid"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
     <com.pictureair.photopass.widget.DashedLineView

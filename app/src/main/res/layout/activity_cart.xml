@@ -143,7 +143,7 @@
         android:layout_below="@id/tt"
         android:background="@color/white"
         android:divider="@color/pp_light_gray_normal"
-        android:dividerHeight="0dp"
+        android:dividerHeight="1px"
         android:scrollbars="none" />
 
     <LinearLayout

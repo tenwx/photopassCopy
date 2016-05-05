@@ -247,6 +247,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 if (showPPCodeList.size() == 0) {
                     ok.setEnabled(false);
+                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
                     PictureAirLog.out("has not pp code");
                     listPP.setVisibility(View.INVISIBLE);
                     noPhotoPassView.setVisibility(View.VISIBLE);
@@ -255,7 +256,14 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
             case 2:
-                ok.setText(formaStringPPP(msg.arg1 - dppp.bindInfo.size(), dppp.capacity - dppp.bindInfo.size()));
+                ok.setText(formaStringPPP(msg.arg1, dppp.capacity));
+                if (msg.arg1 - dppp.bindInfo.size() == 0) {
+                    ok.setEnabled(false);
+                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
+                } else {
+                    ok.setEnabled(true);
+                    ok.setTextColor(getResources().getColor(R.color.white));
+                }
                 break;
 
             case API1.BIND_PP_FAILURE://网络获取失败
@@ -371,7 +379,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         ok = (TextView) findViewById(R.id.ok);
         ok.setVisibility(View.VISIBLE);
         ok.setOnClickListener(this);
-        ok.setText(formaStringPPP(0, dppp.capacity - dppp.bindInfo.size()));
+        ok.setText(formaStringPPP(dppp.bindInfo.size(), dppp.capacity));
+        ok.setEnabled(false);
+        ok.setTextColor(getResources().getColor(R.color.gray_light5));
         getPhotoUrlFromDatabase();
     }
 

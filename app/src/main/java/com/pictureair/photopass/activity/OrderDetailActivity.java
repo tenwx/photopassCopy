@@ -141,7 +141,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
             case 3:
                 //虚拟类商品无须快递,
 //                deliveryInfo.setVisibility(View.GONE);
-                address.setText(getString(R.string.address_digital_goods));
+                address.setText("");
                 break;
 
             default:

@@ -42,12 +42,30 @@
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size_16" />
 
-    <ImageView
-        android:id="@+id/statusImageView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/resultTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/pp_padding_10" />
+        android:layout_marginBottom="@dimen/pp_padding_10"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+
+        <ImageView
+            android:id="@+id/statusImageView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom"
+            android:adjustViewBounds="true"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -254,10 +254,10 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         rlCountry.setVisibility(View.GONE);
         ll_mobile_centen.setVisibility(View.GONE);
         ll_pwd_centen.setVisibility(View.VISIBLE);
-        sure.setText(R.string.ok);
+        sure.setText(R.string.reset_pwd_ok);
         sure.setEnabled(false);
         pwd.setHint(R.string.smssdk_pwd_forget);
-        pwd_again.setHint(R.string.smssdk_pwd2_forget);
+        pwd_again.setHint(R.string.smssdk_pwd2);
     }
 
     @Override
