@@ -324,6 +324,18 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 dialog.dismiss();
+
+                SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新 （其实可以不需要，不过保证数据同步，加上更保险）
+                editor1.putBoolean(Common.NEED_FRESH, true);
+                editor1.commit();
+
+                intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
+                Bundle bundle1 = new Bundle();
+                bundle1.putInt("position", -2);  //代表从 pp＋绑定PP
+                bundle1.putString("tab", sharedPreferences.getString("tabName",""));
+                bundle1.putString("ppsStr",ppsStr);
+                intent.putExtra("bundle", bundle1);
+                startActivity(intent);
                 this.finish();
                 break;
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
