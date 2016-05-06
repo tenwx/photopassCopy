@@ -7,7 +7,7 @@
     <string name="http_error_code_6003">Please enter your mobile number</string>
     <string name="http_error_code_6004">Please enter your nickname</string>
     <string name="http_error_code_6005">Please enter a password</string>
-    <string name="http_error_code_6006">Please specify your country</string>
+    <string name="http_error_code_6006">Please specify your country/Region</string>
     <string name="http_error_code_6007">Please enter your birthday</string>
     <string name="http_error_code_6008">Please select your gender</string>
     <string name="http_error_code_6009">Loading failed, Please check your network</string>

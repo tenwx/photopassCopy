@@ -7,7 +7,7 @@
     <string name="http_error_code_6003">请输入您的手机号码</string>
     <string name="http_error_code_6004">请输入您的昵称</string>
     <string name="http_error_code_6005">请输入密码</string>
-    <string name="http_error_code_6006">请选择国家</string>
+    <string name="http_error_code_6006">请选择国家/地区</string>
     <string name="http_error_code_6007">请选择您的生日</string>
     <string name="http_error_code_6008">请选择您的性别</string>
     <string name="http_error_code_6009">加载失败，请检查您当前的网络环境</string>

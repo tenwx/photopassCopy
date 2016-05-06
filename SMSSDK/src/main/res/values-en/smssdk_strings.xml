@@ -1,7 +1,7 @@
 <resources>
     <string name="smssdk_regist">New Account</string>
     <string name="smssdk_forget">Reset Password</string>
-    <string name="smssdk_make_sure_country_mobile">Please confirm country and input phone number</string>
+    <string name="smssdk_make_sure_country_mobile">Please confirm country/Region and input phone number</string>
     <string name="smssdk_country">Country/Region</string>
     <string name="smssdk_pwd_no">Password inconsistency</string>
     <string name="smssdk_pwd">Password</string>
@@ -24,17 +24,17 @@
     <string name="smssdk_submit">OK</string>
     <string name="smssdk_identify_code">Verification code</string>
     <string name="smssdk_receive_msg"><Data>&lt;font color=#ffffff>%s&lt;/font> s</Data></string>
-    <string name="smssdk_choose_country">Choose Country</string>
+    <string name="smssdk_choose_country">Choose Country/Region</string>
     <string name="smssdk_network_error">Network error, please try later</string>
     <string name="smssdk_country_not_support_currently">Incorrect Network, please back to check again.</string>
     <string name="smssdk_get_verifycode_frequentlly">Send verification code too frequently, please try later!</string>
     <string name="smssdk_get_phone_verifycode_today_frequentlly">I am sorry, the phone number for verification code number too much, please try again tomorrow!</string>
     <string name="smssdk_connecting">Connecting&#8230;</string>
-    <string name="smssdk_modify_password_empty_hint">Please enter a password.</string>
-    <string name="smssdk_notify_password_hint">Password must be at least 6 characters!</string>
-    <string name="smssdk_pw_is_inconsistency">Password does not match!</string>
-    <string name="smssdk_pwd_no_all_space">Password\'s first or last character cannot be space!</string>
-    <string name="smssdk_pwd_head_or_foot_space">Password\'s first or last character cannot be space!</string>
+    <string name="smssdk_modify_password_empty_hint">Please enter a password</string>
+    <string name="smssdk_notify_password_hint">Password must be at least 6 characters</string>
+    <string name="smssdk_pw_is_inconsistency">Password does not match</string>
+    <string name="smssdk_pwd_no_all_space">Please omit any space</string>
+    <string name="smssdk_pwd_head_or_foot_space">Please omit any space</string>
     <string name="is_loading">Loading&#8230;</string>
     <string name="smssdk_virificaition_code_wrong">Verification code error</string>
 </resources>

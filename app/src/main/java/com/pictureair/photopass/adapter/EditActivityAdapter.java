@@ -156,6 +156,12 @@ public class EditActivityAdapter extends BaseAdapter {
             layoutParams.height = ScreenUtil.dip2px(mContext, 60);
             layoutParams.width = ScreenUtil.dip2px(mContext, 60);
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
+
+            LayoutParams layoutParams1 = holderView.editImageview.getLayoutParams();
+            layoutParams1.width = ScreenUtil.dip2px(mContext, 50);
+            layoutParams1.height = ScreenUtil.dip2px(mContext, 50);
+            holderView.editImageview.setLayoutParams(layoutParams1);
+
             if (frameInfos.get(position).onLine == 1) {//网络图片
 
                 ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
@@ -163,7 +169,7 @@ public class EditActivityAdapter extends BaseAdapter {
 
                 ImageLoader.getInstance().displayImage(frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
             }
-            holderView.editImageview.setBackgroundResource(R.drawable.decoration_bg);
+            holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
 
         }
 

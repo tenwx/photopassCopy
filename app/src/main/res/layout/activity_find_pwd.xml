@@ -69,17 +69,17 @@
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_30"
+            android:layout_marginTop="50dp"
             android:text="@string/email_sent"
             android:textColor="@color/pp_light_gray_press"
-            android:textSize="@dimen/text_size_18" />
+            android:textSize="@dimen/text_size_16" />
 
 
         <cn.smssdk.gui.CustomButtonFont
             android:id="@+id/btn_back_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_32"
+            android:layout_marginTop="50dp"
             android:background="@drawable/button_blue_shape_and_selector"
             android:padding="@dimen/pp_padding_10"
             android:text="@string/back_login_page"

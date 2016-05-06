@@ -760,23 +760,23 @@ public class AppUtil {
     }
 
     /**
-     * 验证密码是否可用
+     * 验证密码是否可用,必须按照此顺序
      *
      * @param pwd1 第一次输入的密码
      * @param pwd2 第二次输入的密码
      * @return
      */
     public static final int checkPwd(String pwd1, String pwd2) {
-        if (pwd1.isEmpty() || pwd2.isEmpty()) {// 密码为空
+        if (pwd1.isEmpty()) {// 密码为空
             return PWD_EMPTY;
-        } else if (pwd1.length() < 6 || pwd2.length() < 6) {// 密码小于6位
-            return PWD_SHORT;
-        } else if (!pwd1.equals(pwd2)) {// 密码两次不一致
-            return PWD_INCONSISTENCY;
         } else if (!pwd1.isEmpty() && pwd1.trim().isEmpty()) {// 密码全部为空格
             return PWD_ALL_SAPCE;
         } else if (pwd1.trim().length() < pwd1.length()) {// 密码首尾有空格
             return PWD_HEAD_OR_FOOT_IS_SPACE;
+        } else if (pwd1.length() < 6) {// 密码小于6位
+            return PWD_SHORT;
+        } else if (!pwd1.equals(pwd2)) {// 密码两次不一致
+            return PWD_INCONSISTENCY;
         } else {// 密码可用
             return PWD_AVAILABLE;
         }

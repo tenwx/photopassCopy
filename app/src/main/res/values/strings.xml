@@ -10,10 +10,10 @@
     <string name="login">登录</string>
     <string name="sign">注册</string>
     <string name="otherLogin">电子邮箱账户登录</string>
-    <string name="pwd_no_all_space">密码首或尾不能为空格！</string>
-    <string name="pwd_head_or_foot_space">密码首或尾不能为空格！</string>
+    <string name="pwd_no_all_space">密码首或尾不能为空格</string>
+    <string name="pwd_head_or_foot_space">密码首或尾不能为空格</string>
     <string name="modify_password_empty_hint">请输入密码</string>
-    <string name="notify_password_hint">密码不能小于6位！</string>
+    <string name="notify_password_hint">密码不能小于6位</string>
     <string name="connecting">正在加载中，请稍后&#8230;</string>
     <string name="input_mobile">手机号未输入</string>
     <!-- login activity end-->
@@ -29,14 +29,14 @@
     <string name="date_of_birth">生日</string>
     <string name="male">男</string>
     <string name="female">女</string>
-    <string name="name_is_empty">昵称不能为空</string>
+    <string name="name_is_empty">请输入昵称</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
     <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
-    <string name="select_a_country">选择国家</string>
+    <string name="select_a_country">选择国家/地区</string>
     <!-- select country end -->
 
     <!-- forget pwd start -->

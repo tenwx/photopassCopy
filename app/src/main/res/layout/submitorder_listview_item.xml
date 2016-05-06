@@ -31,7 +31,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/textView_pr"

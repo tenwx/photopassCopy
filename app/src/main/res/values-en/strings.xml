@@ -12,7 +12,7 @@
     <string name="otherLogin">Email Account Login</string>
     <string name="pwd_no_all_space">Please omit any space</string>
     <string name="pwd_head_or_foot_space">Please omit any space</string>
-    <string name="modify_password_empty_hint">Please enter a password.</string>
+    <string name="modify_password_empty_hint">Please enter a password</string>
     <string name="notify_password_hint">Password must be at least 6 characters</string>
     <string name="connecting">Loading&#8230;</string>
     <string name="input_mobile">Please enter your mobile number</string>
@@ -29,14 +29,14 @@
     <string name="date_of_birth">Birthday</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="name_is_empty">Please enter your Nickname</string>
+    <string name="name_is_empty">Please enter your nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
     <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>\n\n&amp;<a href = "1">Privacy Policy</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
-    <string name="select_a_country">Choose Country</string>
+    <string name="select_a_country">Choose Country/Region</string>
     <!-- select country end -->
 
     <!-- forget pwd start -->
@@ -307,7 +307,7 @@
     <!-- modify pwd start -->
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
-    <string name="modify_password_success">Modify Password Success</string>
+    <string name="modify_password_success">Change Password Success</string>
     <string name="show_password">Show Password</string>
     <!-- modify pwd end -->
 

@@ -282,9 +282,6 @@ public class OtherRegisterActivity extends BaseActivity implements
                 } else if (!AppUtil.isEmail(email)) {
                     myToast.setTextAndShow(R.string.email_error,
                             Common.TOAST_SHORT_TIME);
-                } else if (name.isEmpty()) {
-                    myToast.setTextAndShow(R.string.name_is_empty,
-                            Common.TOAST_SHORT_TIME);
                 } else {
                     // 比较密码合法性
                     switch (AppUtil.checkPwd(pwd, pwd2)) {
@@ -294,7 +291,10 @@ public class OtherRegisterActivity extends BaseActivity implements
                             break;
 
                         case AppUtil.PWD_AVAILABLE:// 密码可用
-                            if (isAgree) {
+                            if (name.isEmpty()) {
+                                myToast.setTextAndShow(R.string.name_is_empty,
+                                        Common.TOAST_SHORT_TIME);
+                            } else if (isAgree) {
                                 new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
                                     name, birthday, sex, countryCode, OtherRegisterActivity.this);
                             } else {
