@@ -6,8 +6,9 @@
 
     <include
         android:id="@+id/head"
-        layout="@layout/top_bar"/>
+        layout="@layout/top_bar" />
 
+    <!-- 头部文字  start-->
     <LinearLayout
         android:id="@+id/lead_bar"
         android:layout_width="match_parent"
@@ -58,7 +59,10 @@
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
+    <!-- 头部文字  end-->
 
+
+    <!-- 头部文字  下的蓝色的线 start-->
     <LinearLayout
         android:id="@+id/cursor_layout"
         android:layout_width="match_parent"
@@ -85,22 +89,32 @@
             android:layout_weight="1"
             android:background="@color/transparent" />
     </LinearLayout>
+    <!-- 头部文字  下的蓝色的线 end-->
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/order_vPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/cursor_layout"
-        android:layout_gravity="center"
-        android:background="@color/gray_light"
-        android:flipInterval="10"
-        android:persistentDrawingCache="animation" />
 
-    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
-        android:id="@+id/nonetwork_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/cursor_layout"
-        android:visibility="invisible" />
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/refresh_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/cursor_layout">-->
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/order_vPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_below="@id/cursor_layout"
+            android:background="@color/gray_light"
+            android:flipInterval="10"
+            android:persistentDrawingCache="animation" />
+
+        <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+            android:id="@+id/nonetwork_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cursor_layout"
+            android:visibility="invisible" />
 
 </RelativeLayout>
