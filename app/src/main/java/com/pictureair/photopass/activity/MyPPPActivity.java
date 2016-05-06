@@ -61,7 +61,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private ImageView setting;
     private ListView listPPP;
     private ImageView back;
-    private Button button_buy_ppp,button_scan_ppp; // 无PP＋时 底部的两个按钮。
+    private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
     private LinearLayout ll_button_area;//无PP＋时 底部的两个按钮的区域。
 
     //    private BannerView_PPPIntroduce nopppLayout;
@@ -96,10 +96,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private final Handler myPPPHandler = new MyPPPHandler(this);
 
 
-    private static class MyPPPHandler extends Handler{
+    private static class MyPPPHandler extends Handler {
         private final WeakReference<MyPPPActivity> mActivity;
 
-        public MyPPPHandler(MyPPPActivity activity){
+        public MyPPPHandler(MyPPPActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -115,6 +115,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -263,8 +264,15 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
                     ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
                 }
-                API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, myPPPHandler);
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                //跳转到PP+详情页面
+                Intent intent2 = new Intent(this, PPPDetailProductActivity.class);
+                intent2.putExtra("goods", pppGoodsInfo);
+                startActivity(intent2);
                 break;
+
             case API1.GET_GOODS_FAILED:
                 dialog.dismiss();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);

@@ -289,6 +289,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                                 Common.TOAST_SHORT_TIME);
                         break;
 
+                    case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
                         new SignAndLoginUtil(LoginActivity.this, countryCode + userName.getText().toString().trim(),
                                 password.getText().toString(), false, false, null, null, null, null, this);// 登录
@@ -304,11 +305,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         // Common.TOAST_SHORT_TIME);
                         break;
 
-                    case AppUtil.PWD_SHORT:// 小于6位
-                        myToast.setTextAndShow(R.string.notify_password_hint,
-                                Common.TOAST_SHORT_TIME);
-
-                        break;
+//                        myToast.setTextAndShow(R.string.notify_password_hint,
+//                                Common.TOAST_SHORT_TIME);
+//
+//                        break;
 
                     case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
                         myToast.setTextAndShow(R.string.pwd_head_or_foot_space,

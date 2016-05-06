@@ -440,12 +440,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_4.png");
 		frameInfos.add(frameInfo);
 
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_5.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_5.png");
-		frameInfos.add(frameInfo);
+//		frameInfo = new FrameOrStikerInfo();
+//		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
+//		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");
+//		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_5.png");
+//		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_5.png");
+//		frameInfos.add(frameInfo);
 
 
 		addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
@@ -929,8 +929,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
 		@Override
 		protected Bitmap doInBackground(String... params) {
-			return BitmapUtils.loadImageByPath(params[0], imageWidth,
+			Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth,
 					imageHeight);
+			if(AppUtil.getExifOrientation(params[0])!=0){ // 修改图片显示方向问题。
+				bitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(params[0]),bitmap);
+			}
+			return bitmap;
 		}
 
 		@Override
@@ -944,9 +948,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap = result;
 
 			if (mainBitmap != null) {
-				if(AppUtil.getExifOrientation(photoURL)!=0){
-					mainBitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(photoURL),mainBitmap);
-				}
+//				if(AppUtil.getExifOrientation(photoURL)!=0){
+//					mainBitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(photoURL),mainBitmap);
+//				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
 			PictureAirLog.d("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());

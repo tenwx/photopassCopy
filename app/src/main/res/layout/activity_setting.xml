@@ -53,12 +53,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/pp_margin_10"
+                android:background="@color/white">
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pp_height_1"
-                    android:layout_marginTop="@dimen/pp_margin_16"
                     android:background="@color/line_color" />
 
                 <RelativeLayout
@@ -97,7 +98,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="@dimen/pp_padding_16"
                     android:layout_marginRight="@dimen/pp_margin_16"
                     android:padding="@dimen/pp_padding_16"
                     android:text="@string/download_tpye"
@@ -179,7 +179,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
                     android:layout_marginRight="@dimen/pp_margin_16"
                     android:padding="@dimen/pp_padding_16"
                     android:text="@string/updata_pictures"
@@ -227,7 +226,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
                     android:layout_marginRight="@dimen/pp_margin_16"
                     android:padding="@dimen/pp_padding_16"
                     android:text="@string/setting_language"

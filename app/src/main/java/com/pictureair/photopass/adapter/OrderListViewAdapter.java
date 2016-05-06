@@ -120,7 +120,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             groupHolderView = (GroupHolderView) convertView.getTag();
         }
         //初始化group
-        groupHolderView.orderTimeTextView.setText(grouplist.get(groupPosition).orderTime.substring(0, 16));
+        groupHolderView.orderTimeTextView.setText(grouplist.get(groupPosition).orderTime.substring(0, 19));
         groupHolderView.orderNumberTextView.setText(grouplist.get(groupPosition).orderNumber);
         groupHolderView.totalPriceTextView.setText((int) grouplist.get(groupPosition).orderTotalPrice + "");
         switch (grouplist.get(groupPosition).orderStatus) {
@@ -142,7 +142,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     //3为虚拟类商品无须快递
                     groupHolderView.orderStatesTextView.setText(R.string.order_completed);
                     groupHolderView.paymentButton.setVisibility(View.VISIBLE);
-                    groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.red));
+                    groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.pp_orange));
                     groupHolderView.paymentButton.setText(R.string.delete_order_btn);
                     groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
                 } else {

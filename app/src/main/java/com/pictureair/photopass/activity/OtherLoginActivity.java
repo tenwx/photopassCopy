@@ -145,6 +145,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                                 Common.TOAST_SHORT_TIME);
                         break;
 
+                    case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
                         new SignAndLoginUtil(OtherLoginActivity.this, userName.getText().toString().trim(), password
                                 .getText().toString(), false, false, null, null, null, null, OtherLoginActivity.this);
@@ -155,11 +156,10 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                                 Common.TOAST_SHORT_TIME);
                         break;
 
-                    case AppUtil.PWD_SHORT:// 小于6位
-                        myToast.setTextAndShow(R.string.notify_password_hint,
-                                Common.TOAST_SHORT_TIME);
-
-                        break;
+//                        myToast.setTextAndShow(R.string.notify_password_hint,
+//                                Common.TOAST_SHORT_TIME);
+//
+//                        break;
 
                     case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
                         myToast.setTextAndShow(R.string.pwd_head_or_foot_space,

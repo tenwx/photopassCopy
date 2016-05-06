@@ -25,14 +25,17 @@
             android:id="@+id/et_userinfo_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/pp_margin_20"
+            android:layout_marginTop="4dp"
+            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingRight="@dimen/pp_padding_5"
             android:background="@null"
             android:hint="@string/nn"
             android:singleLine="true"
             android:maxLength="200"
             android:imeOptions="actionDone"
             android:paddingTop="@dimen/pp_padding_16"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
+            android:textColorHint="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
         <View

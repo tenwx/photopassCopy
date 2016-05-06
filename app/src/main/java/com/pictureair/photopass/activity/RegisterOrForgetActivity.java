@@ -24,6 +24,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
 import com.pictureair.photopass.widget.CustomTextView;
@@ -211,10 +212,12 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
     @Override
     public void showDialog() {
-        if (null == customProgressDialog)
-            customProgressDialog = CustomProgressDialog.show(context, getString(R.string.connecting), false, null);
-        else
+        if (null == customProgressDialog) {
+            customProgressDialog = CustomProgressDialog.create(context, getString(R.string.connecting), false, null);
+        }
+        if (!customProgressDialog.isShowing()) {
             customProgressDialog.show();
+        }
     }
 
     @Override
@@ -237,8 +240,12 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     public void countDown(int time) {
         if (time == 0) {
             countDownFinish = true;
-            btn_next.setText(cn.smssdk.R.string.smssdk_send_code2);// 再次发送验证码
-            btn_next.setEnabled(true);
+            btn_next.setText(R.string.smssdk_send_verification_code);// 再次发送验证码
+            if (phoneStr.length() > 0) {
+                btn_next.setEnabled(true);
+            } else {
+                btn_next.setEnabled(false);
+            }
         } else {
 //            PictureAirLog.out("------>倒计时");
             countDownFinish = false;
@@ -255,10 +262,10 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         rlCountry.setVisibility(View.GONE);
         ll_mobile_centen.setVisibility(View.GONE);
         ll_pwd_centen.setVisibility(View.VISIBLE);
-        sure.setText(R.string.ok);
+        sure.setText(R.string.reset_pwd_ok);
         sure.setEnabled(false);
         pwd.setHint(R.string.smssdk_pwd_forget);
-        pwd_again.setHint(R.string.smssdk_pwd2_forget);
+        pwd_again.setHint(R.string.smssdk_pwd2);
     }
 
     @Override
@@ -338,12 +345,22 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
      * 提交
      */
     private void submitEvent() {
-        if (whatActivity.equals(signActivity))
-            if (!checkPwd())
+        if (whatActivity.equals(signActivity)) {
+            if (!checkPhoneNumber()) {
+                myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
                 return;
-        if (!checkPhoneNumber()) {
-            myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
-            return;
+            }
+            if (!checkPwd()) {
+                return;
+            } else if (!isAgree) {
+                myToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
+                return;
+            }
+        } else {
+            if (!checkPhoneNumber()) {
+                myToast.setTextAndShow(R.string.smssdk_write_right_mobile_phone, Common.TOAST_SHORT_TIME);
+                return;
+            }
         }
         registerTool.submit(identifyStr, currentCode + phoneStr, pwdStr);
     }
@@ -352,25 +369,26 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
      * 检查密码
      */
     public boolean checkPwd() {
-        if (pwdStr.isEmpty() || pwdAgainStr.isEmpty()) {
+        //判断密码，必须按照这个顺序
+        if (pwdStr.isEmpty()) {
             // 密码为空
             myToast.setTextAndShow(cn.smssdk.R.string.smssdk_modify_password_empty_hint, 100);
             return false;
-        } else if (pwdStr.length() < 6 || pwdAgainStr.length() < 6) {
+        } else if (!pwdStr.isEmpty() && pwdStr.trim().isEmpty()) {
+            // 密码全部为空格
+            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pwd_no_all_space, 100);
+            return false;
+        } else if (pwdStr.trim().length() < pwdStr.length()) {
+            // 密码首尾有空格
+            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pwd_head_or_foot_space, 100);
+            return false;
+        } else if (pwdStr.length() < 6) {
             // 密码小于6位
             myToast.setTextAndShow(cn.smssdk.R.string.smssdk_notify_password_hint, 100);
             return false;
         } else if (!pwdStr.equals(pwdAgainStr)) {
             // 密码两次不一致
             myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pw_is_inconsistency, 100);
-            return false;
-        } else if (!pwdStr.isEmpty() && pwdAgainStr.trim().isEmpty()) {
-            // 密码全部为空格
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pwd_no_all_space, 100);
-            return false;
-        } else if (pwdStr.trim().length() < pwdAgainStr.length()) {
-            // 密码首尾有空格
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pwd_head_or_foot_space, 100);
             return false;
         }
         return true;
@@ -383,8 +401,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         phoneStr = et_write_phone.getText().toString().trim();
-        pwdStr = pwd.getText().toString().trim();
-        pwdAgainStr = pwd_again.getText().toString().trim();
+        pwdStr = pwd.getText().toString();
+        pwdAgainStr = pwd_again.getText().toString();
         identifyStr = et_put_identify.getText().toString().trim();
         isSubmitAvailable();
         isSendCodeAvailable();
@@ -464,17 +482,14 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         }
     }
 
-    private View view = null;
     private void showPwDialog() {
-        if (null == view){
-            view = LayoutInflater.from(context).inflate(R.layout.dialog_send_code,null);
-            dialogTvPhone = (CustomTextView) view.findViewById(R.id.tv_dialog_mobile);
-        }
-        dialogTvPhone.setText("+"+currentCode+" "+phoneStr);
+        String dialogMsg = String.format(getString(R.string.smssdk_make_sure_mobile_detail), "+" + currentCode + " " + phoneStr);
+        PictureAirLog.out("diamsg--->" + dialogMsg);
 
-        if (pictureWorksDialog == null) {
-            pictureWorksDialog = new PictureWorksDialog(context, null, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), false, view, myHandler);
-        }
+        /**
+         * 每次弹框有可能手机号不同，dialog目前不支持多次改动数据，所以只能每次都重新new dialog
+         */
+        pictureWorksDialog = new PictureWorksDialog(context, null, dialogMsg, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), false, myHandler);
         pictureWorksDialog.show();
     }
 

@@ -3,7 +3,7 @@
     <string name="share_app_name">Shanghai Disney PhotoPass</string>
     <!-- login activity start-->
     <string name="user_login">Account</string>
-    <string name="country">Country</string>
+    <string name="country">Country/Region</string>
     <string name="china">China (mainland)</string>
     <string name="pwd">Password</string>
     <string name="forget_pwd">Forgot Password?</string>
@@ -12,9 +12,9 @@
     <string name="otherLogin">Email Account Login</string>
     <string name="pwd_no_all_space">Please omit any space</string>
     <string name="pwd_head_or_foot_space">Please omit any space</string>
-    <string name="modify_password_empty_hint">Please enter a password.</string>
+    <string name="modify_password_empty_hint">Please enter a password</string>
     <string name="notify_password_hint">Password must be at least 6 characters</string>
-    <string name="connecting">Connecting&#8230;</string>
+    <string name="connecting">Loading&#8230;</string>
     <string name="input_mobile">Please enter your mobile number</string>
     <string name="make_sure_mobile_detail">We will send verification code messages to this number:</string>
     <!-- login activity end-->
@@ -30,22 +30,23 @@
     <string name="date_of_birth">Birthday</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="name_is_empty">Please enter your Nickname</string>
+    <string name="name_is_empty">Please enter your nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
     <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>\n\n&amp;<a href = "1">Privacy Policy</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
-    <string name="select_a_country">Choose Country</string>
+    <string name="select_a_country">Choose Country/Region</string>
     <!-- select country end -->
 
     <!-- forget pwd start -->
     <string name="reset_pwd">Reset password</string>
-    <string name="send_emal">Send a verification email</string>
+    <string name="send_emal">Send verification email</string>
     <string name="back_login_page">Back to Login</string>
     <string name="email_is_empty">Please enter your email address</string>
     <string name="email_sent">Send Successful</string>
+    <string name="reset_pwd_ok">OK</string>
     <!-- forget pwd end -->
 
     <!-- 分享字段 start-->
@@ -88,12 +89,12 @@
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_no_pp">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
-    <string name="no_photo_in_airpass">Please Look for Photographer to Take a Photo!</string>
+    <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_photo_in_magiccam">Collect all your edited photos!</string>
     <string name="no_photo_in_bought">Start to purchase your photos now!</string>
     <string name="no_photo_in_favourite">Start collecting your photos now!</string>
-    <string name="storypage_no_photo">There are no photos in your Disney PhotoPass account</string>
-    <string name="storypage_no_pp">Your PhotoPass photos will appear here</string>
+    <string name="storypage_no_photo">There are no photos in your\nDisney PhotoPass account</string>
+    <string name="storypage_no_pp">Your Disney PhotoPass photos will appear here</string>
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_network">Please check your network</string>
     <string name="click_button_reload">Click button to reload</string>
@@ -253,6 +254,7 @@
     <string name="cart">Shopping Cart</string>
     <string name="select_all">Select All</string>
     <string name="totalprice">Total:</string>
+    <string name="totalprice1">Price:</string>
     <string name="go_pay">Pay(%1$d)</string>
     <string name="delete">Delete</string>
     <string name="no_cart">You do not have anything in the cart</string>
@@ -308,7 +310,7 @@
     <!-- modify pwd start -->
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
-    <string name="modify_password_success">Modify Password Success</string>
+    <string name="modify_password_success">Change Password Successful</string>
     <string name="show_password">Show Password</string>
     <!-- modify pwd end -->
 
@@ -319,12 +321,12 @@
     <string name="all_order">Fulfilled</string>
     <string name="order_completed">Fulfilled</string>
     <string name="order_status">Order Status:</string>
-    <string name="payment_order_btn">Payment</string>
+    <string name="payment_order_btn">Pay</string>
     <string name="order_no">Order ID:</string>
     <string name="orderprice">Order Price:</string>
     <string name="order_time">Order Time:</string>
-    <string name="order_detail">Ordered Products:</string>
-    <string name="delete_order_btn">Delete</string>
+    <string name="order_detail">Order Product:</string>
+    <string name="delete_order_btn">Remove</string>
     <string name="order_empty_resultString">No orders</string>
     <string name="order_empty_buttonString">Go Shopping</string>
     <string name="want_to_buy">There is no order history here.</string>
@@ -351,10 +353,10 @@
     <string name="dialog_ok">Yes, I do</string>
     <string name="dialog_ok1">OK, I know</string>
     <string name="no_activated">Inactive</string>
-    <string name="activated">activated</string>
+    <string name="activated">Activated</string>
     <string name="ppp_has_used">Used</string>
     <string name="ppp_has_expired">Expired</string>
-    <string name="expired_on">Valid:</string>
+    <string name="expired_on">Expiry Date:</string>
     <string name="experiencephotopassplus">Experience Disney PhotoPass+</string>
     <string name="buy_ppp_text">Buy Disney PhotoPass+</string>
     <string name="scan_ppp_text">Scan your existing Disney PhotoPass+</string>
@@ -461,8 +463,10 @@
     <string name="coupon_scan">Scan</string>
     <string name="shop_price">Total</string>
     <string name="coupon_price">Coupon Discount</string>
+    <string name="coupon_price1">Coupon Discount:</string>
     <string name="pay_price">Pay</string>
     <string name="coupon_count">%1$d Coupons</string>
+    <string name="no_coupon1">No Coupon</string>
     <string name="no_coupon">You do not have any coupons in your account.</string>
     <string name="has_been_used">Used</string>
     <string name="expired">Expired</string>
@@ -470,6 +474,7 @@
     <string name="conpon_input_hint">Please enter your coupon code</string>
     <string name="select_cpupon">Select Coupon</string>
     <string name="discount_price">Discount</string>
+    <string name="discount_price1">Discount:</string>
     <string name="incorrect_coupon">Incorrect Coupon</string>
     <string name="coupon_incalid">This coupon cannot support for this good</string>
     <string name="coupon_expireto">Expiration Date: %1$s</string>
