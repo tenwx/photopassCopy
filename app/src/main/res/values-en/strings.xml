@@ -307,7 +307,7 @@
     <!-- modify pwd start -->
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
-    <string name="modify_password_success">Change Password Success</string>
+    <string name="modify_password_success">Change Password Successful</string>
     <string name="show_password">Show Password</string>
     <!-- modify pwd end -->
 
