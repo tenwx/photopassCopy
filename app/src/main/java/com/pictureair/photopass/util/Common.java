@@ -171,7 +171,7 @@ public class Common {
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
-    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
+    public static final String GET_UNIONPAY_TN = "/api/getUnionPayTn";//获取unionpay的tn
     public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
     public static final String SEND_SMS_VALIDATE_CODE = "/userMsg/sendSMSValidateCode" ;//发送短信验证码
     public static final String VALIDATE_CODE_URL = "/userMsg/validateCode";//验证短信验证
