@@ -3,14 +3,13 @@
     android:id="@+id/user_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/pp_margin_16"
-    android:background="@drawable/user_item_select"
     android:orientation="vertical">
 
     <!-- 我的列表 -->
 
     <View
         android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_height="@dimen/pp_height_1"
         android:background="@color/line_color" />
 
@@ -18,6 +17,7 @@
         android:id="@+id/line1_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/user_item_select"
         android:orientation="horizontal">
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -86,6 +86,7 @@
         android:id="@+id/line2_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/user_item_select"
         android:orientation="horizontal">
 
         <com.pictureair.photopass.widget.CustomTextView
@@ -159,6 +160,7 @@
         android:id="@+id/line3_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/user_item_select"
         android:orientation="horizontal">
 
         <com.pictureair.photopass.widget.CustomTextView

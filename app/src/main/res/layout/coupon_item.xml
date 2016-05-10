@@ -52,7 +52,7 @@
             android:layout_marginTop="@dimen/pp_margin_16"
             android:text="有效期"
             android:textColor="@color/gray2"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_12" />
 
         <!-- 描述-->
         <com.pictureair.photopass.widget.CustomTextView
@@ -89,7 +89,7 @@
             android:layout_margin="@dimen/pp_margin_5"
             android:text="状态"
             android:textColor="@color/gray_cover"
-            android:textSize="@dimen/text_size_18" />
+            android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 
 

@@ -1,7 +1,6 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -165,7 +163,7 @@ public class CartInfoAdapter extends BaseAdapter {
                 PictureAirLog.v(TAG, "0 == gridviewlist.size()");
                 ImageView imageView = new ImageView(context);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
+                params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 45)) / 4;
                 params.height = params.width;
                 imageView.setLayoutParams(params);
                 imageView.setImageResource(R.drawable.empty);
@@ -175,19 +173,19 @@ public class CartInfoAdapter extends BaseAdapter {
                 //imageview设置监听
                 imageView.setOnClickListener(new PhotoOnClickListener());
                 viewHolder.cartGoodPhotosGridLayout.addView(imageView, params);
-                TextView textView = new TextView(context);
-                GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-                textView.setLayoutParams(params2);
-                textView.setText(R.string.add_photo);
-                textView.setTextColor(Color.WHITE);
-                textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
-                viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
+//                TextView textView = new TextView(context);
+//                GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//                textView.setLayoutParams(params2);
+//                textView.setText(R.string.add_photo);
+//                textView.setTextColor(Color.WHITE);
+//                textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
+//                viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
 
             } else {//有照片数量
                 for (int i = 0; i < gridviewlist.size(); i++) {
                     ImageView imageView = new ImageView(context);
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                    params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 25)) / 4;
+                    params.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 45)) / 4;
                     params.height = params.width;
                     imageView.setLayoutParams(params);
                     imageView.setScaleType(ScaleType.CENTER_CROP);
@@ -199,13 +197,13 @@ public class CartInfoAdapter extends BaseAdapter {
                     if (gridviewlist.get(i).getPhotoUrl() == null || gridviewlist.get(i).getPhotoUrl().equals("")) {
                         PictureAirLog.v(TAG, "getPhotoUrl() == null");
                         imageView.setImageResource(R.drawable.empty);
-                        TextView textView = new TextView(context);
-                        GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-                        textView.setLayoutParams(params2);
-                        textView.setText(R.string.add_photo);
-                        textView.setTextColor(Color.WHITE);
-                        textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
-                        viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
+//                        TextView textView = new TextView(context);
+//                        GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//                        textView.setLayoutParams(params2);
+//                        textView.setText(R.string.add_photo);
+//                        textView.setTextColor(Color.WHITE);
+//                        textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
+//                        viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
                     } else {
                         String photoUrl;
                         if (gridviewlist.get(i).getPhotoUrl().contains("http")) {

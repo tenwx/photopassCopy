@@ -1641,6 +1641,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
+                PictureAirLog.out("failed---->" + status);
                 handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
             }
         });

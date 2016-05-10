@@ -96,10 +96,10 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         if (oldLanguage.equals(cur)) {
             //确认按钮不可点击
             save.setClickable(false);
-            saveTv.setTextColor(getResources().getColor(R.color.pp_gray));
+            saveTv.setVisibility(View.GONE);
         } else {
             save.setClickable(true);
-            saveTv.setTextColor(getResources().getColor(R.color.white));
+            saveTv.setVisibility(View.VISIBLE);
         }
     }
 

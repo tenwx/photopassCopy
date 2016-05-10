@@ -617,11 +617,21 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
+                    //将 tabname 存入sp
+                    SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新
+                    editor1.putString("tabName", tabName);
+                    editor1.putInt("currentPosition", currentPosition);
+                    editor1.commit();
+
+                    dia.dismiss();
+
                     intent = new Intent(PreviewPhotoActivity.this, MyPPActivity.class);
                     intent.putExtra("photoPassCode",photoInfo.photoPassCode);
                     intent.putExtra("shootTime",photoInfo.shootTime);
                     intent.putExtra("isUseHavedPPP", true);
                     startActivity(intent);
+
+                    this.finish();
                 } else {
                     newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
                 }
@@ -796,6 +806,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             break;
                         }
                     }
+                }
+
+                if (currentPosition == -2) {//绑定PP后返回
+                    String ppsStr = bundle.getString("ppsStr");
+                    refreshPP(photolist,ppsStr);
+                    currentPosition = sharedPreferences.getInt("currentPosition",0);
                 }
 
                 if (currentPosition < 0) {
@@ -1747,4 +1763,27 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void setUmengPhotoSlide() {
         UmengUtil.onEvent(PreviewPhotoActivity.this, Common.EVENT_PHOTO_SLIDE);
     }
+
+    /**
+     * 更新同一组PP, PP 卡号相同，日期相同的更新。
+     * @param photolist
+     * @param ppsStr    //ppsStr:[{"bindDate":"2016-05-04","code":"SHDRF22A2PWFH4N6"}]
+     */
+    private void refreshPP(List<PhotoInfo> photolist, String ppsStr) {
+        JSONArray ppsArray = JSONArray.parseArray(ppsStr);
+        JSONObject jsonObject = (JSONObject) ppsArray.get(0);
+        if (photolist != null) {
+            for (int i = 0; i < photolist.size(); i++) {
+                if (photolist.get(i).photoPassCode != null) {
+                    if (photolist.get(i).photoPassCode.replace(",","").equals(jsonObject.getString("code"))) {
+                        if (photolist.get(i).shootOn.contains(jsonObject.getString("bindDate"))) {
+                            photolist.get(i).isPayed = 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }

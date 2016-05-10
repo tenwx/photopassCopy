@@ -25,6 +25,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
     private EditTextWithClear etUserInfo;
     private int type;
     private MyToast myToast;
+    private String nickName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,11 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
         switch (type) {
             case Common.NICKNAMETYPE:
                 setTopTitleShow(R.string.nn);
+                nickName = intent.getStringExtra("nickname");
                 etUserInfo.setHint(R.string.nn);
+                if (!nickName.equals("")) {
+                    etUserInfo.setText(nickName);
+                }
                 break;
             default:
                 break;

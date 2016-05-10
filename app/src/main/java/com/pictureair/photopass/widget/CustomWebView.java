@@ -9,6 +9,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.pictureair.photopass.util.PictureAirLog;
+
 /**
  * Created by bass on 16/4/22.
  */
@@ -34,8 +36,32 @@ public class CustomWebView extends WebView {
         this.setVerticalScrollBarEnabled(isShowVerticalScrollBarEnabled);
 
         WebSettings settings = this.getSettings();
+
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+
         settings.setJavaScriptEnabled(isSupportJavaScript);
         settings.setSavePassword(false);
+
+        settings.setAllowFileAccess(true);// 设置可以访问网络
+        settings.setBuiltInZoomControls(false);// 设置不支持缩放
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); // 设置
+
+        settings.setSaveFormData(false);
+        // 开启 Application Caches 功能
+        settings.setAppCacheEnabled(true);
+        // 设置 Application Caches 缓存目录
+        // webSettings.setAppCachePath(cacheDirPath);
+        // 开启 DOM storage API 功能
+        settings.setDomStorageEnabled(true);
+        // 开启 database storage API 功能
+        settings.setDatabaseEnabled(true);
+        // 设置数据库缓存路径
+        // webSettings.setDatabasePath(cacheDirPath);
+        settings.setPluginState(WebSettings.PluginState.ON);
+
         if (isCache) {//使用缓存
             settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         } else {//不使用缓存
@@ -43,6 +69,7 @@ public class CustomWebView extends WebView {
         }
         setWebChromeClient();
         setWebViewClient();
+
         loadUrl(url);
     }
 

@@ -41,7 +41,7 @@
             android:gravity="center_vertical"
             android:lines="2"
             android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
         <LinearLayout
             android:id="@+id/cartEditBar"
@@ -59,15 +59,31 @@
                 android:clickable="true"
                 android:src="@drawable/rem_btn" />
 
-            <TextView
-                android:id="@+id/cartProductCountTextView"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/edit_bg"
-                android:gravity="center"
-                android:textColor="@color/pp_gray"
-                android:textSize="@dimen/text_size_16" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/bg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/edit_bg"
+                    android:adjustViewBounds="true"
+                    android:visibility="invisible"/>
+
+
+                <TextView
+                    android:id="@+id/cartProductCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/bg"
+                    android:layout_alignRight="@+id/bg"
+                    android:layout_alignBottom="@+id/bg"
+                    android:layout_alignTop="@+id/bg"
+                    android:background="@drawable/edit_cart_bg"
+                    android:gravity="center"
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_14" />
+            </RelativeLayout>
 
             <com.pictureair.photopass.widget.ListViewImageView
                 android:id="@+id/cartAddImageView"
@@ -82,28 +98,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_small_size" />
+            android:layout_alignTop="@+id/cartProductImageView"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/cartCurrency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignTop="@+id/cartProductImageView"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/cartPrice"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_small_size" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:id="@+id/cartCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/cartProductImageView"
+            android:layout_alignBottom="@+id/cartProductImageView"
+            android:layout_marginBottom="10dp"
             android:layout_alignParentRight="true"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_small_size" />
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -120,7 +139,10 @@
             android:background="@drawable/bg_border_stroke"
             android:columnCount="4"
             android:orientation="horizontal"
-            android:padding="@dimen/pp_padding_10"
+            android:paddingLeft="@dimen/pp_padding_20"
+            android:paddingRight="@dimen/pp_padding_20"
+            android:paddingTop="@dimen/pp_padding_10"
+            android:paddingBottom="@dimen/pp_padding_10"
             android:useDefaultMargins="true" />
 
         <View

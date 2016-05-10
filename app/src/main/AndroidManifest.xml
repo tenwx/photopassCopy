@@ -63,7 +63,7 @@
 
                 <data
                     android:host="com.photopass"
-                    android:scheme="shanghaiphotopass" />
+                    android:scheme="shdrphotopass" />
             </intent-filter>
         </activity>
         <activity

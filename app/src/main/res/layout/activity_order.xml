@@ -12,7 +12,7 @@
     <LinearLayout
         android:id="@+id/lead_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_top_bar_height"
+        android:layout_height="40dp"
         android:layout_below="@id/head"
         android:background="@color/white"
         android:orientation="horizontal">

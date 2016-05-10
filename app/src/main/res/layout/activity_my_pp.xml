@@ -56,11 +56,10 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/pp_padding_14"
             android:text="@string/pp_ok"
-            android:background="@drawable/button_white"
-            android:textColor="@color/gray"
+            android:textColor="@color/white"
             android:padding="@dimen/pp_padding_5"
             android:visibility="gone"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
     <ListView
@@ -101,21 +100,20 @@
                 <View
                     android:layout_width="0dp"
                     android:layout_height="@dimen/pp_height_1dp"
-                    android:layout_weight="2" />
+                    android:layout_weight="3" />
 
                 <ImageView
                     android:id="@+id/no_photo_img_iv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/no_photo_textView"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:adjustViewBounds="true"
                     android:src="@drawable/no_pp_upgrade" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="@dimen/pp_height_1dp"
-                    android:layout_weight="2" />
+                    android:layout_weight="3" />
             </LinearLayout>
 
             <TextView
@@ -123,12 +121,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/no_photo_img"
-                android:layout_marginTop="@dimen/pp_margin_16"
+                android:layout_marginTop="@dimen/pp_margin_5"
                 android:gravity="center"
                 android:paddingLeft="@dimen/pp_padding_20"
                 android:paddingRight="@dimen/pp_padding_20"
                 android:text="@string/no_photopass_update"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
         </RelativeLayout>
     </RelativeLayout>

@@ -3,18 +3,18 @@
     <string name="share_app_name">上海迪士尼乐拍通</string>
     <!-- login activity start-->
     <string name="user_login">用户登录</string>
-    <string name="country">国家</string>
+    <string name="country">国家/地区</string>
     <string name="china">中国大陆</string>
     <string name="pwd">密码</string>
     <string name="forget_pwd">忘记密码？</string>
     <string name="login">登录</string>
     <string name="sign">注册</string>
     <string name="otherLogin">电子邮箱账户登录</string>
-    <string name="pwd_no_all_space">密码首或尾不能为空格！</string>
-    <string name="pwd_head_or_foot_space">密码首或尾不能为空格！</string>
+    <string name="pwd_no_all_space">密码首或尾不能为空格</string>
+    <string name="pwd_head_or_foot_space">密码首或尾不能为空格</string>
     <string name="modify_password_empty_hint">请输入密码</string>
-    <string name="notify_password_hint">密码不能小于6位！</string>
-    <string name="connecting">请稍后&#8230;</string>
+    <string name="notify_password_hint">密码不能小于6位</string>
+    <string name="connecting">正在加载中，请稍后&#8230;</string>
     <string name="input_mobile">手机号未输入</string>
     <string name="make_sure_mobile_detail">我们将发送验证码短信到这个号码:</string>
     <!-- login activity end-->
@@ -30,14 +30,14 @@
     <string name="date_of_birth">生日</string>
     <string name="male">男</string>
     <string name="female">女</string>
-    <string name="name_is_empty">昵称不能为空</string>
+    <string name="name_is_empty">请输入昵称</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
     <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
-    <string name="select_a_country">选择国家</string>
+    <string name="select_a_country">选择国家/地区</string>
     <!-- select country end -->
 
     <!-- forget pwd start -->
@@ -46,6 +46,7 @@
     <string name="back_login_page">返回登录页面</string>
     <string name="email_is_empty">电子邮箱不能为空</string>
     <string name="email_sent">验证邮件已发送</string>
+    <string name="reset_pwd_ok">确认</string>
     <!-- forget pwd end -->
 
     <!-- 分享字段 start-->
@@ -88,7 +89,7 @@
     <string name="story_tab_favorite">收藏</string>
     <string name="story_no_pp">请扫描您的上海迪士尼乐园门票或迪士尼乐拍通卡预览您的照片。</string>
     <string name="story_scan">扫一扫</string>
-    <string name="no_photo_in_airpass">没有照片，快去寻找乐拍通摄影师拍照吧！</string>
+    <string name="no_photo_in_airpass">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
     <string name="no_photo_in_magiccam">收藏全部的已编辑图片</string>
     <string name="no_photo_in_bought">没有照片，赶快来购买吧！</string>
     <string name="no_photo_in_favourite">没有照片，赶快去收藏吧！</string>
@@ -219,8 +220,8 @@
     <string name="magicbrush">滤镜</string>
     <string name="decoration">贴纸</string>
     <string name="rotate">旋转</string>
-    <string name="rotate_left">左转90</string>
-    <string name="rotate_right">右转90</string>
+    <string name="rotate_left">左旋转90</string>
+    <string name="rotate_right">右旋转90</string>
     <string name="saving">正在保存&#8230;</string>
     <string name="dealing">正在处理&#8230;</string>
     <string name="exit_hint">是否保存图片？</string>
@@ -253,6 +254,7 @@
     <string name="cart">购物车</string>
     <string name="select_all">全选</string>
     <string name="totalprice">合计：</string>
+    <string name="totalprice1">合计：</string>
     <string name="go_pay">结算(%1$d)</string>
     <string name="delete">删除</string>
     <string name="no_cart">您的购物车为空</string>
@@ -265,7 +267,7 @@
     <!-- cart end -->
 
     <!-- submit order start -->
-    <string name="submitorder">订单确认</string>
+    <string name="submitorder">订单提交</string>
     <string name="transport">照片领取处</string>
     <string name="goods_info">商品信息</string>
     <string name="all_goods">共%1$d件商品</string>
@@ -354,7 +356,7 @@
     <string name="activated">已激活</string>
     <string name="ppp_has_used">已用完</string>
     <string name="ppp_has_expired">已过期</string>
-    <string name="expired_on">有效时间:</string>
+    <string name="expired_on">有效期:</string>
     <string name="experiencephotopassplus">迪士尼乐拍通一卡通体验卡</string>
     <string name="buy_ppp_text">购买迪士尼乐拍通一卡通</string>
     <string name="scan_ppp_text">扫描已有的迪士尼乐拍通一卡通</string>
@@ -442,7 +444,7 @@
     <string name="confirm_sync_yes">确定</string>
     <string name="confirm_sync_no">取消</string>
     <!-- 删除pp的提示-->
-    <string name="delete_pp">确认删除此迪士尼乐拍通？一旦删除，即该账户不会显示此迪士尼乐拍通的照片！</string>
+    <string name="delete_pp">一旦删除，即该账户不会显示此迪士尼乐拍通的照片！</string>
     <string name="delete_pp_cancel">取消</string>
     <string name="delete_pp_ok">删除</string>
     <!-- tips end -->
@@ -461,8 +463,10 @@
     <string name="coupon_scan">扫描</string>
     <string name="shop_price">商品金额</string>
     <string name="coupon_price">抵用券抵用</string>
+    <string name="coupon_price1">抵用券抵用：</string>
     <string name="pay_price">实际支付</string>
     <string name="coupon_count">有%1$d张抵用券可用</string>
+    <string name="no_coupon1">没有可用的抵用券</string>
     <string name="no_coupon">您还没有可使用的抵用券</string>
     <string name="has_been_used">已使用</string>
     <string name="expired">已过期</string>
@@ -470,6 +474,7 @@
     <string name="conpon_input_hint">请输入抵用券兑换码</string>
     <string name="select_cpupon">使用抵用劵</string>
     <string name="discount_price">优惠立减</string>
+    <string name="discount_price1">优惠立减：</string>
     <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
     <string name="coupon_incalid">此抵用券不适用当前商品</string>
     <string name="coupon_expireto">有效期至：%1$s</string>

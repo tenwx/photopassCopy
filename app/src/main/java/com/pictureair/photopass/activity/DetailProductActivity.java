@@ -36,6 +36,7 @@ import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.smssdk.gui.AppManager;
@@ -168,8 +169,10 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         }
         if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
             PictureAirLog.v(TAG, "goodsInfo picture size" + goodsInfo.getPictures().size());
-            List<GoodInfoPictures> goodInfoPicturesList = goodsInfo.getPictures();
-            goodInfoPicturesList.remove(0);
+            PictureAirLog.v(TAG, "goodsInfo picture size" + goodsInfo.getPictures().get(0).getUrl());
+            PictureAirLog.v(TAG, "goodsInfo picture size" + goodsInfo.getPictures().get(1).getUrl());
+            List<GoodInfoPictures> goodInfoPicturesList = new ArrayList<>();
+            goodInfoPicturesList.add(goodsInfo.getPictures().get(1));
             bannerView_Detail.findimagepath(goodInfoPicturesList);
         }
     }
@@ -192,6 +195,8 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                 intent = new Intent(DetailProductActivity.this, SelectPhotoActivity.class);
                 intent.putExtra("activity", "detailproductactivity");
                 intent.putExtra("goodsInfo", goodsInfo);
+                PictureAirLog.out("size---->" + goodsInfo.getPictures().size());
+                PictureAirLog.out("size---->" + goodsInfo.getPictures().get(0).getUrl());
                 startActivity(intent);
                 break;
 

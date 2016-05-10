@@ -251,6 +251,14 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
         PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
 
+        PictureAirLog.out("photocount--->" + photocount);
+        if (isDisneyVideo) {
+            okButton.setText(String.format(getString(R.string.disney_video_edit_photo), 0, photocount));
+        } else {
+            okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
+        }
+
+        okButton.setEnabled(false);
         //判断是否有照片
         if (isBuy) {//disney video
             if (photoPassArrayList != null && photoPassArrayList.size() > 2) {
@@ -262,7 +270,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
             } else {
                 gridView.setVisibility(View.GONE);
                 llNullPhoto.setVisibility(View.VISIBLE);
-                okButton.setEnabled(false);
                 return;
             }
         } else {
@@ -276,7 +283,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     noPhotoTextView.setText(R.string.no_photo_update);
                     noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
                 }
-                goneOkButton();
+//                goneOkButton();
                 return;
             }
         }
@@ -290,13 +297,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
             myApplication.setneedScanPhoto(false);
         }
         //获取可选图片总数
-        okButton.setVisibility(View.VISIBLE);
+//        okButton.setVisibility(View.VISIBLE);
 
-        if (isDisneyVideo) {
-            okButton.setText(String.format(getString(R.string.disney_video_edit_photo), 0, photocount));
-        } else {
-            okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
-        }
     }
 
     /**
@@ -308,10 +310,10 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         llDisneyVideoFoot = (LinearLayout) findViewById(R.id.ll_disney_video_foot);
         llShopPhoto = (LinearLayout) findViewById(R.id.ll_shop_photo);
         tvBubble.setText(String.format(getString(R.string.disney_video_bubble), photocount));//更新最多选多少张
-        okButton.setVisibility(View.GONE);
+//        okButton.setVisibility(View.GONE);
         okButton = null;
         okButton = (TextView) findViewById(R.id.tv_select_photo_ok);
-        okButton.setVisibility(View.VISIBLE);
+//        okButton.setVisibility(View.VISIBLE);
         llDisneyVideoFoot.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
 
@@ -406,7 +408,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
      * 隐藏OkButton
      */
     private void goneOkButton() {
-        okButton.setVisibility(View.GONE);
+//        okButton.setVisibility(View.GONE);
         okButton.setEnabled(false);
     }
 
