@@ -1,27 +1,20 @@
 package com.pictureair.photopass.customDialog;
 
 import android.app.Dialog;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.ScreenUtil;
-
-import java.util.IllegalFormatCodePointException;
-
-import cn.smssdk.gui.EditTextWithClear;
 
 /**
  * 自定义的dialog，可以替换message显示部分的布局

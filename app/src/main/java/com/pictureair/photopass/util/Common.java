@@ -29,16 +29,6 @@ public class Common {
 //    public final static String POLICY_AGREEMENT = "http://192.168.8.49:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.49:3004/terms.html?source=outer";  //条款 2
 
-    /**
-     * 正式上线服务器
-     */
-//    public static final String BASE_URL_TEST = "http://211.144.223.226:3006";
-//    public static final String PHOTO_URL = "http://211.144.223.224:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.144.223.226:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://211.144.223.226:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "http://211.144.223.224:3000/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://211.144.223.224:3000/terms.html?source=outer";  //条款 2
 
     /**
      *  域名线上服务器
@@ -78,9 +68,9 @@ public class Common {
 
 
 
-    public final static String VERSION_CODE = "V1.0.1";//开发版
-    public final static boolean DEBUG = false;// true，打印log， false，不打印log
-    public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
+    public final static String VERSION_CODE = "V1.1.0";//开发版
+    public final static boolean DEBUG = true;// true，打印log， false，不打印log
+    public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
 
     //接口
@@ -171,7 +161,7 @@ public class Common {
     public static final String SHARE_CALL_BACK = "/api/share";//分享回调
     public static final String GET_AD_LOCATIONS = "/park/getAdLocations";//获取广告地址
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
-    public static final String GET_UNIONPAY_TN = "/api/";//获取unionpay的tn
+    public static final String GET_UNIONPAY_TN = "/api/getUnionPayTn";//获取unionpay的tn
     public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
     public static final String SEND_SMS_VALIDATE_CODE = "/userMsg/sendSMSValidateCode" ;//发送短信验证码
     public static final String VALIDATE_CODE_URL = "/userMsg/validateCode";//验证短信验证

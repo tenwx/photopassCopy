@@ -71,7 +71,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:clickable="false"
-                    android:divider="@null"
+                    android:divider="@color/pp_light_gray_normal"
+                    android:dividerHeight="@dimen/pp_height_1"
                     android:focusable="false" />
 
             </LinearLayout>

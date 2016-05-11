@@ -37,8 +37,9 @@
             android:id="@+id/textView_pr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_padding_10"
+            android:layout_alignTop="@+id/imageView_pd"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
@@ -46,7 +47,8 @@
             android:id="@+id/textView_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/pp_padding_10"
+            android:layout_alignTop="@+id/imageView_pd"
             android:layout_marginRight="@dimen/pp_margin_2"
             android:layout_toLeftOf="@id/textView_pr"
             android:textColor="@color/pp_gray"
@@ -58,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/imageView_pd"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/pp_margin_5"
+            android:layout_marginBottom="@dimen/pp_padding_10"
             android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_14" />
 
@@ -88,8 +90,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1"
-        android:layout_marginBottom="@dimen/pp_margin_8"
+        android:layout_height="@dimen/pp_height_1dp"
         android:layout_marginLeft="@dimen/pp_margin_16"
         android:layout_marginTop="@dimen/pp_margin_8"
         android:background="@color/pp_light_gray_normal" />

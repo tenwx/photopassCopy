@@ -294,6 +294,7 @@
     <string name="pay_unsuccesss">Pay failed，please try again</string>
     <string name="submit_order">Payment Successful</string>
     <string name="no_pay_tips">You don\'t pay anything!</string>
+    <string name="no_pay_success">OK</string>
     <!-- payment end -->
 
     <!-- set header start -->
