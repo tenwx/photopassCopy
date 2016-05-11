@@ -158,9 +158,8 @@ public class NotificationServiceHelp {
                         @Override
                         public void on(String event, IOAcknowledge arg1, Object... arg2) {
                             // TODO Auto-generated method stub
-                            PictureAirLog.d("  ====  arg2", " :" + arg2);
-                            PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
-
+//                            PictureAirLog.d("  ====  arg2", " :" + arg2.toString());
+//                            PictureAirLog.d("===on===", "Server triggered event '" + event + "'");
                             try {
                                 socketUtil.socketOn(event.toString(), (JSONObject) arg2[0], true);
                             } catch (JSONException e) {

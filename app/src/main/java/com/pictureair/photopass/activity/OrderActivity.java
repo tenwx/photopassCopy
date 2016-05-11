@@ -118,72 +118,73 @@ public class OrderActivity extends BaseFragmentActivity {
      * @param msg
      */
     private void dealHandler(Message msg) {
-            switch (msg.what) {
-                case API1.GET_ORDER_SUCCESS:
-                    getOrderData(msg);
-                    break;
+        switch (msg.what) {
+            case API1.GET_ORDER_SUCCESS:
+                getOrderData(msg);
+                break;
 
-                case API1.GET_ORDER_FAILED:
+            case API1.GET_ORDER_FAILED:
 //				toast.setTextAndShow(R.string.failed, Common.TOAST_SHORT_TIME);
-                    OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
-                    orderFragmentEvent.setRequest(1);
-                    EventBus.getDefault().post(orderFragmentEvent);
+                OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
+                orderFragmentEvent.setRequest(1);
+                EventBus.getDefault().post(orderFragmentEvent);
 
-                    hideProgressDialog();
-                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                    netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
-                    viewPager.setVisibility(View.INVISIBLE);
-                    break;
-                case API1.DELETE_ORDER_SUCCESS:
+                hideProgressDialog();
+                netWorkOrNoCountView.setVisibility(View.VISIBLE);
+                netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
+                viewPager.setVisibility(View.INVISIBLE);
+                break;
+            case API1.DELETE_ORDER_SUCCESS:
 //				int deletePosition = msg.arg1;
-                    allOrderArrayList.remove(0);
-                    allOrderChildArrayList.remove(0);
+                allOrderArrayList.remove(0);
+                allOrderChildArrayList.remove(0);
 
-                    deliveryOrderArrayList.remove(0);
-                    deliveryOrderChildArrayList.remove(0);
+                deliveryOrderArrayList.remove(0);
+                deliveryOrderChildArrayList.remove(0);
 
-                    orderAdapter.notifyDataSetChanged();
-                    break;
+                orderAdapter.notifyDataSetChanged();
+                break;
 
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
 //                    if (null != refreshLayout && refreshLayout.isRefreshing()) {
 //                        refreshLayout.setEnabled(true);
 //                        refreshLayout.setRefreshing(false);
 //                    }
-                    //重新加载购物车数据
-                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
-                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                        break;
-                    }
-                    showProgressDialog();
-                    API1.getOrderInfo(  orderActivityHandler);
+                //重新加载购物车数据
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
+                }
+                showProgressDialog();
+                API1.getOrderInfo(orderActivityHandler);
+                break;
 
-                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
-                    //去跳转到商品页面
-                    //需要删除页面，保证只剩下mainTab页面，
-                    AppManager.getInstance().killOtherActivity(MainTabActivity.class);
-                    //同时将mainTab切换到shop Tab
-                    ((MyApplication) getApplication()).setMainTabIndex(3);
+            case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_NO_RELOAD://noView的按钮响应非重新加载的点击事件
+                //去跳转到商品页面
+                //需要删除页面，保证只剩下mainTab页面，
+                AppManager.getInstance().killOtherActivity(MainTabActivity.class);
+                //同时将mainTab切换到shop Tab
+                ((MyApplication) getApplication()).setMainTabIndex(3);
 
+                break;
+            case REFRESH:
+                //重新加载购物车数据
+                if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
-                case REFRESH:
-                    //重新加载购物车数据
-                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
-                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
-                        break;
-                    }
-                    API1.getOrderInfo(  orderActivityHandler);
-                    break;
+                }
+                API1.getOrderInfo(orderActivityHandler);
+                break;
 
 
-                default:
-                    break;
-            }
+            default:
+                break;
         }
+    }
 
     /**
      * 读取订单信息
+     *
      * @param msg
      */
     private void getOrderData(Message msg) {
@@ -248,17 +249,25 @@ public class OrderActivity extends BaseFragmentActivity {
 //                            paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
 //                            sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
 
-        if (null == mFragments || mFragments.size() == 0){
-            mFragments.add(OrderFragment.getInstance(orderActivityHandler,paymentOrderArrayList,deliveryOrderArrayList,downOrderArrayList,paymentOrderChildArrayList,deliveryOrderChildArrayList,downOrderChildArrayList,sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY),0));
-            mFragments.add(OrderFragment.getInstance(orderActivityHandler,paymentOrderArrayList,deliveryOrderArrayList,downOrderArrayList,paymentOrderChildArrayList,deliveryOrderChildArrayList,downOrderChildArrayList,sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY),1));
-            mFragments.add(OrderFragment.getInstance(orderActivityHandler,paymentOrderArrayList,deliveryOrderArrayList,downOrderArrayList,paymentOrderChildArrayList,deliveryOrderChildArrayList,downOrderChildArrayList,sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY),2));
+        if (null == mFragments || mFragments.size() == 0) {
+            if (null != orderActivityHandler
+                    && null != paymentOrderArrayList
+                    && null != deliveryOrderArrayList
+                    && null != downOrderArrayList
+                    && null != paymentOrderChildArrayList
+                    && null != deliveryOrderChildArrayList
+                    && null != downOrderChildArrayList) {
+                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
+                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
+                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
+            }
         }
 
-        if (null == orderAdapter){
-            orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(),mFragments);
+        if (null == orderAdapter) {
+            orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
             viewPager.setAdapter(orderAdapter);
             viewPager.setCurrentItem(orderType);
-        }else{
+        } else {
             OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
             orderFragmentEvent.setOrderChildlist1(paymentOrderChildArrayList);
             orderFragmentEvent.setOrderChildlist2(deliveryOrderChildArrayList);
@@ -383,18 +392,18 @@ public class OrderActivity extends BaseFragmentActivity {
     /**
      * 从网络上获取信息
      */
-    public void getData(){
-        API1.getOrderInfo( orderActivityHandler);
+    public void getData() {
+        API1.getOrderInfo(orderActivityHandler);
     }
 
     /**
      * 显示菊花
      */
-    private void showProgressDialog(){
-        if (null != customProgressDialog && !customProgressDialog.isShowing()){
+    private void showProgressDialog() {
+        if (null != customProgressDialog && !customProgressDialog.isShowing()) {
             customProgressDialog.show();
         }
-        if (null == customProgressDialog){
+        if (null == customProgressDialog) {
             customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.connecting), false, null);
         }
     }
@@ -402,8 +411,8 @@ public class OrderActivity extends BaseFragmentActivity {
     /**
      * 隐藏菊花
      */
-    private void hideProgressDialog(){
-        if (null != customProgressDialog && customProgressDialog.isShowing()){
+    private void hideProgressDialog() {
+        if (null != customProgressDialog && customProgressDialog.isShowing()) {
             customProgressDialog.dismiss();
         }
     }

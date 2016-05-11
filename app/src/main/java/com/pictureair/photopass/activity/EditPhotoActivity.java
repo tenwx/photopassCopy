@@ -517,7 +517,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			case R.id.edit_return:
 				// 判断 是否 需要保存图片
 				if (tempFile.exists() && tempFile.isDirectory()) {
-					if (tempFile.list().length > 0) {
+					if (tempFile != null && tempFile.list().length > 0) {
 						// 提示是否需要保存图片。
 						createIsSaveDialog();
 					} else {
@@ -953,8 +953,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
-			PictureAirLog.d("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
-			editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
+//			PictureAirLog.d("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
+			if (null != editPhotoHandler){
+				editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
+			}
 			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
 	}

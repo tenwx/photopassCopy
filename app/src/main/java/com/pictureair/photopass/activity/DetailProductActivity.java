@@ -73,10 +73,10 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
     private final Handler detailProductHandler = new DetailProductHandler(this);
 
 
-    private static class DetailProductHandler extends Handler{
+    private static class DetailProductHandler extends Handler {
         private final WeakReference<DetailProductActivity> mActivity;
 
-        public DetailProductHandler(DetailProductActivity activity){
+        public DetailProductHandler(DetailProductActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -92,6 +92,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 
     /**
      * 处理Message
+     *
      * @param msg
      */
     private void dealHandler(Message msg) {
@@ -150,13 +151,14 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
-        name.setText(goodsInfo.getNameAlias());
-        detail.setText(goodsInfo.getDescription());
+        if (null != goodsInfo) {
+            name.setText(goodsInfo.getNameAlias());
+            detail.setText(goodsInfo.getDescription());
+        }
         promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         promotionPrice.setText(goodsInfo.getPrice() + "");
-
         //实体商品-自提，数码商品-数码下载
         if (goodsInfo == null) {
             return;

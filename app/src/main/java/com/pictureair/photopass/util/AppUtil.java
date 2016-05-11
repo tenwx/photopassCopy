@@ -423,10 +423,10 @@ public class AppUtil {
         } finally {
             try {
                 if (inStream != null) {
-
                     inStream.close();
                 }
-                httpConnection.disconnect();
+                if (null != httpConnection)
+                    httpConnection.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();
             }

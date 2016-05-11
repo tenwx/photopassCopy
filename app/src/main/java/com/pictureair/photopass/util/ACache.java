@@ -433,7 +433,8 @@ public class ACache {
             e.printStackTrace();
         } finally {
             try {
-                oos.close();
+                if (null != oos)
+                    oos.close();
             } catch (IOException e) {
             }
         }

@@ -476,10 +476,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
 
     public void showPhotoDetail(int curInedx, int tag) {
-        PictureAirLog.v(TAG, "showPhotoDetail size : " + showPPCodeList.size());
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
             return;
         }
+        PictureAirLog.v(TAG, "showPhotoDetail size : " + showPPCodeList.size());
         PhotoInfo photoInfo = showPPCodeList.get(curInedx)
                 .getSelectPhotoItemInfos().get(tag);
         if (photoInfo.photoPathOrURL.equals("")) {

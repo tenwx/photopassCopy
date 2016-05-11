@@ -127,7 +127,6 @@ public class DownloadTask {
                     dbDAO.deleteThread(threadInfo.getUrl(), threadInfo.getId());
                     mHandler.sendEmptyMessage(BreakpointDownloadService.SERVICE_STOP);
                 }
-
             } catch (Exception e) {
                 PictureAirLog.e(TAG, e.getMessage());
                 saveThreadInfo(mFinish);//需要保存下载进度
@@ -137,9 +136,12 @@ public class DownloadTask {
             } finally {
                 try {
                     //关闭流
-                    conn.disconnect();
-                    raf.close();
-                    inputStream.close();
+                    if (null != conn )
+                        conn.disconnect();
+                    if (null != raf)
+                        raf.close();
+                    if (null != inputStream)
+                        inputStream.close();
                 } catch (IOException e) {
                     intent.putExtra("onFailure", true);
                     context.sendBroadcast(intent);

@@ -539,7 +539,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
+                if (null != arg2)
+                    oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
                 if (dialog.isShowing()) {
                     PictureAirLog.out("dismiss--->local");
                     dialog.dismiss();

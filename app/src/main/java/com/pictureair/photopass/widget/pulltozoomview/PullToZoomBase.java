@@ -197,6 +197,7 @@ public abstract class PullToZoomBase<T extends View> extends LinearLayout implem
                 }
                 break;
             }
+
         }
 
         return mIsBeingDragged;

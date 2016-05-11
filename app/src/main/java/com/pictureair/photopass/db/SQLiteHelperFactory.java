@@ -8,34 +8,29 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 
 /**
  * SQLiteOpenHelper 工厂
- * @author Ricky
  *
+ * @author Ricky
  */
 public class SQLiteHelperFactory {
-	
-	private static final String TAG = SQLiteHelperFactory.class.getSimpleName();
-	
-	private static SQLiteOpenHelper sqLiteOpenHelper;
-	
-	private SQLiteHelperFactory(){
-		
-	}
-	
-	public static SQLiteOpenHelper create(Context context){
 
-		if(sqLiteOpenHelper==null){
+    private static final String TAG = SQLiteHelperFactory.class.getSimpleName();
 
-			synchronized (SQLiteHelperFactory.class) {
+    private static SQLiteOpenHelper sqLiteOpenHelper;
 
-				if(sqLiteOpenHelper==null){
+    private SQLiteHelperFactory() {
 
-					sqLiteOpenHelper = new PictureAirDBHelper(context.getApplicationContext());
+    }
 
-					//必须先调用此方法
-					SQLiteDatabase.loadLibs(context);
-				}
-			}
-		}
-		return sqLiteOpenHelper;
-	}
+    public static SQLiteOpenHelper create(Context context) {
+        if (sqLiteOpenHelper == null) {
+            synchronized (SQLiteHelperFactory.class) {
+                if (sqLiteOpenHelper == null) {
+                    sqLiteOpenHelper = new PictureAirDBHelper(context.getApplicationContext());
+                    //必须先调用此方法
+                    SQLiteDatabase.loadLibs(context);
+                }
+            }
+        }
+        return sqLiteOpenHelper;
+    }
 }

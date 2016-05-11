@@ -317,8 +317,8 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
                     }
 
                     if (getWindowToken() != null) {
-                        Resources r = mContext.getResources();
-                        int messageId;
+//                        Resources r = mContext.getResources();
+//                        int messageId;
                     }
                     return true;
                 }
@@ -449,10 +449,12 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     }
 
     private void toggleMediaControlsVisiblity() {
-        if (mMediaController.isShowing()) {
-            mMediaController.hide();
-        } else {
-            mMediaController.show();
+        if (mMediaController != null) {
+            if (mMediaController.isShowing()) {
+                mMediaController.hide();
+            } else {
+                mMediaController.show();
+            }
         }
     }
 
@@ -494,7 +496,7 @@ public class VideoPlayerView extends SurfaceView implements MediaPlayerControl {
     }
 
     public void seekTo(int msec) {
-        PictureAirLog.e(TAG,"seekTo :" + msec);
+        PictureAirLog.e(TAG, "seekTo :" + msec);
         if (mMediaPlayer != null && mIsPrepared) {
             mMediaPlayer.seekTo(msec);
         } else {

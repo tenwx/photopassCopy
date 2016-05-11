@@ -209,7 +209,7 @@ public class WheelScroller {
             // scrolling is not finished when it comes to final Y
             // so, finish it manually 
             if (Math.abs(currY - scroller.getFinalY()) < MIN_DELTA_FOR_SCROLLING) {
-                currY = scroller.getFinalY();
+//                currY = scroller.getFinalY();
                 scroller.forceFinished(true);
             }
             if (!scroller.isFinished()) {

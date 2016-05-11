@@ -542,8 +542,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.cart_edit:
-                for (int i = 0; i < cartInfoList.size(); i++) {
-                    cartInfoList.get(i).setShowEdit(isEdit ? 0 : 1);
+                if (null != cartInfoList) {
+                    for (int i = 0; i < cartInfoList.size(); i++) {
+                        cartInfoList.get(i).setShowEdit(isEdit ? 0 : 1);
+                    }
                 }
                 if (isEdit) {//取消编辑状态
                     cancelEdit();
