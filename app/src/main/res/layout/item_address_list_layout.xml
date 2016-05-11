@@ -40,9 +40,10 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/pp_height_1"
+        android:layout_height="@dimen/pp_height_1dp"
         android:layout_marginBottom="@dimen/pp_margin_8"
         android:layout_marginTop="@dimen/pp_margin_16"
+        android:layout_marginLeft="@dimen/pp_margin_8"
         android:background="@color/pp_light_gray_normal" />
 
 

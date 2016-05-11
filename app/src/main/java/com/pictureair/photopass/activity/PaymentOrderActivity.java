@@ -276,6 +276,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     }
 
     private void init() {
+        IntentFilter filter = new IntentFilter("com.payment.action");
+        registerReceiver(broadcastReceiver, filter);
         sPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 MODE_PRIVATE);
         newToast = new MyToast(this);
@@ -342,7 +344,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         } else {
             paySv.setVisibility(View.GONE);
             noPayLl.setVisibility(View.VISIBLE);
-            sbmtButton.setText(R.string.confirm);
+            sbmtButton.setText(R.string.no_pay_success);
         }
 
     }
@@ -385,8 +387,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     //直接提交订单，等待推送
                     checkOut();
                 }
-                IntentFilter filter = new IntentFilter("com.payment.action");
-                registerReceiver(broadcastReceiver, filter);
+
                 break;
 
             case R.id.zfb:// 选择支付宝支付

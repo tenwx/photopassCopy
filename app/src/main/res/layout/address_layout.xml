@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/bg_border_bottom_line"
+            android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/pp_padding_8">
@@ -31,9 +31,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pp_margin_16"
                 android:text="@string/transport"
+                android:textSize="@dimen/text_size_14"
                 android:textColor="@color/pp_dark_blue" />
 
         </LinearLayout>
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/pp_height_1dp"-->
+            <!--android:background="@color/pp_light_gray_normal"/>-->
 
 
         <ListView
@@ -54,14 +60,15 @@
             <View
                 android:id="@+id/coupon_line"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/pp_height_1"
-                android:background="@color/pp_light_gray_normal" />
+                android:layout_height="@dimen/pp_height_1dp"
+                android:background="@color/pp_light_gray_normal"
+                android:layout_marginLeft="@dimen/pp_padding_16"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/bg_border_bottom_line"
+                android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/pp_padding_8">
@@ -76,15 +83,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/pp_margin_16"
                     android:text="@string/coupon"
-                    android:textColor="@color/pp_dark_blue" />
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_14"/>
 
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pp_height_1dp"
+                android:background="@color/pp_light_gray_normal"/>
 
             <LinearLayout
                 android:id="@+id/coupon_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/pp_margin_16"
                 android:layout_marginLeft="@dimen/pp_margin_16"
                 android:layout_marginTop="@dimen/pp_margin_8"
                 android:orientation="vertical">
@@ -129,20 +140,21 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/pp_height_1"
+                    android:layout_height="@dimen/pp_height_1dp"
                     android:background="@color/pp_light_gray_normal" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/pp_margin_16"
-                    android:layout_marginTop="@dimen/pp_margin_8">
+                    android:layout_marginTop="@dimen/pp_margin_16">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/shop_price"
-                        android:textColor="@color/pp_gray" />
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/shop_price_unit_tv"
@@ -150,7 +162,8 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/shop_price_tv"
                         android:text="$"
-                        android:textColor="@color/pp_gray" />
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/shop_price_tv"
@@ -159,6 +172,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_gray" />
 
                 </RelativeLayout>
@@ -173,7 +187,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/coupon_price"
-                        android:textColor="@color/pp_gray" />
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/coupon_subtract_tv"
@@ -182,7 +197,8 @@
                         android:layout_toLeftOf="@+id/coupon_price_unit_tv"
                         android:text="-"
                         android:visibility="gone"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_orange"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/coupon_price_unit_tv"
@@ -191,7 +207,8 @@
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:layout_toLeftOf="@+id/coupon_price_tv"
                         android:text="$"
-                        android:textColor="@color/pp_orange" />
+                        android:textColor="@color/pp_orange"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/coupon_price_tv"
@@ -200,6 +217,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_orange" />
 
                 </RelativeLayout>
@@ -214,6 +232,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/discount_price"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_gray" />
 
                     <TextView
@@ -223,6 +242,7 @@
                         android:layout_toLeftOf="@+id/discount_price_unit_tv"
                         android:text="-"
                         android:visibility="gone"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_gray" />
 
                     <TextView
@@ -232,6 +252,7 @@
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:layout_toLeftOf="@+id/discount_price_tv"
                         android:text="$"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_gray" />
 
                     <TextView
@@ -241,6 +262,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
+                        android:textSize="@dimen/text_size_14"
                         android:textColor="@color/pp_gray" />
 
                 </RelativeLayout>
@@ -255,7 +277,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pay_price"
-                        android:textColor="@color/pp_gray" />
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/pay_price_unit_tv"
@@ -263,7 +286,8 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/pay_price_tv"
                         android:text="$"
-                        android:textColor="@color/pp_gray" />
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14"/>
 
                     <TextView
                         android:id="@+id/pay_price_tv"
@@ -272,7 +296,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="@dimen/pp_margin_5"
                         android:text="0"
-                        android:textColor="@color/pp_gray" />
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14"/>
 
                 </RelativeLayout>
 

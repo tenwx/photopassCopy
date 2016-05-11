@@ -258,7 +258,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/pp_margin_20"
             android:text="@string/submit_order"
-            android:textColor="@color/pp_dark_blue"
+            android:textColor="@color/pp_gray"
             android:textSize="@dimen/text_size_20" />
 
         <TextView

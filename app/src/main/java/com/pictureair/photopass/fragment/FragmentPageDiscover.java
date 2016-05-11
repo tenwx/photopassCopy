@@ -18,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,6 +33,7 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.adapter.DiscoverLocationAdapter;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
+import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -85,6 +87,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private static final int CHANGE_LOCATION = 111;
     private static final int STOP_LOCATION = 222;
     private static final int FINISH_LOADING = 333;
+    private static final int WAIT_LOCATION = 444;
     private int currentIndex;//当前选择的tab索引值
     private int offset;//动画条的偏移量
     private float rotate_degree = 0;// x轴的旋转角度
@@ -97,6 +100,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private int locationActivatedIndex = -1;//记录激活定位的索引值
     private boolean showTab = false;
     private int id = 0;
+
+    private TextView latitudeTextView;
+    private Button getLocationButton;
+    private TextView longitudeTextView;
 
 
     private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
@@ -125,14 +132,8 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_ALL_LOCATION_FAILED:
-            case API1.GET_FAVORITE_LOCATION_FAILED:
-                noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
-                noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageDiscoverHandler, true);
-                discoverListView.setVisibility(View.GONE);
-                myToast.setTextAndShow(ReflectionUtil.getStringId(getActivity(), msg.arg1), Common.TOAST_SHORT_TIME);
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                PictureAirLog.out("get location failed");
+                fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, ACache.get(getActivity()).getAsString(Common.LOCATION_INFO)).sendToTarget();
                 break;
 
             case API1.GET_ALL_LOCATION_SUCCESS:
@@ -153,6 +154,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                     e1.printStackTrace();
                 }
                 API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
+                break;
+
+            case API1.GET_FAVORITE_LOCATION_FAILED:
+                fragmentPageDiscoverHandler.sendEmptyMessage(WAIT_LOCATION);
                 break;
 
             //获取收藏地址成功
@@ -179,7 +184,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                         }
                     }
                 }
+                fragmentPageDiscoverHandler.sendEmptyMessage(WAIT_LOCATION);
+                break;
 
+            case WAIT_LOCATION:
                 //开启线程等待第一次定位的结束，如果结束了，就显示出来
                 new Thread() {
                     public void run() {
@@ -277,6 +285,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_discover, null);
+        PictureAirLog.out("discover on create");
 
         //初始化控件
         discoverPopularityLinearLayout = (LinearLayout) view.findViewById(R.id.discover_linearlayout_popularity);
@@ -323,8 +332,33 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         distanceFormat.setMaximumFractionDigits(1);
         sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
 
+
+
+
+        latitudeTextView = (TextView) view.findViewById(R.id.latitude);
+        longitudeTextView = (TextView) view.findViewById(R.id.longtitude);
+        getLocationButton = (Button) view.findViewById(R.id.getlocation);
+
+        getLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (locationUtil.mapLocation == null) {
+                    latitudeTextView.setText("latitude: " + 0);
+                    longitudeTextView.setText("longitude: " + 0);
+                } else {
+                    latitudeTextView.setText("latitude: " + locationUtil.mapLocation.getLatitude());
+                    longitudeTextView.setText("longitude: " + locationUtil.mapLocation.getLongitude());
+                }
+            }
+        });
+
+
+
+
+
         //获取数据
         dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+        PictureAirLog.out("start get lcoation info");
         API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
 
         return view;
