@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
@@ -25,6 +26,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -94,6 +96,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
     private final String mMode = "01";
+    private String tNCode;
 
     private boolean isNeedPay = true;//是否需要支付
     private JSONArray couponCodes;//优惠券
@@ -175,13 +178,22 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
+                PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS: ");
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                if (msg.obj == null || ((String) msg.obj).length() == 0) {
+                PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
+                if (msg.obj == null || (msg.obj).toString().length() == 0) {
+                    PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
                     paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
                 } else {
-                    UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, msg.obj.toString(), mMode);
+                    //获得TN号成功 -- 解析数据
+                    PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
+                    JSONObject result = (JSONObject) msg.obj;
+                    PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS:  result： " + result);
+                    tNCode = result.getString("tn");//
+                    UPPayAssistEx.startPay(PaymentOrderActivity.this, null, null, tNCode, mMode);
+                    PictureAirLog.v(TAG, "tNCode: " + tNCode);
                 }
                 break;
 
@@ -220,6 +232,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.UNIONPAY_GET_TN_FAILED://获取银联TN失败
+                PictureAirLog.v(TAG, "UNIONPAY_GET_TN_FAILED: ");
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
@@ -307,7 +320,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             cartItemIds = JSONArray.parseArray(getIntent().getStringExtra("cartItemIds"));
             String couponCodesStr = getIntent().getStringExtra("couponCodes");
             couponCodes = !TextUtils.isEmpty(couponCodesStr) ? JSONArray.parseArray(getIntent().getStringExtra("couponCodes")) : null;
-            cartCount = getIntent().getIntExtra("cartCount",0);
+            cartCount = getIntent().getIntExtra("cartCount", 0);
 
         } else if ("order".equals(getIntent().getStringExtra("flag"))) {
             // 从订单页面进入
@@ -452,12 +465,12 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             if (!dialog.isShowing()) {
                 dialog.show();
             }
-            API1.getUnionPayTN(paymentOrderHandler);
+            API1.getUnionPayTN(orderId, paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
-            Intent intent = new Intent(PaymentOrderActivity.this,WebViewActivity.class);
-            intent.putExtra("key",4);
-            intent.putExtra("orderId",orderId);
+            Intent intent = new Intent(PaymentOrderActivity.this, WebViewActivity.class);
+            intent.putExtra("key", 4);
+            intent.putExtra("orderId", orderId);
             startActivity(intent);
         } else if (payType == 7) {
             weChatIsPaying = true;
@@ -535,9 +548,50 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 10) {
-            //银联返回值处理
-            payUtils.unDealResult();
+        PictureAirLog.e(TAG, "requestCode" + requestCode);
+//        if (requestCode == 10) {
+//            //银联返回值处理
+//            payUtils.unDealResult();
+//        }
+
+        if (data == null) {
+            return;
+        }
+        //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
+        String str = data.getExtras().getString("pay_result");
+        PictureAirLog.e(TAG,"str" + str);
+        if (str.equalsIgnoreCase("success")) {
+            // 支付成功后，extra中如果存在result_data，取出校验
+            // result_data结构见c）result_data参数说明
+            if (data.hasExtra("result_data")) {
+                String result = data.getExtras().getString("result_data");
+                PictureAirLog.e(TAG,"result" + result);
+                JSONObject resultJson = JSONObject.parseObject(result);
+                PictureAirLog.e(TAG,"resultJson" + resultJson);
+                String sign = resultJson.getString("sign");
+                PictureAirLog.e(TAG,"sign" + sign);
+                String dataOrg = resultJson.getString("data");
+                // 验签证书同后台验签证书
+                // 此处的verify，商户需送去商户后台做验签
+                boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
+
+                if (ret) {
+                    // 验证通过后，显示支付结果
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+                } else {
+                    // 验证不通过后的处理
+                    // 建议通过商户后台查询支付结果
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+                }
+            } else {
+                // 未收到签名信息
+                // 建议通过商户后台查询支付结果
+                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+            }
+        } else if (str.equalsIgnoreCase("fail")) {
+            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+        } else if (str.equalsIgnoreCase("cancel")) {
+            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
         }
     }
 
@@ -699,8 +753,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
-            int payType = intent.getIntExtra("payType",-2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
-            switch (payType){
+            int payType = intent.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
+            switch (payType) {
                 case 0:
                     paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
                     break;

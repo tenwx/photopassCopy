@@ -192,59 +192,64 @@ public class PayUtils {
 
     }
 
-    /**
-     * 银联支付
-     */
-    //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
-    private final String mMode = "01";
-    //银联测试假数据
-    private String RESULT = "{\"sign\":\"ZnZY4nqFGu/ugcXNIhniJh6UDVriWANlHtIDRzV9w120E6tUgpL9Z7jIFzWrSV73hmrkk8BZMXMc/9b8u3Ex1ugnZn0OZtWfMZk2I979dxp2MmOB+1N+Zxf8iHr7KNhf9xb+VZdEydn3Wc/xX/B4jncg0AwDJO/0pezhSZqdhSivTEoxq7KQTq2KaHJmNotPzBatWI5Ta7Ka2l/fKUv8zr6DGu3/5UaPqHhnUq1IwgxEWOYxGWQgtyTMo/tDIRx0OlXOm4iOEcnA9DWGT5hXTT3nONkRFuOSyqS5Rzc26gQE6boD+wkdUZTy55ns8cDCdaPajMrnuEByZCs70yvSgA==\",\"data\":\"pay_result=success&tn=201512151321481233778\"}";
+//    /**
+//     * 银联支付
+//     */
+//    //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
+//    private final String mMode = "01";
+//    //银联测试假数据
+//    private String RESULT = "{\"sign\":\"ZnZY4nqFGu/ugcXNIhniJh6UDVriWANlHtIDRzV9w120E6tUgpL9Z7jIFzWrSV73hmrkk8BZMXMc/9b8u3Ex1ugnZn0OZtWfMZk2I979dxp2MmOB+1N+Zxf8iHr7KNhf9xb+VZdEydn3Wc/xX/B4jncg0AwDJO/0pezhSZqdhSivTEoxq7KQTq2KaHJmNotPzBatWI5Ta7Ka2l/fKUv8zr6DGu3/5UaPqHhnUq1IwgxEWOYxGWQgtyTMo/tDIRx0OlXOm4iOEcnA9DWGT5hXTT3nONkRFuOSyqS5Rzc26gQE6boD+wkdUZTy55ns8cDCdaPajMrnuEByZCs70yvSgA==\",\"data\":\"pay_result=success&tn=201512151321481233778\"}";
+//
+//    public void unDealResult() {
+//        //银联测试假数据
+//        Intent data = new Intent();
+//        PictureAirLog.e(TAG,"data" + data);
+////        data.putExtra("pay_result", "success");
+////        data.putExtra("result_data", RESULT);
+//        if (data == null) {
+//            return;
+//        }
+//        //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
+//        String str = data.getExtras().getString("pay_result");
+//        PictureAirLog.e(TAG,"str" + str);
+//        if (str.equalsIgnoreCase("success")) {
+//            // 支付成功后，extra中如果存在result_data，取出校验
+//            // result_data结构见c）result_data参数说明
+//            if (data.hasExtra("result_data")) {
+//                String result = data.getExtras().getString("result_data");
+//                PictureAirLog.e(TAG,"result" + result);
+//                JSONObject resultJson = JSONObject.parseObject(result);
+//                PictureAirLog.e(TAG,"resultJson" + resultJson);
+//                String sign = resultJson.getString("sign");
+//                PictureAirLog.e(TAG,"sign" + sign);
+//                String dataOrg = resultJson.getString("data");
+//                // 验签证书同后台验签证书
+//                // 此处的verify，商户需送去商户后台做验签
+//                boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
+//
+//                //测试修改
+////                ret = true;
+//
+//                if (ret) {
+//                    // 验证通过后，显示支付结果
+//                    handler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//                } else {
+//                    // 验证不通过后的处理
+//                    // 建议通过商户后台查询支付结果
+//                    handler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+//                }
+//            } else {
+//                // 未收到签名信息
+//                // 建议通过商户后台查询支付结果
+//                handler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//            }
+//        } else if (str.equalsIgnoreCase("fail")) {
+//            handler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+//        } else if (str.equalsIgnoreCase("cancel")) {
+//            handler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+//        }
 
-    public void unDealResult() {
-        //银联测试假数据
-        Intent data = new Intent();
-        data.putExtra("pay_result", "success");
-        data.putExtra("result_data", RESULT);
-        if (data == null) {
-            return;
-        }
-        //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
-        String str = data.getExtras().getString("pay_result");
-        if (str.equalsIgnoreCase("success")) {
-            // 支付成功后，extra中如果存在result_data，取出校验
-            // result_data结构见c）result_data参数说明
-            if (data.hasExtra("result_data")) {
-                String result = data.getExtras().getString("result_data");
-                JSONObject resultJson = JSONObject.parseObject(result);
-                String sign = resultJson.getString("sign");
-                String dataOrg = resultJson.getString("data");
-                // 验签证书同后台验签证书
-                // 此处的verify，商户需送去商户后台做验签
-                boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
-
-                //测试修改
-                ret = true;
-
-                if (ret) {
-                    // 验证通过后，显示支付结果
-                    handler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-                } else {
-                    // 验证不通过后的处理
-                    // 建议通过商户后台查询支付结果
-                    handler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-                }
-            } else {
-                // 未收到签名信息
-                // 建议通过商户后台查询支付结果
-                handler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-            }
-        } else if (str.equalsIgnoreCase("fail")) {
-            handler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-        } else if (str.equalsIgnoreCase("cancel")) {
-            handler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
-        }
-
-    }
+//    }
 
 
 }
