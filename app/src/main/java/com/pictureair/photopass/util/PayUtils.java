@@ -1,18 +1,15 @@
 package com.pictureair.photopass.util;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alipay.sdk.app.PayTask;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.alipay.PayResult;
-import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -23,7 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * Created by milo on 16/3/3.

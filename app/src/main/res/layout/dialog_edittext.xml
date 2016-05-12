@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<cn.smssdk.gui.EditTextWithClear xmlns:android="http://schemas.android.com/apk/res/android"
+<com.pictureair.photopass.widget.EditTextWithClear xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/et_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

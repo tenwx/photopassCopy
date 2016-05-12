@@ -12,7 +12,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.widget.MyToast;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 
 /**

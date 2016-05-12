@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import cn.smssdk.gui.AppManager;
+import com.pictureair.photopass.util.AppManager;
 
 /**
  * 订单页面ViewPager的适配器

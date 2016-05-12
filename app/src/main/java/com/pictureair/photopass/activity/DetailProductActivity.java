@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.smssdk.gui.AppManager;
+import com.pictureair.photopass.util.AppManager;
 
 /**
  * 商品明细类，此页面可以加入购物车

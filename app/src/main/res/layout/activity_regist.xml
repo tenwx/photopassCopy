@@ -85,7 +85,7 @@
                         android:textSize="@dimen/text_size_16" />
 
 
-                    <cn.smssdk.gui.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/et_write_phone"
                         android:layout_width="0dip"
                         android:layout_height="match_parent"
@@ -137,7 +137,7 @@
                         android:background="@color/gray_light3"
                         android:visibility="gone" />
 
-                    <cn.smssdk.gui.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/pwd"
                         android:layout_width="0dip"
                         android:layout_height="match_parent"
@@ -184,7 +184,7 @@
                         android:background="@color/gray_light3"
                         android:visibility="gone" />
 
-                    <cn.smssdk.gui.EditTextWithClear
+                    <com.pictureair.photopass.widget.EditTextWithClear
                         android:id="@+id/pwd_again"
                         android:layout_width="0dip"
                         android:layout_height="match_parent"
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip">
 
-                <cn.smssdk.gui.EditTextWithClear
+                <com.pictureair.photopass.widget.EditTextWithClear
                     android:id="@+id/et_put_identify"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
                     android:textColorHint="@color/pp_gray"
                     android:textSize="@dimen/text_size_16" />
 
-                <cn.smssdk.gui.CustomButtonFont
+                <com.pictureair.photopass.widget.CustomButtonFont
                     android:id="@+id/btn_next"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -250,7 +250,7 @@
                     android:textSize="@dimen/text_size_16" />
             </LinearLayout>
 
-            <cn.smssdk.gui.CustomButtonFont
+            <com.pictureair.photopass.widget.CustomButtonFont
                 android:id="@+id/sure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

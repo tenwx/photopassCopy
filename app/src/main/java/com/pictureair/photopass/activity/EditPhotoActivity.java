@@ -77,7 +77,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
 public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener {

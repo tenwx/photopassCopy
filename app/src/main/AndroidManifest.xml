@@ -104,6 +104,10 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.SelectCountryActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.InputCodeActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
@@ -206,10 +210,6 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".activity.ModifyPasswordActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="cn.smssdk.gui.country.SelectCountryActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
         <!-- 扫描 -->

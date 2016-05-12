@@ -27,9 +27,8 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.gui.AppManager;
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**

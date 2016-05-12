@@ -86,7 +86,7 @@
                 android:textColor="@color/pp_gray"
                 android:textSize="@dimen/text_size_16" />
 
-            <cn.smssdk.gui.EditTextWithClear
+            <com.pictureair.photopass.widget.EditTextWithClear
 
                 android:id="@+id/login_username"
                 android:layout_width="0dip"
@@ -109,7 +109,7 @@
             android:background="@color/pp_blue" />
 
 
-        <cn.smssdk.gui.EditTextWithClear
+        <com.pictureair.photopass.widget.EditTextWithClear
             android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

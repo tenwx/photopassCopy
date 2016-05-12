@@ -20,11 +20,11 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
-import cn.smssdk.gui.CustomButtonFont;
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.widget.CustomButtonFont;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 忘记密码：2个页面

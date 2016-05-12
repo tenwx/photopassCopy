@@ -44,7 +44,7 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Vector;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**

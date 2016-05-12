@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.OrderViewPagerAdapter2;
@@ -42,8 +41,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.smssdk.gui.AppManager;
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**

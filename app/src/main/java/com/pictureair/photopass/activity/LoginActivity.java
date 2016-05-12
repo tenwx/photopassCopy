@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
@@ -31,14 +30,9 @@ import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
-import cn.smssdk.gui.RegisterPage;
-import cn.smssdk.gui.country.SelectCountryActivity;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 /**
  * 登录页面 点击登录按钮之后，需要触发几个接口 1.登录接口 2.登录成功之后，需要获取一些信息，会调用获取购物车数量，获取storeId，获取PP列表
@@ -66,7 +60,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     // 区号,国家
     private String countryCode = "86";
     private String country = "";
-    private RegisterPage registerPage;
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
     private CustomProgressDialog customProgressDialog;
     private String forGetphoto;
@@ -123,13 +116,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         OtherRegisterActivity.class));
                 break;
 
-//            case 1://国家
-//                String[] countrys = (String[])msg.obj;
-//                countryCode = countrys[1];
-//                country = countrys[0];
-//                tv_country.setText(country);
-//                tv_country_num.setText("+" + countryCode);
-//                break;
             case API1.FIND_PWD_FAILED:
                 int id = 0;
                 switch (msg.arg1) {
@@ -246,8 +232,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 return false;
             }
         });
-        initSSMSSDK();
-
     }
 
     private void hideInputMethodManager(View v) {
@@ -305,11 +289,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                         // Common.TOAST_SHORT_TIME);
                         break;
 
-//                        myToast.setTextAndShow(R.string.notify_password_hint,
-//                                Common.TOAST_SHORT_TIME);
-//
-//                        break;
-
                     case AppUtil.PWD_HEAD_OR_FOOT_IS_SPACE:// 密码首尾不能为空格
                         myToast.setTextAndShow(R.string.pwd_head_or_foot_space,
                                 Common.TOAST_SHORT_TIME);
@@ -336,53 +315,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         }
     }
 
-
-    /**
-     * 初始化发短信 *
-     */
-    private void initSSMSSDK() {
-        SMSSDK.initSDK(this, PWJniUtil.getSMSSDKAppKey(Common.APP_TYPE_SHDRPP), PWJniUtil.getSMSSDKAppSecret(Common.APP_TYPE_SHDRPP));
-    }
-
-    /**
-     * 第三方短信验证方法
-     */
-    private void sendSMS(final int type) {
-        registerPage = new RegisterPage(type, loginHandler);
-        registerPage.setRegisterCallback(new EventHandler() {
-            public void afterEvent(int event, int result, Object data) {
-                PictureAirLog.v(TAG, "type ---- >" + type + ",result--->" + result + "data-->" + data);
-                // 解析注册结果
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
-                    String pwd = phoneMap.get("pwd").toString();
-                    String phone = phoneMap.get("phone").toString();
-                    // 把手机号发送到服务器判断账号是否存在，存在则跳转到重置密码页面
-                    if (type == 0) {
-						/*
-						 * 服务器返回手机号不存在，注册 将验证都再smssdk中区完成 然后回调上来参数 参数有：phone,pwd
-						 * 拿到值。就直接注册。 注册成功：跳转到主页ok
-						 */
-                        PictureAirLog.v(TAG, "phone:" + phone);
-                        PictureAirLog.v(TAG, "pwd:" + pwd);
-                        new SignAndLoginUtil(LoginActivity.this, phone, pwd, true, false,
-                                null, null, null, null, LoginActivity.this);
-
-                    } else if (type == 1) {
-                        // 忘记密码
-//                        请求API
-                        customProgressDialog = CustomProgressDialog.show(LoginActivity.this, getString(R.string.is_loading), false, null);
-                        forGetphoto = phone;
-                        forGetPwd = pwd;
-                        API1.findPwd(loginHandler, pwd, phone);
-//                        myToast.setTextAndShow("phone:"+phone+"\n"+"PWD:"+pwd,Common.TOAST_SHORT_TIME);
-                    }
-                }
-            }
-        });
-        registerPage.show(this);
-    }
-
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - i > 1000) {
@@ -398,10 +330,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     protected void onDestroy() {
         super.onDestroy();
         checkUpdateManager.onDestroy();
-        if (registerPage != null) {
-            PictureAirLog.v(TAG, "logout onDestroy, need finish registerPage");
-            registerPage.finish();
-        }
         loginHandler.removeCallbacksAndMessages(null);
     }
 

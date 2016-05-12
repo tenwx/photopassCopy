@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 
 /*

@@ -79,7 +79,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 /**
  * 公共类的方法

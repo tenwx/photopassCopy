@@ -5,12 +5,6 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
-import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.PictureAirLog;
-
-import cn.smssdk.gui.CustomFontManager;
-import cn.smssdk.gui.FontResource;
 
 /**
  * 由于Fragment中字体不受chlligraphy框架的影响

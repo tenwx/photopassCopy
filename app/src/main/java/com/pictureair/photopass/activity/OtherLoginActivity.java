@@ -21,8 +21,8 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.MyToast;
 
-import cn.smssdk.gui.AppManager;
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 public class OtherLoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     private static final String TAG = "OtherLoginActivity";

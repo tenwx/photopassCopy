@@ -19,7 +19,7 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <cn.smssdk.gui.EditTextWithClear
+        <com.pictureair.photopass.widget.EditTextWithClear
             android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -41,7 +41,7 @@
             android:layout_height="@dimen/pp_height_1"
             android:background="@color/pp_blue" />
 
-        <cn.smssdk.gui.CustomButtonFont
+        <com.pictureair.photopass.widget.CustomButtonFont
             android:id="@+id/btn_send_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             android:textSize="@dimen/text_size_16" />
 
 
-        <cn.smssdk.gui.CustomButtonFont
+        <com.pictureair.photopass.widget.CustomButtonFont
             android:id="@+id/btn_back_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

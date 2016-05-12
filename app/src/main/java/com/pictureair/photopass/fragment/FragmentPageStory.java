@@ -64,7 +64,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 

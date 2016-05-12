@@ -28,7 +28,7 @@ import com.pictureair.photopass.widget.PictureWorksDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 优惠卷view

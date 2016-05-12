@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.UmengUtil;
 
-import cn.smssdk.gui.AppManager;
+import com.pictureair.photopass.util.AppManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**

@@ -17,7 +17,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.MyToast;
 
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 public class UpdateUserinfoActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout bgUpdateInfo;
