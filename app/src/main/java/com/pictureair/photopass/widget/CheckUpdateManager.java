@@ -9,30 +9,23 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.Toast;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BaseCheckUpdate;
 import com.pictureair.photopass.entity.FileInfo;
-import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.service.BreakpointDownloadService;
 import com.pictureair.photopass.util.API1;
 
-import cn.smssdk.gui.AppManager;
+import com.pictureair.photopass.util.AppManager;
 
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
-import cn.smssdk.gui.CustomProgressDialog;
 
 /**
  * 检查更新apk封装类

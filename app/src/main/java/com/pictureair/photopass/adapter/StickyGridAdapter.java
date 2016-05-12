@@ -20,13 +20,11 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-
-import cn.smssdk.gui.MyToast;
-
 
 public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersSimpleAdapter {
     private ArrayList<PhotoInfo> list;

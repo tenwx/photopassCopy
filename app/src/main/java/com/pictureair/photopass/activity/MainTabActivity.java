@@ -40,7 +40,7 @@ import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
-import cn.smssdk.gui.AppManager;
+import com.pictureair.photopass.util.AppManager;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 

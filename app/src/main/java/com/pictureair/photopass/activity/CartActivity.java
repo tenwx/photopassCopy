@@ -38,8 +38,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.smssdk.gui.AppManager;
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 购物车页面

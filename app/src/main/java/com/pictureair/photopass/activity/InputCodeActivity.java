@@ -5,14 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +16,6 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -28,9 +23,9 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.gui.AppManager;
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import de.greenrobot.event.EventBus;
 
 /**

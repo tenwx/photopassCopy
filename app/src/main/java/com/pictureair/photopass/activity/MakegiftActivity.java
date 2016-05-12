@@ -60,7 +60,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 public class MakegiftActivity extends BaseActivity implements OnClickListener {
     //选择商品的horizontalscrollview的popupwindow

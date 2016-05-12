@@ -85,7 +85,9 @@ dependencies {
     compile files('libs/calligraphy-1.1.0.jar')
     compile files('libs/eventbus-3.0.0-beta1.jar')
     compile files('libs/libammsdk.jar')
+    compile files('libs/MobCommons-2016.0303.1229.jar')
     compile files('libs/MobLogCollector.jar')
+    compile files('libs/MobTools-2016.0303.1229.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
     compile files('libs/recyclerview.jar')
     compile files('libs/ShareSDK-Core-2.7.0.jar')
@@ -106,7 +108,6 @@ dependencies {
     compile files('libs/UPPayAssistEx.jar')
     compile files('libs/UPPayPluginExPro.jar')
     compile files('libs/zxing.jar')
-    compile project(':SMSSDK')
     compile 'com.alibaba:fastjson:1.2.7'
     compile 'com.loopj.android:android-async-http:1.4.8'
 }

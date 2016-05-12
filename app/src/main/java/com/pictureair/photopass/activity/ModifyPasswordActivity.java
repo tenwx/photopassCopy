@@ -22,8 +22,8 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
     private SharedPreferences sharedPreferences;

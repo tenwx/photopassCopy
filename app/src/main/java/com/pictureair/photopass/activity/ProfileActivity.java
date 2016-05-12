@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
@@ -26,9 +25,8 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.country.SelectCountryActivity;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.activity.SelectCountryActivity;
 
 /**
  * 个人信息页面
@@ -211,14 +209,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         g.setOnClickListener(this);
         bd.setOnClickListener(this);
         countryRL.setOnClickListener(this);
-        initSSMSSDK();
-    }
-
-    /**
-     * 初始化SMSSDK才能使用国家
-     */
-    private void initSSMSSDK() {
-        SMSSDK.initSDK(this, PWJniUtil.getSMSSDKAppKey(Common.APP_TYPE_SHDRPP), PWJniUtil.getSMSSDKAppSecret(Common.APP_TYPE_SHDRPP));
     }
 
     private void initData() {

@@ -15,19 +15,20 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
+import com.pictureair.photopass.widget.CustomButtonFont;
+import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.CustomTextView;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.RegisterOrForgetCallback;
@@ -36,11 +37,8 @@ import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.smssdk.gui.CustomButtonFont;
-import cn.smssdk.gui.CustomFontManager;
-import cn.smssdk.gui.CustomProgressDialog;
-import cn.smssdk.gui.EditTextWithClear;
-import cn.smssdk.gui.country.SelectCountryActivity;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.activity.SelectCountryActivity;
 
 
 /**
@@ -177,7 +175,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
             tv_explain.setVisibility(View.GONE);
             ll_pwd_centen.setVisibility(View.GONE);
             tv_otherRegistered.setVisibility(View.GONE);
-            sure.setText(cn.smssdk.R.string.smssdk_next);
+            sure.setText(R.string.smssdk_next);
             setTopTitleShow(R.string.smssdk_forget);
             agreeIv.setVisibility(View.GONE);
             isAgree = true;
@@ -249,7 +247,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         } else {
 //            PictureAirLog.out("------>倒计时");
             countDownFinish = false;
-            String unReceive = context.getString(cn.smssdk.R.string.smssdk_receive_msg, time);// 倒计时
+            String unReceive = context.getString(R.string.smssdk_receive_msg, time);// 倒计时
             btn_next.setText(Html.fromHtml(unReceive));
             btn_next.setEnabled(false);
         }
@@ -372,23 +370,23 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         //判断密码，必须按照这个顺序
         if (pwdStr.isEmpty()) {
             // 密码为空
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_modify_password_empty_hint, 100);
+            myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint, 100);
             return false;
         } else if (!pwdStr.isEmpty() && pwdStr.trim().isEmpty()) {
             // 密码全部为空格
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pwd_no_all_space, 100);
+            myToast.setTextAndShow(R.string.smssdk_pwd_no_all_space, 100);
             return false;
         } else if (pwdStr.trim().length() < pwdStr.length()) {
             // 密码首尾有空格
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pwd_head_or_foot_space, 100);
+            myToast.setTextAndShow(R.string.smssdk_pwd_head_or_foot_space, 100);
             return false;
         } else if (pwdStr.length() < 6) {
             // 密码小于6位
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_notify_password_hint, 100);
+            myToast.setTextAndShow(R.string.smssdk_notify_password_hint, 100);
             return false;
         } else if (!pwdStr.equals(pwdAgainStr)) {
             // 密码两次不一致
-            myToast.setTextAndShow(cn.smssdk.R.string.smssdk_pw_is_inconsistency, 100);
+            myToast.setTextAndShow(R.string.smssdk_pw_is_inconsistency, 100);
             return false;
         }
         return true;
@@ -483,7 +481,8 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     }
 
     private void showPwDialog() {
-        String dialogMsg = String.format(getString(R.string.smssdk_make_sure_mobile_detail), "+" + currentCode + " " + phoneStr);
+        String dialogMsg = "+" + currentCode + " " + phoneStr;
+        dialogMsg = Html.fromHtml(context.getString(R.string.smssdk_make_sure_mobile_detail,dialogMsg)).toString();
         PictureAirLog.out("diamsg--->" + dialogMsg);
 
         /**

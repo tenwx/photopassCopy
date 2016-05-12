@@ -13,8 +13,8 @@ import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.photopass.widget.MyToast;
 
-import cn.smssdk.gui.MyToast;
 
 /**
  * 扫码的管理类

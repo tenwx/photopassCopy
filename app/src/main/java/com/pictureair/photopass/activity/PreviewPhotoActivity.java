@@ -74,7 +74,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作

@@ -9,7 +9,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.util.PictureAirLog;
 
-import cn.smssdk.gui.EditTextWithClear;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 /**
  * 自定义对话框的封装

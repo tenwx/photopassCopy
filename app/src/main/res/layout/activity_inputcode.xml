@@ -16,7 +16,7 @@
         android:layout_below="@id/head"
         android:padding="@dimen/pp_padding_10">
 
-        <cn.smssdk.gui.EditTextWithClear
+        <com.pictureair.photopass.widget.EditTextWithClear
             android:id="@+id/input_manaul_edittext"
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_height_40"

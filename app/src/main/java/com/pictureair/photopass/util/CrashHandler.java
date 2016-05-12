@@ -5,8 +5,6 @@ import android.os.Looper;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import cn.smssdk.gui.AppManager;
-
 /**   
  * UncaughtException处理类,当程序发生Uncaught异常的时候,有该类来接管程序,并记录发送错误报告.  
  *  

@@ -47,8 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cn.smssdk.gui.AppManager;
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 预览照片，总共有4大类，1，全部的照片，2，pictureair网络获取的图片，3，本软件拍的照片，4，已经购买的照片

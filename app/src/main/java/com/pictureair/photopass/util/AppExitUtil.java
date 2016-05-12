@@ -15,8 +15,6 @@ import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.gui.AppManager;
-
 /**
  * Created by milo on 15/12/29.
  * 退出程序操作

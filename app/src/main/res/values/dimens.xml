@@ -27,10 +27,13 @@
     <dimen name="pp_padding_16">16dp</dimen>
     <dimen name="pp_padding_20">20dp</dimen>
     <dimen name="pp_padding_10">10dp</dimen>
+    <dimen name="pp_padding_14">14dp</dimen>
+    <dimen name="pp_padding_15">15dp</dimen>
     <dimen name="pp_margin_32">32dp</dimen>
     <dimen name="pp_margin_20">20dp</dimen>
     <dimen name="pp_margin_10">10dp</dimen>
     <dimen name="pp_top_bar_height">52dp</dimen>
+
     <dimen name="pp_margin_8">8dp</dimen>
     <dimen name="pp_margin_40">40dp</dimen>
     <dimen name="pp_margin_5">5dp</dimen>
@@ -89,6 +92,5 @@
 
     <dimen name="bottom_bar_65">65dp</dimen> <!-- 底部状态栏高度 -->
     <dimen name="bottom_bar_padding_5">5dp</dimen>
-
 
 </resources>

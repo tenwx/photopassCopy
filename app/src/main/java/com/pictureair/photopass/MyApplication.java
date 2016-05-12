@@ -21,13 +21,13 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.CustomFontManager;
+import com.pictureair.photopass.widget.FontResource;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.smssdk.gui.CustomFontManager;
-import cn.smssdk.gui.FontResource;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**

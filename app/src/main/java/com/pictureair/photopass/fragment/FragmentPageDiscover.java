@@ -49,7 +49,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.smssdk.gui.CustomProgressDialog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 发现页面，显示各个地点的与当前的距离，可以筛选各个地方，可支持导航

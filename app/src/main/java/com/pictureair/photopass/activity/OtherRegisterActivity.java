@@ -33,8 +33,8 @@ import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
 
-import cn.smssdk.gui.EditTextWithClear;
-import cn.smssdk.gui.country.SelectCountryActivity;
+import com.pictureair.photopass.widget.EditTextWithClear;
+import com.pictureair.photopass.activity.SelectCountryActivity;
 
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {

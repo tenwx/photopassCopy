@@ -13,10 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ExpandableListView;
-import android.widget.Switch;
-import android.widget.Toast;
 
-import com.aps.t;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -43,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import cn.smssdk.gui.AppManager;
+import com.pictureair.photopass.util.AppManager;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
