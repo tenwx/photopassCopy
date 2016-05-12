@@ -122,7 +122,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"
-            android:background="@color/gray_light2" />
+            android:background="@color/pp_light_gray_background" />
 
         <com.pictureair.photopass.editPhoto.StickerView
             android:id="@+id/sticker_panel"
@@ -188,7 +188,7 @@
         android:layout_height="@dimen/bottom_bar_65"
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
-        android:background="@color/white"
+        android:background="@color/gray_light4"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/bottom_bar_padding_5"
         android:paddingTop="@dimen/bottom_bar_padding_5">

@@ -24,7 +24,7 @@
             android:paddingTop="@dimen/pp_padding_16"
             android:scaleType="centerInside"
             android:src="@drawable/discover_selection"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/photopass"
@@ -42,27 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/discover_title"
         android:orientation="vertical"
-        android:visibility="visible">
-        <TextView
-            android:id="@+id/latitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/pp_dark_blue"/>
-
-        <TextView
-            android:id="@+id/longtitude"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/pp_dark_blue"/>
-
-        <Button
-            android:id="@+id/getlocation"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="get location"
-            android:textColor="@color/pp_dark_blue"/>
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"

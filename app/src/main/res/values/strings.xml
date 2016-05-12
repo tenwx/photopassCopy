@@ -192,7 +192,7 @@
     <string name="neednotdownload">此照片已被保存在本地相册</string>
     <string name="local_photo_not_support_makegift">本地照片不允许打印</string>
     <string name="photo_index">%1$d/%2$d</string>
-    <string name="photo_cannot_edit_content">对不起，您的此张乐拍通照片暂不支持编辑！</string>
+    <string name="photo_cannot_edit_content">对不起，您的此张乐拍通照片暂不支持编辑</string>
     <string name="photo_cannot_edit_no">取消</string>
     <string name="photo_cannot_edit_yes">确定</string>
     <!-- preview photo end -->
@@ -220,8 +220,8 @@
     <string name="magicbrush">滤镜</string>
     <string name="decoration">贴纸</string>
     <string name="rotate">旋转</string>
-    <string name="rotate_left">左旋转90</string>
-    <string name="rotate_right">右旋转90</string>
+    <string name="rotate_left">左旋转90°</string>
+    <string name="rotate_right">右旋转90°</string>
     <string name="saving">正在保存&#8230;</string>
     <string name="dealing">正在处理&#8230;</string>
     <string name="exit_hint">是否保存图片？</string>

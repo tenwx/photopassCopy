@@ -348,7 +348,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         currencytextview.setText(sp.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         priceTextView = (TextView) findViewById(R.id.textview_productprice);
         introduceTextView = (TextView) findViewById(R.id.product_detail);
-        introduceTextView.setTypeface(MyApplication.getInstance().getFontBold());
         addphotoButton = (ImageView) findViewById(R.id.addimage);
         addphotoButton.setOnClickListener(this);
         returnLayout = (ImageView) findViewById(R.id.rt);
@@ -360,6 +359,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         addtocartButton = (Button) findViewById(R.id.button_addtocart);
         buyButton.setTypeface(MyApplication.getInstance().getFontBold());
         addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
+        currencytextview.setTypeface(MyApplication.getInstance().getFontBold());
+        priceTextView.setTypeface(MyApplication.getInstance().getFontBold());
         buttonSelectproduct = (ImageView) findViewById(R.id.button_selectproduct);
         cartButton.setOnClickListener(this);
         progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), CustomProgressBarPop.TYPE_UPLOAD);

@@ -363,6 +363,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         View view = LayoutInflater.from(this).inflate(R.layout.address_layout, null);
         ImageView transportIv = (ImageView) view.findViewById(R.id.transport_iv);
         TextView transportTv = (TextView) view.findViewById(R.id.transport_tv);
+        LinearLayout transLinearLayout = (LinearLayout) view.findViewById(R.id.transport_linearlayout);
         RelativeLayout couponCountRl = (RelativeLayout) view.findViewById(R.id.coupon_count_rl);
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shop_coupon_ll);
         View lineView = view.findViewById(R.id.coupon_line);
@@ -392,6 +393,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         discountSubtractTv = (TextView) view.findViewById(R.id.discount_subtract_tv);
 
         transportListView = (ListView) view.findViewById(R.id.transport_list);
+        View transportLine = (View) view.findViewById(R.id.pickup_line);
 
         btn_agreement = (ImageView) view.findViewById(R.id.iv_agreement);
         btn_agreement.setOnClickListener(new OnClickListener() {
@@ -428,6 +430,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             transportListView.setVisibility(View.GONE);
             layout.setVisibility(View.GONE);
             lineView.setVisibility(View.GONE);
+            transportLine.setVisibility(View.VISIBLE);
 
         } else {
             //判断是否是需要显示地址
@@ -436,6 +439,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 transportIv.setImageResource(R.drawable.icon_transport);
                 transportTv.setText(R.string.transport);
                 transportListView.setVisibility(View.VISIBLE);
+                transportLine.setVisibility(View.VISIBLE);
                 addressAdapter = new AddressAdapter(this, list, new AddressAdapter.doOnClickAddressListener() {
                     @Override
                     public void doOnClickAddressListener(int position) {
@@ -452,8 +456,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 fixListViewHeight(transportListView);
             } else {
                 lineView.setVisibility(View.GONE);
-                transportIv.setVisibility(View.GONE);
-                transportTv.setVisibility(View.GONE);
+//                transportIv.setVisibility(View.GONE);
+//                transportTv.setVisibility(View.GONE);
+                transportLine.setVisibility(View.GONE);
+                transLinearLayout.setVisibility(View.GONE);
             }
 
             //显示商品优惠价格
