@@ -192,7 +192,7 @@
     <string name="neednotdownload">The photo has been saved in the local album!</string>
     <string name="local_photo_not_support_makegift">Sorry we cannot print your edited photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
-    <string name="photo_cannot_edit_content">Sorry, your this PhotoPass picture does not support editing!</string>
+    <string name="photo_cannot_edit_content">Sorry, your pictures taken through the authors temporarily does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
     <string name="photo_cannot_edit_yes">OK</string>
     <!-- preview photo end -->
@@ -220,8 +220,8 @@
     <string name="magicbrush">Filter</string>
     <string name="decoration">Sticker</string>
     <string name="rotate">Rotate</string>
-    <string name="rotate_left">Left 90</string>
-    <string name="rotate_right">Right 90</string>
+    <string name="rotate_left">Left 90°</string>
+    <string name="rotate_right">Right 90°</string>
     <string name="saving">Saving&#8230;</string>
     <string name="dealing">Dealing&#8230;</string>
     <string name="exit_hint">Do you want to save this picture?</string>

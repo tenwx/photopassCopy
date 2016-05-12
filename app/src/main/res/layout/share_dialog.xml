@@ -23,7 +23,7 @@
             android:drawableTop="@drawable/share_wechat_moment"
             android:gravity="center"
             android:text="@string/wechatmoments"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -36,7 +36,7 @@
             android:drawableTop="@drawable/share_wechat"
             android:gravity="center"
             android:text="@string/wechat"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
 
@@ -50,7 +50,7 @@
             android:drawableTop="@drawable/share_qq"
             android:gravity="center"
             android:text="@string/qq"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
 
@@ -70,7 +70,7 @@
             android:drawableTop="@drawable/share_qqzone"
             android:gravity="center"
             android:text="@string/qzone"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -83,7 +83,7 @@
             android:drawableTop="@drawable/share_sina"
             android:gravity="center"
             android:text="@string/sinaweibo"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -96,7 +96,7 @@
             android:drawableTop="@drawable/share_facebook"
             android:gravity="center"
             android:text="@string/facebook"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:visibility="gone"
             android:textSize="@dimen/text_size_16" />
         <TextView
@@ -109,7 +109,7 @@
             android:drawableTop="@drawable/share_twitter"
             android:gravity="center"
             android:text="@string/twitter"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:visibility="invisible"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
@@ -143,7 +143,7 @@
             android:drawableTop="@drawable/share_twitter"
             android:gravity="center"
             android:text="@string/twitter"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:visibility="invisible" />
 
@@ -156,7 +156,7 @@
             android:drawableTop="@drawable/share_twitter"
             android:gravity="center"
             android:text="@string/twitter"
-            android:textColor="@color/pp_gray"
+            android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16"
             android:visibility="invisible" />
     </LinearLayout>

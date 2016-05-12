@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/transport_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -36,10 +37,11 @@
 
         </LinearLayout>
 
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/pp_height_1dp"-->
-            <!--android:background="@color/pp_light_gray_normal"/>-->
+        <View
+            android:id="@+id/pickup_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_height_1dp"
+            android:background="@color/pp_light_gray_normal"/>
 
 
         <ListView
