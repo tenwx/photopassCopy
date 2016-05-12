@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 3
-        versionName "1.1.0"
+        versionName "1.0.2"
 
     }
 
@@ -30,12 +30,16 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"// 显示Log
+
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"// 不显示Log, 在java代码中的调用方式为：BuildConfig.LOG_DEBUG
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

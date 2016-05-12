@@ -1,7 +1,6 @@
 package com.pictureair.photopass.util;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 

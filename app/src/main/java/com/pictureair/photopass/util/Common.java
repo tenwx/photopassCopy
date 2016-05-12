@@ -68,8 +68,7 @@ public class Common {
 
 
 
-    public final static String VERSION_CODE = "V1.1.0";//开发版
-    public final static boolean DEBUG = true;// true，打印log， false，不打印log
+    public final static String VERSION_CODE = "V1.0.2";//开发版
     public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
 

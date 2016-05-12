@@ -9,7 +9,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.pictureair.photopass.util.PictureAirLog;
@@ -181,7 +180,7 @@ public abstract class ImageViewTouchBase extends ImageView implements
 			int bottom) {
 
 		if (LOG_ENABLED) {
-			Log.e(LOG_TAG, "onLayout: " + changed + ", bitmapChanged: "
+			PictureAirLog.e(LOG_TAG, "onLayout: " + changed + ", bitmapChanged: "
 					+ mBitmapChanged + ", scaleChanged: " + mScaleTypeChanged);
 		}
 

@@ -88,7 +88,7 @@ public class MyApplication extends Application {
             typeface = FontResource.getInstance().loadingFout(this);
             typefaceBold = FontResource.getInstance().loadingBoldFout(this);
         }
-        if (!Common.DEBUG) {
+        if (!BuildConfig.LOG_DEBUG) {
             CrashHandler handler = CrashHandler.getInstance();
             handler.init(getApplicationContext());
         }

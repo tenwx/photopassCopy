@@ -529,10 +529,16 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         @Override
         public void onClick(View v) {
             // TODO Auto-generated method stub
+            PictureAirLog.out("preivew photo on click");
             if (delete) {
+                PictureAirLog.out("delete pp");
                 //删除PP
                 deleteListner.deletePhoto(position);
             } else {
+                if (isDeletePP) {
+                    return;
+                }
+                PictureAirLog.out("preview photo");
                 //选择PP 点击单张直接进入改PP的相册页面
                 if (checkUrl(position, tag)) {
                     if (arrayList.get(position).getUrlList().size() > 0) {

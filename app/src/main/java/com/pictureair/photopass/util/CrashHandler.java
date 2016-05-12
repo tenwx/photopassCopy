@@ -2,7 +2,6 @@ package com.pictureair.photopass.util;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 

@@ -99,6 +99,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private int upload_index = 0;
     private TextView priceTextView;
     private TextView introduceTextView;
+    private TextView addressTextView;
     private int recordcount;
 
     private CustomProgressDialog progressDialog;
@@ -158,14 +159,17 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     }
                 }
 
-                goodsInfo = allList.get(0);
-
-                priceTextView.setText(allList.get(0).getPrice() + "");
-                introduceTextView.setText(allList.get(0).getDescription());
-//                selectButton.setText(allList.get(0).getNameAlias());
-                Message message = makeGiftHandler.obtainMessage();
-                message.what = WAIT_DRAW_FINISH;
-                makeGiftHandler.sendMessageDelayed(message, 500);
+                if (allList.size() > 0) {
+                    goodsInfo = allList.get(0);
+                    priceTextView.setText(allList.get(0).getPrice() + "");
+                    introduceTextView.setText(allList.get(0).getDescription());
+                    Message message = makeGiftHandler.obtainMessage();
+                    message.what = WAIT_DRAW_FINISH;
+                    makeGiftHandler.sendMessageDelayed(message, 500);
+                } else {
+                    currencytextview.setVisibility(View.GONE);
+                    addressTextView.setVisibility(View.GONE);
+                }
 
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
@@ -348,6 +352,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         currencytextview.setText(sp.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         priceTextView = (TextView) findViewById(R.id.textview_productprice);
         introduceTextView = (TextView) findViewById(R.id.product_detail);
+        addressTextView = (TextView) findViewById(R.id.detail_receive_address);
         addphotoButton = (ImageView) findViewById(R.id.addimage);
         addphotoButton.setOnClickListener(this);
         returnLayout = (ImageView) findViewById(R.id.rt);
@@ -603,6 +608,10 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
             case R.id.product_name_ll:
                 PictureAirLog.out("选择商品");
+                if (allList.size() == 0) {
+                    newToast.setTextAndShow(R.string.http_error_code_5005, Toast.LENGTH_SHORT);
+                    return;
+                }
                 if (selproductPopupWindow.isShowing()) {
                     selproductPopupWindow.dismiss();
                     buttonSelectproductShowDown();

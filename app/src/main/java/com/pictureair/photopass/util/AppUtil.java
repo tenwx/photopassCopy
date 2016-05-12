@@ -17,7 +17,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -365,7 +364,7 @@ public class AppUtil {
                 }
             }
         } catch (SocketException ex) {
-            Log.e(TAG, ex.toString());
+            PictureAirLog.e(TAG, ex.toString());
         }
         return null;
     }

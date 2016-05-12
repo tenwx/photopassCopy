@@ -12,6 +12,7 @@ import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.pictureair.photopass.BuildConfig;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
 
@@ -54,7 +55,7 @@ public class AboutActivity extends BaseActivity {
         getVersionCode();
         tv_versionCode.setVisibility(View.GONE);
 //        tv_versionCode.setText("V" + versionName);
-        if (Common.DEBUG) {//研发版本
+        if (BuildConfig.LOG_DEBUG) {//研发版本
             developVersion = getString(R.string.develop_version) + Common.VERSION_CODE;
         } else {//内测版本
             developVersion = getString(R.string.testing_version) + Common.VERSION_CODE;
