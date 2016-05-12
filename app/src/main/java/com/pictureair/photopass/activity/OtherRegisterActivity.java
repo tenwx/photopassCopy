@@ -28,13 +28,11 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
-
-import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.activity.SelectCountryActivity;
 
 public class OtherRegisterActivity extends BaseActivity implements
         OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
@@ -303,7 +301,7 @@ public class OtherRegisterActivity extends BaseActivity implements
                             break;
 
                         case AppUtil.PWD_EMPTY:// 空
-                            myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint,
+                            myToast.setTextAndShow(R.string.modify_password_empty_hint,
                                     Common.TOAST_SHORT_TIME);
                             break;
 

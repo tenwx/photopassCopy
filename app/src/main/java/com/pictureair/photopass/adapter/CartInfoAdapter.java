@@ -113,6 +113,7 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.cartGoodCountTextView = (TextView) convertView.findViewById(R.id.cartProductCountTextView);
             viewHolder.cartGoodPhotosGridLayout = (GridLayout) convertView.findViewById(R.id.cartPhotoGridLayout);
             viewHolder.editBarLayout = (LinearLayout) convertView.findViewById(R.id.cartEditBar);
+            viewHolder.dividerLine = convertView.findViewById(R.id.divider);
 //            viewHolder.cartLineImageView = (DashedLineView) convertView.findViewById(R.id.cartLine1);
             convertView.setTag(viewHolder);
         } else {
@@ -238,6 +239,12 @@ public class CartInfoAdapter extends BaseAdapter {
             viewHolder.cartReduceImageView.setEnabled(false);//当数量为1时,不可点击
         }
         viewHolder.selectedImageView.setOnClickListener(new SelectOnClick(viewHolder, goodArrayList.get(position)));
+
+        if (position == goodArrayList.size() - 1) {
+            viewHolder.dividerLine.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.dividerLine.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -253,6 +260,7 @@ public class CartInfoAdapter extends BaseAdapter {
         TextView cartGoodCountTextView;//商品数量（编辑数量的时候的数量）
         GridLayout cartGoodPhotosGridLayout;//商品携带图片的控件
         LinearLayout editBarLayout;//编辑数量
+        View dividerLine;//分割线
         //        DashedLineView cartLineImageView;//线
     }
 

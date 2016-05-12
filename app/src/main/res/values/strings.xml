@@ -298,7 +298,7 @@
     <!-- payment end -->
 
     <!-- set header start -->
-    <string name="loading_percent">正在上传%1$d</string>
+    <string name="loading_percent">正在加载%1$d</string>
     <!-- set header end -->
 
     <!-- profile start -->
@@ -479,54 +479,33 @@
     <string name="incorrect_coupon">您输入的抵用券有误，不可添加！</string>
     <string name="coupon_incalid">此抵用券不适用当前商品</string>
     <string name="coupon_expireto">有效期至：%1$s</string>
-
-
     <!-- 我的优惠券 end-->
+
+    <!--SMSSDK-->
+    <string name="smssdk_regist">用户登录</string>
+    <string name="smssdk_pwd2">再次输入密码</string>
+    <string name="smssdk_pwd_forget">请输入新密码</string>
+    <string name="smssdk_send_verification_code">发送验证码</string>
+    <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
+    <string name="smssdk_explain_briefly">我已阅读并接受<a href = "2">补充条款及细则</a>和<a href = "1">隐私政策</a>。</string>
+    <string name="please_agree">请确认同意补充条款及细则和隐私政策</string>
+    <string name="smssdk_next">下一步</string>
+    <string name="smssdk_cancel">取消</string>
+    <string name="smssdk_ok">好</string>
+    <string name="smssdk_make_sure_mobile_detail">我们将发送验证码短信到这个号码:\n%1$s</string>
+    <string name="smssdk_write_mobile_phone">手机号码</string>
+    <string name="smssdk_write_right_mobile_phone">请填写正确的手机号码</string>
+    <string name="smssdk_write_identify_code">填写验证码</string>
+    <string name="smssdk_receive_msg"><Data>倒计时&lt;font color=#ffffff>%s&lt;/font>秒</Data></string>
+    <string name="is_loading">正在加载中，请稍后&#8230;</string>
+    <string name="smssdk_pw_is_inconsistency">密码输入不一致</string>
+    <!--SMSSDK end-->
 
     <!-- postcard start-->
     <string name="customized_postcard">定制明信片(三联套)</string>
     <string name="postcard_type">款式</string>
     <string name="preview_goods">预览商品(%1$d/%2$d)</string>
     <string name="preview_goods_null">预览商品(0/3)</string>
-
     <!-- postcard end-->
-
-    <string name="smssdk_regist">用户登录</string>
-    <string name="smssdk_forget">重置密码</string>
-    <string name="smssdk_make_sure_country_mobile">请确认你的国家或地区并输入手机号码</string>
-    <string name="smssdk_country">国家</string>
-    <string name="smssdk_pwd_no">密码不一致</string>
-    <string name="smssdk_pwd">密码</string>
-    <string name="smssdk_pwd2">密码确认</string>
-    <string name="smssdk_pwd_forget">请输入新密码</string>
-    <string name="smssdk_pwd2_forget">请再次输入新密码</string>
-    <string name="smssdk_send_verification_code">发送验证码</string>
-    <string name="smssdk_sign_up">注册</string>
-    <string name="smssdk_other_sign_up">其他方式注册</string>
-    <string name="smssdk_explain_briefly">点击上面的‘注册’按钮，即表示您同意<a href = "2">《补充条款及细则》</a>和<a href = "1">《隐私政策》</a></string>
-    <string name="smssdk_send_code2">再次发送验证码</string>
-    <string name="smssdk_next">下一步</string>
-    <string name="smssdk_cancel">取消</string>
-    <string name="smssdk_ok">好</string>
-    <string name="smssdk_make_sure_mobile_detail"><Data>我们将发送&lt;font color=#3cac17>验证码&lt;/font>短信到这个号码: \n %s</Data></string>
-    <string name="smssdk_write_mobile_phone">手机号码</string>
-    <string name="smssdk_write_right_mobile_phone">请填写正确的手机号码</string>
-    <string name="smssdk_write_identify_code">填写验证码</string>
-    <string name="smssdk_submit">确认</string>
-    <string name="smssdk_identify_code">验证码</string>
-    <string name="smssdk_receive_msg"><Data>倒计时&lt;font color=#ffffff>%s&lt;/font>秒</Data></string>
-    <string name="smssdk_choose_country">选择国家</string>
-    <string name="smssdk_network_error">网络异常，请稍后重试</string>
-    <string name="smssdk_country_not_support_currently">网络存在错误，请返回重试！</string>
-    <string name="smssdk_get_verifycode_frequentlly">发送验证码太频繁，请稍后再发！</string>
-    <string name="smssdk_get_phone_verifycode_today_frequentlly">很抱歉，该手机号申请验证码次数过多，请明天重试！</string>
-    <string name="smssdk_connecting">请稍后&#8230;</string>
-    <string name="smssdk_modify_password_empty_hint">请输入密码</string>
-    <string name="smssdk_notify_password_hint">密码不能小于6位!</string>
-    <string name="smssdk_pw_is_inconsistency">密码输入不一致!</string>
-    <string name="smssdk_pwd_no_all_space">密码首或尾不能为空格!</string>
-    <string name="smssdk_pwd_head_or_foot_space">密码首或尾不能为空格!</string>
-    <string name="is_loading">正在加载中，请稍后&#8230;</string>
-    <string name="smssdk_virificaition_code_wrong">验证码不正确，请重新输入</string>
 
 </resources>

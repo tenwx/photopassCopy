@@ -154,7 +154,7 @@
     <string name="http_error_code_5006">Loading failed, Please check your network</string>
     <string name="http_error_code_5007">Loading failed, Please check your network</string>
     <string name="http_error_code_5008">Invalid Goods</string>
-    <string name="http_error_code_5009">Current certification has expired, please login again</string>
+    <string name="http_error_code_5009">Loading failed, Please check your network</string>
     <string name="http_error_code_5010">Loading failed, Please check your network</string>
     <string name="http_error_code_5011">Current certification has expired, please login again</string>
     <string name="http_error_code_5012">Loading failed, Please check your network</string>

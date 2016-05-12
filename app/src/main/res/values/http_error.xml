@@ -154,7 +154,7 @@
     <string name="http_error_code_5006">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_5007">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_5008">该商品数据已失效</string>
-    <string name="http_error_code_5009">请重新登录</string>
+    <string name="http_error_code_5009">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_5010">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_5011">请重新登录</string>
     <string name="http_error_code_5012">加载失败，请检查您当前的网络环境</string>

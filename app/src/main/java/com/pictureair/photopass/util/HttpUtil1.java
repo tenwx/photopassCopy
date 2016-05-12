@@ -399,6 +399,7 @@ public class HttpUtil1 {
      */
     private static void getAPISuccess(HttpBaseJson httpBaseJson, HttpCallback httpCallback) {
         if (httpBaseJson != null) {
+            PictureAirLog.out("status---->" + httpBaseJson.getStatus());
             if (httpBaseJson.getStatus() == 200) {
                 httpCallback.onSuccess((JSONObject) httpBaseJson.getResult());
             } else {

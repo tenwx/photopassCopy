@@ -36,7 +36,7 @@
                     android:gravity="bottom"
                     android:paddingLeft="@dimen/pp_padding_10"
                     android:paddingRight="@dimen/pp_padding_10"
-                    android:text="@string/smssdk_country"
+                    android:text="@string/country"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
@@ -143,7 +143,7 @@
                         android:layout_weight="5"
                         android:background="@null"
                         android:gravity="center_vertical"
-                        android:hint="@string/smssdk_pwd"
+                        android:hint="@string/pwd"
                         android:maxLength="200"
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
@@ -255,7 +255,7 @@
                 android:background="@drawable/button_blue_shape_and_selector"
                 android:enabled="false"
                 android:padding="10dp"
-                android:text="@string/smssdk_sign_up"
+                android:text="@string/sign"
                 android:textColor="@drawable/textview_selector_blue_white"
                 android:textSize="@dimen/text_size_16" />
 

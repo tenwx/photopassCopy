@@ -89,7 +89,7 @@ public final class ViewfinderView extends View {
         paint = new Paint();
         Resources resources = getResources();
 
-        resultPointColor = resources.getColor(R.color.possible_result_points);
+        resultPointColor = resources.getColor(R.color.color3);
         possibleResultPoints = new HashSet<ResultPoint>(5);
     }
 

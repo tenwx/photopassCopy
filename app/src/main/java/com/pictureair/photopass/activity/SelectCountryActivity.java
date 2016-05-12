@@ -68,7 +68,7 @@ public class SelectCountryActivity extends BaseActivity {
         ImageView topLeftIv = (ImageView) this.findViewById(R.id.topLeft_iv);
         topLeftIv.setImageResource(R.drawable.back_white);
         topLeftIv.setVisibility(View.VISIBLE);
-        ((TextView) this.findViewById(R.id.topTitle)).setText(R.string.smssdk_choose_country);
+        ((TextView) this.findViewById(R.id.topTitle)).setText(R.string.select_a_country);
         topLeftView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

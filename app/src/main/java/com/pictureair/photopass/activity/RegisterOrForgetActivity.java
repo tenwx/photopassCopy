@@ -27,6 +27,7 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
 import com.pictureair.photopass.widget.CustomButtonFont;
 import com.pictureair.photopass.widget.CustomFontManager;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
@@ -36,9 +37,6 @@ import com.pictureair.photopass.widget.RegisterOrForgetCallback;
 import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.activity.SelectCountryActivity;
 
 
 /**
@@ -176,7 +174,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
             ll_pwd_centen.setVisibility(View.GONE);
             tv_otherRegistered.setVisibility(View.GONE);
             sure.setText(R.string.smssdk_next);
-            setTopTitleShow(R.string.smssdk_forget);
+            setTopTitleShow(R.string.reset_pwd);
             agreeIv.setVisibility(View.GONE);
             isAgree = true;
         }
@@ -370,19 +368,19 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         //判断密码，必须按照这个顺序
         if (pwdStr.isEmpty()) {
             // 密码为空
-            myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint, 100);
+            myToast.setTextAndShow(R.string.modify_password_empty_hint, 100);
             return false;
         } else if (!pwdStr.isEmpty() && pwdStr.trim().isEmpty()) {
             // 密码全部为空格
-            myToast.setTextAndShow(R.string.smssdk_pwd_no_all_space, 100);
+            myToast.setTextAndShow(R.string.pwd_no_all_space, 100);
             return false;
         } else if (pwdStr.trim().length() < pwdStr.length()) {
             // 密码首尾有空格
-            myToast.setTextAndShow(R.string.smssdk_pwd_head_or_foot_space, 100);
+            myToast.setTextAndShow(R.string.pwd_no_all_space, 100);
             return false;
         } else if (pwdStr.length() < 6) {
             // 密码小于6位
-            myToast.setTextAndShow(R.string.smssdk_notify_password_hint, 100);
+            myToast.setTextAndShow(R.string.notify_password_hint, 100);
             return false;
         } else if (!pwdStr.equals(pwdAgainStr)) {
             // 密码两次不一致

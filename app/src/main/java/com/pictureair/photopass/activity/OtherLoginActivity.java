@@ -152,7 +152,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
-                        myToast.setTextAndShow(R.string.smssdk_modify_password_empty_hint,
+                        myToast.setTextAndShow(R.string.modify_password_empty_hint,
                                 Common.TOAST_SHORT_TIME);
                         break;
 

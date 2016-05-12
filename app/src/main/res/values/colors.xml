@@ -29,9 +29,6 @@
     <!--优惠卷状态的颜色-->
     <color name="coupon_status">#AFB7BE</color>
 
-
-    <color name="possible_result_points">#c0ffbd21</color>
-
     <color name="gray">#4B565D</color>
     <color name="gray2">#8E8E8E</color>
     <color name="gray3">#828282</color>
@@ -45,16 +42,12 @@
     <color name="gray_cover">#cecece</color>
 
 
-    <color name="hint">#afafaf</color>
-    <color name="orange">#FFA300</color>
     <color name="blur_mask">#b2000000</color>
     <color name="ppp_cover">#7a000000</color>
-    <color name="white_alpha_90">#a5ffffff</color>
-    <color name="blue_sky">#58a8d9</color>
+    <!--60%的黑透明度-->
+    <color name="black_alpha_60">#9a000000</color>
 
-
-    <color name="navpage">#FFE1E8EB</color>
-
+    <!--编辑文字的16个颜色-->
     <color name="color1">#FF4040</color>
     <color name="color2">#FF7256</color>
     <color name="color3">#FFB90F</color>
@@ -72,30 +65,10 @@
     <color name="color15">#000</color>
     <color name="color16">#fff</color>
 
-    <color name="black_alpha_60">#9a000000</color>
     <!-- 灰色 例如国家选择右边的检索工具 -->
     <color name="gray4">#50505050</color>
-    <color name="vt_head">#FFE0E0E0</color>
-
-
 
     <!-- TAB -->
     <color name="vpi__bright_foreground_holo_dark">@color/gray</color>
-    <!-- 字的颜色 -->
-    <color name="vpi__bright_foreground_holo_light">@color/pp_dark_blue</color>
-    <color name="vpi__bright_foreground_inverse_holo_dark">
-        @color/vpi__bright_foreground_holo_light
-    </color>
-    <color name="vpi__bright_foreground_inverse_holo_light">
-        @color/vpi__bright_foreground_holo_dark
-    </color>
-
-    <drawable name="smssdk_dialog_btn_nor">#00000000</drawable>
-    <drawable name="smssdk_dialog_btn_pre">#ff282a2b</drawable>
-
-    <color name="smssdk_gray_press">#fff2f2f2</color>
-    <color name="smssdk_lv_tv_color">#455560</color>
-    <color name="smssdk_black">#ff000000</color>
-    <color name="smssdk_gray">#ff898989</color>
 
 </resources>
