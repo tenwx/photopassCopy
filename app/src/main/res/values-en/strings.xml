@@ -414,8 +414,8 @@
 
     <!-- socket start -->
     <string name="notifacation_new_message">New Message</string>
-    <string name="notifacation_new_photo">You have new photos</string>
-    <string name="notifacation_new_video">You have new videos</string>
+    <string name="notifacation_new_photo">You have new photos!</string>
+    <string name="notifacation_new_video">You have new videos!</string>
     <string name="notifacation_order_completed_msg">Payment successful</string>
     <string name="notifacation_order_submit_msg">Proceed to payment</string>
     <!-- socket end -->

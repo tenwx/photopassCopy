@@ -36,6 +36,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/pp_margin_5"
                 android:layout_toRightOf="@+id/my_pp_miqi"
+                android:layout_toLeftOf="@+id/tv_shoot_date"
+                android:layout_marginRight="@dimen/pp_margin_5"
                 android:text="PP12345678"
                 android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
