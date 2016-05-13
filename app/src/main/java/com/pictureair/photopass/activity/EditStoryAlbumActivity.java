@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,13 +13,18 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * 编辑story中的相册页面
@@ -31,12 +33,7 @@ import java.util.ArrayList;
  */
 public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
 	private ImageView backRelativeLayout;
-	private ImageView editPhotoImageView;
-	private TextView selectAllTextView;
-	private TextView shareTextView;
-	private TextView deleteTextView;
-	private TextView buyTextView;
-	private TextView selectDisAllTextView;
+	private TextView deleteTextView, titleTextView;
 	private LinearLayout editBarLinearLayout;
 	private CustomProgressBarPop customProgressBarPop;
 	private GridView pinnedSectionListView;
@@ -53,11 +50,10 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //	private SharePop sharePop;//分享
 	private int shareType = 0;
 	private MyToast myToast;
+	private CustomProgressDialog customProgressDialog;
 	private CustomDialog customdialog;
 	private boolean editMode = false;
-	private ImageView footerView;//防止点击编辑的时候，listview会跳动，所以加了一个footerView，绕道解决了跳动的问题
-	private int bottomBarHeight = 0;//记录底部编辑栏的高度
-	
+
 //	private Handler handler = new Handler(){
 //		public void handleMessage(android.os.Message msg) {
 //			PictureAirLog.d(TAG, "photo on click");
@@ -134,71 +130,41 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 		//find控件
 		backRelativeLayout = (ImageView) findViewById(R.id.rlrt);
-		selectAllTextView = (TextView) findViewById(R.id.select_all);
-		shareTextView = (TextView) findViewById(R.id.select_share);
 		deleteTextView = (TextView) findViewById(R.id.select_delete);
-		buyTextView = (TextView) findViewById(R.id.select_makegift);
-		selectDisAllTextView = (TextView) findViewById(R.id.select_disall);
 		editBarLinearLayout = (LinearLayout) findViewById(R.id.select_tools_linearlayout);
 		pinnedSectionListView = (GridView) findViewById(R.id.pullToRefreshPinnedSectionListView);
-		editPhotoImageView = (ImageView) findViewById(R.id.imageButton_edit);
+		titleTextView = (TextView) findViewById(R.id.text);
 		//删除图片进度条
 		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.editStoryPhotoRelativeLayout), CustomProgressBarPop.TYPE_DELETE);
-		
+		customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+
 		//绑定监听
 		backRelativeLayout.setOnClickListener(this);
-		selectAllTextView.setOnClickListener(this);
-		shareTextView.setOnClickListener(this);
 		deleteTextView.setOnClickListener(this);
-		buyTextView.setOnClickListener(this);
-		selectDisAllTextView.setOnClickListener(this);
-		
-		shareTextView.setEnabled(false);
 		deleteTextView.setEnabled(false);
-		buyTextView.setEnabled(false);
-		selectDisAllTextView.setVisibility(View.GONE);
-		selectAllTextView.setVisibility(View.VISIBLE);
-		
+
 		//初始化数据
-		Bundle b = getIntent().getBundleExtra("photos");
+		editMode = getIntent().getStringExtra("mode").equals("edit");//编辑模式
 		albumArrayList = new ArrayList<>();
-		originalAlbumArrayList = b.getParcelableArrayList("photos");
-		albumArrayList.addAll(originalAlbumArrayList);
-//		if (getIntent().getStringExtra("mode").equals("edit")) {//编辑模式
-//			editMode = true;
-//			editPhotoImageView.setVisibility(View.GONE);
-//		}else if (getIntent().getStringExtra("mode").equals("noedit")) {//非编辑模式
-//			editMode = false;
-//
-//			editPhotoImageView.setOnClickListener(this);
-//		}
+		customProgressDialog.show();
+		if (editMode) {
+			getPreviewPhotos();
+		} else {
+			Bundle b = getIntent().getBundleExtra("photos");
+			originalAlbumArrayList = b.getParcelableArrayList("photos");
+			albumArrayList.addAll(originalAlbumArrayList);
+			if (customProgressDialog.isShowing()) {
+				customProgressDialog.dismiss();
+			}
+		}
+
+		editBarLinearLayout.setVisibility(editMode ? View.VISIBLE : View.GONE);
+		titleTextView.setText(editMode ? R.string.edit : R.string.mypage_pp);
 //		setListCheckedStatus(editMode);
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
-//		sharePop = new SharePop(this);
 		myToast = new MyToast(this);
 		
-		footerView = new ImageView(EditStoryAlbumActivity.this);
-		
-		ViewTreeObserver viewTreeObserver = editBarLinearLayout.getViewTreeObserver();
-		viewTreeObserver.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-
-			@Override
-			public void onGlobalLayout() {
-				// TODO Auto-generated method stub
-				editBarLinearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				bottomBarHeight = editBarLinearLayout.getHeight();
-				PictureAirLog.out("editBarLinearLayout height is "+ editBarLinearLayout.getHeight());
-				LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, bottomBarHeight);
-				footerView.setLayoutParams(layoutParams);
-				if (!editMode) {
-					editBarLinearLayout.setVisibility(View.GONE);
-				}else {
-//					pinnedSectionListView.getRefreshableView().addFooterView(footerView);
-				}
-			}
-		});
-
 		pinnedSectionListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
@@ -213,17 +179,12 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 									int position, long id) {
+				if (editMode) {
+					return;
+				}
 				PictureAirLog.out("select" + position);
 				Intent i = new Intent();
-
 				i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
-//				i.putExtra("activity", "EditStoryAlbumActivity");
-//				i.putExtra("position", position);//在那个相册中的位置
-//				i.putExtra("photoId", albumArrayList.get(position).photoId);
-//				i.putExtra("photos", albumArrayList);//那个相册的全部图片路径
-//				i.putExtra("targetphotos", ((MyApplication) getApplication()).magicPicList);
-//				startActivity(i);
-
 				Bundle bundle = new Bundle();
 				bundle.putInt("position", position);
 				bundle.putString("tab", "other");
@@ -232,7 +193,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				startActivity(i);
 			}
 		});
-
 	}
 	
 //	/**
@@ -260,74 +220,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		case R.id.rlrt:
 			finish();
 			break;
-			
-//		case R.id.select_disall:
-//			//全取消操作
-//			System.out.println("disselect all");
-//			selectAllTextView.setVisibility(View.VISIBLE);
-//			selectDisAllTextView.setVisibility(View.GONE);
-//			editStoryPinnedListViewAdapter.startSelectPhoto(1, 0);
-//			System.out.println("size======"+photoURLlist.size());
-//			photoURLlist.clear();//每次全选，清空全部数据
-//			System.out.println("size======"+photoURLlist.size());
-//			shareTextView.setEnabled(false);
-//			deleteTextView.setEnabled(false);
-//			buyTextView.setEnabled(false);
-//			break;
-//
-//		case R.id.select_all:
-//			//全选操作
-//			selectDisAllTextView.setVisibility(View.VISIBLE);
-//			selectAllTextView.setVisibility(View.GONE);
-//			System.out.println("select all");
-//			editStoryPinnedListViewAdapter.startSelectPhoto(1, 1);
-//			selectall(originalAlbumArrayList);
-//			shareTextView.setEnabled(true);
-//			deleteTextView.setEnabled(true);
-//			buyTextView.setEnabled(true);
-//			break;
-//
-//		case R.id.select_share:
-//			//调用share的接口
-//			System.out.println("select share");
-//			if (photoURLlist.size() == 0) {//没选择图片
-//				myToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
-//			}else if (photoURLlist.size() == 1) {//分享图片
-//				System.out.println("start share=" + photoURLlist.get(0).photoPathOrURL);
-//				//判断图片是本地还是网路图片
-//				if (photoURLlist.get(0).onLine == 1) {//网络图片
-//					System.out.println("网络图片");
-//					if (photoURLlist.get(0).isPayed == 0) {//未购买
-//						myToast.setTextAndShow(R.string.buythephoto, Common.TOAST_SHORT_TIME);
-//					}else {
-//						sharePop.setshareinfo(null, photoURLlist.get(0).photoPathOrURL,null, "online",mhHandler);
-//						sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-//					}
-//
-//				}else {
-//					System.out.println("本地图片");
-//					sharePop.setshareinfo(photoURLlist.get(0).photoPathOrURL, null, null,"local",mhHandler);
-//					sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-//				}
-//			}else {//选择超过1张
-//				myToast.setTextAndShow(R.string.share_photo_count, Common.TOAST_SHORT_TIME);
-//			}
-//			break;
-//
-//		case R.id.select_makegift:
-//			System.out.println("select make gift");
-//			if (photoURLlist.size() == 0) {//没有图片
-//				myToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
-//			}else if (photoURLlist.size() == 1) {//普通商品
-//				System.out.println("makegift");
-//				Intent intent = new Intent(this,MakegiftActivity.class);
-//				intent.putExtra("selectPhoto", photoURLlist.get(0));
-//				startActivity(intent);
-//			}else if (photoURLlist.size() > 1) {//相册，暂时还不开放
-//				myToast.setTextAndShow(R.string.share_photo_count, Common.TOAST_SHORT_TIME);
-//			}
-//
-//			break;
 //
 //		case R.id.select_delete:
 //			if (photoURLlist.size()==0) {
@@ -370,28 +262,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //				}.start();
 //			}
 //			break;
-//
-//		case R.id.imageButton_edit://编辑操作
-//			if (!editMode) {//开始编辑操作
-//				editMode = true;
-//				editBarLinearLayout.setVisibility(View.VISIBLE);
-//				backRelativeLayout.setVisibility(View.GONE);
-////				pinnedSectionListView.getRefreshableView().addFooterView(footerView);
-//				setListCheckedStatus(editMode);
-//			}else {//取消编辑操作
-//				editMode = false;
-//				editBarLinearLayout.setVisibility(View.GONE);
-//				backRelativeLayout.setVisibility(View.VISIBLE);
-////				pinnedSectionListView.getRefreshableView().removeFooterView(footerView);
-//				setListCheckedStatus(editMode);
-//				System.out.println("select photo count is "+ photoURLlist.size());
-//				photoURLlist.clear();
-//				System.out.println("select photo count is "+ photoURLlist.size());
-//			}
-//			editStoryPinnedListViewAdapter.setEditMode(editMode);
-//			editStoryPinnedListViewAdapter.notifyDataSetChanged();
-//			break;
-			
+
 		default:
 			break;
 		}
@@ -417,12 +288,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				PictureAirLog.d(TAG, "找不到删除项");
 				
 			}
-			selectAllTextView.setVisibility(View.VISIBLE);
-			selectDisAllTextView.setVisibility(View.GONE);
 			if (photoURLlist.size() == 0) {
-				shareTextView.setEnabled(false);
 				deleteTextView.setEnabled(false);
-				buyTextView.setEnabled(false);
 			}
 			
 		}
@@ -449,13 +316,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			//判断是否已经全部选中，如果是，则将标记改为true
 			if (photoURLlist.size()==photoCount) {
-				selectAllTextView.setVisibility(View.GONE);
-				selectDisAllTextView.setVisibility(View.VISIBLE);
 			}
 			if (photoURLlist.size() > 0) {//如果有
-				shareTextView.setEnabled(true);
 				deleteTextView.setEnabled(true);
-				buyTextView.setEnabled(true);
 			}
 			
 		}
@@ -568,4 +431,122 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 //			}
 //
 //		}
+
+	/**
+	 * 获取预览图片
+	 */
+	private void getPreviewPhotos() {
+		new Thread() {
+			@Override
+			public void run() {
+				super.run();
+				int tabIndex = getIntent().getIntExtra("tab", 0);
+				long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+				switch (tabIndex) {
+					case 0://all
+						albumArrayList.addAll(AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
+						Collections.sort(albumArrayList);
+
+
+
+
+						break;
+
+					case 1://photopass
+						break;
+
+					case 2://local
+						albumArrayList.addAll(AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
+						Collections.sort(albumArrayList);
+						break;
+
+					case 3://bought
+						break;
+
+					case 4://favourite
+						break;
+
+					default:
+						break;
+				}
+
+
+
+
+
+
+//				if (tabName.equals("all")) {//获取全部照片
+//					locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
+//					try {
+//						photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
+//								pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
+//								simpleDateFormat, MyApplication.getInstance().getLanguageType()));
+//					} catch (ParseException e) {
+//						e.printStackTrace();
+//					}
+//
+//				} else if (tabName.equals("photopass")) {//获取pp图片
+//					getLocation();
+//					try {
+//						photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
+//								simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
+//					} catch (ParseException e) {
+//						e.printStackTrace();
+//					}
+//
+//				} else if (tabName.equals("local")) {//获取本地图片
+//					photolist.addAll(targetphotolist);
+//
+//				} else if (tabName.equals("bought")) {//获取已经购买的图片
+//					getLocation();
+//					try {
+//						photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
+//								simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
+//					} catch (ParseException e) {
+//						e.printStackTrace();
+//					}
+//
+//				} else if (tabName.equals("favourite")) {//获取收藏图片
+//					photolist.addAll(AppUtil.insterSortFavouritePhotos(
+//							pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
+//
+//				} else {//获取列表图片
+//					ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
+//					photolist.addAll(temp);
+//				}
+//
+//				if (currentPosition == -1) {//购买图片后返回
+//					String photoId = bundle.getString("photoId");
+//					for (int i = 0; i < photolist.size(); i++) {
+//						if (photolist.get(i).photoId.equals(photoId)){
+//							photolist.get(i).isPayed = 1;
+//							currentPosition = i;
+//							break;
+//						}
+//					}
+//				}
+//
+//				if (currentPosition == -2) {//绑定PP后返回
+//					String ppsStr = bundle.getString("ppsStr");
+//					refreshPP(photolist,ppsStr);
+//					currentPosition = sharedPreferences.getInt("currentPosition",0);
+//				}
+//
+//				if (currentPosition < 0) {
+//					currentPosition = 0;
+//				}
+//				PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
+//
+//				Iterator<PhotoInfo> photoInfoIterator = photolist.iterator();
+//				while (photoInfoIterator.hasNext()) {
+//					PhotoInfo info = photoInfoIterator.next();
+//					if (info.isVideo == 1) {
+//						photoInfoIterator.remove();
+//					}
+//				}
+//				currentPosition = photolist.indexOf(currentPhotoInfo);
+//				previewPhotoHandler.sendEmptyMessage(7);
+			}
+		}.start();
+	}
 }

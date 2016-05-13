@@ -43,6 +43,7 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
@@ -50,8 +51,6 @@ import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";

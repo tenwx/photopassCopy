@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -25,6 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
@@ -45,11 +47,11 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
@@ -64,7 +66,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -110,7 +111,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private int ppPhotoCount;
 
     //申明控件
-    private ImageView more;
+    private TextView more;
     private ImageView scanLayout;
     private LinearLayout noPhotoView;
     private RelativeLayout scanRelativeLayout;
@@ -666,7 +667,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getActivity().getResources().getString(R.string.story_tab_bought),
                 getActivity().getResources().getString(R.string.story_tab_favorite) };
         //获取控件
-        more = (ImageView) view.findViewById(R.id.story_more);
+        more = (TextView) view.findViewById(R.id.story_more);
         scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
         scanLayout = (ImageView) view.findViewById(R.id.story_scan);
         storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
@@ -1593,9 +1594,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case R.id.story_more:
-                // Disney Video
-                DisneyVideoTool.getIsOneGoToDisneyVideoPage(context);
-                // storyMenuPop.showAsDropDown(v);
+                i = new Intent(getActivity(), EditStoryAlbumActivity.class);
+                i.putExtra("tab", app.fragmentStoryLastSelectedTab);
+                i.putExtra("mode", "edit");
+                startActivity(i);
                 break;
 
             case R.id.story_to_discover://跳转到Discover页面

@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.core.CoordinateConvert;
@@ -38,6 +39,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
@@ -77,8 +79,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import com.pictureair.photopass.widget.EditTextWithClear;
 
 /**
  * 公共类的方法
@@ -1419,6 +1419,22 @@ public class AppUtil {
             }
         }
         return photoPassItemInfoList;
+    }
+
+    public static ArrayList<DiscoverLocationItemInfo> getLocation(String locationJson) {
+        ArrayList<DiscoverLocationItemInfo> result = new ArrayList<>();
+        try {
+            JSONObject response = JSONObject.parseObject(locationJson);
+            JSONArray resultArray = response.getJSONArray("locations");
+            for (int i = 0; i < resultArray.size(); i++) {
+                JSONObject object = resultArray.getJSONObject(i);
+                DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
+                result.add(locationInfo);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 

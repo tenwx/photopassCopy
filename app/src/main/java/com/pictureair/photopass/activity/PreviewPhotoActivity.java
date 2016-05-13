@@ -30,7 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
@@ -56,12 +55,12 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.SharePop;
 
@@ -73,8 +72,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -727,20 +724,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         getPreviewPhotos();
     }
 
-    private void getLocation() {
-        try {
-            JSONObject response = JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-            JSONArray resultArray = response.getJSONArray("locations");
-            for (int i = 0; i < resultArray.size(); i++) {
-                JSONObject object = resultArray.getJSONObject(i);
-                DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                locationList.add(locationInfo);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void getPreviewPhotos() {
         new Thread() {
             @Override
@@ -759,7 +742,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
 
                 if (tabName.equals("all")) {//获取全部照片
-                    getLocation();
+                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
                     try {
                         photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
                                 pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
@@ -769,7 +752,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else if (tabName.equals("photopass")) {//获取pp图片
-                    getLocation();
+                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
@@ -781,7 +764,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photolist.addAll(targetphotolist);
 
                 } else if (tabName.equals("bought")) {//获取已经购买的图片
-                    getLocation();
+                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
@@ -1148,7 +1131,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     } else {//编辑前
                         //判断图片是本地还是网路图片
                         if (photoInfo.onLine == 1) {//网络图片
-                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL,
+                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
                                     "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
                         } else {
                             sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);

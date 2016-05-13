@@ -39,18 +39,20 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
 
-        <ImageView
+        <TextView
             android:id="@+id/story_more"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:gravity="center"
             android:paddingBottom="@dimen/pp_padding_8"
             android:paddingLeft="@dimen/pp_padding_8"
             android:paddingRight="@dimen/pp_margin_16"
             android:paddingTop="@dimen/pp_padding_8"
-            android:visibility="gone"
-            android:src="@drawable/story_video" />
+            android:text="@string/edit"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"/>
     </RelativeLayout>
 
 

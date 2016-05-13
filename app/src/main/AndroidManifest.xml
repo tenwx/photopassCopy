@@ -340,12 +340,14 @@
             </intent-filter>
         </activity>
 
-        <!-- &lt;!&ndash; shareSDK短信 &ndash;&gt; -->
-        <!-- <activity -->
-        <!-- android:name="com.mob.tools.MobUIShell" -->
-        <!-- android:configChanges="keyboardHidden|orientation|screenSize" -->
-        <!-- android:theme="@android:style/Theme.Translucent.NoTitleBar" -->
-        <!-- android:windowSoftInputMode="stateHidden|adjustResize" /> -->
+        <!--微信分享回调-->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service
             android:name=".service.DownloadService"
@@ -355,28 +357,7 @@
             </intent-filter>
         </service>
 
-        <!--
-             微信分享回调
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        -->
-
-
-        <!-- &lt;!&ndash; 调用新浪客户端分享，需要注册的回调activity &ndash;&gt; -->
-        <!-- <activity android:name="cn.sharesdk.sina.weibo.SinaActivity" > -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" /> -->
-
-
-        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-
+        <!--高德地图-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="67e009eeb01ae95ab229247e3d1153e0" />
@@ -385,14 +366,6 @@
         <!-- 开启notification的服务 -->
         <service android:name=".service.NotificationService" />
         <service android:name=".service.BreakpointDownloadService" />
-
-        <!-- notification里面的  广播接受 -->
-        <!-- <receiver android:name="com.pictureAir.receiver.AlertManagerRecriver" > -->
-        <!-- <intent-filter android:priority="500" > -->
-        <!-- <action android:name="com.receiver.AlertManagerRecriver" > -->
-        <!-- </action> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
 
 
         <!-- 开机自启 -->
