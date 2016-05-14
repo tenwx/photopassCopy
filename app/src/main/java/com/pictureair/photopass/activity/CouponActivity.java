@@ -319,7 +319,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     public void noNetwork() {
         netWorkOrNoCountView.setVisibility(View.VISIBLE);
         netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myHandler, true);
-        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
     }
 
     @Override
