@@ -715,10 +715,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (ori == Configuration.ORIENTATION_LANDSCAPE) {
             isLandscape = true;
             landscapeOrientation();
-            originalRadius = (ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) / 3);
-        } else {
-            originalRadius = (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
         }
+        originalRadius = 200;
         curRadius = originalRadius;
         dialog.show();
         getPreviewPhotos();
@@ -773,8 +771,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
+                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
@@ -1578,19 +1577,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         int h = oriClearBmp.getHeight();
         PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
         parentPreviewW = ScreenUtil.getScreenWidth(this);
-        parentPreviewH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
+
+        if (isLandscape) {
+            parentPreviewH = ScreenUtil.getScreenHeight(this);
+        } else {
+            parentPreviewH = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight(this) - toolsBar.getHeight() - indexBar.getHeight() - titleBar.getHeight();
+        }
 
         if (isInit) {
             int[] location = new int[2];
             photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
             marginTop = location[1];
             PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
-        } else {
-            if (parentPreviewH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
-                parentPreviewH = ScreenUtil.getScreenHeight(this);
-            }
-            PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
-            PictureAirLog.v(TAG, "scale width, height" + parentPreviewW + "?" + parentPreviewH);
         }
 
         float sw = 0f;

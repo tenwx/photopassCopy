@@ -10,19 +10,15 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.HttpBaseJson;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-
-import org.apache.http.Header;
 
 import java.io.File;
 import java.io.FileNotFoundException;
