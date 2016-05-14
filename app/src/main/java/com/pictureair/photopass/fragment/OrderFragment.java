@@ -98,8 +98,12 @@ public class OrderFragment extends Fragment {
                     deliveryOrderList.remove(groupInfo);
                     deliveryChildlist.remove(childInfo);
                     //通知适配器刷新
-                    deliveryOrderAdapter.notifyDataSetChanged();
-                    allOrderAdapter.notifyDataSetChanged();
+                    if (deliveryOrderAdapter != null) {
+                        deliveryOrderAdapter.notifyDataSetChanged();
+                    }
+                    if (allOrderAdapter != null) {
+                        allOrderAdapter.notifyDataSetChanged();
+                    }
                     break;
                 case API1.DELETE_ORDER_FAILED:
                     myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
