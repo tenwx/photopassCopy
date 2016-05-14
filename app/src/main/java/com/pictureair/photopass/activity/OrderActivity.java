@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -57,6 +58,7 @@ public class OrderActivity extends BaseFragmentActivity {
     private ArrayList<View> listViews;
     private ImageView cursorImageView;//动画图片
     private TextView paymentOrderTextView, deliveryOrderTextView, allOrderTextView;//选项卡
+    private LinearLayout lead_bar,cursor_layout;
 //    private ImageView backLayout;
 
     //group列表信息
@@ -151,9 +153,11 @@ public class OrderActivity extends BaseFragmentActivity {
 //                    }
                 //重新加载购物车数据
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    goneTop();
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
                 }
+                showTop();
                 showProgressDialog();
                 API1.getOrderInfo(orderActivityHandler);
                 break;
@@ -169,9 +173,11 @@ public class OrderActivity extends BaseFragmentActivity {
             case REFRESH:
                 //重新加载购物车数据
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                    goneTop();
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
                 }
+                showTop();
                 API1.getOrderInfo(orderActivityHandler);
                 break;
 
@@ -315,6 +321,8 @@ public class OrderActivity extends BaseFragmentActivity {
         allOrderTextView = (TextView) findViewById(R.id.order_all);
         viewPager = (ViewPager) findViewById(R.id.order_vPager);
         cursorImageView = (ImageView) findViewById(R.id.cursor);
+        lead_bar = (LinearLayout) findViewById(R.id.lead_bar);
+        cursor_layout = (LinearLayout) findViewById(R.id.cursor_layout);
 
         paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
         deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
@@ -548,5 +556,21 @@ public class OrderActivity extends BaseFragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         orderActivityHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 显示头部
+     */
+    private void showTop(){
+        cursor_layout.setVisibility(View.VISIBLE);
+        lead_bar.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏头部
+     */
+    private void goneTop(){
+        cursor_layout.setVisibility(View.GONE);
+        lead_bar.setVisibility(View.GONE);
     }
 }

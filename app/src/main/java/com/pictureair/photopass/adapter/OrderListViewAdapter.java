@@ -149,8 +149,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     groupHolderView.orderStatesTextView.setText(R.string.order_paid);
                     groupHolderView.paymentButton.setVisibility(View.GONE);
                 }
-
-
                 groupHolderView.paymentButton.setClickable(true);
                 break;
             case 6:
