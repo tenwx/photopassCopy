@@ -15,6 +15,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomWebView;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -25,6 +26,8 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     private CustomWebView webView;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private MyToast myToast;
+    private CustomProgressDialog customProgressDialog;
+
 
     private final Handler myHandler = new MyHandler(this);
 
@@ -53,8 +56,8 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
                 }
+                showDialog();
                 netWorkOrNoCountView.setVisibility(View.GONE);
-                webView.setVisibility(View.VISIBLE);
                 getData();
                 break;
 
@@ -79,6 +82,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     }
 
     private void getData() {
+        webView.setVisibility(View.GONE);
         if (key == 1) {
 //            webView.start(Common.POLICY_AGREEMENT + "&lang=" + MyApplication.getInstance().getLanguageType());
             webView.start(String.format(Common.POLICY_AGREEMENT, (MyApplication.getInstance().getLanguageType().equals("en") ? "en/" : "")));
@@ -163,11 +167,37 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
 
     @Override
     public void loading() {
-
+        webView.setVisibility(View.GONE);
+        showDialog();
     }
 
     @Override
     public void loadFinish() {
+        webView.setVisibility(View.VISIBLE);
+        goneDialog();
+    }
+
+    /**
+     * GONE DIALOG
+     */
+    private void goneDialog(){
+        if (null != customProgressDialog && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
+    }
+
+    /**
+     * SHOW DIALOG
+     */
+    private void showDialog(){
+        if (null == customProgressDialog) {
+            customProgressDialog = CustomProgressDialog.show(WebViewActivity.this, getString(R.string.is_loading), false, null);
+        }
+        if (!customProgressDialog.isShowing()){
+            customProgressDialog.show();
+        }
 
     }
+
+
 }

@@ -121,6 +121,7 @@ public class OrderActivity extends BaseFragmentActivity {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_ORDER_SUCCESS:
+                showTop();
                 PictureAirLog.d(TAG, "get success----");
                 viewPager.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setVisibility(View.INVISIBLE);
@@ -226,6 +227,7 @@ public class OrderActivity extends BaseFragmentActivity {
                 EventBus.getDefault().post(orderFragmentEvent);
 
                 hideProgressDialog();
+                goneTop();
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
                 viewPager.setVisibility(View.INVISIBLE);
