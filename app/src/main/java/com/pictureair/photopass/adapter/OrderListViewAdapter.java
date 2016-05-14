@@ -136,10 +136,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
 
             case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
             case 3:
-                groupHolderView.orderStatesTextView.setText(R.string.order_paid);
-                groupHolderView.paymentButton.setVisibility(View.GONE);
-                groupHolderView.paymentButton.setClickable(false);
-                break;
             case 4://4交易成功，5交易关闭,订单冻结
             case 5:
                 if (grouplist.get(groupPosition).productEntityType == 0) {

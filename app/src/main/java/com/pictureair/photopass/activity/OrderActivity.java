@@ -121,7 +121,102 @@ public class OrderActivity extends BaseFragmentActivity {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_ORDER_SUCCESS:
-                getOrderData(msg);
+                PictureAirLog.d(TAG, "get success----");
+                viewPager.setVisibility(View.VISIBLE);
+                netWorkOrNoCountView.setVisibility(View.INVISIBLE);
+                customProgressDialog.dismiss();
+                paymentOrderArrayList.clear();
+                paymentOrderChildArrayList.clear();
+                deliveryOrderArrayList.clear();
+                deliveryOrderChildArrayList.clear();
+                allOrderArrayList.clear();
+                allOrderChildArrayList.clear();
+                downOrderArrayList.clear();
+                downOrderChildArrayList.clear();
+                //解析数据
+                JSONObject resultJsonObject = (JSONObject) msg.obj;
+                JSONArray allOrdersArray = resultJsonObject.getJSONArray("orders");//得到所有的订单信息
+                PictureAirLog.v(TAG, "orderInfo" + allOrdersArray.toString());
+                for (int i = 0; i < allOrdersArray.size(); i++) {
+                    JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
+                    orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
+                    cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
+                    PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
+
+                    for (int j = 0; j < cartItemInfo.size(); j++) {
+                        if (cartItemInfo.get(j).getCartProductType() == 1) {
+                            orderInfo.productEntityType = 1;
+                            break;
+                        } else {
+                            orderInfo.productEntityType = 0;
+                        }
+                    }
+
+                    OrderProductInfo orderProductInfo = new OrderProductInfo();
+                    orderProductInfo.setOrderTime(orderInfo.orderTime);
+                    orderProductInfo.setCartItemInfos(cartItemInfo);
+                    PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
+                    if (orderInfo.orderStatus == 1) {//1等待买家付款
+                        if (orderIds != null && orderIds.size() > 0) {
+                            for (String orderId : orderIds) {
+                                //判断orderId是否相同，且状态是否为1（未付款）
+                                if (orderId.equals(orderInfo.orderId + "")) {
+                                    orderInfo.orderStatus = 6;
+                                    break;
+                                }
+                            }
+                        }
+                        paymentOrderArrayList.add(orderInfo);
+                        paymentOrderChildArrayList.add(orderProductInfo);
+                    } else if (orderInfo.orderStatus >= 2) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
+                        if (orderInfo.productEntityType == 0) {
+                            //0为虚拟商品
+                            downOrderArrayList.add(orderInfo);
+                            downOrderChildArrayList.add(orderProductInfo);
+                        } else {
+                            //需要买家自提
+                            deliveryOrderArrayList.add(orderInfo);
+                            deliveryOrderChildArrayList.add(orderProductInfo);
+                        }
+                    }
+                }
+
+//                    orderAdapter = new OrderViewPagerAdapter2(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
+//                            paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
+//                            sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
+
+                if (null == mFragments || mFragments.size() == 0) {
+                    if (null != orderActivityHandler
+                            && null != paymentOrderArrayList
+                            && null != deliveryOrderArrayList
+                            && null != downOrderArrayList
+                            && null != paymentOrderChildArrayList
+                            && null != deliveryOrderChildArrayList
+                            && null != downOrderChildArrayList) {
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
+                    }
+                }
+
+                if (null == orderAdapter) {
+                    orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
+                    viewPager.setAdapter(orderAdapter);
+                    viewPager.setCurrentItem(orderType);
+                } else {
+                    OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
+                    orderFragmentEvent.setOrderChildlist1(paymentOrderChildArrayList);
+                    orderFragmentEvent.setOrderChildlist2(deliveryOrderChildArrayList);
+                    orderFragmentEvent.setOrderChildlist3(downOrderChildArrayList);
+
+                    orderFragmentEvent.setCurrency(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+                    orderFragmentEvent.setOrderInfos1(paymentOrderArrayList);
+                    orderFragmentEvent.setOrderInfos2(deliveryOrderArrayList);
+                    orderFragmentEvent.setOrderInfos3(downOrderArrayList);
+
+                    EventBus.getDefault().post(orderFragmentEvent);
+                }
+//                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
                 break;
 
             case API1.GET_ORDER_FAILED:
@@ -185,107 +280,6 @@ public class OrderActivity extends BaseFragmentActivity {
             default:
                 break;
         }
-    }
-
-    /**
-     * 读取订单信息
-     *
-     * @param msg
-     */
-    private void getOrderData(Message msg) {
-        PictureAirLog.v(TAG, "get success----");
-        viewPager.setVisibility(View.VISIBLE);
-        netWorkOrNoCountView.setVisibility(View.INVISIBLE);
-        hideProgressDialog();
-        paymentOrderArrayList.clear();
-        paymentOrderChildArrayList.clear();
-        deliveryOrderArrayList.clear();
-        deliveryOrderChildArrayList.clear();
-        allOrderArrayList.clear();
-        allOrderChildArrayList.clear();
-        downOrderArrayList.clear();
-        downOrderChildArrayList.clear();
-        //解析数据
-        JSONObject resultJsonObject = (JSONObject) msg.obj;
-        JSONArray allOrdersArray = resultJsonObject.getJSONArray("orders");//得到所有的订单信息
-        for (int i = 0; i < allOrdersArray.size(); i++) {
-            JSONObject orderJsonObject = allOrdersArray.getJSONObject(i);//得到单个订单信息
-            orderInfo = JsonUtil.getOrderGroupInfo(orderJsonObject);//获取group信息
-            cartItemInfo = JsonUtil.getOrderChildInfo(orderJsonObject);//获取child信息
-            PictureAirLog.v(TAG, "cartItemInfo size = " + cartItemInfo.size());
-
-            OrderProductInfo orderProductInfo = new OrderProductInfo();
-            orderProductInfo.setOrderTime(orderInfo.orderTime);
-            orderProductInfo.setCartItemInfos(cartItemInfo);
-            PictureAirLog.v(TAG, "orderInfo orderId:" + orderInfo.orderId);
-
-            if (orderInfo.orderStatus == 1) {//1等待买家付款
-                if (orderIds != null && orderIds.size() > 0) {
-                    for (String orderId : orderIds) {
-                        //判断orderId是否相同，且状态是否为1（未付款）
-                        if (orderId.equals(orderInfo.orderId + "")) {
-                            orderInfo.orderStatus = 6;
-                            break;
-                        }
-                    }
-                }
-                paymentOrderArrayList.add(orderInfo);
-                paymentOrderChildArrayList.add(orderProductInfo);
-            } else if (orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3) {//2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-//                        deliveryOrderArrayList.add(orderInfo);
-//                        deliveryOrderChildArrayList.add(orderProductInfo);
-            } else if (orderInfo.orderStatus == 4 || orderInfo.orderStatus == 5) {
-                //暂时模拟数据
-                if (orderInfo.deliveryMethod == 3) {
-                    //3为虚拟商品
-                    downOrderArrayList.add(orderInfo);
-                    downOrderChildArrayList.add(orderProductInfo);
-                } else {
-                    //需要买家自提
-                    deliveryOrderArrayList.add(orderInfo);
-                    deliveryOrderChildArrayList.add(orderProductInfo);
-                }
-
-
-            }
-        }
-
-//                    orderAdapter = new OrderViewPagerAdapter2(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
-//                            paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
-//                            sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
-
-        if (null == mFragments || mFragments.size() == 0) {
-            if (null != orderActivityHandler
-                    && null != paymentOrderArrayList
-                    && null != deliveryOrderArrayList
-                    && null != downOrderArrayList
-                    && null != paymentOrderChildArrayList
-                    && null != deliveryOrderChildArrayList
-                    && null != downOrderChildArrayList) {
-                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
-                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
-                mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
-            }
-        }
-
-        if (null == orderAdapter) {
-            orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
-            viewPager.setAdapter(orderAdapter);
-            viewPager.setCurrentItem(orderType);
-        } else {
-            OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
-            orderFragmentEvent.setOrderChildlist1(paymentOrderChildArrayList);
-            orderFragmentEvent.setOrderChildlist2(deliveryOrderChildArrayList);
-            orderFragmentEvent.setOrderChildlist3(downOrderChildArrayList);
-
-            orderFragmentEvent.setCurrency(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-            orderFragmentEvent.setOrderInfos1(paymentOrderArrayList);
-            orderFragmentEvent.setOrderInfos2(deliveryOrderArrayList);
-            orderFragmentEvent.setOrderInfos3(downOrderArrayList);
-
-            EventBus.getDefault().post(orderFragmentEvent);
-        }
-//                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
     }
 
     @Override
