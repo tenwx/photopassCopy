@@ -140,15 +140,16 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                 if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
                     currentLanguage = Common.SIMPLE_CHINESE;
 //                    updateUI(currentLanguage);
+                    createDialog();
                 }
-                createDialog();
                 break;
             case R.id.language_english:
                 if (!currentLanguage.equals(Common.ENGLISH)) {
                     currentLanguage = Common.ENGLISH;
 //                    updateUI(currentLanguage);
+                    createDialog();
                 }
-                createDialog();
+
                 break;
 
 
