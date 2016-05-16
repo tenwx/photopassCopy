@@ -70,14 +70,6 @@
         ShareByAppClient="true"
         SortId="1" />
 
-    <QZone
-        AppId="1105004402"
-        AppKey="i3UTWIdTzWncslRV"
-        Enable="true"
-        Id="2"
-        ShareByAppClient="true"
-        SortId="2" />
-
     <!--
     	Wechat微信和WechatMoments微信朋友圈的appid是一样的；
     
@@ -123,5 +115,22 @@
         Enable="true"
         Id="6"
         SortId="6" />
+
+    <QZone
+        AppId="1105004402"
+        AppKey="i3UTWIdTzWncslRV"
+        Enable="true"
+        Id="2"
+        ShareByAppClient="true"
+        SortId="2" />
+
+    <!-- test   Instagram  ，申请完毕后 需要替换key -->
+    <Instagram
+        Id="8"
+        SortId="8"
+        ClientId="ff68e3216b4f4f989121aa1c2962d058"
+        ClientSecret="1b2e82f110264869b3505c3fe34e31a1"
+        RedirectUri="http://sharesdk.cn"
+        Enable="true" />
 
 </DevInfor>

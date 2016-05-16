@@ -60,6 +60,8 @@
     <string name="share_failure_qzone">Please download and install QQ before sharing!</string>
     <string name="share_failure_facebook">Please download and install Facebook before sharing!</string>
     <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
+    <string name="share_failure_instagram">Please download and install Instagram before sharing! </string>
+
     <string name="sinaweibo">Sina Weibo</string>
     <string name="qzone">QZone</string>
     <string name="wechat">Friends</string>
