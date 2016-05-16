@@ -572,14 +572,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      */
     public void goToPayActivity(boolean isNeedPay) {
         Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
-        String orderName, orderIntroduce;
+        String orderName, orderIntroduce = null;
         if (list.size() == 1) {
             orderName = list.get(0).getProductNameAlias();
-            orderIntroduce = list.get(0).getDescription();
+            orderIntroduce = list.get(0).getProductNameAlias() + list.get(0).getUnitPrice() + "*" + list.get(0).getQty();
         } else {
             orderName = getString(R.string.multi_goods);
-            orderIntroduce = getString(R.string.multi_goods);
+            for (int i = 0; i < list.size(); i++) {
+                if (i == 0) {
+                    orderIntroduce = list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                } else {
+                    orderIntroduce += "," + list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                }
+            }
         }
+        PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
         intent2.putExtra("isNeedPay", isNeedPay);
         intent2.putExtra("name", orderName);
         intent2.putExtra("price", totalpriceTextView.getText().toString());
@@ -652,15 +659,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 } else {
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
                     intent2.putExtra("price", totalpriceTextView.getText().toString());
-                    String orderName, orderIntroduce;
+                    String orderName, orderIntroduce = null;
                     if (list.size() == 1) {
                         orderName = list.get(0).getProductNameAlias();
-                        orderIntroduce = list.get(0).getDescription();
+                        orderIntroduce = list.get(0).getProductNameAlias() + list.get(0).getUnitPrice() + "*" + list.get(0).getQty();
                     } else {
                         orderName = getString(R.string.multi_goods);
-                        orderIntroduce = getString(R.string.multi_goods);
+                        for (int i = 0; i < list.size(); i++) {
+                            if (i == 0) {
+                                orderIntroduce = list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                            } else {
+                                orderIntroduce += "," + list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                            }
+                        }
                     }
-
+                    PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);

@@ -21,6 +21,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import net.sqlcipher.Cursor;
+import net.sqlcipher.SQLException;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
@@ -809,6 +810,26 @@ public class PictureAirDbManager {
         return resultArrayList;
     }
 
+    /**
+     * 删除数据库中的照片（照片表和收藏表）
+     * @param list
+     */
+    public void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{list.get(i).photoId});
+                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{list.get(i).photoId});
+            }
+            database.setTransactionSuccessful();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+    }
 
     /**
      * 根据ppCode删除对应的照片
@@ -1387,6 +1408,10 @@ public class PictureAirDbManager {
         }
     }
 
+    /**
+     *
+     * @param threadInfo
+     */
     public void insertThread(ThreadInfo threadInfo) {
         database = DBManager.getInstance().writData();
         database.beginTransaction();

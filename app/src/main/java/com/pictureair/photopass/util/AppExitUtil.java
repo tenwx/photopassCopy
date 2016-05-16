@@ -114,4 +114,11 @@ public class AppExitUtil {
         isAppExit = true;
         API1.noticeSocketDisConnect(myHandler);
     }
+
+    /**
+     * app登录
+     */
+    public void AppLogin(){
+        isAppExit = false;
+    }
 }

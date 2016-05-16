@@ -1,10 +1,12 @@
 package com.pictureair.photopass.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore.Images.Media;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -17,19 +19,19 @@ import android.widget.TextView;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
-import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.ACache;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +48,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private ImageView backRelativeLayout;
 	private TextView deleteTextView, titleTextView;
 	private LinearLayout editBarLinearLayout;
-	private CustomProgressBarPop customProgressBarPop;
 	private GridView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
 	private RelativeLayout noCountView;
@@ -55,22 +56,22 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private ArrayList<PhotoInfo> albumArrayList;
 	private ArrayList<PhotoInfo> localPhotoArrayList = new ArrayList<>();
 	private ArrayList<PhotoInfo> originalAlbumArrayList;
-	private ArrayList<PhotoInfo> photoURLlist = new ArrayList<PhotoInfo>();//选择的图片的list
+	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
+	private ArrayList<PhotoInfo> localPhotoslist = new ArrayList<>();//选择的本地图片的list
 	private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
 
-	private static final String TAG = "EditStoryAlbumActivity";
-	private final static int DELETEFILE = 12;
 	private final static int GET_PHOTOS_DONE = 13;
-//	private final static int PROGRESSDIALOG = 0x112;
-	private int photoCount = 0;
+	private final static int START_DELETE_NETWORK_PHOTOS = 14;
+	private final static int DELETE_LOCAL_PHOTOS_DONE = 15;
 	private int tabIndex = 0;
-	private int currentProgress = 0;
 	private int selectCount = 0;
 	private MyToast myToast;
 	private CustomProgressDialog customProgressDialog;
-	private CustomDialog customdialog;
 	private PictureAirDbManager pictureAirDbManager;
 	private boolean editMode = false;
+	private boolean deleteLocalPhotoDone = false;
+	private boolean deleteNetPhotoDone = false;
+	private boolean netWorkFailed = false;
 	private SimpleDateFormat simpleDateFormat;
 	private SharedPreferences sharedPreferences;
 	private PictureWorksDialog pictureWorksDialog;
@@ -113,61 +114,86 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 					editStoryPinnedListViewAdapter.notifyDataSetChanged();
 					break;
+
+				case START_DELETE_NETWORK_PHOTOS://开始删除网络图片
+					API1.deletePhotos(MyApplication.getTokenId(), editStoryAlbumHandler);
+					break;
+
+				case API1.DELETE_PHOTOS_FAILED://判断本地图片是否删除完毕，并且更具有没有本地图片而显示不同的提示
+					//需要处理
+					deleteNetPhotoDone = true;
+					netWorkFailed = true;
+					if (deleteLocalPhotoDone) {
+						dealAfterDeleted();
+					}
+					break;
+
+				case API1.DELETE_PHOTOS_SUCCESS://判断本地图片是否删除完毕
+					/**
+					 * 1.删除列表内的数据
+					 * 2.判断本地数据是否处理完毕
+					 */
+					netWorkFailed = false;
+					//删除本地列表数据操作
+					deleteNetworkPhotos();
+					deleteNetPhotoDone = true;
+					selectCount -= photopassPhotoslist.size();
+					if (deleteLocalPhotoDone) {
+						dealAfterDeleted();
+					}
+					break;
+
+				case DELETE_LOCAL_PHOTOS_DONE://本地文件删除完成
+					deleteLocalPhotoDone = true;
+					((MyApplication)getApplication()).scanMagicFinish = false;
+					selectCount -= localPhotoslist.size();
+					if(deleteNetPhotoDone) {
+						dealAfterDeleted();
+					}
+					break;
+
+				case DialogInterface.BUTTON_POSITIVE://对话框点击确认按钮
+					if (!customProgressDialog.isShowing()){
+						customProgressDialog.show();
+					}
+					new Thread() {
+						public void run() {
+							photopassPhotoslist.clear();
+							localPhotoslist.clear();
+							deleteLocalPhotoDone = false;
+							deleteNetPhotoDone = false;
+							for (int i = 0; i < albumArrayList.size(); i++) {
+								if (albumArrayList.get(i).isSelected == 1) {//选中的照片
+									if (albumArrayList.get(i).onLine == 1) {//网络照片
+										photopassPhotoslist.add(albumArrayList.get(i));
+									} else {
+										localPhotoslist.add(albumArrayList.get(i));
+									}
+								}
+							}
+
+							if (photopassPhotoslist.size() > 0) {
+								editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
+							} else {
+								deleteNetPhotoDone = true;
+							}
+
+							if (localPhotoslist.size() > 0) {
+								deleteLocalPhotos();
+							} else {
+								deleteLocalPhotoDone = true;
+							}
+						}
+					}.start();
+					break;
+
+				default:
+					break;
 			}
 			return false;
 		}
 	});
 
-//	Handler mhHandler = new Handler(){
-//		@Override
-//		public void handleMessage(Message msg) {
-//			// TODO Auto-generated method stub
-//			switch (msg.what) {
-//			case DELETEFILE://删除图片操作
-////				deleteFileDialog.setProgress(msg.arg1);
-//				customProgressBarPop.setProgress(msg.arg1, photoURLlist.size());
-//				if (msg.arg1 == photoURLlist.size()) {
-//					PictureAirLog.out("has delete all files");
-//					Iterator<PhotoInfo> iterator2 = photoURLlist.iterator();
-//					while (iterator2.hasNext()) {
-//						PictureAirLog.out("scan photoURLlist");
-//						PhotoInfo photoInfo = (PhotoInfo) iterator2.next();
-//						if (photoInfo.onLine == 0) {//本地图片，需要删除
-//							PictureAirLog.out("need remove photo");
-//							iterator2.remove();
-//						}
-//					}
-//					currentProgress = 0;
-//					Iterator<PhotoItemInfo> iterator = albumArrayList.iterator();
-//					while (iterator.hasNext()) {
-//						PictureAirLog.out("scan albumArrayList");
-//						PhotoItemInfo photoItemInfo = (PhotoItemInfo) iterator.next();
-//						if (photoItemInfo.list.size() == 0) {
-//							PictureAirLog.out("remove albumArrayList");
-//							iterator.remove();
-//						}
-//					}
-//
-//					editStoryPinnedListViewAdapter.updateData(albumArrayList);
-//					if (photoURLlist.size() == 0) {
-//						shareTextView.setEnabled(false);
-//						deleteTextView.setEnabled(false);
-//						buyTextView.setEnabled(false);
-//					}
-////					deleteFileDiaPictureAirLog.dismiss();
-//					customProgressBarPop.dismiss();
-////					removeDialog(msg.arg2);//删除对应ID的dialog
-//				}
-//				((MyApplication)getApplication()).scanMagicFinish = false;
-//				break;
-//
-//			default:
-//				break;
-//			}
-//		}
-//	};
-
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -182,7 +208,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		noCountView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
 		noCountTextView = (TextView) findViewById(R.id.no_photo_textView);
 		//删除图片进度条
-		customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.editStoryPhotoRelativeLayout), CustomProgressBarPop.TYPE_DELETE);
 		customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
 
 		//绑定监听
@@ -209,7 +234,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		}
 
 		titleTextView.setText(editMode ? R.string.edit : R.string.mypage_pp);
-//		setListCheckedStatus(editMode);
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
 		myToast = new MyToast(this);
@@ -289,144 +313,98 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			}
 
 			if (pictureWorksDialog == null){
-				pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null, "msg", "no", "ok", true, editStoryAlbumHandler);
+				pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
+						getString(R.string.start_delete), getString(R.string.button_cancel), getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
 			}
-
-
-//			boolean hasNetWorkPhoto = false;
-//			boolean hasLocalPhoto = false;
-//			for (int i = 0; i < photoURLlist.size(); i++) {
-//				if (photoURLlist.get(i).onLine == 1) {
-//					if (!hasNetWorkPhoto) {
-//						hasNetWorkPhoto = true;
-//					}
-//				}else {
-//					if (!hasLocalPhoto) {
-//						hasLocalPhoto = true;
-//					}
-//				}
-//			}
-//
-//			if (hasNetWorkPhoto && hasLocalPhoto) {//如果有网络图片，也有本地照片，弹框提示
-//				//初始化dialog
-//				customdialog = new CustomDialog.Builder(this)
-//				.setMessage(getString(R.string.delete_with_photopass))
-//				.setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogOnClickListener())
-//				.setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogOnClickListener())
-//				.setCancelable(false)
-//				.create();
-//				customdialog.show();
-//			}else if (hasNetWorkPhoto && !hasLocalPhoto) {//只有网络图片，没有本地图片
-//				myToast.setTextAndShow(R.string.cannot_delete_in_PhotoPass, Common.TOAST_SHORT_TIME);
-//			}else if (!hasNetWorkPhoto && hasLocalPhoto) {//只有本地图片
-////				showDialog(PROGRESSDIALOG);
-//				customProgressBarPop.show(photoURLlist.size());
-//				new Thread(){
-//					public void run() {
-//						doWork();
-////						doWork(PROGRESSDIALOG);
-//					};
-//				}.start();
-//			}
+			pictureWorksDialog.show();
 			break;
 
 		default:
 			break;
 		}
 	}
-	
-		/**
-		 * 删除文件的操作，完成比较耗时的操作
-		 */
-//		private void doWork() {
-//			File file;
-//			Message message;
-//			boolean hasFound = false;
-//			ArrayList<PhotoInfo> list;
-//			for (int i = 0; i < photoURLlist.size(); i++) {
-//
-//				//删除图片在arraylist中对应的项
-//				if (photoURLlist.get(i).onLine == 0) {//本地图片
-//					//删除contentpridiver表中的数据
-//					PictureAirLog.out("需要删除的文件为"+photoURLlist.get(i).photoPathOrURL);
-//					String params[] = new String[]{photoURLlist.get(i).photoPathOrURL};
-//					//删除Media数据库中的对应图片信息
-//					PictureAirLog.out("删除Media表中的对应数据");
-//					getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, Media.DATA+" like ?", params);
-//
-////					PictureAirLog.out(",需要删除的索引值----->"+photoURLlist.get(i).index.toString());
-//					PictureAirLog.out("arraylist需要移除的文件是"+photoURLlist.get(i).photoPathOrURL);
-//					for (int j = 0; j < albumArrayList.size(); j++) {
-//						list = new ArrayList<PhotoInfo>();
-//						list.addAll(albumArrayList.get(j).list);
-//						Iterator<PhotoInfo> iterator = list.iterator();
-//						while (iterator.hasNext()) {
-//							PhotoInfo photoInfo = iterator.next();
-//							if (photoInfo.photoPathOrURL.equals(photoURLlist.get(i).photoPathOrURL)) {
-//								iterator.remove();
-//								hasFound = true;
-//								break;
-//							}
-//						}
-//						if (hasFound) {
-//							hasFound = false;
-//							albumArrayList.get(j).list = list;
-//							break;
-//						}else {
-//
-//						}
-//					}
-//					//获取需要删除的文件
-//					file = new File(photoURLlist.get(i).photoPathOrURL);
-//					//删除文件
-//					if (file.exists()) {
-//						PictureAirLog.out("开始删除文件"+photoURLlist.get(i).photoPathOrURL);
-//						//删除文件
-//						file.delete();
-//						PictureAirLog.out("the file has been deleted");
-//					}
-//				}
-//				currentProgress++;
-//				message = mhHandler.obtainMessage();
-//				message.what = DELETEFILE;
-//				message.arg1 = currentProgress;
-////				message.arg2 = id;
-////				message.obj = photoURLlist.get(i).photoPathOrURL;
-//				mhHandler.sendMessage(message);
-//			}
-//			PictureAirLog.out("notify");
-//		}
 
-//		private class DialogOnClickListener implements DialogInterface.OnClickListener{
-//
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) {
-//				// TODO Auto-generated method stub
-//				switch (which) {
-//				case DialogInterface.BUTTON_POSITIVE:
-//					PictureAirLog.out("ok");
-////					showDialog(PROGRESSDIALOG);
-//					customProgressBarPop.show(photoURLlist.size());
-//					new Thread(){
-//						public void run() {
-//							doWork();
-////							doWork(PROGRESSDIALOG);
-//						};
-//					}.start();
-//					break;
-//
-//				case DialogInterface.BUTTON_NEGATIVE:
-//					PictureAirLog.out("no");
-//
-//					break;
-//
-//				default:
-//					break;
-//				}
-//				diaPictureAirLog.dismiss();
-//			}
-//
-//		}
+	/**
+	 * 删除本地列表的数据
+	 */
+	private void deleteNetworkPhotos() {
+		/**
+		 * 1.删除数据库的操作（照片表和收藏表都要删除）
+		 * 2.删除本地列表操作
+		 */
+		pictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist);
+
+		for (int i = 0; i < photopassPhotoslist.size(); i++) {
+			Iterator<PhotoInfo> iterator = albumArrayList.iterator();
+			while (iterator.hasNext()) {
+				PhotoInfo photoInfo = iterator.next();
+				if (photoInfo.photoPathOrURL.equals(photopassPhotoslist.get(i).photoPathOrURL)) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 删除文件的操作，完成比较耗时的操作
+	 */
+	private void deleteLocalPhotos() {
+		File file;
+		for (int i = 0; i < localPhotoslist.size(); i++) {
+			//删除contentpridiver表中的数据
+			PictureAirLog.out("需要删除的文件为" + localPhotoslist.get(i).photoPathOrURL);
+			String params[] = new String[]{localPhotoslist.get(i).photoPathOrURL};
+			//删除Media数据库中的对应图片信息
+			PictureAirLog.out("删除Media表中的对应数据");
+			getContentResolver().delete(Media.EXTERNAL_CONTENT_URI, Media.DATA + " like ?", params);
+
+			//获取需要删除的文件
+			file = new File(localPhotoslist.get(i).photoPathOrURL);
+			//删除文件
+			if (file.exists()) {
+				PictureAirLog.out("开始删除文件" + localPhotoslist.get(i).photoPathOrURL);
+				//删除文件
+				file.delete();
+				PictureAirLog.out("the file has been deleted");
+			}
+
+			PictureAirLog.out("arraylist需要移除的文件是" + localPhotoslist.get(i).photoPathOrURL);
+			Iterator<PhotoInfo> iterator = albumArrayList.iterator();
+			while (iterator.hasNext()) {
+				PhotoInfo photoInfo = iterator.next();
+				if (photoInfo.photoPathOrURL.equals(localPhotoslist.get(i).photoPathOrURL)) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+		editStoryAlbumHandler.sendEmptyMessage(DELETE_LOCAL_PHOTOS_DONE);
+	}
+
+	/**
+	 * 删除之后的处理
+	 */
+	private void dealAfterDeleted() {
+		if (selectCount == 0) {
+			deleteTextView.setEnabled(false);
+		}
+		editStoryPinnedListViewAdapter.notifyDataSetChanged();
+		if (photopassPhotoslist.size() > 0 && localPhotoslist.size() > 0) {//如果既有本地图片，又有网络图片
+			if (netWorkFailed) {//网络图片删除失败
+				//需要弹出提示，这种提示需要特别处理，暂时还没有处理
+//				myToast.setTextAndShow("本地文件删除成功，网络图片删除失败", Common.TOAST_SHORT_TIME);
+			}
+		} else if (photopassPhotoslist.size() > 0 && localPhotoslist.size() == 0) {
+			if (netWorkFailed) {//网络图片删除失败
+				myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+			}
+		}
+
+		if (customProgressDialog.isShowing()) {
+			customProgressDialog.dismiss();
+		}
+	}
 
 	/**
 	 * 获取预览图片
