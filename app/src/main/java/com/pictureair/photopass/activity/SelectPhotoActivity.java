@@ -35,20 +35,19 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 预览照片，总共有4大类，1，全部的照片，2，pictureair网络获取的图片，3，本软件拍的照片，4，已经购买的照片
@@ -422,7 +421,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
             photoInfo.isChecked = 1;
             photoInfo.isSelected = 0;
             photoInfo.showMask = 0;
-            if (isBuy) {
+            if (isBuy) {//制作视频的时候，需要已购买的图片
                 if (photoInfo.isPayed == 1) {
                     list.add(photoInfo);
                 }
@@ -431,7 +430,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     if (photoInfo.isPayed == 0) {
                         list.add(photoInfo);
                     }
-                } else {
+                } else {//购买的时候，需要未购买的图片
                     if (goodsInfo == null) {
                         PictureAirLog.v(TAG, "goodsInfo == null");
                         return list;
@@ -441,7 +440,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                         if (photoInfo.isPayed == 0) {
                             list.add(photoInfo);
                         }
-                    } else {
+                    } else {//需要排除纪念照，纪念照不允许制作
+//                        if ()
                         list.add(photoInfo);
                     }
                 }

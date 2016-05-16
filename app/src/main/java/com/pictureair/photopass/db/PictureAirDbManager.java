@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
+import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
@@ -20,6 +21,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import net.sqlcipher.Cursor;
+import net.sqlcipher.SQLException;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
@@ -205,7 +207,7 @@ public class PictureAirDbManager {
      * @param userId
      * @return
      */
-    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(String userId, String deleteTime, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
+    public ArrayList<PhotoInfo> getFavoritePhotoInfoListFromDB(Context context, String userId, String deleteTime, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<>();
         Cursor cursor = null;
         Cursor cursor1 = null;
@@ -255,20 +257,28 @@ public class PictureAirDbManager {
                     }
                 }
                 if (photoInfo.onLine == 0) {//本地图片，检查是否存在
+                    PictureAirLog.out("local photos");
                     file = new File(photoInfo.photoPathOrURL);
                     if (!file.exists()) {
                         continue;
+                    } else {
+                        photoInfo.locationName = context.getString(R.string.story_tab_magic);
                     }
-                }
-
-                for (int i = 0; i < locationItemInfos.size(); i++) {
-                    if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
-                        if (language.equals(Common.ENGLISH)) {
-                            photoInfo.locationName = locationItemInfos.get(i).placeENName;
-                        } else if (language.equals(Common.SIMPLE_CHINESE)) {
-                            photoInfo.locationName = locationItemInfos.get(i).placeCHName;
+                } else {//网络图片
+                    PictureAirLog.out("network photos");
+                    for (int i = 0; i < locationItemInfos.size(); i++) {
+                        PictureAirLog.out("find favorite location---->");
+                        if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
+                            PictureAirLog.out("found favorite location---->");
+                            if (language.equals(Common.ENGLISH)) {
+                                PictureAirLog.out("found favorite endligh location---->");
+                                photoInfo.locationName = locationItemInfos.get(i).placeENName;
+                            } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                                PictureAirLog.out("found favorite chinese location---->");
+                                photoInfo.locationName = locationItemInfos.get(i).placeCHName;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
                 resultArrayList.add(photoInfo);
@@ -800,6 +810,26 @@ public class PictureAirDbManager {
         return resultArrayList;
     }
 
+    /**
+     * 删除数据库中的照片（照片表和收藏表）
+     * @param list
+     */
+    public void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list) {
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{list.get(i).photoId});
+                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{list.get(i).photoId});
+            }
+            database.setTransactionSuccessful();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+    }
 
     /**
      * 根据ppCode删除对应的照片
@@ -1378,6 +1408,10 @@ public class PictureAirDbManager {
         }
     }
 
+    /**
+     *
+     * @param threadInfo
+     */
     public void insertThread(ThreadInfo threadInfo) {
         database = DBManager.getInstance().writData();
         database.beginTransaction();

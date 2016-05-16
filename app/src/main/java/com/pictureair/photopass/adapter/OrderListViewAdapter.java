@@ -269,14 +269,24 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     intent.putExtra("flag", "order");
                     intent.putExtra("deliveryInfo", grouplist.get(position));
                     //childlist
-                    String orderName, orderIntroduce;
+                    String orderName, orderIntroduce = null;
                     if (childlist.get(position).getCartItemInfos().size() == 1) {
                         orderName = childlist.get(position).getCartItemInfos().get(0).getProductName();
-                        orderIntroduce = childlist.get(position).getCartItemInfos().get(0).getDescription();
+                        orderIntroduce = childlist.get(position).getCartItemInfos().get(0).getProductName()
+                                + childlist.get(position).getCartItemInfos().get(0).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(0).getQty();
                     } else {
                         orderName = context.getString(R.string.multi_goods);
-                        orderIntroduce = context.getString(R.string.multi_goods);
+                        for (int i = 0; i < childlist.get(position).getCartItemInfos().size(); i++) {
+                            if (i == 0) {
+                                orderIntroduce = childlist.get(position).getCartItemInfos().get(i).getProductName()
+                                        + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
+                            } else {
+                                orderIntroduce += "," + childlist.get(position).getCartItemInfos().get(i).getProductName()
+                                        + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
+                            }
+                        }
                     }
+                    PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
                     intent.putExtra("name", orderName);
                     intent.putExtra("introduce", orderIntroduce);
                     context.startActivity(intent);

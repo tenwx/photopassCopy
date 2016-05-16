@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +22,9 @@ import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SettingUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+
+import java.lang.ref.WeakReference;
 
 /**
  * @author talon
@@ -45,6 +50,54 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
     //纪录是否自动更新的变量。
     private boolean isAutoUpdate = false;
+    private CustomProgressDialog customProgressDialog; // loading 框
+
+    private final Handler settingHandler = new HelpHandler(this);
+
+
+    private static class HelpHandler extends Handler{
+        private final WeakReference<SettingActivity> mActivity;
+
+        public HelpHandler(SettingActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    private void dealHandler(Message msg) {
+        if (null != customProgressDialog && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
+
+        switch (msg.what){
+            case 1:
+                ibGprWifiDownload.setImageResource(R.drawable.nosele);
+                ibWifiOnlyDownload.setImageResource(R.drawable.sele);
+                break;
+            case 2:
+                ibGprWifiDownload.setImageResource(R.drawable.sele);
+                ibWifiOnlyDownload.setImageResource(R.drawable.nosele);
+                break;
+            case 3:
+                isAutoUpdate = true;
+                ibAutoUpdate.setImageResource(R.drawable.sele);
+                break;
+            case 4:
+                isAutoUpdate = false;
+                ibAutoUpdate.setImageResource(R.drawable.nosele);
+                break;
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -97,7 +150,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
         appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
         currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        judgeSettingStatus();
+        customProgressDialog = CustomProgressDialog.show(this, this.getString(R.string.is_loading), true, null);
+        new Thread() {
+            @Override
+            public void run() {
+                judgeSettingStatus();
+            }
+        }.start();
     }
 
     @Override
@@ -209,19 +268,15 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
      */
     private void judgeSettingStatus() {
         if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-            ibGprWifiDownload.setImageResource(R.drawable.nosele);
-            ibWifiOnlyDownload.setImageResource(R.drawable.sele);
+            settingHandler.sendEmptyMessage(1);
         } else {
-            ibGprWifiDownload.setImageResource(R.drawable.sele);
-            ibWifiOnlyDownload.setImageResource(R.drawable.nosele);
+            settingHandler.sendEmptyMessage(2);
         }
 
         if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-            isAutoUpdate = true;
-            ibAutoUpdate.setImageResource(R.drawable.sele);
+            settingHandler.sendEmptyMessage(3);
         } else {
-            isAutoUpdate = false;
-            ibAutoUpdate.setImageResource(R.drawable.nosele);
+            settingHandler.sendEmptyMessage(4);
         }
     }
 

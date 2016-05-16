@@ -521,8 +521,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     back.setImageResource(R.drawable.back_white);
                     delete.setVisibility(View.VISIBLE);
                     PictureAirLog.d("===========", "取消删除......");
-                    updateUI(UPDATE_UI);//更新界面
-
+//                    updateUI(UPDATE_UI);//更新界面
+                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
                 } else {
                     finish();
                 }

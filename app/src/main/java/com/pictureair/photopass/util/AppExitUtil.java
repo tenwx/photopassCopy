@@ -81,7 +81,7 @@ public class AppExitUtil {
                     Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     MyApplication.getInstance().startActivity(i);
-                    isAppExit = false;
+                    isAppExit = true;
 
                     AppManager.getInstance().AppExit(MyApplication.getInstance());
                     break;
@@ -113,5 +113,12 @@ public class AppExitUtil {
         //断开推送
         isAppExit = true;
         API1.noticeSocketDisConnect(myHandler);
+    }
+
+    /**
+     * app登录
+     */
+    public void AppLogin(){
+        isAppExit = false;
     }
 }

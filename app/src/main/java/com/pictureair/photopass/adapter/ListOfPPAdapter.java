@@ -27,7 +27,6 @@ import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
@@ -377,24 +376,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         return true;
     }
 
-    //获取地点信息
-    private ArrayList<DiscoverLocationItemInfo> createLocationList() {
-        ArrayList<DiscoverLocationItemInfo> resultArrayList = new ArrayList<DiscoverLocationItemInfo>();
-        try {
-            com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(mContext).getAsString(Common.LOCATION_INFO));
-            com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
-            for (int i = 0; i < resultArray.size(); i++) {
-                DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-                com.alibaba.fastjson.JSONObject object = resultArray.getJSONObject(i);
-                locationInfo = JsonUtil.getLocation(object);
-                resultArrayList.add(locationInfo);
-            }
-        } catch (com.alibaba.fastjson.JSONException e) {
-            e.printStackTrace();
-        }
-        return resultArrayList;
-    }
-
     /**
      * 生成photoItemInfo的列表
      *
@@ -406,7 +387,8 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         ArrayList<PhotoInfo> photoInfos = new ArrayList<PhotoInfo>();
         photoInfos.addAll(arrayList.get(index).getSelectPhotoItemInfos());
 
-        ArrayList<DiscoverLocationItemInfo> locationList = createLocationList();
+        ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
+        locationList.addAll(AppUtil.getLocation(ACache.get(mContext).getAsString(Common.LOCATION_INFO)));
 
         PhotoItemInfo photoItemInfo = new PhotoItemInfo();
 

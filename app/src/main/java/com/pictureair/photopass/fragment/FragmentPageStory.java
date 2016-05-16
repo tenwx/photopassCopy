@@ -781,6 +781,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void showViewPager() {
         if (allItemInfoList != null && allItemInfoList.size() > 0) {//有图片
             PictureAirLog.out("viewpager---->has photos");
+            more.setVisibility(View.VISIBLE);
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             //隐藏空图的情况
@@ -815,9 +816,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
         } else {//没有图片
-
             //判断是否应该显示左上角红点
-
+            more.setVisibility(View.INVISIBLE);
             if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //显示没有pp的情况
@@ -998,7 +998,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     super.run();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
 
                 }
@@ -1163,7 +1163,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     favouritePhotoList.clear();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
                     fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {

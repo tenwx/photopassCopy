@@ -175,13 +175,19 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 intent.putExtra("flag", "order");
                 intent.putExtra("deliveryInfo", orderInfo);
                 String orderName;
-                String orderIntroduce;
+                String orderIntroduce = null;
                 if (orderDetailArrayList.size() > 1){//>1
                     orderName = getString(R.string.multi_goods);
-                    orderIntroduce = getString(R.string.multi_goods);
+                    for (int i = 0; i < orderDetailArrayList.size(); i++) {
+                        if (i == 0) {
+                            orderIntroduce = orderDetailArrayList.get(i).getProductName() + orderDetailArrayList.get(i).getUnitPrice() + "*" + orderDetailArrayList.get(i).getQty();
+                        } else {
+                            orderIntroduce += "," + orderDetailArrayList.get(i).getProductName() + orderDetailArrayList.get(i).getUnitPrice() + "*" + orderDetailArrayList.get(i).getQty();
+                        }
+                    }
                 } else {//1
                     orderName = orderDetailArrayList.get(0).getProductName();
-                    orderIntroduce = orderDetailArrayList.get(0).getDescription();
+                    orderIntroduce = orderDetailArrayList.get(0).getProductName() + orderDetailArrayList.get(0).getUnitPrice() + "*" + orderDetailArrayList.get(0).getQty();
                 }
                 intent.putExtra("name", orderName);
                 intent.putExtra("introduce", orderIntroduce);

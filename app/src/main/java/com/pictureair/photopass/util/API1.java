@@ -10,19 +10,15 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.HttpBaseJson;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-
-import org.apache.http.Header;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -109,6 +105,9 @@ public class API1 {
 
     public static final int GET_AD_LOCATIONS_FAILED = 2090;
     public static final int GET_AD_LOCATIONS_SUCCESS = 2091;
+
+    public static final int DELETE_PHOTOS_SUCCESS = 2101;
+    public static final int DELETE_PHOTOS_FAILED = 2100;
 
     /**
      * 发现
@@ -649,6 +648,14 @@ public class API1 {
         });
     }
 
+    /**
+     * 删除网络图片
+     * @param tokenId
+     * @param handler
+     */
+    public static void deletePhotos(String tokenId, final Handler handler){
+        handler.obtainMessage(DELETE_PHOTOS_SUCCESS).sendToTarget();
+    }
 
     /**
      * 获取已收藏的地点信息

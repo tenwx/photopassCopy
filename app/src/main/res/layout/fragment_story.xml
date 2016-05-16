@@ -52,6 +52,7 @@
             android:paddingTop="@dimen/pp_padding_8"
             android:text="@string/edit"
             android:textColor="@color/white"
+            android:visibility="gone"
             android:textSize="@dimen/text_size_14"/>
     </RelativeLayout>
 

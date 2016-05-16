@@ -29,6 +29,7 @@ import com.pictureair.photopass.fragment.FragmentPageShop;
 import com.pictureair.photopass.fragment.FragmentPageStory;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
+import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -128,6 +129,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
         newToast = new MyToast(this);
+
+        //设置app是否登录的状态
+        AppExitUtil.getInstance().AppLogin();
+
         // 自动检查更新
         sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
