@@ -390,6 +390,7 @@
     <string name="auto_sync">Auto Sync</string>
     <string name="setting_language">Change Language</string>
     <string name="comfirm_logout">Do you want to Sign Out?</string>
+    <string name="setting_language_msg">Do you want to change the language?</string>
     <!-- settings end -->
 
     <!-- change language start -->
