@@ -12,9 +12,11 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.util.Locale;
 
@@ -26,8 +28,8 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private RelativeLayout back;
     private RelativeLayout languageChinese;
     private RelativeLayout languageEnglish;
-    private RelativeLayout save;
-    private TextView saveTv;
+//    private RelativeLayout save;
+//    private TextView saveTv;
 
     private ImageView chineseSeleted;
     private ImageView englishSeleted;
@@ -35,6 +37,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private String oldLanguage = "";
     private String currentLanguage = "";   // en表示英语，zh表示简体中文。
     private SharedPreferences sharedPreferences;
+    private PictureWorksDialog pictureWorksDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +55,13 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         back = (RelativeLayout) findViewById(R.id.back_set);
         languageChinese = (RelativeLayout) findViewById(R.id.language_chinese);
         languageEnglish = (RelativeLayout) findViewById(R.id.language_english);
-        save = (RelativeLayout) findViewById(R.id.save);
-        saveTv = (TextView) findViewById(R.id.save_tv);
+//        save = (RelativeLayout) findViewById(R.id.save);
+//        saveTv = (TextView) findViewById(R.id.save_tv);
 
         chineseSeleted = (ImageView) findViewById(R.id.chinese_imageView);
         englishSeleted = (ImageView) findViewById(R.id.english_imageView);
 
-        save.setOnClickListener(this);
+//        save.setOnClickListener(this);
         back.setOnClickListener(this);
         languageChinese.setOnClickListener(this);
         languageEnglish.setOnClickListener(this);
@@ -93,14 +96,14 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             englishSeleted.setVisibility(View.VISIBLE);
             chineseSeleted.setVisibility(View.INVISIBLE);
         }
-        if (oldLanguage.equals(cur)) {
-            //确认按钮不可点击
-            save.setClickable(false);
-            saveTv.setVisibility(View.GONE);
-        } else {
-            save.setClickable(true);
-            saveTv.setVisibility(View.VISIBLE);
-        }
+//        if (oldLanguage.equals(cur)) {
+//            //确认按钮不可点击
+//            save.setClickable(false);
+//            saveTv.setVisibility(View.GONE);
+//        } else {
+//            save.setClickable(true);
+//            saveTv.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -115,8 +118,60 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             case R.id.back_set:
                 finish();
                 break;
-            case R.id.save:
-                //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
+//            case R.id.save:
+//                //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
+//                if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
+//                    config.locale = Locale.SIMPLIFIED_CHINESE;
+//                    MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
+//                } else if (currentLanguage.equals(Common.ENGLISH)) {
+//                    config.locale = Locale.US;
+//                    MyApplication.getInstance().setLanguageType(Common.ENGLISH);
+//                }
+//                getResources().updateConfiguration(config, dm);
+//                //把语言写入数据库
+//                SharedPreferences.Editor localEditor = sharedPreferences.edit();
+//                localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
+//                localEditor.commit();
+//                //清除商品
+//                clearCache();
+//                finish();
+//                break;
+            case R.id.language_chinese:
+                if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
+                    currentLanguage = Common.SIMPLE_CHINESE;
+//                    updateUI(currentLanguage);
+                }
+                createDialog();
+                break;
+            case R.id.language_english:
+                if (!currentLanguage.equals(Common.ENGLISH)) {
+                    currentLanguage = Common.ENGLISH;
+//                    updateUI(currentLanguage);
+                }
+                createDialog();
+                break;
+
+
+            default:
+                break;
+        }
+    }
+
+    //清除acahe框架的缓存数据
+    private void clearCache() {
+        ACache.get(this).remove(Common.ALL_GOODS);
+        ACache.get(this).remove(Common.ACACHE_ADDRESS);
+    }
+
+
+    // 改变语言设置时的对话框
+    private void createDialog() {
+        new CustomDialog(SettingLanguageActivity.this, R.string.setting_language_msg, R.string.confirm_sync_no, R.string.confirm_sync_yes, new CustomDialog.MyDialogInterface() {
+            @Override
+            public void yes() {
+                // TODO Auto-generated method stub // 确认语言设置之后，修改状态
+                updateUI(currentLanguage);
+
                 if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
                     config.locale = Locale.SIMPLIFIED_CHINESE;
                     MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
@@ -131,33 +186,15 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
                 localEditor.commit();
                 //清除商品
                 clearCache();
-                finish();
-                break;
-            case R.id.language_chinese:
-                if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
-                    currentLanguage = Common.SIMPLE_CHINESE;
-                    updateUI(currentLanguage);
-                }
+                onCreate(null);
+//                finish();
+            }
+            @Override
+            public void no() {
+                // TODO Auto-generated method stub // 取消：不做操作
 
-                break;
-            case R.id.language_english:
-                if (!currentLanguage.equals(Common.ENGLISH)) {
-                    currentLanguage = Common.ENGLISH;
-                    updateUI(currentLanguage);
-
-                }
-                break;
-
-
-            default:
-                break;
-        }
-    }
-
-    //清除acahe框架的缓存数据
-    private void clearCache() {
-        ACache.get(this).remove(Common.ALL_GOODS);
-        ACache.get(this).remove(Common.ACACHE_ADDRESS);
+            }
+        });
     }
 
 }
