@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -528,65 +529,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				break;
 			case R.id.btn_left_back:
-				//如果添加了边框。让边框消失。
-				if (editType == 1) {
-					if (frameImageView.isShown()) {
-						frameImageView.setVisibility(View.INVISIBLE);
-					}
-					//恢复到没有裁减的状态。
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-						if (photoInfo.onLine == 1) {
-							loadOnlineImg(photoURL);
-						}else{
-							loadImage(photoURL);
-						}
-					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-//						loadImage(pathList.get(pathList.size() - 1));
-					}
-				}
-
-				//如果有饰品，饰品消失。
-				if (editType == 3) {
-					if (mStickerView.isShown()) {
-						mStickerView.setVisibility(View.GONE);
-						mStickerView.clear();
-					}
-				}
-
-				//如果添加了滤镜。
-				if(editType == 2){
-					if (newImage!=null) {
-						newImage = null;
-//					newImage.recycle();
-					}
-//					mainImage.setImageBitmap(mainBitmap);
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-						if (photoInfo.onLine == 1) {
-							loadOnlineImg(photoURL);
-						}else{
-							loadImage(photoURL);
-						}
-					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
-					}
-				}
-
-				// 如果旋转了
-				if (editType == 4) { // 恢复到原始状态。
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-						if (photoInfo.onLine == 1) {
-							loadOnlineImg(photoURL);
-						}else{
-							loadImage(photoURL);
-						}
-					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
-					}
-				}
-				exitEditStates(); // 推出编辑状态
-				if(editPhotoInfoArrayList.size() > 1){
-					preview_save.setVisibility(View.VISIBLE);
-				}
+				leftback();
 				break;
 
 			//编辑边框。
@@ -745,6 +688,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				});
 				break;
 			case R.id.btn_onedit_save: //保存到临时目录
+
+				if (index == 0){ //只要是从原图开始操作，就清空 editPhotoInfoArrayList
+					editPhotoInfoArrayList.clear();
+					addEditPhotoInfo(photoURL,0,null,null,"",0);
+				}
 
 				SaveStickersTask task = new SaveStickersTask();
 				if (editType == 2) { //滤镜处理过的
@@ -1531,4 +1479,89 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		bitmap = EditPhotoUtil.rotateImage(bitmap,rotateAngle);
 		return bitmap;
 	}
+
+	/**
+	 * 监听返回键
+	 * @param keyCode
+	 * @param event
+     * @return
+     */
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (top_HorizontalListView.isShown() || editType == 4){  //如果进入编辑状态。
+				leftback();
+			}else {
+				finish();
+			}
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+
+	/**
+	 * 退出编辑状态。
+	 */
+	private void leftback(){
+		//如果添加了边框。让边框消失。
+		if (editType == 1) {
+			if (frameImageView.isShown()) {
+				frameImageView.setVisibility(View.INVISIBLE);
+			}
+			//恢复到没有裁减的状态。
+			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+				if (photoInfo.onLine == 1) {
+					loadOnlineImg(photoURL);
+				}else{
+					loadImage(photoURL);
+				}
+			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+//						loadImage(pathList.get(pathList.size() - 1));
+			}
+		}
+
+		//如果有饰品，饰品消失。
+		if (editType == 3) {
+			if (mStickerView.isShown()) {
+				mStickerView.setVisibility(View.GONE);
+				mStickerView.clear();
+			}
+		}
+
+		//如果添加了滤镜。
+		if(editType == 2){
+			if (newImage!=null) {
+				newImage = null;
+//					newImage.recycle();
+			}
+//					mainImage.setImageBitmap(mainBitmap);
+			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+				if (photoInfo.onLine == 1) {
+					loadOnlineImg(photoURL);
+				}else{
+					loadImage(photoURL);
+				}
+			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+			}
+		}
+
+		// 如果旋转了
+		if (editType == 4) { // 恢复到原始状态。
+			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+				if (photoInfo.onLine == 1) {
+					loadOnlineImg(photoURL);
+				}else{
+					loadImage(photoURL);
+				}
+			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+			}
+		}
+		exitEditStates(); // 推出编辑状态
+		if(editPhotoInfoArrayList.size() > 1){
+			preview_save.setVisibility(View.VISIBLE);
+		}
+	}
+
 }
