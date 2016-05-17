@@ -388,7 +388,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         photoInfos.addAll(arrayList.get(index).getSelectPhotoItemInfos());
 
         ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
-        locationList.addAll(AppUtil.getLocation(ACache.get(mContext).getAsString(Common.LOCATION_INFO)));
+        locationList.addAll(AppUtil.getLocation(mContext, ACache.get(mContext).getAsString(Common.LOCATION_INFO), true));
 
         PhotoItemInfo photoItemInfo = new PhotoItemInfo();
 

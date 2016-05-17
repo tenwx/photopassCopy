@@ -420,7 +420,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					case 0://all
 						localPhotoArrayList.addAll(AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
 						Collections.sort(localPhotoArrayList);
-						locationList.addAll(AppUtil.getLocation(ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO)));
+						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedAllPhotos(EditStoryAlbumActivity.this, locationList, localPhotoArrayList,
 									pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
@@ -431,7 +431,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						break;
 
 					case 1://photopass
-						locationList.addAll(AppUtil.getLocation(ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO)));
+						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
 									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
@@ -452,7 +452,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						break;
 
 					case 3://bought
-						locationList.addAll(AppUtil.getLocation(ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO)));
+						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
 									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
@@ -462,7 +462,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						break;
 
 					case 4://favourite
-						locationList.addAll(AppUtil.getLocation(ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO)));
+						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(
 								pictureAirDbManager.getFavoritePhotoInfoListFromDB(EditStoryAlbumActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 						break;

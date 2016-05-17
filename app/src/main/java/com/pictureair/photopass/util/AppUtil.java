@@ -1421,18 +1421,49 @@ public class AppUtil {
         return photoPassItemInfoList;
     }
 
-    public static ArrayList<DiscoverLocationItemInfo> getLocation(String locationJson) {
+    /**
+     * 获取地点列表
+     * @param locationJson
+     * @param showPhoto true显示照片，需要手动添加一个地点,false显示列表，不需要手动添加地点
+     * @return
+     */
+    public static ArrayList<DiscoverLocationItemInfo> getLocation(Context context, String locationJson, boolean showPhoto) {
         ArrayList<DiscoverLocationItemInfo> result = new ArrayList<>();
+        DiscoverLocationItemInfo locationInfo;
         try {
             JSONObject response = JSONObject.parseObject(locationJson);
             JSONArray resultArray = response.getJSONArray("locations");
             for (int i = 0; i < resultArray.size(); i++) {
                 JSONObject object = resultArray.getJSONObject(i);
-                DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                result.add(locationInfo);
+                locationInfo = JsonUtil.getLocation(object);
+                if (!showPhoto) {//不需要显示照片
+                    if (locationInfo.isShow == 1) {
+                        result.add(locationInfo);
+                    }
+                } else {
+                    result.add(locationInfo);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        if (showPhoto) {//显示照片，需要手动添加一个点
+            locationInfo = new DiscoverLocationItemInfo();
+            locationInfo.locationId = "others";
+            locationInfo.locationIds = "others";
+            locationInfo.isShow = 0;
+
+            locationInfo.placeCHName = context.getResources().getString(R.string.story_other_ch);
+            locationInfo.placeENName = context.getResources().getString(R.string.story_other_en);
+            locationInfo.placeUrl = "";
+            locationInfo.latitude = 0;
+            locationInfo.longitude = 0;
+            locationInfo.placeDetailCHIntroduce = "";
+            locationInfo.placeDetailENIntroduce = "";
+            locationInfo.popularity = "";
+            locationInfo.islove = 0;
+            locationInfo.showDetail = 0;
+            result.add(locationInfo);
         }
         return result;
     }

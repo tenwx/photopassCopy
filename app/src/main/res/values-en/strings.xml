@@ -87,6 +87,8 @@
     <string name="story_tab_magic">Local</string>
     <string name="story_tab_bought">Purchased</string>
     <string name="story_tab_favorite">Favorite</string>
+    <string name="story_other_en">Others</string>
+    <string name="story_other_ch">其他</string>
     <string name="story_no_pp">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>

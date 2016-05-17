@@ -21,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -232,17 +231,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
                 PictureAirLog.d(TAG, "---------->get location success");
-                try {
-                    JSONObject response = JSONObject.parseObject(msg.obj.toString());
-                    JSONArray resultArray = response.getJSONArray("locations");
-                    for (int i = 0; i < resultArray.size(); i++) {
-                        JSONObject object = resultArray.getJSONObject(i);
-                        DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                        locationList.add(locationInfo);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                locationList.clear();
+                locationList.addAll(AppUtil.getLocation(getActivity(), msg.obj.toString(), true));
                 //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
                 photoPassPicList.clear();
                 photoPassVideoList.clear();
@@ -1405,7 +1395,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.out("遍历地址");
                 PhotoItemInfo p = photoPassItemInfoList.get(j);
                 if (p.locationId == null) {//此item为视频，直接跳过
-                    continue;
+//                    continue;
+                    p.locationId = "others";
                 }
                 if (info.locationId.equals(p.locationId) || p.locationIds.contains(info.locationId)) {//如果locationId和photo的locationid一样
                     PictureAirLog.out("location一样");

@@ -87,6 +87,8 @@
     <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">收藏</string>
+    <string name="story_other_en">Others</string>
+    <string name="story_other_ch">其他</string>
     <string name="story_no_pp">请扫描您的上海迪士尼乐园门票或迪士尼乐拍通卡预览您的照片。</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>

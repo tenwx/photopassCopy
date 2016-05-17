@@ -716,7 +716,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             isLandscape = true;
             landscapeOrientation();
         }
-        originalRadius = 200;
+        originalRadius = 250;
         curRadius = originalRadius;
         dialog.show();
         getPreviewPhotos();
@@ -740,7 +740,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
 
                 if (tabName.equals("all")) {//获取全部照片
-                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
                                 pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
@@ -750,7 +750,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else if (tabName.equals("photopass")) {//获取pp图片
-                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
@@ -762,7 +762,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photolist.addAll(targetphotolist);
 
                 } else if (tabName.equals("bought")) {//获取已经购买的图片
-                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
@@ -771,7 +771,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
-                    locationList.addAll(AppUtil.getLocation(ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO)));
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
                             pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 

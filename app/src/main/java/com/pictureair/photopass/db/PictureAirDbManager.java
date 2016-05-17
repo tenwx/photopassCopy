@@ -769,7 +769,8 @@ public class PictureAirDbManager {
                 PhotoInfo photo = isVideo ? JsonUtil.getVideoInfo(object) : JsonUtil.getPhoto(object);
                 if (!isVideo) {
                     if (photo.locationId == null || photo.locationId.equals("")) {
-                        continue;
+//                        continue;
+                        photo.locationId = "others";
                     }
                 }
 

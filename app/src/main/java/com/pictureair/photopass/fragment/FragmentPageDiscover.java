@@ -36,11 +36,11 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
@@ -48,8 +48,6 @@ import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 发现页面，显示各个地点的与当前的距离，可以筛选各个地方，可支持导航
@@ -133,20 +131,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             case API1.GET_ALL_LOCATION_SUCCESS:
                 //获取全部的location
                 PictureAirLog.d(TAG, "get location success============" + msg.obj);
-                try {
-                    JSONObject response = JSONObject.parseObject(msg.obj.toString());
-                    JSONArray resultArray = response.getJSONArray("locations");
-                    for (int i = 0; i < resultArray.size(); i++) {
-                        JSONObject object = resultArray.getJSONObject(i);
-                        DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                        if (locationInfo.isShow == 1) {
-                            locationList.add(locationInfo);
-                        }
-                    }
-                    locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
+                locationList.clear();
+                locationList.addAll(AppUtil.getLocation(getActivity(), msg.obj.toString(), false));
+                locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
                 API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
                 break;
 

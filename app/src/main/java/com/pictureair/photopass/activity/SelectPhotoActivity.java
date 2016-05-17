@@ -441,8 +441,9 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                             list.add(photoInfo);
                         }
                     } else {//需要排除纪念照，纪念照不允许制作
-//                        if ()
-                        list.add(photoInfo);
+                        if (!photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
+                            list.add(photoInfo);
+                        }
                     }
                 }
 
