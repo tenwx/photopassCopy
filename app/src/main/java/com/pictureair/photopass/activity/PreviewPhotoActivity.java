@@ -50,6 +50,7 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
@@ -615,6 +616,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
+
+                    if (AppManager.getInstance().checkActivity(MyPPActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
+                        AppManager.getInstance().killActivity(MyPPActivity.class);
+                    }
                     //将 tabname 存入sp
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新
                     editor1.putString("tabName", tabName);
@@ -651,6 +656,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
         PictureAirLog.out("oncreate start----");
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE );
         init();//初始化UI
         PictureAirLog.out("oncreate finish----");
 //        judge();//判断 照片是否购买，并弹出相应的tips

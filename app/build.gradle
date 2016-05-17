@@ -102,6 +102,7 @@ dependencies {
     compile files('libs/recyclerview.jar')
     compile files('libs/ShareSDK-Core-2.7.0.jar')
     compile files('libs/ShareSDK-Facebook-2.6.4.jar')
+    compile files('libs/ShareSDK-Instagram-2.7.2.jar')
     compile files('libs/ShareSDK-QQ-2.7.0.jar')
     compile files('libs/ShareSDK-QZone-2.7.0.jar')
     compile files('libs/ShareSDK-SinaWeibo-2.7.0.jar')

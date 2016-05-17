@@ -1218,25 +1218,28 @@ public class AppUtil {
         File[] files = file.listFiles();
         Date date;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
-                if (files[i].length() > 0) {//扫描到文件
-                    selectPhotoItemInfo = new PhotoInfo();
-                    selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
-                    selectPhotoItemInfo.lastModify = files[i].lastModified();
-                    date = new Date(selectPhotoItemInfo.lastModify);
-                    selectPhotoItemInfo.shootOn = sdf.format(date);
-                    selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
-                    selectPhotoItemInfo.isChecked = 0;
-                    selectPhotoItemInfo.isSelected = 0;
-                    selectPhotoItemInfo.showMask = 0;
-                    selectPhotoItemInfo.locationName = context.getString(R.string.story_tab_magic);
-                    selectPhotoItemInfo.isPayed = 1;
-                    selectPhotoItemInfo.onLine = 0;
-                    selectPhotoItemInfo.isVideo = 0;
-                    selectPhotoItemInfo.isHasPreset = 0;
-                    resultList.add(selectPhotoItemInfo);
-                    PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+        if (null != files) {
+
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
+                    if (files[i].length() > 0) {//扫描到文件
+                        selectPhotoItemInfo = new PhotoInfo();
+                        selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
+                        selectPhotoItemInfo.lastModify = files[i].lastModified();
+                        date = new Date(selectPhotoItemInfo.lastModify);
+                        selectPhotoItemInfo.shootOn = sdf.format(date);
+                        selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
+                        selectPhotoItemInfo.isChecked = 0;
+                        selectPhotoItemInfo.isSelected = 0;
+                        selectPhotoItemInfo.showMask = 0;
+                        selectPhotoItemInfo.locationName = context.getString(R.string.story_tab_magic);
+                        selectPhotoItemInfo.isPayed = 1;
+                        selectPhotoItemInfo.onLine = 0;
+                        selectPhotoItemInfo.isVideo = 0;
+                        selectPhotoItemInfo.isHasPreset = 0;
+                        resultList.add(selectPhotoItemInfo);
+                        PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+                    }
                 }
             }
         }

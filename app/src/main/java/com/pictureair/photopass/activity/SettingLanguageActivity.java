@@ -138,14 +138,12 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
 //                break;
             case R.id.language_chinese:
                 if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
-                    currentLanguage = Common.SIMPLE_CHINESE;
 //                    updateUI(currentLanguage);
                     createDialog();
                 }
                 break;
             case R.id.language_english:
                 if (!currentLanguage.equals(Common.ENGLISH)) {
-                    currentLanguage = Common.ENGLISH;
 //                    updateUI(currentLanguage);
                     createDialog();
                 }
@@ -171,8 +169,13 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             @Override
             public void yes() {
                 // TODO Auto-generated method stub // 确认语言设置之后，修改状态
-                updateUI(currentLanguage);
 
+                if (currentLanguage.equals(Common.SIMPLE_CHINESE)){
+                    currentLanguage = Common.ENGLISH;
+                }else{
+                    currentLanguage = Common.SIMPLE_CHINESE;
+                }
+                updateUI(currentLanguage);
                 if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
                     config.locale = Locale.SIMPLIFIED_CHINESE;
                     MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);

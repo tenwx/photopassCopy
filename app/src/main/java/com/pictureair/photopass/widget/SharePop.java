@@ -40,6 +40,7 @@ import cn.sharesdk.facebook.Facebook;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.instagram.Instagram;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.tencent.qzone.QZone;
@@ -236,7 +237,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
             shareParams.imagePath = imagePath;
         } else if ("online".equals(type)) {// 网络图片
             shareParams.shareType = Platform.SHARE_WEBPAGE;// 以网页的形式分享图片
-             shareParams.imageUrl = imageUrl;
+            shareParams.imageUrl = imageUrl;
             shareParams.url = shareUrl;// share_webpage的时候需要这个参数
         }
         platform.share(shareParams);
@@ -394,6 +395,45 @@ public class SharePop extends PopupWindow implements OnClickListener,
         }
         platform.share(shareParams);
     }
+
+    /**
+     * instagram
+     * 分享图文	 ImagePath
+     * imageUrl
+     * 分享视频	 FilePath(/sdcard/视屏文件)
+     *
+     * @param context
+     * @param imagePath 本地图片路径
+     * @param imageUrl  网络图片url
+     * @param type      判断是否是本地还是网络，类型有“local”“online”
+     */
+    private void instagramShare(Context context, String imagePath, String imageUrl,
+                                String shareUrl, String type) {
+        PictureAirLog.i(TAG, "---> instagram分享");
+        Platform platform = ShareSDK.getPlatform(context, Instagram.NAME);
+        if (platform.isClientValid()) {
+            PictureAirLog.i(TAG, "---> instagram分享---用户已经安装客户端");
+            platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
+            cn.sharesdk.instagram.Instagram.ShareParams shareParams = new cn.sharesdk.instagram.Instagram.ShareParams();
+            shareParams.text = context.getResources().getString(
+                    R.string.share_text);
+            if ("local".equals(type)) {// 本地图片
+                shareParams.setImagePath(imagePath);
+                shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
+            } else if ("online".equals(type)) {// 网络图片
+                shareParams.imageUrl = imageUrl;
+            }
+            platform.share(shareParams);
+        } else {
+            PictureAirLog.i(TAG, "---> instagram分享---用户没有安装客户端");
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            showNotification(2000,
+                    context.getString(R.string.share_failure_instagram));
+        }
+    }
+
 
     /**
      * 开始分享

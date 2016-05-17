@@ -114,7 +114,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         switch (view.getId()) {
             case R.id.topLeftView:
                 if (key == 4) {
-                    sendBroadcast(-1);
+                    sendActivityResult(-1);
                 }
                 finish();
                 break;
@@ -129,9 +129,9 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         if (obj.containsKey("status")) {
             int code = obj.getIntValue("status");
             if (code == 200) {
-                sendBroadcast(0); // 支付成功
+                sendActivityResult(0); // 支付成功
             } else {
-                sendBroadcast(-2);
+                sendActivityResult(-2);
             }
         }
         this.finish();
@@ -142,7 +142,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         super.onBackPressed();
         //返回键
         if (key == 4) {
-            sendBroadcast(-1);
+            sendActivityResult(-1);
         }
         finish();
     }
@@ -152,10 +152,15 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
      *
      * @param payType
      */
-    private void sendBroadcast(int payType) {
-        Intent intent = new Intent("com.payment.action");
+    private void sendActivityResult(int payType) {
+//        Intent intent = new Intent("com.payment.action");
+//        intent.putExtra("payType", payType);
+//        sendBroadcast(intent);
+
+        Intent intent = new Intent(WebViewActivity.this, PaymentOrderActivity.class);
         intent.putExtra("payType", payType);
-        sendBroadcast(intent);
+        setResult(111,intent);
+
     }
 
     @Override
@@ -199,5 +204,9 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myHandler.removeCallbacksAndMessages(null);
+    }
 }
