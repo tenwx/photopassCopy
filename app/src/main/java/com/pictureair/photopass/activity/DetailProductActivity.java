@@ -158,7 +158,9 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        promotionPrice.setText(goodsInfo.getPrice() + "");
+        if (null != goodsInfo) {
+            promotionPrice.setText(goodsInfo.getPrice() + "");
+        }
         //实体商品-自提，数码商品-数码下载
         if (goodsInfo == null) {
             return;

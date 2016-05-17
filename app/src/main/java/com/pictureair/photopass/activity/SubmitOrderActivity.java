@@ -285,7 +285,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         infoListView.setFooterDividersEnabled(false);
         infoListView.addHeaderView(initHeaderAndFooterView(true, false, null));
         infoListView.setAdapter(submitorderAdapter);
-        if (list == null || list.size() < 0) {
+        if (list == null) {
             PictureAirLog.v(TAG, "initView list == null ");
             return;
         }
@@ -752,7 +752,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
             } else {
                 //取消使用优惠券，couponCodes为空数组
-                API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
+                if (null != cartItemIds) {
+                    API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
+                }
             }
         }
 
