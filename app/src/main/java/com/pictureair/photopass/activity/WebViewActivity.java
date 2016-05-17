@@ -204,5 +204,9 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myHandler.removeCallbacksAndMessages(null);
+    }
 }

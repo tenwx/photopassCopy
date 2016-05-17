@@ -70,14 +70,6 @@
         ShareByAppClient="true"
         SortId="1" />
 
-    <QZone
-        AppId="1105004402"
-        AppKey="i3UTWIdTzWncslRV"
-        Enable="true"
-        Id="2"
-        ShareByAppClient="true"
-        SortId="2" />
-
     <!--
     	Wechat微信和WechatMoments微信朋友圈的appid是一样的；
     
@@ -123,5 +115,21 @@
         Enable="true"
         Id="6"
         SortId="6" />
+
+    <QZone
+        AppId="1105004402"
+        AppKey="i3UTWIdTzWncslRV"
+        Enable="true"
+        Id="2"
+        ShareByAppClient="true"
+        SortId="2" />
+
+    <Instagram
+        Id="8"
+        SortId="8"
+        ClientId="09ce7dcc0c504ba8a3da3f71b3408d44"
+        ClientSecret="33cf09d0d13e4df3897aff25de6e3ccc"
+        RedirectUri="http://www.pictureair.com/"
+        Enable="true" />
 
 </DevInfor>
