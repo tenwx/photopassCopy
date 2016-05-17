@@ -288,8 +288,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     }
 
     private void init() {
-        IntentFilter filter = new IntentFilter("com.payment.action");
-        registerReceiver(broadcastReceiver, filter);
+//        IntentFilter filter = new IntentFilter("com.payment.action");
+//        registerReceiver(broadcastReceiver, filter);
         sPreferences = getSharedPreferences(Common.USERINFO_NAME,
                 MODE_PRIVATE);
         newToast = new MyToast(this);
@@ -470,7 +470,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             Intent intent = new Intent(PaymentOrderActivity.this, WebViewActivity.class);
             intent.putExtra("key", 4);
             intent.putExtra("orderId", orderId);
-            startActivity(intent);
+            startActivityForResult(intent,3333);
         } else if (payType == 7) {
             weChatIsPaying = true;
             PictureAirLog.v(TAG, "wechat");
@@ -556,6 +556,25 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (data == null) {
             return;
         }
+
+        // ipaylink 支付回调。
+        if (requestCode == 3333 && resultCode == 111){
+            int payType = data.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
+            switch (payType) {
+                case 0:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+                    break;
+                case -1:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+                    break;
+                case -2:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
+                    break;
+            }
+            return;
+        }
+
+
         //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
         String str = data.getExtras().getString("pay_result");
         PictureAirLog.e(TAG,"str" + str);
@@ -665,7 +684,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             EventBus.getDefault().unregister(this);
         }
         paymentOrderHandler.removeCallbacksAndMessages(null);
-        unregisterReceiver(broadcastReceiver); // 解除广播
+//        unregisterReceiver(broadcastReceiver); // 解除广播
     }
 
 
@@ -747,24 +766,24 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     /**
      * 广播 用于接受iPayLink的数据。
      */
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
-            int payType = intent.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
-            switch (payType) {
-                case 0:
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-                    break;
-                case -1:
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
-                    break;
-                case -2:
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
-                    break;
-            }
-        }
-    };
+//    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            // TODO Auto-generated method stub
+//            int payType = intent.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
+//            switch (payType) {
+//                case 0:
+//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//                    break;
+//                case -1:
+//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+//                    break;
+//                case -2:
+//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
+//                    break;
+//            }
+//        }
+//    };
 
 }
