@@ -253,7 +253,6 @@ public class SharePop extends PopupWindow implements OnClickListener,
      */
     private void qzoneShare(Context context, String imagePath, String imageUrl,
                             String shareUrl, String type) {
-//        instagramShare(context,imagePath,imageUrl,shareUrl,type);
         Platform platform = ShareSDK.getPlatform(context, QZone.NAME);
         if (platform.isClientValid()) {
             platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
