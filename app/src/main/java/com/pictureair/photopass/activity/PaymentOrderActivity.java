@@ -1,9 +1,6 @@
 package com.pictureair.photopass.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,19 +24,19 @@ import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.unionpay.UPPayAssistEx;
 
 import java.lang.ref.WeakReference;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -761,29 +758,5 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             EventBus.getDefault().removeStickyEvent(asyncPayResultEvent);
         }
     }
-
-
-    /**
-     * 广播 用于接受iPayLink的数据。
-     */
-//    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            // TODO Auto-generated method stub
-//            int payType = intent.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
-//            switch (payType) {
-//                case 0:
-//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-//                    break;
-//                case -1:
-//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
-//                    break;
-//                case -2:
-//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
-//                    break;
-//            }
-//        }
-//    };
 
 }

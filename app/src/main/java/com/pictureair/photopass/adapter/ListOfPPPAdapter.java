@@ -3,14 +3,12 @@ package com.pictureair.photopass.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,10 +18,8 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -179,6 +175,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pppCardCenterCover.setVisibility(View.GONE);
 		}
 
+		if (dpp.expired == 1) {
+			holder.tvState.setText(R.string.ppp_has_expired);
+		}
+
 		//初始化PPP使用情况
 		if (dpp.expericePPP == 1) {//体验卡
 			holder.pppName.setText(R.string.experiencephotopassplus);
@@ -228,9 +228,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					break;
 			}
 
-			if (dpp.expired == 1) {
-				holder.tvState.setText(R.string.ppp_has_expired);
-			}
 
 			//如果是选择 pp＋的状态
 			if (isUseHavedPPP) {

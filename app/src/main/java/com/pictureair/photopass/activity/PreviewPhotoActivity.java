@@ -259,7 +259,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("current radius---->" + curRadius);
 
                 x = (int) (msg.arg1 - curRadius - (parentPreviewW - curShowBmpWidth) / 2);
-                y = (int) (msg.arg2 - curRadius - (isLandscape ? 0 : marginTop) - (parentPreviewH - curShowBmpHeight) / 2);
+                y = (int) (msg.arg2 - 2 * curRadius + 20 - (isLandscape ? 0 : marginTop) - (parentPreviewH - curShowBmpHeight) / 2);
                 if (x > curShowBmpWidth - 2 * curRadius) {
                     x = curShowBmpWidth - 2 * curRadius;
                     x1 += moveSize;
@@ -722,7 +722,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             isLandscape = true;
             landscapeOrientation();
         }
-        originalRadius = 250;
+        originalRadius = 200;
         curRadius = originalRadius;
         dialog.show();
         getPreviewPhotos();
@@ -1589,6 +1589,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {
             parentPreviewH = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight(this) - toolsBar.getHeight() - indexBar.getHeight() - titleBar.getHeight();
         }
+        PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
 
         if (isInit) {
             int[] location = new int[2];
@@ -1612,8 +1613,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void cropNewBmt() {
         zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
         zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
+        PictureAirLog.out("crop--->" + Math.min(zoomW, oriBlurBmp.getWidth()) + "--->" + Math.min(zoomH, oriBlurBmp.getHeight()));
         matrix.reset();
-        matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
+        float sw;
+        if (zoomBlurBmp.getHeight() / (float)zoomBlurBmp.getWidth() > parentPreviewH / parentPreviewW) {//左右留白
+            sw = parentPreviewH / (float) zoomBlurBmp.getHeight();
+        } else {//上下留白
+            sw = parentPreviewW / (float)zoomBlurBmp.getWidth();
+        }
+        matrix.postScale(sw, sw);
         zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
         zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
     }

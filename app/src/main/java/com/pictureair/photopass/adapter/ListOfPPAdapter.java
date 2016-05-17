@@ -16,6 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.EditStoryAlbumActivity;
@@ -29,7 +32,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.text.ParseException;
@@ -204,13 +206,8 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
 
         // 图片显示
         int photoCount = ppInfo1.getUrlList().size();
-//		Log.v("===================================开始=====================================",
-//				"");
-//		Log.v("===========", "PP卡: PPCode:" + ppInfo1.getPpCode());
-//		Log.v("===========", "图片显示 photoCount:" + photoCount);
         urlList.removeAll(urlList);
         urlList.addAll(ppInfo1.getUrlList());
-//		Log.v("============", "urlList.size()" + urlList.size());
         if (photoCount == 0) {
             holder.conerImageView.setImageResource(R.drawable.my_pp_miqi_no_photo);
         } else {
@@ -227,8 +224,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                     urlList.add(i, defaultUrl);
                 }
             }
-
-
         } else if (photoCount > 6) {
 
             holder.ppImageLayout2.setVisibility(View.VISIBLE);
@@ -255,43 +250,80 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.showCconutLayout.setLayoutParams(params);
             holder.image12.setLayoutParams(params2);
 
+            ImageAware imageAware7 = new ImageViewAware(holder.image7, false);
+            ImageAware imageAware8 = new ImageViewAware(holder.image8, false);
+            ImageAware imageAware9 = new ImageViewAware(holder.image9, false);
+            ImageAware imageAware10 = new ImageViewAware(holder.image10, false);
+            ImageAware imageAware11 = new ImageViewAware(holder.image11, false);
+            ImageAware imageAware12 = new ImageViewAware(holder.image12, false);
+
+            String url7, url8, url9, url10, url11, url12;
+
             if (urlList.get(6) == null || urlList.get(6).equals("")) {
-                holder.image7.setImageResource(R.drawable.default_pp);
-                holder.image7.setTag("null");
+                url7 = "drawable://" + R.drawable.default_pp;
             } else {
-                UniversalImageLoadTool.loadImage(urlList.get(6), holder.image7);
-            }
-            if (urlList.get(7) == null || urlList.get(7).equals("")) {
-                holder.image8.setImageResource(R.drawable.default_pp);
-                holder.image8.setTag("null");
-            } else {
-                UniversalImageLoadTool.loadImage(urlList.get(7), holder.image8);
-            }
-            if (urlList.get(8) == null || urlList.get(8).equals("")) {
-                holder.image9.setImageResource(R.drawable.default_pp);
-                holder.image9.setTag("null");
-            } else {
-                UniversalImageLoadTool.loadImage(urlList.get(8), holder.image9);
-            }
-            if (urlList.get(9) == null || urlList.get(9).equals("")) {
-                holder.image10.setImageResource(R.drawable.default_pp);
-                holder.image10.setTag("null");
-            } else {
-                UniversalImageLoadTool.loadImage(urlList.get(9), holder.image10);
-            }
-            if (urlList.get(10) == null || urlList.get(10).equals("")) {
-                holder.image11.setImageResource(R.drawable.default_pp);
-                holder.image11.setTag("null");
-            } else {
-                UniversalImageLoadTool.loadImage(urlList.get(10), holder.image11);
-            }
-            if (urlList.get(11) == null || urlList.get(11).equals("")) {
-                holder.image12.setImageResource(R.drawable.default_pp);
-                holder.image12.setTag("null");
-            } else {
-                UniversalImageLoadTool.loadImage(urlList.get(11), holder.image12);
+                url7 = urlList.get(6);
             }
 
+            if (urlList.get(7) == null || urlList.get(7).equals("")) {
+                url8 = "drawable://" + R.drawable.default_pp;
+            } else {
+                url8 = urlList.get(7);
+            }
+
+            if (urlList.get(8) == null || urlList.get(8).equals("")) {
+                url9 = "drawable://" + R.drawable.default_pp;
+            } else {
+                url9 = urlList.get(8);
+            }
+
+            if (urlList.get(9) == null || urlList.get(9).equals("")) {
+                url10 = "drawable://" + R.drawable.default_pp;
+            } else {
+                url10 = urlList.get(9);
+            }
+
+            if (urlList.get(10) == null || urlList.get(10).equals("")) {
+                url11 = "drawable://" + R.drawable.default_pp;
+            } else {
+                url11 = urlList.get(10);
+            }
+
+            if (urlList.get(11) == null || urlList.get(11).equals("")) {
+                url12 = "drawable://" + R.drawable.default_pp;
+            } else {
+                url12 = urlList.get(11);
+            }
+
+            if (holder.image7.getTag() == null || !holder.image7.getTag().equals(url7)) {
+                ImageLoader.getInstance().displayImage(url7, imageAware7);
+                holder.image7.setTag(url7);
+            }
+
+            if (holder.image8.getTag() == null || !holder.image8.getTag().equals(url8)) {
+                ImageLoader.getInstance().displayImage(url8, imageAware8);
+                holder.image8.setTag(url8);
+            }
+
+            if (holder.image9.getTag() == null || !holder.image9.getTag().equals(url9)) {
+                ImageLoader.getInstance().displayImage(url9, imageAware9);
+                holder.image9.setTag(url9);
+            }
+
+            if (holder.image10.getTag() == null || !holder.image10.getTag().equals(url10)) {
+                ImageLoader.getInstance().displayImage(url10, imageAware10);
+                holder.image10.setTag(url10);
+            }
+
+            if (holder.image11.getTag() == null || !holder.image11.getTag().equals(url11)) {
+                ImageLoader.getInstance().displayImage(url11, imageAware11);
+                holder.image11.setTag(url11);
+            }
+
+            if (holder.image12.getTag() == null || !holder.image12.getTag().equals(url12)) {
+                holder.image12.setTag(url12);
+                ImageLoader.getInstance().displayImage(url12, imageAware12);
+            }
         }
 
         holder.image1.setLayoutParams(params);
@@ -301,46 +333,79 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         holder.image5.setLayoutParams(params);
         holder.image6.setLayoutParams(params);
 
+        ImageAware imageAware1 = new ImageViewAware(holder.image1, false);
+        ImageAware imageAware2 = new ImageViewAware(holder.image2, false);
+        ImageAware imageAware3 = new ImageViewAware(holder.image3, false);
+        ImageAware imageAware4 = new ImageViewAware(holder.image4, false);
+        ImageAware imageAware5 = new ImageViewAware(holder.image5, false);
+        ImageAware imageAware6 = new ImageViewAware(holder.image6, false);
+
+        String url1, url2, url3, url4, url5, url6;
+
         if (urlList.get(0) == null || urlList.get(0).equals("")) {
-            holder.image1.setImageResource(R.drawable.default_pp);
-            holder.image1.setTag("null");
+            url1 = "drawable://" + R.drawable.default_pp;
         } else {
-            UniversalImageLoadTool.loadImage(urlList.get(0), holder.image1);
+            url1 = urlList.get(0);
         }
 
         if (urlList.get(1) == null || urlList.get(1).equals("")) {
-            holder.image2.setImageResource(R.drawable.default_pp);
-            holder.image2.setTag("null");
+            url2 = "drawable://" + R.drawable.default_pp;
         } else {
-            UniversalImageLoadTool.loadImage(urlList.get(1), holder.image2);
+            url2 = urlList.get(1);
         }
 
         if (urlList.get(2) == null || urlList.get(2).equals("")) {
-            holder.image3.setImageResource(R.drawable.default_pp);
-            holder.image3.setTag("null");
+            url3 = "drawable://" + R.drawable.default_pp;
         } else {
-            UniversalImageLoadTool.loadImage(urlList.get(2), holder.image3);
+            url3 = urlList.get(2);
         }
 
         if (urlList.get(3) == null || urlList.get(3).equals("")) {
-            holder.image4.setImageResource(R.drawable.default_pp);
-            holder.image4.setTag("null");
+            url4 = "drawable://" + R.drawable.default_pp;
         } else {
-            UniversalImageLoadTool.loadImage(urlList.get(3), holder.image4);
+            url4 = urlList.get(3);
         }
 
         if (urlList.get(4) == null || urlList.get(4).equals("")) {
-            holder.image5.setImageResource(R.drawable.default_pp);
-            holder.image5.setTag("null");
+            url5 = "drawable://" + R.drawable.default_pp;
         } else {
-            UniversalImageLoadTool.loadImage(urlList.get(4), holder.image5);
+            url5 = urlList.get(4);
         }
 
         if (urlList.get(5) == null || urlList.get(5).equals("")) {
-            holder.image6.setImageResource(R.drawable.default_pp);
-            holder.image6.setTag("null");
+            url6 = "drawable://" + R.drawable.default_pp;
         } else {
-            UniversalImageLoadTool.loadImage(urlList.get(5), holder.image6);
+            url6 = urlList.get(5);
+        }
+
+        if (holder.image1.getTag() == null || !holder.image1.getTag().equals(url1)) {
+            ImageLoader.getInstance().displayImage(url1, imageAware1);
+            holder.image1.setTag(url1);
+        }
+
+        if (holder.image2.getTag() == null || !holder.image2.getTag().equals(url2)) {
+            ImageLoader.getInstance().displayImage(url2, imageAware2);
+            holder.image2.setTag(url2);
+        }
+
+        if (holder.image3.getTag() == null || !holder.image3.getTag().equals(url3)) {
+            ImageLoader.getInstance().displayImage(url3, imageAware3);
+            holder.image3.setTag(url3);
+        }
+
+        if (holder.image4.getTag() == null || !holder.image4.getTag().equals(url4)) {
+            ImageLoader.getInstance().displayImage(url4, imageAware4);
+            holder.image4.setTag(url4);
+        }
+
+        if (holder.image5.getTag() == null || !holder.image5.getTag().equals(url5)) {
+            ImageLoader.getInstance().displayImage(url5, imageAware5);
+            holder.image5.setTag(url5);
+        }
+
+        if (holder.image6.getTag() == null || !holder.image6.getTag().equals(url6)) {
+            holder.image6.setTag(url6);
+            ImageLoader.getInstance().displayImage(url6, imageAware6);
         }
 
         return convertView;

@@ -419,7 +419,6 @@ public class SharePop extends PopupWindow implements OnClickListener,
                     R.string.share_text);
             if ("local".equals(type)) {// 本地图片
                 shareParams.setImagePath(imagePath);
-                shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
             } else if ("online".equals(type)) {// 网络图片
                 shareParams.imageUrl = imageUrl;
             }
