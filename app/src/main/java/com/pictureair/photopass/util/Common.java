@@ -16,8 +16,6 @@ public class Common {
     public static final String APP_TYPE_HKDLPP = "hkdlpp";
 
 
-
-
     /**
      * 49演示服务器
      */
@@ -31,7 +29,7 @@ public class Common {
 
 
     /**
-     *  域名线上服务器
+     * 域名线上服务器
      */
     public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
     public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
@@ -64,8 +62,6 @@ public class Common {
 //    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
 //    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
-
-
 
 
     public final static String VERSION_CODE = "V1.0.2";//开发版
@@ -151,7 +147,7 @@ public class Common {
     public static final String APNS_CONNECT = "/socket/APNSConnect"; // 链接时
     public static final String APNS_DISCONNECT = "/socket/APNSDisconnect"; // 退出登陆时
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
-    public static final String GET_SOCKET_DATA= "/socket/getSocketData"; // 返回用户未接收到的推送消息
+    public static final String GET_SOCKET_DATA = "/socket/getSocketData"; // 返回用户未接收到的推送消息
 
 
     public static final String ME_HELP = "/help/getHelpList";
@@ -162,11 +158,10 @@ public class Common {
     public static final String USE_EXPERIENCE_PPP = "/ppp/useExperiencePPP";//使用体验卡绑定图片
     public static final String GET_UNIONPAY_TN = "/api/getUnionPayTn";//获取unionpay的tn
     public static final String REMOVE_PP_FROM_USER = "/user/removePPFromUser";//从user中删除pp
-    public static final String SEND_SMS_VALIDATE_CODE = "/userMsg/sendSMSValidateCode" ;//发送短信验证码
+    public static final String SEND_SMS_VALIDATE_CODE = "/userMsg/sendSMSValidateCode";//发送短信验证码
     public static final String VALIDATE_CODE_URL = "/userMsg/validateCode";//验证短信验证
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
-
 
 
     //user的SharedPreferences    以及   接口参数
@@ -263,8 +258,8 @@ public class Common {
     public static final String VERSION = "version";
     public static final String VALIDATE_CODE = "validateCode";
     public static final String SEND_TO = "sendTo";
-    public static final String PHONE ="phone";
-    public static final String MSG_TYPE ="msgType";
+    public static final String PHONE = "phone";
+    public static final String MSG_TYPE = "msgType";
     public static final String SHOOTDATE = "shootDate";
 
 
@@ -279,6 +274,7 @@ public class Common {
     public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/share/";
     public static final String OCR_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/tessdata/";
     public static final String OCR_DATA_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/tessdata/eng.traineddata";
+    public static final String LOG_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/log/";
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";

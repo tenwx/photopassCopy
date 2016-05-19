@@ -42,7 +42,7 @@ public class MyApplication extends Application {
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
     private int pushViedoCount = 0; // 推送视频的数量。
     private ArrayList<HashMap<String, String>> codeList;// 记录登录之前扫描的pp或者ppp
-//    public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
+    //    public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
 //    public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
 //    public ArrayList<PhotoInfo> magicPicList;// 所有的使用magic相机拍出来的图片的信息
 //    public ArrayList<PhotoItemInfo> boughtPicList;// 所有已经购买的图片的信息
@@ -170,36 +170,36 @@ public class MyApplication extends Application {
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .considerExifParams(true)
                 .// 考虑图片的exif属性
-                        // showStubImage(imageRes)//图片下载期间显示的图片
-                        // .showImageForEmptyUri(R.drawable.ic_empty) //
-                        // 设置图片Uri为空或是错误的时候显示的图片
+                // showStubImage(imageRes)//图片下载期间显示的图片
+                // .showImageForEmptyUri(R.drawable.ic_empty) //
+                // 设置图片Uri为空或是错误的时候显示的图片
                         showImageOnLoading(R.drawable.ic_loading)
                 .showImageOnFail(R.drawable.ic_failed)
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 context)
                 .memoryCacheExtraOptions(1000, 1000)
-                        // max width, max height，即保存的每个缓存文件的最大长宽
+                // max width, max height，即保存的每个缓存文件的最大长宽
                 .threadPoolSize(4)
-                        // 线程池内加载的数量
+                // 线程池内加载的数量
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .denyCacheImageMultipleSizesInMemory()
                 .memoryCacheSize(5 * 1024 * 1024)
-                        // memoryCache(...)和memoryCacheSize(...)这两个参数会互相覆盖，所以在ImageLoaderConfiguration中使用一个就好了
+                // memoryCache(...)和memoryCacheSize(...)这两个参数会互相覆盖，所以在ImageLoaderConfiguration中使用一个就好了
                 .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                        // 将保存的时候的URI名称用MD5 加密
+                // 将保存的时候的URI名称用MD5 加密
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
-                        // .diskCacheFileCount(100)
-                        // 缓存的文件数量
-                        // .diskCache(new UnlimitedDiscCache(cacheDir))
-                        // 自定义缓存路径
-                        // UnlimitedDiskCache 不限制缓存大小（默认）
-                        // TotalSizeLimitedDiskCache (设置总缓存大小，超过时删除最久之前的缓存)
-                        // FileCountLimitedDiskCache
-                        // (设置总缓存文件数量，当到达警戒值时，删除最久之前的缓存。如果文件的大小都一样的时候，可以使用该模式)
-                        // LimitedAgeDiskCache (不限制缓存大小，但是设置缓存时间，到期后删除)
+                // .diskCacheFileCount(100)
+                // 缓存的文件数量
+                // .diskCache(new UnlimitedDiscCache(cacheDir))
+                // 自定义缓存路径
+                // UnlimitedDiskCache 不限制缓存大小（默认）
+                // TotalSizeLimitedDiskCache (设置总缓存大小，超过时删除最久之前的缓存)
+                // FileCountLimitedDiskCache
+                // (设置总缓存文件数量，当到达警戒值时，删除最久之前的缓存。如果文件的大小都一样的时候，可以使用该模式)
+                // LimitedAgeDiskCache (不限制缓存大小，但是设置缓存时间，到期后删除)
                 .diskCacheSize(30 * 1024 * 1024)
-                        // 50m本地缓存
+                // 50m本地缓存
                 .defaultDisplayImageOptions(defaultOptions)
                 .imageDownloader(
                         new BaseImageDownloader(context, 5 * 1000, 30 * 1000)) // connectTimeout
@@ -354,7 +354,6 @@ public class MyApplication extends Application {
 
     /**
      * 记录当前正在购买的photopass的图片信息
-     *
      */
     public void setIsBuyingPhotoInfo(String photoId, String tabName) {
         this.isBuyingPhotoId = photoId;
@@ -427,6 +426,7 @@ public class MyApplication extends Application {
 
     /**
      * 获取是否处于storyTab页面
+     *
      * @return
      */
     public boolean isStoryTab() {
@@ -435,6 +435,7 @@ public class MyApplication extends Application {
 
     /**
      * 设置是否处于storyTab页面
+     *
      * @param isStoryTab
      */
     public void setIsStoryTab(boolean isStoryTab) {
@@ -461,6 +462,7 @@ public class MyApplication extends Application {
 
     /**
      * 得到时候需要刷新原有的数据
+     *
      * @return
      */
     public boolean isNeedRefreshOldPhotos() {
@@ -469,6 +471,7 @@ public class MyApplication extends Application {
 
     /**
      * 设置是否需要刷新原有的数据
+     *
      * @param needRefreshOldPhotos
      */
     public void setNeedRefreshOldPhotos(boolean needRefreshOldPhotos) {
@@ -477,6 +480,7 @@ public class MyApplication extends Application {
 
     /**
      * 获取需要切换的值
+     *
      * @return
      */
     public int getMainTabIndex() {
@@ -485,6 +489,7 @@ public class MyApplication extends Application {
 
     /**
      * 设置需要切换的值
+     *
      * @param mainTabIndex
      */
     public void setMainTabIndex(int mainTabIndex) {
@@ -493,6 +498,7 @@ public class MyApplication extends Application {
 
     /**
      * 获取是否成功拿到广告地点信息
+     *
      * @return
      */
     public boolean isGetADLocationSuccess() {
@@ -501,6 +507,7 @@ public class MyApplication extends Application {
 
     /**
      * 设置是否成功拿到广告地点信息
+     *
      * @param getADLocationSuccess
      */
     public void setGetADLocationSuccess(boolean getADLocationSuccess) {
