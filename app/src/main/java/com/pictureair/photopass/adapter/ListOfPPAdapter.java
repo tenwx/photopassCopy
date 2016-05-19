@@ -38,7 +38,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -49,7 +48,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
     private Context mContext;
     private int screenWidth = 0;// 屏幕宽度
     private ViewHolder holder;
-    private doShowPhotoListener listener;
     private doDeletePhotoListener deleteListner;
     private LinearLayout.LayoutParams params;
     private RelativeLayout.LayoutParams params2;
@@ -69,11 +67,10 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
 
     private String userPP;
 
-    public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doShowPhotoListener listener, final doDeletePhotoListener deleteListner,
+    public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doDeletePhotoListener deleteListner,
                            boolean isSelete, boolean isDeletePP, Handler mHandler, PPPinfo pppInfo) {
         this.arrayList = list;
         this.mContext = mContext;
-        this.listener = listener;
         this.deleteListner = deleteListner;
         this.isSelete = isSelete;
         this.mHandler = mHandler;
@@ -89,7 +86,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                 (screenWidth - 24) / 6, (screenWidth - 24) / 6);
 
         this.pppInfo = pppInfo;
-        map = new HashMap<Integer, Boolean>();
+        map = new HashMap<>();
         if (isSelete) {
             useNumber = pppInfo.bindInfo.size();
         }
@@ -142,18 +139,19 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.photoCount = (TextView) convertView.findViewById(R.id.photo_count);
             holder.conerImageView = (ImageView) convertView.findViewById(R.id.my_pp_miqi);
             holder.tvShootDate = (TextView) convertView.findViewById(R.id.tv_shoot_date);
+            holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        childClickListener = new OnItemChildClickListener(position, isSelete);
+        holder.itemLayout.setOnClickListener(childClickListener);
 
         if (isSelete) {
             holder.deleteMyPP.setVisibility(View.GONE);
-            childClickListener = new OnItemChildClickListener(position);
             holder.img_no_check = (ImageView) convertView.findViewById(R.id.img);
             holder.img_no_check.setVisibility(View.VISIBLE);
-            holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.pp_item);
             holder.tvShootDate.setText(arrayList.get(position).getShootDate());
             holder.tvShootDate.setVisibility(View.VISIBLE);
             //初始化选中与否
@@ -164,8 +162,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             } else {//不可选
                 holder.img_no_check.setImageResource(R.drawable.del1);
             }
-            holder.img_no_check.setOnClickListener(childClickListener);
-            holder.itemLayout.setOnClickListener(childClickListener);
         } else {
             //判断是否显示删除按钮
             if (isDeletePP && !arrayList.get(position).getPpCode().equals(userPP)) {
@@ -173,19 +169,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             } else {
                 holder.deleteMyPP.setVisibility(View.GONE);
             }
-            holder.deleteMyPP.setOnClickListener(new PhotoPassManagerOnClickListener(position, 0, true));//删除图片
-            holder.image1.setOnClickListener(new PhotoPassManagerOnClickListener(position, 0, false));
-            holder.image2.setOnClickListener(new PhotoPassManagerOnClickListener(position, 1, false));
-            holder.image3.setOnClickListener(new PhotoPassManagerOnClickListener(position, 2, false));
-            holder.image4.setOnClickListener(new PhotoPassManagerOnClickListener(position, 3, false));
-            holder.image5.setOnClickListener(new PhotoPassManagerOnClickListener(position, 4, false));
-            holder.image6.setOnClickListener(new PhotoPassManagerOnClickListener(position, 5, false));
-            holder.image7.setOnClickListener(new PhotoPassManagerOnClickListener(position, 6, false));
-            holder.image8.setOnClickListener(new PhotoPassManagerOnClickListener(position, 7, false));
-            holder.image9.setOnClickListener(new PhotoPassManagerOnClickListener(position, 8, false));
-            holder.image10.setOnClickListener(new PhotoPassManagerOnClickListener(position, 9, false));
-            holder.image11.setOnClickListener(new PhotoPassManagerOnClickListener(position, 10, false));
-            holder.showCconutLayout.setOnClickListener(new PhotoPassManagerOnClickListener(position, 11, false));
+            holder.deleteMyPP.setOnClickListener(new PhotoPassManagerOnClickListener(position, true));//删除图片
         }
 
 
@@ -428,14 +412,13 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
      * 检测是否包含图片
      *
      * @param position
-     * @param n
      * @return
      */
-    public boolean checkUrl(int position, int n) {
+    public boolean checkUrl(int position) {
         if (arrayList == null || arrayList.size() <= 0 || arrayList.get(position).getUrlList() == null || arrayList.get(position).getUrlList().size() <= 0) {
             return false;
         }
-        if (arrayList.get(position).getUrlList() == null || arrayList.get(position).getUrlList().size() < n + 1 || arrayList.get(position).getUrlList().get(n).equals("")) {
+        if (arrayList.get(position).getUrlList() == null || arrayList.get(position).getUrlList().size() < 1 || arrayList.get(position).getUrlList().get(0).equals("")) {
             return false;
         }
         return true;
@@ -448,80 +431,26 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
      * @return
      */
     private ArrayList<PhotoItemInfo> createPhotoItemInfoList(int index) {
-        ArrayList<PhotoItemInfo> resultArrayList = new ArrayList<PhotoItemInfo>();
-        ArrayList<PhotoInfo> photoInfos = new ArrayList<PhotoInfo>();
+        ArrayList<PhotoItemInfo> resultArrayList = new ArrayList<>();
+        ArrayList<PhotoInfo> photoInfos = new ArrayList<>();
         photoInfos.addAll(arrayList.get(index).getSelectPhotoItemInfos());
+
+        PictureAirLog.out("photoinfos---->" + photoInfos.size());
 
         ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
         locationList.addAll(AppUtil.getLocation(mContext, ACache.get(mContext).getAsString(Common.LOCATION_INFO), true));
 
-        PhotoItemInfo photoItemInfo = new PhotoItemInfo();
-
-        //遍历所有photopass信息
-        boolean clone_contains = false;
-        Date date1;
-        Date date2;
-        for (int l = 0; l < photoInfos.size(); l++) {
-            PhotoInfo info = photoInfos.get(l);
-//			Log.d(TAG, "scan photo list:"+l);
-            //先挑选出相同的locationid信息
-            for (int i = 0; i < locationList.size(); i++) {
-//				Log.d(TAG, "scan location:"+i);
-                if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-//					Log.d(TAG, "find the location");
-                    //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
-                    try {
-                        for (int j = 0; j < resultArrayList.size(); j++) {
-                            //						Log.d(TAG, "weather already exists:"+j);
-                            if (info.shootTime.equals(resultArrayList.get(j).shootTime)
-                                    && (info.locationId.equals(resultArrayList.get(j).locationId) || resultArrayList.get(j).locationIds.contains(info.locationId))) {
-                                info.locationName = resultArrayList.get(j).place;
-                                resultArrayList.get(j).list.add(info);
-                                date1 = sdf.parse(info.shootOn);
-                                date2 = sdf.parse(resultArrayList.get(j).shootOn);
-                                if (date1.after(date2)) {
-                                    resultArrayList.get(j).shootOn = info.shootOn;
-                                }
-                                clone_contains = true;
-                                break;
-                            }
-                        }
-                    } catch (ParseException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    if (!clone_contains) {
-                        //初始化item的信息
-                        photoItemInfo = new PhotoItemInfo();
-                        photoItemInfo.locationId = locationList.get(i).locationId;
-                        photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
-                        photoItemInfo.shootTime = info.shootTime;
-                        if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
-                            photoItemInfo.place = locationList.get(i).placeCHName;
-                            info.locationName = locationList.get(i).placeCHName;
-
-                        } else {
-                            photoItemInfo.place = locationList.get(i).placeENName;
-                            info.locationName = locationList.get(i).placeENName;
-
-                        }
-                        photoItemInfo.list.add(info);
-                        photoItemInfo.placeUrl = locationList.get(i).placeUrl;
-                        photoItemInfo.latitude = locationList.get(i).latitude;
-                        photoItemInfo.longitude = locationList.get(i).longitude;
-                        photoItemInfo.islove = 0;
-                        photoItemInfo.shootOn = info.shootOn;
-                        resultArrayList.add(photoItemInfo);
-                    } else {
-                        clone_contains = false;
-                    }
-                    break;
-                }
-            }
+        try {
+            resultArrayList.addAll(AppUtil.getPhotoItemInfoList(locationList, photoInfos, sdf, MyApplication.getInstance().getLanguageType()));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         Collections.sort(resultArrayList);//对all进行排序
 
+        for (int i = 0; i < resultArrayList.size(); i++) {
+            PictureAirLog.out("count------>" + resultArrayList.get(i).list.size());
+        }
         return resultArrayList;
     }
 
@@ -554,22 +483,15 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
 
     //删除图片监听
     public interface doDeletePhotoListener {
-        public void deletePhoto(int position);
-    }
-
-    //显示图片监听
-    public interface doShowPhotoListener {
-        public void previewPhoto(int position, int tag);
+        void deletePhoto(int position);
     }
 
     class PhotoPassManagerOnClickListener implements OnClickListener {
         private int position;
-        private int tag;
         private boolean delete;
 
-        public PhotoPassManagerOnClickListener(int position, int tag, boolean delete) {
+        public PhotoPassManagerOnClickListener(int position, boolean delete) {
             this.position = position;
-            this.tag = tag;
             this.delete = delete;
         }
 
@@ -581,13 +503,79 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                 PictureAirLog.out("delete pp");
                 //删除PP
                 deleteListner.deletePhoto(position);
+            }
+        }
+
+    }
+
+
+    //点击一个item的事件
+    private class OnItemChildClickListener implements OnClickListener {
+        private int position;
+        private boolean isSelect;
+
+        public OnItemChildClickListener(int position, boolean isSelect) {
+            this.position = position;
+            this.isSelect = isSelect;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (isSelect) {
+                if (arrayList.get(position) instanceof PPinfo) {
+                    PPinfo ppInfo = (PPinfo) arrayList.get(position);
+                    switch (v.getId()) {
+                        case R.id.img:
+                        case R.id.pp_item:
+                            PictureAirLog.out("adapter---size=" + map.size());
+                            if (null != mHandler) {
+                                Message msg = mHandler.obtainMessage();
+                                if (ppInfo.isSelected == 0) {
+                                    if (useNumber >= pppInfo.capacity) {
+                                        myToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
+                                        break;
+                                    } else {
+                                        ++choice;
+                                        for (int j = 0; j < arrayList.size(); j++) {
+                                        }
+                                        ppInfo.isSelected = 1;
+                                        ++useNumber;
+                                        map.put(position, ppInfo.isSelected == 1);
+                                    }
+                                } else if (ppInfo.isSelected == 2) {
+
+                                } else {
+                                    --choice;
+                                    if (choice == 0) {
+                                        for (int j = 0; j < arrayList.size(); j++) {
+                                            PPinfo pp = (PPinfo) arrayList.get(j);
+                                            if (pp.isSelected == 2) {
+                                                pp.isSelected = 0;
+                                            }
+                                        }
+                                    }
+                                    ppInfo.isSelected = 0;
+                                    --useNumber;
+                                    map.remove(position);
+                                }
+                                notifyDataSetChanged();
+                                msg.arg1 = useNumber;
+                                msg.what = 2;
+                                mHandler.sendMessage(msg);
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
             } else {
                 if (isDeletePP) {
                     return;
                 }
                 PictureAirLog.out("preview photo");
                 //选择PP 点击单张直接进入改PP的相册页面
-                if (checkUrl(position, tag)) {
+                if (checkUrl(position)) {
                     if (arrayList.get(position).getUrlList().size() > 0) {
                         //进入相册
                         ArrayList<PhotoItemInfo> allPhotoItemInfos = createPhotoItemInfoList(position);
@@ -595,82 +583,9 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                         Bundle b = new Bundle();
                         b.putParcelableArrayList("photos", AppUtil.startSortForPinnedListView(allPhotoItemInfos));
                         i.putExtra("photos", b);
-                        i.putExtra("mode", "noedit");
+                        i.putExtra("ppCode", arrayList.get(position).getPpCode());
                         mContext.startActivity(i);
                     }
-//                    else {
-//                        //显示单张图片
-//                        listener.previewPhoto(position, tag);
-//                    }
-                }
-            }
-
-        }
-
-    }
-
-
-    //点击一个item的事件
-
-    private class OnItemChildClickListener implements OnClickListener {
-        private int position;
-
-        public OnItemChildClickListener(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (arrayList.get(position) instanceof PPinfo) {
-                PPinfo ppInfo = (PPinfo) arrayList.get(position);
-                switch (v.getId()) {
-                    case R.id.img:
-                    case R.id.pp_item:
-                        PictureAirLog.out("adapter---size=" + map.size());
-                        if (null != mHandler) {
-                            Message msg = mHandler.obtainMessage();
-                            if (ppInfo.isSelected == 0) {
-                                if (useNumber >= pppInfo.capacity) {
-                                    myToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
-                                    break;
-                                } else {
-                                    ++choice;
-                                    for (int j = 0; j < arrayList.size(); j++) {
-//                                        PPinfo pp = (PPinfo) arrayList.get(j);
-//                                        if (!pp.getShootDate().equals(ppInfo.getShootDate())) {// && !pp.time.equals("")
-//                                            pp.isSelected = 2;
-//                                        }
-                                    }
-                                    ppInfo.isSelected = 1;
-                                    ++useNumber;
-                                    map.put(position, ppInfo.isSelected == 1);
-                                }
-                            } else if (ppInfo.isSelected == 2) {
-
-                            } else {
-                                --choice;
-                                if (choice == 0) {
-                                    for (int j = 0; j < arrayList.size(); j++) {
-                                        PPinfo pp = (PPinfo) arrayList.get(j);
-                                        if (pp.isSelected == 2) {
-                                            pp.isSelected = 0;
-                                        }
-                                    }
-                                }
-                                ppInfo.isSelected = 0;
-                                --useNumber;
-                                map.remove(position);
-                            }
-                            notifyDataSetChanged();
-                            msg.arg1 = useNumber;
-                            msg.what = 2;
-                            mHandler.sendMessage(msg);
-                        }
-//					map.put(position, ppInfo.isSelected == 1);
-                        break;
-
-                    default:
-                        break;
                 }
             }
         }

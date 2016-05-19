@@ -33,7 +33,7 @@
     <string name="name_is_empty">请输入昵称</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a> </string>
+    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>和\n<a href = "1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -461,6 +461,7 @@
     <string name="disall">取消</string>
     <string name="delete_percent">正在删除%1$d/%2$d</string>
     <string name="start_delete">删除照片后您的账户中将不再显示此照片，请确认是否删除？</string>
+    <string name="edit_story_album">编辑</string>
     <!-- edit story end -->
 
     <!-- 我的优惠券 start-->

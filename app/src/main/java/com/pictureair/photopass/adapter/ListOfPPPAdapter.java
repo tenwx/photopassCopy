@@ -175,10 +175,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pppCardCenterCover.setVisibility(View.GONE);
 		}
 
-		if (dpp.expired == 1) {
-			holder.tvState.setText(R.string.ppp_has_expired);
-		}
-
 		//初始化PPP使用情况
 		if (dpp.expericePPP == 1) {//体验卡
 			holder.pppName.setText(R.string.experiencephotopassplus);
@@ -226,6 +222,22 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 				default:
 					break;
+			}
+
+			if (dpp.expired == 1) {//设置是否过期
+				if (dpp.expericePPP == 1) {//体验卡
+					if (dpp.bindInfo.size() == 1) {//已用完
+
+					} else {//过期
+						holder.tvState.setText(R.string.ppp_has_expired);
+					}
+				} else {//正常ppp卡
+					if (dpp.bindInfo.size() == 3) {//已用完
+
+					} else {//过期
+						holder.tvState.setText(R.string.ppp_has_expired);
+					}
+				}
 			}
 
 

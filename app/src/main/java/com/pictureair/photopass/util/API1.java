@@ -653,8 +653,27 @@ public class API1 {
      * @param tokenId
      * @param handler
      */
-    public static void deletePhotos(String tokenId, final Handler handler){
-        handler.obtainMessage(DELETE_PHOTOS_SUCCESS).sendToTarget();
+    public static void removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.SHARE_PHOTO_ID, ids);
+        params.put(Common.PP, ppCode);
+        PictureAirLog.out("param---->" + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("delete photos----->" + jsonObject);
+                handler.sendEmptyMessage(DELETE_PHOTOS_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.out("delete photos failed--->" + status);
+                handler.obtainMessage(DELETE_PHOTOS_FAILED, status, 0).sendToTarget();
+            }
+        });
     }
 
     /**

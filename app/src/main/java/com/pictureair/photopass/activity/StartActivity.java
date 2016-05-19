@@ -48,17 +48,21 @@ public class StartActivity extends BaseActivity implements Callback {
 
         //获取手机设置的语言
         languageType = spApp.getString(Common.LANGUAGE_TYPE, "");
-        if (!languageType.equals("")) {
+        if (!languageType.equals("")) {//语言不为空
             if (languageType.equals(Common.ENGLISH)) {
                 config.locale = Locale.US;
             } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
                 config.locale = Locale.SIMPLIFIED_CHINESE;
             }
-        } else {
+        } else {//语言为空，说明第一次进入
+            PictureAirLog.out("langeuange is null---->" + config.locale.getLanguage());
+            PictureAirLog.out("langeuange is null---->" + config.locale);
             if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
                 languageType = Common.SIMPLE_CHINESE;
+                config.locale = Locale.SIMPLIFIED_CHINESE;
             } else {
                 languageType = Common.ENGLISH;
+                config.locale = Locale.US;
             }
         }
 

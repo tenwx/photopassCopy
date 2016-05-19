@@ -43,6 +43,11 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		imageLoader = ImageLoader.getInstance();
 	}
 
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+//		notifyDataSetChanged();
+	}
+
 	@Override
 	public int getCount() {
 		return photoList.size();
@@ -60,7 +65,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+		PictureAirLog.out("ppcode---->" + photoList.get(position).photoPassCode);
 		ViewHolder viewHolder = null;
 		if (convertView == null) {
 			viewHolder = new ViewHolder();
@@ -118,6 +123,9 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 			}
 
 			viewHolder.maskImageView.setVisibility(photoList.get(position).showMask == 1 ? View.VISIBLE : View.GONE);
+		} else {
+			viewHolder.selectImageView.setVisibility(View.GONE);
+			viewHolder.maskImageView.setVisibility(View.GONE);
 		}
 		return convertView;
 	}
