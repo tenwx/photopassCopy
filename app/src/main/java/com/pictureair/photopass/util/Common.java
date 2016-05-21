@@ -68,7 +68,7 @@ public class Common {
 
 
 
-    public final static String VERSION_CODE = "V1.0.3";//开发版
+    public final static String VERSION_CODE = "1.1.0";//开发版
     public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
 
 
@@ -166,6 +166,7 @@ public class Common {
     public static final String VALIDATE_CODE_URL = "/userMsg/validateCode";//验证短信验证
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
+    public static final String REMOVE_PHOTOS_FROME_PP= "/p/removePhotosFromPP";//从pp中删除照片
 
 
 
@@ -233,6 +234,7 @@ public class Common {
     public static final String DEFAULT_CURRENCY = "¥";
     public static final String HEADPHOTO_PATH = "headphoto";
     public static final String BGPHOTO_PAHT = "bgphoto";
+    public static final String IS_DELETED_PHOTO_FROM_PP = "isDeletedPhotoFromPP";
 
     public static final int TOAST_SHORT_TIME = 100;
     //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";
@@ -264,9 +266,10 @@ public class Common {
     public static final String VERSION = "version";
     public static final String VALIDATE_CODE = "validateCode";
     public static final String SEND_TO = "sendTo";
-    public static final String PHONE ="phone";
-    public static final String MSG_TYPE ="msgType";
+    public static final String PHONE = "phone";
+    public static final String MSG_TYPE = "msgType";
     public static final String SHOOTDATE = "shootDate";
+    public static final String PP = "pp";
 
 
     //存放sdk的目录

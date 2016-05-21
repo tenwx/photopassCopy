@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.amap.api.maps.model.LatLng;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.BindPPInfo;
@@ -53,9 +52,13 @@ public class JsonUtil {
 //			PictureAirLog.out("转换之前的坐标"+obj.toString());
 //			LatLng latLng = AppUtil.converterFromGPS2BD(obj);//转换成百度坐标系
             if (obj != null) {
-                LatLng latLng = AppUtil.converterFromGPS2AMAP(obj);//转换成高德坐标系
-                info.latitude = latLng.latitude;
-                info.longitude = latLng.longitude;
+                if (!obj.containsKey("GPSLatitude") || !obj.containsKey("GPSLongitude")) {
+                    info.latitude = 0;
+                    info.longitude = 0;
+                } else {
+                    info.latitude = Double.valueOf(obj.getString("GPSLatitude"));
+                    info.longitude = Double.valueOf(obj.getString("GPSLongitude"));
+                }
             }
 
 //			PictureAirLog.out("转换之后的坐标"+latLng.toString());

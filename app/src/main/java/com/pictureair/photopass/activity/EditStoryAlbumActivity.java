@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore.Images.Media;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
@@ -46,7 +48,7 @@ import java.util.Iterator;
  */
 public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
 	private ImageView backRelativeLayout;
-	private TextView deleteTextView, titleTextView;
+	private TextView deleteTextView, titleTextView, editTextView;
 	private LinearLayout editBarLinearLayout;
 	private GridView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
@@ -72,6 +74,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private boolean deleteLocalPhotoDone = false;
 	private boolean deleteNetPhotoDone = false;
 	private boolean netWorkFailed = false;
+	private String ppCode;
 	private SimpleDateFormat simpleDateFormat;
 	private SharedPreferences sharedPreferences;
 	private PictureWorksDialog pictureWorksDialog;
@@ -116,7 +119,13 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					break;
 
 				case START_DELETE_NETWORK_PHOTOS://开始删除网络图片
-					API1.deletePhotos(MyApplication.getTokenId(), editStoryAlbumHandler);
+					JSONArray ids = new JSONArray();
+					for (int i = 0; i < photopassPhotoslist.size(); i++) {
+						ids.add(photopassPhotoslist.get(i).photoId);
+					}
+					PictureAirLog.out("ids---->" + ids);
+					PictureAirLog.out("ppCode---->" + ppCode);
+					API1.removePhotosFromPP(MyApplication.getTokenId(), ids, ppCode, editStoryAlbumHandler);
 					break;
 
 				case API1.DELETE_PHOTOS_FAILED://判断本地图片是否删除完毕，并且更具有没有本地图片而显示不同的提示
@@ -138,6 +147,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					deleteNetworkPhotos();
 					deleteNetPhotoDone = true;
 					selectCount -= photopassPhotoslist.size();
+
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, true);
+					editor.commit();
+
 					if (deleteLocalPhotoDone) {
 						dealAfterDeleted();
 					}
@@ -207,33 +221,26 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		titleTextView = (TextView) findViewById(R.id.text);
 		noCountView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
 		noCountTextView = (TextView) findViewById(R.id.no_photo_textView);
+		editTextView = (TextView) findViewById(R.id.pp_photos_edit);
 		//删除图片进度条
-		customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+		customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
 
 		//绑定监听
 		backRelativeLayout.setOnClickListener(this);
 		deleteTextView.setOnClickListener(this);
 		deleteTextView.setEnabled(false);
+		editTextView.setOnClickListener(this);
 
 		//初始化数据
-		editMode = getIntent().getStringExtra("mode").equals("edit");//编辑模式
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
 		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
 		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		customProgressDialog.show();
-		if (editMode) {
-			getPreviewPhotos();
-		} else {
-			Bundle b = getIntent().getBundleExtra("photos");
-			originalAlbumArrayList = b.getParcelableArrayList("photos");
-			albumArrayList.addAll(originalAlbumArrayList);
-			if (customProgressDialog.isShowing()) {
-				customProgressDialog.dismiss();
-			}
-		}
+		ppCode = getIntent().getStringExtra("ppCode");
+		Bundle b = getIntent().getBundleExtra("photos");
+		originalAlbumArrayList = b.getParcelableArrayList("photos");
+		albumArrayList.addAll(originalAlbumArrayList);
 
-		titleTextView.setText(editMode ? R.string.edit : R.string.mypage_pp);
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
 		myToast = new MyToast(this);
@@ -302,25 +309,63 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.rlrt:
+			case R.id.rlrt:
+				returnBack();
+				break;
+
+			case R.id.select_delete:
+				if (selectCount == 0) {
+					myToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
+					return;
+				}
+
+				if (pictureWorksDialog == null) {
+					pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
+							getString(R.string.start_delete), getString(R.string.button_cancel), getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
+				}
+				pictureWorksDialog.show();
+				break;
+
+			case R.id.pp_photos_edit:
+				editMode = true;
+				editStoryPinnedListViewAdapter.setEditMode(editMode);
+				editBarLinearLayout.setVisibility(View.VISIBLE);
+				titleTextView.setText(R.string.edit_story_album);
+				deleteTextView.setEnabled(false);
+				editTextView.setVisibility(View.GONE);
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			returnBack();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	private void returnBack() {
+		if (editMode) {
+			editMode = false;
+			editBarLinearLayout.setVisibility(View.GONE);
+			editStoryPinnedListViewAdapter.setEditMode(editMode);
+			titleTextView.setText(R.string.mypage_pp);
+			if (selectCount > 0) {
+				for (int i = 0; i < albumArrayList.size(); i++) {
+					if (albumArrayList.get(i).isSelected == 1) {
+						albumArrayList.get(i).isSelected = 0;
+						albumArrayList.get(i).showMask = 0;
+					}
+				}
+				selectCount = 0;
+			}
+			editTextView.setVisibility(View.VISIBLE);
+		} else {
 			finish();
-			break;
-
-		case R.id.select_delete:
-			if (selectCount == 0) {
-				myToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
-				return;
-			}
-
-			if (pictureWorksDialog == null){
-				pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
-						getString(R.string.start_delete), getString(R.string.button_cancel), getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
-			}
-			pictureWorksDialog.show();
-			break;
-
-		default:
-			break;
 		}
 	}
 
@@ -329,10 +374,10 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	 */
 	private void deleteNetworkPhotos() {
 		/**
-		 * 1.删除数据库的操作（照片表和收藏表都要删除）
+		 * 1.删除数据库的操作（照片表和收藏表都要删除），同时需要判断是否输入多张PP卡
 		 * 2.删除本地列表操作
 		 */
-		pictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist);
+		pictureAirDbManager.deletePhotosFromPhotoInfoAndFavorite(photopassPhotoslist, ppCode + ",");
 
 		for (int i = 0; i < photopassPhotoslist.size(); i++) {
 			Iterator<PhotoInfo> iterator = albumArrayList.iterator();

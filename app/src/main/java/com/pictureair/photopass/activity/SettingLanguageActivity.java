@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -69,11 +68,13 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
         oldLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         currentLanguage = oldLanguage;
+
+        PictureAirLog.out("current language---->" + currentLanguage);
         if (currentLanguage.equals("")) {
             //获取本地数据
-            if (config.locale.equals(Locale.SIMPLIFIED_CHINESE)) {
+            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
                 currentLanguage = Common.SIMPLE_CHINESE;
-            } else if (config.locale.equals(Locale.US)) {
+            } else {
                 currentLanguage = Common.ENGLISH;
             }
 
@@ -96,14 +97,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             englishSeleted.setVisibility(View.VISIBLE);
             chineseSeleted.setVisibility(View.INVISIBLE);
         }
-//        if (oldLanguage.equals(cur)) {
-//            //确认按钮不可点击
-//            save.setClickable(false);
-//            saveTv.setVisibility(View.GONE);
-//        } else {
-//            save.setClickable(true);
-//            saveTv.setVisibility(View.VISIBLE);
-//        }
     }
 
     @Override
@@ -118,24 +111,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             case R.id.back_set:
                 finish();
                 break;
-//            case R.id.save:
-//                //保存全局变量，和服务器同步。主要用于商品 列表的中英文切换
-//                if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
-//                    config.locale = Locale.SIMPLIFIED_CHINESE;
-//                    MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
-//                } else if (currentLanguage.equals(Common.ENGLISH)) {
-//                    config.locale = Locale.US;
-//                    MyApplication.getInstance().setLanguageType(Common.ENGLISH);
-//                }
-//                getResources().updateConfiguration(config, dm);
-//                //把语言写入数据库
-//                SharedPreferences.Editor localEditor = sharedPreferences.edit();
-//                localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
-//                localEditor.commit();
-//                //清除商品
-//                clearCache();
-//                finish();
-//                break;
             case R.id.language_chinese:
                 if (!currentLanguage.equals(Common.SIMPLE_CHINESE)) {
 //                    updateUI(currentLanguage);

@@ -18,14 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
@@ -110,7 +108,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private int ppPhotoCount;
 
     //申明控件
-    private TextView more;
     private ImageView scanLayout;
     private LinearLayout noPhotoView;
     private RelativeLayout scanRelativeLayout;
@@ -657,7 +654,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getActivity().getResources().getString(R.string.story_tab_bought),
                 getActivity().getResources().getString(R.string.story_tab_favorite) };
         //获取控件
-        more = (TextView) view.findViewById(R.id.story_more);
+//        more = (TextView) view.findViewById(R.id.story_more);
         scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
         scanLayout = (ImageView) view.findViewById(R.id.story_scan);
         storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
@@ -695,7 +692,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         scanLayout.setOnClickListener(this);
         scanRelativeLayout.setOnClickListener(this);
         storyNoPhotoToDiscoverImageView.setOnClickListener(this);
-        more.setOnClickListener(this);
+//        more.setOnClickListener(this);
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
         myToast = new MyToast(getActivity());
@@ -771,7 +768,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void showViewPager() {
         if (allItemInfoList != null && allItemInfoList.size() > 0) {//有图片
             PictureAirLog.out("viewpager---->has photos");
-            more.setVisibility(View.VISIBLE);
+//            more.setVisibility(View.VISIBLE);
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             //隐藏空图的情况
@@ -807,7 +804,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             }
         } else {//没有图片
             //判断是否应该显示左上角红点
-            more.setVisibility(View.INVISIBLE);
+//            more.setVisibility(View.INVISIBLE);
             if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //显示没有pp的情况
@@ -1584,12 +1581,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 startActivity(i);
                 break;
 
-            case R.id.story_more:
-                i = new Intent(getActivity(), EditStoryAlbumActivity.class);
-                i.putExtra("tab", app.fragmentStoryLastSelectedTab);
-                i.putExtra("mode", "edit");
-                startActivity(i);
-                break;
+//            case R.id.story_more:
+//                i = new Intent(getActivity(), EditStoryAlbumActivity.class);
+//                i.putExtra("tab", app.fragmentStoryLastSelectedTab);
+//                i.putExtra("mode", "edit");
+//                startActivity(i);
+//                break;
 
             case R.id.story_to_discover://跳转到Discover页面
                 PictureAirLog.out("Onclick---->Discover");

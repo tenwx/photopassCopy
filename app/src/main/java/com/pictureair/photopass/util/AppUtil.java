@@ -24,10 +24,8 @@ import android.view.View;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.amap.api.location.core.CoordinateConvert;
-import com.amap.api.location.core.GeoPoint;
-import com.amap.api.maps.AMapUtils;
-import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps2d.AMapUtils;
+import com.amap.api.maps2d.model.LatLng;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -185,25 +183,38 @@ public class AppUtil {
     /**
      * 计算方位角pab
      *
-     * @param lat_a
-     * @param lng_a
-     * @param lat_b
-     * @param lng_b
+     * @param lat_tar 目标地点
+     * @param lng_tar
+     * @param lat_cur 当前地点
+     * @param lng_cur
      * @return
      */
-    public static double gps2d(double lat_a, double lng_a, double lat_b, double lng_b) {
+    public static double gps2d(double lat_tar, double lng_tar, double lat_cur, double lng_cur) {
         double d;
-        lat_a = rad(lat_a);
-        lng_a = rad(lng_a);
-        lat_b = rad(lat_b);
-        lng_b = rad(lng_b);
+        lat_tar = rad(lat_tar);
+        lng_tar = rad(lng_tar);
+        lat_cur = rad(lat_cur);
+        lng_cur = rad(lng_cur);
 
-        d = Math.sin(lat_a) * Math.sin(lat_b) + Math.cos(lat_a)
-                * Math.cos(lat_b) * Math.cos(lng_b - lng_a);
+        d = Math.sin(lat_tar) * Math.sin(lat_cur) + Math.cos(lat_tar)
+                * Math.cos(lat_cur) * Math.cos(lng_tar - lng_cur);
         d = Math.sqrt(1 - d * d);
         if (d != 0) {
-            d = Math.cos(lat_b) * Math.sin(lng_b - lng_a) / d;
+            d = Math.cos(lat_cur) * Math.sin(lng_tar - lng_cur) / d;
             d = Math.asin(d) * 180 / Math.PI;
+        }
+        if (lat_tar >= lat_cur) {
+            if (lng_tar >= lng_cur) {//第一象限，测试通过
+
+            } else {//第二象限，测试通过
+
+            }
+        } else {
+            if (lng_tar >= lng_cur) {//第四象限，测试通过
+                d = 180 - d;
+            } else {//第三象限，测试通过
+                d = 180 - d;
+            }
         }
         return d;
     }
@@ -680,31 +691,6 @@ public class AppUtil {
         LatLng start = new LatLng(startLat, startLng);
         LatLng end = new LatLng(endLat, endLng);
         return AMapUtils.calculateLineDistance(start, end);
-    }
-
-    /**
-     * 将GPS设备采集的原始GPS坐标转换成高德坐标
-     *
-     * @param obj json对象
-     * @return 转换后的经纬度
-     * @throws JSONException
-     * @throws NumberFormatException
-     */
-    public static LatLng converterFromGPS2AMAP(JSONObject obj) throws NumberFormatException, JSONException {
-//				double lat = Double.valueOf("31.1616667");//我的座位
-//				double lng = Double.valueOf("121.7083333");
-        if (!obj.containsKey("GPSLatitude") || !obj.containsKey("GPSLongitude")) {
-            return new LatLng(0, 0);
-        }
-        double lat = Double.valueOf(obj.getString("GPSLatitude"));
-        double lng = Double.valueOf(obj.getString("GPSLongitude"));
-        GeoPoint geoPoint = CoordinateConvert.fromGpsToAMap(lat, lng);
-        LatLng latLng = new LatLng(geoPoint.getLatitudeE6() * 1e-6, geoPoint.getLongitudeE6() * 1e-6);
-
-        PictureAirLog.out("latlng:" + lat + "___" + lng);
-        PictureAirLog.out("latlng:" + Double.valueOf(obj.getString("GPSLatitude")) + "____" + Double.valueOf(obj.getString("GPSLongitude")));
-        PictureAirLog.out("latlng:" + latLng.toString());
-        return latLng;
     }
 
     /**

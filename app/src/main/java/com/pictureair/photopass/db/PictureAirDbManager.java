@@ -814,14 +814,21 @@ public class PictureAirDbManager {
     /**
      * 删除数据库中的照片（照片表和收藏表）
      * @param list
+     * @param ppCode
      */
-    public void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list) {
+    public void deletePhotosFromPhotoInfoAndFavorite(ArrayList<PhotoInfo> list, String ppCode) {
         database = DBManager.getInstance().writData();
         database.beginTransaction();
         try {
             for (int i = 0; i < list.size(); i++) {
-                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{list.get(i).photoId});
-                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{list.get(i).photoId});
+                if (list.get(i).photoPassCode.equals(ppCode)) {//只有一张卡
+                    database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and photoCode = ?", new String[]{list.get(i).photoId, ppCode});
+                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ? and photoCode = ?", new String[]{list.get(i).photoId, ppCode});
+                } else {//有多张卡
+                    String newPPCode = list.get(i).photoPassCode.replace(ppCode, "");
+                    database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ? where photoId = ?", new String[]{newPPCode, list.get(i).photoId});
+                    database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ? where photoId = ?", new String[]{newPPCode, list.get(i).photoId});
+                }
             }
             database.setTransactionSuccessful();
         } catch (SQLException e) {
