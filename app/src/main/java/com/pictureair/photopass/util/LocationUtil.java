@@ -1,13 +1,11 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.location.Location;
-import android.os.Bundle;
 
 import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 
 import java.util.ArrayList;
@@ -19,7 +17,8 @@ import java.util.ArrayList;
  */
 public class LocationUtil implements AMapLocationListener{
 
-	private LocationManagerProxy mLocationManagerProxy;
+	private AMapLocationClient locationClient = null;
+	private AMapLocationClientOption locationOption = null;
 	public AMapLocation mapLocation;
 	private Context context;
 	private double latitude, longitude;//定位的经纬度
@@ -47,19 +46,29 @@ public class LocationUtil implements AMapLocationListener{
 	private void initLocation() {
 		PictureAirLog.d(TAG, "----------->init location");
 
-		if (mLocationManagerProxy != null) {
+		if (locationClient != null) {
 			PictureAirLog.d(TAG, "------->has started");
 			return;
 		}
 		locationChanged = false;
-		mLocationManagerProxy = LocationManagerProxy.getInstance(context);// 定位实例
-		// LocationManagerProxy.GPS_PROVIDER，代表使用手机GPS定位；LocationManagerProxy.NETWORK_PROVIDER，代表使用手机网络定位；LocationProviderProxy.AMapNetwork，代表高德网络定位服务。
-		// minTime - 位置变化的通知时间，单位为毫秒.
-		// minDistance - 位置变化通知距离，单位为米。10米
-		// 定位方式设置为混合定位，包括网络定位和GPS定位
-		mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, 2000, 5, this);// 自己的位置变化会通知
-		// 如果定位方式包括GPS定位需要手动设置GPS可用
-		mLocationManagerProxy.setGpsEnable(true);
+
+		locationClient = new AMapLocationClient(context);
+		locationOption = new AMapLocationClientOption();
+		// 设置定位模式为高精度模式
+		locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+		// 设置定位监听
+		locationClient.setLocationListener(this);
+		/**
+		 * 设置是否优先返回GPS定位结果，如果30秒内GPS没有返回定位结果则进行网络定位
+		 * 注意：只有在高精度模式下的单次定位有效，其他方式无效
+		 */
+		locationOption.setGpsFirst(true);
+		// 设置发送定位请求的时间间隔,最小值为1000，如果小于1000，按照1000算
+		locationOption.setInterval(2000);
+		// 设置定位参数
+		locationClient.setLocationOption(locationOption);
+		// 启动定位
+		locationClient.startLocation();
 	}
 
 	public void startLocation() {
@@ -70,34 +79,17 @@ public class LocationUtil implements AMapLocationListener{
 	public void stopLocation() {
 		PictureAirLog.d(TAG, "----------->stop location");
 
-		mLocationManagerProxy.removeUpdates(this);
-		mLocationManagerProxy.destroy();
-		mLocationManagerProxy = null;
-
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
+		if (null != locationClient) {
+			// 停止定位
+			locationClient.stopLocation();
+			/**
+			 * 如果AMapLocationClient是在当前Activity实例化的，
+			 * 在Activity的onDestroy中一定要执行AMapLocationClient的onDestroy
+			 */
+			locationClient.onDestroy();
+			locationClient = null;
+			locationOption = null;
+		}
 	}
 
 	@Override
@@ -105,7 +97,7 @@ public class LocationUtil implements AMapLocationListener{
 		// TODO Auto-generated method stub
 		PictureAirLog.out("map" + arg0);
 		locationChanged = true;
-		if (arg0 != null && arg0.getAMapException().getErrorCode() == 0) {
+		if (arg0 != null && arg0.getErrorCode() == 0) {
 			latitude = arg0.getLatitude();
 			longitude = arg0.getLongitude();
 			mapLocation = arg0;

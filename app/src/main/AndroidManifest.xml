@@ -369,6 +369,7 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="67e009eeb01ae95ab229247e3d1153e0" />
+        <service android:name="com.amap.api.location.APSService" />
 
         <!-- notification 服务 -->
         <!-- 开启notification的服务 -->

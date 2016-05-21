@@ -217,7 +217,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 //				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
                 // 距离
                 item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
-                double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
+                double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
                 PictureAirLog.out("degree----->" + rotate_degree + "; d---> " + d);
                 latitudeTextView.setText("rotate degree: " + rotate_degree);
                 longitudeTextView.setText("d: " + d);
