@@ -22,7 +22,6 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
@@ -287,8 +286,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private void init() {
 //        IntentFilter filter = new IntentFilter("com.payment.action");
 //        registerReceiver(broadcastReceiver, filter);
-        sPreferences = getSharedPreferences(Common.USERINFO_NAME,
-                MODE_PRIVATE);
+        sPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         newToast = new MyToast(this);
         myApplication = (MyApplication) getApplication();
 

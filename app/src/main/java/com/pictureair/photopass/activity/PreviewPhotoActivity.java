@@ -673,7 +673,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
         dialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
 
         locationTextView = (TextView) findViewById(R.id.preview_location);

@@ -16,16 +16,16 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.EditTextWithClear;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -137,7 +137,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private void initview() {
         tvManulInputIntro = (TextView) findViewById(R.id.tv_manul_input_intro);
 
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         ok = (Button) findViewById(R.id.sure);
 
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);

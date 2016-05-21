@@ -65,7 +65,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         languageChinese.setOnClickListener(this);
         languageEnglish.setOnClickListener(this);
 
-        sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         oldLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         currentLanguage = oldLanguage;
 

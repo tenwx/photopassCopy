@@ -30,11 +30,13 @@ import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.eventbus.OrderFragmentEvent;
 import com.pictureair.photopass.fragment.OrderFragment;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
@@ -42,8 +44,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -305,7 +305,7 @@ public class OrderActivity extends BaseFragmentActivity {
         getData();
         //获取本地已付款为收到推送的order
         getLocalPaymentOrder();
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         //获取订单接口
         // 显示进度条。
         showProgressDialog();

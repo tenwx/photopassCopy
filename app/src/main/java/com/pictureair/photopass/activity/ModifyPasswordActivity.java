@@ -18,12 +18,11 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.EditTextWithClear;
 
 public class ModifyPasswordActivity extends BaseActivity implements OnClickListener {
     private SharedPreferences sharedPreferences;
@@ -93,7 +92,7 @@ public class ModifyPasswordActivity extends BaseActivity implements OnClickListe
 
     private void initView() {
         newToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.modify);
         radio = (ImageButton) findViewById(R.id.modify_password_radio);

@@ -55,7 +55,7 @@ public class NotificationServiceHelp {
 
     public NotificationServiceHelp(Context context) {
         mContext = context;
-        preferences = mContext.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        preferences = mContext.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         socketUtil = new SocketUtil(mContext, notificationHandler, preferences);
     }
 

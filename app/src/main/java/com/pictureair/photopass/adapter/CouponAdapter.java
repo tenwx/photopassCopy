@@ -25,13 +25,13 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
     private Context mContext;
     private List<CouponInfo> mDatas;
     private String whatPage = "";
-    private String Company = "";
+    private String currency = "";
 
     public CouponAdapter(Context context, List<CouponInfo> datas) {
         this.mContext = context;
         this.mDatas = datas;
         mInflater = LayoutInflater.from(context);
-        Company = context.getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE).getString("currency","");
+        currency = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME,Context.MODE_PRIVATE).getString("currency","");
     }
 
     /**
@@ -106,7 +106,7 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.MyViewHold
             //目前不知如何显示
 //            holder.tvNumber.setText((int)mDatas.get(position).getCpNumber()+ mContext.getResources().getString(R.string.discount));//这里是价格或者是折扣需要单位
         }else if (mDatas.get(position).getCpType().equals("subtract")){//减
-            holder.tvNumber.setText(Company+" -"+(int)mDatas.get(position).getCpNumber());//这里是价格或者是折扣需要单位
+            holder.tvNumber.setText(currency+" -"+(int)mDatas.get(position).getCpNumber());//这里是价格或者是折扣需要单位
         }
         holder.tvName.setText(mDatas.get(position).getCpName());
         holder.tvDescribe.setText(mDatas.get(position).getCpDescribe());

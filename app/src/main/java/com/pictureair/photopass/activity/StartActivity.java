@@ -41,7 +41,7 @@ public class StartActivity extends BaseActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        spApp = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        spApp = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         config = getResources().getConfiguration();
         displayMetrics = getResources().getDisplayMetrics();
         handler = new Handler(this);
@@ -83,7 +83,7 @@ public class StartActivity extends BaseActivity implements Callback {
 
             if (code == versionCode) {// 启动app,如果不是第一次进入，则直接跳过引导页
                 // 需要从服务器获取最新的照片信息，地点信息，个人用户信息，商品信息，购物车信息等等，然后存入到数据库中
-                SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
                 final String _id = sp.getString(Common.USERINFO_ID, null);
                 handler.postDelayed(new Runnable() {
                     @Override

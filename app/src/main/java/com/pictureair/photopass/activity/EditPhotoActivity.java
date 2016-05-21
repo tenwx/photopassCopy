@@ -452,7 +452,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
 
 		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
-		appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+		appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
 
 		editPhotoInfoArrayList = new ArrayList<EditPhotoInfo>();
 

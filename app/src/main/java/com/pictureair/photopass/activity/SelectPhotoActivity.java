@@ -220,7 +220,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         ivDisneyNullPhoto = (ImageView) findViewById(R.id.iv_disney_null_photo);
         tvDisneyNullPhoto = (TextView) findViewById(R.id.tv_disney_null_photo);
 
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
 
         /*
          * 更新标题

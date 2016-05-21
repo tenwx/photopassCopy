@@ -268,7 +268,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     }
 
     private void initView() {
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.submitorder);

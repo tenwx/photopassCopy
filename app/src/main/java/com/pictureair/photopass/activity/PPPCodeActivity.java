@@ -19,16 +19,16 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -147,7 +147,7 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
         btnReScanPppCode.setOnClickListener(this);
         lvButtom = (LinearLayout) findViewById(R.id.lv_buttom);
 
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         input1 = (EditText) findViewById(R.id.input1);
         input2 = (EditText) findViewById(R.id.input2);

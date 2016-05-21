@@ -29,6 +29,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
@@ -44,7 +45,6 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Vector;
 
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -227,7 +227,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 //        tvCenterHint.setRotation(90);
 
         newToast = new MyToast(this);
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);

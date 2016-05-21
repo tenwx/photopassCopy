@@ -215,7 +215,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         getIsOnline();//读取网络视频还是本地
         sharePop = new SharePop(context);
         pictureAirDbManager = new PictureAirDbManager(context);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         myToast = new MyToast(context);
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.my_disney_story);

@@ -173,7 +173,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
 
         //初始数据
         myToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         //获取传过来的值
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
         nameTextView.setText(goodsInfo.getNameAlias());

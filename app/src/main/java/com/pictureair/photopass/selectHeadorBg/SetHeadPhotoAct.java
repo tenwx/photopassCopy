@@ -125,7 +125,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         setContentView(R.layout.activity_set_head_photo);
         myToast = new MyToast(this);

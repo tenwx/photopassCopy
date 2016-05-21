@@ -53,7 +53,7 @@ public class AppExitUtil {
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
-                    SharedPreferences sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, MyApplication.getInstance().MODE_PRIVATE);
+                    SharedPreferences sp = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MyApplication.getInstance().MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.clear();
                     editor.commit();

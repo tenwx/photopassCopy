@@ -201,7 +201,7 @@ public class DealCodeUtil {
 		bindData = intent.getStringExtra("binddate");
 		pppId = intent.getStringExtra("pppid");
 		this.isInputAct = isInputAct;
-		sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE);
+		sharedPreferences = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME,Context.MODE_PRIVATE);
 	}
 	
 	/**

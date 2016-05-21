@@ -93,17 +93,12 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
-        userInfosharedPreferences = this.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        appSP = getSharedPreferences(Common.APP_NAME, Context.MODE_PRIVATE);
+        userInfosharedPreferences = this.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
+        appSP = this.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE);
         // 初始化友盟
         UmengUtil.initUmeng();
         initImageLoader(getApplicationContext());
         codeList = new ArrayList<HashMap<String, String>>();
-//        photoPassPicList = new ArrayList<PhotoInfo>();
-//        photoPassVideoList = new ArrayList<>();
-//        allPicList = new ArrayList<PhotoItemInfo>();
-//        magicPicList = new ArrayList<PhotoInfo>();
-//        boughtPicList = new ArrayList<PhotoItemInfo>();
         PictureAirLog.out("application on create--->");
     }
 

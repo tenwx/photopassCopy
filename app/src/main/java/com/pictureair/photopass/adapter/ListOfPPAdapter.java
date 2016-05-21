@@ -91,7 +91,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             useNumber = pppInfo.bindInfo.size();
         }
 
-        sharedPreferences = mContext.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = mContext.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         userPP = sharedPreferences.getString(Common.USERINFO_USER_PP, "");
 
     }

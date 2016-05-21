@@ -173,7 +173,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     }
 
     private void initview() {
-        appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);// userInfo
+        appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);// userInfo
 
         myToast = new MyToast(LoginActivity.this);// 获取toast
         parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);

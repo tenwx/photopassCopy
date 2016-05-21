@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/pp_height_1"
                     android:background="@color/line_color"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
 
                 <RelativeLayout
                     android:id="@+id/yl"

@@ -269,7 +269,7 @@ public class API1 {
 
                 super.onSuccess(jsonObject);
                 try {
-                    SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
                     e.commit();
@@ -1591,7 +1591,7 @@ public class API1 {
     public static void checkUpdate(Context context, final Handler handler, final String thisVerName, final String language) {
         final String channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
         PictureAirLog.out("channel------>" + channelStr);
-        String verson = context.getSharedPreferences(Common.APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
+        String verson = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);

@@ -234,7 +234,7 @@ public class SignAndLoginUtil implements Handler.Callback {
         PictureAirLog.v(TAG, "start login or sign");
         myToast = new MyToast(context);
         customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-        sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         handler = new Handler(this);
         if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
             PictureAirLog.v(TAG, "no tokenid");

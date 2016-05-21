@@ -37,14 +37,13 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * shop类
@@ -186,7 +185,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.shopNoNetWorkView);
 
         //初始化数据
-        sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);//获取购物车数量
         currency = sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
         //设置购物车数量

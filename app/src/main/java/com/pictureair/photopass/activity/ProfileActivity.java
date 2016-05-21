@@ -20,13 +20,11 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.activity.SelectCountryActivity;
 
 /**
  * 个人信息页面
@@ -182,7 +180,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_profile);
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         newToast = new MyToast(this);
         initView();
         initData();

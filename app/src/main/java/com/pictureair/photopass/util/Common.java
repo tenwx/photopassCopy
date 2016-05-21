@@ -174,7 +174,7 @@ public class Common {
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
     public static final String APP_ID = "appID";
-    public static final String USERINFO_NAME = "userInfo";
+    public static final String SHARED_PREFERENCE_USERINFO_NAME = "userInfo";
     public static final String USERINFO_ID = "_id";//api需要的userId
     public static final String USERINFO_TOKENID = "tokenId";//api需要的tokenId
     public static final String USERINFO_USER_PP = "userPP"; //用户的code
@@ -322,7 +322,7 @@ public class Common {
     //	public static final String BARCODEURL = "http://192.168.8.3:3001/downloadApp.html?";
 
     //app的SharePreferences
-    public static final String APP = "app";
+    public static final String SHARED_PREFERENCE_APP = "app";
     public static final String BLUR_LEAD = "blurlead";
     public static final String APP_VERSION_CODE = "version_code";
     public static final String APP_VERSION_NAME = "version_name";

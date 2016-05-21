@@ -234,7 +234,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		//初始化数据
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
-		sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ppCode = getIntent().getStringExtra("ppCode");
 		Bundle b = getIntent().getBundleExtra("photos");

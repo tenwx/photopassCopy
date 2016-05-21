@@ -157,10 +157,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         Bundle bundle = getIntent().getExtras();
         orderInfo = bundle.getParcelable("groupitem");
         orderDetailArrayList = (ArrayList<CartItemInfo>) bundle.getSerializable("childitemlist");
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
-                MODE_PRIVATE);
-        currency = sharedPreferences.getString(Common.CURRENCY,
-                Common.DEFAULT_CURRENCY);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
+        currency = sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY);
     }
 
     @Override

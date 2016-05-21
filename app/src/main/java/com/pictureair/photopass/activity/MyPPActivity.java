@@ -376,7 +376,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(pictureAirDbManager);
         myToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
         back = (ImageView) findViewById(R.id.back);

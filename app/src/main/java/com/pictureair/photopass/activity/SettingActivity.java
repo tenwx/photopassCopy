@@ -147,8 +147,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         ibAutoUpdate.setOnClickListener(this);
 
         settingUtil = new SettingUtil(new PictureAirDbManager(this));
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
-        appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
+        appSharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         customProgressDialog = CustomProgressDialog.show(this, this.getString(R.string.is_loading), true, null);
         new Thread() {

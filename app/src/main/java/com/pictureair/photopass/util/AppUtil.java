@@ -203,12 +203,8 @@ public class AppUtil {
             d = Math.cos(lat_cur) * Math.sin(lng_tar - lng_cur) / d;
             d = Math.asin(d) * 180 / Math.PI;
         }
-        if (lat_tar >= lat_cur) {
-            if (lng_tar >= lng_cur) {//第一象限，测试通过
+        if (lat_tar >= lat_cur) {//第一二象限，不需要做任何处理
 
-            } else {//第二象限，测试通过
-
-            }
         } else {
             if (lng_tar >= lng_cur) {//第四象限，测试通过
                 d = 180 - d;

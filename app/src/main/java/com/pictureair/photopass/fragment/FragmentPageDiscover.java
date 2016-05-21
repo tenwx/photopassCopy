@@ -320,7 +320,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         favoriteList = new ArrayList<String>();
         distanceFormat = NumberFormat.getNumberInstance();
         distanceFormat.setMaximumFractionDigits(1);
-        sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
 
 
 

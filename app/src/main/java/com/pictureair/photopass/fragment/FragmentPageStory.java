@@ -679,7 +679,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         app = (MyApplication) getActivity().getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
-        sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         photoPassItemInfoList = new ArrayList<>();
         magicItemInfoList = new ArrayList<>();
 

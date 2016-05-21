@@ -190,3 +190,8 @@
 -keep class com.amap.api.location.**{*;}
 -keep class com.amap.api.fence.**{*;}
 -keep class com.autonavi.aps.amapapi.model.**{*;}
+
+#百度统计
+-keep class com.baidu.kirin.** { *; }
+-keep class com.baidu.mobstat.** { *; }
+-keep class com.baidu.bottom.** { *; }
