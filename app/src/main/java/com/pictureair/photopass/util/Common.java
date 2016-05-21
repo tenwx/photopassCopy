@@ -222,6 +222,7 @@ public class Common {
     public static final String CUSTOMERID = "customerId";
     public static final String ADDRESS_ID = "addressId";
     public static final String ORDER_ID = "orderId";
+    public static final String ORDER_CODE = "orderCode";
     public static final String PAY_TYPE = "payType";
     public static final String DELIVERY_TYPE = "deliveryType";
     public static final String STORE_ADDRESS = "storeAddress";

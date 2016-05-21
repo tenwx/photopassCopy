@@ -2043,11 +2043,11 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getUnionPayTN(String orderId , final Handler handler){
+    public static void getUnionPayTN(String orderCode , final Handler handler){
         PictureAirLog.e(TAG, MyApplication.getTokenId());
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.ORDER_ID, orderId);
+        params.put(Common.ORDER_CODE, orderCode);
         PictureAirLog.e(TAG, MyApplication.getTokenId());
 
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN , params, new HttpCallback() {

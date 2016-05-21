@@ -436,7 +436,7 @@ public class JsonUtil {
 
             //resume
             JSONObject resumeJsonObject = orderJsonObject.getJSONObject("resume");
-            orderInfo.orderId = resumeJsonObject.getString("orderId");
+            orderInfo.orderId = resumeJsonObject.getString("code");
             orderInfo.orderNumber = resumeJsonObject.getString("code");//订单号
             orderInfo.orderTime = resumeJsonObject.getString("time");//订单时间
             orderInfo.orderPayMentMethod = resumeJsonObject.getIntValue("payType");//支付类型

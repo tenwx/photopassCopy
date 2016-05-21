@@ -202,7 +202,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             case API1.ADD_ORDER_SUCCESS:
                 PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
                 JSONObject jsonObject = (JSONObject) msg.obj;
-                orderId = jsonObject.getString("orderId");
+                orderId = jsonObject.getString("orderCode");
                 customProgressDialog.dismiss();
                 if (orderId != null && !orderId.isEmpty()) {
                     goToPayActivity(true);

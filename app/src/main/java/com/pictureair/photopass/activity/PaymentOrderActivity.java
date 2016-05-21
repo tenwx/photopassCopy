@@ -91,7 +91,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private boolean isPaying = false;
 
     //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
-    private final String mMode = "01";
+    private final String mMode = "00";
     private String tNCode;
 
     private boolean isNeedPay = true;//是否需要支付
@@ -461,13 +461,14 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             if (!dialog.isShowing()) {
                 dialog.show();
             }
+            PictureAirLog.out("========orderId" + orderId);
             API1.getUnionPayTN(orderId, paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
             Intent intent = new Intent(PaymentOrderActivity.this, WebViewActivity.class);
             intent.putExtra("key", 4);
             intent.putExtra("orderId", orderId);
-            startActivityForResult(intent,3333);
+            startActivityForResult(intent, 3333);
         } else if (payType == 7) {
             weChatIsPaying = true;
             PictureAirLog.v(TAG, "wechat");
@@ -555,7 +556,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         }
 
         // ipaylink 支付回调。
-        if (requestCode == 3333 && resultCode == 111){
+        if (requestCode == 3333 && resultCode == 111) {
             int payType = data.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
             switch (payType) {
                 case 0:
@@ -571,42 +572,46 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             return;
         }
 
-
-        //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
-        String str = data.getExtras().getString("pay_result");
-        PictureAirLog.e(TAG,"str" + str);
-        if (str.equalsIgnoreCase("success")) {
-            // 支付成功后，extra中如果存在result_data，取出校验
-            // result_data结构见c）result_data参数说明
-            if (data.hasExtra("result_data")) {
-                String result = data.getExtras().getString("result_data");
-                PictureAirLog.e(TAG,"result" + result);
-                JSONObject resultJson = JSONObject.parseObject(result);
-                PictureAirLog.e(TAG,"resultJson" + resultJson);
-                String sign = resultJson.getString("sign");
-                PictureAirLog.e(TAG,"sign" + sign);
-                String dataOrg = resultJson.getString("data");
-                // 验签证书同后台验签证书
-                // 此处的verify，商户需送去商户后台做验签
-                boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
-
-                if (ret) {
-                    // 验证通过后，显示支付结果
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-                } else {
-                    // 验证不通过后的处理
-                    // 建议通过商户后台查询支付结果
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-                }
-            } else {
-                // 未收到签名信息
-                // 建议通过商户后台查询支付结果
+        if (requestCode == 10) {
+            //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
+            String str = data.getExtras().getString("pay_result");
+            PictureAirLog.e(TAG, "str" + str);
+            if (str.equalsIgnoreCase("success")) {
+                // 支付成功后，extra中如果存在result_data，取出校验
+                // result_data结构见c）result_data参数说明
                 paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//                if (data.hasExtra("result_data")) {
+//                    String result = data.getExtras().getString("result_data");
+//                    PictureAirLog.e(TAG, "result" + result);
+//                    JSONObject resultJson = JSONObject.parseObject(result);
+//                    PictureAirLog.e(TAG, "resultJson" + resultJson);
+//                    String sign = resultJson.getString("sign");
+//                    PictureAirLog.e(TAG, "sign" + sign);
+//                    String dataOrg = resultJson.getString("data");
+////                    // 验签证书同后台验签证书
+////                    // 此处的verify，商户需送去商户后台做验签
+////                    boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
+////
+//////                    PictureAirLog.e(TAG,"========" + ret);
+////
+////                    if (ret) {
+////                        // 验证通过后，显示支付结果
+////                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+////                    } else {
+////                        // 验证不通过后的处理
+////                        // 建议通过商户后台查询支付结果
+////                        paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+////                    }
+//                } else {
+//                    // 未收到签名信息
+//                    // 建议通过商户后台查询支付结果
+//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//                }
+            } else if (str.equalsIgnoreCase("fail")) {
+                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+            } else if (str.equalsIgnoreCase("cancel")) {
+                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
             }
-        } else if (str.equalsIgnoreCase("fail")) {
-            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-        } else if (str.equalsIgnoreCase("cancel")) {
-            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
         }
     }
 
