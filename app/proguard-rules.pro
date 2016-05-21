@@ -64,6 +64,8 @@
 
 #避免混淆银联支付
 -keep class com.unionpay.** {*;}
+-keep class org.simalliance.openmobileapi.** {*;}
+-keep class org.simalliance.openmobileapi.service.** {*;}
 
 #短信验证和分享避免混淆
 -keep class android.net.http.SslError
