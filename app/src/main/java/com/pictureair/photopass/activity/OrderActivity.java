@@ -9,7 +9,6 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -55,7 +54,6 @@ public class OrderActivity extends BaseFragmentActivity {
 
     private ViewPager viewPager;
     private OrderViewPagerAdapter2 orderAdapter;
-    private ArrayList<View> listViews;
     private ImageView cursorImageView;//动画图片
     private TextView paymentOrderTextView, deliveryOrderTextView, allOrderTextView;//选项卡
     private LinearLayout lead_bar,cursor_layout;
@@ -182,10 +180,6 @@ public class OrderActivity extends BaseFragmentActivity {
                     }
                 }
 
-//                    orderAdapter = new OrderViewPagerAdapter2(OrderActivity.this, listViews, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList,
-//                            paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList,
-//                            sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), ((MyApplication) getApplication()));
-
                 if (null == mFragments || mFragments.size() == 0) {
                     if (null != orderActivityHandler
                             && null != paymentOrderArrayList
@@ -244,10 +238,6 @@ public class OrderActivity extends BaseFragmentActivity {
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-//                    if (null != refreshLayout && refreshLayout.isRefreshing()) {
-//                        refreshLayout.setEnabled(true);
-//                        refreshLayout.setRefreshing(false);
-//                    }
                 //重新加载购物车数据
                 if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
                     goneTop();
@@ -324,37 +314,6 @@ public class OrderActivity extends BaseFragmentActivity {
         deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
         allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
 
-//        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
-//        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
-//        refreshLayout.setEnabled(true);
-//        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                PictureAirLog.out("start refresh");
-//                refreshLayout.setEnabled(false);
-//                Message message = orderActivityHandler.obtainMessage();
-//                message.what = REFRESH;
-//                orderActivityHandler.sendMessage(message);
-//            }
-//        });
-
-//        viewPager.setOnTouchListener(new View.OnT
-// ouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_MOVE:
-//                        refreshLayout.setEnabled(false);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                    case MotionEvent.ACTION_CANCEL:
-//                        refreshLayout.setEnabled(true);
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
         matrix.postTranslate(0, 0);
@@ -366,7 +325,6 @@ public class OrderActivity extends BaseFragmentActivity {
      * 初始化数据
      */
     public void initData() {
-        listViews = new ArrayList<>();
         //初始化expandablelistview需要的数据
         paymentOrderArrayList = new ArrayList<>();
         deliveryOrderArrayList = new ArrayList<>();
@@ -382,11 +340,6 @@ public class OrderActivity extends BaseFragmentActivity {
         paymentOrderTextView.setOnClickListener(new viewPagerOnClickListener(0));
         deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
-
-        LayoutInflater mInflater = getLayoutInflater();
-        listViews.add(mInflater.inflate(R.layout.order_list, null));
-        listViews.add(mInflater.inflate(R.layout.order_list, null));
-        listViews.add(mInflater.inflate(R.layout.order_list, null));
 
         myToast = new MyToast(this);
         pictureAirDbManager = new PictureAirDbManager(this);
