@@ -103,6 +103,7 @@ public class HelpActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         context = this;
+        customProgressDialog = CustomProgressDialog.create(context, context.getString(R.string.is_loading), true, null);
         initView();
         initData();
     }
@@ -111,12 +112,14 @@ public class HelpActivity extends BaseActivity {
      * 初始化网络数据
      */
     private void initData() {
+        if (!customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
         if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
             mListView.setVisibility(View.GONE);
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
             helpHandler.sendEmptyMessage(NOT_NETWORK);
         } else {
-        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), true, null);
             mListView.setVisibility(View.VISIBLE);
             noNetWorkOrNoCountView.setVisibility(View.GONE);
             API1.getHelp(helpHandler);

@@ -136,7 +136,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // 自动检查更新
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
+        checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(), currentLanguage,
                 parentLayout);
         checkUpdateManager.startCheck();
         // 得到fragment的个数

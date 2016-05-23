@@ -1194,6 +1194,9 @@ public class AppUtil {
         if (!hasSDCard()) {//如果SD卡不存在
             return resultList;
         }
+        PictureAirLog.out("path---->" + filePath);
+        filePath = filePath.substring(0, filePath.length() - 1);
+        PictureAirLog.out("path---->" + filePath);
         File file = new File(filePath);
         if (!file.exists()) {//如果文件不存在，创建文件夹
             file.mkdirs();
@@ -1419,6 +1422,9 @@ public class AppUtil {
         DiscoverLocationItemInfo locationInfo;
         try {
             JSONObject response = JSONObject.parseObject(locationJson);
+            if (response == null) {
+                return result;
+            }
             JSONArray resultArray = response.getJSONArray("locations");
             for (int i = 0; i < resultArray.size(); i++) {
                 JSONObject object = resultArray.getJSONObject(i);

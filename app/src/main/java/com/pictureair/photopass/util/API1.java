@@ -1602,7 +1602,7 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
 
                 super.onSuccess(jsonObject);
-
+                PictureAirLog.out("update---->" + jsonObject);
                 /**
                  * 测试使用
                  */
