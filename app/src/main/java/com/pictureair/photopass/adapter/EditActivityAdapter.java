@@ -24,6 +24,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
+import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -45,7 +46,7 @@ public class EditActivityAdapter extends BaseAdapter {
     private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
     private Context mContext;
     private List<String> stickerPathList;
-    private int editType = 0;
+    private int editType = PhotoCommon.EditNone;
     private int[] filterText = { R.string.original, R.string.lomo, R.string.earlybird, R.string.natural,
             R.string.hdr, R.string.whitening, R.string.vintage };
     private ArrayList<FrameOrStikerInfo> frameInfos;
@@ -93,7 +94,7 @@ public class EditActivityAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (editType == 1 || editType == 3) {
+        if (editType == PhotoCommon.EditFrame || editType == PhotoCommon.EditSticker) {
             return frameInfos.size();
         } else {
             return stickerPathList.size();
@@ -103,7 +104,7 @@ public class EditActivityAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if (editType == 1 || editType == 3) {
+        if (editType == PhotoCommon.EditFrame || editType == PhotoCommon.EditSticker) {
             return frameInfos.get(position);
         } else {
             return stickerPathList.get(position);
@@ -141,7 +142,7 @@ public class EditActivityAdapter extends BaseAdapter {
         holderView.maskImageView.setVisibility(View.GONE);
         holderView.fileSizeTextView.setVisibility(View.INVISIBLE);
         holderView.progressBar.setVisibility(View.INVISIBLE);
-        if (editType == 2) {//滤镜
+        if (editType == PhotoCommon.EditFilter) {//滤镜
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
             layoutParams.height = ScreenUtil.dip2px(mContext, 50);
             layoutParams.width = ScreenUtil.dip2px(mContext, 50);
@@ -151,7 +152,7 @@ public class EditActivityAdapter extends BaseAdapter {
             holderView.editText.setText(filterText[position]);
             holderView.editText.setVisibility(View.VISIBLE);
         }
-        if (editType == 3) {//饰品
+        if (editType == PhotoCommon.EditSticker) {//饰品
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
             layoutParams.height = ScreenUtil.dip2px(mContext, 60);
             layoutParams.width = ScreenUtil.dip2px(mContext, 60);
@@ -173,7 +174,7 @@ public class EditActivityAdapter extends BaseAdapter {
 
         }
 
-        if (editType == 1) {//边框
+        if (editType == PhotoCommon.EditFrame) {//边框
 //			LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
 //			layoutParams.height = ScreenUtil.dip2px(mContext, 80);
 //			layoutParams.width = ScreenUtil.dip2px(mContext, 60);

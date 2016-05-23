@@ -22,7 +22,7 @@ public class FrameOrStikerInfo implements Parcelable{
 	public int isDownload;//是否已经下载，1：已下载，0：未下载
 	public int fileSize;//文件大小
 //	public int needShow;//边框是否需要显示，因为地点变化，边框也会变化
-	
+
 	public static final Parcelable.Creator<FrameOrStikerInfo> CREATOR = new Creator<FrameOrStikerInfo>() {
 
 		@Override

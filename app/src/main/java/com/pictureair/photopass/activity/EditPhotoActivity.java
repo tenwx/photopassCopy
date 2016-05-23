@@ -42,6 +42,8 @@ import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.editPhoto.Matrix3;
 import com.pictureair.photopass.editPhoto.StickerItem;
 import com.pictureair.photopass.editPhoto.StickerView;
+import com.pictureair.photopass.editPhoto.controller.PWEditController;
+import com.pictureair.photopass.editPhoto.view.PWEditView;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.EditPhotoInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
@@ -322,16 +324,25 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_photo);
+        // 进编辑页即释放掉ImageLoader的缓存，尽量增大可用内存
+//		ImageLoader.getInstance().clearMemoryCache();
 
-		initView();
-		dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-//		new Thread() {
-//			public void run() {
-				//		    addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
-		initData();
-		//开始从网络获取最新数据
-		API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
+		PWEditView pwEditView = new PWEditView();
+		pwEditView.initView(this);
+
+		PWEditController pwEditController = new PWEditController();
+		pwEditController.onCreate(this,pwEditView);
+
+//		setContentView(R.layout.activity_edit_photo);
+
+//		initView();
+//		dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
+////		new Thread() {
+////			public void run() {
+//				//		    addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
+//		initData();
+//		//开始从网络获取最新数据
+//		API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
 //			};
 //		}.start();
 
@@ -339,46 +350,46 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	}
 
 
-	private void initView(){
-		locationUtil = new LocationUtil(this);
-		locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
-		mainImage = (ImageView) findViewById(R.id.main_image);
-		// 贴图  view
-		mStickerView = (StickerView) findViewById(R.id.sticker_panel);
-
-		frameImageView = (ImageView) findViewById(R.id.framephoto_imageView1); // 相框
-
-		back = (ImageView) findViewById(R.id.edit_return);
-		edit_accessory = (TextView) findViewById(R.id.edit_accessory);
-		titleTextView = (TextView) findViewById(R.id.title_edit);
-		edittoolsbar = (LinearLayout) findViewById(R.id.edittoolsbar);
-		top_HorizontalListView = (HorizontalListView) findViewById(R.id.horizontalListView);
-		preview_save = (TextView) findViewById(R.id.preview_save);
-		btn_onedit_save = (ImageButton) findViewById(R.id.btn_onedit_save);
-		btn_cancel = (ImageButton) findViewById(R.id.btn_cancel);
-		btn_forward = (ImageButton) findViewById(R.id.btn_forward);
-		btn_left_back = (ImageView) findViewById(R.id.btn_left_back);
-		edit_filter = (TextView) findViewById(R.id.edit_filter);
-		edit_text = (TextView) findViewById(R.id.edit_text);
-		edit_frame = (TextView) findViewById(R.id.edit_frame);
-		font_bar = (LinearLayout) findViewById(R.id.font_bar);
-		tvLeft90 = (TextView) findViewById(R.id.tv_left90);
-		tvRight90 = (TextView) findViewById(R.id.tv_right90);
-
-
-		edit_frame.setOnClickListener(this);
-		tvLeft90.setOnClickListener(this);
-		tvRight90.setOnClickListener(this);
-		edit_text.setOnClickListener(this);
-		edit_filter.setOnClickListener(this);
-		btn_forward.setOnClickListener(this);
-		btn_cancel.setOnClickListener(this);
-		preview_save.setOnClickListener(this);
-		btn_onedit_save.setOnClickListener(this);
-		btn_left_back.setOnClickListener(this);
-		edit_accessory.setOnClickListener(this);
-		back.setOnClickListener(this);
-	}
+//	private void initView(){
+//		locationUtil = new LocationUtil(this);
+//		locationItemInfos = new ArrayList<DiscoverLocationItemInfo>();
+//		mainImage = (ImageView) findViewById(R.id.main_image);
+//		// 贴图  view
+//		mStickerView = (StickerView) findViewById(R.id.sticker_panel);
+//
+//		frameImageView = (ImageView) findViewById(R.id.framephoto_imageView1); // 相框
+//
+//		back = (ImageView) findViewById(R.id.edit_return);
+//		edit_accessory = (TextView) findViewById(R.id.edit_accessory);
+//		titleTextView = (TextView) findViewById(R.id.title_edit);
+//		edittoolsbar = (LinearLayout) findViewById(R.id.edittoolsbar);
+//		top_HorizontalListView = (HorizontalListView) findViewById(R.id.horizontalListView);
+//		preview_save = (TextView) findViewById(R.id.preview_save);
+//		btn_onedit_save = (ImageButton) findViewById(R.id.btn_onedit_save);
+//		btn_cancel = (ImageButton) findViewById(R.id.btn_cancel);
+//		btn_forward = (ImageButton) findViewById(R.id.btn_forward);
+//		btn_left_back = (ImageView) findViewById(R.id.btn_left_back);
+//		edit_filter = (TextView) findViewById(R.id.edit_filter);
+//		edit_text = (TextView) findViewById(R.id.edit_text);
+//		edit_frame = (TextView) findViewById(R.id.edit_frame);
+//		font_bar = (LinearLayout) findViewById(R.id.font_bar);
+//		tvLeft90 = (TextView) findViewById(R.id.tv_left90);
+//		tvRight90 = (TextView) findViewById(R.id.tv_right90);
+//
+//
+//		edit_frame.setOnClickListener(this);
+//		tvLeft90.setOnClickListener(this);
+//		tvRight90.setOnClickListener(this);
+//		edit_text.setOnClickListener(this);
+//		edit_filter.setOnClickListener(this);
+//		btn_forward.setOnClickListener(this);
+//		btn_cancel.setOnClickListener(this);
+//		preview_save.setOnClickListener(this);
+//		btn_onedit_save.setOnClickListener(this);
+//		btn_left_back.setOnClickListener(this);
+//		edit_accessory.setOnClickListener(this);
+//		back.setOnClickListener(this);
+//	}
 
 	private void initData(){
 		rotateAngle = 0;
@@ -481,33 +492,33 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
-			try {
-				com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-				com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
-				for (int i = 0; i < resultArray.size(); i++) {
-
-					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-					JSONObject object = resultArray.getJSONObject(i);
-					locationInfo = JsonUtil.getLocation(object);
-					if (locationInfo.isShow == 1) {
-						locationItemInfos.add(locationInfo);
-					}
-				}
-				locationUtil.setLocationItemInfos(locationItemInfos, this);
-			} catch (com.alibaba.fastjson.JSONException e1) {
-
-				e1.printStackTrace();
-			}
-		}
-		locationUtil.startLocation();
+//		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
+//			try {
+//				com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
+//				com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
+//				for (int i = 0; i < resultArray.size(); i++) {
+//
+//					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
+//					JSONObject object = resultArray.getJSONObject(i);
+//					locationInfo = JsonUtil.getLocation(object);
+//					if (locationInfo.isShow == 1) {
+//						locationItemInfos.add(locationInfo);
+//					}
+//				}
+//				locationUtil.setLocationItemInfos(locationItemInfos, this);
+//			} catch (com.alibaba.fastjson.JSONException e1) {
+//
+//				e1.printStackTrace();
+//			}
+//		}
+//		locationUtil.startLocation();
 	}
 
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		locationUtil.stopLocation();
+//		locationUtil.stopLocation();
 	}
 
 	@Override
@@ -590,161 +601,161 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				break;
 
 			//编辑边框。
-			case R.id.edit_frame:
-//			
-//			System.out.println(ssss.equals("---"));
-//			
-
-				titleTextView.setText(R.string.frames);
-				onEditStates();
-				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, editPhotoHandler);
-				top_HorizontalListView.setAdapter(eidtAdapter);
-				top_HorizontalListView.setOnItemClickListener(null);
-//			top_HorizontalListView
-//			.setOnItemClickListener(new OnItemClickListener() {
-//				//加载边框。
-//				@Override
-//				public void onItemClick(AdapterView<?> parent,
-//						View view, int position, long id) {
-//					// TODO Auto-generated method stub
-//					curFramePosition = position;
-//					//							loadframe(position);
-//					editType = 1;
-//					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
-//					dialog.show();
-//					Message msg = handler.obtainMessage();
-//					msg.obj = position;
-//					msg.what = 1111;
-//					handler.sendMessage(msg);
-//				}
-//			});
-				break;
-			case R.id.edit_filter:
-				onEditStates();
-				titleTextView.setText(R.string.magicbrush);
-				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this, mainBitmap, filterPathList, 2, new ArrayList<FrameOrStikerInfo>(), editPhotoHandler);
-				top_HorizontalListView.setAdapter(eidtAdapter);
-				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-											int position, long arg3) {
-						// TODO Auto-generated method stub
-						btn_onedit_save.setVisibility(View.VISIBLE);
-						editType = 2;
-						switch (position) {
-							case 0:
-								filter = new NormalFilter();
-								break;
-							case 1:
-								filter = new LomoFilter();
-								break;
-							case 2:
-								// 流年效果
-								filter = new Amaro();
-								break;
-							case 3:
-								// 自然美肤效果
-								filter = new BeautifyFilter();
-								break;
-							case 4:
-								// HDR 效果
-								filter = new HDRFilter();
-								break;
-							case 5:
-								// 自然美肤效果
-								filter = new BlurFilter();
-								break;
-							case 6:
-								// 怀旧效果
-								filter = new OldFilter();
-								break;
-							default:
-								break;
-						}
-
-						new Thread() {
-							@Override
-							public void run() {
-								super.run();
-								if (photoInfo.onLine == 1) {
-									mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
-								}else{
-									mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
-											imageHeight);
-								}
-								editPhotoHandler.sendEmptyMessage(START_ASYNC);
-							}
-						}.start();
-
-					}
-				});
-				break;
-			case R.id.edit_text:
-				editType = 4;
-				titleTextView.setText(R.string.rotate);
-				onEditStates();
-				break;
-
-
-			case R.id.edit_accessory:
-				calRec();
-				mStickerView.setVisibility(View.VISIBLE); // 事先让视图可见。
-				//饰品编辑
-				onEditStates();
-				titleTextView.setText(R.string.decoration);
-				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),3, stikerInfos, editPhotoHandler);
-				top_HorizontalListView.setAdapter(eidtAdapter);
-				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-											int position, long arg3) {
-						// TODO Auto-generated method stub
-						btn_onedit_save.setVisibility(View.VISIBLE);
-						editType = 3;
-						String stickerUrl = "";
-						if (stikerInfos.get(position).onLine == 1) {//网络图片
-							stickerUrl = Common.PHOTO_URL + stikerInfos.get(position).frameOriginalPathPortrait;
-						}else {
-							stickerUrl = stikerInfos.get(position).frameOriginalPathPortrait;
-						}
-						//ImageLoader 加载
-						imageLoader.loadImage(stickerUrl, new ImageLoadingListener() {
-
-							@Override
-							public void onLoadingStarted(String imageUri, View view) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onLoadingFailed(String imageUri, View view,
-														FailReason failReason) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-								// TODO Auto-generated method stub
-								mStickerView.addBitImage(loadedImage);
-							}
-
-							@Override
-							public void onLoadingCancelled(String imageUri, View view) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-//					}else {
-//						Bitmap accessoryBitmap = EditPhotoUtil.getImageFromAssetsFile(EditPhotoActivity.this, stikerInfos.get(position).frameOriginalPathPortrait);
-//						mStickerView.addBitImage(accessoryBitmap);
+//			case R.id.edit_frame:
+////
+////			System.out.println(ssss.equals("---"));
+////
+//
+//				titleTextView.setText(R.string.frames);
+//				onEditStates();
+//				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, editPhotoHandler);
+//				top_HorizontalListView.setAdapter(eidtAdapter);
+//				top_HorizontalListView.setOnItemClickListener(null);
+////			top_HorizontalListView
+////			.setOnItemClickListener(new OnItemClickListener() {
+////				//加载边框。
+////				@Override
+////				public void onItemClick(AdapterView<?> parent,
+////						View view, int position, long id) {
+////					// TODO Auto-generated method stub
+////					curFramePosition = position;
+////					//							loadframe(position);
+////					editType = 1;
+////					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
+////					dialog.show();
+////					Message msg = handler.obtainMessage();
+////					msg.obj = position;
+////					msg.what = 1111;
+////					handler.sendMessage(msg);
+////				}
+////			});
+//				break;
+//			case R.id.edit_filter:
+//				onEditStates();
+//				titleTextView.setText(R.string.magicbrush);
+//				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this, mainBitmap, filterPathList, 2, new ArrayList<FrameOrStikerInfo>(), editPhotoHandler);
+//				top_HorizontalListView.setAdapter(eidtAdapter);
+//				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
+//
+//					@Override
+//					public void onItemClick(AdapterView<?> arg0, View arg1,
+//											int position, long arg3) {
+//						// TODO Auto-generated method stub
+//						btn_onedit_save.setVisibility(View.VISIBLE);
+//						editType = 2;
+//						switch (position) {
+//							case 0:
+//								filter = new NormalFilter();
+//								break;
+//							case 1:
+//								filter = new LomoFilter();
+//								break;
+//							case 2:
+//								// 流年效果
+//								filter = new Amaro();
+//								break;
+//							case 3:
+//								// 自然美肤效果
+//								filter = new BeautifyFilter();
+//								break;
+//							case 4:
+//								// HDR 效果
+//								filter = new HDRFilter();
+//								break;
+//							case 5:
+//								// 自然美肤效果
+//								filter = new BlurFilter();
+//								break;
+//							case 6:
+//								// 怀旧效果
+//								filter = new OldFilter();
+//								break;
+//							default:
+//								break;
+//						}
+//
+//						new Thread() {
+//							@Override
+//							public void run() {
+//								super.run();
+//								if (photoInfo.onLine == 1) {
+//									mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
+//								}else{
+//									mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
+//											imageHeight);
+//								}
+//								editPhotoHandler.sendEmptyMessage(START_ASYNC);
+//							}
+//						}.start();
+//
 //					}
-					}
-				});
-				break;
-			case R.id.btn_onedit_save: //保存到临时目录
+//				});
+//				break;
+//			case R.id.edit_text:
+//				editType = 4;
+//				titleTextView.setText(R.string.rotate);
+//				onEditStates();
+//				break;
+
+
+//			case R.id.edit_accessory:
+//				calRec();
+//				mStickerView.setVisibility(View.VISIBLE); // 事先让视图可见。
+//				//饰品编辑
+//				onEditStates();
+//				titleTextView.setText(R.string.decoration);
+//				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),3, stikerInfos, editPhotoHandler);
+//				top_HorizontalListView.setAdapter(eidtAdapter);
+//				top_HorizontalListView.setOnItemClickListener(new OnItemClickListener() {
+//
+//					@Override
+//					public void onItemClick(AdapterView<?> arg0, View arg1,
+//											int position, long arg3) {
+//						// TODO Auto-generated method stub
+//						btn_onedit_save.setVisibility(View.VISIBLE);
+//						editType = 3;
+//						String stickerUrl = "";
+//						if (stikerInfos.get(position).onLine == 1) {//网络图片
+//							stickerUrl = Common.PHOTO_URL + stikerInfos.get(position).frameOriginalPathPortrait;
+//						}else {
+//							stickerUrl = stikerInfos.get(position).frameOriginalPathPortrait;
+//						}
+//						//ImageLoader 加载
+//						imageLoader.loadImage(stickerUrl, new ImageLoadingListener() {
+//
+//							@Override
+//							public void onLoadingStarted(String imageUri, View view) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//
+//							@Override
+//							public void onLoadingFailed(String imageUri, View view,
+//														FailReason failReason) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//
+//							@Override
+//							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//								// TODO Auto-generated method stub
+//								mStickerView.addBitImage(loadedImage);
+//							}
+//
+//							@Override
+//							public void onLoadingCancelled(String imageUri, View view) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//						});
+////					}else {
+////						Bitmap accessoryBitmap = EditPhotoUtil.getImageFromAssetsFile(EditPhotoActivity.this, stikerInfos.get(position).frameOriginalPathPortrait);
+////						mStickerView.addBitImage(accessoryBitmap);
+////					}
+//					}
+//				});
+//				break;
+			case R.id.ib_temp_save: //保存到临时目录
 
 				SaveStickersTask task = new SaveStickersTask();
 				if (editType == 2) { //滤镜处理过的
@@ -757,66 +768,66 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					task.execute(mainBitmap);
 				}
 				break;
-			case R.id.preview_save: //真正的保存按钮。
-				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
-					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-					dialog.show();
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							EditPhotoUtil.saveBitmap(mainBitmap , url);
-							scan(url);
-							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-							Looper.prepare();
-							dialog.dismiss();
-							Looper.loop();
-						}
-					}).start();
-				}else{
-					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
-					scan(url);
-					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-				}
+//			case R.id.preview_save: //真正的保存按钮。
+//				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+//				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
+//					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
+//					dialog.show();
+//					new Thread(new Runnable() {
+//						@Override
+//						public void run() {
+//							EditPhotoUtil.saveBitmap(mainBitmap , url);
+//							scan(url);
+//							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+//							Looper.prepare();
+//							dialog.dismiss();
+//							Looper.loop();
+//						}
+//					}).start();
+//				}else{
+//					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
+//					scan(url);
+//					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+//				}
 
-				break;
-			case R.id.btn_forward: // 前进按钮。
-				if (index == -1) {
-					index = editPhotoInfoArrayList.size() - 1;
-				}
-
-				if (editPhotoInfoArrayList.size() > index + 1) {
-					index++;
-					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
-				}
-				check();
-				break;
-			case R.id.btn_cancel: //返回按钮。
-				if (index == -1) {
-					index = editPhotoInfoArrayList.size() - 1;
-				}
-				if (index >= 1) {
-					index--;
-				}
-
-				if (editPhotoInfoArrayList.size() - 2 >= 0) {
-
-					if (index == 0) {
-						if (isOnlinePic) {
-							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
-							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-						}else{
-							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-						}
-					}else{
-						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-					}
-				}
-				check();
-				break;
+//				break;
+//			case R.id.btn_forward: // 前进按钮。
+//				if (index == -1) {
+//					index = editPhotoInfoArrayList.size() - 1;
+//				}
+//
+//				if (editPhotoInfoArrayList.size() > index + 1) {
+//					index++;
+//					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+//					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
+//				}
+//				check();
+//				break;
+//			case R.id.btn_cancel: //返回按钮。
+//				if (index == -1) {
+//					index = editPhotoInfoArrayList.size() - 1;
+//				}
+//				if (index >= 1) {
+//					index--;
+//				}
+//
+//				if (editPhotoInfoArrayList.size() - 2 >= 0) {
+//
+//					if (index == 0) {
+//						if (isOnlinePic) {
+//							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
+//							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+//						}else{
+//							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+//							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+//						}
+//					}else{
+//						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+//						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+//					}
+//				}
+//				check();
+//				break;
 			case R.id.tv_left90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
 				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,-90);
@@ -1285,7 +1296,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			dialog.dismiss();
 			frameImageView.setVisibility(View.INVISIBLE);
 		}
-
 	}
 
 	/*
