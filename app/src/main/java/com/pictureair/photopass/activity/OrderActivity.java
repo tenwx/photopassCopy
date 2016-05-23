@@ -188,9 +188,9 @@ public class OrderActivity extends BaseFragmentActivity {
                             && null != paymentOrderChildArrayList
                             && null != deliveryOrderChildArrayList
                             && null != downOrderChildArrayList) {
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, deliveryOrderArrayList, downOrderArrayList, paymentOrderChildArrayList, deliveryOrderChildArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, paymentOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, deliveryOrderArrayList, deliveryOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, downOrderArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
                     }
                 }
 
