@@ -283,6 +283,7 @@ public class Common {
     public static final String SHARE_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/share/";
     public static final String OCR_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/tessdata/";
     public static final String OCR_DATA_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/tessdata/eng.traineddata";
+    public static final String LOG_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/log/";
 
     //缓存的字段
     public static final String TOP_GOODS = "topgoods";

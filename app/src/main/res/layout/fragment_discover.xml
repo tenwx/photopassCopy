@@ -24,7 +24,7 @@
             android:paddingTop="@dimen/pp_padding_16"
             android:scaleType="centerInside"
             android:src="@drawable/discover_selection"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <com.pictureair.photopass.widget.CustomTextView
             android:id="@+id/photopass"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/discover_title"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
         <TextView
             android:id="@+id/latitude"
             android:layout_width="match_parent"

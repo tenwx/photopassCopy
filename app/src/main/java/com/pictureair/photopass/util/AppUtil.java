@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -73,6 +74,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1453,5 +1455,35 @@ public class AppUtil {
         return result;
     }
 
-
+    /**
+     * 收集设备参数信息
+     *
+     * @param ctx
+     */
+    public static Map<String, String> collectDeviceInfo(Context ctx) {
+        Map<String, String> infos = new HashMap<String, String>();
+        try {
+            PackageManager pm = ctx.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
+            if (pi != null) {
+                String versionName = pi.versionName == null ? "null" : pi.versionName;
+                String versionCode = pi.versionCode + "";
+                infos.put("versionName", versionName);
+                infos.put("versionCode", versionCode);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            PictureAirLog.e(TAG, "an error occured when collect package info" + e);
+        }
+        Field[] fields = Build.class.getDeclaredFields();
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                infos.put(field.getName(), field.get(null).toString());
+                PictureAirLog.d(TAG, field.getName() + " : " + field.get(null));
+            } catch (Exception e) {
+                PictureAirLog.e(TAG, "an error occured when collect crash info" + e);
+            }
+        }
+        return infos;
+    }
 }
