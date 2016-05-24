@@ -365,6 +365,7 @@
     <string name="experiencephotopassplus">迪士尼乐拍通一卡通体验卡</string>
     <string name="buy_ppp_text">购买迪士尼乐拍通一卡通</string>
     <string name="scan_ppp_text">扫描已有的迪士尼乐拍通一卡通</string>
+
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -372,7 +373,7 @@
     <!-- pp end -->
 
     <!-- select pp start -->
-    <string name="selectionpp">选择迪士尼乐拍通卡</string>
+    <string name="selectionpp">选择迪士尼乐拍通</string>
     <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
@@ -381,6 +382,10 @@
 
     <!-- select ppp start -->
     <string name="select_your_ppp">请选择你的迪士尼乐拍通一卡通</string>
+    <string name="select_ppp_title">选择</string>
+    <string name="update_ppp_msg">您将使用迪士尼乐拍通一卡通升级您此张迪士尼乐拍通卡内包含的照片，以便您浏览清晰照片吗？</string>
+    <string name="update_ppp_cancel">取消</string>
+    <string name="update_ppp_ok">确认</string>
     <!-- select ppp end -->
 
     <!-- settings start -->
