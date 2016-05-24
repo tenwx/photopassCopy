@@ -480,7 +480,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
     private void showPwDialog() {
         String dialogMsg = "+" + currentCode + " " + phoneStr;
-        dialogMsg = Html.fromHtml(context.getString(R.string.smssdk_make_sure_mobile_detail,dialogMsg)).toString();
+        dialogMsg = context.getString(R.string.smssdk_make_sure_mobile_detail,dialogMsg);
         PictureAirLog.out("diamsg--->" + dialogMsg);
 
         /**

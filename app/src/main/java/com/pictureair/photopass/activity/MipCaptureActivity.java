@@ -25,6 +25,7 @@ import com.google.zxing.Result;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -318,23 +319,24 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             playBeepSoundAndVibrate();
             String resultString = result.getText();
             PictureAirLog.out("scan result = " + resultString);
-            if (resultString.equals("")) {
-                //			Toast.makeText(MipcaActivityCapture.this, "Scan failed!", Toast.LENGTH_SHORT).show();
-                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-            } else if (!resultString.contains("vid=") && !resultString.contains("VID=")) {//错误的码
+            if (resultString.contains("vid=")) { //包含vid
+                code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+
+            } else if (resultString.contains("VID=")) {//包含VID
+                code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
+
+            } else if (resultString.length() >= 18 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于18-22位之间，并且都是纯数字
+                code = resultString;
+
+            } else {//无效的卡号
                 newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 finish();
-            } else {
-                if (resultString.contains("vid=")) {
-                    code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
-                } else if (resultString.contains("VID=")) {
-                    code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
-                }
-                PictureAirLog.out("code：：：" + code);
-                dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                dealCodeUtil.startDealCode(code);
+                return;
             }
 
+            PictureAirLog.out("code：：：" + code);
+            dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+            dealCodeUtil.startDealCode(code);
         }
     }
 

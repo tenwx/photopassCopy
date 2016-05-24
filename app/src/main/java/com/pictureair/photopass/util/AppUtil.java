@@ -521,12 +521,24 @@ public class AppUtil {
      * @return
      */
     public static boolean isEmail(String strEmail) {
-        // String strPattern =
-        // "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         String strPattern = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
         Pattern p = Pattern.compile(strPattern);
         Matcher m = p.matcher(strEmail);
         return m.matches();
+    }
+
+    /**
+     * 判断是否是全部数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
     }
 
     /**
