@@ -68,7 +68,6 @@ public class OrderFragment extends Fragment {
     private MyApplication application;
     private int tab = 0;
 
-    private static final int REFRESH = 0X001;
     private static Handler mHandler;
     private SwipeRefreshLayout refreshLayout;
 
@@ -85,13 +84,10 @@ public class OrderFragment extends Fragment {
                     ArrayList<CartItemInfo> childInfo = (ArrayList) b.getParcelableArrayList("child");
 
                     // 删除Delivery中的对象
-//                    deliveryOrderList.remove(groupInfo);
                     switch (tab) {
                         case 0://未付款
                             break;
                         case 1://已付款，未收货
-                            childlist.remove(childInfo);
-                            break;
                         case 2://订单完成
                             //删除全部订单 中的对象
                             orderList.remove(groupInfo);
@@ -114,9 +110,6 @@ public class OrderFragment extends Fragment {
                     AppManager.getInstance().killOtherActivity(MainTabActivity.class);
                     //同时将mainTab切换到shop Tab
                     application.setMainTabIndex(3);
-                    break;
-                case REFRESH:
-                    myToast.setTextAndShow("000", Common.TOAST_SHORT_TIME);
                     break;
             }
             return false;
@@ -234,8 +227,8 @@ public class OrderFragment extends Fragment {
             expandGropu(tab);
         }
 
-        if (null != refreshLayout)
-            orderListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
+//        if (null != refreshLayout)
+//            orderListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
 
         return view;
     }
@@ -384,45 +377,5 @@ public class OrderFragment extends Fragment {
 
         }
     }
-
-    /**
-     * 解决SwipeRefreshLayout下拉刷新冲突
-     */
-    public static class SwipeListViewOnScrollListener implements AbsListView.OnScrollListener {
-
-        private SwipeRefreshLayout mSwipeView;
-        private AbsListView.OnScrollListener mOnScrollListener;
-
-        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView) {
-            mSwipeView = swipeView;
-        }
-
-        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView,
-                                             AbsListView.OnScrollListener onScrollListener) {
-            mSwipeView = swipeView;
-            mOnScrollListener = onScrollListener;
-        }
-
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int i) {
-        }
-
-        @Override
-        public void onScroll(AbsListView absListView, int firstVisibleItem,
-                             int visibleItemCount, int totalItemCount) {
-            View firstView = absListView.getChildAt(firstVisibleItem);
-
-            // 当firstVisibleItem是第0位。如果firstView==null说明列表为空，需要刷新;或者top==0说明已经到达列表顶部, 也需要刷新
-            if (firstVisibleItem == 0 && (firstView == null || firstView.getTop() == 0)) {
-                mSwipeView.setEnabled(true);
-            } else {
-                mSwipeView.setEnabled(false);
-            }
-            if (null != mOnScrollListener) {
-                mOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
-            }
-        }
-    }
-
 
 }
