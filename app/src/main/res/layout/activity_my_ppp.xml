@@ -53,13 +53,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/pp_margin_16"
+            android:layout_marginRight="@dimen/pp_padding_14"
             android:text="@string/pp_ok"
-            android:background="@drawable/button_white"
-            android:textColor="@color/gray"
+            android:textColor="@color/white"
             android:padding="@dimen/pp_padding_5"
             android:visibility="gone"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_14" />
 
     </RelativeLayout>
 

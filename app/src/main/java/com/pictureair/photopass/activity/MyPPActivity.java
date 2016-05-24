@@ -403,6 +403,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         ok.setVisibility(View.VISIBLE);
         ok.setOnClickListener(this);
         ok.setText(formaStringPPP(0, 1));
+        ok.setEnabled(false);
+        ok.setTextColor(getResources().getColor(R.color.gray_light5));
         final String[] finalPhotoCode = photoCode;
         new Thread() {
             public void run() {

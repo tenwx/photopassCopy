@@ -40,14 +40,16 @@
 
         <ImageView
             android:id="@+id/iv_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_alignParentRight="true"
-            android:clickable="true"
             android:layout_centerVertical="true"
-            android:paddingRight="@dimen/pp_padding_10"
+            android:layout_marginRight="@dimen/pp_padding_10"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:scaleType="centerInside"
             android:src="@drawable/nosele"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
