@@ -118,7 +118,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean isEdited = false;
 
+    /**
+     * 是否已经拿到对象
+     */
     private boolean getPhotoInfoSuccess = false;
+
+    /**
+     * 是否已经获取图片结束
+     */
+    private boolean loadPhotoSuccess = false;
 
     private String tabName;
 
@@ -549,6 +557,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("set enable in local");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
+                loadPhotoSuccess = true;
                 break;
 
             case API1.GET_AD_LOCATIONS_SUCCESS:
@@ -605,12 +614,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case RESIZE_BLUR_IMAGE:
-                if (!getPhotoInfoSuccess) {
-                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
-                } else {
+                if (getPhotoInfoSuccess && loadPhotoSuccess) {
                     if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
-                        resizeBlurImage();
+                        if (null != oriClearBmp) {
+                            resizeBlurImage();
+                        }
                     }
+                } else {
+                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
                 }
                 break;
 
@@ -860,6 +871,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      */
     private void loadPhotoPassPhoto(PhotoInfo loadPhotoInfo, boolean isOnCreate) {
         // TODO Auto-generated method stub
+        loadPhotoSuccess = false;
         dirFile = new File(getApplicationContext().getCacheDir() + "/" + loadPhotoInfo.photoId);//创建一个以ID为名字的文件，放入到app缓存文件下
         PictureAirLog.v(TAG, dirFile.toString());
         PictureAirLog.v(TAG, "photo URL ------->" + loadPhotoInfo.photoThumbnail_1024);
@@ -894,13 +906,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     oriClearBmp = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
+                    loadPhotoSuccess = true;
                 }
 
                 @Override
                 public void onFailure(int status) {
                     super.onFailure(status);
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
-
+                    loadPhotoSuccess = true;
                 }
             });
         }
@@ -1199,6 +1212,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
 
+                if (photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
+                    newToast.setTextAndShow(R.string.not_support_makegift, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+
                 if (photoInfo.onLine == 0) {
                     newToast.setTextAndShow(R.string.local_photo_not_support_makegift, Common.TOAST_SHORT_TIME);
                     return;
@@ -1459,11 +1477,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         previewPhotoHandler.sendEmptyMessage(RESIZE_BLUR_IMAGE);
 
-//        if (dia.isShowing()) {
+        if (dia != null) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             dia.getWindow().setAttributes(layoutParams);
-//        }
+        }
         super.onConfigurationChanged(newConfig);
     }
 

@@ -173,7 +173,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                         // 需要对ppp进行排序
                         list1.add(ppPinfo);
                         PictureAirLog.v(TAG, "the ppp code ====>"
-                                + ppPinfo.PPPCode);
+                                + ppPinfo.PPPCode + "expericePPP===>" + ppPinfo.expericePPP + "capacity" + ppPinfo.capacity);
                     }
                     Collections.sort(list1);
                     PictureAirLog.v(TAG, "list-=--=" + list1.size());

@@ -34,6 +34,12 @@ public class CouponTool {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case API1.GET_COUPON_FAILED://获取所有优惠卷失败
+                    if (couponView != null) {
+                        couponView.goneProgressBar();
+                        couponView.noNetwork();
+                    }
+                    break;
+
                 case API1.INSERT_COUPON_FAILED://添加一张优惠卷失败
                     int id = ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1);
                     if (couponView != null) {

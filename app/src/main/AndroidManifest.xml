@@ -125,6 +125,7 @@
         <activity
             android:name=".activity.SubmitOrderActivity"
             android:configChanges="keyboard|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CartActivity"
@@ -175,6 +176,7 @@
         <activity
             android:name=".activity.PPPDetailProductActivity"
             android:configChanges="keyboard|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OrderActivity"

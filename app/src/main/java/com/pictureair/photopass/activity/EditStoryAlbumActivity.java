@@ -446,6 +446,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			}
 		}
 
+		if (albumArrayList.size() == 0) {//全部删除，需要显示无图页面
+			noCountView.setVisibility(View.VISIBLE);
+			noCountTextView.setText(R.string.no_photo_in_airpass);
+		}
+
 		if (customProgressDialog.isShowing()) {
 			customProgressDialog.dismiss();
 		}

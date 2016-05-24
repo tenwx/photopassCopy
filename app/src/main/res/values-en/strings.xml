@@ -195,6 +195,7 @@
     <string name="reloadphoto">Please reload this photo</string>
     <string name="neednotdownload">The photo has been saved in the local album!</string>
     <string name="local_photo_not_support_makegift">Sorry we cannot print your edited photos.</string>
+    <string name="not_support_makegift">Sorry we cannot print your digital souvenir photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">Sorry, your pictures taken through the authors temporarily does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
