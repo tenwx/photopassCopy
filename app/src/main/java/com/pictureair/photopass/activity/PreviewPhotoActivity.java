@@ -1588,8 +1588,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         curShowBmpHeight = oriClearBmp.getHeight();
         if (flag) {//放大模式
             flag = false;
-            zoomBlurBmp.recycle();
-            zoomClearBmp.recycle();
+            if (zoomBlurBmp != null) {
+                zoomBlurBmp.recycle();
+            }
+
+            if (zoomClearBmp != null) {
+                zoomClearBmp.recycle();
+            }
         }
         curRadius = originalRadius;
         PictureAirLog.out("larger bmp h after resize---->" + curShowBmpHeight);

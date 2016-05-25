@@ -242,6 +242,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     }
 
 
+    //Can not perform this action after onSaveInstanceState 这个问题，暂时先这么解，之后要全部改掉
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+
     //tab按钮的点击监听
     private class TabOnClick implements OnClickListener {
         private int currentTab;

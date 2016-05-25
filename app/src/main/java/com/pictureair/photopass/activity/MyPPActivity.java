@@ -231,7 +231,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             case API1.GET_PPS_FAILED:// 获取pp列表失败
 //                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPHandler, true);
                 noPhotoPassView.setVisibility(View.GONE);

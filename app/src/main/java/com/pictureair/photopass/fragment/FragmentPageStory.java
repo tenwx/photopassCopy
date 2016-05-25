@@ -132,7 +132,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList, localPhotoList;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
-    private List<Fragment> fragments;
+    private List<Fragment> fragments = new ArrayList<>();
     private FragmentAdapter fragmentAdapter;
     private Context context;
     private SimpleDateFormat sdf;
@@ -316,7 +316,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 if (jsonObject.size() > 0) {
-                    JsonUtil.dealGetSocketData(getActivity(), jsonObject.toString(), true, null, sharedPreferences);
+                    JsonUtil.dealGetSocketData(MyApplication.getInstance().getApplicationContext(), jsonObject.toString(), true, null, sharedPreferences);
                 }
                 break;
 
@@ -408,8 +408,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
                 } else {
                     scanMagicPhotoNeedCallBack = true;
-                    fragments = new ArrayList<>();
-                    fragments.clear();
                     showViewPager();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
                     if (sharedNeedFresh) {
@@ -439,7 +437,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case API1.GET_PPP_SUCCESS:
-                if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0) {
+                if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0 && context != null) {
                     new CustomDialog(context, R.string.pp_first_up10_msg, R.string.pp_first_up10_no_msg, R.string.pp_first_up10_yes_msg, new CustomDialog.MyDialogInterface() {
 
                         @Override
@@ -777,6 +775,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //显示有pp的情况
             storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
 
+            fragments.clear();
             fragments.add(StoryFragment.getInstance(allPhotoList, targetMagicPhotoList, 0, fragmentPageStoryHandler));
             fragments.add(StoryFragment.getInstance(pictureAirPhotoList, targetMagicPhotoList, 1, fragmentPageStoryHandler));
             fragments.add(StoryFragment.getInstance(magicPhotoList, targetMagicPhotoList, 2, fragmentPageStoryHandler));
@@ -1011,6 +1010,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
+        context = null;
         fragmentPageStoryHandler.removeCallbacksAndMessages(null);
     }
 
