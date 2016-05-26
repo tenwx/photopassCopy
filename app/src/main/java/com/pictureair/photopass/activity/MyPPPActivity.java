@@ -334,7 +334,13 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 if (listPPPAdapter.getMap().size() >=1){
                     ok.setEnabled(true);
                     ok.setTextColor(getResources().getColor(R.color.white));
+                }else{
+                    ok.setEnabled(false);
+                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
                 }
+                break;
+            case 3:
+
                 break;
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 dialog.dismiss();

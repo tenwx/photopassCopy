@@ -21,6 +21,7 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.MyToast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,12 +38,14 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private HashMap<Integer, Boolean> map;//统计被勾选的子项 只能选一张PP+.
 	private int onclickPosition;
 	private Handler handler;
+	private MyToast myToast;
 	
 	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
 		this.isUseHavedPPP = isUseHavedPPP;
 		this.handler = handler;
+		myToast = new MyToast(mContext);
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.ic_discover_loading)
 				.showImageOnFail(R.drawable.ic_discover_failed)
@@ -283,9 +286,15 @@ public class ListOfPPPAdapter extends BaseAdapter {
 						if (map.size() == 0){ //增加
 							onclickPosition = position; //通过MyPPP获取它
 							map.put(position,true);
-						}else if (map.size() == 1){ //替换
-							map.clear();
-							map.put(position,true);
+						}else if (map.size() == 1){ // 超出范围
+							if (map.containsKey(position)){
+								map.clear();
+//							    map.put(position,true);
+							}else {
+								myToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
+							}
+//							map.clear();
+//							map.put(position,true);
 						}
 						notifyDataSetChanged();
 						handler.sendEmptyMessage(2);
