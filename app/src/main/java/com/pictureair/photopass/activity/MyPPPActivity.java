@@ -344,10 +344,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 dialog.dismiss();
+                if (API1.PPPlist.size() != 0 ){
+                    API1.PPPlist.clear(); // 绑定成功 之后 清空API中的数据。
+                }
+                if (AppManager.getInstance().checkActivity(SelectPPActivity.class)){ //SelectPPActivity，就把这个类杀掉。
+                    AppManager.getInstance().killActivity(SelectPPActivity.class);
+                }
 
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新 （其实可以不需要，不过保证数据同步，加上更保险）
                 editor1.putBoolean(Common.NEED_FRESH, true);
                 editor1.commit();
+
+                if (AppManager.getInstance().checkActivity(PreviewPhotoActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
+                    AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+                }
 
                 intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle1 = new Bundle();
@@ -687,7 +697,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         super.onDestroy();
         if (isUseHavedPPP){
-            API1.PPPlist.clear();
+//            API1.PPPlist.clear();
         }else{
             if (EventBus.getDefault().isRegistered(this)) {
                 EventBus.getDefault().unregister(this);

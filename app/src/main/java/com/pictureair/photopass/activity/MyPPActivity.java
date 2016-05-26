@@ -550,7 +550,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         intent.putExtra("ppsStr",pps.toString());
                         intent.putExtra("isUseHavedPPP", true);
                         startActivity(intent);
-                        this.finish();
+//                        this.finish();
                     }else{
                         dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
                         API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);

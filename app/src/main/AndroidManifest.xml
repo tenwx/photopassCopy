@@ -36,7 +36,7 @@
     <uses-permission android:name="org.simalliance.openmobileapi.SMARTCARD" />
     <uses-permission android:name="android.permission.NFC" />
 
-    <uses-feature android:name="android.hardware.nfc.hce"/>
+    <uses-feature android:name="android.hardware.nfc.hce" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -244,8 +244,6 @@
             android:name=".activity.FindPasswordActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
-
-
         <activity
             android:name=".activity.RegisterOrForgetActivity"
             android:configChanges="keyboard|orientation"
@@ -257,7 +255,7 @@
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <!-- alipay sdk end -->
 
 
@@ -291,14 +289,13 @@
             </intent-filter>
         </receiver>
 
-        <!-- 统计，百度/友盟-->
+        <!-- 统计，百度/友盟 -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="564c08dee0f55a15de002a72" />
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
-
         <meta-data
             android:name="BaiduMobAd_STAT_ID"
             android:value="FVwu3al4gAKBjSfLvhedEkQAiFarNoRV" />
@@ -353,7 +350,7 @@
             </intent-filter>
         </activity>
 
-        <!--微信分享回调-->
+        <!-- 微信分享回调 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -370,17 +367,17 @@
             </intent-filter>
         </service>
 
-        <!--高德地图-->
+        <!-- 高德地图 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="67e009eeb01ae95ab229247e3d1153e0" />
+
         <service android:name="com.amap.api.location.APSService" />
 
         <!-- notification 服务 -->
         <!-- 开启notification的服务 -->
         <service android:name=".service.NotificationService" />
         <service android:name=".service.BreakpointDownloadService" />
-
 
         <!-- 开机自启 -->
         <receiver
@@ -402,6 +399,7 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".activity.SelectPPActivity"></activity>
     </application>
 
 </manifest>

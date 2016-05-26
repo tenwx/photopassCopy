@@ -382,7 +382,7 @@
 
     <!-- select ppp start -->
     <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
-    <string name="select_ppp_title">select</string>
+    <string name="select_ppp_title">Select</string>
     <string name="update_ppp_msg">You are going to activate your photos in PhotoPass using this PhotoPass +.</string>
     <string name="update_ppp_cancel">Cancel</string>
     <string name="update_ppp_ok">OK</string>

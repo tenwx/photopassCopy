@@ -50,7 +50,6 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
@@ -628,9 +627,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
 
-                    if (AppManager.getInstance().checkActivity(MyPPActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
-                        AppManager.getInstance().killActivity(MyPPActivity.class);
-                    }
+//                    if (AppManager.getInstance().checkActivity(MyPPActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
+//                        AppManager.getInstance().killActivity(MyPPActivity.class);
+//                    }
                     //将 tabname 存入sp
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新
                     editor1.putString("tabName", tabName);
@@ -639,13 +638,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                     dia.dismiss();
 
-                    intent = new Intent(PreviewPhotoActivity.this, MyPPActivity.class);
+                    intent = new Intent(PreviewPhotoActivity.this, SelectPPActivity.class);
                     intent.putExtra("photoPassCode",photoInfo.photoPassCode);
                     intent.putExtra("shootTime",photoInfo.shootTime);
-                    intent.putExtra("isUseHavedPPP", true);
+//                    intent.putExtra("isUseHavedPPP", true);
                     startActivity(intent);
 
-                    this.finish();
+//                    this.finish();
                 } else {
                     newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
                 }

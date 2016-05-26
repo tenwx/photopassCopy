@@ -33,7 +33,7 @@
     <string name="name_is_empty">请输入昵称</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>和\n<a href = "1">隐私政策</a> </string>
+    <string name="terms_and_policy"><a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -499,7 +499,7 @@
     <string name="smssdk_pwd_forget">请输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
-    <string name="smssdk_explain_briefly">我已阅读并接受<a href = "2">补充条款及细则</a>和<a href = "1">隐私政策</a>。</string>
+    <string name="smssdk_explain_briefly">我已阅读并接受<a href="2">补充条款及细则</a>和<a href="1">隐私政策</a>。</string>
     <string name="please_agree">请确认同意补充条款及细则和隐私政策</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
