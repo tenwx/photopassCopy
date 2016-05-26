@@ -656,7 +656,7 @@ public class API1 {
     public static void removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final Handler handler){
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
-        params.put(Common.SHARE_PHOTO_ID, ids);
+        params.put(Common.SHARE_PHOTO_ID, ids.toJSONString());
         params.put(Common.PP, ppCode);
         PictureAirLog.out("param---->" + params.toString());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {

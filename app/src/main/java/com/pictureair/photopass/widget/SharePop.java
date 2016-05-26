@@ -330,15 +330,15 @@ public class SharePop extends PopupWindow implements OnClickListener,
                            String shareUrl, String type) {
         Platform platform = ShareSDK.getPlatform(context, SinaWeibo.NAME);
 
-        platform.SSOSetting(false);// 未审核，必须要关闭SSO，true代表关闭。审核过了之后才要设置为false
+//        platform.SSOSetting(false);// 未审核，必须要关闭SSO，true代表关闭。审核过了之后才要设置为false，新版本，貌似已经不需要这个了
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         cn.sharesdk.sina.weibo.SinaWeibo.ShareParams shareParams = new cn.sharesdk.sina.weibo.SinaWeibo.ShareParams();
         shareParams.text = context.getString(R.string.share_text);
         if ("local".equals(type)) {// 本地图片
-            shareParams.imagePath = imagePath;
+            shareParams.setImagePath(imagePath);
         } else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
-            shareParams.imageUrl = imageUrl;
-            shareParams.setUrl(shareUrl);
+            shareParams.setImageUrl(imageUrl);
+//            shareParams.setUrl(shareUrl);
         }
         platform.share(shareParams);
     }

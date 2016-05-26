@@ -75,7 +75,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private org.json.JSONObject payAsyncResultJsonObject;
     private CustomProgressDialog dialog;
 
-    private int payType;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
+    private int payType = 1;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
     private PayUtils payUtils;
 
     private OrderInfo orderInfo;
@@ -292,8 +292,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
 //		lrtLayout.setOnClickListener(this);
         sbmtButton.setOnClickListener(this);
-        zfButton.setImageResource(R.drawable.sele);
-        yhkButton.setImageResource(R.drawable.nosele);
+        yhkButton.setImageResource(R.drawable.sele);
+        zfButton.setImageResource(R.drawable.nosele);
         paypalButton.setImageResource(R.drawable.nosele);
         wechatButton.setImageResource(R.drawable.nosele);
 

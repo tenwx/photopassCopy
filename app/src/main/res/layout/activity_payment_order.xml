@@ -64,6 +64,7 @@
                     android:background="@color/white"
                     android:paddingBottom="@dimen/pp_padding_8"
                     android:paddingTop="@dimen/pp_padding_8"
+                    android:paddingLeft="1dp"
                     android:visibility="visible">
 
                     <ImageView
