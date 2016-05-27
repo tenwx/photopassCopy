@@ -382,6 +382,12 @@ public class Common {
     public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
     public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
 
+    // 5.27新增
+    public static final String EVENT_ONCLICK_DEL_PP = "event_onclick_del_pp";// 点击删除PP的按钮。不是具体删除的按钮。
+    public static final String EVENT_ONCLICK_EDIT_PHOTO = "event_onclick_edit_photo";// 点击编辑图片按钮,删除照片时候的按钮。
+    public static final String EVENT_ONCLICK_DEL_PHOTO = "event_onclick_del_photo";// 具体删除照片的按钮。
+
+
     // 友盟sharedPreferences
 
     public static final String IS_HAVE_PIC = "IS_HAVE_PIC";// 是否包含图片

@@ -29,6 +29,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
@@ -167,6 +168,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					break;
 
 				case DialogInterface.BUTTON_POSITIVE://对话框点击确认按钮
+					UmengUtil.onEvent(EditStoryAlbumActivity.this,Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
 					if (!customProgressDialog.isShowing()){
 						customProgressDialog.show();
 					}
@@ -327,6 +329,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				break;
 
 			case R.id.pp_photos_edit:
+				UmengUtil.onEvent(EditStoryAlbumActivity.this,Common.EVENT_ONCLICK_EDIT_PHOTO); //统计点 编辑时候的事件（友盟）
 				editMode = true;
 				editStoryPinnedListViewAdapter.setEditMode(editMode);
 				editBarLinearLayout.setVisibility(View.VISIBLE);

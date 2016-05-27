@@ -31,6 +31,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
+import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -492,6 +493,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.cancel:// 删除按钮
+                UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
                 PictureAirLog.d("==============",
                         "点击删除按钮 showPPCodeList" + showPPCodeList.size());
                 if (isDeletePhoto) {
