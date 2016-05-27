@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/user_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- 我的列表 -->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="@dimen/pp_height_1"
+        android:background="@color/line_color" />
+
+    <LinearLayout
+        android:id="@+id/line1_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/user_item_select"
+        android:orientation="horizontal">
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_pp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/my_pp"
+            android:gravity="center"
+            android:padding="@dimen/pp_padding_8"
+            android:text="@string/mypage_pp1"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_ppp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/my_ppp1"
+            android:gravity="center"
+            android:paddingTop="@dimen/pp_padding_8"
+            android:paddingBottom="@dimen/pp_padding_8"
+            android:text="@string/mypage_ppp1"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_coupon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/my_coupon"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_coupons"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_height_1"
+        android:background="@color/line_color" />
+
+    <LinearLayout
+        android:id="@+id/line2_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/user_item_select"
+        android:orientation="horizontal">
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_profile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/my_profile"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_myprofile"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_order"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/my_order"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_myorder"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_setting"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/setting"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_setting"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_height_1"
+        android:background="@color/line_color" />
+
+    <LinearLayout
+        android:id="@+id/line3_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/user_item_select"
+        android:orientation="horizontal">
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_about"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/about"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_about"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_help"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/help"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_help"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <View
+            android:layout_width="@dimen/pp_height_1"
+            android:layout_height="match_parent"
+            android:background="@color/line_color" />
+
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/me_opinions"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/pp_padding_8"
+            android:drawableTop="@drawable/icon_contact_us"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_margin_16"
+            android:text="@string/mypage_opinions"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_height_1"
+        android:background="@color/line_color" />
+
+</LinearLayout>

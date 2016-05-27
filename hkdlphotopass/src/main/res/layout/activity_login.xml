@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pp_light_gray_background">
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_top_bar_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/pp_blue">
+
+        <TextView
+            android:id="@+id/photopass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/user_login"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/login_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/rl_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_margin_20"
+            android:paddingBottom="@dimen/pp_padding_16">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:paddingLeft="@dimen/pp_padding_10"
+                android:paddingRight="@dimen/pp_padding_10"
+                android:text="@string/country"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_16" />
+
+            <TextView
+                android:id="@+id/tv_country"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/pp_margin_10"
+                android:layout_weight="1"
+                android:gravity="right|bottom"
+                android:text="@string/china"
+                android:textColor="@color/pp_blue"
+                android:textSize="@dimen/text_size_16" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_height_1"
+            android:background="@color/pp_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/pp_margin_16"
+            android:paddingRight="@dimen/pp_margin_5">
+
+            <TextView
+                android:id="@+id/tv_country_num"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="+86"
+                android:textColor="@color/pp_gray"
+                android:textSize="@dimen/text_size_16" />
+
+            <com.pictureworks.android.widget.EditTextWithClear
+
+                android:id="@+id/login_username"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/smssdk_write_mobile_phone"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="200"
+                android:paddingLeft="@dimen/pp_padding_5"
+                android:textColor="@color/pp_gray"
+                android:textColorHint="@color/pp_gray"
+                android:textSize="@dimen/text_size_16" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_height_1"
+            android:background="@color/pp_blue" />
+
+
+        <com.pictureworks.android.widget.EditTextWithClear
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/pwd"
+            android:imeOptions="actionGo"
+            android:inputType="textPassword"
+            android:maxLength="200"
+            android:paddingBottom="@dimen/pp_padding_16"
+            android:paddingLeft="@dimen/pp_padding_10"
+            android:paddingRight="@dimen/pp_padding_5"
+            android:textColor="@color/pp_gray"
+            android:textColorHint="@color/pp_gray"
+            android:textSize="@dimen/text_size_16" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pp_height_1"
+            android:background="@color/pp_blue" />
+
+        <TextView
+            android:id="@+id/forgot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:text="@string/forget_pwd"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_margin_32"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/login"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/text_size_16" />
+
+        <Button
+            android:id="@+id/sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:background="@drawable/button_sign_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/sign"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/otherLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/pp_margin_40"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/otherLogin"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_14" />
+    </LinearLayout>
+
+</RelativeLayout>

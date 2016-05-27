@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.pictureworks.android.widget.stickygridheaders.StickyGridHeadersGridView
+            android:id="@+id/stickyGridHeadersGridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/top"
+            android:background="@color/white"
+            android:clipToPadding="true"
+            android:horizontalSpacing="@dimen/pp_padding_5"
+            android:listSelector="@color/transparent"
+            android:numColumns="3"
+            android:scrollbars="none"
+            android:verticalSpacing="0dip" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/no_photo_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pp_light_gray_background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:id="@+id/no_photo_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_weight="3" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/no_photo_textView"
+                    android:layout_weight="2"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/no_photos_img" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/pp_height_1dp"
+                    android:layout_weight="3" />
+            </LinearLayout>
+
+            <com.pictureworks.android.widget.CustomTextView
+                android:id="@+id/no_photo_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/no_photo_img"
+                android:layout_marginTop="@dimen/pp_margin_16"
+                android:gravity="center"
+                android:paddingLeft="@dimen/pp_padding_20"
+                android:paddingRight="@dimen/pp_padding_20"
+                android:text="@string/no_photo_in_airpass"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_16" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
