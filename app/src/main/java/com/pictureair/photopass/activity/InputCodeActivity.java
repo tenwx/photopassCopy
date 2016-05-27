@@ -9,9 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
@@ -32,31 +29,16 @@ import de.greenrobot.event.EventBus;
  * 手动输入条码的页面
  */
 public class InputCodeActivity extends BaseActivity implements OnClickListener{
-    private String[] resultList;
-    private TextView tvConfirmHint, tvManulInputIntro;
-
-    private ImageView ivShowResult;
-    private Button btnConfirmScanPppCode, btnReScanPppCode;
-    private LinearLayout lvButtom;
-
     private Button ok;
     private SharedPreferences sp;
     private MyToast newToast;
-    private String inputValue1, inputValue2, inputValue3, inputValue4;
     private DealCodeUtil dealCodeUtil;
 
     private CustomProgressDialog dialog;
 
     private EditTextWithClear inputCodeEdit;
-    private LinearLayout comfirmPPPLayout;
 
     private final Handler inputCodeHandler = new InputCodeHandler(this);
-
-    /**
-     * 统计已输入条码的个数
-     */
-    private int[] codeCount;
-
 
     private static class InputCodeHandler extends Handler {
         private final WeakReference<InputCodeActivity> mActivity;
@@ -135,8 +117,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     }
 
     private void initview() {
-        tvManulInputIntro = (TextView) findViewById(R.id.tv_manul_input_intro);
-
         sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         ok = (Button) findViewById(R.id.sure);
 

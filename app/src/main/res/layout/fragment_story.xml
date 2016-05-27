@@ -12,24 +12,6 @@
         android:layout_centerHorizontal="true"
         android:background="@color/pp_blue">
 
-        <RelativeLayout
-            android:id="@+id/storyScanRelativeLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/pp_padding_8"
-            android:paddingLeft="@dimen/pp_margin_16"
-            android:paddingRight="@dimen/pp_padding_8"
-            android:paddingTop="@dimen/pp_padding_8">
-
-            <ImageView
-                android:id="@+id/story_scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:adjustViewBounds="true"
-                android:src="@drawable/scan_box4" />
-
-        </RelativeLayout>
 
         <com.pictureair.photopass.widget.CustomTextView
             android:layout_width="wrap_content"
@@ -38,6 +20,25 @@
             android:text="@string/tab_story"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
+
+        <RelativeLayout
+            android:id="@+id/story_menu_rl"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_margin_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_padding_15">
+
+            <ImageView
+                android:id="@+id/story_menu_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/add_righttop" />
+        </RelativeLayout>
     </RelativeLayout>
 
 

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +94,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     String ppsStr;
     private TextView mTitle;
     private PictureWorksDialog pictureWorksDialog;
+    private RelativeLayout menuLayout;
 
 
     private final Handler myPPPHandler = new MyPPPHandler(this);
@@ -123,7 +125,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         Intent intent;
         switch (msg.what) {
-            case 999://购买PPP
+            case PPPPop.POP_BUY://购买PPP
                 //购买PP+，先获取商品 然后进入订单界面
                 dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
@@ -133,8 +135,17 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
 
-            case 888://扫描
+            case PPPPop.POP_SCAN://扫描
                 intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
+                intent.putExtra("type", "ppp");//只扫描ppp
+                startActivity(intent);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
+            case PPPPop.POP_INPUT://手动输入
+                intent = new Intent(MyPPPActivity.this, InputCodeActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent);
                 if (pppPop.isShowing()) {
@@ -407,13 +418,14 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initViewCommon(){
-        pppPop = new PPPPop(this, myPPPHandler);
+        pppPop = new PPPPop(this, myPPPHandler, false);
         //初始化
         newToast = new MyToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);
+        menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
         setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
         listPPP = (ListView) findViewById(R.id.list_ppp);
@@ -424,7 +436,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         listPPP.setVisibility(View.GONE);
 
         back.setOnClickListener(this);
-        setting.setOnClickListener(this);
+        menuLayout.setOnClickListener(this);
     }
 
     private void initViewUseHavedPPP(){
@@ -573,10 +585,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 doBack();
                 break;
 
-            case R.id.ppp_setting://设置按钮   + 按钮
+            case R.id.ppp_rl://设置按钮   + 按钮
                 int[] location = new int[2];
                 setting.getLocationOnScreen(location);
-                pppPop.showAsDropDown(setting);
+                pppPop.showAsDropDown(setting, -300, 10);
                 break;
 
             case R.id.button_buy_ppp:

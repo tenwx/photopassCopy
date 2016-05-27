@@ -320,7 +320,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             // 从订单页面进入
             PictureAirLog.v(TAG, "从订单页面进入");
             orderInfo = getIntent().getParcelableExtra("deliveryInfo");
-            orderid = orderInfo.orderId;
+            orderid = orderInfo.orderNumber;
             // 此处信息，获取比较麻烦，暂时写死
             priceString = orderInfo.orderTotalPrice + "";
 //            nameString = "PictureAir";

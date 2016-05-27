@@ -108,6 +108,7 @@ public class DealCodeUtil {
 					} else if ("coupon".equals(msg.obj.toString())) {
 						codeType = "coupon";
 					}
+					PictureAirLog.out("codetype--->" + codeType + " dealway--->" + dealWay);
 					if (dealWay != null) {//如果从ppp或者coupon页面进来，卡的类型不一致，直接返回，退出，一致，则添加
 						if (!dealWay.equals(codeType)) {//类型不一致
 							if (dealWay.equals("ppp")) {//ppp

@@ -25,13 +25,14 @@
         android:textSize="@dimen/text_size_16" />
 
     <ImageView
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_height_1"
         android:layout_marginBottom="@dimen/pp_margin_10"
         android:layout_marginLeft="@dimen/pp_margin_2"
         android:layout_marginRight="@dimen/pp_margin_2"
         android:layout_marginTop="@dimen/pp_margin_10"
-        android:background="@color/gray_light" />
+        android:background="@color/gray_light4" />
 
     <TextView
         android:id="@+id/scanTextView"
@@ -45,6 +46,30 @@
         android:paddingLeft="@dimen/pp_padding_20"
         android:paddingRight="@dimen/pp_padding_20"
         android:text="@string/auto"
+        android:textColor="@drawable/textview_selector"
+        android:textSize="@dimen/text_size_16" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_height_1"
+        android:layout_marginBottom="@dimen/pp_margin_10"
+        android:layout_marginLeft="@dimen/pp_margin_2"
+        android:layout_marginRight="@dimen/pp_margin_2"
+        android:layout_marginTop="@dimen/pp_margin_10"
+        android:background="@color/gray_light4" />
+
+    <TextView
+        android:id="@+id/input_tv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/transparent"
+        android:drawableLeft="@drawable/ppppop_input_button"
+        android:drawablePadding="@dimen/pp_margin_5"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="@dimen/pp_padding_20"
+        android:paddingRight="@dimen/pp_padding_20"
+        android:text="@string/manual"
         android:textColor="@drawable/textview_selector"
         android:textSize="@dimen/text_size_16" />
 

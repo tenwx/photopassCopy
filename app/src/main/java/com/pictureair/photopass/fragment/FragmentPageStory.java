@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.InputCodeActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
@@ -51,6 +52,7 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 
 import java.io.File;
@@ -108,9 +110,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private int ppPhotoCount;
 
     //申明控件
-    private ImageView scanLayout;
+    private ImageView scanIv;
+    private RelativeLayout scanLayout;
     private LinearLayout noPhotoView;
-    private RelativeLayout scanRelativeLayout;
     private CustomProgressDialog dialog;// 加载等待
     private ViewPager storyViewPager;
     private LinearLayout storyNoPpToScanLinearLayout;
@@ -118,6 +120,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ImageView storyNoPhotoToDiscoverImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private PPPPop pppPop;
 
     //申明类
     private MyApplication app;
@@ -490,6 +493,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getData();
                 break;
 
+            case PPPPop.POP_SCAN:
+                Intent intent = new Intent(getActivity(), MipCaptureActivity.class);
+                startActivity(intent);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
+            case PPPPop.POP_INPUT://进入手动输入页面
+                Intent intent2 = new Intent(getActivity(), InputCodeActivity.class);
+                startActivity(intent2);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
             default:
                 break;
         }
@@ -652,9 +671,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getActivity().getResources().getString(R.string.story_tab_bought),
                 getActivity().getResources().getString(R.string.story_tab_favorite) };
         //获取控件
-//        more = (TextView) view.findViewById(R.id.story_more);
-        scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
-        scanLayout = (ImageView) view.findViewById(R.id.story_scan);
+        scanIv = (ImageView) view.findViewById(R.id.story_menu_iv);
+        scanLayout = (RelativeLayout) view.findViewById(R.id.story_menu_rl);
         storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
         storyLeadBarLinearLayout = (LinearLayout) view.findViewById(R.id.story_lead_bar);
         storyNoPpScanImageView = (ImageView) view.findViewById(R.id.story_no_pp_scan);
@@ -688,7 +706,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         favouritePhotoList = new ArrayList<>();
         storyNoPpScanImageView.setOnClickListener(this);
         scanLayout.setOnClickListener(this);
-        scanRelativeLayout.setOnClickListener(this);
         storyNoPhotoToDiscoverImageView.setOnClickListener(this);
 //        more.setOnClickListener(this);
         //初始化数据
@@ -1574,19 +1591,20 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         Intent i = null;
         switch (v.getId()) {
             //扫描按钮
-            case R.id.story_scan:
-            case R.id.storyScanRelativeLayout:
+            case R.id.story_menu_rl:
+                if (pppPop == null ) {
+                    pppPop = new PPPPop(getActivity(), fragmentPageStoryHandler, true);
+                }
+
+                int[] location = new int[2];
+                scanIv.getLocationOnScreen(location);
+                pppPop.showAsDropDown(scanIv, -300, 10);
+                break;
+
             case R.id.story_no_pp_scan:
                 i = new Intent(getActivity(), MipCaptureActivity.class);
                 startActivity(i);
                 break;
-
-//            case R.id.story_more:
-//                i = new Intent(getActivity(), EditStoryAlbumActivity.class);
-//                i.putExtra("tab", app.fragmentStoryLastSelectedTab);
-//                i.putExtra("mode", "edit");
-//                startActivity(i);
-//                break;
 
             case R.id.story_to_discover://跳转到Discover页面
                 PictureAirLog.out("Onclick---->Discover");
