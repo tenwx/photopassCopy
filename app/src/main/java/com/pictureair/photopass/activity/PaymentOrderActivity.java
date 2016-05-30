@@ -638,12 +638,15 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
                 myApplication.setPhotoIsPaid(true);
                 PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
+                String tab = myApplication.getIsBuyingTabName();
+                String photoId = myApplication.getIsBuyingPhotoId();
+                PictureAirLog.out("tabname---->" + tab + "photoid--->" + photoId);
 
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", -1);
-                bundle.putString("tab", myApplication.getIsBuyingTabName());
-                bundle.putString("photoId", myApplication.getIsBuyingPhotoId());
+                bundle.putString("tab", tab);
+                bundle.putString("photoId", photoId);
                 intent.putExtra("bundle", bundle);
 
                 // 清空标记

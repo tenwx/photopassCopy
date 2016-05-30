@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,6 +63,7 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
@@ -189,6 +191,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private final int RESIZE_BLUR_IMAGE = 999;
 
     private CustomDialog customdialog; //  对话框
+    private PictureWorksDialog pictureWorksDialog;
 
 
     /**
@@ -752,7 +755,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 photolist = new ArrayList<>();
                 Bundle bundle = getIntent().getBundleExtra("bundle");
                 currentPosition = bundle.getInt("position", 0);
+                PictureAirLog.out("currentposition---->" + currentPosition);
                 tabName = bundle.getString("tab");
+                PictureAirLog.out("tabName--->" + tabName);
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
 
                 if (tabName.equals("all")) {//获取全部照片
@@ -797,9 +802,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
 
                 if (currentPosition == -1) {//购买图片后返回
-                    String photoId = bundle.getString("photoId");
+                    String photoId = bundle.getString("photoId", "");
+                    PictureAirLog.out("photoid--->" + photoId);
                     for (int i = 0; i < photolist.size(); i++) {
-                        if (photolist.get(i).photoId.equals(photoId)){
+                        PictureAirLog.out("photoinfo.photoid----->" + photolist.get(i).photoId);
+                        if (TextUtils.isEmpty(photolist.get(i).photoId)) {//本地图片，没有PhotoId，需要过滤
+
+                        } else if (photolist.get(i).photoId.equals(photoId)){
                             photolist.get(i).isPayed = 1;
                             currentPosition = i;
                             break;
@@ -1109,22 +1118,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
 //                        new PictureWorksDialog(PreviewPhotoActivity.this,getString(R.string.photo_cannot_edit_title),getString(R.string.photo_cannot_edit_content),getString(R.string.photo_cannot_edit_no),getString(R.string.photo_cannot_edit_yes),true,null).show();
 //                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
-                        customdialog = new CustomDialog(PreviewPhotoActivity.this,
-                                R.string.photo_cannot_edit_content,
-                                R.string.photo_cannot_edit_no,
-                                R.string.photo_cannot_edit_yes,
-                                new CustomDialog.MyDialogInterface() {
-
-                                    @Override
-                                    public void yes() {
-                                        // TODO Auto-generated method stub
-                                    }
-
-                                    @Override
-                                    public void no() {
-                                        // TODO Auto-generated method stub // 考虑下：弹窗消失
-                                    }
-                                });
+                        if (pictureWorksDialog == null) {
+                            pictureWorksDialog = new PictureWorksDialog(PreviewPhotoActivity.this, null,
+                                    getString(R.string.photo_cannot_edit_content), null,
+                                    getString(R.string.photo_cannot_edit_yes), true, previewPhotoHandler);
+                        }
+                        pictureWorksDialog.show();
                     }
                 } else {
                     if (loadFailed) {
@@ -1423,7 +1422,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         PictureAirLog.v(TAG, "----------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
-        if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
+        if (photoInfo != null && photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
 
             } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITYANDPAYED)) {

@@ -622,6 +622,7 @@ public class PictureAirDbManager {
         try {
             if (isDelete) {//删除操作
                 database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
+                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
             } else {//同步操作
                 cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
                         + " where photoId = ?", new String[]{selectedPhotoId});
@@ -650,6 +651,7 @@ public class PictureAirDbManager {
                 }
 
                 database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
+                database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -672,9 +674,11 @@ public class PictureAirDbManager {
         database.beginTransaction();
         try {
             if (isDelete) {//删除操作
-                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
+                database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoCode like ?", new String[]{"%" + ppCode + "%"});
+                database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoCode like ?", new String[]{"%" + ppCode + "%"});
             } else {//同步
                 database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
+                database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set isPay = 1 where photoCode like ? and shootTime = ?", new String[]{"%" + ppCode + "%", shootDate});
             }
             database.setTransactionSuccessful();
         } catch (Exception e) {
@@ -883,6 +887,7 @@ public class PictureAirDbManager {
                 //5
                 if (needDelete) {//需要删除
                     database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).photoId});
+                    database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{deletePhotos.get(i).photoId});
                 } else {
                     needDelete = true;
                 }

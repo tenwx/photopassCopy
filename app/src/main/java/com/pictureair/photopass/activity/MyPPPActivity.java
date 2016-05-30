@@ -588,7 +588,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             case R.id.ppp_rl://设置按钮   + 按钮
                 int[] location = new int[2];
                 setting.getLocationOnScreen(location);
-                pppPop.showAsDropDown(setting, -300, 10);
+                pppPop.showAsDropDown(setting, -200, 25);
                 break;
 
             case R.id.button_buy_ppp:

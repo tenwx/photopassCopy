@@ -105,6 +105,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private boolean sharedNeedFresh = false;
     private int screenWidth;
     private boolean isLoading = false;
+    private boolean isOnCreate = false;
     private boolean scanMagicPhotoNeedCallBack;//记录是否需要重新扫描本地照片
     private boolean noPhotoViewStateRefresh = false;//无图的时候进行的刷新
     private int ppPhotoCount;
@@ -325,7 +326,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
                 PictureAirLog.d(TAG, "scan local photos success");
-                dealLocalRefreshedData();
+                if (!isOnCreate) {//当不在oncreate的时候，需要刷新本地图片
+                    dealLocalRefreshedData();
+                }
                 break;
 
             case REFRESH://开始刷新
@@ -664,6 +667,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PictureAirLog.out("on create----->");
+        isOnCreate = true;
         View view = inflater.inflate(R.layout.fragment_story, null);
         titleStrings = new String[] {getActivity().getResources().getString(R.string.story_tab_all),
                 getActivity().getResources().getString(R.string.story_tab_photopass),
@@ -844,6 +848,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 storyViewPager.setVisibility(View.INVISIBLE);
             }
         }
+        isOnCreate = false;
     }
 
 
@@ -1598,7 +1603,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                 int[] location = new int[2];
                 scanIv.getLocationOnScreen(location);
-                pppPop.showAsDropDown(scanIv, -300, 10);
+                pppPop.showAsDropDown(scanIv, -200, 25);
                 break;
 
             case R.id.story_no_pp_scan:
