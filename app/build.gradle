@@ -111,7 +111,7 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Moments-2.7.2.jar')
     compile files('libs/socketio.jar')
     compile files('libs/sqlcipher.jar')
-    compile files('libs/tess-two.tesseract3.01-leptonica1.68-LibJPEG6b.jar')
+    compile files('libs/tess-two-6.0.0-sources.jar')
     compile files('libs/umeng-analytics-v5.6.1.jar')
     compile files('libs/universal-image-loader-1.9.3-with-sources.jar')
     compile files('libs/UPPayAssistEx.jar')
