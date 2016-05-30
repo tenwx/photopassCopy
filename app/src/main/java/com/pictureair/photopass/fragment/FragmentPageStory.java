@@ -374,7 +374,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case SORT_COMPLETED_REFRESH:
                 //刷新广告地点
                 app.setGetADLocationSuccess(false);
-                API1.getADLocations(fragmentPageStoryHandler);
+                API1.getADLocations(0, fragmentPageStoryHandler);
 
                 if (noPhotoViewStateRefresh) {//无图页的刷新
                     showViewPager();
@@ -396,7 +396,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //没有成功获取广告信息
                 if (!app.isGetADLocationSuccess()) {
                     PictureAirLog.out("start get ad location");
-                    API1.getADLocations(fragmentPageStoryHandler);
+                    API1.getADLocations(0, fragmentPageStoryHandler);
                 } else {
                     PictureAirLog.out("ad location has got already");
                 }

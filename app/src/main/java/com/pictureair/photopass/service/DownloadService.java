@@ -2,6 +2,7 @@ package com.pictureair.photopass.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +53,7 @@ public class DownloadService extends Service {
     private boolean isDownloading = false;
     private File file;  //文件
     private String photoId;// 图片的photoId
+    private String lastDownLoadUrl = "";
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -127,9 +129,15 @@ public class DownloadService extends Service {
                         notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
                     }
 
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(lastDownLoadUrl)), "image/*");
+                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+
                     Notification notification = new NotificationCompat.Builder(mContext).
                             setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
-                            .setContentText(notificationDetail).setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
+                            .setContentText(notificationDetail).setContentIntent(pendingIntent).
+                                    setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
                     notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
                     notification.defaults = Notification.DEFAULT_SOUND;//默认下载完成声音
 
@@ -185,6 +193,8 @@ public class DownloadService extends Service {
             ++downed_num;
             exist_num++;
             downloadList.remove(0);
+            lastDownLoadUrl = file.toString();
+            PictureAirLog.out("download url---->" + lastDownLoadUrl);
             handler.sendEmptyMessage(START_DOWNLOAD);
             //			sendMsg(file);
         }
@@ -269,6 +279,8 @@ public class DownloadService extends Service {
                         //				stopService(serviceIntent);
                         scan_num++;
                         downloadList.remove(0);
+                        lastDownLoadUrl = file.toString();
+                        PictureAirLog.out("download url---->" + lastDownLoadUrl);
                         handler.sendEmptyMessage(START_DOWNLOAD);
                     }
                 });

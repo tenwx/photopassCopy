@@ -186,7 +186,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int LOAD_FROM_LOCAL = 444;
     private static final int LOAD_FROM_NETWORK = 555;
     private static final int CHECK_FAVORITE = 666;
+    private static final int GET_FAVORITE_DATA_DONE = 1000;
     private static final int GET_LOCATION_AD = 777;
+    private static final int GET_LOCATION_AD_DONE = 1001;
     private static final int CREATE_BLUR_DIALOG = 888;
     private final int RESIZE_BLUR_IMAGE = 999;
 
@@ -562,52 +564,79 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 loadPhotoSuccess = true;
                 break;
 
+            case GET_LOCATION_AD:
+                currentPhotoADTextView.setVisibility(View.GONE);
+                final int oldPositon = msg.arg1;
+                if (myApplication.isGetADLocationSuccess()) {
+                    //从数据库中查找
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String adStr = pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+                            previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPositon, 0, adStr).sendToTarget();
+                        }
+                    }).start();
+
+                } else {
+                    //从网络获取
+                    API1.getADLocations(oldPositon, previewPhotoHandler);
+                }
+                if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->ad");
+                    dialog.dismiss();
+                }
+                break;
+
+            case GET_LOCATION_AD_DONE:
+                if (msg.arg1 == currentPosition && !msg.obj.toString().equals("")) {//如果获取的对应索引值，依旧是当期的索引值，则显示广告
+                    PictureAirLog.out("current position need show ad");
+                    currentPhotoADTextView.setVisibility(View.VISIBLE);
+                    currentPhotoADTextView.setText(msg.obj.toString());
+                }
+                break;
+
             case API1.GET_AD_LOCATIONS_SUCCESS:
                 PictureAirLog.out("ad location---->" + msg.obj.toString());
+                final int oldPosition1 = msg.arg1;
+                final JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
+                myApplication.setGetADLocationSuccess(true);
                 /**
                  * 1.存入数据库
                  * 2.在application中记录结果
                  */
-                JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
-                String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
-                        photoInfo.locationId, MyApplication.getInstance().getLanguageType());
-
-                if (!adString.equals("")) {
-                    currentPhotoADTextView.setVisibility(View.VISIBLE);
-                    currentPhotoADTextView.setText(adString);
-                }
-                myApplication.setGetADLocationSuccess(true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
+                            photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+                        previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPosition1, 0, adString).sendToTarget();
+                    }
+                }).start();
                 break;
 
             case API1.GET_AD_LOCATIONS_FAILED:
                 break;
 
-            case CHECK_FAVORITE:
+            case CHECK_FAVORITE://开始获取收藏信息
+                final int oldPosition = msg.arg1;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        previewPhotoHandler.obtainMessage(GET_FAVORITE_DATA_DONE, oldPosition, 0,
+                                pictureAirDbManager.checkLovePhoto(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))).sendToTarget();
+                    }
+                }).start();
+                break;
+
+            case GET_FAVORITE_DATA_DONE://获取数据成功
                 //更新收藏图标
-                if (photoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                if (Boolean.valueOf(msg.obj.toString()) && msg.arg1 == currentPosition) {//数据库查询的数据是true，并且对应的index还是之前的位置
+                    PictureAirLog.out("current postion and is favorite");
                     photoInfo.isLove = 1;
                     loveImageButton.setImageResource(R.drawable.discover_like);
                 } else {
+                    PictureAirLog.out("not the favorite");
                     loveImageButton.setImageResource(R.drawable.discover_no_like);
-                }
-                break;
-
-            case GET_LOCATION_AD:
-                currentPhotoADTextView.setVisibility(View.GONE);
-                if (myApplication.isGetADLocationSuccess()) {
-                    //从数据库中查找
-                    String adStr = pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType());
-                    if (!adStr.equals("")) {
-                        currentPhotoADTextView.setVisibility(View.VISIBLE);
-                        currentPhotoADTextView.setText(adStr);
-                    }
-                } else {
-                    //从网络获取
-                    API1.getADLocations(previewPhotoHandler);
-                }
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->ad");
-                    dialog.dismiss();
                 }
                 break;
 
@@ -938,7 +967,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {//编辑前
             photoInfo = photolist.get(currentPosition);
         }
-        previewPhotoHandler.sendEmptyMessageDelayed(CHECK_FAVORITE, 200);
+        previewPhotoHandler.obtainMessage(CHECK_FAVORITE, currentPosition, 0).sendToTarget();
 
         //更新title地点名称
         locationTextView.setText(photoInfo.locationName);
@@ -970,7 +999,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             currentPhotoADTextView.setVisibility(View.GONE);
             loadPhotoPassPhoto(photoInfo, isOnCreate);
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
-            previewPhotoHandler.sendEmptyMessage(GET_LOCATION_AD);
+            previewPhotoHandler.obtainMessage(GET_LOCATION_AD, currentPosition, 0).sendToTarget();
             PictureAirLog.out("set enable in get ad");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);

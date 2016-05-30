@@ -782,14 +782,14 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getADLocations(final Handler handler) {
+    public static void getADLocations(final int oldPosition, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_AD_LOCATIONS_SUCCESS, jsonObject).sendToTarget();
+                handler.obtainMessage(GET_AD_LOCATIONS_SUCCESS, oldPosition, 0, jsonObject).sendToTarget();
             }
 
             @Override
