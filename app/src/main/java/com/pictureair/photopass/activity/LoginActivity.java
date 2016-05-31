@@ -27,7 +27,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
@@ -53,6 +52,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     // 申明变量
     private static final int START_OTHER_REGISTER_ACTIVITY = 11;// 启动 其他注册的侧面
     private final int START_AGREEMENT_WEBVIEW = 22;
+    private static final int START_CHECK_UPDATE = 33;
     // 申明其他类
     private SharedPreferences appPreferences;
     private MyToast myToast;
@@ -60,7 +60,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private String countryCode = "86";
     private String country = "";
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
-    private CustomProgressDialog customProgressDialog;
     private String forGetphoto;
     private String forGetPwd;
 
@@ -104,9 +103,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
      * @param msg
      */
     private void dealHandler(Message msg) {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
         switch (msg.what) {
             case START_OTHER_REGISTER_ACTIVITY:
                 // 其他注册的按钮//
@@ -129,15 +125,21 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
+
             case API1.FIND_PWD_SUCCESS:
                 new SignAndLoginUtil(LoginActivity.this, forGetphoto,
                         forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
                 break;
+
             case START_AGREEMENT_WEBVIEW:
                 Intent intent = new Intent();
                 intent.putExtra("key", msg.arg1);
                 intent.setClass(LoginActivity.this, WebViewActivity.class);
                 startActivity(intent);
+                break;
+
+            case START_CHECK_UPDATE:
+                checkUpdateManager.startCheck();
                 break;
 
             default:
@@ -200,7 +202,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(),
                 appPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH),
                 parentRelativeLayout);
-        checkUpdateManager.startCheck();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                checkUpdateManager.init();
+                loginHandler.sendEmptyMessage(START_CHECK_UPDATE);
+            }
+        }).start();
 
         userName.setOnKeyListener(new OnKeyListener() {
 
@@ -328,7 +337,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        checkUpdateManager.onDestroy();
+        if (checkUpdateManager != null) {
+            checkUpdateManager.onDestroy();
+        }
         loginHandler.removeCallbacksAndMessages(null);
     }
 

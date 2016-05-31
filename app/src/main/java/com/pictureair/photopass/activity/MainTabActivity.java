@@ -138,7 +138,15 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(), currentLanguage,
                 parentLayout);
-        checkUpdateManager.startCheck();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                checkUpdateManager.init();
+                checkUpdateManager.startCheck();
+            }
+        });
+
         // 得到fragment的个数
         int count = fragmentArray.length;
 

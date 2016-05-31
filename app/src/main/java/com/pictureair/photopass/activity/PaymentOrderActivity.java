@@ -470,12 +470,17 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         } else if (payType == 7) {
             weChatIsPaying = true;
             PictureAirLog.v(TAG, "wechat");
-            try {
-                // 调起微信支付
-                payUtils.wxPay();
-            } catch (Exception e) {
-                e.printStackTrace();
-                newToast.setTextAndShow(R.string.pay_failed, Common.TOAST_SHORT_TIME);
+            if (payUtils.isWechatInstalled()) {
+                try {
+                    // 调起微信支付
+                    payUtils.wxPay();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    newToast.setTextAndShow(R.string.pay_failed, Common.TOAST_SHORT_TIME);
+                }
+            } else {
+                newToast.setTextAndShow(R.string.install_wechat_first, Common.TOAST_SHORT_TIME);
+                sbmtButton.setEnabled(true);
             }
         } else {
             PictureAirLog.v(TAG, "other");

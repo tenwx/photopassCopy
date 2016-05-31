@@ -164,6 +164,12 @@ public class CheckUpdateManager {
         this.currentLanguage = currentLanguage;
         this.parentView = parent;
         myToast = new MyToast(context);
+    }
+
+    /**
+     * 初始化
+     */
+    public void init(){
         baseCheckUpdate = CheckUpdate.getInstance();
         dbDAO = new PictureAirDbManager(context);
     }

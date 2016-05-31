@@ -10,6 +10,7 @@ import com.alipay.sdk.app.PayTask;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.alipay.PayResult;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -19,8 +20,6 @@ import net.sourceforge.simcpux.Util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * Created by milo on 16/3/3.
@@ -36,6 +35,7 @@ public class PayUtils {
     private String introductString;
     private String priceString;
     private String seed;
+    private IWXAPI msgApi;
 
     public PayUtils(Activity activity, Handler handler, String orderId, String nameString, String introductString, String priceString, String seed) {
         this.activity = activity;
@@ -104,6 +104,15 @@ public class PayUtils {
     }
 
     /**
+     * 检查微信是否已经安装
+     * @return
+     */
+    public boolean isWechatInstalled() {
+        msgApi = WXAPIFactory.createWXAPI(activity, null);
+        return msgApi.isWXAppInstalled();
+    }
+
+    /**
      * 微信支付
      */
     public void wxPay() {
@@ -137,7 +146,6 @@ public class PayUtils {
         StringBuffer sb = new StringBuffer();
         Map<String, String> resultunifiedorder;
         WXPayUtil wxPayUtil = new WXPayUtil(seed);
-        IWXAPI msgApi = WXAPIFactory.createWXAPI(activity, null);
 
         @Override
         protected void onPreExecute() {

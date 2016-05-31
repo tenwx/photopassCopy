@@ -18,7 +18,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -98,11 +97,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private int locationActivatedIndex = -1;//记录激活定位的索引值
     private boolean showTab = false;
     private int id = 0;
-
-    private TextView latitudeTextView;
-    private Button getLocationButton;
-    private TextView longitudeTextView;
-
 
     private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
 
@@ -219,8 +213,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
                 double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
                 PictureAirLog.out("degree----->" + rotate_degree + "; d---> " + d);
-                latitudeTextView.setText("rotate degree: " + rotate_degree);
-                longitudeTextView.setText("d: " + d);
                 // 角度
                 item.locationLeadImageView.setRotation((float) d - rotate_degree);
                 break;
@@ -315,43 +307,11 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         locationUtil = new LocationUtil(getActivity());
         app = (MyApplication) getActivity().getApplication();
         locationStart = true;
-        startService();
         locationList = new ArrayList<DiscoverLocationItemInfo>();
         favoriteList = new ArrayList<String>();
         distanceFormat = NumberFormat.getNumberInstance();
         distanceFormat.setMaximumFractionDigits(1);
         sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-
-
-
-
-
-
-
-
-
-        latitudeTextView = (TextView) view.findViewById(R.id.latitude);
-        longitudeTextView = (TextView) view.findViewById(R.id.longtitude);
-        getLocationButton = (Button) view.findViewById(R.id.getlocation);
-
-        getLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (locationUtil.mapLocation == null) {
-                    latitudeTextView.setText("latitude: " + 0);
-                    longitudeTextView.setText("longitude: " + 0);
-                } else {
-                    latitudeTextView.setText("latitude: " + locationUtil.mapLocation.getLatitude());
-                    longitudeTextView.setText("longitude: " + locationUtil.mapLocation.getLongitude());
-                }
-            }
-        });
-
-
-
-
-
-
 
         //获取数据
         dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);

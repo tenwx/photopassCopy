@@ -749,7 +749,7 @@ public class AppUtil {
         }
         // 16位加密，从第9位到25位
 //		return md5StrBuff.substring(8, 24).toString().toUpperCase();
-        PictureAirLog.out("md5 password------->" + md5StrBuff.toString());
+        PictureAirLog.out("md5 result------->" + md5StrBuff.toString());
         //32位
         return md5StrBuff.toString();
     }

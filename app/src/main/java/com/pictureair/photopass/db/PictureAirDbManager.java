@@ -45,7 +45,6 @@ public class PictureAirDbManager {
 
     public PictureAirDbManager(Context context) {
         if (photoInfoDBHelper == null) {
-//            photoInfoDBHelper = PictureAirDBHelper.getInstance(context);
             photoInfoDBHelper = SQLiteHelperFactory.create(context);
             DBManager.initializeInstance(photoInfoDBHelper);//初始化数据库操作类
         }

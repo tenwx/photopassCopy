@@ -55,13 +55,12 @@
     <string name="share_canceled">Share Canceled</string>
     <string name="share_failed">Share Failed</string>
     <string name="weibo_oauth_regiseter">Authorization</string>
-    <string name="share_failure_wechat">Please download and install WeChat before sharing!</string>
-    <string name="share_failure_weibo">Please download and install SinaWeibo before sharing!</string>
-    <string name="share_failure_qzone">Please download and install QQ before sharing!</string>
-    <string name="share_failure_facebook">Please download and install Facebook before sharing!</string>
-    <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
-    <string name="share_failure_instagram">Please download and install Instagram before sharing! </string>
-
+    <string name="share_failure_wechat">Your mobile has not install WeChat, Please download and install to share!</string>
+    <string name="share_failure_weibo">Your mobile has not install Sina Weibo, Please download and install to share!</string>
+    <string name="share_failure_qzone">Your mobile has not install QQ, Please download and install to share!</string>
+    <string name="share_failure_facebook">Your mobile has not install Facebook, Please download and install to share!</string>
+    <string name="share_failure_twitter">Your mobile has not install Twitter, Please download and install to share!</string>
+    <string name="share_failure_instagram">Your mobile has not install Instagram, Please download and install to share!</string>
     <string name="sinaweibo">Sina Weibo</string>
     <string name="qzone">QZone</string>
     <string name="wechat">Friends</string>
@@ -300,6 +299,7 @@
     <string name="submit_order">Payment Successful</string>
     <string name="no_pay_tips">You don\'t pay anything!</string>
     <string name="no_pay_success">OK</string>
+    <string name="install_wechat_first">Your mobile has not install WeChat, Please download and install to pay!</string>
     <!-- payment end -->
 
     <!-- set header start -->

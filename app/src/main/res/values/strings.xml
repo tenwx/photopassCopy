@@ -61,7 +61,6 @@
     <string name="share_failure_facebook">您的手机没有安装Facebook客户端，请先下载安装后再分享！</string>
     <string name="share_failure_twitter">您的手机没有安装Twitter客户端，请先下载安装后再分享！</string>
     <string name="share_failure_instagram">您的手机没有安装Instagram客户端，请先下载安装后再分享！</string>
-
     <string name="sinaweibo">新浪微博</string>
     <string name="qzone">QQ空间</string>
     <string name="wechat">微信好友</string>
@@ -300,6 +299,7 @@
     <string name="submit_order">订单已提交</string>
     <string name="no_pay_tips">您不用额外支付任何费用</string>
     <string name="no_pay_success">确认</string>
+    <string name="install_wechat_first">您的手机没有安装微信客户端，请先下载安装后再支付！</string>
     <!-- payment end -->
 
     <!-- set header start -->
