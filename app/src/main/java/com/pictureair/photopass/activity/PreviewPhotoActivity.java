@@ -17,6 +17,7 @@ import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
@@ -318,6 +319,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (null != touchClearBmp) {
                     touchClearBmp.recycle();
                     touchClearBmp = null;
+                }
+
+                if (null != msg.obj && !msg.obj.equals("")){
+                    if (msg.obj.equals("indexLast")){
+                        indexLast();
+                    }else{
+                        indexNext();
+                    }
+                    touchSpeet = "";
+                }else{
+                    PictureAirLog.out("the obj : "+msg.obj);
                 }
                 break;
 
@@ -988,7 +1000,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
+    private VelocityTracker vTracker = null;
+    private String touchSpeet = "";
     public boolean onTouchEvent(MotionEvent event) {
+        PictureAirLog.out("the-----onTouchEvent");
         if (!loadFailed) {
             if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {// 未购买状态
                 if (event.getY() < marginTop || event.getY() > parentPreviewH + marginTop) {
@@ -1031,6 +1046,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             }
                         }
 
+                        /** 测速 */
+                        if(vTracker == null){
+                            vTracker = VelocityTracker.obtain();
+                        }else{
+                            vTracker.clear();
+                        }
+                        vTracker.addMovement(event);
+
                         break;
                     case MotionEvent.ACTION_MOVE:
                         mode = MODE_MOVE;
@@ -1043,20 +1066,41 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             fir = 0;
                             sec = 0;
                         }
+
+                        vTracker.addMovement(event);
+                        vTracker.computeCurrentVelocity(1000);
+                        PictureAirLog.out("the x velocity is "+vTracker.getXVelocity());
+                        PictureAirLog.out("the y velocity is "+vTracker.getYVelocity());
+                        if (vTracker.getXVelocity() > 10000){
+//                            indexLast();
+                            touchSpeet =  "indexLast";
+                            PictureAirLog.out("the -----<");
+                        }
+                        if (vTracker.getXVelocity() < -10000){
+//                            indexNext();
+                            touchSpeet =  "indexNext";
+                            PictureAirLog.out("the ----->");
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
+                        vTracker.recycle();
+                        vTracker = null;
+
                         mode = MODE_UP;
                         PictureAirLog.v(TAG, "up");
+                        msg.obj = touchSpeet;
                         msg.what = 2;
                         touchtoclean.setVisibility(View.VISIBLE);
                         break;
                 }
                 previewPhotoHandler.sendMessage(msg);
-
             }
         }
-        return super.onTouchEvent(event);
+        return true;
     }
+
+
+
 
 
     public void onClick(View v) {
@@ -1293,25 +1337,40 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case R.id.index_last://上一张
-                PictureAirLog.v(TAG, "--------->last");
-                lastPhotoImageView.setEnabled(false);
-                nextPhotoImageView.setEnabled(false);
-                changeTab(false);
-                setUmengPhotoSlide();//统计滑动图片次数
+                indexLast();
                 break;
 
             case R.id.index_next://下一张
-                PictureAirLog.v(TAG, "--------->next");
-                lastPhotoImageView.setEnabled(false);
-                nextPhotoImageView.setEnabled(false);
-                changeTab(true);
-                setUmengPhotoSlide();//统计滑动图片次数
+                indexNext();
                 break;
 
             default:
                 break;
         }
     }
+
+    /**
+     * 下一张
+     */
+    private void indexNext(){
+        PictureAirLog.v(TAG, "--------->next");
+        lastPhotoImageView.setEnabled(false);
+        nextPhotoImageView.setEnabled(false);
+        changeTab(true);
+        setUmengPhotoSlide();//统计滑动图片次数
+    }
+
+    /**
+     * 上一张
+     */
+    private void indexLast(){
+        PictureAirLog.v(TAG, "--------->last");
+        lastPhotoImageView.setEnabled(false);
+        nextPhotoImageView.setEnabled(false);
+        changeTab(false);
+        setUmengPhotoSlide();//统计滑动图片次数
+    }
+
 
 
     /**
