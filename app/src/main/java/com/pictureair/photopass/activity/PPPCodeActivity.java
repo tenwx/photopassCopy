@@ -355,7 +355,7 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
 
                 if ("".equals(inputValue1 + inputValue2 + inputValue3 + inputValue4)) {
                     //				Toast.makeText(InputCodeAct.this, R.string.nocontext, Common.TOAST_SHORT_TIME).show();
-                    newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 } else if (inputValue1.trim().length() + inputValue2.trim().length() + inputValue3.trim().length() + inputValue4.trim().length() != 16) {//长度不一致
                     PictureAirLog.out("=======> length" + (inputValue1.trim().length() + inputValue2.trim().length() + inputValue3.trim().length() + inputValue4.trim().length()));
                     newToast.setTextAndShow(R.string.wrong_length, Common.TOAST_SHORT_TIME);

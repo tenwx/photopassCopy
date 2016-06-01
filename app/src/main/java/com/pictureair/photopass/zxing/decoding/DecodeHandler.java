@@ -56,6 +56,7 @@ final class DecodeHandler extends Handler {
 
     private final MipCaptureActivity activity;
     private final MultiFormatReader multiFormatReader;
+    private TessBaseAPI baseApi;
 
     DecodeHandler(MipCaptureActivity activity, Hashtable<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
@@ -77,6 +78,7 @@ final class DecodeHandler extends Handler {
                 break;
             case R.id.quit:
                 Looper.myLooper().quit();
+                releaseBaseAPI();
                 break;
         }
     }
@@ -129,47 +131,6 @@ final class DecodeHandler extends Handler {
     }
 
     /**
-     * 处理OCR 的具体方法。 旧版PP+
-     */
-//  private void decodeOCR(byte[] data, int width, int height){
-//    image = new YuvImage(data, ImageFormat.NV21, width, height, null);
-//    if(image!=null){
-////      PictureAirLog.e("","width:"+width+"_height:"+height);
-//      //计算出矩形区域的长和宽。  长边为宽，短边为高
-//      recHeight = height/3*2;
-//      recWidth = recHeight*85/54;
-//      //计算出状态栏高度，计算出标题栏高度。
-//      Rect frame = new Rect();
-//      activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-//      int topHeight = frame.top;
-//      int topBarHeight = ScreenUtil.dip2px(activity,52);
-//      //计算出 横向PP+卡左上角的坐标。
-//      a_x = (width - topHeight - topBarHeight - recWidth)/2 + topHeight + topHeight;  //横向  坐标。
-//      a_y = (height - recHeight)/2;
-//      PictureAirLog.e("","a_x:"+a_x+"a_y:"+a_y);
-//
-//
-//      //横向情况，计算出 卡号 区域左上角的坐标。
-//      int b_x = a_x + recWidth*20/85; // 横向情况，计算出 卡号 区域左上角的坐标。
-//      int b_y = a_y + recHeight*39/54;
-//
-//      // 计算出PP＋号码区域 矩形的长和宽。长边为宽，短边为高
-//      int targetWidth = recWidth*(85-20*2)/85;
-//      int targetHeight = recHeight * 8/54;
-//
-//      ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//      image.compressToJpeg(new Rect(b_x, b_y, b_x + targetWidth, b_y + targetHeight), 90, stream);
-//      Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-//      try {
-//        stream.close();
-//      } catch (Exception ex) {
-//      }
-//      regonize(bmp,data);
-//    }
-//  }
-
-
-    /**
      * 处理OCR 的具体方法。新版PP+
      */
     private void decodeOCR(byte[] data, int width, int height) {
@@ -220,6 +181,7 @@ final class DecodeHandler extends Handler {
         PictureAirLog.e("", "测试结果:" + text);
         text = OCRUtils.dealCode(text);
         boolean flag = OCRUtils.checkCode(text);
+        PictureAirLog.out("ocr---> check code done");
         if (flag) { //扫描成功。截取矩形Bitmap
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compressToJpeg(new Rect(a_x, a_y, a_x + recWidth, a_y + recHeight), 50, stream);
@@ -246,22 +208,38 @@ final class DecodeHandler extends Handler {
      * @return
      */
     private String doOcr(Bitmap bitmap, String language) {
-        TessBaseAPI baseApi = new TessBaseAPI();
-
+        PictureAirLog.out("start init--->ocr");
+        if (baseApi == null) {//为空
+            baseApi = new TessBaseAPI();
+            baseApi.init(Common.PHOTO_SAVE_PATH, language);
+        }
+        PictureAirLog.out("end init--->ocr");
         File tessdata = new File(Common.PHOTO_SAVE_PATH + "tessdata");
         if (tessdata.exists() && tessdata.isDirectory()) {
         } else {
             return "";
         }
 
-        baseApi.init(Common.PHOTO_SAVE_PATH, language);
         // 必须加此行，tess-two要求BMP必须为此配置
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         baseApi.setImage(bitmap);
         String text = baseApi.getUTF8Text();
-        baseApi.clear();
-        baseApi.end();
+
+        PictureAirLog.out("end------>ocr");
         return text;
+    }
+
+    /**
+     * 释放ocr对象
+     */
+    private void releaseBaseAPI() {
+        if (baseApi != null) {
+            PictureAirLog.out("base api need clear");
+            baseApi.clear();
+            baseApi.end();
+        } else {
+            PictureAirLog.out("base api need not clear");
+        }
     }
 
 }

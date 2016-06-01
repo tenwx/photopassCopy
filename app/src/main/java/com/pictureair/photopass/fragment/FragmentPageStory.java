@@ -1406,7 +1406,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         allItemInfoList.removeAll(photoPassItemInfoList);
 
         //将图片按照location加载到list中去
-        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size(); l++) {//遍历所要添加的图片list
+        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size() && l > 0; l++) {//遍历所要添加的图片list
             PictureAirLog.out("遍历照片");
             PhotoInfo info = photoPassPicList.get(l);
             //查找list_clone有图片的item，如果找到locationid，在判断是否有同一天的photos，如果有同一天的，add进去，如果没有，新建一个项
@@ -1603,7 +1603,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                 int[] location = new int[2];
                 scanIv.getLocationOnScreen(location);
-                pppPop.showAsDropDown(scanIv, -200, 25);
+                pppPop.showAsDropDown(scanIv, 0, ScreenUtil.dip2px(getActivity(), 15) - 10);
                 break;
 
             case R.id.story_no_pp_scan:

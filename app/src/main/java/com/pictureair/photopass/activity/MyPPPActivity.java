@@ -39,6 +39,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
@@ -588,7 +589,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             case R.id.ppp_rl://设置按钮   + 按钮
                 int[] location = new int[2];
                 setting.getLocationOnScreen(location);
-                pppPop.showAsDropDown(setting, -200, 25);
+                pppPop.showAsDropDown(setting, 0, ScreenUtil.dip2px(MyPPPActivity.this, 15) - 10);
                 break;
 
             case R.id.button_buy_ppp:

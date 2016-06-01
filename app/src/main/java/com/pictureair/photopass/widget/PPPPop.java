@@ -12,7 +12,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.ScreenUtil;
 
 public class PPPPop extends PopupWindow implements OnClickListener {
 	private LayoutInflater inflater;
@@ -55,7 +54,7 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 			llBuy.setVisibility(View.GONE);
 		}
 
-		setWidth(ScreenUtil.getScreenWidth(context) * 2 / 5);
+		setWidth(LayoutParams.WRAP_CONTENT);
 		setHeight(LayoutParams.WRAP_CONTENT);
 		setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
 		setFocusable(true);

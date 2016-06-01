@@ -145,7 +145,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
         switch (v.getId()) {
             case R.id.sure://手动输入页面的确定
                 if ("".equals(inputCodeEdit.getText().toString())) {
-                    newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 } else {
                     //如果有键盘显示，把键盘取消掉
                     hideInputMethodManager(v);

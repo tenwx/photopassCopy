@@ -311,7 +311,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         }
         textView.setText(ppCode);
         try {
-            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 5));
+            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 2));
         } catch (WriterException e) {
             e.printStackTrace();
         }

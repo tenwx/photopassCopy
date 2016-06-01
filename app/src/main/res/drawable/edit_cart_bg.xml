@@ -5,4 +5,7 @@
         android:width="1px"
         android:color="@color/pp_light_gray_press" />
 
+    <solid
+        android:color="@color/white"/>
+
 </shape>

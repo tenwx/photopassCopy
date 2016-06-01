@@ -55,6 +55,7 @@ public class OCRUtils {
      * @return
      */
     public static boolean checkCode(String codeStr) {
+        PictureAirLog.out("ocr---> checkCode");
         //长度必须等于19位
         if (codeStr.length() != 19){
             return false;

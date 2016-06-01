@@ -827,7 +827,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
-                    photolist.addAll(temp);
+                    if (temp != null) {
+                        photolist.addAll(temp);
+                    }
                 }
 
                 if (currentPosition == -1) {//购买图片后返回
@@ -1657,7 +1659,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         matrix.reset();
         matrix.postScale(sw, sw);
-        oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+        if (w > 0 && h > 0) {
+            oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+        }
     }
 
     private void cropNewBmt() {

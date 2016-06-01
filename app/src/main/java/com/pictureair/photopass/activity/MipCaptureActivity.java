@@ -282,10 +282,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         super.onPause();
         PictureAirLog.out("----------pause");
         if (handler != null) {
+            PictureAirLog.out("need quitSynchronously");
             handler.quitSynchronously();
             handler = null;
         }
+        PictureAirLog.out("need closeDriver");
         CameraManager.get().closeDriver();
+        PictureAirLog.out("pause -----> done");
     }
 
     @Override
