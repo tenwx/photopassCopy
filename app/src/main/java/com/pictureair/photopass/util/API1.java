@@ -2236,13 +2236,4 @@ public class API1 {
             }
         });
     }
-
-
-    public static boolean checkPermission(Context context, String permission) {
-        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
-    }
-
 }

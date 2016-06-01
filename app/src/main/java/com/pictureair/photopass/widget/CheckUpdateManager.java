@@ -96,7 +96,7 @@ public class CheckUpdateManager {
                     break;
 
                 case DialogInterface.BUTTON_POSITIVE:
-                    if (API1.checkPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (AppUtil.checkPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         dialogButtonPositive();//确认下载
                     }else{
                         myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);

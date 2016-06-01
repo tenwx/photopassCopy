@@ -681,7 +681,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					editPhotoInfoArrayList.clear();
 					addEditPhotoInfo(photoURL,0,null,null,"",0);
 				}
-				if (!API1.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+				if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
 					break;
 				}
@@ -698,7 +698,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				break;
 			case R.id.preview_save: //真正的保存按钮。
 				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-				if (!API1.checkPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+				if (!AppUtil.checkPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
 					break;
 				}

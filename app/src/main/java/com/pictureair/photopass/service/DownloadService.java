@@ -21,6 +21,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
@@ -102,7 +103,7 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         PictureAirLog.out("DownloadService ----------> preparedownload");
         PictureAirLog.out("DownloadService ----------> before notification");
-        if (!API1.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
             return;
         }

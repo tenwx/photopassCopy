@@ -17,6 +17,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -1503,5 +1504,17 @@ public class AppUtil {
             }
         }
         return infos;
+    }
+
+    /**
+     * 检查手机权限
+     *
+     * @param permission 权限
+     * */
+    public static boolean checkPermission(Context context, String permission) {
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
     }
 }
