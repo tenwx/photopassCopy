@@ -1,7 +1,9 @@
 package com.pictureair.photopass.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,6 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -97,6 +102,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private int locationActivatedIndex = -1;//记录激活定位的索引值
     private boolean showTab = false;
     private int id = 0;
+
+    private static final int REQUEST_LOCATION_PERMISSION = 2;
+    private boolean mIsAskLocationPermission = false;
 
     private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
 
@@ -257,7 +265,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             case API1.EDIT_FAVORITE_LOCATION_SUCCESS:
                 discoverLocationAdapter.updateIsLove(msg.arg1);
                 break;
-
             default:
                 break;
         }
@@ -343,9 +350,14 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     @Override
     public void onResume() {
         PictureAirLog.out(TAG+ "  ==onResume");
+        if (mIsAskLocationPermission) {
+            mIsAskLocationPermission = false;
+            super.onResume();
+            return;
+        }
         isLoading = false;
         locationStart = true;
-        startService();
+        requesLocationPermission();
         super.onResume();
     }
 
@@ -589,5 +601,31 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         PictureAirLog.out("in or out special location......");
     }
 
+    private void requesLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                mIsAskLocationPermission = true;
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                return;
+            }
+            mIsAskLocationPermission = true;
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            return;
+        }
+        startService();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (Manifest.permission.ACCESS_COARSE_LOCATION.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startService();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
 }

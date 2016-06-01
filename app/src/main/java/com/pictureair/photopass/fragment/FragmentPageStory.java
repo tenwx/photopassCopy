@@ -1,14 +1,19 @@
 package com.pictureair.photopass.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -156,6 +161,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private SettingUtil settingUtil;
     private LinearLayout storyLeadBarLinearLayout;
     private TabPageIndicator indicator;
+
+    private static final int REQUEST_STORAGE_PERMISSION = 1;
+    private boolean mIsAskStoragePermission = false;
 
     //申明handler消息回调机制
 
@@ -511,7 +519,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     pppPop.dismiss();
                 }
                 break;
-
             default:
                 break;
         }
@@ -963,6 +970,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void onResume() {
         PictureAirLog.out(TAG + "  ==onResume");
+        if (mIsAskStoragePermission) {
+            mIsAskStoragePermission = false;
+            super.onResume();;
+            return;
+        }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -984,8 +996,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             if (!dialog.isShowing()) {
                 dialog.show();
             }
-            scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
-            scanPhotosThread.start();
+            requesPermission();
         } else {//检查本地文件夹，属于外部原因的检查
             PictureAirLog.out("need check local photos");
             new Thread(){
@@ -1690,5 +1701,30 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
     }
 
+    private void requesPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                mIsAskStoragePermission = true;
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+                return;
+            }
+            mIsAskStoragePermission = true;
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+            return;
+        }
+        scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
+        scanPhotosThread.start();
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_STORAGE_PERMISSION:
+                scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
+                scanPhotosThread.start();
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,6 +43,9 @@ import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
 import com.pictureair.photopass.util.AppManager;
+
+import java.util.List;
+
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -432,6 +436,19 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
             last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> listFragments = getSupportFragmentManager().getFragments();
+        if (listFragments != null && listFragments.size() >0) {
+            for (Fragment fragment : listFragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
         }
     }
 }

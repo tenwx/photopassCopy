@@ -39,6 +39,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OCRUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.camera.PlanarYUVLuminanceSource;
 
@@ -57,11 +58,13 @@ final class DecodeHandler extends Handler {
     private final MipCaptureActivity activity;
     private final MultiFormatReader multiFormatReader;
     private TessBaseAPI baseApi;
+    private MyToast myToast;
 
     DecodeHandler(MipCaptureActivity activity, Hashtable<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.activity = activity;
+        myToast = new MyToast(activity.getApplicationContext());
     }
 
     @Override
@@ -72,7 +75,12 @@ final class DecodeHandler extends Handler {
                 if (MipCaptureActivity.scanType == 1) { // 第一种模式
                     decode((byte[]) message.obj, message.arg1, message.arg2);
                 } else {// OCR模式
-                    decodeOCR((byte[]) message.obj, message.arg1, message.arg2);
+                    if (MipCaptureActivity.mNoStoragePermission) {
+                        decodeOCR((byte[]) message.obj, message.arg1, message.arg2);
+                    }else{
+                        myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+                    }
+
                 }
 
                 break;

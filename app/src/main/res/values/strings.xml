@@ -520,4 +520,7 @@
     <string name="preview_goods_null">预览商品(0/3)</string>
     <!-- postcard end-->
 
+    <!-- permission request start -->
+    <string name="permission_storage_message">请先在设置中打开读写手机存储权限</string>
+    <!-- permission request end -->
 </resources>
