@@ -236,7 +236,6 @@ public class PictureAirDbManager {
                 photoInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
                 photoInfo.isLove = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isLove")));
                 photoInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
-//                photoInfo.locationName = cursor.getString(cursor.getColumnIndex("locationName"));
                 photoInfo.locationCountry = cursor.getString(cursor.getColumnIndex("locationCountry"));
                 photoInfo.shareURL = cursor.getString(cursor.getColumnIndex("shareURL"));
                 photoInfo.isVideo = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isVideo")));

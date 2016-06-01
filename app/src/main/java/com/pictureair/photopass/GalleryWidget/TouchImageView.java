@@ -41,7 +41,7 @@ import java.util.TimerTask;
 @SuppressLint("NewApi")
 public class TouchImageView extends ImageView {
 
-    private int positionForTouchImageView = -1;
+//    private int positionForTouchImageView = -1;
 
     // private static final String TAG = "Touch";
     // These matrices will be used to move and zoom image

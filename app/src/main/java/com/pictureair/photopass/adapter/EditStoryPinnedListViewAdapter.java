@@ -186,7 +186,6 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	@Override
 	public long getHeaderId(int position) {
-		// TODO Auto-generated method stub
 		return photoList.get(position).sectionId;
 	}
 

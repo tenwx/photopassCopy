@@ -39,7 +39,7 @@ public class MyImageView extends ImageView {
 
 	protected Handler mHandler = new Handler();
 
-	int mThisWidth = -1, mThisHeight = -1;//布局后的宽度和高度，由于是全屏显示，这两个值等于屏幕分辨率
+//	int mThisWidth = -1, mThisHeight = -1;//布局后的宽度和高度，由于是全屏显示，这两个值等于屏幕分辨率
 
 	float mMaxZoom;// 最大缩放比例
 	float mMinZoom;// 最小缩放比例
@@ -185,8 +185,8 @@ public class MyImageView extends ImageView {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
-		mThisWidth = right - left;
-		mThisHeight = bottom - top;
+//		mThisWidth = right - left;
+//		mThisHeight = bottom - top;
 		if (image != null) {
 			getProperBaseMatrix(image, mBaseMatrix);
 			 setImageMatrix(getImageViewMatrix());

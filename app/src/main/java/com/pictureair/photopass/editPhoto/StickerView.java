@@ -30,7 +30,7 @@ public class StickerView extends View {
 	private StickerItem currentItem;// 当前操作的贴图数据
 	private float oldx, oldy;
 	private Paint rectPaint = new Paint();
-	private Paint boxPaint = new Paint();
+//	private Paint boxPaint = new Paint();
 
 	private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<Integer, StickerItem>();// 存贮每层贴图数据
 
@@ -79,8 +79,9 @@ public class StickerView extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// System.out.println("on draw!!~");
+		StickerItem item;
 		for (Integer id : bank.keySet()) {
-			StickerItem item = bank.get(id);
+			item= bank.get(id);
 			item.draw(canvas);
 		}// end for each
 	}

@@ -59,10 +59,10 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
         ibSave.setOnClickListener(this);
         bgUpdateInfo.setOnClickListener(this);
         etUserInfo.addTextChangedListener(new TextWatcher() {
-            int cou = 0;
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int cou = 0;
                 cou = before + count;
                 String editable = etUserInfo.getText().toString();
                 String str = AppUtil.inputTextFilter(editable); //过滤特殊字符

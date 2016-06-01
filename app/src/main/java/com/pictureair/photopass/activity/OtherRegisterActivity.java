@@ -194,10 +194,10 @@ public class OtherRegisterActivity extends BaseActivity implements
         etMonth.setOnClickListener(this);
         etDay.setOnClickListener(this);
         etName.addTextChangedListener(new TextWatcher() {
-            int cou = 0;
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int cou = 0;
                 cou = before + count;
                 String editable = etName.getText().toString();
                 String str = AppUtil.inputTextFilter(editable); //过滤特殊字符

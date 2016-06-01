@@ -94,7 +94,7 @@ public abstract class ImageViewTouchBase extends ImageView implements
 	private boolean mScaleTypeChanged;
 	private boolean mBitmapChanged;
 
-	final protected int DEFAULT_ANIMATION_DURATION = 200;
+	protected final int DEFAULT_ANIMATION_DURATION = 200;
 
 	protected RectF mBitmapRect = new RectF();
 	protected RectF mCenterRect = new RectF();

@@ -42,7 +42,7 @@ public class StickerItem {
 	private float roatetAngle = 0;
 	boolean isDrawHelpTool = false;
 	private Paint dstPaint = new Paint();
-	private Paint paint = new Paint();
+//	private Paint paint = new Paint();
 	private Paint helpBoxPaint = new Paint();
 
 	private float initWidth;// 加入屏幕时原始宽度
@@ -255,7 +255,7 @@ public class StickerItem {
 		// detectRotateRect
 	}
 
-	Path path = new Path();
+//	Path path = new Path();
 
 	/**
 	 * 缩放指定矩形
@@ -285,8 +285,8 @@ public class StickerItem {
 	 * 
 	 * 
 	 * @param rect
-	 * @param centerX
-	 * @param centerY
+	 * @param center_x
+	 * @param center_y
 	 * @param roatetAngle
 	 */
 	private static void rotateRect(RectF rect, float center_x, float center_y,

@@ -79,7 +79,7 @@ public class WheelView extends View {
 	private List<OnWheelScrollListener> scrollingListeners = new LinkedList<OnWheelScrollListener>();
 	private List<OnWheelClickedListener> clickingListeners = new LinkedList<OnWheelClickedListener>();
 	private TextView textView1,textView2,textView3;
-	String label="";
+//	String label="";
 
 	/**
 	 * Constructor

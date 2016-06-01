@@ -90,7 +90,6 @@ public class WebViewActivity extends BaseActivity {
 
     /**
      * 发送广播。 0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
-     * @param payType
      */
     private void sendBroadcast(int payType){
         Intent intent = new Intent("com.payment.action");

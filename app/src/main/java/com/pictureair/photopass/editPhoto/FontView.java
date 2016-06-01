@@ -31,7 +31,7 @@ public class FontView extends ImageView {
     public FontItem currentItem;// 当前操作的贴图数据
     private float oldx, oldy;
     private Paint rectPaint = new Paint();
-    private Paint boxPaint = new Paint();
+//    private Paint boxPaint = new Paint();
 
     private LinkedHashMap<Integer, FontItem> bank = new LinkedHashMap<Integer, FontItem>();// 存贮每层贴图数据
 

@@ -10,7 +10,7 @@ import com.pictureair.photopass.util.PictureAirLog;
  * Created by mordonez on 1/14/14.
  */
 public class Amaro extends Filter {
-    private final String AMARO = "Amaro";
+    private static final String AMARO = "Amaro";
 
 
     public Amaro() {

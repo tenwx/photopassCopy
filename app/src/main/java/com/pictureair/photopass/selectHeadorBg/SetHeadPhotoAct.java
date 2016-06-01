@@ -41,7 +41,7 @@ import java.lang.ref.WeakReference;
 public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     private ClipImageLayout mClipImageLayout;
     private final String IMAGE_TYPE = "image/*";
-    private final int IMAGE_CODE = 0; // 这里的IMAGE_CODE是自己任意定义的
+    private final static int IMAGE_CODE = 0; // 这里的IMAGE_CODE是自己任意定义的
     private ImageView clip;
     private ImageView back;
     private SharedPreferences sp;

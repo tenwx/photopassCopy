@@ -41,7 +41,7 @@ import de.greenrobot.event.Subscribe;
 
 
 public class StoryFragment extends Fragment {
-	private final String TAG = "StoryFragment";
+	private static final String TAG = "StoryFragment";
 	private GridView gridView;
 	private RelativeLayout noPhotoRelativeLayout;
 	private TextView noPhotoTextView;
@@ -49,7 +49,7 @@ public class StoryFragment extends Fragment {
 	private ArrayList<PhotoInfo> targetArrayList;
 	private ArrayList<PhotoInfo> photoInfoArrayList;
 	private int tab;
-	private MyApplication application;
+//	private MyApplication application;
 	private View view;
 	private SharedPreferences countShare;
 	private SwipeRefreshLayout refreshLayout;
@@ -86,7 +86,7 @@ public class StoryFragment extends Fragment {
 			photoInfoArrayList = getArguments().getParcelableArrayList("photo");
 			targetArrayList = getArguments().getParcelableArrayList("target");
 			tab = getArguments().getInt("tab");
-			application = (MyApplication) getActivity().getApplication();
+//			application = (MyApplication) getActivity().getApplication();
 		}
 		super.onAttach(context);
 	}

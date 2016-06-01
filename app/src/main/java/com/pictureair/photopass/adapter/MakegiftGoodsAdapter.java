@@ -21,7 +21,7 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 	private LayoutInflater mInflater;
 	private List<GoodsInfo> mDatas;
 	private ImageLoader imageLoader;
-	private int width = 0;
+//	private int width = 0;
 
 	public MakegiftGoodsAdapter(Context context, List<GoodsInfo> mDatas)
 	{

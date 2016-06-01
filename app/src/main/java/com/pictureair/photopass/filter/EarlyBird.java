@@ -16,7 +16,7 @@ import com.pictureair.photopass.util.PictureAirLog;
  * Created by mordonez on 1/14/14.
  */
 public class EarlyBird extends Filter{
-    private final String EARLYBIRD = "EarlyBird";
+    private static final String EARLYBIRD = "EarlyBird";
 
     public EarlyBird() {
 
