@@ -1,10 +1,14 @@
 package com.pictureair.photopass.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +35,8 @@ import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 登录页面 点击登录按钮之后，需要触发几个接口 1.登录接口 2.登录成功之后，需要获取一些信息，会调用获取购物车数量，获取storeId，获取PP列表
@@ -62,6 +68,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
     private String forGetphoto;
     private String forGetPwd;
+
+    private List<String> permissionList;
+    private List<String> permissionNeed;
+    private static final int REQUEST_ASK_PERMISSION = 1;
+    private boolean mIsAskPermission = false;
 
     private final Handler loginHandler = new LoginHandler(this);
 
@@ -141,7 +152,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             case START_CHECK_UPDATE:
                 checkUpdateManager.startCheck();
                 break;
-
             default:
                 break;
         }
@@ -351,4 +361,67 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         finish();
     }
 
+    private boolean addPermission(List<String> permissionList, String permission) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(permission);
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this,permission)) {
+                 return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsAskPermission) {
+            mIsAskPermission = false;
+            return;
+        }
+        requesPermission();
+    }
+
+    private void requesPermission() {
+        if (permissionList != null) {
+            permissionList.clear();
+            permissionList = null;
+        }
+        permissionList = new ArrayList<String>();
+        if (permissionNeed != null) {
+            permissionNeed.clear();
+            permissionNeed = null;
+        }
+        permissionNeed = new ArrayList<String>();
+        if (!addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            permissionNeed.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            permissionNeed.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (!addPermission(permissionList, Manifest.permission.CAMERA)) {
+            permissionNeed.add(Manifest.permission.CAMERA);
+        }
+        if (!addPermission(permissionList, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            permissionNeed.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (!addPermission(permissionList, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            permissionNeed.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (permissionList.size() > 0) {
+            if (permissionNeed.size() > 0) {
+                mIsAskPermission = true;
+                ActivityCompat.requestPermissions(LoginActivity.this,permissionNeed.toArray(new String[permissionNeed.size()]),REQUEST_ASK_PERMISSION);
+                return;
+            }
+            mIsAskPermission = true;
+            ActivityCompat.requestPermissions(LoginActivity.this,permissionList.toArray(new String[permissionList.size()]),REQUEST_ASK_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

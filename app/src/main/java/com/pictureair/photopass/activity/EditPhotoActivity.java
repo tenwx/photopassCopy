@@ -1,6 +1,7 @@
 package com.pictureair.photopass.activity;
 
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -66,6 +67,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
+import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
@@ -170,6 +172,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	Matrix touchMatrix; //纪录图片的 Matrix
 	LinkedHashMap<Integer, StickerItem> addItems;
+
+	private MyToast myToast;
 
 	// 旋转图片组件
 
@@ -334,6 +338,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //		}.start();
 
 		//		initDate();
+		myToast = new MyToast(getApplicationContext());
 	}
 
 
@@ -676,7 +681,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					editPhotoInfoArrayList.clear();
 					addEditPhotoInfo(photoURL,0,null,null,"",0);
 				}
-
+				if (!API1.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+					break;
+				}
 				SaveStickersTask task = new SaveStickersTask();
 				if (editType == 2) { //滤镜处理过的
 					task.execute(newImage);
@@ -690,6 +698,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				break;
 			case R.id.preview_save: //真正的保存按钮。
 				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+				if (!API1.checkPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+					break;
+				}
+
 				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
 					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
 					dialog.show();

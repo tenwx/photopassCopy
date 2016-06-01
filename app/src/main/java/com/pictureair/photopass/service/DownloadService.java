@@ -1,5 +1,6 @@
 package com.pictureair.photopass.service;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,6 +27,7 @@ import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.MyToast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -54,6 +56,7 @@ public class DownloadService extends Service {
     private File file;  //文件
     private String photoId;// 图片的photoId
     private String lastDownLoadUrl = "";
+    private MyToast myToast;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -65,6 +68,7 @@ public class DownloadService extends Service {
         super.onCreate();
         PictureAirLog.out("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        myToast = new MyToast(getApplicationContext());
     }
 
     @SuppressWarnings("deprecation")
@@ -98,6 +102,10 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         PictureAirLog.out("DownloadService ----------> preparedownload");
         PictureAirLog.out("DownloadService ----------> before notification");
+        if (!API1.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+            return;
+        }
         Notification notification = new NotificationCompat.Builder(mContext).
                 setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.downloading)).setWhen(System.currentTimeMillis()).setTicker(mContext.getString(R.string.downloading)).build();

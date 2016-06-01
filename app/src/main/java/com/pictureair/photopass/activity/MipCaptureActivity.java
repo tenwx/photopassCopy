@@ -1,7 +1,9 @@
 package com.pictureair.photopass.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -11,6 +13,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -83,6 +87,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private TextView tvScanQRcodeTips;// QR码的提示字体。
     private RelativeLayout rlMask,rlLight; //蒙版, 高亮部分
     private ScanView ocrScanView;
+
+    public static boolean mNoStoragePermission;
+    private static final int REQUEST_CAMERA_PERMISSION = 3;
+    private boolean mIsAskCameraPermission = false;
     // 点击响应方法
     @Override
     public void onClick(View view) {
@@ -196,7 +204,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
                 finish();
                 break;
-
             default:
                 break;
         }
@@ -210,19 +217,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
         scanType = 1; // 每次进入的时候 更改为扫描QR码的方式。
-        File tessdata = new File(Common.OCR_PATH); //创建文件夹。
-        if (!tessdata.exists()){
-            tessdata.mkdirs();
-        }
-        // 移动OCR 需要的data 到SD卡上。
-        if (!(new File(Common.OCR_DATA_PATH)).exists()){
-            try {
-                copyDataToSD(Common.OCR_DATA_PATH);
-            }catch (Exception e){
-
-            }
-        }
-
+        checkStoragePermissionAndCopyData();
         ocrScanView = (ScanView) findViewById(R.id.scan_view_line_ocr);
         tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
 //        tvCenterHint.setRotation(90);
@@ -255,11 +250,15 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     @Override
     protected void onResume() {
         super.onResume();
+        if (mIsAskCameraPermission) {
+            mIsAskCameraPermission = false;
+            return;
+        }
         PictureAirLog.out("resume==============");
 
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
-            initCamera(surfaceHolder);
+            requestCameraPermissionAndInit();
         } else {
             surfaceHolder.addCallback(this);
             surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -374,7 +373,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         PictureAirLog.out("----------holder create");
         if (!hasSurface) {
             hasSurface = true;
-            initCamera(holder);
+            requestCameraPermissionAndInit();
+
         }
 
     }
@@ -502,4 +502,56 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         myInput.close();
         myOutput.close();
     }
+
+    private void copyOCRDataToStorage() {
+        File tessdata = new File(Common.OCR_PATH); //创建文件夹。
+        if (!tessdata.exists()){
+            tessdata.mkdirs();
+        }
+        // 移动OCR 需要的data 到SD卡上。
+        if (!(new File(Common.OCR_DATA_PATH)).exists()){
+            try {
+                copyDataToSD(Common.OCR_DATA_PATH);
+            }catch (Exception e){
+
+            }
+        }
+    }
+
+    private void checkStoragePermissionAndCopyData() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            copyOCRDataToStorage();
+            mNoStoragePermission = true;
+        }else{
+            mNoStoragePermission = false;
+        }
+    }
+
+    private void requestCameraPermissionAndInit() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(MipCaptureActivity.this, Manifest.permission.CAMERA)) {
+                mIsAskCameraPermission = true;
+                ActivityCompat.requestPermissions(MipCaptureActivity.this,new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                return;
+            }
+            mIsAskCameraPermission = true;
+            ActivityCompat.requestPermissions(MipCaptureActivity.this,new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+            return;
+        }
+        initCamera(surfaceView.getHolder());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA_PERMISSION:
+                if (Manifest.permission.CAMERA.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initCamera(surfaceView.getHolder());
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 }

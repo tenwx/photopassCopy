@@ -520,4 +520,8 @@
     <string name="preview_goods_null">预览商品(0/3)</string>
     <!-- postcard end-->
 
+    <!-- permission request start -->
+    <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
+    <!-- permission request start -->
+
 </resources>
