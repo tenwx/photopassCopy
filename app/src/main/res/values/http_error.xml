@@ -222,4 +222,8 @@
     <string name="http_error_code_6175">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6176">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6177">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_5044">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_5045">加载失败，请检查您当前的网络环境</string>
+    <string name="http_error_code_5046">银联支付授权失败</string>
+    <string name="http_error_code_5047">加载失败，请检查您当前的网络环境</string>
 </resources>

@@ -204,7 +204,7 @@
     <!-- blur start -->
     <string name="blur_intro">Disney PhotoPass+ allows you to view and download all your photos taken by our professional Disney PhotoPass Photographers in a single day.</string>
     <string name="up_ppp_money">Upgrade to Disney PhotoPass+</string>
-    <string name="use_ppp">Upgrade your purchased PhotoPass+</string>
+    <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
     <string name="no_ppp_tips">Have not PhotoPass+ !</string>
@@ -465,7 +465,7 @@
     <string name="all">Select All</string>
     <string name="disall">Disselect</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
-    <string name="start_delete">Your account will no longer display these photos once deleted. Confirm delete?</string>
+    <string name="start_delete">Your account will no longer display these photos once deleted. Confirm to delete?</string>
     <string name="edit_story_album">Select</string>
     <!-- edit story end -->
 
