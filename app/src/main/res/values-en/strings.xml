@@ -500,7 +500,7 @@
     <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
     <string name="smssdk_explain_briefly"> I have read and agree to the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
-    <string name="please_agree">Please confirm to agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
+    <string name="please_agree">Please agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>
     <string name="smssdk_ok">OK</string>
@@ -522,5 +522,6 @@
 
     <!-- permission request start -->
     <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
+    <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
     <!-- permission request end -->
 </resources>

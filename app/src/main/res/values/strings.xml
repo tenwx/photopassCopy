@@ -522,5 +522,6 @@
 
     <!-- permission request start -->
     <string name="permission_storage_message">请先在设置中打开读写手机存储权限</string>
+    <string name="permission_read_phone_state_message">请先在设置中打开设备信息权限</string>
     <!-- permission request end -->
 </resources>

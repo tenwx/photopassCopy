@@ -1,5 +1,6 @@
 package com.pictureair.photopass.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -456,11 +457,16 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             }
         } else if (1 == payType) {
             PictureAirLog.v(TAG, "yl");
-            if (!dialog.isShowing()) {
-                dialog.show();
+            if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE)) {//没有权限
+                newToast.setTextAndShow(R.string.permission_read_phone_state_message, Common.TOAST_SHORT_TIME);
+                sbmtButton.setEnabled(true);
+            } else {
+                if (!dialog.isShowing()) {
+                    dialog.show();
+                }
+                PictureAirLog.out("========orderId" + orderId);
+                API1.getUnionPayTN(orderId, paymentOrderHandler);
             }
-            PictureAirLog.out("========orderId" + orderId);
-            API1.getUnionPayTN(orderId, paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
             Intent intent = new Intent(PaymentOrderActivity.this, WebViewActivity.class);

@@ -409,6 +409,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             permissionNeed.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         }
 
+        if (!addPermission(permissionList, Manifest.permission.READ_PHONE_STATE)) {
+            permissionNeed.add(Manifest.permission.READ_PHONE_STATE);
+        }
+
         if (permissionList.size() > 0) {
             if (permissionNeed.size() > 0) {
                 mIsAskPermission = true;
