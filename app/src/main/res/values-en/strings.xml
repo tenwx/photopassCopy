@@ -207,7 +207,7 @@
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
-    <string name="no_ppp_tips">Have not PhotoPass+ !</string>
+    <string name="no_ppp_tips">You haven\'t any expiry PhotoPass+</string>
     <!-- blur end -->
 
     <!-- download start -->

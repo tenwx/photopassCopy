@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -74,6 +75,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -1512,6 +1514,22 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             dia.getWindow().setAttributes(layoutParams);
         }
         super.onConfigurationChanged(newConfig);
+
+        String language = MyApplication.getInstance().getLanguageType();
+        PictureAirLog.out("language------>" + language);
+        Configuration config = getResources().getConfiguration();
+        if (!language.equals("")) {//语言不为空
+            if (language.equals(Common.ENGLISH)) {
+                config.locale = Locale.US;
+            } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+            }
+        }
+        PictureAirLog.out("new config---->" + config.locale);
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        getResources().updateConfiguration(config, displayMetrics);
+        PictureAirLog.out("update configuration done");
+
     }
 
     /**
