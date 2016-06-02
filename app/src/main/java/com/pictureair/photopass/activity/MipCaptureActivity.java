@@ -522,7 +522,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     }
 
     private void checkStoragePermissionAndCopyData() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             copyOCRDataToStorage();
             mNoStoragePermission = true;
         }else{
@@ -531,7 +531,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     }
 
     private void requestCameraPermissionAndInit() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.CAMERA)) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(MipCaptureActivity.this, Manifest.permission.CAMERA)) {
                 mIsAskCameraPermission = true;
                 ActivityCompat.requestPermissions(MipCaptureActivity.this,new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);

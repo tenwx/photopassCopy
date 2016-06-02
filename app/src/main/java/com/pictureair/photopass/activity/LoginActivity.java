@@ -3,12 +3,10 @@ package com.pictureair.photopass.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -362,7 +360,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     }
 
     private boolean addPermission(List<String> permissionList, String permission) {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+        if (!AppUtil.checkPermission(getApplicationContext(), permission)) {
             permissionList.add(permission);
             if (!ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this,permission)) {
                  return false;
