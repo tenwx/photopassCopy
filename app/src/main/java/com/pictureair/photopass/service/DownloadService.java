@@ -80,7 +80,11 @@ public class DownloadService extends Service {
         Bundle b = intent.getExtras();
         if (b != null) {
             photos = b.getParcelableArrayList("photos");
-            if (photos != null && photos.size() > 0) {
+
+            if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+                stopSelf();//下载服务停止
+            } else if (photos != null && photos.size() > 0) {
                 //将新的数据放入到下载队列的末尾
                 for (int i = 0; i < photos.size(); i++) {
                     downloadList.add(photos.get(i));
@@ -103,10 +107,6 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         PictureAirLog.out("DownloadService ----------> preparedownload");
         PictureAirLog.out("DownloadService ----------> before notification");
-        if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
-            return;
-        }
         Notification notification = new NotificationCompat.Builder(mContext).
                 setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.downloading)).setWhen(System.currentTimeMillis()).setTicker(mContext.getString(R.string.downloading)).build();

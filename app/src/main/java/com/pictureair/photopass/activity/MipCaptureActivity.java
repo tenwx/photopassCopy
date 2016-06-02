@@ -550,6 +550,16 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             case REQUEST_CAMERA_PERMISSION:
                 if (Manifest.permission.CAMERA.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initCamera(surfaceView.getHolder());
+                } else {
+                    newToast.setTextAndShow(R.string.camera_closed_jump_to_manual, Common.TOAST_SHORT_TIME);
+                    Intent intent = new Intent();
+                    intent.setClass(this, InputCodeActivity.class);
+                    intent.putExtra("type", getIntent().getStringExtra("type"));
+                    intent.putExtra("needbind", getIntent().getStringExtra("needbind"));
+                    intent.putExtra("binddate", getIntent().getStringExtra("binddate"));
+                    intent.putExtra("pppid", getIntent().getStringExtra("pppid"));
+                    startActivity(intent);
+                    finish();
                 }
                 break;
             default:
