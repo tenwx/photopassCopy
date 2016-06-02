@@ -384,14 +384,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private void requesPermission() {
         if (permissionList != null) {
             permissionList.clear();
-            permissionList = null;
+        } else {
+            permissionList = new ArrayList<>();
         }
-        permissionList = new ArrayList<String>();
+
         if (permissionNeed != null) {
             permissionNeed.clear();
-            permissionNeed = null;
+        } else {
+            permissionNeed = new ArrayList<>();
         }
-        permissionNeed = new ArrayList<String>();
+
         if (!addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             permissionNeed.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
@@ -412,11 +414,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         if (permissionList.size() > 0) {
             if (permissionNeed.size() > 0) {
                 mIsAskPermission = true;
-                ActivityCompat.requestPermissions(LoginActivity.this,permissionNeed.toArray(new String[permissionNeed.size()]),REQUEST_ASK_PERMISSION);
+                ActivityCompat.requestPermissions(LoginActivity.this, permissionNeed.toArray(new String[permissionNeed.size()]), REQUEST_ASK_PERMISSION);
                 return;
             }
             mIsAskPermission = true;
-            ActivityCompat.requestPermissions(LoginActivity.this,permissionList.toArray(new String[permissionList.size()]),REQUEST_ASK_PERMISSION);
+            ActivityCompat.requestPermissions(LoginActivity.this, permissionList.toArray(new String[permissionList.size()]), REQUEST_ASK_PERMISSION);
         }
     }
 

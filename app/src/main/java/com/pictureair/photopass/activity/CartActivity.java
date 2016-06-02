@@ -560,7 +560,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         paymentButton.setBackgroundResource(R.color.red);
                     }
                     paymentButton.setText(R.string.delete);
-                    rtButton.setVisibility(View.INVISIBLE);
+//                    rtButton.setVisibility(View.INVISIBLE);
                 }
                 cartAdapter.notifyDataSetChanged();
                 break;
