@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -93,13 +94,7 @@ public class DealCodeUtil {
 				case API1.CHECK_CODE_SUCCESS://检查code成功
 					PictureAirLog.out("----------->check code success" + msg.obj);
 					if (msg.obj == null || "invalid".equals(msg.obj.toString())) {
-						if (dealWay != null && dealWay.equals("coupon")) {
-							id = R.string.incorrect_coupon;
-						} else {
-							id = R.string.http_error_code_6136;
-						}
-						myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
-						handler.sendEmptyMessage(DEAL_CODE_FAILED);
+						checkCodeAvailableFailed();
 						break;
 					} else if ("photoPass".equals(msg.obj.toString())) {
 						codeType = "pp";
@@ -108,6 +103,13 @@ public class DealCodeUtil {
 					} else if ("coupon".equals(msg.obj.toString())) {
 						codeType = "coupon";
 					}
+
+					if (TextUtils.isEmpty(codeType)) {//为空
+						checkCodeAvailableFailed();
+						break;
+					}
+
+					PictureAirLog.out("codetype--->" + codeType + " dealway--->" + dealWay);
 					if (dealWay != null) {//如果从ppp或者coupon页面进来，卡的类型不一致，直接返回，退出，一致，则添加
 						if (!dealWay.equals(codeType)) {//类型不一致
 							if (dealWay.equals("ppp")) {//ppp
@@ -201,7 +203,20 @@ public class DealCodeUtil {
 		bindData = intent.getStringExtra("binddate");
 		pppId = intent.getStringExtra("pppid");
 		this.isInputAct = isInputAct;
-		sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME,Context.MODE_PRIVATE);
+		sharedPreferences = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME,Context.MODE_PRIVATE);
+	}
+
+	/**
+	 * 检查code失败的情况
+	 */
+	private void checkCodeAvailableFailed(){
+		if (dealWay != null && dealWay.equals("coupon")) {
+			id = R.string.incorrect_coupon;
+		} else {
+			id = R.string.http_error_code_6136;
+		}
+		myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
+		handler.sendEmptyMessage(DEAL_CODE_FAILED);
 	}
 	
 	/**

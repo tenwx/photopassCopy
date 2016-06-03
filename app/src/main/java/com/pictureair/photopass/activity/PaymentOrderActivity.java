@@ -1,9 +1,7 @@
 package com.pictureair.photopass.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,21 +23,20 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
-import com.pictureair.photopass.unionpay.UnionpayRSAUtil;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.unionpay.UPPayAssistEx;
 
 import java.lang.ref.WeakReference;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -79,7 +76,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private org.json.JSONObject payAsyncResultJsonObject;
     private CustomProgressDialog dialog;
 
-    private int payType;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
+    private int payType = 1;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
     private PayUtils payUtils;
 
     private OrderInfo orderInfo;
@@ -94,7 +91,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private boolean isPaying = false;
 
     //mMode参数解释： "00" - 启动银联正式环境 "01" - 连接银联测试环境
-    private final String mMode = "01";
+    private final String mMode = "00";
     private String tNCode;
 
     private boolean isNeedPay = true;//是否需要支付
@@ -288,17 +285,16 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     }
 
     private void init() {
-        IntentFilter filter = new IntentFilter("com.payment.action");
-        registerReceiver(broadcastReceiver, filter);
-        sPreferences = getSharedPreferences(Common.USERINFO_NAME,
-                MODE_PRIVATE);
+//        IntentFilter filter = new IntentFilter("com.payment.action");
+//        registerReceiver(broadcastReceiver, filter);
+        sPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         newToast = new MyToast(this);
         myApplication = (MyApplication) getApplication();
 
 //		lrtLayout.setOnClickListener(this);
         sbmtButton.setOnClickListener(this);
-        zfButton.setImageResource(R.drawable.sele);
-        yhkButton.setImageResource(R.drawable.nosele);
+        yhkButton.setImageResource(R.drawable.sele);
+        zfButton.setImageResource(R.drawable.nosele);
         paypalButton.setImageResource(R.drawable.nosele);
         wechatButton.setImageResource(R.drawable.nosele);
 
@@ -325,7 +321,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             // 从订单页面进入
             PictureAirLog.v(TAG, "从订单页面进入");
             orderInfo = getIntent().getParcelableExtra("deliveryInfo");
-            orderid = orderInfo.orderId;
+            orderid = orderInfo.orderNumber;
             // 此处信息，获取比较麻烦，暂时写死
             priceString = orderInfo.orderTotalPrice + "";
 //            nameString = "PictureAir";
@@ -461,25 +457,36 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             }
         } else if (1 == payType) {
             PictureAirLog.v(TAG, "yl");
-            if (!dialog.isShowing()) {
-                dialog.show();
+            if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE)) {//没有权限
+                newToast.setTextAndShow(R.string.permission_read_phone_state_message, Common.TOAST_SHORT_TIME);
+                sbmtButton.setEnabled(true);
+            } else {
+                if (!dialog.isShowing()) {
+                    dialog.show();
+                }
+                PictureAirLog.out("========orderId" + orderId);
+                API1.getUnionPayTN(orderId, paymentOrderHandler);
             }
-            API1.getUnionPayTN(orderId, paymentOrderHandler);
         } else if (6 == payType) {
             PictureAirLog.v(TAG, "paypal");
             Intent intent = new Intent(PaymentOrderActivity.this, WebViewActivity.class);
             intent.putExtra("key", 4);
             intent.putExtra("orderId", orderId);
-            startActivity(intent);
+            startActivityForResult(intent, 3333);
         } else if (payType == 7) {
             weChatIsPaying = true;
             PictureAirLog.v(TAG, "wechat");
-            try {
-                // 调起微信支付
-                payUtils.wxPay();
-            } catch (Exception e) {
-                e.printStackTrace();
-                newToast.setTextAndShow(R.string.pay_failed, Common.TOAST_SHORT_TIME);
+            if (payUtils.isWechatInstalled()) {
+                try {
+                    // 调起微信支付
+                    payUtils.wxPay();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    newToast.setTextAndShow(R.string.pay_failed, Common.TOAST_SHORT_TIME);
+                }
+            } else {
+                newToast.setTextAndShow(R.string.install_wechat_first, Common.TOAST_SHORT_TIME);
+                sbmtButton.setEnabled(true);
             }
         } else {
             PictureAirLog.v(TAG, "other");
@@ -556,41 +563,64 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (data == null) {
             return;
         }
-        //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
-        String str = data.getExtras().getString("pay_result");
-        PictureAirLog.e(TAG,"str" + str);
-        if (str.equalsIgnoreCase("success")) {
-            // 支付成功后，extra中如果存在result_data，取出校验
-            // result_data结构见c）result_data参数说明
-            if (data.hasExtra("result_data")) {
-                String result = data.getExtras().getString("result_data");
-                PictureAirLog.e(TAG,"result" + result);
-                JSONObject resultJson = JSONObject.parseObject(result);
-                PictureAirLog.e(TAG,"resultJson" + resultJson);
-                String sign = resultJson.getString("sign");
-                PictureAirLog.e(TAG,"sign" + sign);
-                String dataOrg = resultJson.getString("data");
-                // 验签证书同后台验签证书
-                // 此处的verify，商户需送去商户后台做验签
-                boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
 
-                if (ret) {
-                    // 验证通过后，显示支付结果
+        // ipaylink 支付回调。
+        if (requestCode == 3333 && resultCode == 111) {
+            int payType = data.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
+            switch (payType) {
+                case 0:
                     paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-                } else {
-                    // 验证不通过后的处理
-                    // 建议通过商户后台查询支付结果
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-                }
-            } else {
-                // 未收到签名信息
-                // 建议通过商户后台查询支付结果
-                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+                    break;
+                case -1:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+                    break;
+                case -2:
+                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
+                    break;
             }
-        } else if (str.equalsIgnoreCase("fail")) {
-            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
-        } else if (str.equalsIgnoreCase("cancel")) {
-            paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+            return;
+        }
+
+        if (requestCode == 10) {
+            //支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
+            String str = data.getExtras().getString("pay_result");
+            PictureAirLog.e(TAG, "str" + str);
+            if (str.equalsIgnoreCase("success")) {
+                // 支付成功后，extra中如果存在result_data，取出校验
+                // result_data结构见c）result_data参数说明
+                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//                if (data.hasExtra("result_data")) {
+//                    String result = data.getExtras().getString("result_data");
+//                    PictureAirLog.e(TAG, "result" + result);
+//                    JSONObject resultJson = JSONObject.parseObject(result);
+//                    PictureAirLog.e(TAG, "resultJson" + resultJson);
+//                    String sign = resultJson.getString("sign");
+//                    PictureAirLog.e(TAG, "sign" + sign);
+//                    String dataOrg = resultJson.getString("data");
+////                    // 验签证书同后台验签证书
+////                    // 此处的verify，商户需送去商户后台做验签
+////                    boolean ret = UnionpayRSAUtil.verify(dataOrg, sign, mMode);
+////
+//////                    PictureAirLog.e(TAG,"========" + ret);
+////
+////                    if (ret) {
+////                        // 验证通过后，显示支付结果
+////                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+////                    } else {
+////                        // 验证不通过后的处理
+////                        // 建议通过商户后台查询支付结果
+////                        paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+////                    }
+//                } else {
+//                    // 未收到签名信息
+//                    // 建议通过商户后台查询支付结果
+//                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
+//                }
+            } else if (str.equalsIgnoreCase("fail")) {
+                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+            } else if (str.equalsIgnoreCase("cancel")) {
+                paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
+            }
         }
     }
 
@@ -619,12 +649,15 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
                 myApplication.setPhotoIsPaid(true);
                 PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
+                String tab = myApplication.getIsBuyingTabName();
+                String photoId = myApplication.getIsBuyingPhotoId();
+                PictureAirLog.out("tabname---->" + tab + "photoid--->" + photoId);
 
                 intent = new Intent(PaymentOrderActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", -1);
-                bundle.putString("tab", myApplication.getIsBuyingTabName());
-                bundle.putString("photoId", myApplication.getIsBuyingPhotoId());
+                bundle.putString("tab", tab);
+                bundle.putString("photoId", photoId);
                 intent.putExtra("bundle", bundle);
 
                 // 清空标记
@@ -665,7 +698,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             EventBus.getDefault().unregister(this);
         }
         paymentOrderHandler.removeCallbacksAndMessages(null);
-        unregisterReceiver(broadcastReceiver); // 解除广播
+//        unregisterReceiver(broadcastReceiver); // 解除广播
     }
 
 
@@ -742,29 +775,5 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             EventBus.getDefault().removeStickyEvent(asyncPayResultEvent);
         }
     }
-
-
-    /**
-     * 广播 用于接受iPayLink的数据。
-     */
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // TODO Auto-generated method stub
-            int payType = intent.getIntExtra("payType", -2); //0: 支付成功 ， -1: 支付取消 ， -2: 支付失败
-            switch (payType) {
-                case 0:
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_SUCCESS);
-                    break;
-                case -1:
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_CANCEL);
-                    break;
-                case -2:
-                    paymentOrderHandler.sendEmptyMessage(PaymentOrderActivity.RQF_UNSUCCESS);
-                    break;
-            }
-        }
-    };
 
 }

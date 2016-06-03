@@ -31,6 +31,8 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
+import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PictureWorksDialog;
@@ -38,8 +40,6 @@ import com.pictureair.photopass.widget.PictureWorksDialog;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 
 /*
@@ -111,6 +111,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case UPDATE_UI:
+                PictureAirLog.out("update ui----->");
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
                 PictureAirLog.out("pp code size --->" + showPPCodeList.size());
                 // 更新界面  查看pp页面
@@ -129,6 +130,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     delete.setVisibility(View.GONE);
                     listPP.setVisibility(View.INVISIBLE);
                     noPhotoPassView.setVisibility(View.VISIBLE);
+                }
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
                 }
                 break;
 
@@ -222,14 +226,15 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         e.printStackTrace();
                     }
                 }
-                customProgressDialog.dismiss();
                 updateUI(UPDATE_UI);
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 break;
 
             case API1.GET_PPS_FAILED:// 获取pp列表失败
-                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                customProgressDialog.dismiss();
+//                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPHandler, true);
                 noPhotoPassView.setVisibility(View.GONE);
@@ -244,7 +249,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
             // seletePP的页面
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, null, true, isDeletePhoto, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, isDeletePhoto, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {
@@ -374,14 +379,16 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(pictureAirDbManager);
         myToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME,
-                MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
         back = (ImageView) findViewById(R.id.back);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         back.setOnClickListener(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
+        editor.commit();
     }
 
 
@@ -399,6 +406,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         ok.setVisibility(View.VISIBLE);
         ok.setOnClickListener(this);
         ok.setText(formaStringPPP(0, 1));
+        ok.setEnabled(false);
+        ok.setTextColor(getResources().getColor(R.color.gray_light5));
         final String[] finalPhotoCode = photoCode;
         new Thread() {
             public void run() {
@@ -441,22 +450,14 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         // pPCodeList = getIntent().getParcelableArrayListExtra("pPCodeList");
         showPPCodeList = new ArrayList<PPinfo>();
         listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this,
-                new ListOfPPAdapter.doShowPhotoListener() {
+                new ListOfPPAdapter.doDeletePhotoListener() {
 
                     @Override
-                    public void previewPhoto(int position, int tag) {
+                    public void deletePhoto(int position) {
                         // TODO Auto-generated method stub
-                        // 进入图片详情
-                        showPhotoDetail(position, tag);
+                        deleteAPI(position);// 提交删除PP
                     }
-                }, new ListOfPPAdapter.doDeletePhotoListener() {
-
-            @Override
-            public void deletePhoto(int position) {
-                // TODO Auto-generated method stub
-                deleteAPI(position);// 提交删除PP
-            }
-        }, false, isDeletePhoto, null, null);
+                }, false, isDeletePhoto, null, null);
 
         listPP.setAdapter(listPPAdapter);
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
@@ -474,43 +475,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         myPPHandler.sendMessage(message);
     }
 
-
-    public void showPhotoDetail(int curInedx, int tag) {
-        if (showPPCodeList == null || showPPCodeList.size() <= 0) {
-            return;
-        }
-        PictureAirLog.v(TAG, "showPhotoDetail size : " + showPPCodeList.size());
-        PhotoInfo photoInfo = showPPCodeList.get(curInedx)
-                .getSelectPhotoItemInfos().get(tag);
-        if (photoInfo.photoPathOrURL.equals("")) {
-            return;
-        }
-        selectedTag = tag;
-        selectedCurrent = curInedx;
-        selectedPhotoId = showPPCodeList.get(curInedx).getSelectPhotoItemInfos().get(tag).photoId;
-        MyApplication.getInstance().setRefreshViewAfterBuyBlurPhoto(Common.FROM_MYPHOTOPASS);
-
-        PictureAirLog.v(TAG, "showPhotoDetail curIndex : " + curInedx + "url-->" + photoInfo.photoPathOrURL);
-        Intent i = new Intent();
-
-        ArrayList<PhotoInfo> photopassArrayList = new ArrayList<PhotoInfo>();
-        //需要将picList中的图片数据全部转到成photopassArrayList
-        photopassArrayList.addAll(showPPCodeList.get(curInedx)
-                .getSelectPhotoItemInfos());
-        for (int j = 0; j < photopassArrayList.size(); j++) {
-            photopassArrayList.get(j).onLine = 1;
-        }
-        i.setClass(this, PreviewPhotoActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("position", photopassArrayList.indexOf(photoInfo));
-        bundle.putString("tab", "other");
-        bundle.putParcelableArrayList("photos", photopassArrayList);
-        i.putExtra("bundle", bundle);
-        startActivity(i);
-
-    }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -521,8 +485,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     back.setImageResource(R.drawable.back_white);
                     delete.setVisibility(View.VISIBLE);
                     PictureAirLog.d("===========", "取消删除......");
-                    updateUI(UPDATE_UI);//更新界面
-
+                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
                 } else {
                     finish();
                 }
@@ -530,6 +493,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.cancel:// 删除按钮
+                UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
                 PictureAirLog.d("==============",
                         "点击删除按钮 showPPCodeList" + showPPCodeList.size());
                 if (isDeletePhoto) {
@@ -588,7 +552,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         intent.putExtra("ppsStr",pps.toString());
                         intent.putExtra("isUseHavedPPP", true);
                         startActivity(intent);
-                        this.finish();
+//                        this.finish();
                     }else{
                         dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
                         API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
@@ -606,12 +570,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (isUseHavedPPP){
-
-        }else{
-        if (dppp != null) {
-
-        } else {
+        if (!isUseHavedPPP && dppp == null) {
             PictureAirLog.out("MyPPActivity----->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
                 PictureAirLog.out("deal data after bought photo");
@@ -626,6 +585,15 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 selectedPhotoId = null;
             }
         }
+
+        if (sharedPreferences.getBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
+            editor.commit();
+            if (!customProgressDialog.isShowing()) {
+                customProgressDialog.show();
+            }
+            updateUI(UPDATE_UI);
         }
     }
 

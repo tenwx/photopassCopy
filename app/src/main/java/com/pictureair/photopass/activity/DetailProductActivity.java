@@ -27,6 +27,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -38,8 +39,6 @@ import com.pictureair.photopass.widget.MyToast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pictureair.photopass.util.AppManager;
 
 /**
  * 商品明细类，此页面可以加入购物车
@@ -148,7 +147,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 
         //初始化数据
         myToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
         if (null != goodsInfo) {
@@ -158,7 +157,9 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        promotionPrice.setText(goodsInfo.getPrice() + "");
+        if (null != goodsInfo) {
+            promotionPrice.setText(goodsInfo.getPrice() + "");
+        }
         //实体商品-自提，数码商品-数码下载
         if (goodsInfo == null) {
             return;

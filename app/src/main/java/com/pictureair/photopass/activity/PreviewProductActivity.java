@@ -265,7 +265,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         //上传进度条
         dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
 
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             counTextView.setVisibility(View.INVISIBLE);

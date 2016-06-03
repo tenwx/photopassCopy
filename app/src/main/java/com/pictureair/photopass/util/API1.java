@@ -10,19 +10,15 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.entity.CartItemInfo;
-import com.pictureair.photopass.entity.HttpBaseJson;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-
-import org.apache.http.Header;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -109,6 +105,9 @@ public class API1 {
 
     public static final int GET_AD_LOCATIONS_FAILED = 2090;
     public static final int GET_AD_LOCATIONS_SUCCESS = 2091;
+
+    public static final int DELETE_PHOTOS_SUCCESS = 2101;
+    public static final int DELETE_PHOTOS_FAILED = 2100;
 
     /**
      * 发现
@@ -270,7 +269,7 @@ public class API1 {
 
                 super.onSuccess(jsonObject);
                 try {
-                    SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
                     Editor e = sp.edit();
                     e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
                     e.commit();
@@ -649,6 +648,33 @@ public class API1 {
         });
     }
 
+    /**
+     * 删除网络图片
+     * @param tokenId
+     * @param handler
+     */
+    public static void removePhotosFromPP(String tokenId, JSONArray ids, String ppCode, final Handler handler){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.SHARE_PHOTO_ID, ids.toJSONString());
+        params.put(Common.PP, ppCode);
+        PictureAirLog.out("param---->" + params.toString());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.REMOVE_PHOTOS_FROME_PP, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("delete photos----->" + jsonObject);
+                handler.sendEmptyMessage(DELETE_PHOTOS_SUCCESS);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.out("delete photos failed--->" + status);
+                handler.obtainMessage(DELETE_PHOTOS_FAILED, status, 0).sendToTarget();
+            }
+        });
+    }
 
     /**
      * 获取已收藏的地点信息
@@ -756,14 +782,14 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getADLocations(final Handler handler) {
+    public static void getADLocations(final int oldPosition, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_AD_LOCATIONS, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_AD_LOCATIONS_SUCCESS, jsonObject).sendToTarget();
+                handler.obtainMessage(GET_AD_LOCATIONS_SUCCESS, oldPosition, 0, jsonObject).sendToTarget();
             }
 
             @Override
@@ -1565,7 +1591,7 @@ public class API1 {
     public static void checkUpdate(Context context, final Handler handler, final String thisVerName, final String language) {
         final String channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
         PictureAirLog.out("channel------>" + channelStr);
-        String verson = context.getSharedPreferences(Common.APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
+        String verson = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1576,7 +1602,7 @@ public class API1 {
             public void onSuccess(JSONObject jsonObject) {
 
                 super.onSuccess(jsonObject);
-
+                PictureAirLog.out("update---->" + jsonObject);
                 /**
                  * 测试使用
                  */
@@ -2036,11 +2062,11 @@ public class API1 {
      *
      * @param handler
      */
-    public static void getUnionPayTN(String orderId , final Handler handler){
+    public static void getUnionPayTN(String orderCode , final Handler handler){
         PictureAirLog.e(TAG, MyApplication.getTokenId());
         final RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.ORDER_ID, orderId);
+        params.put(Common.ORDER_CODE, orderCode);
         PictureAirLog.e(TAG, MyApplication.getTokenId());
 
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_UNIONPAY_TN , params, new HttpCallback() {

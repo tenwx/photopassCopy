@@ -43,6 +43,27 @@
         android:layout_below="@id/discover_title"
         android:orientation="vertical"
         android:visibility="gone">
+        <TextView
+            android:id="@+id/latitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pp_dark_blue"/>
+
+        <TextView
+            android:id="@+id/longtitude"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pp_dark_blue"/>
+
+        <Button
+            android:id="@+id/getlocation"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="get location"
+            android:textColor="@color/pp_dark_blue"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package com.pictureair.photopass.activity;
 
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,16 +20,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -63,11 +62,12 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
+import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
@@ -78,8 +78,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
 public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener {
@@ -174,6 +172,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	Matrix touchMatrix; //纪录图片的 Matrix
 	LinkedHashMap<Integer, StickerItem> addItems;
+
+	private MyToast myToast;
 
 	// 旋转图片组件
 
@@ -347,6 +347,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //		}.start();
 
 		//		initDate();
+		myToast = new MyToast(getApplicationContext());
 	}
 
 
@@ -465,7 +466,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
 
 		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
-		appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+		appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
 
 		editPhotoInfoArrayList = new ArrayList<EditPhotoInfo>();
 
@@ -492,26 +493,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-//		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
-//			try {
-//				com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-//				com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
-//				for (int i = 0; i < resultArray.size(); i++) {
-//
-//					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-//					JSONObject object = resultArray.getJSONObject(i);
-//					locationInfo = JsonUtil.getLocation(object);
-//					if (locationInfo.isShow == 1) {
-//						locationItemInfos.add(locationInfo);
-//					}
-//				}
-//				locationUtil.setLocationItemInfos(locationItemInfos, this);
-//			} catch (com.alibaba.fastjson.JSONException e1) {
-//
-//				e1.printStackTrace();
-//			}
-//		}
-//		locationUtil.startLocation();
+		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
+			locationItemInfos.clear();
+			locationItemInfos.addAll(AppUtil.getLocation(this, ACache.get(this).getAsString(Common.LOCATION_INFO), false));
+			locationUtil.setLocationItemInfos(locationItemInfos, this);
+		}
+		locationUtil.startLocation();
 	}
 
 	@Override
@@ -539,65 +526,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				break;
 			case R.id.btn_left_back:
-				//如果添加了边框。让边框消失。
-				if (editType == 1) {
-					if (frameImageView.isShown()) {
-						frameImageView.setVisibility(View.INVISIBLE);
-					}
-					//恢复到没有裁减的状态。
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-						if (photoInfo.onLine == 1) {
-							loadOnlineImg(photoURL);
-						}else{
-							loadImage(photoURL);
-						}
-					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-//						loadImage(pathList.get(pathList.size() - 1));
-					}
-				}
-
-				//如果有饰品，饰品消失。
-				if (editType == 3) {
-					if (mStickerView.isShown()) {
-						mStickerView.setVisibility(View.GONE);
-						mStickerView.clear();
-					}
-				}
-
-				//如果添加了滤镜。
-				if(editType == 2){
-					if (newImage!=null) {
-						newImage = null;
-//					newImage.recycle();
-					}
-//					mainImage.setImageBitmap(mainBitmap);
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-						if (photoInfo.onLine == 1) {
-							loadOnlineImg(photoURL);
-						}else{
-							loadImage(photoURL);
-						}
-					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
-					}
-				}
-
-				// 如果旋转了
-				if (editType == 4) { // 恢复到原始状态。
-					if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
-						if (photoInfo.onLine == 1) {
-							loadOnlineImg(photoURL);
-						}else{
-							loadImage(photoURL);
-						}
-					}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-						loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
-					}
-				}
-				exitEditStates(); // 推出编辑状态
-				if(editPhotoInfoArrayList.size() > 1){
-					preview_save.setVisibility(View.VISIBLE);
-				}
+				leftback();
 				break;
 
 			//编辑边框。
@@ -757,6 +686,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //				break;
 			case R.id.ib_temp_save: //保存到临时目录
 
+				if (index == 0){ //只要是从原图开始操作，就清空 editPhotoInfoArrayList
+					editPhotoInfoArrayList.clear();
+					addEditPhotoInfo(photoURL,0,null,null,"",0);
+				}
+				if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+					break;
+				}
 				SaveStickersTask task = new SaveStickersTask();
 				if (editType == 2) { //滤镜处理过的
 					task.execute(newImage);
@@ -768,66 +705,72 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					task.execute(mainBitmap);
 				}
 				break;
-//			case R.id.preview_save: //真正的保存按钮。
-//				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-//				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
-//					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-//					dialog.show();
-//					new Thread(new Runnable() {
-//						@Override
-//						public void run() {
-//							EditPhotoUtil.saveBitmap(mainBitmap , url);
-//							scan(url);
-//							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-//							Looper.prepare();
-//							dialog.dismiss();
-//							Looper.loop();
-//						}
-//					}).start();
-//				}else{
-//					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
-//					scan(url);
-//					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-//				}
 
-//				break;
-//			case R.id.btn_forward: // 前进按钮。
-//				if (index == -1) {
-//					index = editPhotoInfoArrayList.size() - 1;
-//				}
-//
-//				if (editPhotoInfoArrayList.size() > index + 1) {
-//					index++;
-//					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-//					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
-//				}
-//				check();
-//				break;
-//			case R.id.btn_cancel: //返回按钮。
-//				if (index == -1) {
-//					index = editPhotoInfoArrayList.size() - 1;
-//				}
-//				if (index >= 1) {
-//					index--;
-//				}
-//
-//				if (editPhotoInfoArrayList.size() - 2 >= 0) {
-//
-//					if (index == 0) {
-//						if (isOnlinePic) {
-//							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
-//							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-//						}else{
-//							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-//							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-//						}
-//					}else{
-//						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-//						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-//					}
-//				}
-//				check();
-//				break;
+			case R.id.preview_save: //真正的保存按钮。
+				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+				if (!AppUtil.checkPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+					break;
+				}
+
+				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
+					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
+					dialog.show();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							EditPhotoUtil.saveBitmap(mainBitmap , url);
+							scan(url);
+							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+							Looper.prepare();
+							dialog.dismiss();
+							Looper.loop();
+						}
+					}).start();
+				}else{
+					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
+					scan(url);
+					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+				}
+
+				break;
+			case R.id.btn_forward: // 前进按钮。
+				if (index == -1) {
+					index = editPhotoInfoArrayList.size() - 1;
+				}
+
+				if (editPhotoInfoArrayList.size() > index + 1) {
+					index++;
+					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
+				}
+				check();
+				break;
+			case R.id.btn_cancel: //返回按钮。
+				if (index == -1) {
+					index = editPhotoInfoArrayList.size() - 1;
+				}
+				if (index >= 1) {
+					index--;
+				}
+
+				if (editPhotoInfoArrayList.size() - 2 >= 0) {
+					if (index == 0) {
+						if (isOnlinePic) {
+							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
+							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+						}else{
+							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+						}
+					}else{
+						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+					}
+				}
+				check();
+				break;
+
 			case R.id.tv_left90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
 				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,-90);
@@ -835,6 +778,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				rotateAngle = rotateAngle - 90;
 				break;
+
 			case R.id.tv_right90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
 				mainBitmap = EditPhotoUtil.rotateImage(mainBitmap,90);
@@ -1541,4 +1485,89 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		bitmap = EditPhotoUtil.rotateImage(bitmap,rotateAngle);
 		return bitmap;
 	}
+
+	/**
+	 * 监听返回键
+	 * @param keyCode
+	 * @param event
+     * @return
+     */
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (top_HorizontalListView.isShown() || editType == 4){  //如果进入编辑状态。
+				leftback();
+			}else {
+				finish();
+			}
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+
+	/**
+	 * 退出编辑状态。
+	 */
+	private void leftback(){
+		//如果添加了边框。让边框消失。
+		if (editType == 1) {
+			if (frameImageView.isShown()) {
+				frameImageView.setVisibility(View.INVISIBLE);
+			}
+			//恢复到没有裁减的状态。
+			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+				if (photoInfo.onLine == 1) {
+					loadOnlineImg(photoURL);
+				}else{
+					loadImage(photoURL);
+				}
+			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+//						loadImage(pathList.get(pathList.size() - 1));
+			}
+		}
+
+		//如果有饰品，饰品消失。
+		if (editType == 3) {
+			if (mStickerView.isShown()) {
+				mStickerView.setVisibility(View.GONE);
+				mStickerView.clear();
+			}
+		}
+
+		//如果添加了滤镜。
+		if(editType == 2){
+			if (newImage!=null) {
+				newImage = null;
+//					newImage.recycle();
+			}
+//					mainImage.setImageBitmap(mainBitmap);
+			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+				if (photoInfo.onLine == 1) {
+					loadOnlineImg(photoURL);
+				}else{
+					loadImage(photoURL);
+				}
+			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+			}
+		}
+
+		// 如果旋转了
+		if (editType == 4) { // 恢复到原始状态。
+			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+				if (photoInfo.onLine == 1) {
+					loadOnlineImg(photoURL);
+				}else{
+					loadImage(photoURL);
+				}
+			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
+				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+			}
+		}
+		exitEditStates(); // 推出编辑状态
+		if(editPhotoInfoArrayList.size() > 1){
+			preview_save.setVisibility(View.VISIBLE);
+		}
+	}
+
 }

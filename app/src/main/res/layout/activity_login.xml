@@ -97,6 +97,7 @@
                 android:hint="@string/smssdk_write_mobile_phone"
                 android:imeOptions="actionNext"
                 android:inputType="phone"
+                android:maxLength="200"
                 android:paddingLeft="@dimen/pp_padding_5"
                 android:textColor="@color/pp_gray"
                 android:textColorHint="@color/pp_gray"

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dashLine="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_margin_5"
+        android:background="@color/pp_light_gray_background" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8">
+
+        <TextView
+            android:id="@+id/or_states"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/order_status"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/order_states"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/pp_margin_16"
+            android:layout_toRightOf="@id/or_states"
+            android:gravity="center"
+            android:text="未付款"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
+
+        <Button
+            android:id="@+id/order_payment1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button_blue"
+            android:focusable="false"
+            android:paddingBottom="@dimen/pp_margin_5"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_margin_5"
+            android:text="@string/order_unpaid"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14" />
+    </RelativeLayout>
+
+    <com.pictureworks.android.widget.DashedLineView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        dashLine:dashColor="@color/pp_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="@string/order_no"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/order_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:gravity="center"
+            android:text="fsa"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_14" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16">
+
+        <TextView
+            android:id="@+id/or_price_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="@string/orderprice"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/order_price_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/or_price_currency"
+            android:gravity="center"
+            android:text="currency"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/order_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@+id/order_price_currency"
+            android:gravity="center"
+            android:text="fsa"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_margin_8"
+            android:src="@drawable/order_detail" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8">
+
+        <TextView
+            android:id="@+id/or_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/order_time"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/order_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/or_time"
+            android:gravity="center"
+            android:text="fsad"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
+    </LinearLayout>
+
+
+    <com.pictureworks.android.widget.DashedLineView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:background="@color/white"
+        dashLine:dashColor="@color/pp_gray" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/pp_padding_8"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_8"
+        android:text="@string/order_detail"
+        android:textColor="@color/pp_dark_blue"
+        android:textSize="@dimen/text_size_14" />
+
+</LinearLayout>

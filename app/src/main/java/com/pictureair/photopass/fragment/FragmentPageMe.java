@@ -126,7 +126,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         });
 
         //初始化控件
-        sp = MyApplication.getInstance().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sp = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         userPPCode = sp.getString(Common.USERINFO_USER_PP, "");
         qrCodeUrl = Common.BARCODEURL + userPPCode;
         //设置头像ImageLoader参数
@@ -311,7 +311,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         }
         textView.setText(ppCode);
         try {
-            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 5));
+            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 2));
         } catch (WriterException e) {
             e.printStackTrace();
         }

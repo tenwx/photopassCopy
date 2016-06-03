@@ -18,6 +18,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.eventbus.AsyncPayResultEvent;
 import com.pictureair.photopass.eventbus.RedPointControlEvent;
 import com.pictureair.photopass.eventbus.SocketEvent;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -26,7 +27,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import com.pictureair.photopass.util.AppManager;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -105,12 +105,12 @@ public class SocketUtil {
                 PictureAirLog.out("a new notifycation" + updateJsonObject.toString());
                 syncMessageList.add(updateJsonObject.toString() + (isDelete ? "del" : "sync"));
             }
-            if (updateJsonObject.has("customerId")) {//ppp升级pp
+            if (updateJsonObject.has("customerId")) {//ppp升级pp， 删除pp推送
                 socketType = SocketEvent.SOCKET_PHOTOPASS;
                 ppCode = updateJsonObject.getString("customerId");
-                shootDate = updateJsonObject.getString("shootDate");
+                shootDate = updateJsonObject.optString("shootDate");
                 pictureAirDbManager.updatePhotoBoughtByPPCodeAndDate(ppCode, shootDate, isDelete);
-            } else if (updateJsonObject.has("id")) {//照片购买
+            } else if (updateJsonObject.has("id")) {//照片购买，删除照片推送
                 socketType = SocketEvent.SOCKET_PHOTO;
                 photoId = updateJsonObject.getString("id");
                 pictureAirDbManager.updatePhotoBought(photoId, isDelete);

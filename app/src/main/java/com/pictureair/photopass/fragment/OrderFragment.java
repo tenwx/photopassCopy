@@ -36,11 +36,13 @@ import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.pictureair.photopass.util.AppManager;
+
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -51,22 +53,12 @@ public class OrderFragment extends Fragment {
     private final String TAG = "OrderFragment";
     private static OrderFragment orderFragment;
     private View view;
-    private List<View> listViews;
     private ExpandableListView orderListView;
 
-    private ArrayList<OrderInfo> paymentOrderList;
-    private ArrayList<OrderInfo> deliveryOrderList;
-    private ArrayList<OrderInfo> allOrderList;
+    private ArrayList<OrderInfo> orderList;
 
-    //    private ArrayList<OrderProductInfo> paymentChildlist;
-//    private ArrayList<OrderProductInfo> deliveryChildlist;
-//    private ArrayList<OrderProductInfo> allChildlist;
-    private static List<OrderProductInfo> paymentChildlist;
-    private static List<OrderProductInfo> deliveryChildlist;
-    private static List<OrderProductInfo> allChildlist;
+    private List<OrderProductInfo> childlist;
 
-    private OrderListViewAdapter paymentOrderAdapter;
-    private OrderListViewAdapter deliveryOrderAdapter;
     private OrderListViewAdapter allOrderAdapter;
 
     private String currency;
@@ -76,7 +68,6 @@ public class OrderFragment extends Fragment {
     private MyApplication application;
     private int tab = 0;
 
-    private static final int REFRESH = 0X001;
     private static Handler mHandler;
     private SwipeRefreshLayout refreshLayout;
 
@@ -90,16 +81,24 @@ public class OrderFragment extends Fragment {
                     // 移除第几个position。
                     Bundle b = msg.getData();
                     OrderInfo groupInfo = b.getParcelable("group");
-                    ArrayList<CartItemInfo> childInfo = (ArrayList)b.getParcelableArrayList("child");
-                    //删除全部订单 中的对象
-                    allOrderList.remove(groupInfo);
-                    allChildlist.remove(childInfo);
+                    ArrayList<CartItemInfo> childInfo = (ArrayList) b.getParcelableArrayList("child");
+
                     // 删除Delivery中的对象
-                    deliveryOrderList.remove(groupInfo);
-                    deliveryChildlist.remove(childInfo);
-                    //通知适配器刷新
-                    deliveryOrderAdapter.notifyDataSetChanged();
-                    allOrderAdapter.notifyDataSetChanged();
+                    switch (tab) {
+                        case 0://未付款
+                            break;
+                        case 1://已付款，未收货
+                        case 2://订单完成
+                            //删除全部订单 中的对象
+                            orderList.remove(groupInfo);
+                            childlist.remove(childInfo);
+                            break;
+                        default:
+                            break;
+                    }
+                    if (allOrderAdapter != null) {
+                        allOrderAdapter.notifyDataSetChanged();
+                    }
                     break;
                 case API1.DELETE_ORDER_FAILED:
                     myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
@@ -112,9 +111,6 @@ public class OrderFragment extends Fragment {
                     //同时将mainTab切换到shop Tab
                     application.setMainTabIndex(3);
                     break;
-                case REFRESH:
-                    myToast.setTextAndShow("000", Common.TOAST_SHORT_TIME);
-                    break;
             }
             return false;
         }
@@ -123,28 +119,14 @@ public class OrderFragment extends Fragment {
     public OrderFragment() {
     }
 
-    //        public static OrderFragment getInstance(Handler handler,ArrayList<OrderInfo> orderInfos1,
-//                                            ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
-//                                            ArrayList<OrderProductInfo> orderChildlist1, ArrayList<OrderProductInfo> orderChildlist2,
-//                                            ArrayList<OrderProductInfo> orderChildlist3, String currency, int tab
-    public static OrderFragment getInstance(Handler handler, ArrayList<OrderInfo> orderInfos1, ArrayList<OrderInfo> orderInfos2, ArrayList<OrderInfo> orderInfos3,
-                                            List<OrderProductInfo> orderChildlist1, List<OrderProductInfo> orderChildlist2,
+    public static OrderFragment getInstance(Handler handler, ArrayList<OrderInfo> orderInfos3,
                                             List<OrderProductInfo> orderChildlist3, String currency, int tab
     ) {
         mHandler = handler;
         orderFragment = new OrderFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("paymentOrderList", orderInfos1);
-        bundle.putParcelableArrayList("deliveryOrderList", orderInfos2);
-        bundle.putParcelableArrayList("allOrderList", orderInfos3);
-
-
-//        bundle.putSerializable("paymentChildlist", orderChildlist1);
-//        bundle.putSerializable("deliveryChildlist", orderChildlist2);
-//        bundle.putSerializable("allChildlist", orderChildlist3);
-        paymentChildlist = OrderProductDateSort(orderChildlist1);
-        deliveryChildlist = OrderProductDateSort(orderChildlist2);
-        allChildlist = OrderProductDateSort(orderChildlist3);
+        bundle.putParcelableArrayList("orderList", orderInfos3);
+        bundle.putSerializable("orderChildList", (Serializable) orderChildlist3);
 
         bundle.putString("currency", currency);
         bundle.putInt("tab", tab);
@@ -164,14 +146,13 @@ public class OrderFragment extends Fragment {
         return orderInfoList1;
     }
 
-
     /**
      * 商品信息信息降序排列
      *
      * @param orderInfoList1
      * @return
      */
-    private static List<OrderProductInfo> OrderProductDateSort(List<OrderProductInfo> orderInfoList1) {
+    private List<OrderProductInfo> OrderProductDateSort(List<OrderProductInfo> orderInfoList1) {
         Collections.sort(orderInfoList1, new OrderProductDateSortUtil());
         return orderInfoList1;
     }
@@ -180,24 +161,12 @@ public class OrderFragment extends Fragment {
     public void onAttach(Context context) {
 
         if (getArguments() != null) {
-            paymentOrderList = getArguments().getParcelableArrayList("paymentOrderList");
-            paymentOrderList = OrderDateSort(paymentOrderList);
 
-            deliveryOrderList = getArguments().getParcelableArrayList("deliveryOrderList");
-            deliveryOrderList = OrderDateSort(deliveryOrderList);
+            orderList = getArguments().getParcelableArrayList("orderList");
+            orderList = OrderDateSort(orderList);
 
-            allOrderList = getArguments().getParcelableArrayList("allOrderList");
-            allOrderList = OrderDateSort(allOrderList);
-
-
-//            paymentChildlist = (ArrayList<OrderProductInfo>) getArguments().getSerializable("paymentChildlist");
-//            paymentChildlist = OrderProductDateSort(paymentChildlist);
-//
-//            deliveryChildlist = (ArrayList<OrderProductInfo>) getArguments().getSerializable("deliveryChildlist");
-//            deliveryChildlist = OrderProductDateSort(deliveryChildlist);
-//
-//            allChildlist = (ArrayList<OrderProductInfo>) getArguments().getSerializable("allChildlist");
-//            allChildlist = OrderProductDateSort(allChildlist);
+            childlist = (List<OrderProductInfo>) getArguments().getSerializable("orderChildList");
+            childlist = OrderProductDateSort(childlist);
 
             currency = getArguments().getString("currency");
             tab = getArguments().getInt("tab");
@@ -229,98 +198,53 @@ public class OrderFragment extends Fragment {
             }
         });
 
+        allOrderAdapter = new OrderListViewAdapter(context, orderList, childlist, currency, handler);
+        orderListView.setGroupIndicator(null);
+        orderListView.setAdapter(allOrderAdapter);
         switch (tab) {
-            case 0:
-                //未付款
-                paymentOrderAdapter = new OrderListViewAdapter(context, paymentOrderList, paymentChildlist, currency, handler); //
-                orderListView.setGroupIndicator(null);
-                orderListView.setAdapter(paymentOrderAdapter);
+            case 0://未付款
                 orderListView.setOnGroupClickListener(new GroupOnClick(0));
                 orderListView.setOnChildClickListener(new ChildOnClick(0));
-
-                if (paymentOrderList == null || paymentOrderList.size() == 0) {
-                    orderListView.setVisibility(View.GONE);
-                    refreshLayout.setVisibility(View.GONE);
-                    netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
-                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                } else {
-                    expandGropu(tab);
-                }
                 break;
-
-            case 1:
-                //已付款，未收货
-                deliveryOrderAdapter = new OrderListViewAdapter(context, deliveryOrderList, deliveryChildlist, currency, handler);
-                orderListView.setGroupIndicator(null);
-                orderListView.setAdapter(deliveryOrderAdapter);
+            case 1://已付款，未收货
                 orderListView.setOnGroupClickListener(new GroupOnClick(1));
                 orderListView.setOnChildClickListener(new ChildOnClick(1));
-                if (deliveryOrderList == null || deliveryOrderList.size() == 0) {
-                    orderListView.setVisibility(View.GONE);
-                    refreshLayout.setVisibility(View.GONE);
-                    netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
-                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                } else {
-                    expandGropu(tab);
-                }
                 break;
-
-            case 2:
-                //订单完成
-                allOrderAdapter = new OrderListViewAdapter(context, allOrderList, allChildlist, currency, handler);
-                orderListView.setGroupIndicator(null);
-                orderListView.setAdapter(allOrderAdapter);
+            case 2://订单完成
                 orderListView.setOnGroupClickListener(new GroupOnClick(2));
                 orderListView.setOnChildClickListener(new ChildOnClick(2));
-
-                if (allOrderList == null || allOrderList.size() == 0) {
-                    orderListView.setVisibility(View.GONE);
-                    refreshLayout.setVisibility(View.GONE);
-                    netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
-                    netWorkOrNoCountView.setVisibility(View.VISIBLE);
-                } else {
-                    expandGropu(tab);
-                }
                 break;
-
             default:
                 break;
         }
 
-        if (null != refreshLayout)
-            orderListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
+        if (orderList == null || orderList.size() == 0) {
+            orderListView.setVisibility(View.GONE);
+            refreshLayout.setVisibility(View.GONE);
+            netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
+            netWorkOrNoCountView.setVisibility(View.VISIBLE);
+        } else {
+            expandGropu(tab);
+        }
+
+//        if (null != refreshLayout)
+//            orderListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
 
         return view;
     }
 
     //expandablelistview展开child项
     public void expandGropu(int current) {
-//        PictureAirLog.v(TAG, "expandGropu currency: " + current);
         switch (current) {
             case 0:
-                for (int i = 0; i < paymentOrderList.size(); i++) {
-                    if (orderListView != null) {
-                        orderListView.expandGroup(i);
-                    }
-
-                }
-                break;
             case 1:
-                for (int i = 0; i < deliveryOrderList.size(); i++) {
-                    if (orderListView != null) {
-                        orderListView.expandGroup(i);
-                    }
-                }
-                break;
-
             case 2:
-                for (int i = 0; i < allOrderList.size(); i++) {
+                for (int i = 0; i < orderList.size(); i++) {
                     if (orderListView != null) {
                         orderListView.expandGroup(i);
                     }
                 }
                 break;
-
             default:
                 break;
         }
@@ -365,25 +289,9 @@ public class OrderFragment extends Fragment {
         // TODO Auto-generated method stub
         Intent intent = new Intent(context, OrderDetailActivity.class);
         Bundle bundle = new Bundle();
-        switch (index) {
-            case 0:
-                bundle.putParcelable("groupitem", paymentOrderList.get(groupPosition));//传递对象
-                bundle.putParcelableArrayList("childitemlist", (ArrayList)paymentChildlist.get(groupPosition).getCartItemInfos());//传递list
-                break;
+        bundle.putParcelable("groupitem", orderList.get(groupPosition));
+        bundle.putSerializable("childitemlist",  childlist.get(groupPosition).getCartItemInfos());
 
-            case 1:
-                bundle.putParcelable("groupitem", deliveryOrderList.get(groupPosition));
-                bundle.putParcelableArrayList("childitemlist", (ArrayList)deliveryChildlist.get(groupPosition).getCartItemInfos());
-                break;
-
-            case 2:
-                bundle.putParcelable("groupitem", allOrderList.get(groupPosition));
-                bundle.putParcelableArrayList("childitemlist", (ArrayList)allChildlist.get(groupPosition).getCartItemInfos());
-                break;
-
-            default:
-                break;
-        }
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -419,6 +327,8 @@ public class OrderFragment extends Fragment {
                         refreshLayout.setEnabled(true);
                         refreshLayout.setRefreshing(false);
                     }
+                    EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
+
                     break;
 
                 case 0:
@@ -426,30 +336,40 @@ public class OrderFragment extends Fragment {
                         refreshLayout.setEnabled(true);
                         refreshLayout.setRefreshing(false);
                     }
-                    paymentOrderList = orderFragmentEvent.getOrderInfos1();
-                    paymentOrderList = OrderDateSort(paymentOrderList);
-
-                    deliveryOrderList = orderFragmentEvent.getOrderInfos2();
-                    deliveryOrderList = OrderDateSort(deliveryOrderList);
-
-                    allOrderList = orderFragmentEvent.getOrderInfos3();
-                    allOrderList = OrderDateSort(allOrderList);
-
-                    paymentChildlist = orderFragmentEvent.getOrderChildlist1();
-                    paymentChildlist = OrderProductDateSort(paymentChildlist);
-
-                    deliveryChildlist = orderFragmentEvent.getOrderChildlist2();
-                    deliveryChildlist = OrderProductDateSort(deliveryChildlist);
-
-                    allChildlist = orderFragmentEvent.getOrderChildlist3();
-                    allChildlist = OrderProductDateSort(allChildlist);
-
                     currency = orderFragmentEvent.getCurrency();
+                    switch (tab) {
+                        case 0://未付款
+                            orderList = orderFragmentEvent.getOrderInfos1();
+                            orderList = OrderDateSort(orderList);
 
-                    paymentOrderAdapter.notifyDataSetChanged();
-                    deliveryOrderAdapter.notifyDataSetChanged();
-                    allOrderAdapter.notifyDataSetChanged();
+                            childlist = orderFragmentEvent.getOrderChildlist1();
+                            childlist = OrderProductDateSort(childlist);
+                            EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
+                            break;
+                        case 1://已付款，未收货
+                            orderList = orderFragmentEvent.getOrderInfos2();
+                            orderList = OrderDateSort(orderList);
+
+                            childlist = orderFragmentEvent.getOrderChildlist2();
+                            childlist = OrderProductDateSort(childlist);
+                            EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
+                            break;
+                        case 2://订单完成
+                            orderList = orderFragmentEvent.getOrderInfos3();
+                            orderList = OrderDateSort(orderList);
+
+                            childlist = orderFragmentEvent.getOrderChildlist3();
+                            childlist = OrderProductDateSort(childlist);
+                            EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
+                            break;
+                        default:
+                            break;
+                    }
+                    if (null != allOrderAdapter) {
+                        allOrderAdapter.notifyDataSetChanged();
+                    }
                     break;
+
                 default:
                     break;
 
@@ -457,45 +377,5 @@ public class OrderFragment extends Fragment {
 
         }
     }
-
-    /**
-     * 解决SwipeRefreshLayout下拉刷新冲突
-     */
-    public static class SwipeListViewOnScrollListener implements AbsListView.OnScrollListener {
-
-        private SwipeRefreshLayout mSwipeView;
-        private AbsListView.OnScrollListener mOnScrollListener;
-
-        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView) {
-            mSwipeView = swipeView;
-        }
-
-        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView,
-                                             AbsListView.OnScrollListener onScrollListener) {
-            mSwipeView = swipeView;
-            mOnScrollListener = onScrollListener;
-        }
-
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int i) {
-        }
-
-        @Override
-        public void onScroll(AbsListView absListView, int firstVisibleItem,
-                             int visibleItemCount, int totalItemCount) {
-            View firstView = absListView.getChildAt(firstVisibleItem);
-
-            // 当firstVisibleItem是第0位。如果firstView==null说明列表为空，需要刷新;或者top==0说明已经到达列表顶部, 也需要刷新
-            if (firstVisibleItem == 0 && (firstView == null || firstView.getTop() == 0)) {
-                mSwipeView.setEnabled(true);
-            } else {
-                mSwipeView.setEnabled(false);
-            }
-            if (null != mOnScrollListener) {
-                mOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
-            }
-        }
-    }
-
 
 }

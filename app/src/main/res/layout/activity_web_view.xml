@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.pictureair.photopass.activity.WebViewActivity">
 
     <include
@@ -17,21 +19,26 @@
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
-            />
+            android:scrollbars="none" />
 
         <ProgressBar
             android:id="@+id/pb"
-            android:layout_alignParentTop="true"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="fill_parent"
             android:layout_height="3dip"
+            android:layout_alignParentTop="true"
             android:indeterminateOnly="false"
             android:max="100"
-            android:progressDrawable="@drawable/progress_bar_style" >
-        </ProgressBar>
+            android:progressDrawable="@drawable/progress_bar_style"></ProgressBar>
 
     </RelativeLayout>
+
+    <com.pictureair.photopass.widget.NoNetWorkOrNoCountView
+        android:id="@+id/nonetwork_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/head"
+        android:visibility="invisible" />
 
 
 </RelativeLayout>

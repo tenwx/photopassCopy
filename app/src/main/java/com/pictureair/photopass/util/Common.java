@@ -17,18 +17,6 @@ public class Common {
 
 
     /**
-     * 49演示服务器
-     */
-//    public static final String BASE_URL_TEST = "http://192.168.8.49:3006";
-//    public static final String PHOTO_URL = "http://192.168.8.82:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.36:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://211.95.27.36:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "http://192.168.8.49:3004/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://192.168.8.49:3004/terms.html?source=outer";  //条款 2
-
-
-    /**
      * 域名线上服务器
      */
     public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
@@ -64,9 +52,8 @@ public class Common {
 //    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
 
 
-    public final static String VERSION_CODE = "V1.0.2";//开发版
-    public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
-
+    public final static String VERSION_CODE = "1.1.0";//开发版
+    public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
 
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
@@ -162,13 +149,14 @@ public class Common {
     public static final String VALIDATE_CODE_URL = "/userMsg/validateCode";//验证短信验证
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
+    public static final String REMOVE_PHOTOS_FROME_PP= "/p/removePhotosFromPP";//从pp中删除照片
 
 
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
     public static final String TERMINAL = "terminal";
     public static final String APP_ID = "appID";
-    public static final String USERINFO_NAME = "userInfo";
+    public static final String SHARED_PREFERENCE_USERINFO_NAME = "userInfo";
     public static final String USERINFO_ID = "_id";//api需要的userId
     public static final String USERINFO_TOKENID = "tokenId";//api需要的tokenId
     public static final String USERINFO_USER_PP = "userPP"; //用户的code
@@ -217,6 +205,7 @@ public class Common {
     public static final String CUSTOMERID = "customerId";
     public static final String ADDRESS_ID = "addressId";
     public static final String ORDER_ID = "orderId";
+    public static final String ORDER_CODE = "orderCode";
     public static final String PAY_TYPE = "payType";
     public static final String DELIVERY_TYPE = "deliveryType";
     public static final String STORE_ADDRESS = "storeAddress";
@@ -227,6 +216,7 @@ public class Common {
     public static final String DEFAULT_CURRENCY = "¥";
     public static final String HEADPHOTO_PATH = "headphoto";
     public static final String BGPHOTO_PAHT = "bgphoto";
+    public static final String IS_DELETED_PHOTO_FROM_PP = "isDeletedPhotoFromPP";
 
     public static final int TOAST_SHORT_TIME = 100;
     //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";
@@ -261,6 +251,7 @@ public class Common {
     public static final String PHONE = "phone";
     public static final String MSG_TYPE = "msgType";
     public static final String SHOOTDATE = "shootDate";
+    public static final String PP = "pp";
 
 
     //存放sdk的目录
@@ -314,7 +305,7 @@ public class Common {
     //	public static final String BARCODEURL = "http://192.168.8.3:3001/downloadApp.html?";
 
     //app的SharePreferences
-    public static final String APP = "app";
+    public static final String SHARED_PREFERENCE_APP = "app";
     public static final String BLUR_LEAD = "blurlead";
     public static final String APP_VERSION_CODE = "version_code";
     public static final String APP_VERSION_NAME = "version_name";
@@ -386,6 +377,12 @@ public class Common {
 
     public static final String EVENT_ONCLICK_SHARE_FACEBOOK = "event_onclick_share_facebook";// 点击facebook分享
     public static final String EVENT_SHARE_FACEBOOK_FINISH = "event_share_facebook_finish";// facebook分享成功
+
+    // 5.27新增
+    public static final String EVENT_ONCLICK_DEL_PP = "event_onclick_del_pp";// 点击删除PP的按钮。不是具体删除的按钮。
+    public static final String EVENT_ONCLICK_EDIT_PHOTO = "event_onclick_edit_photo";// 点击编辑图片按钮,删除照片时候的按钮。
+    public static final String EVENT_ONCLICK_DEL_PHOTO = "event_onclick_del_photo";// 具体删除照片的按钮。
+
 
     // 友盟sharedPreferences
 

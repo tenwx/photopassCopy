@@ -94,7 +94,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         layoutInflater = LayoutInflater.from(context);
         screenWidth = ScreenUtil.getScreenWidth(context);
         activatedLocationMap = new HashMap<>();
-        sharedPreferences = context.getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_discover_loading).
                 showImageOnFail(R.drawable.ic_discover_failed).cacheInMemory(true).cacheOnDisk(true).build();
         imageLoader = ImageLoader.getInstance();
@@ -264,7 +264,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
         viewHolder.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
         //获取旋转角度
-        double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
+        double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
         viewHolder.locationLeadImageView.setRotation((float) d - x);
         //设置喜爱按钮的监听
         viewHolder.favoriteImageView.setOnClickListener(new OnItemChildClickListener(LOVE, position, viewHolder));

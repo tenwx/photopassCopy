@@ -1,15 +1,24 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 3
-        versionName "1.0.2"
+        versionName "1.1.0"
+
+        /**
+         * 历史版本
+         * versionCode 1
+         * versionName "1.0.0"
+         *
+         * versionCode 2 (正式发布的第一个版本)
+         * versionName "1.0.1"
+         */
 
     }
 
@@ -79,30 +88,29 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/alipaySdk-20160223.jar')
-    compile files('libs/AMap_3DMap_V2.4.0.jar')
-    compile files('libs/android-support-v4.jar')
-    compile files('libs/Android_Location_V1.3.2.jar')
+    compile files('libs/AMap2DMap_2.8.1_AMapLocation_2.4.1_20160425.jar')
+    compile files('libs/Baidu_Mtj_3.7.3.1.jar')
     compile files('libs/calligraphy-1.1.0.jar')
     compile files('libs/eventbus-3.0.0-beta1.jar')
     compile files('libs/libammsdk.jar')
-    compile files('libs/MobCommons-2016.0303.1229.jar')
-    compile files('libs/MobLogCollector.jar')
-    compile files('libs/MobTools-2016.0303.1229.jar')
+    compile files('libs/MobCommons-2016.0426.1819.jar')
+    compile files('libs/MobTools-2016.0426.1819.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
-    compile files('libs/recyclerview.jar')
-    compile files('libs/ShareSDK-Core-2.7.0.jar')
-    compile files('libs/ShareSDK-Facebook-2.6.4.jar')
-    compile files('libs/ShareSDK-QQ-2.7.0.jar')
-    compile files('libs/ShareSDK-QZone-2.7.0.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.7.0.jar')
-    compile files('libs/ShareSDK-Twitter-2.7.0.jar')
-    compile files('libs/ShareSDK-Wechat-2.7.0.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.7.0.jar')
-    compile files('libs/ShareSDK-Wechat-Favorite-2.7.0.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.7.0.jar')
+    compile files('libs/org.apache.http.legacy.jar')
+    compile files('libs/ShareSDK-Core-2.7.2.jar')
+    compile files('libs/ShareSDK-Facebook-2.7.2.jar')
+    compile files('libs/ShareSDK-Instagram-2.7.2.jar')
+    compile files('libs/ShareSDK-QQ-2.7.2.jar')
+    compile files('libs/ShareSDK-QZone-2.7.2.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.7.2.jar')
+    compile files('libs/ShareSDK-Twitter-2.7.2.jar')
+    compile files('libs/ShareSDK-Wechat-2.7.2.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.7.2.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.7.2.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.7.2.jar')
     compile files('libs/socketio.jar')
     compile files('libs/sqlcipher.jar')
-    compile files('libs/tess-two.tesseract3.01-leptonica1.68-LibJPEG6b.jar')
+    compile files('libs/tess-two-6.0.0-sources.jar')
     compile files('libs/umeng-analytics-v5.6.1.jar')
     compile files('libs/universal-image-loader-1.9.3-with-sources.jar')
     compile files('libs/UPPayAssistEx.jar')
@@ -110,4 +118,7 @@ dependencies {
     compile files('libs/zxing.jar')
     compile 'com.alibaba:fastjson:1.2.7'
     compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
 }

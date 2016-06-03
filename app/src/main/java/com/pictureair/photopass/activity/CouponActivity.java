@@ -14,15 +14,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONArray;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
 import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CouponViewInterface;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     private PictureWorksDialog pictureWorksDialog;
     private DealCodeUtil dealCodeUtil;
     public static int PREVIEW_COUPON_CODE = 10000;
+    private NoNetWorkOrNoCountView netWorkOrNoCountView;
 
     private Intent mOerderIntent = null;
     private CouponInfo newAddCoupon = null;//在订单页面进入优惠卷页面添加的新优惠卷
@@ -78,6 +82,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         setTopRightValueAndShow(R.drawable.add_righttop, true);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_coupon);
         llNoCoupon = (LinearLayout) findViewById(R.id.ll_no_coupon);
+        netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
 
         mSelectData = new ArrayList<>();
         mAllData = new ArrayList<>();
@@ -89,8 +94,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
             @Override
             public void onItemClick(View view, CouponInfo data) {
                 if (whatPege.equals(CouponTool.ACTIVITY_ORDER) && data.getCpStatus().equals("active")) {//当订单页面进来 ，状态为可使用，取消注释
-                    if (!data.isApplyThisProduct()){
-                        myToast.setTextAndShow(R.string.coupon_incalid,Common.TOAST_SHORT_TIME);
+                    if (!data.isApplyThisProduct()) {
+                        myToast.setTextAndShow(R.string.coupon_incalid, Common.TOAST_SHORT_TIME);
                         return;
                     }
                     if (data.getCpIsSelect()) {//取消选中
@@ -147,7 +152,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
             }
             int availableCount = 0;
             for (int i = 0; i < mAllData.size(); i++) {
-                if (mAllData.get(i).isApplyThisProduct()){
+                if (mAllData.get(i).isApplyThisProduct()) {
                     availableCount++;
                 }
             }
@@ -196,6 +201,21 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
                     } else {
                         goneProgressBar();
                     }
+                    break;
+                case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
+//                    if (null != refreshLayout && refreshLayout.isRefreshing()) {
+//                        refreshLayout.setEnabled(true);
+//                        refreshLayout.setRefreshing(false);
+//                    }
+                    //重新加载购物车数据
+                    if (AppUtil.getNetWorkType(MyApplication.getInstance()) == 0) {
+                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                        break;
+                    }
+                    couponTool.getIntentActivity(mOerderIntent);//重新获取优惠卷
+                    netWorkOrNoCountView.setVisibility(View.GONE);
+                    break;
+                default:
                     break;
 
             }
@@ -256,15 +276,15 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
             }
             if (null != newAddCoupon) {//订单页面中新添加的优惠卷
                 for (int k = 0; k < sortDatas.size(); k++) {
-                    if (newAddCoupon.getCpCode().equals(sortDatas.get(k).getCpCode())){
+                    if (newAddCoupon.getCpCode().equals(sortDatas.get(k).getCpCode())) {
                         sortDatas.remove(k);
                         newAddCoupon.setApplyThisProduct(true);//适用
                         break;
-                    }else{
+                    } else {
                         newAddCoupon.setApplyThisProduct(false);//不适用
                     }
                 }
-                sortDatas.add(0,newAddCoupon);
+                sortDatas.add(0, newAddCoupon);
             }
         }
         if (needClear) {
@@ -281,7 +301,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
 
     @Override
     public void noCoupon() {
-        if (whatPege.equals(couponTool.ACTIVITY_ORDER) && null != newAddCoupon){
+        if (whatPege.equals(couponTool.ACTIVITY_ORDER) && null != newAddCoupon) {
             couponAdapter.setPage(whatPege);//设置显示界面
             newAddCoupon.setApplyThisProduct(false);//不适用
             mAllData.clear();
@@ -297,7 +317,8 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
 
     @Override
     public void noNetwork() {
-        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+        netWorkOrNoCountView.setVisibility(View.VISIBLE);
+        netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myHandler, true);
     }
 
     @Override

@@ -17,16 +17,16 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.amap.api.location.core.CoordinateConvert;
-import com.amap.api.location.core.GeoPoint;
-import com.amap.api.maps.AMapUtils;
-import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps2d.AMapUtils;
+import com.amap.api.maps2d.model.LatLng;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -38,6 +38,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
+import com.pictureair.photopass.widget.EditTextWithClear;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
@@ -49,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -73,12 +75,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import com.pictureair.photopass.widget.EditTextWithClear;
 
 /**
  * 公共类的方法
@@ -185,25 +186,34 @@ public class AppUtil {
     /**
      * 计算方位角pab
      *
-     * @param lat_a
-     * @param lng_a
-     * @param lat_b
-     * @param lng_b
+     * @param lat_tar 目标地点
+     * @param lng_tar
+     * @param lat_cur 当前地点
+     * @param lng_cur
      * @return
      */
-    public static double gps2d(double lat_a, double lng_a, double lat_b, double lng_b) {
+    public static double gps2d(double lat_tar, double lng_tar, double lat_cur, double lng_cur) {
         double d;
-        lat_a = rad(lat_a);
-        lng_a = rad(lng_a);
-        lat_b = rad(lat_b);
-        lng_b = rad(lng_b);
+        lat_tar = rad(lat_tar);
+        lng_tar = rad(lng_tar);
+        lat_cur = rad(lat_cur);
+        lng_cur = rad(lng_cur);
 
-        d = Math.sin(lat_a) * Math.sin(lat_b) + Math.cos(lat_a)
-                * Math.cos(lat_b) * Math.cos(lng_b - lng_a);
+        d = Math.sin(lat_tar) * Math.sin(lat_cur) + Math.cos(lat_tar)
+                * Math.cos(lat_cur) * Math.cos(lng_tar - lng_cur);
         d = Math.sqrt(1 - d * d);
         if (d != 0) {
-            d = Math.cos(lat_b) * Math.sin(lng_b - lng_a) / d;
+            d = Math.cos(lat_cur) * Math.sin(lng_tar - lng_cur) / d;
             d = Math.asin(d) * 180 / Math.PI;
+        }
+        if (lat_tar >= lat_cur) {//第一二象限，不需要做任何处理
+
+        } else {
+            if (lng_tar >= lng_cur) {//第四象限，测试通过
+                d = 180 - d;
+            } else {//第三象限，测试通过
+                d = 180 - d;
+            }
         }
         return d;
     }
@@ -512,12 +522,24 @@ public class AppUtil {
      * @return
      */
     public static boolean isEmail(String strEmail) {
-        // String strPattern =
-        // "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         String strPattern = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
         Pattern p = Pattern.compile(strPattern);
         Matcher m = p.matcher(strEmail);
         return m.matches();
+    }
+
+    /**
+     * 判断是否是全部数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -683,31 +705,6 @@ public class AppUtil {
     }
 
     /**
-     * 将GPS设备采集的原始GPS坐标转换成高德坐标
-     *
-     * @param obj json对象
-     * @return 转换后的经纬度
-     * @throws JSONException
-     * @throws NumberFormatException
-     */
-    public static LatLng converterFromGPS2AMAP(JSONObject obj) throws NumberFormatException, JSONException {
-//				double lat = Double.valueOf("31.1616667");//我的座位
-//				double lng = Double.valueOf("121.7083333");
-        if (!obj.containsKey("GPSLatitude") || !obj.containsKey("GPSLongitude")) {
-            return new LatLng(0, 0);
-        }
-        double lat = Double.valueOf(obj.getString("GPSLatitude"));
-        double lng = Double.valueOf(obj.getString("GPSLongitude"));
-        GeoPoint geoPoint = CoordinateConvert.fromGpsToAMap(lat, lng);
-        LatLng latLng = new LatLng(geoPoint.getLatitudeE6() * 1e-6, geoPoint.getLongitudeE6() * 1e-6);
-
-        PictureAirLog.out("latlng:" + lat + "___" + lng);
-        PictureAirLog.out("latlng:" + Double.valueOf(obj.getString("GPSLatitude")) + "____" + Double.valueOf(obj.getString("GPSLongitude")));
-        PictureAirLog.out("latlng:" + latLng.toString());
-        return latLng;
-    }
-
-    /**
      * 获取应用的版本号
      *
      * @param context
@@ -753,7 +750,7 @@ public class AppUtil {
         }
         // 16位加密，从第9位到25位
 //		return md5StrBuff.substring(8, 24).toString().toUpperCase();
-        PictureAirLog.out("md5 password------->" + md5StrBuff.toString());
+        PictureAirLog.out("md5 result------->" + md5StrBuff.toString());
         //32位
         return md5StrBuff.toString();
     }
@@ -1210,6 +1207,9 @@ public class AppUtil {
         if (!hasSDCard()) {//如果SD卡不存在
             return resultList;
         }
+        PictureAirLog.out("path---->" + filePath);
+        filePath = filePath.substring(0, filePath.length() - 1);
+        PictureAirLog.out("path---->" + filePath);
         File file = new File(filePath);
         if (!file.exists()) {//如果文件不存在，创建文件夹
             file.mkdirs();
@@ -1218,25 +1218,28 @@ public class AppUtil {
         File[] files = file.listFiles();
         Date date;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
-                if (files[i].length() > 0) {//扫描到文件
-                    selectPhotoItemInfo = new PhotoInfo();
-                    selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
-                    selectPhotoItemInfo.lastModify = files[i].lastModified();
-                    date = new Date(selectPhotoItemInfo.lastModify);
-                    selectPhotoItemInfo.shootOn = sdf.format(date);
-                    selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
-                    selectPhotoItemInfo.isChecked = 0;
-                    selectPhotoItemInfo.isSelected = 0;
-                    selectPhotoItemInfo.showMask = 0;
-                    selectPhotoItemInfo.locationName = context.getString(R.string.story_tab_magic);
-                    selectPhotoItemInfo.isPayed = 1;
-                    selectPhotoItemInfo.onLine = 0;
-                    selectPhotoItemInfo.isVideo = 0;
-                    selectPhotoItemInfo.isHasPreset = 0;
-                    resultList.add(selectPhotoItemInfo);
-                    PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+        if (null != files) {
+
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].getName().endsWith(".JPG") || files[i].getName().endsWith(".jpg")) {
+                    if (files[i].length() > 0) {//扫描到文件
+                        selectPhotoItemInfo = new PhotoInfo();
+                        selectPhotoItemInfo.photoPathOrURL = files[i].getPath();
+                        selectPhotoItemInfo.lastModify = files[i].lastModified();
+                        date = new Date(selectPhotoItemInfo.lastModify);
+                        selectPhotoItemInfo.shootOn = sdf.format(date);
+                        selectPhotoItemInfo.shootTime = selectPhotoItemInfo.shootOn.substring(0, 10);
+                        selectPhotoItemInfo.isChecked = 0;
+                        selectPhotoItemInfo.isSelected = 0;
+                        selectPhotoItemInfo.showMask = 0;
+                        selectPhotoItemInfo.locationName = context.getString(R.string.story_tab_magic);
+                        selectPhotoItemInfo.isPayed = 1;
+                        selectPhotoItemInfo.onLine = 0;
+                        selectPhotoItemInfo.isVideo = 0;
+                        selectPhotoItemInfo.isHasPreset = 0;
+                        resultList.add(selectPhotoItemInfo);
+                        PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
+                    }
                 }
             }
         }
@@ -1421,5 +1424,97 @@ public class AppUtil {
         return photoPassItemInfoList;
     }
 
+    /**
+     * 获取地点列表
+     * @param locationJson
+     * @param showPhoto true显示照片，需要手动添加一个地点,false显示列表，不需要手动添加地点
+     * @return
+     */
+    public static ArrayList<DiscoverLocationItemInfo> getLocation(Context context, String locationJson, boolean showPhoto) {
+        ArrayList<DiscoverLocationItemInfo> result = new ArrayList<>();
+        DiscoverLocationItemInfo locationInfo;
+        try {
+            JSONObject response = JSONObject.parseObject(locationJson);
+            if (response == null) {
+                return result;
+            }
+            JSONArray resultArray = response.getJSONArray("locations");
+            for (int i = 0; i < resultArray.size(); i++) {
+                JSONObject object = resultArray.getJSONObject(i);
+                locationInfo = JsonUtil.getLocation(object);
+                if (!showPhoto) {//不需要显示照片
+                    if (locationInfo.isShow == 1) {
+                        result.add(locationInfo);
+                    }
+                } else {
+                    result.add(locationInfo);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (showPhoto) {//显示照片，需要手动添加一个点
+            locationInfo = new DiscoverLocationItemInfo();
+            locationInfo.locationId = "others";
+            locationInfo.locationIds = "others";
+            locationInfo.isShow = 0;
 
+            locationInfo.placeCHName = context.getResources().getString(R.string.story_other_ch);
+            locationInfo.placeENName = context.getResources().getString(R.string.story_other_en);
+            locationInfo.placeUrl = "";
+            locationInfo.latitude = 0;
+            locationInfo.longitude = 0;
+            locationInfo.placeDetailCHIntroduce = "";
+            locationInfo.placeDetailENIntroduce = "";
+            locationInfo.popularity = "";
+            locationInfo.islove = 0;
+            locationInfo.showDetail = 0;
+            result.add(locationInfo);
+        }
+        return result;
+    }
+
+    /**
+     * 收集设备参数信息
+     *
+     * @param ctx
+     */
+    public static Map<String, String> collectDeviceInfo(Context ctx) {
+        Map<String, String> infos = new HashMap<String, String>();
+        try {
+            PackageManager pm = ctx.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
+            if (pi != null) {
+                String versionName = pi.versionName == null ? "null" : pi.versionName;
+                String versionCode = pi.versionCode + "";
+                infos.put("versionName", versionName);
+                infos.put("versionCode", versionCode);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            PictureAirLog.e(TAG, "an error occured when collect package info" + e);
+        }
+        Field[] fields = Build.class.getDeclaredFields();
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                infos.put(field.getName(), field.get(null).toString());
+                PictureAirLog.d(TAG, field.getName() + " : " + field.get(null));
+            } catch (Exception e) {
+                PictureAirLog.e(TAG, "an error occured when collect crash info" + e);
+            }
+        }
+        return infos;
+    }
+
+    /**
+     * 检查手机权限
+     *
+     * @param permission 权限
+     * */
+    public static boolean checkPermission(Context context, String permission) {
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
+    }
 }

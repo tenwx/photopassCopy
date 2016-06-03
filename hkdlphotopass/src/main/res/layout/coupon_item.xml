@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/pp_padding_10"
+    android:orientation="horizontal">
+
+    <!-- 优惠卷item-->
+    <RelativeLayout
+        android:id="@+id/rl_left"
+        android:layout_width="wrap_content"
+        android:gravity="right"
+        android:layout_height="match_parent"
+        android:background="@drawable/coupon_1">
+
+        <ImageView
+            android:id="@+id/iv_select"
+            android:layout_width="@dimen/pp_height_40"
+            android:layout_height="@dimen/pp_height_40"
+            android:layout_centerVertical="true"
+            android:scaleType="centerInside"
+            android:layout_marginRight="@dimen/pp_margin_5"
+            android:src="@drawable/sele"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rl_left"
+        android:background="@drawable/coupon_2"
+        android:padding="@dimen/pp_padding_16">
+
+        <!-- 优惠卷名字-->
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:layout_toLeftOf="@+id/tv_status"
+            android:text="优惠卷名字"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_16" />
+
+        <!-- 有效期-->
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/tv_validity_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:text="有效期"
+            android:textColor="@color/gray2"
+            android:textSize="@dimen/text_size_12" />
+
+        <!-- 描述-->
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/tv_describe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_validity_period"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:text="描述"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_12" />
+
+        <!-- 优惠卷价格或者折扣-->
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/tv_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_validity_period"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/pp_margin_10"
+            android:layout_marginTop="@dimen/pp_margin_10"
+            android:text=" "
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_20" />
+
+
+        <!-- 状态-->
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/pp_margin_5"
+            android:layout_margin="@dimen/pp_margin_5"
+            android:text="状态"
+            android:textColor="@color/gray_cover"
+            android:textSize="@dimen/text_size_16" />
+    </RelativeLayout>
+
+
+</LinearLayout>

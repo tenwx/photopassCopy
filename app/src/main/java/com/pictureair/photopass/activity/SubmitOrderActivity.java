@@ -43,6 +43,7 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.io.File;
@@ -50,8 +51,6 @@ import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
@@ -203,7 +202,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             case API1.ADD_ORDER_SUCCESS:
                 PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
                 JSONObject jsonObject = (JSONObject) msg.obj;
-                orderId = jsonObject.getString("orderId");
+                orderId = jsonObject.getString("orderCode");
                 customProgressDialog.dismiss();
                 if (orderId != null && !orderId.isEmpty()) {
                     goToPayActivity(true);
@@ -269,7 +268,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     }
 
     private void initView() {
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.submitorder);
@@ -286,7 +285,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         infoListView.setFooterDividersEnabled(false);
         infoListView.addHeaderView(initHeaderAndFooterView(true, false, null));
         infoListView.setAdapter(submitorderAdapter);
-        if (list == null || list.size() < 0) {
+        if (list == null) {
             PictureAirLog.v(TAG, "initView list == null ");
             return;
         }
@@ -573,14 +572,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      */
     public void goToPayActivity(boolean isNeedPay) {
         Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
-        String orderName, orderIntroduce;
+        String orderName, orderIntroduce = null;
         if (list.size() == 1) {
             orderName = list.get(0).getProductNameAlias();
-            orderIntroduce = list.get(0).getDescription();
+            orderIntroduce = list.get(0).getProductNameAlias() + list.get(0).getUnitPrice() + "*" + list.get(0).getQty();
         } else {
             orderName = getString(R.string.multi_goods);
-            orderIntroduce = getString(R.string.multi_goods);
+            for (int i = 0; i < list.size(); i++) {
+                if (i == 0) {
+                    orderIntroduce = list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                } else {
+                    orderIntroduce += "," + list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                }
+            }
         }
+        PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
         intent2.putExtra("isNeedPay", isNeedPay);
         intent2.putExtra("name", orderName);
         intent2.putExtra("price", totalpriceTextView.getText().toString());
@@ -653,15 +659,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 } else {
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
                     intent2.putExtra("price", totalpriceTextView.getText().toString());
-                    String orderName, orderIntroduce;
+                    String orderName, orderIntroduce = null;
                     if (list.size() == 1) {
                         orderName = list.get(0).getProductNameAlias();
-                        orderIntroduce = list.get(0).getDescription();
+                        orderIntroduce = list.get(0).getProductNameAlias() + list.get(0).getUnitPrice() + "*" + list.get(0).getQty();
                     } else {
                         orderName = getString(R.string.multi_goods);
-                        orderIntroduce = getString(R.string.multi_goods);
+                        for (int i = 0; i < list.size(); i++) {
+                            if (i == 0) {
+                                orderIntroduce = list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                            } else {
+                                orderIntroduce += "," + list.get(i).getProductNameAlias() + list.get(i).getUnitPrice() + "*" + list.get(i).getQty();
+                            }
+                        }
                     }
-
+                    PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
@@ -740,7 +752,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
             } else {
                 //取消使用优惠券，couponCodes为空数组
-                API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
+                if (null != cartItemIds) {
+                    API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
+                }
             }
         }
 

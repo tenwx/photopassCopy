@@ -34,6 +34,7 @@ public class StartActivity extends BaseActivity implements Callback {
     private TextView versionTextView;
     private static final String TAG = "StartActivity";
     private Handler handler;
+    private Class tarClass;
 
 
     @Override
@@ -41,24 +42,28 @@ public class StartActivity extends BaseActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        spApp = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        spApp = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         config = getResources().getConfiguration();
         displayMetrics = getResources().getDisplayMetrics();
         handler = new Handler(this);
 
         //获取手机设置的语言
         languageType = spApp.getString(Common.LANGUAGE_TYPE, "");
-        if (!languageType.equals("")) {
+        if (!languageType.equals("")) {//语言不为空
             if (languageType.equals(Common.ENGLISH)) {
                 config.locale = Locale.US;
             } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
                 config.locale = Locale.SIMPLIFIED_CHINESE;
             }
-        } else {
+        } else {//语言为空，说明第一次进入
+            PictureAirLog.out("langeuange is null---->" + config.locale.getLanguage());
+            PictureAirLog.out("langeuange is null---->" + config.locale);
             if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
                 languageType = Common.SIMPLE_CHINESE;
+                config.locale = Locale.SIMPLIFIED_CHINESE;
             } else {
                 languageType = Common.ENGLISH;
+                config.locale = Locale.US;
             }
         }
 
@@ -76,41 +81,34 @@ public class StartActivity extends BaseActivity implements Callback {
             versionTextView.setText("V" + info.versionName);
             code = spApp.getInt(Common.APP_VERSION_CODE, 0);
             PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
+            SharedPreferences sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
+            final String _id = sp.getString(Common.USERINFO_ID, null);
+            if (_id != null) {//之前登录过，直接进入主页面
+                tarClass = MainTabActivity.class;
 
-            if (code == versionCode) {// 启动app,如果不是第一次进入，则直接跳过引导页
-                // 需要从服务器获取最新的照片信息，地点信息，个人用户信息，商品信息，购物车信息等等，然后存入到数据库中
-                SharedPreferences sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
-                final String _id = sp.getString(Common.USERINFO_ID, null);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = null;
-                        if (_id != null) {//判断是否已经登录
-                            //发送广播
-                            PictureAirLog.d(TAG, "start push service");
-                            intent = new Intent(StartActivity.this, MainTabActivity.class);
-                        } else {
-                            intent = new Intent(StartActivity.this, LoginActivity.class);
-                        }
-                        finish();
-                        startActivity(intent);
-                    }
-                }, 2000);
-            } else {//进入引导页
-//				API1.getTokenId(this, null);
+            } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
+                tarClass = WelcomeActivity.class;
                 editor = spApp.edit();
                 editor.putInt(Common.APP_VERSION_CODE, versionCode);
                 editor.putString(Common.APP_VERSION_NAME, info.versionName);
                 editor.commit();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(StartActivity.this, WelcomeActivity.class);
-                        finish();
-                        startActivity(intent);
-                    }
-                }, 2000);
+
+//            } else if (code == versionCode) {//无登录过，并且不是第一次安装，并且版本一致，进入登录页面
+//                tarClass = LoginActivity.class;
+
+            } else {//无登录，也不是第一次安装，版本不一致，表示升级的版本，进入登录页面
+                tarClass = LoginActivity.class;
+
             }
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(StartActivity.this, tarClass);
+                    finish();
+                    startActivity(intent);
+                }
+            }, 2000);
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }

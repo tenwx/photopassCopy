@@ -1,7 +1,9 @@
 package com.pictureair.photopass.service;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +21,14 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.MyToast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -52,6 +56,8 @@ public class DownloadService extends Service {
     private boolean isDownloading = false;
     private File file;  //文件
     private String photoId;// 图片的photoId
+    private String lastDownLoadUrl = "";
+    private MyToast myToast;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -63,6 +69,7 @@ public class DownloadService extends Service {
         super.onCreate();
         PictureAirLog.out("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        myToast = new MyToast(getApplicationContext());
     }
 
     @SuppressWarnings("deprecation")
@@ -73,7 +80,11 @@ public class DownloadService extends Service {
         Bundle b = intent.getExtras();
         if (b != null) {
             photos = b.getParcelableArrayList("photos");
-            if (photos != null && photos.size() > 0) {
+
+            if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+                stopSelf();//下载服务停止
+            } else if (photos != null && photos.size() > 0) {
                 //将新的数据放入到下载队列的末尾
                 for (int i = 0; i < photos.size(); i++) {
                     downloadList.add(photos.get(i));
@@ -127,9 +138,15 @@ public class DownloadService extends Service {
                         notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
                     }
 
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(lastDownLoadUrl)), "image/*");
+                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+
                     Notification notification = new NotificationCompat.Builder(mContext).
                             setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
-                            .setContentText(notificationDetail).setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
+                            .setContentText(notificationDetail).setContentIntent(pendingIntent).
+                                    setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
                     notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
                     notification.defaults = Notification.DEFAULT_SOUND;//默认下载完成声音
 
@@ -185,6 +202,8 @@ public class DownloadService extends Service {
             ++downed_num;
             exist_num++;
             downloadList.remove(0);
+            lastDownLoadUrl = file.toString();
+            PictureAirLog.out("download url---->" + lastDownLoadUrl);
             handler.sendEmptyMessage(START_DOWNLOAD);
             //			sendMsg(file);
         }
@@ -269,6 +288,8 @@ public class DownloadService extends Service {
                         //				stopService(serviceIntent);
                         scan_num++;
                         downloadList.remove(0);
+                        lastDownLoadUrl = file.toString();
+                        PictureAirLog.out("download url---->" + lastDownLoadUrl);
                         handler.sendEmptyMessage(START_DOWNLOAD);
                     }
                 });

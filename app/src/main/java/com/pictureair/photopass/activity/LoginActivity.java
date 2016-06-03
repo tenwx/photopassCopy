@@ -1,10 +1,12 @@
 package com.pictureair.photopass.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,11 +29,12 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 登录页面 点击登录按钮之后，需要触发几个接口 1.登录接口 2.登录成功之后，需要获取一些信息，会调用获取购物车数量，获取storeId，获取PP列表
@@ -53,6 +56,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     // 申明变量
     private static final int START_OTHER_REGISTER_ACTIVITY = 11;// 启动 其他注册的侧面
     private final int START_AGREEMENT_WEBVIEW = 22;
+    private static final int START_CHECK_UPDATE = 33;
     // 申明其他类
     private SharedPreferences appPreferences;
     private MyToast myToast;
@@ -60,9 +64,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private String countryCode = "86";
     private String country = "";
     private CheckUpdateManager checkUpdateManager;// 自动检查更新
-    private CustomProgressDialog customProgressDialog;
     private String forGetphoto;
     private String forGetPwd;
+
+    private List<String> permissionList;
+    private List<String> permissionNeed;
+    private static final int REQUEST_ASK_PERMISSION = 1;
+    private boolean mIsAskPermission = false;
 
     private final Handler loginHandler = new LoginHandler(this);
 
@@ -104,9 +112,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
      * @param msg
      */
     private void dealHandler(Message msg) {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
         switch (msg.what) {
             case START_OTHER_REGISTER_ACTIVITY:
                 // 其他注册的按钮//
@@ -129,10 +134,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
+
             case API1.FIND_PWD_SUCCESS:
                 new SignAndLoginUtil(LoginActivity.this, forGetphoto,
                         forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
                 break;
+
             case START_AGREEMENT_WEBVIEW:
                 Intent intent = new Intent();
                 intent.putExtra("key", msg.arg1);
@@ -140,6 +147,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 startActivity(intent);
                 break;
 
+            case START_CHECK_UPDATE:
+                checkUpdateManager.startCheck();
+                break;
             default:
                 break;
         }
@@ -173,7 +183,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     }
 
     private void initview() {
-        appPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);// userInfo
+        appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);// userInfo
 
         myToast = new MyToast(LoginActivity.this);// 获取toast
         parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
@@ -197,10 +207,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         otherLogin.setOnClickListener(this);
 
         // 自动检查更新
-        checkUpdateManager = new CheckUpdateManager(this,
+        checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(),
                 appPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH),
                 parentRelativeLayout);
-        checkUpdateManager.startCheck();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                checkUpdateManager.init();
+                loginHandler.sendEmptyMessage(START_CHECK_UPDATE);
+            }
+        }).start();
 
         userName.setOnKeyListener(new OnKeyListener() {
 
@@ -328,7 +345,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        checkUpdateManager.onDestroy();
+        if (checkUpdateManager != null) {
+            checkUpdateManager.onDestroy();
+        }
         loginHandler.removeCallbacksAndMessages(null);
     }
 
@@ -340,4 +359,73 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         finish();
     }
 
+    private boolean addPermission(List<String> permissionList, String permission) {
+        if (!AppUtil.checkPermission(getApplicationContext(), permission)) {
+            permissionList.add(permission);
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this,permission)) {
+                 return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsAskPermission) {
+            mIsAskPermission = false;
+            return;
+        }
+        requesPermission();
+    }
+
+    private void requesPermission() {
+        if (permissionList != null) {
+            permissionList.clear();
+        } else {
+            permissionList = new ArrayList<>();
+        }
+
+        if (permissionNeed != null) {
+            permissionNeed.clear();
+        } else {
+            permissionNeed = new ArrayList<>();
+        }
+
+        if (!addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            permissionNeed.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            permissionNeed.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (!addPermission(permissionList, Manifest.permission.CAMERA)) {
+            permissionNeed.add(Manifest.permission.CAMERA);
+        }
+        if (!addPermission(permissionList, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            permissionNeed.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (!addPermission(permissionList, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            permissionNeed.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (!addPermission(permissionList, Manifest.permission.READ_PHONE_STATE)) {
+            permissionNeed.add(Manifest.permission.READ_PHONE_STATE);
+        }
+
+        if (permissionList.size() > 0) {
+            if (permissionNeed.size() > 0) {
+                mIsAskPermission = true;
+                ActivityCompat.requestPermissions(LoginActivity.this, permissionNeed.toArray(new String[permissionNeed.size()]), REQUEST_ASK_PERMISSION);
+                return;
+            }
+            mIsAskPermission = true;
+            ActivityCompat.requestPermissions(LoginActivity.this, permissionList.toArray(new String[permissionList.size()]), REQUEST_ASK_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

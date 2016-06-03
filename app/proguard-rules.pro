@@ -64,6 +64,8 @@
 
 #避免混淆银联支付
 -keep class com.unionpay.** {*;}
+-keep class org.simalliance.openmobileapi.** {*;}
+-keep class org.simalliance.openmobileapi.service.** {*;}
 
 #短信验证和分享避免混淆
 -keep class android.net.http.SslError
@@ -149,7 +151,19 @@
 
 ##异步网络请求避免混淆
 -dontwarn android-async-http-1.4.8.jar.**
--keep class android-async-http-1.4.8.jar.**{*;}
+-keep class com.loopj.android.http.**{*;}
+
+#不混淆org.apache.http.legacy.jar
+-dontwarn android.net.compatibility.**
+-dontwarn android.net.http.**
+-dontwarn com.android.internal.http.multipart.**
+-dontwarn org.apache.commons.**
+-dontwarn org.apache.http.**
+-keep class android.net.compatibility.**{*;}
+-keep class android.net.http.**{*;}
+-keep class com.android.internal.http.multipart.**{*;}
+-keep class org.apache.commons.**{*;}
+-keep class org.apache.http.**{*;}
 
  # fastjson 混淆
 -dontwarn com.alibaba.fastjson.**
@@ -180,3 +194,16 @@
 -keep class net.sqlcipher.database.SQLiteDatabase {
     int mNativeHandle;
 }
+
+#定位
+-keep class com.amap.api.maps2d.**{*;}
+-keep class com.amap.api.mapcore2d.**{*;}
+
+-keep class com.amap.api.location.**{*;}
+-keep class com.amap.api.fence.**{*;}
+-keep class com.autonavi.aps.amapapi.model.**{*;}
+
+#百度统计
+-keep class com.baidu.kirin.** { *; }
+-keep class com.baidu.mobstat.** { *; }
+-keep class com.baidu.bottom.** { *; }

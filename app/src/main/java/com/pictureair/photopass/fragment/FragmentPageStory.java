@@ -1,5 +1,6 @@
 package com.pictureair.photopass.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,11 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.InputCodeActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
@@ -45,13 +48,14 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 
 import java.io.File;
@@ -64,7 +68,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -105,15 +108,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private boolean sharedNeedFresh = false;
     private int screenWidth;
     private boolean isLoading = false;
+    private boolean isOnCreate = false;
     private boolean scanMagicPhotoNeedCallBack;//记录是否需要重新扫描本地照片
     private boolean noPhotoViewStateRefresh = false;//无图的时候进行的刷新
     private int ppPhotoCount;
 
     //申明控件
-    private ImageView more;
-    private ImageView scanLayout;
+    private ImageView scanIv;
+    private RelativeLayout scanLayout;
     private LinearLayout noPhotoView;
-    private RelativeLayout scanRelativeLayout;
     private CustomProgressDialog dialog;// 加载等待
     private ViewPager storyViewPager;
     private LinearLayout storyNoPpToScanLinearLayout;
@@ -121,6 +124,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ImageView storyNoPhotoToDiscoverImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private PPPPop pppPop;
 
     //申明类
     private MyApplication app;
@@ -135,7 +139,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList, localPhotoList;
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
-    private List<Fragment> fragments;
+    private List<Fragment> fragments = new ArrayList<>();
     private FragmentAdapter fragmentAdapter;
     private Context context;
     private SimpleDateFormat sdf;
@@ -155,6 +159,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private SettingUtil settingUtil;
     private LinearLayout storyLeadBarLinearLayout;
     private TabPageIndicator indicator;
+
+    private static final int REQUEST_STORAGE_PERMISSION = 1;
+    private boolean mIsAskStoragePermission = false;
 
     //申明handler消息回调机制
 
@@ -231,17 +238,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
                 PictureAirLog.d(TAG, "---------->get location success");
-                try {
-                    JSONObject response = JSONObject.parseObject(msg.obj.toString());
-                    JSONArray resultArray = response.getJSONArray("locations");
-                    for (int i = 0; i < resultArray.size(); i++) {
-                        JSONObject object = resultArray.getJSONObject(i);
-                        DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                        locationList.add(locationInfo);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                locationList.clear();
+                locationList.addAll(AppUtil.getLocation(getActivity(), msg.obj.toString(), true));
                 //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
                 photoPassPicList.clear();
                 photoPassVideoList.clear();
@@ -328,13 +326,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 if (jsonObject.size() > 0) {
-                    JsonUtil.dealGetSocketData(getActivity(), jsonObject.toString(), true, null, sharedPreferences);
+                    JsonUtil.dealGetSocketData(MyApplication.getInstance().getApplicationContext(), jsonObject.toString(), true, null, sharedPreferences);
                 }
                 break;
 
             case REFRESH_LOCAL_PHOTOS://刷新处理本地照片
                 PictureAirLog.d(TAG, "scan local photos success");
-                dealLocalRefreshedData();
+                if (!isOnCreate) {//当不在oncreate的时候，需要刷新本地图片
+                    dealLocalRefreshedData();
+                }
                 break;
 
             case REFRESH://开始刷新
@@ -380,7 +380,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case SORT_COMPLETED_REFRESH:
                 //刷新广告地点
                 app.setGetADLocationSuccess(false);
-                API1.getADLocations(fragmentPageStoryHandler);
+                API1.getADLocations(0, fragmentPageStoryHandler);
 
                 if (noPhotoViewStateRefresh) {//无图页的刷新
                     showViewPager();
@@ -402,7 +402,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 //没有成功获取广告信息
                 if (!app.isGetADLocationSuccess()) {
                     PictureAirLog.out("start get ad location");
-                    API1.getADLocations(fragmentPageStoryHandler);
+                    API1.getADLocations(0, fragmentPageStoryHandler);
                 } else {
                     PictureAirLog.out("ad location has got already");
                 }
@@ -420,8 +420,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
                 } else {
                     scanMagicPhotoNeedCallBack = true;
-                    fragments = new ArrayList<>();
-                    fragments.clear();
                     showViewPager();
                     noNetWorkOrNoCountView.setVisibility(View.GONE);//无网络状态的View设置为不可见
                     if (sharedNeedFresh) {
@@ -451,7 +449,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case API1.GET_PPP_SUCCESS:
-                if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0) {
+                if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0 && context != null) {
                     new CustomDialog(context, R.string.pp_first_up10_msg, R.string.pp_first_up10_no_msg, R.string.pp_first_up10_yes_msg, new CustomDialog.MyDialogInterface() {
 
                         @Override
@@ -504,6 +502,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getData();
                 break;
 
+            case PPPPop.POP_SCAN:
+                Intent intent = new Intent(getActivity(), MipCaptureActivity.class);
+                startActivity(intent);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
+            case PPPPop.POP_INPUT://进入手动输入页面
+                Intent intent2 = new Intent(getActivity(), InputCodeActivity.class);
+                startActivity(intent2);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
             default:
                 break;
         }
@@ -659,6 +672,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PictureAirLog.out("on create----->");
+        isOnCreate = true;
         View view = inflater.inflate(R.layout.fragment_story, null);
         titleStrings = new String[] {getActivity().getResources().getString(R.string.story_tab_all),
                 getActivity().getResources().getString(R.string.story_tab_photopass),
@@ -666,9 +680,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 getActivity().getResources().getString(R.string.story_tab_bought),
                 getActivity().getResources().getString(R.string.story_tab_favorite) };
         //获取控件
-        more = (ImageView) view.findViewById(R.id.story_more);
-        scanRelativeLayout = (RelativeLayout) view.findViewById(R.id.storyScanRelativeLayout);
-        scanLayout = (ImageView) view.findViewById(R.id.story_scan);
+        scanIv = (ImageView) view.findViewById(R.id.story_menu_iv);
+        scanLayout = (RelativeLayout) view.findViewById(R.id.story_menu_rl);
         storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
         storyLeadBarLinearLayout = (LinearLayout) view.findViewById(R.id.story_lead_bar);
         storyNoPpScanImageView = (ImageView) view.findViewById(R.id.story_no_pp_scan);
@@ -691,7 +704,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         app = (MyApplication) getActivity().getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
-        sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         photoPassItemInfoList = new ArrayList<>();
         magicItemInfoList = new ArrayList<>();
 
@@ -702,9 +715,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         favouritePhotoList = new ArrayList<>();
         storyNoPpScanImageView.setOnClickListener(this);
         scanLayout.setOnClickListener(this);
-        scanRelativeLayout.setOnClickListener(this);
         storyNoPhotoToDiscoverImageView.setOnClickListener(this);
-        more.setOnClickListener(this);
+//        more.setOnClickListener(this);
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
         myToast = new MyToast(getActivity());
@@ -780,6 +792,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void showViewPager() {
         if (allItemInfoList != null && allItemInfoList.size() > 0) {//有图片
             PictureAirLog.out("viewpager---->has photos");
+//            more.setVisibility(View.VISIBLE);
             //隐藏没有pp的情况
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             //隐藏空图的情况
@@ -788,6 +801,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //显示有pp的情况
             storyLeadBarLinearLayout.setVisibility(View.VISIBLE);
 
+            fragments.clear();
             fragments.add(StoryFragment.getInstance(allPhotoList, targetMagicPhotoList, 0, fragmentPageStoryHandler));
             fragments.add(StoryFragment.getInstance(pictureAirPhotoList, targetMagicPhotoList, 1, fragmentPageStoryHandler));
             fragments.add(StoryFragment.getInstance(magicPhotoList, targetMagicPhotoList, 2, fragmentPageStoryHandler));
@@ -814,9 +828,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 EventBus.getDefault().post(new RedPointControlEvent(false));
             }
         } else {//没有图片
-
             //判断是否应该显示左上角红点
-
+//            more.setVisibility(View.INVISIBLE);
             if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //显示没有pp的情况
@@ -840,6 +853,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 storyViewPager.setVisibility(View.INVISIBLE);
             }
         }
+        isOnCreate = false;
     }
 
 
@@ -954,6 +968,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void onResume() {
         PictureAirLog.out(TAG + "  ==onResume");
+        if (mIsAskStoragePermission) {
+            mIsAskStoragePermission = false;
+            super.onResume();;
+            return;
+        }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -975,8 +994,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             if (!dialog.isShowing()) {
                 dialog.show();
             }
-            scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
-            scanPhotosThread.start();
+            requesPermission();
         } else {//检查本地文件夹，属于外部原因的检查
             PictureAirLog.out("need check local photos");
             new Thread(){
@@ -997,7 +1015,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     super.run();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
 
                 }
@@ -1023,6 +1041,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
+        context = null;
         fragmentPageStoryHandler.removeCallbacksAndMessages(null);
     }
 
@@ -1162,7 +1181,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     favouritePhotoList.clear();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
                     fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {
@@ -1396,7 +1415,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         allItemInfoList.removeAll(photoPassItemInfoList);
 
         //将图片按照location加载到list中去
-        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size(); l++) {//遍历所要添加的图片list
+        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size() && l > 0; l++) {//遍历所要添加的图片list
             PictureAirLog.out("遍历照片");
             PhotoInfo info = photoPassPicList.get(l);
             //查找list_clone有图片的item，如果找到locationid，在判断是否有同一天的photos，如果有同一天的，add进去，如果没有，新建一个项
@@ -1404,7 +1423,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.out("遍历地址");
                 PhotoItemInfo p = photoPassItemInfoList.get(j);
                 if (p.locationId == null) {//此item为视频，直接跳过
-                    continue;
+//                    continue;
+                    p.locationId = "others";
                 }
                 if (info.locationId.equals(p.locationId) || p.locationIds.contains(info.locationId)) {//如果locationId和photo的locationid一样
                     PictureAirLog.out("location一样");
@@ -1585,17 +1605,19 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         Intent i = null;
         switch (v.getId()) {
             //扫描按钮
-            case R.id.story_scan:
-            case R.id.storyScanRelativeLayout:
+            case R.id.story_menu_rl:
+                if (pppPop == null ) {
+                    pppPop = new PPPPop(getActivity(), fragmentPageStoryHandler, true);
+                }
+
+                int[] location = new int[2];
+                scanIv.getLocationOnScreen(location);
+                pppPop.showAsDropDown(scanIv, 0, ScreenUtil.dip2px(getActivity(), 15) - 10);
+                break;
+
             case R.id.story_no_pp_scan:
                 i = new Intent(getActivity(), MipCaptureActivity.class);
                 startActivity(i);
-                break;
-
-            case R.id.story_more:
-                // Disney Video
-                DisneyVideoTool.getIsOneGoToDisneyVideoPage(context);
-                // storyMenuPop.showAsDropDown(v);
                 break;
 
             case R.id.story_to_discover://跳转到Discover页面
@@ -1677,5 +1699,30 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
     }
 
+    private void requesPermission() {
+        if (!AppUtil.checkPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                mIsAskStoragePermission = true;
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+                return;
+            }
+            mIsAskStoragePermission = true;
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+            return;
+        }
+        scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
+        scanPhotosThread.start();
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_STORAGE_PERMISSION:
+                scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);
+                scanPhotosThread.start();
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 }

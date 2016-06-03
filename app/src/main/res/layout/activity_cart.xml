@@ -25,11 +25,9 @@
             android:src="@drawable/back_white" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/cart_edit"
-            android:layout_toRightOf="@+id/ret_relyt"
             android:gravity="center"
             android:singleLine="true"
             android:text="@string/cart"
@@ -37,7 +35,6 @@
             android:textSize="@dimen/text_size_16" />
 
         <TextView
-            android:visibility="invisible"
             android:id="@+id/cart_edit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -47,7 +44,8 @@
             android:gravity="center"
             android:text="@string/edit"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="invisible" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -149,9 +147,9 @@
         android:id="@+id/discountPriceLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/line"
         android:orientation="horizontal"
         android:padding="@dimen/pp_margin_16"
-        android:layout_above="@+id/line"
         android:visibility="gone">
 
         <TextView

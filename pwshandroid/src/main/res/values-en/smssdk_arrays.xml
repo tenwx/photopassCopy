@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="smssdk_country">
+		<item>Afghanistan,93,45,412,AF</item>
+		<item>Albania,355,108,276,AL</item>
+		<item>Algeria,213,50,603,DZ</item>
+		<item>Andorra,376,119,213,AD</item>
+		<item>Angola,244,77,631,AO</item>
+		<item>Anguilla,1264,195,365,AI</item>
+		<item>Antigua and Barbuda,1268,196,344,AG</item>
+		<item>Argentina,54,27,722,AR</item>
+		<item>Armenia,374,117,283,AM</item>
+		<item>Aruba,297,100,363,AW</item>
+		<item>Australia,61,33,505,AU</item>
+		<item>Austria,43,16,232,AT</item>
+		<item>Azerbaijan,994,189,400,AZ</item>
+	
+		<item>Bahamas,1242,193,364,BS</item>
+		<item>Bahrain,973,182,426,BH</item>
+		<item>Bangladesh,880,168,470,BD</item>
+		<item>Barbados,1246,194,342,BB</item>
+		<item>Belarus,375,118,257,BY</item>
+		<item>Belgium,32,9,206,BE</item>
+		<item>Belize,501,132,702,BZ</item>
+		<item>Benin,229,62,616,BJ</item>
+		<item>Bermuda,1441,200,350,BM</item>
+		<item>Bhutan,975,184,402,BT</item>
+		<item>Bolivia,591,142,736,BO</item>
+		<item>Bosnia and Herzegovina,387,127,218,BA</item>
+		<item>Botswana,267,97,652,BW</item>
+		<item>Brazil,55,28,724,BR</item>
+		<item>Brunei,673,152,528,BN</item>
+		<item>Bulgaria,359,112,284,BG</item>
+		<item>Burkina Faso,226,59,613,BF</item>
+		<item>Burundi,257,88,642,BI</item>
+	
+		<item>Cambodia,855,166,456,KH</item>
+		<item>Cameroon,237,70,624,CM</item>
+		<item>Canada,1,1,302,CA</item>
+		<item>Cape Verde,238,71,625,CV</item>
+		<item>Cayman Islands,1345,199,346,KY</item>
+		<item>Central African Republic,236,69,623,CF</item>
+		<item>Chad,235,68,622,TD</item>
+		<item>Chile,56,29,730,CL</item>
+		<item>China (mainland),86,42,460|461,CN</item>
+		<item>Colombia,57,30,732,CO</item>
+		<item>Comoros,269,99,654,KM</item>
+		<item>Cook Islands,682,157,548,CK</item>
+		<item>Costa Rica,506,137,712,CR</item>
+		<item>Croatia,385,125,219,HR</item>
+		<item>Cuba,53,26,368,CU</item>
+		<item>Cyprus,357,110,280,CY</item>
+		<item>Czech Republic,420,129,230,CZ</item>
+	
+		<item>Democratic Republic of the Congo,243,76,630,CD</item>
+		<item>Denmark,45,19,238,DK</item>
+		<item>Djibouti,253,84,638,DJ</item>
+		<item>Dominica,1767,206,366,DM</item>
+		<item>Dominican Republic,1809,209,370,DO</item>
+	
+		<item>East Timor,670,151,514,TL</item>
+		<item>Ecuador,593,144,740,EC</item>
+		<item>Egypt,20,5,602,EG</item>
+		<item>El Salvador,503,134,706,SV</item>
+		<item>Equatorial Guinea,240,73,627,GQ</item>
+		<item>Estonia,372,115,248,EE</item>
+		<item>Ethiopia,251,82,636,ET</item>
+		<item>Faroe Islands,298,101,288,FO</item>
+	
+		<item>Fiji,679,156,542,FJ</item>
+		<item>Finland,358,111,244,FI</item>
+		<item>France,33,10,208,FR</item>
+		<item>French Guiana,594,145,742,GF</item>
+		<item>French Polynesia,689,161,547,PF</item>
+	
+		<item>Gabon,241,74,628,GA</item>
+		<item>Gambia,220,53,607,GM</item>
+		<item>Georgia,995,190,282,GE</item>
+		<item>Germany,49,23,262,DE</item>
+		<item>Ghana,233,66,620,GH</item>
+		<item>Gibraltar,350,103,266,GI</item>
+		<item>Greece,30,7,202,GR</item>
+		<item>Greenland,299,102,290,GL</item>
+		<item>Grenada,1473,201,352,GD</item>
+		<item>Guadeloupe,590,141,340,GP</item>
+		<item>Guam,1671,204,535,GU</item>
+		<item>Guatemala,502,133,704,GT</item>
+		<item>Guinea,224,57,611,GN</item>
+		<item>Guinea-Bissau,245,78,632,GW</item>
+		<item>Guyana,592,143,738,GY</item>
+	
+		<item>Haiti,509,140,372,HT</item>
+		<item>Honduras,504,135,708,HN</item>
+		<item>Hong Kong,852,164,454,HK</item>
+		<item>Hungary,36,12,216,HU</item>
+	
+		<item>Iceland,354,107,274,IS</item>
+		<item>India,91,44,404|405|406,IN</item>
+		<item>Indonesia,62,34,510,ID</item>
+		<item>Iran,98,47,432,IR</item>
+		<item>Iraq,964,174,418,IQ</item>
+		<item>Ireland,353,106,272,IE</item>
+		<item>Israel,972,181,425,IL</item>
+		<item>Italy,39,13,222,IT</item>
+		<item>Ivory Coast,225,58,612,CI</item>
+	
+		<item>Jamaica,1876,212,338,JM</item>
+		<item>Japan,81,39,441|440,JP</item>
+		<item>Jersey,44,17,234,JE</item>
+		<item>Jordan,962,172,416,JO</item>
+	
+		<item>Kazakhstan,7,3,401,KZ</item>
+		<item>Kenya,254,85,639,KE</item>
+		<item>Kiribati,686,159,545,KI</item>
+		<item>Kuwait,965,175,419,KW</item>
+		<item>Kyrgyzstan,996,191,437,KG</item>
+	
+		<item>Laos,856,167,457,LA</item>
+		<item>Latvia,371,114,247,LV</item>
+		<item>Lebanon,961,171,415,LB</item>
+		<item>Lesotho,266,96,651,LS</item>
+		<item>Liberia,231,64,618,LR</item>
+		<item>Libya,218,52,606,LY</item>
+		<item>Liechtenstein,423,131,295,LI</item>
+		<item>Lithuania,370,113,246,LT</item>
+		<item>Luxembourg,352,105,270|294,LU</item>
+	
+		<item>Macau,853,165,455,MO</item>
+		<item>Macedonia,389,128,294,MK</item>
+		<item>Madagascar,261,91,646,MG</item>
+		<item>Malawi,265,95,650,MW</item>
+		<item>Malaysia,60,32,502,MY</item>
+		<item>Maldives,960,170,472,MV</item>
+		<item>Mali,223,56,610,ML</item>
+		<item>Malta,356,109,278,MT</item>
+		<item>Martinique,596,147,340,MQ</item>
+		<item>Mauritania,222,55,609,MR</item>
+		<item>Mauritius,230,63,617,MU</item>
+		<item>Mexico,52,25,334,MX</item>
+		<item>Micronesia,691,162,550,FM</item>
+		<item>Moldova,373,116,259,MD</item>
+		<item>Monaco,377,120,212,MC</item>
+		<item>Mongolia,976,185,428,MN</item>
+		<item>Montenegro,382,124,297,ME</item>
+		<item>Montserrat,1664,203,354,MS</item>
+		<item>Morocco,212,49,604,MA</item>
+		<item>Mozambique,258,89,643,MZ</item>
+	
+		<item>Namibia,264,94,649,NA</item>
+		<item>Nepal,977,186,429,NP</item>
+		<item>Netherlands,31,8,204,NL</item>
+		<item>Netherlands Antilles,599,150,362,NULL</item>
+		<item>New Caledonia,687,160,546,NC</item>
+		<item>New Zealand,64,36,530,NZ</item>
+		<item>Nicaragua,505,136,710,NI</item>
+		<item>Niger,227,60,614,NE</item>
+		<item>Nigeria,234,67,621,NG</item>
+		<item>North Korea,850,163,467,KP</item>
+		<item>Norway,47,21,242,NO</item>
+	
+		<item>Oman,968,178,422,OM</item>
+	
+		<item>Palestinian Territory,970,179,425,PS</item>
+		<item>Panama,507,138,714,PA</item>
+		<item>Papua New Guinea,675,153,537,PG</item>
+		<item>Paraguay,595,146,744,PY</item>
+		<item>Peru,51,24,716,PE</item>
+		<item>Philippines,63,35,515,PH</item>
+		<item>Poland,48,22,260,PL</item>
+		<item>Portugal,351,104,268,PT</item>
+		<item>Puerto Rico,1787,208,330,PR</item>
+	
+		<item>Qatar,974,183,427,QA</item>
+	
+		<item>Republic Of The Congo,242,75,629,CD</item>
+		<item>Réunion Island,262,92,647,RE</item>
+		<item>Romania,40,14,226,RO</item>
+		<item>Russia,7,4,250,RU</item>
+		<item>Rwanda,250,81,635,RW</item>
+	
+		<item>Saint Kitts and Nevis,1869,211,356,KN</item>
+		<item>Saint Lucia,1758,205,358,LC</item>
+		<item>Saint Pierre and Miquelon,508,139,308,PM</item>
+		<item>Saint Vincent and The Grenadines,1784,207,360,VC</item>
+		<item>Samoa,685,158,549,WS</item>
+		<item>San Marino,378,121,292,SM</item>
+		<item>Sao Tome and Principe,239,72,626,ST</item>
+		<item>Saudi Arabia,966,176,420,SA</item>
+		<item>Senegal,221,54,608,SN</item>
+		<item>Serbia,381,123,220,RS</item>
+		<item>Seychelles,248,79,633,SC</item>
+		<item>Sierra Leone,232,65,619,SL</item>
+		<item>Singapore,65,37,525,SG</item>
+		<item>Slovakia,421,130,231,SK</item>
+		<item>Slovenia,386,126,293,SI</item>
+		<item>Somalia,252,83,637,SO</item>
+		<item>South Africa,27,6,655,ZA</item>
+		<item>South Korea,82,40,450,KR</item>
+		<item>South Sudan,211,48,659,SS</item>
+		<item>Spain,34,11,214,ES</item>
+		<item>Sri Lanka,94,46,413,LK</item>
+		<item>Sudan,249,80,634,SD</item>
+		<item>Suriname,597,148,746,SR</item>
+		<item>Swaziland,268,98,653,SZ</item>
+		<item>Sweden,46,20,240,SE</item>
+		<item>Switzerland,41,15,228,CH</item>
+		<item>Syria,963,173,417,SY</item>
+	
+		<item>Taiwan,886,169,466,TW</item>
+		<item>Tajikistan,992,187,436,TJ</item>
+		<item>Tanzania,255,86,640,TZ</item>
+		<item>Thailand,66,38,520,TH</item>
+		<item>Togo,228,61,615,TG</item>
+		<item>Tonga,676,154,539,TO</item>
+		<item>Trinidad and Tobago,1868,210,374,TT</item>
+		<item>Tunisia,216,51,605,TN</item>
+		<item>Turkey,90,43,286,TR</item>
+		<item>Turkmenistan,993,188,438,TM</item>
+		<item>Turks and Caicos Islands,1649,202,376,TC</item>
+	
+		<item>Uganda,256,87,641,UG</item>
+		<item>Ukraine,380,122,255,UA</item>
+		<item>United Arab Emirates,971,180,424|430|431,AE</item>
+		<item>United Kingdom,44,18,234|235,GB</item>
+		<item>United States,1,2,310|311|312|313|314|315|316,UM</item>
+		<item>Uruguay,598,149,748,UY</item>
+		<item>Uzbekistan,998,192,434,UZ</item>
+	
+	
+		<item>Vanuatu,678,155,541,VU</item>
+		<item>Venezuela,58,31,734,VE</item>
+		<item>Vietnam,84,41,452,VN</item>
+		<item>Virgin Islands, British,1340,198,348,VG</item>
+		<item>Virgin Islands, US,1284,197,332,VI</item>
+	
+		<item>Yemen,967,177,421,YE</item>
+	
+		<item>Zambia,260,90,645,ZM</item>
+		<item>Zimbabwe,263,93,648,ZW</item>
+    </string-array>
+</resources>

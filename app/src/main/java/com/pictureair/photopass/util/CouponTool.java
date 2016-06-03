@@ -34,6 +34,12 @@ public class CouponTool {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case API1.GET_COUPON_FAILED://获取所有优惠卷失败
+                    if (couponView != null) {
+                        couponView.goneProgressBar();
+                        couponView.noNetwork();
+                    }
+                    break;
+
                 case API1.INSERT_COUPON_FAILED://添加一张优惠卷失败
                     int id = ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1);
                     if (couponView != null) {
@@ -66,10 +72,6 @@ public class CouponTool {
      * 判断是从什么页面进来的
      */
     public void getIntentActivity(Intent getIntent) {
-        if (!getNetwork()) {//无网络
-            couponView.noNetwork();
-            return;
-        }
         if (null == getIntent) {
             return;
         }
@@ -81,6 +83,10 @@ public class CouponTool {
             //根据tokenID
             whatPege = ACTIVITY_ME;
             couponView.getWhatPege(ACTIVITY_ME);
+            if (!getNetwork()) {//无网络
+                couponView.noNetwork();
+                return;
+            }
             queryCouponMePage();
         } else if (getIntent.getExtras().getString(ACTIVITY_ORDER, "").equals(ACTIVITY_ORDER)) {//从订单页面进来的
             whatPege = ACTIVITY_ORDER;
@@ -88,6 +94,10 @@ public class CouponTool {
             cartItemIds = JSONArray.parseArray(getIntent.getExtras().getString(ACTIVITY_ORDER_CART_DATAS));
             couponView.showCouponFromOrderPage(JSONArray.parseArray(getIntent.getExtras().getString("couponCodes")));
             if (null == cartItemIds) {
+                return;
+            }
+            if (!getNetwork()) {//无网络
+                couponView.noNetwork();
                 return;
             }
             queryCouponOrderPage(cartItemIds);

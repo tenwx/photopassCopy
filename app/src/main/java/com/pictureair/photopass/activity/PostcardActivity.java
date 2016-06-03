@@ -105,7 +105,7 @@ public class PostcardActivity extends BaseActivity implements View.OnClickListen
 
         //初始化数据
         myToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
     }
 
 

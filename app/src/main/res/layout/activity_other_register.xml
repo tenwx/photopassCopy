@@ -35,6 +35,7 @@
                 android:background="@null"
                 android:hint="@string/email"
                 android:imeOptions="actionNext"
+                android:maxLength="200"
                 android:inputType="textEmailAddress"
                 android:paddingBottom="@dimen/pp_padding_16"
                 android:paddingLeft="@dimen/pp_padding_10"

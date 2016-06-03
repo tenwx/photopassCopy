@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="@dimen/pp_height_1dp"
+        android:left="@dimen/pp_height_1dp"
+        android:right="@dimen/pp_height_1dp"
+        android:top="@dimen/pp_height_1dp">
+        <shape>
+            <stroke
+                android:width="@dimen/pp_height_1dp"
+                android:color="@color/pp_light_gray_normal"
+                android:dashGap="@dimen/pp_width_3"
+                android:dashWidth="@dimen/pp_width_3" />
+            <solid android:color="@color/white" />
+
+            <corners android:radius="@dimen/pp_radius_5" />
+        </shape>
+    </item>
+
+</layer-list>

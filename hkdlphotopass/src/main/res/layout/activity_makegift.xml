@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/makegift_relativate"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pp_light_gray_background">
+
+    <RelativeLayout
+        android:id="@+id/makegift_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_top_bar_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/pp_blue">
+
+        <LinearLayout
+            android:id="@+id/product_name_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/pp_padding_20"
+            android:paddingRight="@dimen/pp_padding_20"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/product_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:layout_gravity="center_vertical"
+                android:text="@string/preview"
+                android:paddingRight="@dimen/pp_padding_8"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_16" />
+
+            <ImageView
+                android:id="@+id/button_selectproduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"
+                android:src="@drawable/make_gift_product"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/button_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/cart" />
+
+        <TextView
+            android:id="@+id/textview_cart_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/pp_margin_8"
+            android:layout_marginTop="@dimen/pp_padding_4"
+            android:background="@drawable/bg1"
+            android:gravity="center"
+            android:padding="@dimen/pp_padding_1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12" />
+
+        <ImageView
+            android:id="@+id/rt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <ImageView
+            android:id="@+id/addimage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/pp_margin_5"
+            android:layout_toLeftOf="@id/button_cart"
+            android:scaleType="fitCenter"
+            android:src="@drawable/addphoto"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <com.pictureworks.android.widget.MyScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buttonllout"
+        android:layout_below="@id/makegift_titlebar"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.pictureworks.android.widget.BannerView_PreviewCompositeProduct
+                android:id="@+id/bannerview_makegift_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="@dimen/pp_padding_20" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/pp_margin_16">
+
+                <com.pictureworks.android.widget.CustomTextView
+                    android:id="@+id/product_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/pp_padding_16"
+                    android:textColor="@color/pp_blue"
+                    android:textSize="@dimen/text_size_14" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/pp_blue" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/pp_padding_5">
+
+                    <com.pictureworks.android.widget.CustomTextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/pp_blue"
+                        android:textSize="@dimen/text_size_14" />
+
+
+                    <com.pictureworks.android.widget.CustomTextView
+                        android:id="@+id/textview_productprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/pp_margin_2"
+                        android:layout_toRightOf="@id/textView2"
+                        android:textColor="@color/pp_blue"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <com.pictureworks.android.widget.CustomTextView
+                        android:id="@+id/detail_receive_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/textView2"
+                        android:layout_marginTop="@dimen/pp_padding_8"
+                        android:text="@string/self_collect"
+                        android:textColor="@color/pp_blue"
+                        android:textSize="@dimen/text_size_14" />
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </com.pictureworks.android.widget.MyScrollView>
+
+    <LinearLayout
+        android:id="@+id/buttonllout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/pp_margin_16">
+
+        <Button
+            android:id="@+id/button_buy"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_blue_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/confirm"
+            android:textColor="@drawable/textview_selector_blue_white"
+            android:textSize="@dimen/pp_margin_16" />
+
+        <Button
+            android:id="@+id/button_addtocart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/pp_margin_16"
+            android:layout_weight="1"
+            android:background="@drawable/button_sign_shape_and_selector"
+            android:padding="@dimen/pp_padding_10"
+            android:text="@string/add_to_cart"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/pp_margin_16" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -9,54 +9,36 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.MyToast;
 
 import java.lang.ref.WeakReference;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.EditTextWithClear;
 import de.greenrobot.event.EventBus;
 
 /**
  * 手动输入条码的页面
  */
 public class InputCodeActivity extends BaseActivity implements OnClickListener{
-    private String[] resultList;
-    private TextView tvConfirmHint, tvManulInputIntro;
-
-    private ImageView ivShowResult;
-    private Button btnConfirmScanPppCode, btnReScanPppCode;
-    private LinearLayout lvButtom;
-
     private Button ok;
     private SharedPreferences sp;
     private MyToast newToast;
-    private String inputValue1, inputValue2, inputValue3, inputValue4;
     private DealCodeUtil dealCodeUtil;
 
     private CustomProgressDialog dialog;
 
     private EditTextWithClear inputCodeEdit;
-    private LinearLayout comfirmPPPLayout;
 
     private final Handler inputCodeHandler = new InputCodeHandler(this);
-
-    /**
-     * 统计已输入条码的个数
-     */
-    private int[] codeCount;
-
 
     private static class InputCodeHandler extends Handler {
         private final WeakReference<InputCodeActivity> mActivity;
@@ -135,9 +117,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     }
 
     private void initview() {
-        tvManulInputIntro = (TextView) findViewById(R.id.tv_manul_input_intro);
-
-        sp = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         ok = (Button) findViewById(R.id.sure);
 
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);
@@ -165,7 +145,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
         switch (v.getId()) {
             case R.id.sure://手动输入页面的确定
                 if ("".equals(inputCodeEdit.getText().toString())) {
-                    newToast.setTextAndShow(R.string.nocontext, Common.TOAST_SHORT_TIME);
+                    newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 } else {
                     //如果有键盘显示，把键盘取消掉
                     hideInputMethodManager(v);

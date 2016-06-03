@@ -69,7 +69,7 @@ public class DisneyVideoTool {
         // 判断是否有照片,到MyApplication查询是否有已经购买的照片
         //测试
         PictureAirLog.e(TAG,"tokenId:"+ MyApplication.getTokenId());
-        SharedPreferences sp = context.getSharedPreferences(Common.USERINFO_NAME,context.MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         PictureAirLog.e(TAG,"userId:"+ sp.getString(Common.USERINFO_ID,"0") );
 
         Intent intent = new Intent(context, SelectPhotoActivity.class);

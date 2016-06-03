@@ -52,7 +52,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 	public void onResp(BaseResp resp) {
 		PictureAirLog.d(TAG, "onPay, errCode = " + resp.errCode);
 		if (sharedPreferences == null) {
-			sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+			sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
 		}
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putInt(Common.WECHAT_PAY_STATUS, resp.errCode);

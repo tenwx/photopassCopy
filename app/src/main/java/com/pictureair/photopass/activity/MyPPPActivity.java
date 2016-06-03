@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,22 +33,24 @@ import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -90,6 +93,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     // 选择PP＋需要的组件
     private TextView ok;
     String ppsStr;
+    private TextView mTitle;
+    private PictureWorksDialog pictureWorksDialog;
+    private RelativeLayout menuLayout;
 
 
     private final Handler myPPPHandler = new MyPPPHandler(this);
@@ -120,7 +126,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private void dealHandler(Message msg) {
         Intent intent;
         switch (msg.what) {
-            case 999://购买PPP
+            case PPPPop.POP_BUY://购买PPP
                 //购买PP+，先获取商品 然后进入订单界面
                 dialog = CustomProgressDialog.show(MyPPPActivity.this, getString(R.string.is_loading), false, null);
                 //获取商品（以后从缓存中取）
@@ -130,8 +136,17 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
 
-            case 888://扫描
+            case PPPPop.POP_SCAN://扫描
                 intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
+                intent.putExtra("type", "ppp");//只扫描ppp
+                startActivity(intent);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
+            case PPPPop.POP_INPUT://手动输入
+                intent = new Intent(MyPPPActivity.this, InputCodeActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
                 startActivity(intent);
                 if (pppPop.isShowing()) {
@@ -173,7 +188,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                         // 需要对ppp进行排序
                         list1.add(ppPinfo);
                         PictureAirLog.v(TAG, "the ppp code ====>"
-                                + ppPinfo.PPPCode);
+                                + ppPinfo.PPPCode + "expericePPP===>" + ppPinfo.expericePPP + "capacity" + ppPinfo.capacity);
                     }
                     Collections.sort(list1);
                     PictureAirLog.v(TAG, "list-=--=" + list1.size());
@@ -328,13 +343,33 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
             case 2:
                 ok.setText(formaStringPPP(listPPPAdapter.getMap().size(),1));
+                if (listPPPAdapter.getMap().size() >=1){
+                    ok.setEnabled(true);
+                    ok.setTextColor(getResources().getColor(R.color.white));
+                }else{
+                    ok.setEnabled(false);
+                    ok.setTextColor(getResources().getColor(R.color.gray_light5));
+                }
+                break;
+            case 3:
+
                 break;
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 dialog.dismiss();
+                if (API1.PPPlist.size() != 0 ){
+                    API1.PPPlist.clear(); // 绑定成功 之后 清空API中的数据。
+                }
+                if (AppManager.getInstance().checkActivity(SelectPPActivity.class)){ //SelectPPActivity，就把这个类杀掉。
+                    AppManager.getInstance().killActivity(SelectPPActivity.class);
+                }
 
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新 （其实可以不需要，不过保证数据同步，加上更保险）
                 editor1.putBoolean(Common.NEED_FRESH, true);
                 editor1.commit();
+
+                if (AppManager.getInstance().checkActivity(PreviewPhotoActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
+                    AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
+                }
 
                 intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle1 = new Bundle();
@@ -348,6 +383,16 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
                 dialog.dismiss();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+            case DialogInterface.BUTTON_POSITIVE:
+                if (listPPPAdapter.getMap().size() == 1){
+                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+                    API1.bindPPsDateToPPP(JSONArray.parseArray(ppsStr), API1.PPPlist.get(listPPPAdapter.getOnclickPosition()).PPPCode, myPPPHandler);
+                }else{
+                    newToast.setTextAndShow(R.string.select_your_ppp, Common.TOAST_SHORT_TIME);
+                }
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
                 break;
 
             default:
@@ -374,13 +419,14 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initViewCommon(){
-        pppPop = new PPPPop(this, myPPPHandler);
+        pppPop = new PPPPop(this, myPPPHandler, false);
         //初始化
         newToast = new MyToast(this);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);
+        menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
         setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
         listPPP = (ListView) findViewById(R.id.list_ppp);
@@ -391,17 +437,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         listPPP.setVisibility(View.GONE);
 
         back.setOnClickListener(this);
-        setting.setOnClickListener(this);
+        menuLayout.setOnClickListener(this);
     }
 
     private void initViewUseHavedPPP(){
+        mTitle = (TextView) findViewById(R.id.myppp);
+        mTitle.setText(R.string.select_ppp_title);
         // 显示右上角 ok 按钮。隐藏 ＋ 号
         ok = (TextView) findViewById(R.id.ok);
         ok.setVisibility(View.VISIBLE);
         ok.setText(formaStringPPP(0, 1));
         ok.setOnClickListener(this);
         setting.setVisibility(View.GONE);
-
+        ok.setEnabled(false);
+        ok.setTextColor(getResources().getColor(R.color.gray_light5));
         listPPP.setVisibility(View.VISIBLE);
         listPPPAdapter = new ListOfPPPAdapter(API1.PPPlist, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
         listPPP.setAdapter(listPPPAdapter);
@@ -537,10 +586,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 doBack();
                 break;
 
-            case R.id.ppp_setting://设置按钮   + 按钮
+            case R.id.ppp_rl://设置按钮   + 按钮
                 int[] location = new int[2];
                 setting.getLocationOnScreen(location);
-                pppPop.showAsDropDown(setting);
+                pppPop.showAsDropDown(setting, 0, ScreenUtil.dip2px(MyPPPActivity.this, 15) - 10);
                 break;
 
             case R.id.button_buy_ppp:
@@ -560,12 +609,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.ok: // 确定选择之后
-                if (listPPPAdapter.getMap().size() == 1){
-                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
-                    API1.bindPPsDateToPPP(JSONArray.parseArray(ppsStr), API1.PPPlist.get(listPPPAdapter.getOnclickPosition()).PPPCode, myPPPHandler);
-                }else{
-                    newToast.setTextAndShow(R.string.select_your_ppp, Common.TOAST_SHORT_TIME);
-                }
+                createDialog();
                 break;
 
             default:
@@ -666,7 +710,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         super.onDestroy();
         if (isUseHavedPPP){
-            API1.PPPlist.clear();
+//            API1.PPPlist.clear();
         }else{
             if (EventBus.getDefault().isRegistered(this)) {
                 EventBus.getDefault().unregister(this);
@@ -728,6 +772,15 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     private String formaStringPPP(int count1, int count2) {
         return String.format(getString(R.string.pp_ok), count1, count2);
+    }
+
+
+    // 没有保存的时候的对话框
+    private void createDialog() {
+        if (pictureWorksDialog == null) {
+            pictureWorksDialog = new PictureWorksDialog(this, null, getString(R.string.update_ppp_msg), getString(R.string.update_ppp_cancel), getString(R.string.update_ppp_ok), true, myPPPHandler);
+        }
+        pictureWorksDialog.show();
     }
 
 }

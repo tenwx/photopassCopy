@@ -16,6 +16,8 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.Cipher;
 import android.util.Base64;
 
+import com.pictureair.photopass.util.PictureAirLog;
+
 public class UnionpayRSAUtil {
 
     public static final String RSA = "RSA";
@@ -267,8 +269,10 @@ public class UnionpayRSAUtil {
             String publicExponent) {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(new BigInteger(
-                    modulus), new BigInteger(publicExponent));
+            BigInteger modulusBI = new BigInteger(modulus);
+            BigInteger pubExponnetBI = new BigInteger(publicExponent);
+
+            RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(modulusBI, pubExponnetBI);
             return keyFactory.generatePublic(pubKeySpec);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -286,8 +290,8 @@ public class UnionpayRSAUtil {
 
     public static PublicKey getPublicKeyProduct() {
         // 请将此处的module换成生产环境商户验签的公钥模数
-        String modulus = "24882698307025187401768229621661046262584590315978248721358993520593720674589904440569546585666019820242051570504151753011145804842286060932917913063481673780509705461614953345565639235206110825500286080970112119864280897521494849627888301696007067301658192870705725665343356870712277918685009799388229000694331337917299248049043161583425309743997726880393752539043378681782404204317246630750179082094887254614603968643698185220012572776981256942180397391050384441191238689965500817914744059136226832836964600497185974686263216711646940573711995536080829974535604890076661028920284600607547181058581575296480113060083";
-        String publicExponent = "65537";
+        String modulus = "b57725a371f8a41f968b8c127740c6c27c995a78bbfb6d93924ea56d7404acc3473e4f3873c0e78d3f025bc8c87efdf3779341a6f1b73b78d0fd81c595a777f4376052fa83774598f3f0b82dfdb1ca8d3e81045972430a10021df0597afeb3cd1ec6cf44634866013a001caf0916eb8a214d16db97ccfe28806eef8a5a817241967c061a279cc9a5a1a5301396d538b73158ca839c7cb75fe8141929155b019c079218f258ac19f48ab7e75c384ecfb85c2163db343a2ad9b27d5706e42a126a573ee3ef5d7aa7389470b48525ab2758c9e9f02ac84a3e76717cd2fd8d64b9a20c3cfff5074a5c8d5a8c3498e8c28a033b1203dd36467e4e55ed2fbee05a3057";
+        String publicExponent = "10001";
         PublicKey publicKey = UnionpayRSAUtil.generateRSAPublicKey(modulus,
                 publicExponent);
         return publicKey;

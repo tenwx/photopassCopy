@@ -33,7 +33,7 @@
     <string name="name_is_empty">Please enter your nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
-    <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>\n\n&amp;<a href = "1">Privacy Policy</a> </string>
+    <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>&amp;\n<a href = "1">Privacy Policy</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -55,11 +55,12 @@
     <string name="share_canceled">Share Canceled</string>
     <string name="share_failed">Share Failed</string>
     <string name="weibo_oauth_regiseter">Authorization</string>
-    <string name="share_failure_wechat">Please download and install WeChat before sharing!</string>
-    <string name="share_failure_weibo">Please download and install SinaWeibo before sharing!</string>
-    <string name="share_failure_qzone">Please download and install QQ before sharing!</string>
-    <string name="share_failure_facebook">Please download and install Facebook before sharing!</string>
-    <string name="share_failure_twitter">Please download and install Twitter before sharing!</string>
+    <string name="share_failure_wechat">Your mobile has not install WeChat, Please download and install to share!</string>
+    <string name="share_failure_weibo">Your mobile has not install Sina Weibo, Please download and install to share!</string>
+    <string name="share_failure_qzone">Your mobile has not install QQ, Please download and install to share!</string>
+    <string name="share_failure_facebook">Your mobile has not install Facebook, Please download and install to share!</string>
+    <string name="share_failure_twitter">Your mobile has not install Twitter, Please download and install to share!</string>
+    <string name="share_failure_instagram">Your mobile has not install Instagram, Please download and install to share!</string>
     <string name="sinaweibo">Sina Weibo</string>
     <string name="qzone">QZone</string>
     <string name="wechat">Friends</string>
@@ -87,6 +88,8 @@
     <string name="story_tab_magic">Local</string>
     <string name="story_tab_bought">Purchased</string>
     <string name="story_tab_favorite">Favorite</string>
+    <string name="story_other_en">Others</string>
+    <string name="story_other_ch">其他</string>
     <string name="story_no_pp">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
@@ -96,7 +99,7 @@
     <string name="storypage_no_photo">There are no photos in your\nDisney PhotoPass account</string>
     <string name="storypage_no_pp">Your Disney PhotoPass photos will appear here</string>
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
-    <string name="no_network">Please check your network</string>
+    <string name="no_network">Loading failed, Please check your network</string>
     <string name="click_button_reload">Click button to reload</string>
     <string name="reload">Refresh</string>
     <string name="nomore">No more data to load!</string>
@@ -191,6 +194,7 @@
     <string name="reloadphoto">Please reload this photo</string>
     <string name="neednotdownload">The photo has been saved in the local album!</string>
     <string name="local_photo_not_support_makegift">Sorry we cannot print your edited photos.</string>
+    <string name="not_support_makegift">Sorry we cannot print your digital souvenir photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">Sorry, your pictures taken through the authors temporarily does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
@@ -200,10 +204,10 @@
     <!-- blur start -->
     <string name="blur_intro">Disney PhotoPass+ allows you to view and download all your photos taken by our professional Disney PhotoPass Photographers in a single day.</string>
     <string name="up_ppp_money">Upgrade to Disney PhotoPass+</string>
-    <string name="use_ppp">Have PhotoPass+ to Upgrade</string>
+    <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
-    <string name="no_ppp_tips">Have not PhotoPass+ !</string>
+    <string name="no_ppp_tips">You haven\'t any expiry PhotoPass+</string>
     <!-- blur end -->
 
     <!-- download start -->
@@ -295,6 +299,7 @@
     <string name="submit_order">Payment Successful</string>
     <string name="no_pay_tips">You don\'t pay anything!</string>
     <string name="no_pay_success">OK</string>
+    <string name="install_wechat_first">Your mobile has not install WeChat, Please download and install to pay!</string>
     <!-- payment end -->
 
     <!-- set header start -->
@@ -377,6 +382,10 @@
 
     <!-- select ppp start -->
     <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
+    <string name="select_ppp_title">Select</string>
+    <string name="update_ppp_msg">You are going to activate your photos in PhotoPass using this PhotoPass +.</string>
+    <string name="update_ppp_cancel">Cancel</string>
+    <string name="update_ppp_ok">OK</string>
     <!-- select ppp end -->
 
     <!-- settings start -->
@@ -390,6 +399,7 @@
     <string name="auto_sync">Auto Sync</string>
     <string name="setting_language">Change Language</string>
     <string name="comfirm_logout">Do you want to Sign Out?</string>
+    <string name="setting_language_msg">Do you want to change the language?</string>
     <!-- settings end -->
 
     <!-- change language start -->
@@ -414,8 +424,8 @@
 
     <!-- socket start -->
     <string name="notifacation_new_message">New Message</string>
-    <string name="notifacation_new_photo">You have new photos</string>
-    <string name="notifacation_new_video">You have new videos</string>
+    <string name="notifacation_new_photo">You have new photos!</string>
+    <string name="notifacation_new_video">You have new videos!</string>
     <string name="notifacation_order_completed_msg">Payment successful</string>
     <string name="notifacation_order_submit_msg">Proceed to payment</string>
     <!-- socket end -->
@@ -455,6 +465,8 @@
     <string name="all">Select All</string>
     <string name="disall">Disselect</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
+    <string name="start_delete">Your account will no longer display these photos once deleted. Confirm to delete?</string>
+    <string name="edit_story_album">Select</string>
     <!-- edit story end -->
 
     <!-- 优惠卷start   文案没有，暂时中文-->
@@ -488,7 +500,7 @@
     <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
     <string name="smssdk_explain_briefly"> I have read and agree to the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
-    <string name="please_agree">Please confirm to agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
+    <string name="please_agree">Please agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>
     <string name="smssdk_ok">OK</string>
@@ -508,4 +520,8 @@
     <string name="preview_goods_null">预览商品(0/3)</string>
     <!-- postcard end-->
 
+    <!-- permission request start -->
+    <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
+    <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
+    <!-- permission request end -->
 </resources>

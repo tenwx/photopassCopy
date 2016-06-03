@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/pp_margin_20"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/pp_padding_8">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/pp_margin_10"
+        android:layout_marginRight="@dimen/pp_margin_10">
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/good_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/good_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
+        <com.pictureworks.android.widget.CustomTextView
+            android:id="@+id/good_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/good_price"
+            android:layout_marginRight="@dimen/pp_margin_2"
+            android:layout_toLeftOf="@id/good_price"
+            android:textColor="@color/pp_blue"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/goodDetailIntroduce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/pp_margin_10"
+        android:layout_marginLeft="@dimen/pp_margin_10"
+        android:layout_marginRight="@dimen/pp_margin_10"
+        android:layout_marginTop="@dimen/pp_margin_5"
+        android:textColor="@color/pp_light_gray_press" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/goodImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+
+        <!--<TextView-->
+        <!--android:id="@+id/goodDetailIntroduce"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="@color/ppp_cover"-->
+        <!--android:padding="10dp"-->
+        <!--android:singleLine="true"-->
+        <!--android:textColor="@color/white" />-->
+    </RelativeLayout>
+
+</LinearLayout>

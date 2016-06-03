@@ -40,6 +40,7 @@ import cn.sharesdk.facebook.Facebook;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.instagram.Instagram;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.tencent.qzone.QZone;
@@ -202,7 +203,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
         Platform platform = ShareSDK.getPlatform(context, WechatMoments.NAME);
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         ShareParams shareParams = new ShareParams();
-        shareParams.title = context.getString(R.string.share_text);
+        shareParams.title = context.getString(R.string.share_app_name);
         // 本地图片可以
         if ("local".equals(type)) {// 本地图片
             shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
@@ -228,14 +229,15 @@ public class SharePop extends PopupWindow implements OnClickListener,
         Platform platform = ShareSDK.getPlatform(context, Wechat.NAME);
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         ShareParams shareParams = new ShareParams();
-        shareParams.title = context.getString(R.string.share_text);
+        shareParams.title = context.getString(R.string.share_app_name);
+        shareParams.text = context.getString(R.string.share_text);
         // 本地图片可以
         if ("local".equals(type)) {// 本地图片
             shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
             shareParams.imagePath = imagePath;
         } else if ("online".equals(type)) {// 网络图片
             shareParams.shareType = Platform.SHARE_WEBPAGE;// 以网页的形式分享图片
-            // shareParams.imageUrl = imageUrl;
+            shareParams.imageUrl = imageUrl;
             shareParams.url = shareUrl;// share_webpage的时候需要这个参数
         }
         platform.share(shareParams);
@@ -259,9 +261,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
             shareParams.text = context.getResources().getString(
                     R.string.share_text);
             if ("local".equals(type)) {// 本地图片
-                shareParams.imagePath = imagePath;
-                shareParams.titleUrl = "http://www.pictureair.com";
-                // shareParams.siteUrl = "http://www.pictureair.com";
+                shareParams.setImagePath(imagePath);
+                shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
             } else if ("online".equals(type)) {// 网络图片
                 shareParams.imageUrl = imageUrl;
                 shareParams.titleUrl = shareUrl;
@@ -298,9 +299,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
             shareParams.text = context.getResources().getString(
                     R.string.share_text);
             if ("local".equals(type)) {// 本地图片
-                shareParams.imagePath = imagePath;
-                shareParams.titleUrl = "http://www.pictureair.com";
-                // shareParams.siteUrl = "http://www.pictureair.com";
+                shareParams.setImagePath(imagePath);
+                shareParams.setTitleUrl("http://www.disneyphotopass.com.cn");
             } else if ("online".equals(type)) {// 网络图片
                 shareParams.imageUrl = imageUrl;
                 shareParams.titleUrl = shareUrl;
@@ -330,16 +330,15 @@ public class SharePop extends PopupWindow implements OnClickListener,
                            String shareUrl, String type) {
         Platform platform = ShareSDK.getPlatform(context, SinaWeibo.NAME);
 
-        platform.SSOSetting(false);// 未审核，必须要关闭SSO，true代表关闭。审核过了之后才要设置为false
+//        platform.SSOSetting(false);// 未审核，必须要关闭SSO，true代表关闭。审核过了之后才要设置为false，新版本，貌似已经不需要这个了
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         cn.sharesdk.sina.weibo.SinaWeibo.ShareParams shareParams = new cn.sharesdk.sina.weibo.SinaWeibo.ShareParams();
         shareParams.text = context.getString(R.string.share_text);
-        shareParams.setTitleUrl(shareUrl);
         if ("local".equals(type)) {// 本地图片
-            shareParams.imagePath = imagePath;
+            shareParams.setImagePath(imagePath);
         } else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
-            shareParams.imageUrl = imageUrl;
-            // shareParams.text = imageUrl;
+            shareParams.setImageUrl(imageUrl);
+//            shareParams.setUrl(shareUrl);
         }
         platform.share(shareParams);
     }
@@ -398,6 +397,44 @@ public class SharePop extends PopupWindow implements OnClickListener,
     }
 
     /**
+     * instagram
+     * 分享图文	 ImagePath
+     * imageUrl
+     * 分享视频	 FilePath(/sdcard/视屏文件)
+     *
+     * @param context
+     * @param imagePath 本地图片路径
+     * @param imageUrl  网络图片url
+     * @param type      判断是否是本地还是网络，类型有“local”“online”
+     */
+    private void instagramShare(Context context, String imagePath, String imageUrl,
+                                String shareUrl, String type) {
+        PictureAirLog.i(TAG, "---> instagram分享");
+        Platform platform = ShareSDK.getPlatform(context, Instagram.NAME);
+        if (platform.isClientValid()) {
+            PictureAirLog.i(TAG, "---> instagram分享---用户已经安装客户端");
+            platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
+            cn.sharesdk.instagram.Instagram.ShareParams shareParams = new cn.sharesdk.instagram.Instagram.ShareParams();
+            shareParams.text = context.getResources().getString(
+                    R.string.share_text);
+            if ("local".equals(type)) {// 本地图片
+                shareParams.setImagePath(imagePath);
+            } else if ("online".equals(type)) {// 网络图片
+                shareParams.imageUrl = imageUrl;
+            }
+            platform.share(shareParams);
+        } else {
+            PictureAirLog.i(TAG, "---> instagram分享---用户没有安装客户端");
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            showNotification(2000,
+                    context.getString(R.string.share_failure_instagram));
+        }
+    }
+
+
+    /**
      * 开始分享
      *
      * @param id
@@ -430,7 +467,11 @@ public class SharePop extends PopupWindow implements OnClickListener,
             case R.id.qqzone:
                 shareType = Common.EVENT_ONCLICK_SHARE_QQZONE;
                 sharePlatform = "qzone";
-                qzoneShare(context, imagePath, imageUrl, shareUrl, type);
+                if (type.equals("local")) {
+                    createThumbNail(id);
+                } else {
+                    qzoneShare(context, imagePath, imageUrl, shareUrl, type);
+                }
                 break;
 
             case R.id.sina:
@@ -535,7 +576,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                                 // TODO Auto-generated method stub
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 loadedImage.compress(
-                                        Bitmap.CompressFormat.JPEG, 30, baos);
+                                        Bitmap.CompressFormat.JPEG, 20, baos);
                                 byte[] datas = baos.toByteArray();
                                 File shareFile = new File(Common.SHARE_PATH);
                                 if (!shareFile.exists()) {
@@ -584,6 +625,10 @@ public class SharePop extends PopupWindow implements OnClickListener,
                                     case R.id.qq:
                                         qqShare(context, shareFile.toString(), imageUrl,
                                                 shareUrl, type);
+                                        break;
+
+                                    case R.id.qqzone:
+                                        qzoneShare(context, shareFile.toString(), imageUrl, shareUrl, type);
                                         break;
 
                                     default:

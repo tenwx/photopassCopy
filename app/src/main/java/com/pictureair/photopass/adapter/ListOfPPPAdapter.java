@@ -3,14 +3,12 @@ package com.pictureair.photopass.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,11 +18,10 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.MyToast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,12 +38,14 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private HashMap<Integer, Boolean> map;//统计被勾选的子项 只能选一张PP+.
 	private int onclickPosition;
 	private Handler handler;
+	private MyToast myToast;
 	
 	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
 		this.isUseHavedPPP = isUseHavedPPP;
 		this.handler = handler;
+		myToast = new MyToast(mContext);
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.ic_discover_loading)
 				.showImageOnFail(R.drawable.ic_discover_failed)
@@ -228,9 +227,22 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					break;
 			}
 
-			if (dpp.expired == 1) {
-				holder.tvState.setText(R.string.ppp_has_expired);
+			if (dpp.expired == 1) {//设置是否过期
+				if (dpp.expericePPP == 1) {//体验卡
+					if (dpp.bindInfo.size() == 1) {//已用完
+
+					} else {//过期
+						holder.tvState.setText(R.string.ppp_has_expired);
+					}
+				} else {//正常ppp卡
+					if (dpp.bindInfo.size() == 3) {//已用完
+
+					} else {//过期
+						holder.tvState.setText(R.string.ppp_has_expired);
+					}
+				}
 			}
+
 
 			//如果是选择 pp＋的状态
 			if (isUseHavedPPP) {
@@ -274,9 +286,15 @@ public class ListOfPPPAdapter extends BaseAdapter {
 						if (map.size() == 0){ //增加
 							onclickPosition = position; //通过MyPPP获取它
 							map.put(position,true);
-						}else if (map.size() == 1){ //替换
-							map.clear();
-							map.put(position,true);
+						}else if (map.size() == 1){ // 超出范围
+							if (map.containsKey(position)){
+								map.clear();
+//							    map.put(position,true);
+							}else {
+								myToast.setTextAndShow(R.string.outofrange, Common.TOAST_SHORT_TIME);
+							}
+//							map.clear();
+//							map.put(position,true);
 						}
 						notifyDataSetChanged();
 						handler.sendEmptyMessage(2);

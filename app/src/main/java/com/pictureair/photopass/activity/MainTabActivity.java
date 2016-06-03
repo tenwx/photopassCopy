@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.pictureair.photopass.fragment.FragmentPageShop;
 import com.pictureair.photopass.fragment.FragmentPageStory;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
+import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -41,6 +43,9 @@ import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
 
 import com.pictureair.photopass.util.AppManager;
+
+import java.util.List;
+
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
@@ -128,12 +133,24 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
         newToast = new MyToast(this);
+
+        //设置app是否登录的状态
+        AppExitUtil.getInstance().AppLogin();
+
         // 自动检查更新
-        sharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
+        checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(), currentLanguage,
                 parentLayout);
-        checkUpdateManager.startCheck();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                checkUpdateManager.init();
+                checkUpdateManager.startCheck();
+            }
+        });
+
         // 得到fragment的个数
         int count = fragmentArray.length;
 
@@ -236,6 +253,12 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         }
     }
 
+
+    //Can not perform this action after onSaveInstanceState 这个问题，暂时先这么解，之后要全部改掉
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
 
     //tab按钮的点击监听
     private class TabOnClick implements OnClickListener {
@@ -413,6 +436,19 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             application.setIsStoryTab(mainTabSwitchEvent.getMainTabSwitchIndex() == 0 ? true : false);
             last_tab = mainTabSwitchEvent.getMainTabSwitchIndex();
             EventBus.getDefault().removeStickyEvent(mainTabSwitchEvent);
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> listFragments = getSupportFragmentManager().getFragments();
+        if (listFragments != null && listFragments.size() >0) {
+            for (Fragment fragment : listFragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
         }
     }
 }

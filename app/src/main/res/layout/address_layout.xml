@@ -332,7 +332,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_agreement"
                     android:layout_marginTop="@dimen/pp_margin_13"
-                    android:layout_marginBottom="8dp"
+                    android:paddingBottom="8dp"
                     android:text="@string/smssdk_explain_briefly"
                     android:textColor="@color/pp_blue"
                     android:textSize="@dimen/text_size_14" />

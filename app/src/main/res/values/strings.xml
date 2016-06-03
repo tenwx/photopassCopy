@@ -33,7 +33,7 @@
     <string name="name_is_empty">请输入昵称</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href = "2">补充条款及细则</a>\n\n和<a href = "1">隐私政策</a> </string>
+    <string name="terms_and_policy"><a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -60,6 +60,7 @@
     <string name="share_failure_qzone">您的手机没有安装QQ客户端，请先下载安装后再分享！</string>
     <string name="share_failure_facebook">您的手机没有安装Facebook客户端，请先下载安装后再分享！</string>
     <string name="share_failure_twitter">您的手机没有安装Twitter客户端，请先下载安装后再分享！</string>
+    <string name="share_failure_instagram">您的手机没有安装Instagram客户端，请先下载安装后再分享！</string>
     <string name="sinaweibo">新浪微博</string>
     <string name="qzone">QQ空间</string>
     <string name="wechat">微信好友</string>
@@ -87,6 +88,8 @@
     <string name="story_tab_magic">本地相册</string>
     <string name="story_tab_bought">已购买</string>
     <string name="story_tab_favorite">收藏</string>
+    <string name="story_other_en">Others</string>
+    <string name="story_other_ch">其他</string>
     <string name="story_no_pp">请扫描您的上海迪士尼乐园门票或迪士尼乐拍通卡预览您的照片。</string>
     <string name="story_scan">扫一扫</string>
     <string name="no_photo_in_airpass">赶快去找迪士尼乐拍通摄影师为您拍照吧！</string>
@@ -191,8 +194,9 @@
     <string name="reloadphoto">请重新加载此照片</string>
     <string name="neednotdownload">此照片已被保存在本地相册</string>
     <string name="local_photo_not_support_makegift">本地照片不允许打印</string>
+    <string name="not_support_makegift">纪念照不允许打印</string>
     <string name="photo_index">%1$d/%2$d</string>
-    <string name="photo_cannot_edit_content">对不起，您的此张乐拍通照片暂不支持编辑</string>
+    <string name="photo_cannot_edit_content">对不起，您的此张带有模板标识的乐拍通照片暂不支持编辑！</string>
     <string name="photo_cannot_edit_no">取消</string>
     <string name="photo_cannot_edit_yes">确定</string>
     <!-- preview photo end -->
@@ -295,6 +299,7 @@
     <string name="submit_order">订单已提交</string>
     <string name="no_pay_tips">您不用额外支付任何费用</string>
     <string name="no_pay_success">确认</string>
+    <string name="install_wechat_first">您的手机没有安装微信客户端，请先下载安装后再支付！</string>
     <!-- payment end -->
 
     <!-- set header start -->
@@ -368,7 +373,7 @@
     <!-- pp end -->
 
     <!-- select pp start -->
-    <string name="selectionpp">选择迪士尼乐拍通卡</string>
+    <string name="selectionpp">选择迪士尼乐拍通</string>
     <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
@@ -377,6 +382,10 @@
 
     <!-- select ppp start -->
     <string name="select_your_ppp">请选择你的迪士尼乐拍通一卡通</string>
+    <string name="select_ppp_title">选择</string>
+    <string name="update_ppp_msg">您将使用迪士尼乐拍通一卡通升级您此张迪士尼乐拍通卡内包含的照片，以便您浏览清晰照片吗？</string>
+    <string name="update_ppp_cancel">取消</string>
+    <string name="update_ppp_ok">确认</string>
     <!-- select ppp end -->
 
     <!-- settings start -->
@@ -390,6 +399,7 @@
     <string name="auto_sync">自动更新</string>
     <string name="setting_language">语言切换</string>
     <string name="comfirm_logout">确定退出？</string>
+    <string name="setting_language_msg">您确定修改您的语言设置吗？</string>
     <!-- settings end -->
 
     <!-- change language start -->
@@ -414,8 +424,8 @@
 
     <!-- socket start -->
     <string name="notifacation_new_message">新的消息</string>
-    <string name="notifacation_new_photo">您有新的照片</string>
-    <string name="notifacation_new_video">您有新的视频</string>
+    <string name="notifacation_new_photo">您有新的照片！</string>
+    <string name="notifacation_new_video">您有新的视频！</string>
     <string name="notifacation_order_completed_msg">亲，您已经支付成功，美好影像体验尽在迪彩！</string>
     <string name="notifacation_order_submit_msg">亲，您已经下单成功，快去支付吧！</string>
     <!-- socket end -->
@@ -455,6 +465,8 @@
     <string name="all">所有</string>
     <string name="disall">取消</string>
     <string name="delete_percent">正在删除%1$d/%2$d</string>
+    <string name="start_delete">删除照片后您的账户中将不再显示此照片，请确认是否删除？</string>
+    <string name="edit_story_album">编辑</string>
     <!-- edit story end -->
 
     <!-- 我的优惠券 start-->
@@ -487,7 +499,7 @@
     <string name="smssdk_pwd_forget">请输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
-    <string name="smssdk_explain_briefly">我已阅读并接受<a href = "2">补充条款及细则</a>和<a href = "1">隐私政策</a>。</string>
+    <string name="smssdk_explain_briefly">我已阅读并接受<a href="2">补充条款及细则</a>和<a href="1">隐私政策</a>。</string>
     <string name="please_agree">请确认同意补充条款及细则和隐私政策</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
@@ -508,4 +520,8 @@
     <string name="preview_goods_null">预览商品(0/3)</string>
     <!-- postcard end-->
 
+    <!-- permission request start -->
+    <string name="permission_storage_message">请先在设置中打开读写手机存储权限</string>
+    <string name="permission_read_phone_state_message">请先在设置中打开设备信息权限</string>
+    <!-- permission request end -->
 </resources>

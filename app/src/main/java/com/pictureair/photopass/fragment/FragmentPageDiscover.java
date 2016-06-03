@@ -1,7 +1,9 @@
 package com.pictureair.photopass.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,11 +40,11 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
@@ -48,8 +52,6 @@ import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 发现页面，显示各个地点的与当前的距离，可以筛选各个地方，可支持导航
@@ -100,6 +102,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private boolean showTab = false;
     private int id = 0;
 
+    private static final int REQUEST_LOCATION_PERMISSION = 2;
+    private boolean mIsAskLocationPermission = false;
+
     private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
 
     private static class FragmentPageDiscoverHandler extends Handler{
@@ -133,20 +138,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             case API1.GET_ALL_LOCATION_SUCCESS:
                 //获取全部的location
                 PictureAirLog.d(TAG, "get location success============" + msg.obj);
-                try {
-                    JSONObject response = JSONObject.parseObject(msg.obj.toString());
-                    JSONArray resultArray = response.getJSONArray("locations");
-                    for (int i = 0; i < resultArray.size(); i++) {
-                        JSONObject object = resultArray.getJSONObject(i);
-                        DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                        if (locationInfo.isShow == 1) {
-                            locationList.add(locationInfo);
-                        }
-                    }
-                    locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
+                locationList.clear();
+                locationList.addAll(AppUtil.getLocation(getActivity(), msg.obj.toString(), false));
+                locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
                 API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
                 break;
 
@@ -224,7 +218,8 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 //				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
                 // 距离
                 item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
-                double d = -AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
+                double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
+                PictureAirLog.out("degree----->" + rotate_degree + "; d---> " + d);
                 // 角度
                 item.locationLeadImageView.setRotation((float) d - rotate_degree);
                 break;
@@ -269,7 +264,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             case API1.EDIT_FAVORITE_LOCATION_SUCCESS:
                 discoverLocationAdapter.updateIsLove(msg.arg1);
                 break;
-
             default:
                 break;
         }
@@ -319,12 +313,11 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         locationUtil = new LocationUtil(getActivity());
         app = (MyApplication) getActivity().getApplication();
         locationStart = true;
-        startService();
         locationList = new ArrayList<DiscoverLocationItemInfo>();
         favoriteList = new ArrayList<String>();
         distanceFormat = NumberFormat.getNumberInstance();
         distanceFormat.setMaximumFractionDigits(1);
-        sharedPreferences = getActivity().getSharedPreferences(Common.USERINFO_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
 
         //获取数据
         dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
@@ -356,9 +349,14 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     @Override
     public void onResume() {
         PictureAirLog.out(TAG+ "  ==onResume");
+        if (mIsAskLocationPermission) {
+            mIsAskLocationPermission = false;
+            super.onResume();
+            return;
+        }
         isLoading = false;
         locationStart = true;
-        startService();
+        requesLocationPermission();
         super.onResume();
     }
 
@@ -553,7 +551,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 do {
                     updateLocation(position, view);
                     try {
-                        Thread.sleep(20);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -602,5 +600,31 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         PictureAirLog.out("in or out special location......");
     }
 
+    private void requesLocationPermission() {
+        if (!AppUtil.checkPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                mIsAskLocationPermission = true;
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                return;
+            }
+            mIsAskLocationPermission = true;
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            return;
+        }
+        startService();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (Manifest.permission.ACCESS_COARSE_LOCATION.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startService();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
 }

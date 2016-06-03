@@ -15,26 +15,27 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-  
+
 /**
  * AES加密解密
- * @author bauer_bao
  *
+ * @author bauer_bao
  */
-public class AESKeyHelper {  
-  
-	/**
-	 * aes加密字节数组到文件
-	 * @param sourceData 源数据
-	 * @param encryptedFilePath 目标文件
-	 * @param aesKey 16字节密码
-	 * @throws IOException
-	 * @throws NoSuchAlgorithmException
-	 * @throws NoSuchPaddingException
-	 * @throws InvalidKeyException
-	 */
+public class AESKeyHelper {
+
+    /**
+     * aes加密字节数组到文件
+     *
+     * @param sourceData        源数据
+     * @param encryptedFilePath 目标文件
+     * @param aesKey            16字节密码
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     */
     public static void encrypt(byte[] sourceData, String encryptedFilePath, String aesKey) throws Exception {
-    	PictureAirLog.out("start encryption------>");
+        PictureAirLog.out("start encryption------>");
         // Here you read the cleartext.
 //        FileInputStream fis = new FileInputStream(sourceFilePath);
         // This stream write the encrypted text. This stream will be wrapped by another stream.
@@ -62,11 +63,12 @@ public class AESKeyHelper {
         PictureAirLog.out("finish encryption------>");
 //        fis.close();
     }
-    
+
     /**
      * aes解密文件到字节数组
+     *
      * @param sourceFilePath 目标文件
-     * @param aesKey key
+     * @param aesKey         key
      * @return
      * @throws IOException
      * @throws NoSuchAlgorithmException
@@ -74,7 +76,7 @@ public class AESKeyHelper {
      * @throws InvalidKeyException
      */
     public static byte[] decrypt(String sourceFilePath, String aesKey) throws Exception {
-    	PictureAirLog.out("start decryption------>");
+        PictureAirLog.out("start decryption------>");
         FileInputStream fis = new FileInputStream(sourceFilePath);
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream(1000);
@@ -84,7 +86,7 @@ public class AESKeyHelper {
         CipherInputStream cis = new CipherInputStream(fis, cipher);
         int b;
         byte[] d = new byte[8];
-        while((b = cis.read(d)) != -1) {
+        while ((b = cis.read(d)) != -1) {
             outs.write(d, 0, b);
         }
         outs.flush();
@@ -93,12 +95,13 @@ public class AESKeyHelper {
         PictureAirLog.out("finish decryption----->");
         return outs.toByteArray();
     }
-    
+
     /**
      * 加密文件到新的文件
-     * @param sourceFilePath 原始文件
+     *
+     * @param sourceFilePath    原始文件
      * @param encryptedFilePath 加密后文件
-     * @param aesKey key
+     * @param aesKey            key
      * @throws IOException
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
@@ -121,7 +124,7 @@ public class AESKeyHelper {
         // Write bytes
         int b;
         byte[] d = new byte[8];
-        while((b = fis.read(d)) != -1) {
+        while ((b = fis.read(d)) != -1) {
             cos.write(d, 0, b);
         }
         // Flush and close streams.
@@ -129,12 +132,13 @@ public class AESKeyHelper {
         cos.close();
         fis.close();
     }
-    
+
     /**
      * aes解密文件到文件
-     * @param sourceFilePath 原始文件
+     *
+     * @param sourceFilePath    原始文件
      * @param decryptedFilePath 解密后文件
-     * @param aesKey key
+     * @param aesKey            key
      * @throws IOException
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
@@ -150,7 +154,7 @@ public class AESKeyHelper {
         CipherInputStream cis = new CipherInputStream(fis, cipher);
         int b;
         byte[] d = new byte[8];
-        while((b = cis.read(d)) != -1) {
+        while ((b = cis.read(d)) != -1) {
             fos.write(d, 0, b);
         }
         fos.flush();
@@ -160,6 +164,7 @@ public class AESKeyHelper {
 
     /**
      * 根据种子生成密钥
+     *
      * @param seed
      * @return
      * @throws Exception
@@ -178,7 +183,7 @@ public class AESKeyHelper {
     /**
      * 结合密钥生成加密后的密文
      *
-     * @param raw key
+     * @param raw   key
      * @param input 输入数据
      * @return
      * @throws Exception
@@ -197,7 +202,7 @@ public class AESKeyHelper {
     /**
      * 根据密钥解密已经加密的数据
      *
-     * @param raw key
+     * @param raw       key
      * @param encrypted 加密数据
      * @return
      * @throws Exception
@@ -213,10 +218,10 @@ public class AESKeyHelper {
      * 加密字符串
      *
      * @param source 原始文字
-     * @param seed seed
+     * @param seed   seed
      * @return
      */
-    public static String encryptString(String source, String seed){
+    public static String encryptString(String source, String seed) {
         byte[] result = null;
         try {
             byte[] rawKey = getRawKey(seed.getBytes());
@@ -232,7 +237,7 @@ public class AESKeyHelper {
      * 解密字符串
      *
      * @param encrypted 加密的字符串
-     * @param seed seed
+     * @param seed      seed
      * @return
      */
     public static String decryptString(String encrypted, String seed) {
@@ -246,7 +251,10 @@ public class AESKeyHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new String(result);
+        if (null != result) {
+            return new String(result);
+        }
+        return "";
     }
 
     public static String toHex(String txt) {

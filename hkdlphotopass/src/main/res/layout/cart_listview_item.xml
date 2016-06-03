@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/pp_margin_16">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/pp_padding_16"
+        android:paddingRight="@dimen/pp_padding_16">
+
+        <ImageView
+            android:id="@+id/cartSelectImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/cart_select" />
+
+        <ImageView
+            android:id="@+id/cartProductImageView"
+            android:layout_width="@dimen/pp_height_60"
+            android:layout_height="@dimen/pp_height_60"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/pp_margin_5"
+            android:layout_toRightOf="@id/cartSelectImageView"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_stub" />
+
+        <TextView
+            android:id="@+id/cartProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/pp_margin_10"
+            android:layout_marginRight="@dimen/pp_margin_32"
+            android:layout_toRightOf="@id/cartProductImageView"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="2"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_14" />
+
+        <LinearLayout
+            android:id="@+id/cartEditBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/pp_margin_10"
+            android:layout_toRightOf="@id/cartProductImageView"
+            android:orientation="horizontal">
+
+            <com.pictureworks.android.widget.ListViewImageView
+                android:id="@+id/cartRemoveImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/rem_btn" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/bg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/edit_bg"
+                    android:adjustViewBounds="true"
+                    android:visibility="invisible"/>
+
+
+                <TextView
+                    android:id="@+id/cartProductCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/bg"
+                    android:layout_alignRight="@+id/bg"
+                    android:layout_alignBottom="@+id/bg"
+                    android:layout_alignTop="@+id/bg"
+                    android:background="@drawable/edit_cart_bg"
+                    android:gravity="center"
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_14" />
+            </RelativeLayout>
+
+            <com.pictureworks.android.widget.ListViewImageView
+                android:id="@+id/cartAddImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/add_btn" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cartPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/cartProductImageView"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/cartCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/cartProductImageView"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="@dimen/pp_margin_2"
+            android:layout_toLeftOf="@id/cartPrice"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/cartCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/cartProductImageView"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/pp_gray"
+            android:textSize="@dimen/text_size_14" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/pp_padding_16">
+
+        <GridLayout
+            android:id="@+id/cartPhotoGridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/pp_margin_16"
+            android:layout_marginTop="@dimen/pp_margin_8"
+            android:background="@drawable/bg_border_stroke"
+            android:columnCount="4"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/pp_padding_20"
+            android:paddingRight="@dimen/pp_padding_20"
+            android:paddingTop="@dimen/pp_padding_10"
+            android:paddingBottom="@dimen/pp_padding_10"
+            android:useDefaultMargins="true" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_height_1"
+        android:layout_below="@+id/cartPhotoGridLayout"
+        android:layout_marginTop="@dimen/pp_margin_16"
+        android:background="@color/pp_light_gray_normal" />
+
+
+</LinearLayout>

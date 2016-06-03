@@ -78,7 +78,7 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		mViewPager.setOnTouchListener(this);
 		LayoutInflater inflater = LayoutInflater.from(WelcomeActivity.this);
 		list = new ArrayList<View>();
-		appSharedPreferences = getSharedPreferences(Common.APP, MODE_PRIVATE);
+		appSharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
 		currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
 		initpage(inflater);
 

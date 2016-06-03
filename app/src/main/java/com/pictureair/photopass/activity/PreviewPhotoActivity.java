@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -31,7 +33,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
@@ -57,13 +58,14 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.JsonTools;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
@@ -74,8 +76,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import java.util.Locale;
 
 /**
  * 预览图片，可以进行编辑，分享，下载和制作礼物的操作
@@ -121,7 +122,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private boolean isEdited = false;
 
+    /**
+     * 是否已经拿到对象
+     */
     private boolean getPhotoInfoSuccess = false;
+
+    /**
+     * 是否已经获取图片结束
+     */
+    private boolean loadPhotoSuccess = false;
 
     private String tabName;
 
@@ -180,11 +189,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int LOAD_FROM_LOCAL = 444;
     private static final int LOAD_FROM_NETWORK = 555;
     private static final int CHECK_FAVORITE = 666;
+    private static final int GET_FAVORITE_DATA_DONE = 1000;
     private static final int GET_LOCATION_AD = 777;
+    private static final int GET_LOCATION_AD_DONE = 1001;
     private static final int CREATE_BLUR_DIALOG = 888;
     private final int RESIZE_BLUR_IMAGE = 999;
 
     private CustomDialog customdialog; //  对话框
+    private PictureWorksDialog pictureWorksDialog;
 
 
     /**
@@ -262,7 +274,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("current radius---->" + curRadius);
 
                 x = (int) (msg.arg1 - curRadius - (parentPreviewW - curShowBmpWidth) / 2);
-                y = (int) (msg.arg2 - curRadius - (isLandscape ? 0 : marginTop) - (parentPreviewH - curShowBmpHeight) / 2);
+                y = (int) (msg.arg2 - 2 * curRadius + 20 - (isLandscape ? 0 : marginTop) - (parentPreviewH - curShowBmpHeight) / 2);
                 if (x > curShowBmpWidth - 2 * curRadius) {
                     x = curShowBmpWidth - 2 * curRadius;
                     x1 += moveSize;
@@ -563,54 +575,82 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("set enable in local");
                 lastPhotoImageView.setEnabled(true);
                 nextPhotoImageView.setEnabled(true);
+                loadPhotoSuccess = true;
+                break;
+
+            case GET_LOCATION_AD:
+                currentPhotoADTextView.setVisibility(View.GONE);
+                final int oldPositon = msg.arg1;
+                if (myApplication.isGetADLocationSuccess()) {
+                    //从数据库中查找
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String adStr = pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+                            previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPositon, 0, adStr).sendToTarget();
+                        }
+                    }).start();
+
+                } else {
+                    //从网络获取
+                    API1.getADLocations(oldPositon, previewPhotoHandler);
+                }
+                if (dialog.isShowing()) {
+                    PictureAirLog.out("dismiss--->ad");
+                    dialog.dismiss();
+                }
+                break;
+
+            case GET_LOCATION_AD_DONE:
+                if (msg.arg1 == currentPosition && !msg.obj.toString().equals("")) {//如果获取的对应索引值，依旧是当期的索引值，则显示广告
+                    PictureAirLog.out("current position need show ad");
+                    currentPhotoADTextView.setVisibility(View.VISIBLE);
+                    currentPhotoADTextView.setText(msg.obj.toString());
+                }
                 break;
 
             case API1.GET_AD_LOCATIONS_SUCCESS:
                 PictureAirLog.out("ad location---->" + msg.obj.toString());
+                final int oldPosition1 = msg.arg1;
+                final JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
+                myApplication.setGetADLocationSuccess(true);
                 /**
                  * 1.存入数据库
                  * 2.在application中记录结果
                  */
-                JSONObject adJsonObject = JSONObject.parseObject(msg.obj.toString());
-                String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
-                        photoInfo.locationId, MyApplication.getInstance().getLanguageType());
-
-                if (!adString.equals("")) {
-                    currentPhotoADTextView.setVisibility(View.VISIBLE);
-                    currentPhotoADTextView.setText(adString);
-                }
-                myApplication.setGetADLocationSuccess(true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String adString = pictureAirDbManager.insertADLocations(adJsonObject.getJSONArray("locations"),
+                            photoInfo.locationId, MyApplication.getInstance().getLanguageType());
+                        previewPhotoHandler.obtainMessage(GET_LOCATION_AD_DONE, oldPosition1, 0, adString).sendToTarget();
+                    }
+                }).start();
                 break;
 
             case API1.GET_AD_LOCATIONS_FAILED:
                 break;
 
-            case CHECK_FAVORITE:
+            case CHECK_FAVORITE://开始获取收藏信息
+                final int oldPosition = msg.arg1;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        previewPhotoHandler.obtainMessage(GET_FAVORITE_DATA_DONE, oldPosition, 0,
+                                pictureAirDbManager.checkLovePhoto(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))).sendToTarget();
+                    }
+                }).start();
+                break;
+
+            case GET_FAVORITE_DATA_DONE://获取数据成功
                 //更新收藏图标
-                if (photoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                if (Boolean.valueOf(msg.obj.toString()) && msg.arg1 == currentPosition) {//数据库查询的数据是true，并且对应的index还是之前的位置
+                    PictureAirLog.out("current postion and is favorite");
                     photoInfo.isLove = 1;
                     loveImageButton.setImageResource(R.drawable.discover_like);
                 } else {
+                    PictureAirLog.out("not the favorite");
                     loveImageButton.setImageResource(R.drawable.discover_no_like);
-                }
-                break;
-
-            case GET_LOCATION_AD:
-                currentPhotoADTextView.setVisibility(View.GONE);
-                if (myApplication.isGetADLocationSuccess()) {
-                    //从数据库中查找
-                    String adStr = pictureAirDbManager.getADByLocationId(photoInfo.locationId, MyApplication.getInstance().getLanguageType());
-                    if (!adStr.equals("")) {
-                        currentPhotoADTextView.setVisibility(View.VISIBLE);
-                        currentPhotoADTextView.setText(adStr);
-                    }
-                } else {
-                    //从网络获取
-                    API1.getADLocations(previewPhotoHandler);
-                }
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->ad");
-                    dialog.dismiss();
                 }
                 break;
 
@@ -619,17 +659,23 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case RESIZE_BLUR_IMAGE:
-                if (!getPhotoInfoSuccess) {
-                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
-                } else {
+                if (getPhotoInfoSuccess && loadPhotoSuccess) {
                     if (photoInfo.onLine == 1 && photoInfo.isPayed == 0) {//模糊图需要重新修改大小
-                        resizeBlurImage();
+                        if (null != oriClearBmp) {
+                            resizeBlurImage();
+                        }
                     }
+                } else {
+                    previewPhotoHandler.sendEmptyMessageDelayed(RESIZE_BLUR_IMAGE, 200);
                 }
                 break;
 
             case API1.GET_PPPS_BY_SHOOTDATE_SUCCESS:  //根据已有PP＋升级
                 if (API1.PPPlist.size() > 0) {
+
+//                    if (AppManager.getInstance().checkActivity(MyPPActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
+//                        AppManager.getInstance().killActivity(MyPPActivity.class);
+//                    }
                     //将 tabname 存入sp
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新
                     editor1.putString("tabName", tabName);
@@ -638,13 +684,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                     dia.dismiss();
 
-                    intent = new Intent(PreviewPhotoActivity.this, MyPPActivity.class);
+                    intent = new Intent(PreviewPhotoActivity.this, SelectPPActivity.class);
                     intent.putExtra("photoPassCode",photoInfo.photoPassCode);
                     intent.putExtra("shootTime",photoInfo.shootTime);
-                    intent.putExtra("isUseHavedPPP", true);
+//                    intent.putExtra("isUseHavedPPP", true);
                     startActivity(intent);
 
-                    this.finish();
+//                    this.finish();
                 } else {
                     newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
                 }
@@ -666,6 +712,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
         PictureAirLog.out("oncreate start----");
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE );
         init();//初始化UI
         PictureAirLog.out("oncreate finish----");
 //        judge();//判断 照片是否购买，并弹出相应的tips
@@ -682,7 +729,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
         dialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
-        sharedPreferences = getSharedPreferences(Common.USERINFO_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
 
         locationTextView = (TextView) findViewById(R.id.preview_location);
@@ -730,27 +777,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (ori == Configuration.ORIENTATION_LANDSCAPE) {
             isLandscape = true;
             landscapeOrientation();
-            originalRadius = (ScreenUtil.getScreenHeight(PreviewPhotoActivity.this) / 3);
-        } else {
-            originalRadius = (ScreenUtil.getScreenWidth(PreviewPhotoActivity.this) / 3);
         }
+        originalRadius = 120;
         curRadius = originalRadius;
         dialog.show();
         getPreviewPhotos();
-    }
-
-    private void getLocation() {
-        try {
-            JSONObject response = JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-            JSONArray resultArray = response.getJSONArray("locations");
-            for (int i = 0; i < resultArray.size(); i++) {
-                JSONObject object = resultArray.getJSONObject(i);
-                DiscoverLocationItemInfo locationInfo = JsonUtil.getLocation(object);
-                locationList.add(locationInfo);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void getPreviewPhotos() {
@@ -767,11 +798,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 photolist = new ArrayList<>();
                 Bundle bundle = getIntent().getBundleExtra("bundle");
                 currentPosition = bundle.getInt("position", 0);
+                PictureAirLog.out("currentposition---->" + currentPosition);
                 tabName = bundle.getString("tab");
+                PictureAirLog.out("tabName--->" + tabName);
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
 
                 if (tabName.equals("all")) {//获取全部照片
-                    getLocation();
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedAllPhotos(PreviewPhotoActivity.this, locationList, targetphotolist,
                                 pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
@@ -781,7 +814,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else if (tabName.equals("photopass")) {//获取pp图片
-                    getLocation();
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
@@ -793,7 +826,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photolist.addAll(targetphotolist);
 
                 } else if (tabName.equals("bought")) {//获取已经购买的图片
-                    getLocation();
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     try {
                         photolist.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
                                 simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
@@ -802,18 +835,25 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
 
                 } else if (tabName.equals("favourite")) {//获取收藏图片
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
-                    photolist.addAll(temp);
+                    if (temp != null) {
+                        photolist.addAll(temp);
+                    }
                 }
 
                 if (currentPosition == -1) {//购买图片后返回
-                    String photoId = bundle.getString("photoId");
+                    String photoId = bundle.getString("photoId", "");
+                    PictureAirLog.out("photoid--->" + photoId);
                     for (int i = 0; i < photolist.size(); i++) {
-                        if (photolist.get(i).photoId.equals(photoId)){
+                        PictureAirLog.out("photoinfo.photoid----->" + photolist.get(i).photoId);
+                        if (TextUtils.isEmpty(photolist.get(i).photoId)) {//本地图片，没有PhotoId，需要过滤
+
+                        } else if (photolist.get(i).photoId.equals(photoId)){
                             photolist.get(i).isPayed = 1;
                             currentPosition = i;
                             break;
@@ -884,6 +924,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      */
     private void loadPhotoPassPhoto(PhotoInfo loadPhotoInfo, boolean isOnCreate) {
         // TODO Auto-generated method stub
+        loadPhotoSuccess = false;
         dirFile = new File(getApplicationContext().getCacheDir() + "/" + loadPhotoInfo.photoId);//创建一个以ID为名字的文件，放入到app缓存文件下
         PictureAirLog.v(TAG, dirFile.toString());
         PictureAirLog.v(TAG, "photo URL ------->" + loadPhotoInfo.photoThumbnail_1024);
@@ -918,13 +959,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     }
                     oriClearBmp = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
+                    loadPhotoSuccess = true;
                 }
 
                 @Override
                 public void onFailure(int status) {
                     super.onFailure(status);
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
-
+                    loadPhotoSuccess = true;
                 }
             });
         }
@@ -941,7 +983,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         } else {//编辑前
             photoInfo = photolist.get(currentPosition);
         }
-        previewPhotoHandler.sendEmptyMessageDelayed(CHECK_FAVORITE, 200);
+        previewPhotoHandler.obtainMessage(CHECK_FAVORITE, currentPosition, 0).sendToTarget();
 
         //更新title地点名称
         locationTextView.setText(photoInfo.locationName);
@@ -973,7 +1015,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             currentPhotoADTextView.setVisibility(View.GONE);
             loadPhotoPassPhoto(photoInfo, isOnCreate);
         } else if (photoInfo.isPayed == 1 && photoInfo.onLine == 1) {
-            previewPhotoHandler.sendEmptyMessage(GET_LOCATION_AD);
+            previewPhotoHandler.obtainMessage(GET_LOCATION_AD, currentPosition, 0).sendToTarget();
             PictureAirLog.out("set enable in get ad");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);
@@ -1157,22 +1199,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
 //                        new PictureWorksDialog(PreviewPhotoActivity.this,getString(R.string.photo_cannot_edit_title),getString(R.string.photo_cannot_edit_content),getString(R.string.photo_cannot_edit_no),getString(R.string.photo_cannot_edit_yes),true,null).show();
 //                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
-                        customdialog = new CustomDialog(PreviewPhotoActivity.this,
-                                R.string.photo_cannot_edit_content,
-                                R.string.photo_cannot_edit_no,
-                                R.string.photo_cannot_edit_yes,
-                                new CustomDialog.MyDialogInterface() {
-
-                                    @Override
-                                    public void yes() {
-                                        // TODO Auto-generated method stub
-                                    }
-
-                                    @Override
-                                    public void no() {
-                                        // TODO Auto-generated method stub // 考虑下：弹窗消失
-                                    }
-                                });
+                        if (pictureWorksDialog == null) {
+                            pictureWorksDialog = new PictureWorksDialog(PreviewPhotoActivity.this, null,
+                                    getString(R.string.photo_cannot_edit_content), null,
+                                    getString(R.string.photo_cannot_edit_yes), true, previewPhotoHandler);
+                        }
+                        pictureWorksDialog.show();
                     }
                 } else {
                     if (loadFailed) {
@@ -1196,7 +1228,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     } else {//编辑前
                         //判断图片是本地还是网路图片
                         if (photoInfo.onLine == 1) {//网络图片
-                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoPathOrURL,
+                            sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
                                     "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
                         } else {
                             sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
@@ -1256,6 +1288,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case R.id.preview_makegift:
                 if (leadView.isShown()) {
+                    return;
+                }
+
+                if (photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
+                    newToast.setTextAndShow(R.string.not_support_makegift, Common.TOAST_SHORT_TIME);
                     return;
                 }
 
@@ -1481,7 +1518,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         PictureAirLog.v(TAG, "----------->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
-        if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
+        if (photoInfo != null && photoInfo.isPayed == 0 && photoInfo.onLine == 1) {
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
 
             } else if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_VIEWORSELECTACTIVITYANDPAYED)) {
@@ -1534,12 +1571,28 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         previewPhotoHandler.sendEmptyMessage(RESIZE_BLUR_IMAGE);
 
-//        if (dia.isShowing()) {
+        if (dia != null) {
             WindowManager.LayoutParams layoutParams = dia.getWindow().getAttributes();
             layoutParams.width = ScreenUtil.getScreenWidth(this);
             dia.getWindow().setAttributes(layoutParams);
-//        }
+        }
         super.onConfigurationChanged(newConfig);
+
+        String language = MyApplication.getInstance().getLanguageType();
+        PictureAirLog.out("language------>" + language);
+        Configuration config = getResources().getConfiguration();
+        if (!language.equals("")) {//语言不为空
+            if (language.equals(Common.ENGLISH)) {
+                config.locale = Locale.US;
+            } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+            }
+        }
+        PictureAirLog.out("new config---->" + config.locale);
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        getResources().updateConfiguration(config, displayMetrics);
+        PictureAirLog.out("update configuration done");
+
     }
 
     /**
@@ -1645,8 +1698,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         curShowBmpHeight = oriClearBmp.getHeight();
         if (flag) {//放大模式
             flag = false;
-            zoomBlurBmp.recycle();
-            zoomClearBmp.recycle();
+            if (zoomBlurBmp != null) {
+                zoomBlurBmp.recycle();
+            }
+
+            if (zoomClearBmp != null) {
+                zoomClearBmp.recycle();
+            }
         }
         curRadius = originalRadius;
         PictureAirLog.out("larger bmp h after resize---->" + curShowBmpHeight);
@@ -1658,19 +1716,19 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         int h = oriClearBmp.getHeight();
         PictureAirLog.v(TAG, "oriClearBmp width, height" + w + "?" + h);
         parentPreviewW = ScreenUtil.getScreenWidth(this);
-        parentPreviewH = photoFraRelativeLayout.getHeight();//如果切换屏幕的时候，这个数值依旧是旋转屏幕之前的数值
+
+        if (isLandscape) {
+            parentPreviewH = ScreenUtil.getScreenHeight(this);
+        } else {
+            parentPreviewH = ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight(this) - toolsBar.getHeight() - indexBar.getHeight() - titleBar.getHeight();
+        }
+        PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
 
         if (isInit) {
             int[] location = new int[2];
             photoFraRelativeLayout.getLocationOnScreen(location);//获取控件在屏幕上的坐标
             marginTop = location[1];
             PictureAirLog.v(TAG, "------------>photoFraRelativeLayout height is " + photoFraRelativeLayout.getHeight());
-        } else {
-            if (parentPreviewH > ScreenUtil.getScreenHeight(this)) {//如果是切换到横屏的时候，如果超过屏幕高，则使用屏幕的高
-                parentPreviewH = ScreenUtil.getScreenHeight(this);
-            }
-            PictureAirLog.v(TAG, "screen width, height" + parentPreviewW + "?" + ScreenUtil.getScreenHeight(this));
-            PictureAirLog.v(TAG, "scale width, height" + parentPreviewW + "?" + parentPreviewH);
         }
 
         float sw = 0f;
@@ -1682,14 +1740,23 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
         matrix.reset();
         matrix.postScale(sw, sw);
-        oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+        if (w > 0 && h > 0) {
+            oriClearBmp = Bitmap.createBitmap(oriClearBmp, 0, 0, w, h, matrix, true);
+        }
     }
 
     private void cropNewBmt() {
         zoomBlurBmp = Bitmap.createBitmap(oriBlurBmp, x1, y1, Math.min(zoomW, oriBlurBmp.getWidth()), Math.min(zoomH, oriBlurBmp.getHeight()));
         zoomClearBmp = Bitmap.createBitmap(oriClearBmp, x1, y1, Math.min(zoomW, oriClearBmp.getWidth()), Math.min(zoomH, oriClearBmp.getHeight()));
+        PictureAirLog.out("crop--->" + Math.min(zoomW, oriBlurBmp.getWidth()) + "--->" + Math.min(zoomH, oriBlurBmp.getHeight()));
         matrix.reset();
-        matrix.postScale(parentPreviewW / zoomBlurBmp.getWidth(), parentPreviewH / zoomBlurBmp.getHeight());
+        float sw;
+        if (zoomBlurBmp.getHeight() / (float)zoomBlurBmp.getWidth() > parentPreviewH / parentPreviewW) {//左右留白
+            sw = parentPreviewH / (float) zoomBlurBmp.getHeight();
+        } else {//上下留白
+            sw = parentPreviewW / (float)zoomBlurBmp.getWidth();
+        }
+        matrix.postScale(sw, sw);
         zoomBlurBmp = Bitmap.createBitmap(zoomBlurBmp, 0, 0, zoomBlurBmp.getWidth(), zoomBlurBmp.getHeight(), matrix, true);
         zoomClearBmp = Bitmap.createBitmap(zoomClearBmp, 0, 0, zoomClearBmp.getWidth(), zoomClearBmp.getHeight(), matrix, true);
     }
