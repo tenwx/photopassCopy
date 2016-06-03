@@ -26,9 +26,8 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -57,7 +56,7 @@ public class DownloadService extends Service {
     private File file;  //文件
     private String photoId;// 图片的photoId
     private String lastDownLoadUrl = "";
-    private MyToast myToast;
+    private PWToast myToast;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -69,7 +68,7 @@ public class DownloadService extends Service {
         super.onCreate();
         PictureAirLog.out("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        myToast = new MyToast(getApplicationContext());
+        myToast = new PWToast(getApplicationContext());
     }
 
     @SuppressWarnings("deprecation")
@@ -188,7 +187,7 @@ public class DownloadService extends Service {
      */
     private void downLoad(String originalUrl, String id, int isVideo) {
         PictureAirLog.out("downloadurl--->" + originalUrl);
-        String fileName = ScreenUtil.getReallyFileName(originalUrl,isVideo);
+        String fileName = AppUtil.getReallyFileName(originalUrl,isVideo);
         PictureAirLog.out("filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();

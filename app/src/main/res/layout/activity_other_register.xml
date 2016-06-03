@@ -182,7 +182,7 @@
                         android:drawableLeft="@drawable/readio_group_sex_readio_button"
                         android:drawablePadding="@dimen/pp_padding_5"
                         android:text="@string/male"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_middle_size" />
 
                     <RadioButton
@@ -197,7 +197,7 @@
                         android:drawableLeft="@drawable/readio_group_sex_readio_button"
                         android:drawablePadding="@dimen/pp_padding_5"
                         android:text="@string/female"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_middle_size" />
                 </RadioGroup>
             </LinearLayout>

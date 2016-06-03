@@ -18,7 +18,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
@@ -40,7 +40,7 @@ public class HelpActivity extends BaseActivity {
     private CustomProgressDialog customProgressDialog;
     private ListView mListView;
     private HelpInfosAdapter adapte;
-    private MyToast myToast;
+    private PWToast myToast;
 
 
     private final Handler helpHandler = new HelpHandler(this);
@@ -127,7 +127,7 @@ public class HelpActivity extends BaseActivity {
     }
 
     private void initView() {
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.mypage_help);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.storyNoNetWorkView);

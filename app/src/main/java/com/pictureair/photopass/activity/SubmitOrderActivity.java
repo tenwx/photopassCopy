@@ -44,7 +44,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,7 +73,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private CustomProgressBarPop customProgressBarPop;
     private CustomProgressDialog customProgressDialog;
 
-    private MyToast newToast;
+    private PWToast newToast;
 
     private JSONArray cartItemIds;
     private JSONObject cartItemId;
@@ -262,7 +262,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_submit_order);
         myApplication = MyApplication.getInstance();
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         initView();
 
     }

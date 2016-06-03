@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Lomo"
-        android:textColor="@color/gray"
+        android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_8"
         android:visibility="gone" />
 

@@ -32,7 +32,7 @@ import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -57,7 +57,7 @@ public class EditActivityAdapter extends BaseAdapter {
     private long firstFileProgress = 0;//文件下载的进度
     private long secondFileProgress = 0;//文件下载进度
     private CustomDialog customDialog;
-    private MyToast myToast;
+    private PWToast myToast;
     private PictureAirDbManager pictureAirDbManager;
 
 
@@ -88,7 +88,7 @@ public class EditActivityAdapter extends BaseAdapter {
         this.stickerPathList = stickerPathList;
         this.frameInfos = frameInfos;
         this.handler = handler;
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         pictureAirDbManager = new PictureAirDbManager(context);
     }
 
@@ -384,14 +384,14 @@ public class EditActivityAdapter extends BaseAdapter {
                 firstFileFailOrExist = true;
                 return;
             }
-            downloadNameString = "frame_landscape_" + ScreenUtil.getReallyFileName(url,0);
+            downloadNameString = "frame_landscape_" + AppUtil.getReallyFileName(url,0);
         } else {
             url = frameInfos.get(position).frameOriginalPathPortrait;
             if (url == null || url.equals("")) {//文件不存在
                 secondFileFailOrExist = true;
                 return;
             }
-            downloadNameString = "frame_portrait_" + ScreenUtil.getReallyFileName(url,0);
+            downloadNameString = "frame_portrait_" + AppUtil.getReallyFileName(url,0);
         }
 
         File file = new File(mContext.getFilesDir(), "frames");

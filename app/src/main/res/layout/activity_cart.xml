@@ -73,7 +73,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/cartSelectAllImageView"
             android:text="@string/select_all"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 
         <LinearLayout
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/totalprice"
-                android:textColor="@color/gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_16" />
 
             <TextView

@@ -3,7 +3,6 @@ package com.pictureair.photopass.adapter;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -27,7 +26,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.blur.BlurUtil;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
 import com.pictureair.photopass.util.API1;
@@ -84,7 +83,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     private ViewGroup.LayoutParams layoutParams;
 
-    public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Activity context, Handler hander, AMapLocation location, float x) {
+    public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Context context, Handler hander, AMapLocation location, float x) {
         this.list = list;
         this.mHandler = hander;
         this.mLocation = location;

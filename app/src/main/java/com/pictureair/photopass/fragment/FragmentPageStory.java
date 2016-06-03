@@ -53,7 +53,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
@@ -144,7 +144,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private Context context;
     private SimpleDateFormat sdf;
     private SharedPreferences sharedPreferences;
-    private MyToast myToast;
+    private PWToast myToast;
     private PhotoInfo selectPhotoItemInfo;
     private ScanPhotosThread scanPhotosThread;
     private PictureAirDbManager pictureAirDbManager;
@@ -719,7 +719,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 //        more.setOnClickListener(this);
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
-        myToast = new MyToast(getActivity());
+        myToast = new PWToast(getActivity());
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         locationList.clear();
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());

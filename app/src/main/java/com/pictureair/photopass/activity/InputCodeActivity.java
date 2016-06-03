@@ -19,7 +19,7 @@ import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
@@ -31,7 +31,7 @@ import de.greenrobot.event.EventBus;
 public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private Button ok;
     private SharedPreferences sp;
-    private MyToast newToast;
+    private PWToast newToast;
     private DealCodeUtil dealCodeUtil;
 
     private CustomProgressDialog dialog;
@@ -111,7 +111,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inputcode);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         initview();
 
     }

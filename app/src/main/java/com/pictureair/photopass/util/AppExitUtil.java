@@ -11,7 +11,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.LoginActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
@@ -25,14 +25,14 @@ public class AppExitUtil {
     private static AppExitUtil appExitUtil;
     private static PictureAirDbManager pictureAirDbManager;
     public static boolean isAppExit = false;//防止程序一直logout
-    private static MyToast newToast;
+    private static PWToast newToast;
     private MyHandler myHandler = new MyHandler(MyApplication.getInstance());
 
     public static AppExitUtil getInstance() {
         if (appExitUtil == null) {
             appExitUtil = new AppExitUtil();
             pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
-            newToast = new MyToast(MyApplication.getInstance());
+            newToast = new PWToast(MyApplication.getInstance());
         }
         return appExitUtil;
     }

@@ -14,7 +14,7 @@ import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CouponInfo;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 
 /**
@@ -27,7 +27,7 @@ public class DealCodeUtil {
 	private String code;
 	private Handler handler;
 	private String codeType;
-	private MyToast myToast;
+	private PWToast myToast;
 	private String dealWay;
 	private String needBind;
 	private String bindData;
@@ -197,7 +197,7 @@ public class DealCodeUtil {
 	public DealCodeUtil(Context context, Intent intent, boolean isInputAct, Handler handler) {
 		this.context = context;
 		this.handler = handler;
-		myToast = new MyToast(context);
+		myToast = new PWToast(context);
 		dealWay = intent.getStringExtra("type");
 		needBind = intent.getStringExtra("needbind");
 		bindData = intent.getStringExtra("binddate");

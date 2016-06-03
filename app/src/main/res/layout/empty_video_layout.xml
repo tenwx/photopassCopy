@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/pp_margin_20"
         android:layout_marginRight="@dimen/pp_margin_64"
         android:text="@string/disney_video_about_null_photo_note"
-        android:textColor="@color/gray"
+        android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_16" />
 
 

@@ -35,10 +35,11 @@ import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
+import com.pictureair.photopass.zxing.decoding.OnDealCodeListener;
 import com.pictureair.photopass.zxing.view.ScanView;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
@@ -57,9 +58,8 @@ import de.greenrobot.event.EventBus;
  *
  * @author Talon
  */
-public class MipCaptureActivity extends BaseActivity implements Callback,View.OnClickListener{
+public class MipCaptureActivity extends BaseActivity implements Callback,View.OnClickListener, OnDealCodeListener {
     private TextView tvCenterHint;
-    public static Bitmap tempBitmap = null;
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
     private boolean hasSurface;
@@ -75,20 +75,20 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private SharedPreferences sp;
     private String code;
 
-    private MyToast newToast;
+    private PWToast newToast;
 
     private CustomProgressDialog dialog;
     private DealCodeUtil dealCodeUtil;
     private final Handler mipCaptureHandler = new MipCaptureHandler(this);
 
     private TextView tvScanQRCode ,tvScanPPPCode; //扫描QR码 和 PP+号码的按钮
-    public static int scanType = 1; //扫描方式。1，代表Qr码扫描。2，代表PP+卡扫描。  默认进来是扫描QR码
+    private int scanType = 1; //扫描方式。1，代表Qr码扫描。2，代表PP+卡扫描。  默认进来是扫描QR码
     private ViewfinderView viewfinder_view; // QR码 扫描的矩形
     private TextView tvScanQRcodeTips;// QR码的提示字体。
     private RelativeLayout rlMask,rlLight; //蒙版, 高亮部分
     private ScanView ocrScanView;
 
-    public static boolean mNoStoragePermission;
+    private boolean mNoStoragePermission;
     private static final int REQUEST_CAMERA_PERMISSION = 3;
     private boolean mIsAskCameraPermission = false;
     // 点击响应方法
@@ -97,6 +97,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         switch (view.getId()){
             case R.id.tv_scan_qr_code:
                 scanType = 1;
+                handler.setScanType(scanType);
                 ocrScanView.setVisibility(View.GONE);
                 viewfinder_view.setVisibility(View.VISIBLE);
                 tvScanQRcodeTips.setVisibility(View.VISIBLE);
@@ -110,7 +111,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
             case R.id.tv_scan_ppp_code:
                 scanType = 2;
-
+                handler.setScanType(scanType);
                 if (rlp == null) {
                     int height = ((surfaceView.getHeight() - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
                     int width = (int) (height / 85.0 * 54);
@@ -119,8 +120,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     rlp = new RelativeLayout.LayoutParams(width, height);
                     rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
                     rlLight.setLayoutParams(rlp);
-                    ocrScanView.setWidth(rlp.width);
-                    ocrScanView.setHeight(rlp.height);
                     ViewGroup.LayoutParams layoutParams = tvCenterHint.getLayoutParams();
                     layoutParams.width = rlp.height - 20;
                     layoutParams.height = rlp.width - 20;
@@ -140,6 +139,47 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_nor), null, null);
                 tvScanQRCode.setTextColor(getResources().getColor(R.color.white));
                 break;
+        }
+    }
+
+    @Override
+    public void decodeSuccess(Result result, Bitmap bitmap) {
+        if (dialog != null && dialog.isShowing()) {//不处理扫描结果
+
+        } else {
+            inactivityTimer.onActivity();
+            playBeepSoundAndVibrate();
+            String resultString = result.getText();
+            PictureAirLog.out("scan result = " + resultString);
+            if (resultString.contains("vid=")) { //包含vid
+                code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
+
+            } else if (resultString.contains("VID=")) {//包含VID
+                code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
+
+            } else if (resultString.length() >= 18 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于18-22位之间，并且都是纯数字
+                code = resultString;
+
+            } else {//无效的卡号
+                newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
+                finish();
+                return;
+            }
+            PictureAirLog.out("code：：：" + code);
+            dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+            dealCodeUtil.startDealCode(code);
+        }
+    }
+
+    @Override
+    public void decodeOCRSuccess(Bundle bundle) {
+        if (bundle.getString("text") != null){ //跳转到确认的界面。
+            Intent intent = new Intent();
+            intent.putExtra("text", bundle.getString("text"));
+            intent.putExtra("type", getIntent().getStringExtra("type"));
+            intent.putExtra("bmpData", bundle.getByteArray("data"));
+            intent.setClass(this, PPPCodeActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -222,7 +262,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
 //        tvCenterHint.setRotation(90);
 
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         CameraManager.init(getApplication());
@@ -307,41 +347,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         mipCaptureHandler.removeCallbacksAndMessages(null);
     }
 
-    /**
-     * 处理函数
-     *
-     * @param result
-     * @param barcode
-     */
-    public void handleDecode(Result result, Bitmap barcode) {
-        if (dialog != null && dialog.isShowing()) {//不处理扫描结果
-
-        } else {
-            inactivityTimer.onActivity();
-            playBeepSoundAndVibrate();
-            String resultString = result.getText();
-            PictureAirLog.out("scan result = " + resultString);
-            if (resultString.contains("vid=")) { //包含vid
-                code = resultString.substring(resultString.lastIndexOf("vid=") + 4, resultString.length());  //截取字符串。
-
-            } else if (resultString.contains("VID=")) {//包含VID
-                code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
-
-            } else if (resultString.length() >= 18 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于18-22位之间，并且都是纯数字
-                code = resultString;
-
-            } else {//无效的卡号
-                newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
-                finish();
-                return;
-            }
-
-            PictureAirLog.out("code：：：" + code);
-            dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-            dealCodeUtil.startDealCode(code);
-        }
-    }
-
     private void initCamera(SurfaceHolder surfaceHolder) {
         try {
             CameraManager.get().openDriver(surfaceHolder);
@@ -361,7 +366,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             return;
         }
         if (handler == null) {
-            handler = new CaptureActivityHandler(this, decodeFormats, characterSet);
+            handler = new CaptureActivityHandler(getApplicationContext(), decodeFormats, characterSet, viewfinderView, scanType, mNoStoragePermission);
+            handler.setOnDealCodeListener(this);
         }
     }
 
@@ -389,18 +395,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     }
 
-    public ViewfinderView getViewfinderView() {
-        return viewfinderView;
-    }
-
     public Handler getHandler() {
         return handler;
     }
 
-    public void drawViewfinder() {
-        viewfinderView.drawViewfinder();
-
-    }
 
     private void initBeepSound() {
         if (playBeep && mediaPlayer == null) {
@@ -467,22 +465,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
         }
     }
-
-    /**
-     * 处理OCR 结果返回。
-     */
-    public void handleDecodeOCR(String text){
-        if (text != null){ //跳转到确认的界面。
-            Intent intent = new Intent();
-            intent.putExtra("text",text);
-            intent.putExtra("type", getIntent().getStringExtra("type"));
-            intent.setClass(this, PPPCodeActivity.class);
-            PictureAirLog.out("text" + text);
-            startActivity(intent);
-//            this.finish();
-        }
-    }
-
 
     /**
      * 复制文件 到 SD 卡中

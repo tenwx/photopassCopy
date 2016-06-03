@@ -21,7 +21,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
@@ -33,7 +33,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     private TextView tvNickName, tvGender, tvBirthday, countryTv, accountTv;
     private RelativeLayout nn, g, bd, countryRL, item_password;
     private SharedPreferences sp;
-    private MyToast newToast;
+    private PWToast newToast;
     private String nickNameString, genderString, birthdayString, countryString;
     private RelativeLayout isSelectMale, isSelectFemale;
     private ImageView iVisSelectMale, iVisSelectFemale;
@@ -181,7 +181,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_profile);
         sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         initView();
         initData();
     }

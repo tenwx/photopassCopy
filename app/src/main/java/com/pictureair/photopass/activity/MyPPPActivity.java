@@ -41,7 +41,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PictureWorksDialog;
@@ -70,7 +70,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private LinearLayout nopppLayout;
 
     private CustomProgressDialog dialog;
-    private MyToast newToast;
+    private PWToast newToast;
     private CustomDialog customdialog;
 
     private ListOfPPPAdapter listPPPAdapter;
@@ -421,7 +421,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     private void initViewCommon(){
         pppPop = new PPPPop(this, myPPPHandler, false);
         //初始化
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);

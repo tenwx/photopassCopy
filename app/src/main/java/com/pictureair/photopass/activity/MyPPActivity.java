@@ -33,7 +33,7 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
@@ -79,7 +79,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private PPPinfo dppp;
     private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
     private CustomProgressDialog dialog;
-    private MyToast myToast;
+    private PWToast myToast;
     private SettingUtil settingUtil;
 
     private PictureWorksDialog pictureWorksDialog;
@@ -378,7 +378,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private void initView() {
         pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(pictureAirDbManager);
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);

@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import com.pictureair.photopass.widget.CustomProgressDialog;
 
@@ -27,7 +27,7 @@ public class SignAndLoginUtil implements Handler.Callback {
     private String name, birthday, gender, country;
     private SharedPreferences sp;
     private Editor editor;
-    private MyToast myToast;
+    private PWToast myToast;
     private Context context;
     private CustomProgressDialog customProgressDialog;
     private OnLoginSuccessListener onLoginSuccessListener;
@@ -232,7 +232,7 @@ public class SignAndLoginUtil implements Handler.Callback {
      */
     private void start() {
         PictureAirLog.v(TAG, "start login or sign");
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
         sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         handler = new Handler(this);

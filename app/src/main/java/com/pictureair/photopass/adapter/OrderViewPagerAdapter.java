@@ -25,7 +25,7 @@ import com.pictureair.photopass.util.OrderInfoDateSortUtil;
 import com.pictureair.photopass.util.OrderProductDateSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
     private String currency;
 
     private Context context;
-    private MyToast myToast;
+    private PWToast myToast;
     private MyApplication application;
 
     private Handler handler = new Handler() {
@@ -111,7 +111,7 @@ public class OrderViewPagerAdapter extends PagerAdapter {
         this.paymentChildlist = OrderProductDateSort(orderChildlist1);
         this.deliveryChildlist = OrderProductDateSort(orderChildlist2);
         this.allChildlist = OrderProductDateSort(orderChildlist3);
-        this.myToast = new MyToast(context);
+        this.myToast = new PWToast(context);
         this.application = application;
     }
 

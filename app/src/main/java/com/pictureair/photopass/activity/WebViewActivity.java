@@ -12,12 +12,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomWebView;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
@@ -25,7 +24,7 @@ import java.lang.ref.WeakReference;
 public class WebViewActivity extends BaseActivity implements CustomWebView.MyWebviewImp {
     private CustomWebView webView;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
-    private MyToast myToast;
+    private PWToast myToast;
     private CustomProgressDialog customProgressDialog;
     private int key;
 
@@ -74,7 +73,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
         key = getIntent().getIntExtra("key", 1);
         webView = (CustomWebView) findViewById(R.id.webView);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         webView.setMyWebViewImp(this);
         getData();
     }

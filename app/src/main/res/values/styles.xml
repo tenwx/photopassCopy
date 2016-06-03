@@ -83,7 +83,7 @@
     </style>
     
     <style name="PullToRefreshText">
-    <item name="android:textColor">@color/gray</item>
+    <item name="android:textColor">@color/pp_dark_blue</item>
     <item name="android:textSize">15sp</item>
     <item name="android:textStyle">normal</item>
   </style>

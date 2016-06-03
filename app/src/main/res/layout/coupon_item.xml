@@ -40,7 +40,7 @@
             android:layout_marginTop="@dimen/pp_margin_10"
             android:layout_toLeftOf="@+id/tv_status"
             android:text="优惠卷名字"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 
         <!-- 有效期-->
@@ -62,7 +62,7 @@
             android:layout_below="@+id/tv_validity_period"
             android:layout_marginTop="@dimen/pp_margin_16"
             android:text="描述"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_12" />
 
         <!-- 优惠卷价格或者折扣-->
@@ -75,7 +75,7 @@
             android:layout_marginRight="@dimen/pp_margin_10"
             android:layout_marginTop="@dimen/pp_margin_10"
             android:text=" "
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_20" />
 
 

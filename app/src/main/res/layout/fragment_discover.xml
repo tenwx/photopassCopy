@@ -91,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/discover_popularity"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_small_size" />
 
                     <ImageView
@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/discover_distance"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_small_size" />
 
                     <ImageView
@@ -153,7 +153,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/discover_selection"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_small_size" />
 
                     <ImageView
@@ -184,7 +184,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/discover_collect"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_small_size" />
 
                     <ImageView

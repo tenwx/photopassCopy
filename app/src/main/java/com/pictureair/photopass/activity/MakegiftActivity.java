@@ -53,7 +53,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -105,7 +105,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private CustomProgressBarPop progressBarPop;
 
 
-    private MyToast newToast;
+    private PWToast newToast;
 
     private int previewViewWidth;
     private int previewViewHeight;
@@ -346,7 +346,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private void init() {
         sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         currencytextview = (TextView) findViewById(R.id.textView2);
         currencytextview.setText(sp.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         priceTextView = (TextView) findViewById(R.id.textview_productprice);

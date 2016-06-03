@@ -17,7 +17,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
@@ -36,7 +36,7 @@ public class PostcardActivity extends BaseActivity implements View.OnClickListen
     //申明实例类
     private SharedPreferences sharedPreferences;
     private Editor editor;
-    private MyToast myToast;
+    private PWToast myToast;
 
     //申明变量
     private int recordcount = 0; //记录数据库中有几条记录
@@ -104,7 +104,7 @@ public class PostcardActivity extends BaseActivity implements View.OnClickListen
         btnPreview.setOnClickListener(this);
 
         //初始化数据
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
     }
 

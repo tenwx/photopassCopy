@@ -39,7 +39,7 @@ import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.blur.BlurUtil;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
@@ -64,7 +64,7 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
 
@@ -99,7 +99,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private ImageButton loveImageButton;
 
-    private MyToast newToast;
+    private PWToast newToast;
     private SharePop sharePop;
     private MyApplication myApplication;
     private PictureAirDbManager pictureAirDbManager;
@@ -194,6 +194,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int GET_LOCATION_AD_DONE = 1001;
     private static final int CREATE_BLUR_DIALOG = 888;
     private final int RESIZE_BLUR_IMAGE = 999;
+    private static final int MAX_SPEED = 6000;
 
     private CustomDialog customdialog; //  对话框
     private PictureWorksDialog pictureWorksDialog;
@@ -252,6 +253,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private int moveSize = 30;
 
     private Handler previewPhotoHandler;
+
+    /**
+     * 速度监听
+     */
+    private VelocityTracker vTracker = null;
+    private String touchSpeet = "";
 
     /**
      * 处理Message
@@ -333,7 +340,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     touchClearBmp = null;
                 }
 
-                if (null != msg.obj && !msg.obj.equals("")){
+                if (TextUtils.isEmpty(msg.obj.toString())){
                     if (msg.obj.equals("indexLast")){
                         indexLast();
                     }else{
@@ -723,7 +730,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         previewPhotoHandler = new Handler(this);
         pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(pictureAirDbManager);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         sharePop = new SharePop(this);
         matrix = new Matrix();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1042,8 +1049,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
-    private VelocityTracker vTracker = null;
-    private String touchSpeet = "";
     public boolean onTouchEvent(MotionEvent event) {
         PictureAirLog.out("the-----onTouchEvent");
         if (!loadFailed) {
@@ -1063,7 +1068,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 msg.arg2 = (int) event.getY();
 
                 switch (event.getAction()) {
-
                     case MotionEvent.ACTION_DOWN:
                         mode = MODE_DOWN;
                         PictureAirLog.v(TAG, "-------->downY---" + event.getY());
@@ -1111,22 +1115,23 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                         vTracker.addMovement(event);
                         vTracker.computeCurrentVelocity(1000);
-                        PictureAirLog.out("the x velocity is "+vTracker.getXVelocity());
-                        PictureAirLog.out("the y velocity is "+vTracker.getYVelocity());
-                        if (vTracker.getXVelocity() > 10000){
-//                            indexLast();
-                            touchSpeet =  "indexLast";
-                            PictureAirLog.out("the -----<");
-                        }
-                        if (vTracker.getXVelocity() < -10000){
-//                            indexNext();
-                            touchSpeet =  "indexNext";
-                            PictureAirLog.out("the ----->");
+                        PictureAirLog.out("vTracker----> the x velocity is "+vTracker.getXVelocity());
+                        PictureAirLog.out("vTracker----> the y velocity is "+vTracker.getYVelocity());
+                        if (vTracker.getXVelocity() > MAX_SPEED){
+                            touchSpeet = "indexLast";
+                            PictureAirLog.out("vTracker----> the -----<");
+                        } else if (vTracker.getXVelocity() < -MAX_SPEED){
+                            touchSpeet = "indexNext";
+                            PictureAirLog.out("vTracker----> the ----->");
                         }
                         break;
+
                     case MotionEvent.ACTION_UP:
-                        vTracker.recycle();
-                        vTracker = null;
+                        if (vTracker != null) {
+                            vTracker.clear();
+                            vTracker.recycle();
+                            vTracker = null;
+                        }
 
                         mode = MODE_UP;
                         PictureAirLog.v(TAG, "up");
@@ -1140,10 +1145,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         return true;
     }
-
-
-
-
 
     public void onClick(View v) {
         Intent intent;

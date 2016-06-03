@@ -29,7 +29,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
 import java.lang.ref.WeakReference;
@@ -43,7 +43,7 @@ public class OtherRegisterActivity extends BaseActivity implements
     private RadioGroup rg;
     private RadioButton rbMan, rbWoman;
     private Button btn_submit_sign;
-    private MyToast myToast;
+    private PWToast myToast;
     // 变量
     private String sex = "";// 性别
     private String country = "";
@@ -160,7 +160,7 @@ public class OtherRegisterActivity extends BaseActivity implements
             tvAgreement.setText(style);
         }
 
-        myToast = new MyToast(OtherRegisterActivity.this);
+        myToast = new PWToast(OtherRegisterActivity.this);
 //		getDateYMD();
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.smssdk_regist);

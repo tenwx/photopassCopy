@@ -24,7 +24,7 @@ import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CouponViewInterface;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
@@ -49,7 +49,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
     private Context context;
-    private MyToast myToast;
+    private PWToast myToast;
 
     private CouponTool couponTool;
     private String whatPege = "";//是从什么页面进来的
@@ -76,7 +76,7 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
     }
 
     private void initViews() {
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow("");
         setTopRightValueAndShow(R.drawable.add_righttop, true);

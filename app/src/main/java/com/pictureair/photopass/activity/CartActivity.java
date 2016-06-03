@@ -33,7 +33,7 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
@@ -75,7 +75,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private CustomProgressDialog customProgressDialog;
 
     private String userId = "";
-    private MyToast newToast;
+    private PWToast newToast;
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private CartItemInfoJson cartItemInfoJson;//存放返回的数据
@@ -327,7 +327,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         //上传进度条
         dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
         rtButton = (ImageView) findViewById(R.id.ret_relyt);

@@ -8,8 +8,8 @@ android {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.1.0"
+        versionCode 4
+        versionName "1.1.1"
 
         /**
          * 历史版本
@@ -18,6 +18,9 @@ android {
          *
          * versionCode 2 (正式发布的第一个版本)
          * versionName "1.0.1"
+         *
+         * versionCode 3 (正式发布的第二个版本)
+         * versionName "1.1.0"
          */
 
     }

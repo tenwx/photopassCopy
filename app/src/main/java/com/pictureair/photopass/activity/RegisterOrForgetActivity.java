@@ -30,7 +30,7 @@ import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.RegisterOrForgetCallback;
 
@@ -48,7 +48,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private RegisterTool registerTool;
     private String tokenId;
     private String languageType;
-    private MyToast myToast;
+    private PWToast myToast;
     private Context context;
     private CustomProgressDialog customProgressDialog;
     private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_put_identify_centen;
@@ -186,7 +186,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     }
 
     private void initData() {
-        myToast = new MyToast(context);// 获取toast
+        myToast = new PWToast(context);// 获取toast
         tvCountry.setText(R.string.china);
     }
 

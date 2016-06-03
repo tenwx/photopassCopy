@@ -42,7 +42,7 @@ import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -68,7 +68,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private TextView noPhotoTextView;
     private ImageView noPhotoImageView, ivDisneyNullPhoto;
 
-    private MyToast newToast;
+    private PWToast newToast;
     private MyApplication myApplication;
     private ArrayList<PhotoInfo> photoPassArrayList;
     private String activity = null;
@@ -202,7 +202,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     //初始化函数
     private void initview() {
         //初始化资源
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         myApplication = (MyApplication) getApplication();
         //初始化控件
         rtLayout = (ImageView) findViewById(R.id.rlrt);

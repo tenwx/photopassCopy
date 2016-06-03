@@ -32,7 +32,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,7 +51,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
     private doDeletePhotoListener deleteListner;
     private LinearLayout.LayoutParams params;
     private RelativeLayout.LayoutParams params2;
-    private MyToast myToast;
+    private PWToast myToast;
     private SimpleDateFormat sdf;
 
     private boolean isSelete;
@@ -75,7 +75,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         this.isSelete = isSelete;
         this.mHandler = mHandler;
         this.isDeletePP = isDeletePP;
-        myToast = new MyToast(mContext);
+        myToast = new PWToast(mContext);
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         screenWidth = ScreenUtil.getScreenWidth(mContext);// 获取屏幕宽度
         params = new LinearLayout.LayoutParams(

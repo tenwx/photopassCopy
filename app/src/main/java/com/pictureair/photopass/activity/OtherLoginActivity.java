@@ -19,7 +19,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.widget.EditTextWithClear;
@@ -37,7 +37,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     private StringBuffer loginUrl = new StringBuffer();// 登录的url
 
     // 申明其他类
-    private MyToast myToast;
+    private PWToast myToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
      */
     private void initView() {
         loginUrl.append(Common.BASE_URL_TEST).append(Common.LOGIN);// 链接地址
-        myToast = new MyToast(OtherLoginActivity.this);// 获取toast
+        myToast = new PWToast(OtherLoginActivity.this);// 获取toast
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.user_login);
         sign = (Button) findViewById(R.id.sign);

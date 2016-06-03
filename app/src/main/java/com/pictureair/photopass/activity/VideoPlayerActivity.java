@@ -36,7 +36,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 import com.pictureair.photopass.widget.VideoPlayerView;
 import com.pictureair.photopass.widget.VideoPlayerView.MySizeChangeLinstener;
@@ -64,7 +64,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private LinearLayout llEnd;
     private ImageView ivIsLove;
     private TextView tvLoding;
-    private MyToast myToast;
+    private PWToast myToast;
     private SharePop sharePop;
     private SharedPreferences sharedPreferences;
 
@@ -216,7 +216,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         sharePop = new SharePop(context);
         pictureAirDbManager = new PictureAirDbManager(context);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.my_disney_story);
         ivIsLove = getTopRightImageView();
@@ -253,7 +253,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     }
 
     private void getIsOnline(){
-        String fileName = ScreenUtil.getReallyFileName(videoInfo.photoPathOrURL,1);
+        String fileName = AppUtil.getReallyFileName(videoInfo.photoPathOrURL,1);
         PictureAirLog.e(TAG, "filename=" + fileName);
         File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
         filedir.mkdirs();

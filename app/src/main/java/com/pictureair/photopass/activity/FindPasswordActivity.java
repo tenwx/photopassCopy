@@ -21,7 +21,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import com.pictureair.photopass.widget.CustomButtonFont;
 import com.pictureair.photopass.widget.CustomProgressDialog;
@@ -36,7 +36,7 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 public class FindPasswordActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "FindPasswordActivity";
     private Context context;
-    private MyToast myToast;
+    private PWToast myToast;
     private CustomProgressDialog customProgressDialog;
     //输入邮箱页面
     private LinearLayout llFindPwdContent;
@@ -92,7 +92,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     }
 
     private void initview() {
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.reset_pwd);
 

@@ -36,7 +36,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
@@ -82,7 +82,7 @@ public class OrderActivity extends BaseFragmentActivity {
     private static String TAG = "OrderActivity";
 
     private CustomProgressDialog customProgressDialog;
-    private MyToast myToast;
+    private PWToast myToast;
     private PictureAirDbManager pictureAirDbManager;
     private List<String> orderIds;
 
@@ -311,8 +311,8 @@ public class OrderActivity extends BaseFragmentActivity {
         cursor_layout = (LinearLayout) findViewById(R.id.cursor_layout);
 
         paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-        deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-        allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+        deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+        allOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
 
         screenW = ScreenUtil.getScreenWidth(this);// 获取分辨率宽度
         Matrix matrix = new Matrix();
@@ -341,7 +341,7 @@ public class OrderActivity extends BaseFragmentActivity {
         deliveryOrderTextView.setOnClickListener(new viewPagerOnClickListener(1));
         allOrderTextView.setOnClickListener(new viewPagerOnClickListener(2));
 
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         pictureAirDbManager = new PictureAirDbManager(this);
     }
 
@@ -430,20 +430,20 @@ public class OrderActivity extends BaseFragmentActivity {
             switch (arg0) {
                 case 0:
                     paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-                    allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                    allOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
 
                     break;
 
                 case 1:
-                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                     deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                    allOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+                    allOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                     break;
 
                 case 2:
-                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.gray));
-                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.gray));
+                    paymentOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                    deliveryOrderTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                     allOrderTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                     break;
 

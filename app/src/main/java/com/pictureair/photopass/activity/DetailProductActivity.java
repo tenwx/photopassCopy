@@ -34,7 +34,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
     private GoodsInfo goodsInfo;
     private SharedPreferences sharedPreferences;
     private Editor editor;
-    private MyToast myToast;
+    private PWToast myToast;
 
     //申明变量
     private int recordcount = 0; //记录数据库中有几条记录
@@ -146,7 +146,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         addtocartButton.setOnClickListener(this);
 
         //初始化数据
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");

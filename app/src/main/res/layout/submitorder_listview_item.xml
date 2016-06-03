@@ -30,7 +30,7 @@
             android:layout_toRightOf="@id/imageView_pd"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />
 
         <TextView

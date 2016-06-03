@@ -11,10 +11,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.MainTabActivity;
@@ -32,8 +30,7 @@ import com.pictureair.photopass.util.OrderInfoDateSortUtil;
 import com.pictureair.photopass.util.OrderProductDateSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.util.UniversalImageLoadTool;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.io.Serializable;
@@ -64,7 +61,7 @@ public class OrderFragment extends Fragment {
     private String currency;
 
     private Context context;
-    private MyToast myToast;
+    private PWToast myToast;
     private MyApplication application;
     private int tab = 0;
 
@@ -172,7 +169,7 @@ public class OrderFragment extends Fragment {
             tab = getArguments().getInt("tab");
         }
         application = (MyApplication) getActivity().getApplication();
-        this.myToast = new MyToast(context);
+        this.myToast = new PWToast(context);
         this.context = context;
         super.onAttach(context);
     }

@@ -1,4 +1,4 @@
-package com.pictureair.photopass.blur;
+package com.pictureair.photopass.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

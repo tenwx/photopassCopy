@@ -25,9 +25,9 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.UmengUtil;
 
 import java.io.BufferedOutputStream;
@@ -82,7 +82,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
     public static final String SHARE_PHOTO_TYPE = "photo";
     public static final String SHARE_VIDEO_TYOE = "video";
 
-    private MyToast myToast;
+    private PWToast myToast;
 
     public SharePop(Context context) {
         super(context);
@@ -129,7 +129,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
     private void initPopupWindow() {
         ShareSDK.initSDK(context);
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         defaultView = inflater.inflate(R.layout.share_dialog, null);
@@ -557,34 +557,28 @@ public class SharePop extends PopupWindow implements OnClickListener,
                         new ImageLoadingListener() {
 
                             @Override
-                            public void onLoadingStarted(String imageUri,
-                                                         View view) {
+                            public void onLoadingStarted(String imageUri, View view) {
                                 // TODO Auto-generated method stub
 
                             }
 
                             @Override
-                            public void onLoadingFailed(String imageUri,
-                                                        View view, FailReason failReason) {
+                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                                 // TODO Auto-generated method stub
 
                             }
 
                             @Override
-                            public void onLoadingComplete(String imageUri,
-                                                          View view, Bitmap loadedImage) {
+                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 // TODO Auto-generated method stub
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                loadedImage.compress(
-                                        Bitmap.CompressFormat.JPEG, 20, baos);
+                                loadedImage.compress(Bitmap.CompressFormat.JPEG, 20, baos);
                                 byte[] datas = baos.toByteArray();
                                 File shareFile = new File(Common.SHARE_PATH);
                                 if (!shareFile.exists()) {
                                     shareFile.mkdirs();
                                 }
-                                shareFile = new File(Common.SHARE_PATH
-                                        + ScreenUtil
-                                        .getReallyFileName(imagePath, 0));
+                                shareFile = new File(Common.SHARE_PATH + AppUtil.getReallyFileName(imagePath, 0));
                                 if (shareFile.exists()) {
 
                                 } else {
@@ -592,10 +586,8 @@ public class SharePop extends PopupWindow implements OnClickListener,
                                     BufferedOutputStream stream = null;
                                     try {
                                         shareFile.createNewFile();
-                                        FileOutputStream fStream = new FileOutputStream(
-                                                shareFile);
-                                        stream = new BufferedOutputStream(
-                                                fStream);
+                                        FileOutputStream fStream = new FileOutputStream(shareFile);
+                                        stream = new BufferedOutputStream(fStream);
                                         stream.write(datas);
                                     } catch (Exception e) {
                                         // TODO: handle exception
@@ -613,18 +605,15 @@ public class SharePop extends PopupWindow implements OnClickListener,
                                 switch (id) {
                                     case R.id.twitter:
                                         // 生成缩略图成功， 需要开始分享
-                                        twitterShare(context, shareFile.toString(),
-                                                imageUrl, shareUrl, type);
+                                        twitterShare(context, shareFile.toString(), imageUrl, shareUrl, type);
                                         break;
 
                                     case R.id.sina:
-                                        sinaShare(context, shareFile.toString(), imageUrl,
-                                                shareUrl, type);
+                                        sinaShare(context, shareFile.toString(), imageUrl, shareUrl, type);
                                         break;
 
                                     case R.id.qq:
-                                        qqShare(context, shareFile.toString(), imageUrl,
-                                                shareUrl, type);
+                                        qqShare(context, shareFile.toString(), imageUrl, shareUrl, type);
                                         break;
 
                                     case R.id.qqzone:
@@ -637,8 +626,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                             }
 
                             @Override
-                            public void onLoadingCancelled(String imageUri,
-                                                           View view) {
+                            public void onLoadingCancelled(String imageUri, View view) {
                                 // TODO Auto-generated method stub
 
                             }

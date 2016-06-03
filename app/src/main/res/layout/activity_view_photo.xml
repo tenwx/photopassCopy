@@ -158,7 +158,7 @@
             android:paddingLeft="@dimen/pp_padding_20"
             android:paddingRight="@dimen/pp_padding_20"
             android:text="@string/no_photo_in_magiccam"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
     </LinearLayout>
 

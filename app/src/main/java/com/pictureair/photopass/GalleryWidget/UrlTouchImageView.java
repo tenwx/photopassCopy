@@ -130,7 +130,7 @@ public class UrlTouchImageView extends RelativeLayout {
      */
     public void setUrl(String imageUrl) {
         //1.获取需要显示文件的文件名
-        String fileString = ScreenUtil.getReallyFileName(imageUrl,0);
+        String fileString = AppUtil.getReallyFileName(imageUrl,0);
         //2、判断文件是否存在sd卡中
         File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
         if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息

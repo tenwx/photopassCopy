@@ -39,7 +39,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,7 +79,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private GoodsInfo goodsInfo;//存放商品信息
     private String picUrl = "";
 
-    private MyToast newToast;
+    private PWToast newToast;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -233,7 +233,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         //获取从selectphotoactivity传递过来的信息
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goodsInfo");
         list = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photopath");

@@ -1,8 +1,6 @@
 package com.pictureair.photopass.editPhoto;
 
 
-import java.util.LinkedHashMap;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,6 +9,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.LinkedHashMap;
 
 /**
  * 贴图操作控件
@@ -31,6 +31,7 @@ public class StickerView extends View {
 	private float oldx, oldy;
 	private Paint rectPaint = new Paint();
 //	private Paint boxPaint = new Paint();
+	private float leftTopX, leftTopY, rightBottomX, rightBottomY;
 
 	private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<Integer, StickerItem>();// 存贮每层贴图数据
 
@@ -152,7 +153,7 @@ public class StickerView extends View {
 				float dx = x - oldx;
 				float dy = y - oldy;
 				if (currentItem != null) {
-					currentItem.updatePos(dx, dy);
+					currentItem.updatePos(dx, dy, leftTopX, leftTopY, rightBottomX, rightBottomY);
 					invalidate();
 				}// end if
 				oldx = x;
@@ -185,5 +186,19 @@ public class StickerView extends View {
 	public void clear() {
 		bank.clear();
 		this.invalidate();
+	}
+
+	/**
+	 * 更新坐标
+	 * @param leftTopX
+	 * @param leftTopY
+	 * @param rightBottomX
+	 * @param rightBottomY
+	 */
+	public void updateCoordinate(float leftTopX, float leftTopY, float rightBottomX, float rightBottomY) {
+		this.leftTopX = leftTopX;
+		this.leftTopY = leftTopY;
+		this.rightBottomX = rightBottomX;
+		this.rightBottomY = rightBottomY;
 	}
 }// end class

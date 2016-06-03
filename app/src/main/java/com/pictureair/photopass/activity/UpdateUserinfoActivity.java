@@ -15,7 +15,7 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import com.pictureair.photopass.widget.EditTextWithClear;
 
@@ -24,7 +24,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
     private Button ibSave;   // save btn
     private EditTextWithClear etUserInfo;
     private int type;
-    private MyToast myToast;
+    private PWToast myToast;
     private String nickName;
 
     @Override
@@ -38,7 +38,7 @@ public class UpdateUserinfoActivity extends BaseActivity implements OnClickListe
         setTopLeftValueAndShow(R.drawable.back_white, true);
         etUserInfo = (EditTextWithClear) findViewById(R.id.et_userinfo_text);
         bgUpdateInfo = (RelativeLayout) findViewById(R.id.bg_update_info);
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         //判断是从哪个页面跳转过来的。
         Intent intent = getIntent();
         type = intent.getIntExtra(Common.USERINFOTYPE, 0);

@@ -38,7 +38,7 @@ public class CheckUpdateManager {
     private String downloadURL, forceUpdate, currentLanguage;
     private CustomProgressBarPop customProgressBarPop;
     private View parentView;
-    private MyToast myToast;
+    private PWToast myToast;
     private String version;
     private File downloadAPKFile;
     private static final int INSTALL_APK = 201;
@@ -167,7 +167,7 @@ public class CheckUpdateManager {
         this.context = context;
         this.currentLanguage = currentLanguage;
         this.parentView = parent;
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
     }
 
     /**

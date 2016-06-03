@@ -21,7 +21,7 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,14 +38,14 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private HashMap<Integer, Boolean> map;//统计被勾选的子项 只能选一张PP+.
 	private int onclickPosition;
 	private Handler handler;
-	private MyToast myToast;
+	private PWToast myToast;
 	
 	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
 		this.isUseHavedPPP = isUseHavedPPP;
 		this.handler = handler;
-		myToast = new MyToast(mContext);
+		myToast = new PWToast(mContext);
 		options = new DisplayImageOptions.Builder()
 				.showImageOnLoading(R.drawable.ic_discover_loading)
 				.showImageOnFail(R.drawable.ic_discover_failed)

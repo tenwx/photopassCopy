@@ -15,9 +15,9 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.editPhoto.bean.PhotoStikerInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,7 +67,7 @@ public class PWEditUtil {
      * @return
      */
     public File getFile(String photoPath){
-        photoPath = ScreenUtil.getReallyFileName(photoPath,0);
+        photoPath = AppUtil.getReallyFileName(photoPath,0);
         File file = new File(Common.PHOTO_DOWNLOAD_PATH + photoPath);
         return file;
     }
@@ -144,13 +144,13 @@ public class PWEditUtil {
         Bitmap frameBitmap;
         if (mMainBitmap.getWidth()<mMainBitmap.getHeight()) {
             if(frameInfos.get(curFramePosition).onLine == 1){
-                frameBitmap = imageLoader.loadImageSync("file://" + mContext.getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
+                frameBitmap = imageLoader.loadImageSync("file://" + mContext.getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
             }else{
                 frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
             }
         }else{
             if(frameInfos.get(curFramePosition).onLine == 1){
-                frameBitmap = imageLoader.loadImageSync("file://" + mContext.getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
+                frameBitmap = imageLoader.loadImageSync("file://" + mContext.getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
             }else{
                 frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
             }

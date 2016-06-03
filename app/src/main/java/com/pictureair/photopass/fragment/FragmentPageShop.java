@@ -38,7 +38,7 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
@@ -72,7 +72,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
     //申明其他
     private SharedPreferences sharedPreferences;
-    private MyToast newToast;
+    private PWToast newToast;
 
 
     private final Handler fragmentPageShopHandler = new FragmentPageShopHandler(this);
@@ -176,7 +176,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop, null);
-        newToast = new MyToast(MyApplication.getInstance());
+        newToast = new PWToast(MyApplication.getInstance());
         //找控件
         shoppingBag = (ImageView) view.findViewById(R.id.frag3_cart);
         cartCountTextView = (TextView) view.findViewById(R.id.textview_cart_count);

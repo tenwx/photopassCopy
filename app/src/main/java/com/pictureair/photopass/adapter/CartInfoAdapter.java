@@ -28,7 +28,7 @@ import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.ListViewImageView;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class CartInfoAdapter extends BaseAdapter {
     private String userId;
     private ImageLoader imageLoader;
     private ArrayList<ArrayList<ImageView>> gridLayoutLists;
-    private MyToast myToast;
+    private PWToast myToast;
 
     public static final int MINUSCOUNT = 0;// 减少数量
     public static final int ADDCOUNT = 1;// 增加数量
@@ -68,7 +68,7 @@ public class CartInfoAdapter extends BaseAdapter {
         layoutInflater = LayoutInflater.from(context);
         imageLoader = ImageLoader.getInstance();
         gridLayoutLists = new ArrayList<>();
-        myToast = new MyToast(context);
+        myToast = new PWToast(context);
     }
 
     /**

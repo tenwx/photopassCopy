@@ -44,7 +44,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/pp_margin_16"
             android:text="@string/all_goods"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
 
         <TextView
@@ -91,7 +91,7 @@
             android:layout_marginRight="@dimen/pp_margin_5"
             android:layout_toLeftOf="@id/textView_currency"
             android:text="@string/totalprice1"
-            android:textColor="@color/gray"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_16" />
     </RelativeLayout>
 

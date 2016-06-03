@@ -16,6 +16,7 @@
 
 package com.pictureair.photopass.zxing.decoding;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -34,17 +35,17 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OCRUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.camera.PlanarYUVLuminanceSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 
 final class DecodeHandler extends Handler {
@@ -55,32 +56,44 @@ final class DecodeHandler extends Handler {
     int recWidth;
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
-    private final MipCaptureActivity activity;
+    private final Context context;
     private final MultiFormatReader multiFormatReader;
     private TessBaseAPI baseApi;
-    private MyToast myToast;
+    private int scanType;
+    private boolean permission;
+    private OnScanResultListener onScanResultListener;
+    private PWToast myToast;
 
-    DecodeHandler(MipCaptureActivity activity, Hashtable<DecodeHintType, Object> hints) {
+    public interface OnScanResultListener {
+        void getResultMessage(Message msg);
+    }
+
+    DecodeHandler(Context context, int scanType, boolean permission, Hashtable<DecodeHintType, Object> hints, OnScanResultListener onScanResultListener) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
-        this.activity = activity;
-        myToast = new MyToast(activity.getApplicationContext());
+        this.context = context;
+        this.scanType = scanType;
+        this.permission = permission;
+        this.onScanResultListener = onScanResultListener;
+        myToast = new PWToast(context);
+    }
+
+    public void setScanType(int scanType) {
+        this.scanType = scanType;
     }
 
     @Override
     public void handleMessage(Message message) {
         switch (message.what) {
             case R.id.decode:
-                //Log.d(TAG, "Got decode message");
-                if (MipCaptureActivity.scanType == 1) { // 第一种模式
+                if (scanType == 1) { // 第一种模式
                     decode((byte[]) message.obj, message.arg1, message.arg2);
                 } else {// OCR模式
-                    if (MipCaptureActivity.mNoStoragePermission) {
+                    if (permission) {
                         decodeOCR((byte[]) message.obj, message.arg1, message.arg2);
-                    }else{
+                    } else {
                         myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
                     }
-
                 }
 
                 break;
@@ -123,19 +136,20 @@ final class DecodeHandler extends Handler {
             multiFormatReader.reset();
         }
 
+        Message message = new Message();
         if (rawResult != null) {
             long end = System.currentTimeMillis();
             PictureAirLog.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
-            Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);
+            message.what = R.id.decode_succeeded;
+            message.obj = rawResult;
+
             Bundle bundle = new Bundle();
             bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
             message.setData(bundle);
-            //Log.d(TAG, "Sending decode succeeded message...");
-            message.sendToTarget();
         } else {
-            Message message = Message.obtain(activity.getHandler(), R.id.decode_failed);
-            message.sendToTarget();
+            message.what = R.id.decode_failed;
         }
+        onScanResultListener.getResultMessage(message);
     }
 
     /**
@@ -148,15 +162,12 @@ final class DecodeHandler extends Handler {
             recHeight = height / 3 * 2;
             recWidth = recHeight * 85 / 54;
             //计算出状态栏高度，计算出标题栏高度。
-            Rect frame = new Rect();
-            activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-            int topHeight = frame.top;
-            int topBarHeight = ScreenUtil.dip2px(activity, 52);
+            int topHeight = ScreenUtil.getStatusBarHeight(context);
+            int topBarHeight = ScreenUtil.dip2px(context, 52);
             //计算出 横向PP+卡左上角的坐标。
             a_x = (width - topHeight - topBarHeight - recWidth) / 2 + topHeight + topHeight;  //横向  坐标。
             a_y = (height - recHeight) / 2;
             PictureAirLog.e("", "a_x:" + a_x + "a_y:" + a_y);
-
 
             //横向情况，计算出 卡号 区域左上角的坐标。
             int b_x = a_x + recWidth * 6 / 85; // 横向情况，计算出 卡号 区域左上角的坐标。
@@ -190,22 +201,24 @@ final class DecodeHandler extends Handler {
         text = OCRUtils.dealCode(text);
         boolean flag = OCRUtils.checkCode(text);
         PictureAirLog.out("ocr---> check code done");
+        Message message = new Message();
         if (flag) { //扫描成功。截取矩形Bitmap
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compressToJpeg(new Rect(a_x, a_y, a_x + recWidth, a_y + recHeight), 50, stream);
-            Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-
-            MipCaptureActivity.tempBitmap = bmp;
-            Message message = activity.getHandler().obtainMessage();
             message.what = R.id.decode_ocr_succeeded;
             Bundle b = new Bundle();
             b.putString("text", text);
+            b.putByteArray("data", stream.toByteArray());
             message.setData(b);
-            message.sendToTarget();
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
-            Message message = Message.obtain(activity.getHandler(), R.id.decode_failed);
-            message.sendToTarget();
+            message.what = R.id.decode_failed;
         }
+        onScanResultListener.getResultMessage(message);
     }
 
     /**

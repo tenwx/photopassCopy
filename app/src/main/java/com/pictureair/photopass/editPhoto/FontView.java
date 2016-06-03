@@ -32,6 +32,7 @@ public class FontView extends ImageView {
     private float oldx, oldy;
     private Paint rectPaint = new Paint();
 //    private Paint boxPaint = new Paint();
+    private float leftTopX, leftTopY, rightBottomX, rightBottomY;
 
     private LinkedHashMap<Integer, FontItem> bank = new LinkedHashMap<Integer, FontItem>();// 存贮每层贴图数据
 
@@ -179,7 +180,7 @@ public class FontView extends ImageView {
                     float dx = x - oldx;
                     float dy = y - oldy;
                     if (currentItem != null) {
-                        currentItem.updatePos(dx, dy);
+                        currentItem.updatePos(dx, dy, leftTopX, leftTopY, rightBottomX, rightBottomY);
                         invalidate();
                     }// end if
                     oldx = x;
@@ -212,5 +213,19 @@ public class FontView extends ImageView {
     public void clear() {
         bank.clear();
         this.invalidate();
+    }
+
+    /**
+     * 更新坐标
+     * @param leftTopX
+     * @param leftTopY
+     * @param rightBottomX
+     * @param rightBottomY
+     */
+    public void updateCoordinate(float leftTopX, float leftTopY, float rightBottomX, float rightBottomY) {
+        this.leftTopX = leftTopX;
+        this.leftTopY = leftTopY;
+        this.rightBottomX = rightBottomX;
+        this.rightBottomY = rightBottomY;
     }
 }// end class

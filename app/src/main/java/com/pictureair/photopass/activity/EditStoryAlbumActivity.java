@@ -31,7 +31,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
@@ -68,7 +68,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private final static int DELETE_LOCAL_PHOTOS_DONE = 15;
 	private int tabIndex = 0;
 	private int selectCount = 0;
-	private MyToast myToast;
+	private PWToast myToast;
 	private CustomProgressDialog customProgressDialog;
 	private PictureAirDbManager pictureAirDbManager;
 	private boolean editMode = false;
@@ -245,7 +245,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
-		myToast = new MyToast(this);
+		myToast = new PWToast(this);
 		
 		pinnedSectionListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 

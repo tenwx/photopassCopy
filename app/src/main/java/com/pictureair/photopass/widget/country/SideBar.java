@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.ScreenUtil;
 
 
 /**

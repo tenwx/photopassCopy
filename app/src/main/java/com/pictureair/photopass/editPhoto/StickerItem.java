@@ -9,13 +9,11 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.EditPhotoActivity;
 
 
 /**
@@ -124,14 +122,14 @@ public class StickerItem {
 
 	/**
 	 * 位置更新
-	 * 
+	 *
 	 * @param dx
 	 * @param dy
 	 */
-	public void updatePos( float dx,  float dy) {
-		dx = calPosition( EditPhotoActivity.leftTopX- dstRect.left - dstRect.width()/2, EditPhotoActivity.rightBottomX - dstRect.right + dstRect.width()/2, dx);
-		dy = calPosition(EditPhotoActivity.leftTopY - dstRect.top - dstRect.height()/2, EditPhotoActivity.rightBottomY - dstRect.bottom + dstRect.height()/2, dy); //
-		
+	public void updatePos( float dx,  float dy, float leftTopX, float leftTopY, float rightBottomX, float rightBottomY) {
+		dx = calPosition(leftTopX - dstRect.left - dstRect.width()/2, rightBottomX - dstRect.right + dstRect.width()/2, dx);
+		dy = calPosition(leftTopY - dstRect.top - dstRect.height()/2, rightBottomY - dstRect.bottom + dstRect.height()/2, dy); //
+
 		this.matrix.postTranslate(dx, dy);// 记录到矩阵中
 		dstRect.offset(dx, dy);
 		// 工具按钮随之移动

@@ -37,7 +37,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.dropview.CoverManager;
 import com.pictureair.photopass.widget.dropview.DropCover.OnDragCompeteListener;
 import com.pictureair.photopass.widget.dropview.WaterDrop;
@@ -73,7 +73,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     //记录退出的时候的两次点击的间隔时间
     private long exitTime = 0;
 
-    private MyToast newToast;
+    private PWToast newToast;
 
     //上次的tab页面，用来判断点击视频之后回到那个tab
     private int last_tab = 0;
@@ -132,7 +132,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // 实例化TabHost对象，得到TabHost
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
 
         //设置app是否登录的状态
         AppExitUtil.getInstance().AppLogin();
@@ -140,7 +140,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // 自动检查更新
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(), currentLanguage,
+        checkUpdateManager = new CheckUpdateManager(getApplicationContext(), currentLanguage,
                 parentLayout);
 
         runOnUiThread(new Runnable() {
@@ -349,7 +349,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             newToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);
             exitTime = System.currentTimeMillis();
         } else {
-            newToast.cancelToast();
+            newToast.cancelShow();
             mTabHost.removeAllViews();
             finish();
             clearCache();

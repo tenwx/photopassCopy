@@ -2,6 +2,8 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,7 +27,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 
@@ -46,7 +48,7 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
     private Button ok;
     private EditText input1, input2, input3, input4;
     private SharedPreferences sp;
-    private MyToast newToast;
+    private PWToast newToast;
     private String inputValue1, inputValue2, inputValue3, inputValue4;
     private DealCodeUtil dealCodeUtil;
 
@@ -133,7 +135,7 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ppp_code);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         initview();
 
     }
@@ -160,9 +162,10 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
 
         codeCount = new int[]{0, 0, 0, 0};
 
+        byte[] bitmapData = getIntent().getByteArrayExtra("bmpData");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length);
+        ivShowResult.setImageBitmap(bitmap);
 
-        ivShowResult.setImageBitmap(MipCaptureActivity.tempBitmap);
-        MipCaptureActivity.tempBitmap = null;
         setTopTitleShow(R.string.scan_ppp_code);
         resultList = getIntent().getStringExtra("text").split("-");
         input1.setText(resultList[0]);

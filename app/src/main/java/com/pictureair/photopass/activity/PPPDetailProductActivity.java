@@ -35,7 +35,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
     private GoodsInfo goodsInfo;
     private SharedPreferences sharedPreferences;
     private Editor editor;
-    private MyToast myToast;
+    private PWToast myToast;
 
     private String[] photoUrls;
 
@@ -172,7 +172,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
         addToCartButton.setOnClickListener(this);
 
         //初始数据
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         //获取传过来的值
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");

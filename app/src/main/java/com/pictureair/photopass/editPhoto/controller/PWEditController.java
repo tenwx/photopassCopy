@@ -15,9 +15,9 @@ import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
@@ -307,25 +307,30 @@ public class PWEditController implements PWEditViewListener{
                     if (curFramePosition !=0 ){
                         if (pwEditUtil.getFrameInfos().get(curFramePosition).onLine == 1) { // 网络图片
                             if (mMainBitmap.getWidth() < mMainBitmap.getHeight()) {
-//                                imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait,0),
-//                                        frameImageView, options, new ImageloaderListener());
-                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),"file://" + mActivity.getFilesDir().toString() + "/frames/frame_portrait_" + ScreenUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathPortrait,0));
+                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(), pwEditUtil.getOptions(),
+                                        "file://" + mActivity.getFilesDir().toString() + "/frames/frame_portrait_" +
+                                                AppUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathPortrait,0));
                             }else{
 //                                imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape,0),
 //                                        frameImageView, options, new ImageloaderListener());
-                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),"file://" + mActivity.getFilesDir().toString() + "/frames/frame_landscape_" + ScreenUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathLandscape,0));
+                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(), pwEditUtil.getOptions(),
+                                        "file://" + mActivity.getFilesDir().toString() + "/frames/frame_landscape_" +
+                                                AppUtil.getReallyFileName(pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathLandscape,0));
                             }
                         }else {  // 本地图片
                             if (mMainBitmap.getWidth() < mMainBitmap.getHeight()) {
 //                                imageLoader.displayImage(frameInfos.get(position).frameOriginalPathPortrait, frameImageView, options, new ImageloaderListener());
-                                  pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathPortrait);
+                                  pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(), pwEditUtil.getOptions(),
+                                          pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathPortrait);
                             }else{
 //                                imageLoader.displayImage(frameInfos.get(position).frameOriginalPathLandscape, frameImageView, options, new ImageloaderListener());
-                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathLandscape);
+                                pwEditViewInterface.showPhotoFrame(pwEditUtil.getImageLoader(), pwEditUtil.getOptions(),
+                                        pwEditUtil.getFrameInfos().get(curFramePosition).frameOriginalPathLandscape);
                             }
                         }
                     }else{
-                        pwEditViewInterface.hidePhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+                        pwEditViewInterface.hidePhotoFrame(pwEditUtil.getImageLoader(), pwEditUtil.getOptions(),
+                                pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
                     }
                     break;
 

@@ -32,7 +32,7 @@ import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.unionpay.UPPayAssistEx;
 
 import java.lang.ref.WeakReference;
@@ -70,7 +70,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private MyApplication myApplication;
     private SharedPreferences sPreferences;
-    private MyToast newToast;
+    private PWToast newToast;
     private PictureAirDbManager pictureAirDbManager;
     private boolean paySyncResult = false;
     private org.json.JSONObject payAsyncResultJsonObject;
@@ -288,7 +288,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 //        IntentFilter filter = new IntentFilter("com.payment.action");
 //        registerReceiver(broadcastReceiver, filter);
         sPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        newToast = new MyToast(this);
+        newToast = new PWToast(this);
         myApplication = (MyApplication) getApplication();
 
 //		lrtLayout.setOnClickListener(this);

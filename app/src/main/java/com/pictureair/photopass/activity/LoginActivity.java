@@ -30,7 +30,7 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.EditTextWithClear;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private static final int START_CHECK_UPDATE = 33;
     // 申明其他类
     private SharedPreferences appPreferences;
-    private MyToast myToast;
+    private PWToast myToast;
     // 区号,国家
     private String countryCode = "86";
     private String country = "";
@@ -185,7 +185,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private void initview() {
         appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);// userInfo
 
-        myToast = new MyToast(LoginActivity.this);// 获取toast
+        myToast = new PWToast(LoginActivity.this);// 获取toast
         parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
         login = (Button) findViewById(R.id.login);// 登录按钮
         sign = (Button) findViewById(R.id.sign);// 注册按钮
@@ -207,7 +207,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         otherLogin.setOnClickListener(this);
 
         // 自动检查更新
-        checkUpdateManager = new CheckUpdateManager(MyApplication.getInstance().getApplicationContext(),
+        checkUpdateManager = new CheckUpdateManager(getApplicationContext(),
                 appPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH),
                 parentRelativeLayout);
 
@@ -337,7 +337,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             myToast.setTextAndShow(R.string.exit, Common.TOAST_SHORT_TIME);
             i = System.currentTimeMillis();
         } else {
-            myToast.cancelToast();
+            myToast.cancelShow();
             finish();
         }
     }

@@ -229,6 +229,14 @@ public final class CameraManager {
         return framingRect;
     }
 
+    public Rect getOCRFrameRect(){
+        int width = ScreenUtil.getScreenWidth(context) / 3 * 2;
+        int topOffset = 0;
+        int leftOffset = 0;
+        Rect framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + ScreenUtil.getScreenWidth(context) / 3 * 2 * 85 / 54);
+        return framingRect;
+    }
+
     /**
      * Like {@link #getFramingRect} but coordinates are in terms of the preview frame,
      * not UI / screen.

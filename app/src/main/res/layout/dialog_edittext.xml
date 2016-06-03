@@ -11,5 +11,5 @@
     android:digits="@string/input_content"
     android:padding="@dimen/pp_padding_10"
     android:maxLength="200"
-    android:textColor="@color/gray"
+    android:textColor="@color/pp_dark_blue"
     android:textSize="@dimen/text_size_14" />

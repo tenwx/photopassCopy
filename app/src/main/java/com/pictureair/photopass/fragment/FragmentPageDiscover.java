@@ -45,7 +45,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
 import java.lang.ref.WeakReference;
@@ -71,7 +71,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
 
     //申明类
-    private MyToast myToast;
+    private PWToast myToast;
     private DiscoverLocationAdapter discoverLocationAdapter;
     private SensorManager sensorManager;// 传感器管理器
     private Sensor sensor_orientation;
@@ -184,7 +184,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                                 Looper.prepare();
                                 isLoading = true;
                                 PictureAirLog.d(TAG, "location is ready");
-                                discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
+                                discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity().getApplicationContext(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
                                 discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
                                 fragmentPageDiscoverHandler.sendEmptyMessage(FINISH_LOADING);
                             }
@@ -309,7 +309,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         //初始化数据
         changeClickEffect(0);
         offset = ScreenUtil.getScreenWidth(getActivity()) / 4;//偏移量
-        myToast = new MyToast(getActivity());
+        myToast = new PWToast(getActivity());
         locationUtil = new LocationUtil(getActivity());
         app = (MyApplication) getActivity().getApplication();
         locationStart = true;
@@ -408,9 +408,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 popularityTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                distanceTextView.setTextColor(getResources().getColor(R.color.gray));
-                selectionTextView.setTextColor(getResources().getColor(R.color.gray));
-                collectionTextView.setTextColor(getResources().getColor(R.color.gray));
+                distanceTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                selectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                collectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                 break;
 
             case 1:
@@ -418,10 +418,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 distanceIconImageView.setImageResource(R.drawable.discover_collection_sele);
                 selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                popularityTextView.setTextColor(getResources().getColor(R.color.gray));
+                popularityTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                 distanceTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                selectionTextView.setTextColor(getResources().getColor(R.color.gray));
-                collectionTextView.setTextColor(getResources().getColor(R.color.gray));
+                selectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                collectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                 break;
 
             case 2:
@@ -429,10 +429,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 selectionIconImageView.setImageResource(R.drawable.discover_collection_sele);
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
-                popularityTextView.setTextColor(getResources().getColor(R.color.gray));
-                distanceTextView.setTextColor(getResources().getColor(R.color.gray));
+                popularityTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                distanceTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                 selectionTextView.setTextColor(getResources().getColor(R.color.pp_blue));
-                collectionTextView.setTextColor(getResources().getColor(R.color.gray));
+                collectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                 break;
 
             case 3:
@@ -440,9 +440,9 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 distanceIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 selectionIconImageView.setImageResource(R.drawable.discover_collection_nor);
                 collectionIconImageView.setImageResource(R.drawable.discover_collection_sele);
-                popularityTextView.setTextColor(getResources().getColor(R.color.gray));
-                distanceTextView.setTextColor(getResources().getColor(R.color.gray));
-                selectionTextView.setTextColor(getResources().getColor(R.color.gray));
+                popularityTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                distanceTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
+                selectionTextView.setTextColor(getResources().getColor(R.color.pp_dark_blue));
                 collectionTextView.setTextColor(getResources().getColor(R.color.pp_blue));
                 break;
 

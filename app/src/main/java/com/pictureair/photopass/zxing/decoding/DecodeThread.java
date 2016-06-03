@@ -16,13 +16,13 @@
 
 package com.pictureair.photopass.zxing.decoding;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
-import com.pictureair.photopass.activity.MipCaptureActivity;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -35,17 +35,26 @@ import java.util.concurrent.CountDownLatch;
 final class DecodeThread extends Thread {
 
     public static final String BARCODE_BITMAP = "barcode_bitmap";
-    private final MipCaptureActivity activity;
     private final Hashtable<DecodeHintType, Object> hints;
-    private Handler handler;
+    private DecodeHandler handler;
     private final CountDownLatch handlerInitLatch;
+    private Context context;
+    private int scanType;
+    private boolean permission;
+    private DecodeHandler.OnScanResultListener onScanResultListener;
 
-    DecodeThread(MipCaptureActivity activity,
+    DecodeThread(Context context,
                  Vector<BarcodeFormat> decodeFormats,
                  String characterSet,
-                 ResultPointCallback resultPointCallback) {
+                 int scanType,
+                 boolean permission,
+                 ResultPointCallback resultPointCallback,
+                 DecodeHandler.OnScanResultListener onScanResultListener) {
 
-        this.activity = activity;
+        this.context = context;
+        this.scanType = scanType;
+        this.permission = permission;
+        this.onScanResultListener = onScanResultListener;
         handlerInitLatch = new CountDownLatch(1);
 
         hints = new Hashtable<DecodeHintType, Object>(3);
@@ -78,9 +87,12 @@ final class DecodeThread extends Thread {
     @Override
     public void run() {
         Looper.prepare();
-        handler = new DecodeHandler(activity, hints);
+        handler = new DecodeHandler(context, scanType, permission, hints, onScanResultListener);
         handlerInitLatch.countDown();
         Looper.loop();
     }
 
+    public void setScanType(int scanType) {
+        handler.setScanType(scanType);
+    }
 }

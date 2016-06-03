@@ -1517,4 +1517,28 @@ public class AppUtil {
         }
         return true;
     }
+
+    /**
+     * 得到url中正确的文件名,根据 isVideo 获取是视频还是图片
+     * @param url 原始url
+     * @param isVideo 判断是照片还是视频，0 代表是照片。
+     * @return 文件名
+     */
+    public static String getReallyFileName(String url,int isVideo) {
+        String filename = url;
+        if (isVideo == 0){
+            if (url.endsWith(".jpg") || url.endsWith(".JPG")) {
+                filename = filename.substring(filename.lastIndexOf("/") + 1);
+            } else {
+                filename = filename.substring(filename.lastIndexOf("/") + 1)+".jpg";
+            }
+        } else {
+            if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
+                filename = filename.substring(filename.lastIndexOf("/") + 1);
+            } else {
+                filename = filename.substring(filename.lastIndexOf("/") + 1)+".mp4";
+            }
+        }
+        return filename;
+    }
 }

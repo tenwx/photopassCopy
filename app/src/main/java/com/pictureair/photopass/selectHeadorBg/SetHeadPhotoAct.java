@@ -20,12 +20,12 @@ import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseActivity;
-import com.pictureair.photopass.blur.BlurUtil;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,7 +46,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     private ImageView back;
     private SharedPreferences sp;
     private CustomProgressBarPop dialog;
-    private MyToast myToast;
+    private PWToast myToast;
     private File headPhoto;
 
     private final Handler setHeadPhotoHandler = new SetHeadPhotoHandler(this);
@@ -128,7 +128,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
         sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         setContentView(R.layout.activity_set_head_photo);
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
         getAlbum.setType(IMAGE_TYPE);
         initView();

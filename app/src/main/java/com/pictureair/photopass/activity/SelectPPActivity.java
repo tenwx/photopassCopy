@@ -1,6 +1,5 @@
 package com.pictureair.photopass.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,12 +21,10 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.MyToast;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
@@ -53,7 +50,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
     private ListView listPP;
     private RelativeLayout noPhotoPassView;
     private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
-    private MyToast myToast;
+    private PWToast myToast;
     private PictureWorksDialog pictureWorksDialog;
     private static class MyPPHandler extends Handler{
         private final WeakReference<SelectPPActivity> mActivity;
@@ -116,7 +113,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         back.setOnClickListener(this);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         pictureAirDbManager = new PictureAirDbManager(this);
-        myToast = new MyToast(this);
+        myToast = new PWToast(this);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
 
