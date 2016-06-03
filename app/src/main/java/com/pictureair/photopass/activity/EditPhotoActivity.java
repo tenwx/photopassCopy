@@ -18,7 +18,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
@@ -706,70 +705,70 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				break;
 
-			case R.id.preview_save: //真正的保存按钮。
-				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-				if (!AppUtil.checkPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
-					break;
-				}
-
-				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
-					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-					dialog.show();
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							EditPhotoUtil.saveBitmap(mainBitmap , url);
-							scan(url);
-							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-							Looper.prepare();
-							dialog.dismiss();
-							Looper.loop();
-						}
-					}).start();
-				}else{
-					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
-					scan(url);
-					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-				}
-
-				break;
-			case R.id.btn_forward: // 前进按钮。
-				if (index == -1) {
-					index = editPhotoInfoArrayList.size() - 1;
-				}
-
-				if (editPhotoInfoArrayList.size() > index + 1) {
-					index++;
-					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
-				}
-				check();
-				break;
-			case R.id.btn_cancel: //返回按钮。
-				if (index == -1) {
-					index = editPhotoInfoArrayList.size() - 1;
-				}
-				if (index >= 1) {
-					index--;
-				}
-
-				if (editPhotoInfoArrayList.size() - 2 >= 0) {
-					if (index == 0) {
-						if (isOnlinePic) {
-							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
-							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-						}else{
-							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-						}
-					}else{
-						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
-						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
-					}
-				}
-				check();
-				break;
+//			case R.id.preview_save: //真正的保存按钮。
+//				final String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+//				if (!AppUtil.checkPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//					myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+//					break;
+//				}
+//
+//				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
+//					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
+//					dialog.show();
+//					new Thread(new Runnable() {
+//						@Override
+//						public void run() {
+//							EditPhotoUtil.saveBitmap(mainBitmap , url);
+//							scan(url);
+//							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+//							Looper.prepare();
+//							dialog.dismiss();
+//							Looper.loop();
+//						}
+//					}).start();
+//				}else{
+//					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
+//					scan(url);
+//					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+//				}
+//
+//				break;
+//			case R.id.btn_forward: // 前进按钮。
+//				if (index == -1) {
+//					index = editPhotoInfoArrayList.size() - 1;
+//				}
+//
+//				if (editPhotoInfoArrayList.size() > index + 1) {
+//					index++;
+//					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+//					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
+//				}
+//				check();
+//				break;
+//			case R.id.btn_cancel: //返回按钮。
+//				if (index == -1) {
+//					index = editPhotoInfoArrayList.size() - 1;
+//				}
+//				if (index >= 1) {
+//					index--;
+//				}
+//
+//				if (editPhotoInfoArrayList.size() - 2 >= 0) {
+//					if (index == 0) {
+//						if (isOnlinePic) {
+//							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
+//							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+//						}else{
+//							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+//							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+//						}
+//					}else{
+//						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+//						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
+//					}
+//				}
+//				check();
+//				break;
 
 			case R.id.tv_left90:
 				btn_onedit_save.setVisibility(View.VISIBLE);
