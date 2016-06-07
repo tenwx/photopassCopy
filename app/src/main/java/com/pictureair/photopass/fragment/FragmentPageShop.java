@@ -118,7 +118,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     shopGoodListViewAdapter.refresh(allGoodsList);
                     //将数据保存到缓存中
                     if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.TIME_DAY);
                     }
                 }
 
@@ -146,7 +146,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 if (addressJson != null && addressJson.getOutlets().size() > 0) {
                     //存入缓存
                     if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.TIME_DAY);
                     }
                 }
                 break;

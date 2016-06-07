@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -508,7 +509,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString(), ACache.TIME_DAY);
+                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString());
                 handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
             }
 
@@ -1617,10 +1618,14 @@ public class API1 {
                     String content = versionObject.getString("content");
                     String channel = "";
                     String downloadUrl = "";
+                    String websiteDownloadUrl = "";
 
                     JSONArray array = versionObject.getJSONArray("downloadChannel");
                     for (int i = 0; i < array.size(); i++) {
                         channel = array.getJSONObject(i).getString("channel");
+                        if (channel.equals("website")) {//官网渠道
+                            websiteDownloadUrl = array.getJSONObject(i).getString("downloadUrl");
+                        }
                         if (channelStr.equals(channel)) {
                             downloadUrl = array.getJSONObject(i).getString("downloadUrl");
                             break;
@@ -1630,6 +1635,7 @@ public class API1 {
                     boolean flag = false;//为false则不更新
                     int[] number = CheckUpdateManager.verNameChangeInt(thisVerName);
                     int[] newNumber = CheckUpdateManager.verNameChangeInt(versionName);
+                    //根据版本号判断是否需要更新
                     for (int i = 0; i < number.length; i++) {
                         if (number[i] < newNumber[i]) {
                             //需要更新
@@ -1637,6 +1643,17 @@ public class API1 {
                             break;
                         }
                     }
+
+                    if (TextUtils.isEmpty(downloadUrl)) {//判断下载链接是否为空
+                        if (TextUtils.isEmpty(websiteDownloadUrl)) {//官网下载链接为空
+                            flag = false;
+                        } else {
+                            downloadUrl = websiteDownloadUrl;
+                        }
+                    } else {
+
+                    }
+
                     if (flag) {
                         //更新
                         String[] objsStrings = new String[4];

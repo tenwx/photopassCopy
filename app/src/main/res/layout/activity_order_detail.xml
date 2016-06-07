@@ -375,6 +375,7 @@
                     android:paddingTop="@dimen/pp_padding_8">
 
                     <TextView
+                        android:id="@+id/collections"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -388,8 +389,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_gravity="center_vertical"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/collections"
+                        android:layout_marginLeft="5dp"
                         android:textColor="@color/pp_gray"
+                        android:gravity="right"
+                        android:singleLine="true"
                         android:textSize="@dimen/text_size_14" />
                 </RelativeLayout>
 

@@ -188,7 +188,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     fixListViewHeight(transportListView);
                     //存入缓存
                     if (ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ACACHE_ADDRESS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, msg.obj.toString(), ACache.TIME_DAY);
                     }
                 }
                 break;

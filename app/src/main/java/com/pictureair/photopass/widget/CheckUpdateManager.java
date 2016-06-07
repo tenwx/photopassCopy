@@ -319,7 +319,7 @@ public class CheckUpdateManager {
     /**
      * 注销dialog
      */
-    public void dismissDialog(){
+    private void dismissDialog(){
         if (null != pictureWorksDialog){
             pictureWorksDialog.dismiss();
             pictureWorksDialog = null;

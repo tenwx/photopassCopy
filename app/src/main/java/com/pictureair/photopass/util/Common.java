@@ -268,10 +268,7 @@ public class Common {
     public static final String LOG_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/log/";
 
     //缓存的字段
-    public static final String TOP_GOODS = "topgoods";
     public static final String ALL_GOODS = "allgoods";
-    public static final String BANNER_GOODS = "bannergoods";
-    public static final String PPP_GOOD = "pppgood";
     public static final String LOCATION_INFO = "locationInfo";
     public static final String ACACHE_ADDRESS = "address";//收货地址缓存
     //	public static final String CHANGE_CUR_TAB = "change_cur_tab";

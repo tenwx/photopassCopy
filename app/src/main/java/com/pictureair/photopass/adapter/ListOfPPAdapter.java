@@ -3,7 +3,6 @@ package com.pictureair.photopass.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -19,25 +18,17 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.EditStoryAlbumActivity;
-import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.entity.PhotoItemInfo;
-import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -424,35 +415,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         return true;
     }
 
-    /**
-     * 生成photoItemInfo的列表
-     *
-     * @param index
-     * @return
-     */
-    private ArrayList<PhotoItemInfo> createPhotoItemInfoList(int index) {
-        ArrayList<PhotoItemInfo> resultArrayList = new ArrayList<>();
-        ArrayList<PhotoInfo> photoInfos = new ArrayList<>();
-        photoInfos.addAll(arrayList.get(index).getSelectPhotoItemInfos());
-
-        PictureAirLog.out("photoinfos---->" + photoInfos.size());
-
-        ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
-        locationList.addAll(AppUtil.getLocation(mContext, ACache.get(mContext).getAsString(Common.LOCATION_INFO), true));
-
-        try {
-            resultArrayList.addAll(AppUtil.getPhotoItemInfoList(locationList, photoInfos, sdf, MyApplication.getInstance().getLanguageType()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Collections.sort(resultArrayList);//对all进行排序
-
-        for (int i = 0; i < resultArrayList.size(); i++) {
-            PictureAirLog.out("count------>" + resultArrayList.get(i).list.size());
-        }
-        return resultArrayList;
-    }
 
     @Override
     public void onClick(View v) {
@@ -578,11 +540,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                 if (checkUrl(position)) {
                     if (arrayList.get(position).getUrlList().size() > 0) {
                         //进入相册
-                        ArrayList<PhotoItemInfo> allPhotoItemInfos = createPhotoItemInfoList(position);
                         Intent i = new Intent(mContext, EditStoryAlbumActivity.class);
-                        Bundle b = new Bundle();
-                        b.putParcelableArrayList("photos", AppUtil.startSortForPinnedListView(allPhotoItemInfos));
-                        i.putExtra("photos", b);
                         i.putExtra("ppCode", arrayList.get(position).getPpCode());
                         mContext.startActivity(i);
                     }

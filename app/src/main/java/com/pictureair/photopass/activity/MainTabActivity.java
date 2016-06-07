@@ -85,6 +85,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     private static final String TAG = "MainTabActivity";
 
+    private static final int START_CHECK_UPDATE = 100;
+
     /**
      * 消失动画的更新
      */
@@ -114,10 +116,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
     //清除acahe框架的缓存数据
     private void clearCache() {
-        ACache.get(this).remove(Common.TOP_GOODS);
         ACache.get(this).remove(Common.ALL_GOODS);
-        ACache.get(this).remove(Common.BANNER_GOODS);
-        ACache.get(this).remove(Common.PPP_GOOD);
         ACache.get(this).remove(Common.LOCATION_INFO);
         ACache.get(this).remove(Common.ACACHE_ADDRESS);
     }
@@ -143,13 +142,13 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         checkUpdateManager = new CheckUpdateManager(getApplicationContext(), currentLanguage,
                 parentLayout);
 
-        runOnUiThread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 checkUpdateManager.init();
-                checkUpdateManager.startCheck();
+                handler.sendEmptyMessage(START_CHECK_UPDATE);
             }
-        });
+        }).start();
 
         // 得到fragment的个数
         int count = fragmentArray.length;
@@ -402,6 +401,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                     expolredAnimFrameIndex = 0;
                     explored.setVisibility(View.GONE);
                 }
+                break;
+
+            case START_CHECK_UPDATE:
+                checkUpdateManager.startCheck();
                 break;
 
             default:

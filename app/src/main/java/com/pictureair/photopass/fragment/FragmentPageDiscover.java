@@ -45,8 +45,8 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
@@ -132,14 +132,15 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         switch (msg.what) {
             case API1.GET_ALL_LOCATION_FAILED:
                 PictureAirLog.out("get location failed");
-                fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, ACache.get(getActivity()).getAsString(Common.LOCATION_INFO)).sendToTarget();
+                String locationCache = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+                fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
                 break;
 
             case API1.GET_ALL_LOCATION_SUCCESS:
                 //获取全部的location
                 PictureAirLog.d(TAG, "get location success============" + msg.obj);
                 locationList.clear();
-                locationList.addAll(AppUtil.getLocation(getActivity(), msg.obj.toString(), false));
+                locationList.addAll(AppUtil.getLocation(getActivity().getApplicationContext(), msg.obj.toString(), false));
                 locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
                 API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
                 break;
@@ -327,17 +328,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         return view;
     }
 
-//    //获取地点数据
-//    private void getLocationData() {
-//        if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
-//        } else {
-//            Message message = fragmentPageDiscoverHandler.obtainMessage();
-//            message.what = API1.GET_ALL_LOCATION_SUCCESS;
-//            message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-//            fragmentPageDiscoverHandler.sendMessage(message);
-//        }
-//    }
-
     @Override
     public void onStop() {
         PictureAirLog.d(TAG, "stop============");
@@ -375,10 +365,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         locationStart = false;
         isLoading = false;
         fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
-        super.onDestroyView();
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
+        super.onDestroyView();
     }
 
     //顶部导航栏的点击事件类
