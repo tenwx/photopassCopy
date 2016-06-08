@@ -239,7 +239,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
                 PictureAirLog.d(TAG, "---------->get location success");
                 locationList.clear();
-                locationList.addAll(AppUtil.getLocation(getActivity(), msg.obj.toString(), true));
+                locationList.addAll(AppUtil.getLocation(getActivity().getApplicationContext(), msg.obj.toString(), true));
                 //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
                 photoPassPicList.clear();
                 photoPassVideoList.clear();
@@ -1065,21 +1065,21 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     //处理网络图片
                     for (int l = 0; l < photoPassPicList.size(); l++) {
                         PhotoInfo info = photoPassPicList.get(l);
-                        PictureAirLog.d(TAG, "scan photo list:" + l);
+//                        PictureAirLog.d(TAG, "scan photo list:" + l);
                         //先挑选出相同的locationid信息
                         for (int i = 0; i < locationList.size(); i++) {
-                            PictureAirLog.d(TAG, "scan location:" + i);
+//                            PictureAirLog.d(TAG, "scan location:" + i);
                             if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-                                PictureAirLog.d(TAG, "find the location");
+//                                PictureAirLog.d(TAG, "find the location");
                                 //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
                                 for (int j = 0; j < photoPassItemInfoList.size(); j++) {
-                                    PictureAirLog.d(TAG, "weather already exists:" + j);
+//                                    PictureAirLog.d(TAG, "weather already exists:" + j);
                                     if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
                                             && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
-                                        PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
-                                        PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
-                                        PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);
-                                        PictureAirLog.d(TAG, "already exist");
+//                                        PictureAirLog.d(TAG, "photo location id " + info.locationId + "____" + info.shootTime);
+//                                        PictureAirLog.d(TAG, "location id:" + locationList.get(i).locationId + "___" + locationList.get(i).locationIds);
+//                                        PictureAirLog.d(TAG, "location id:" + photoPassItemInfoList.get(j).locationId + "___" + photoPassItemInfoList.get(j).locationIds);
+//                                        PictureAirLog.d(TAG, "already exist");
                                         info.locationName = photoPassItemInfoList.get(j).place;
                                         photoPassItemInfoList.get(j).list.add(info);
                                         date1 = sdf.parse(info.shootOn);
@@ -1227,13 +1227,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         boolean isContains = false;
         //判断是否已经购买
         if (info.isPayed == 1) {//已购买状态，需要将图片放到bought列表中
-            PictureAirLog.d(TAG, "add to bought list");
+//            PictureAirLog.d(TAG, "add to bought list");
             for (int j = 0; j < boughtItemInfoList.size(); j++) {
-                PictureAirLog.d(TAG, "检查之前的是否存在");
+//                PictureAirLog.d(TAG, "检查之前的是否存在");
 
                 if (info.shootTime.equals(boughtItemInfoList.get(j).shootTime) &&
                         (info.locationId.equals(boughtItemInfoList.get(j).locationId) || boughtItemInfoList.get(j).locationIds.contains(info.locationId))) {
-                    PictureAirLog.d(TAG, "已经存在于bought列表");
+//                    PictureAirLog.d(TAG, "已经存在于bought列表");
 //                    info.locationName = boughtItemInfoList.get(j).place;
                     boughtItemInfoList.get(j).list.add(info);
                     isContains = true;
@@ -1241,7 +1241,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 }
             }
             if (!isContains) {//没有
-                PictureAirLog.d(TAG, "不存在于之前的已购买的列表");
+//                PictureAirLog.d(TAG, "不存在于之前的已购买的列表");
                 //初始化item的信息
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = info.locationId;

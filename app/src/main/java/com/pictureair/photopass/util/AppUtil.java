@@ -40,6 +40,8 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.widget.EditTextWithClear;
 
+import net.sqlcipher.Cursor;
+
 import org.apache.http.conn.util.InetAddressUtils;
 
 import java.io.BufferedReader;
@@ -1174,11 +1176,18 @@ public class AppUtil {
     public static String getMetaData(Context context, String key){
         String result = "";
         try {
-            ApplicationInfo appInfo = context.getPackageManager()
-                    .getApplicationInfo(context.getPackageName(),
-                            PackageManager.GET_META_DATA);
-            result = appInfo.metaData.get(key).toString();
-            PictureAirLog.out("channel---->" + appInfo.metaData.get(key));
+            if (context != null) {
+                PackageManager packageManager = context.getPackageManager();
+                if (packageManager != null) {
+                    ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+                    if (applicationInfo != null) {
+                        if (applicationInfo.metaData != null) {
+                            result = applicationInfo.metaData.getString(key);
+                        }
+                    }
+                }
+            }
+            PictureAirLog.out("channel---->" + result);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -1541,4 +1550,41 @@ public class AppUtil {
         }
         return filename;
     }
+
+    /**
+     * 从cursor中获取photoInfo，不支持收藏表
+     * @param cursor
+     * @return
+     */
+    public static PhotoInfo getPhotoInfoFromCursor(Cursor cursor) {
+        PhotoInfo sInfo = new PhotoInfo();
+        sInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
+        sInfo.photoPathOrURL = cursor.getString(cursor.getColumnIndex("originalUrl"));
+        sInfo.photoThumbnail = cursor.getString(cursor.getColumnIndex("previewUrl"));
+        sInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
+        sInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
+        sInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
+        sInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
+        sInfo.locationName = cursor.getString(cursor.getColumnIndex("locationName"));
+        sInfo.locationCountry = cursor.getString(cursor.getColumnIndex("locationCountry"));
+        sInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
+        sInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
+        sInfo.shareURL = cursor.getString(cursor.getColumnIndex("shareURL"));
+        sInfo.isPayed = cursor.getInt(cursor.getColumnIndex("isPay"));
+        sInfo.isVideo = cursor.getInt(cursor.getColumnIndex("isVideo"));
+        sInfo.isLove = cursor.getInt(cursor.getColumnIndex("isLove"));
+        sInfo.fileSize = cursor.getInt(cursor.getColumnIndex("fileSize"));
+        sInfo.videoHeight = cursor.getInt(cursor.getColumnIndex("videoHeight"));
+        sInfo.videoWidth = cursor.getInt(cursor.getColumnIndex("videoWidth"));
+        sInfo.isHasPreset = cursor.getInt(cursor.getColumnIndex("isHasPreset"));
+        sInfo.onLine = 1;
+        sInfo.isChecked = 0;
+        sInfo.isSelected = 0;
+        sInfo.isUploaded = 0;
+        sInfo.showMask = 0;
+        sInfo.lastModify = 0l;
+        sInfo.index = "";
+        return sInfo;
+    }
+
 }

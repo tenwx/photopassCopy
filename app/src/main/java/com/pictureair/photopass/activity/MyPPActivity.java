@@ -243,7 +243,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 break;
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                customProgressDialog = CustomProgressDialog.show(MyPPActivity.this, getString(R.string.is_loading), false, null);
+                if (!customProgressDialog.isShowing()) {
+                    customProgressDialog.show();
+                }
                 API1.getPPSByUserId(myPPHandler);
                 break;
 
@@ -380,6 +382,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         settingUtil = new SettingUtil(pictureAirDbManager);
         myToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
+        customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
         back = (ImageView) findViewById(R.id.back);
@@ -445,7 +448,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         myApplication = (MyApplication) getApplication();
         delete.setOnClickListener(this);
         // 获取PP信息
-        customProgressDialog = CustomProgressDialog.show(MyPPActivity.this, getString(R.string.is_loading), false, null);
+        if (!customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
         API1.getPPSByUserId(myPPHandler);
         // pPCodeList = getIntent().getParcelableArrayListExtra("pPCodeList");
         showPPCodeList = new ArrayList<PPinfo>();

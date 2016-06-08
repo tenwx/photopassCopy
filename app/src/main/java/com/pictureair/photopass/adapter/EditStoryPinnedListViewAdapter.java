@@ -45,7 +45,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 
 	public void setEditMode(boolean editMode) {
 		this.editMode = editMode;
-//		notifyDataSetChanged();
+		notifyDataSetChanged();
 	}
 
 	@Override

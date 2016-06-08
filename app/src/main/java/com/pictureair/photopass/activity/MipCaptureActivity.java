@@ -90,6 +90,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     private boolean mNoStoragePermission;
     private static final int REQUEST_CAMERA_PERMISSION = 3;
+    private static final int FINISH_CURRENT_ACTIVITY = 4;
     private boolean mIsAskCameraPermission = false;
     // 点击响应方法
     @Override
@@ -162,7 +163,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
             } else {//无效的卡号
                 newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
-                finish();
+                mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
                 return;
             }
             PictureAirLog.out("code：：：" + code);
@@ -211,10 +212,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
+                PictureAirLog.out("scan failed----->");
                 if (msg.obj != null) {//从ppp页面过来，需要返回
                     EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false));
+                    finish();
+                } else {
+                    mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
                 }
-                finish();
                 break;
 
             case DealCodeUtil.DEAL_CODE_SUCCESS:
@@ -224,6 +228,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
                 if (msg.obj != null) {//从ppp过来
                     Bundle bundle = (Bundle) msg.obj;
+                    PictureAirLog.out("status-------->" + bundle.getInt("status"));
                     if (bundle.getInt("status") == 1) {
                         EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
                     } else if (bundle.getInt("status") == 2) {//将pp码返回
@@ -240,10 +245,16 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     } else if (bundle.getInt("status") == 5) {
                         EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
                     }
+                    finish();
+                } else {
+                    mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
                 }
+                break;
 
+            case FINISH_CURRENT_ACTIVITY:
                 finish();
                 break;
+
             default:
                 break;
         }

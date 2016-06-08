@@ -16,6 +16,7 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -550,33 +551,14 @@ public class PictureAirDbManager {
                     PictureAirLog.d("cursor cursor cursor ", "cursor :" + cursor.getCount());
                 } else {
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE +
-                            " where photoCode like ? and shootTime=? order by shootOn", new String[]{"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
+                            " where photoCode like ? and shootTime = ? order by shootOn", new String[]{"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
                 }
 
                 if (cursor != null && cursor.moveToFirst()) {
                     do {
                         // 获取图片路径
                         urlList.add(cursor.getString(cursor.getColumnIndex("previewUrl")));
-                        PhotoInfo sInfo = new PhotoInfo();
-                        sInfo.photoId = cursor.getString(cursor.getColumnIndex("photoId"));
-                        sInfo.photoPathOrURL = cursor.getString(cursor.getColumnIndex("originalUrl"));
-                        sInfo.photoThumbnail = cursor.getString(cursor.getColumnIndex("previewUrl"));
-                        sInfo.photoThumbnail_512 = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
-                        sInfo.photoThumbnail_1024 = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
-                        sInfo.photoPassCode = cursor.getString(cursor.getColumnIndex("photoCode"));
-                        sInfo.locationId = cursor.getString(cursor.getColumnIndex("locationId"));
-                        sInfo.shootOn = cursor.getString(cursor.getColumnIndex("shootOn"));
-                        sInfo.shootTime = cursor.getString(cursor.getColumnIndex("shootTime"));
-                        sInfo.isPayed = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isPay")));
-                        sInfo.isVideo = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isVideo")));
-                        sInfo.onLine = 1;
-                        sInfo.isChecked = 0;
-                        sInfo.isSelected = 0;
-                        sInfo.isUploaded = 0;
-                        sInfo.showMask = 0;
-                        sInfo.lastModify = 0l;
-                        sInfo.index = "";
-                        sInfo.isHasPreset = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isHasPreset")));
+                        PhotoInfo sInfo = AppUtil.getPhotoInfoFromCursor(cursor);
                         selectPhotoItemInfos.add(sInfo);
                     } while (cursor.moveToNext());
 
@@ -606,6 +588,53 @@ public class PictureAirDbManager {
             DBManager.getInstance().closeDatabase();
         }
         return showPPCodeList;
+    }
+
+    /**
+     * 根据ppCode获取对应的PP照片列表
+     * @param ppCode
+     */
+    public ArrayList<PhotoInfo> getPhotoInfosByPPCode(String ppCode, ArrayList<DiscoverLocationItemInfo> locationItemInfos, String language) {
+        Cursor cursor = null;
+        ArrayList<PhotoInfo> selectPhotoItemInfos = new ArrayList<>();
+        try {
+            database = DBManager.getInstance().writData();
+            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
+                    + " where photoCode like ? order by shootOn desc", new String[]{"%" + ppCode + "%"});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    // 获取图片路径
+                    PhotoInfo photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
+                    for (int i = 0; i < locationItemInfos.size(); i++) {
+                        PictureAirLog.out("find favorite location---->");
+                        if (photoInfo.locationId.equals(locationItemInfos.get(i).locationId) || locationItemInfos.get(i).locationIds.contains(photoInfo.locationId)) {
+                            PictureAirLog.out("found favorite location---->");
+                            if (language.equals(Common.ENGLISH)) {
+                                PictureAirLog.out("found favorite endligh location---->");
+                                photoInfo.locationName = locationItemInfos.get(i).placeENName;
+                            } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                                PictureAirLog.out("found favorite chinese location---->");
+                                photoInfo.locationName = locationItemInfos.get(i).placeCHName;
+                            }
+                            break;
+                        }
+                    }
+                    selectPhotoItemInfos.add(photoInfo);
+                } while (cursor.moveToNext());
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 处理完了，通知处理之后的信息
+            if (cursor != null) {
+                PictureAirLog.out("cursor close ---> getPPCodeInfo1ByPPCodeList");
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return selectPhotoItemInfos;
     }
 
     /**
@@ -921,34 +950,7 @@ public class PictureAirDbManager {
         PhotoInfo photoInfo;
         if (cursor.moveToFirst()) {//判断是否photo数据
             do {
-                photoInfo = new PhotoInfo();
-                PictureAirLog.out("load data from database = " + cursor.getInt(0));
-                photoInfo.photoId = cursor.getString(1);//photoId
-                photoInfo.photoPassCode = cursor.getString(2);//photopassCode
-                photoInfo.shootTime = cursor.getString(3);//shootTime
-                photoInfo.photoPathOrURL = cursor.getString(4);//originalUrl
-                photoInfo.photoThumbnail = cursor.getString(5);//previewUrl
-                photoInfo.photoThumbnail_512 = cursor.getString(6);//previewUrl_512
-                photoInfo.photoThumbnail_1024 = cursor.getString(7);//previewUrl_1024
-                photoInfo.locationId = cursor.getString(8);//locationId
-                photoInfo.shootOn = cursor.getString(9);//shootOn
-                photoInfo.isLove = cursor.getInt(10);//islove
-                photoInfo.isPayed = cursor.getInt(11);//ispay
-                photoInfo.locationName = cursor.getString(12);//locationName
-                photoInfo.locationCountry = cursor.getString(13);//locationCountry
-                photoInfo.shareURL = cursor.getString(14);//shareURL
-                photoInfo.isVideo = cursor.getInt(15);//isVideo
-                photoInfo.fileSize = cursor.getInt(16);//fileSize
-                photoInfo.videoWidth = cursor.getInt(17);//videoWidth
-                photoInfo.videoHeight = cursor.getInt(18);//videoHeight
-                photoInfo.onLine = 1;
-                photoInfo.isChecked = 0;
-                photoInfo.isSelected = 0;
-                photoInfo.isUploaded = 0;
-                photoInfo.showMask = 0;
-                photoInfo.lastModify = 0l;
-                photoInfo.index = "";
-                photoInfo.isHasPreset = cursor.getInt(19); // isHasPreset
+                photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
                 resultArrayList.add(photoInfo);
             } while (cursor.moveToNext());
         }
@@ -978,34 +980,7 @@ public class PictureAirDbManager {
         PhotoInfo photoInfo;
         if (cursor.moveToFirst()) {//判断是否photo数据
             do {
-                photoInfo = new PhotoInfo();
-                PictureAirLog.out("load data from database = " + cursor.getInt(0));
-                photoInfo.photoId = cursor.getString(1);//photoId
-                photoInfo.photoPassCode = cursor.getString(2);//photopassCode
-                photoInfo.shootTime = cursor.getString(3);//shootTime
-                photoInfo.photoPathOrURL = cursor.getString(4);//originalUrl
-                photoInfo.photoThumbnail = cursor.getString(5);//previewUrl
-                photoInfo.photoThumbnail_512 = cursor.getString(6);//previewUrl_512
-                photoInfo.photoThumbnail_1024 = cursor.getString(7);//previewUrl_1024
-                photoInfo.locationId = cursor.getString(8);//locationId
-                photoInfo.shootOn = cursor.getString(9);//shootOn
-                photoInfo.isLove = cursor.getInt(10);//islove
-                photoInfo.isPayed = cursor.getInt(11);//ispay
-                photoInfo.locationName = cursor.getString(12);//locationName
-                photoInfo.locationCountry = cursor.getString(13);//locationCountry
-                photoInfo.shareURL = cursor.getString(14);//shareURL
-                photoInfo.isVideo = cursor.getInt(15);//isVideo
-                photoInfo.fileSize = cursor.getInt(16);//fileSize
-                photoInfo.videoWidth = cursor.getInt(17);//videoWidth
-                photoInfo.videoHeight = cursor.getInt(18);//videoHeight
-                photoInfo.onLine = 1;
-                photoInfo.isChecked = 0;
-                photoInfo.isSelected = 0;
-                photoInfo.isUploaded = 0;
-                photoInfo.showMask = 0;
-                photoInfo.lastModify = 0l;
-                photoInfo.index = "";
-                photoInfo.isHasPreset = cursor.getInt(19); // isHasPreset
+                photoInfo = AppUtil.getPhotoInfoFromCursor(cursor);
                 resultArrayList.add(photoInfo);
             } while (cursor.moveToNext());
         }

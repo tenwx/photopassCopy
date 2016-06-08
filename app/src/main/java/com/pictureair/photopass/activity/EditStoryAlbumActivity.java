@@ -239,9 +239,17 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ppCode = getIntent().getStringExtra("ppCode");
-		Bundle b = getIntent().getBundleExtra("photos");
-		originalAlbumArrayList = b.getParcelableArrayList("photos");
-		albumArrayList.addAll(originalAlbumArrayList);
+
+		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.LOCATION_INFO), true));
+		customProgressDialog.show();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				originalAlbumArrayList = pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType());
+				albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(originalAlbumArrayList));
+				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
+			}
+		}).start();
 
 		editStoryPinnedListViewAdapter = new EditStoryPinnedListViewAdapter(this, editMode, albumArrayList);//
 		pinnedSectionListView.setAdapter(editStoryPinnedListViewAdapter);
@@ -269,8 +277,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
 					Bundle bundle = new Bundle();
 					bundle.putInt("position", position);
-					bundle.putString("tab", "other");
-					bundle.putParcelableArrayList("photos", albumArrayList);
+					bundle.putString("tab", "editStory");
+					bundle.putString("ppCode", ppCode);
 					i.putExtra("bundle", bundle);
 					startActivity(i);
 				}
@@ -474,7 +482,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					case 0://all
 						localPhotoArrayList.addAll(AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
 						Collections.sort(localPhotoArrayList);
-						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedAllPhotos(EditStoryAlbumActivity.this, locationList, localPhotoArrayList,
 									pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
@@ -485,7 +492,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						break;
 
 					case 1://photopass
-						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
 									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
@@ -506,7 +512,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						break;
 
 					case 3://bought
-						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						try {
 							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
 									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
@@ -516,7 +521,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 						break;
 
 					case 4://favourite
-						locationList.addAll(AppUtil.getLocation(EditStoryAlbumActivity.this, ACache.get(EditStoryAlbumActivity.this).getAsString(Common.LOCATION_INFO), true));
 						albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(
 								pictureAirDbManager.getFavoritePhotoInfoListFromDB(EditStoryAlbumActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 						break;

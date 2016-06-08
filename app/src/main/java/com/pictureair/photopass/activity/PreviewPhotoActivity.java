@@ -443,7 +443,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     API1.addToCart(pppGoodsInfo.getGoodsKey(), 1, true, null, previewPhotoHandler);
                     //将数据保存到缓存中
                     if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.GOODS_ADDRESS_ACACHE_TIME);
+                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.TIME_DAY);
                     }
                 }
                 break;
@@ -851,6 +851,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
                             pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 
+                } else if (tabName.equals("editStory")){//编辑PP照片页面
+                    String ppCode = bundle.getString("ppCode");
+                    locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.LOCATION_INFO), true));
+                    photolist.addAll(AppUtil.insterSortFavouritePhotos(
+                            pictureAirDbManager.getPhotoInfosByPPCode(ppCode, locationList, MyApplication.getInstance().getLanguageType())));
+
                 } else {//获取列表图片
                     ArrayList<PhotoInfo> temp = bundle.getParcelableArrayList("photos");//获取图片路径list
                     if (temp != null) {
@@ -1190,6 +1196,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else {//编辑前
                     photoInfo = photolist.get(mViewPager.getCurrentItem());
                 }
+                if (photoInfo == null) {
+                    return;
+                }
                 if (photoInfo.isLove == 1) {
                     PictureAirLog.d(TAG, "cancel love");
                     pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), false);
@@ -1206,6 +1215,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case R.id.preview_edit://编辑
                 if (leadView.isShown()) {
+                    return;
+                }
+                if (photoInfo == null) {
                     return;
                 }
                 if (photoInfo.isPayed == 1) {
@@ -1246,6 +1258,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (leadView.isShown()) {
                     return;
                 }
+                if (photoInfo == null) {
+                    return;
+                }
                 if (photoInfo.isPayed == 1) {
                     dia.dismiss();
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
@@ -1278,6 +1293,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                if (photoInfo == null) {
                     return;
                 }
                 if (photoInfo.isPayed == 1) {
@@ -1314,6 +1332,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case R.id.preview_makegift:
                 if (leadView.isShown()) {
+                    return;
+                }
+
+                if (photoInfo == null) {
                     return;
                 }
 
@@ -1362,6 +1384,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     return;
                 }
+                if (photoInfo == null) {
+                    return;
+                }
                 if (!dialog.isShowing()) {
                     dialog.show();
                 }
@@ -1384,6 +1409,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 dia.dismiss();
                 break;
             case R.id.use_ppp:
+                if (photoInfo == null) {
+                    return;
+                }
                 if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_INVALID) { //判断网络情况。
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     dia.dismiss();

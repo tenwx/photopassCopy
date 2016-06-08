@@ -209,7 +209,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     @Override
     public void showDialog() {
         if (null == customProgressDialog) {
-            customProgressDialog = CustomProgressDialog.create(context, getString(R.string.connecting), false, null);
+            customProgressDialog = CustomProgressDialog.create(this, getString(R.string.connecting), false, null);
         }
         if (!customProgressDialog.isShowing()) {
             customProgressDialog.show();

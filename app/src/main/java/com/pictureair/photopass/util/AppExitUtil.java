@@ -58,11 +58,8 @@ public class AppExitUtil {
                     editor.clear();
                     editor.commit();
 
-                    ACache.get(MyApplication.getInstance()).remove(Common.TOP_GOODS);
                     ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
                     ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);
-                    ACache.get(MyApplication.getInstance()).remove(Common.BANNER_GOODS);
-                    ACache.get(MyApplication.getInstance()).remove(Common.PPP_GOOD);
                     ACache.get(MyApplication.getInstance()).remove(Common.LOCATION_INFO);
 
                     MyApplication.getInstance().setPushPhotoCount(0);
