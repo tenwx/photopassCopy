@@ -1,13 +1,6 @@
 package com.pictureair.photopass.editPhoto.bean;
 
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
 
-
-import com.pictureair.photopass.editPhoto.StickerItem;
-import com.pictureair.photopass.entity.StikerInfo;
-
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**

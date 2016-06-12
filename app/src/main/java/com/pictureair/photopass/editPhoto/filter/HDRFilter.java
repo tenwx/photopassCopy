@@ -1,4 +1,4 @@
-package com.pictureair.photopass.filter;
+package com.pictureair.photopass.editPhoto.filter;
 
 import android.graphics.Bitmap;
 

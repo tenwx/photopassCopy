@@ -12,7 +12,7 @@ import android.os.Message;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.editPhoto.StickerItem;
+import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
@@ -76,7 +76,7 @@ public class PWEditController implements PWEditViewListener{
         if (isOnLine){
             loadImageOnLine(photoPath);
         }else{
-            PictureAirLog.e("====","本地图片");
+            PictureAirLog.d("====","本地图片");
             loadImageOnLocal(photoPath);
 //            pwEditUtil.addPhotoEditorInfo(photoPath,PhotoCommon.EditNone,-1,null,"",0);
             pwEditUtil.addPhotoEditorInfo(photoPath, PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
@@ -89,14 +89,14 @@ public class PWEditController implements PWEditViewListener{
      */
     private void loadImageOnLine(final String photoPath){
         if (pwEditUtil.getFile(photoPath).exists()){
-            PictureAirLog.e("====","网络图片本地存在");
+            PictureAirLog.d("====","网络图片本地存在");
             loadImageOnLocal(pwEditUtil.getFile(photoPath).toString());
         }else{
-            PictureAirLog.e("====","网络图片本地不存在");
+            PictureAirLog.d("====","网络图片本地不存在");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    PictureAirLog.e("===","photoPath:"+photoPath);
+                    PictureAirLog.d("===","photoPath:"+photoPath);
                     mMainBitmap = pwEditUtil.getOnLineBitampFormPath(photoPath);
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
@@ -158,7 +158,7 @@ public class PWEditController implements PWEditViewListener{
 
     @Override
     public void saveTempPhoto(final LinkedHashMap<Integer, StickerItem> addItems, final Matrix touchMatrix) {
-        PictureAirLog.e("===","保存临时图片");
+        PictureAirLog.d("===","保存临时图片");
         if (!AppUtil.checkPermission(mActivity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) { //检查权限
             pwEditViewInterface.ToastShow(R.string.permission_storage_message);
             return;
@@ -195,6 +195,7 @@ public class PWEditController implements PWEditViewListener{
                         }else if(curEditType == PhotoCommon.EditSticker){
                             pwEditViewInterface.hidePhotoStickerView();
                         }
+                        curEditType = PhotoCommon.EditNone;
                     }
                 });
             }
@@ -203,7 +204,7 @@ public class PWEditController implements PWEditViewListener{
 
     @Override
     public void lastStep() {
-        PictureAirLog.e("===","上一步");
+        PictureAirLog.d("===","上一步");
         index--;
         mMainBitmap = pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(index - 1).getPhotoPath());
         pwEditViewInterface.showBitmap(mMainBitmap);
@@ -212,7 +213,7 @@ public class PWEditController implements PWEditViewListener{
 
     @Override
     public void nextStep() {
-        PictureAirLog.e("===","下一步");
+        PictureAirLog.d("===","下一步");
         mMainBitmap = pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
         pwEditViewInterface.showBitmap(mMainBitmap);
         index++;
@@ -221,7 +222,7 @@ public class PWEditController implements PWEditViewListener{
 
     @Override
     public void rotate() {
-        PictureAirLog.e("===","旋转图片按钮点击");
+        PictureAirLog.d("===","旋转图片按钮点击");
         curEditType = PhotoCommon.EditRotate;
         pwEditViewInterface.showEditView(curEditType,null);
     }
@@ -244,7 +245,7 @@ public class PWEditController implements PWEditViewListener{
 
     @Override
     public void saveReallyPhoto() {
-        PictureAirLog.e("===","保存图片按钮点击");
+        PictureAirLog.d("===","保存图片按钮点击");
         if (!AppUtil.checkPermission(mActivity.getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {//检查权限
             pwEditViewInterface.ToastShow(R.string.permission_storage_message);
             return;
@@ -262,12 +263,13 @@ public class PWEditController implements PWEditViewListener{
 
     @Override
     public void judgeIsShowDialog() {
-        if(pwEditUtil.isNeedShowDialog()){ //弹出对话框
+        if(pwEditUtil.isNeedShowDialog(isOnLine)){ //弹出对话框
             if (pictureWorksDialog == null) {
                 pictureWorksDialog = new PictureWorksDialog(mActivity, null, mActivity.getString(R.string.exit_hint), mActivity.getString(R.string.button_cancel), mActivity.getString(R.string.button_ok), true, mHandler);
             }
             pwEditViewInterface.showIsSaveDialog(pictureWorksDialog);
         }else {
+            pwEditUtil.deleteTempPic(Common.TEMPPIC_PATH);
             finish();
         }
     }

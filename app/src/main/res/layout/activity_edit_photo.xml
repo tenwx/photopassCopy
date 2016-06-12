@@ -124,7 +124,7 @@
             android:layout_centerInParent="true"
             android:background="@color/pp_light_gray_background" />
 
-        <com.pictureair.photopass.editPhoto.StickerView
+        <com.pictureair.photopass.editPhoto.widget.StickerView
             android:id="@+id/sticker_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -132,12 +132,12 @@
             android:visibility="gone" />
 
         <!-- 字体 view -->
-        <com.pictureair.photopass.editPhoto.FontView
-            android:id="@+id/font_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_centerInParent="true"
-            android:visibility="invisible" />
+        <!--<com.pictureair.photopass.editPhoto.FontView-->
+            <!--android:id="@+id/font_panel"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:visibility="invisible" />-->
 
 
         <!--    <ImageView
@@ -156,29 +156,29 @@
             android:visibility="invisible" />
 
 
-        <GridView
-            android:id="@+id/fontList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_cover"
-            android:listSelector="@color/transparent"
-            android:paddingBottom="@dimen/pp_padding_10"
-            android:paddingTop="@dimen/pp_padding_10"
-            android:scrollbars="none"
-            android:visibility="gone"></GridView>
+        <!--<GridView-->
+            <!--android:id="@+id/fontList"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/gray_cover"-->
+            <!--android:listSelector="@color/transparent"-->
+            <!--android:paddingBottom="@dimen/pp_padding_10"-->
+            <!--android:paddingTop="@dimen/pp_padding_10"-->
+            <!--android:scrollbars="none"-->
+            <!--android:visibility="gone"></GridView>-->
 
-        <GridView
-            android:id="@+id/colorList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_cover"
-            android:listSelector="@color/transparent"
-            android:paddingBottom="@dimen/pp_padding_10"
-            android:paddingTop="@dimen/pp_padding_10"
-            android:scrollbars="none"
-            android:visibility="gone"></GridView>
+        <!--<GridView-->
+            <!--android:id="@+id/colorList"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/gray_cover"-->
+            <!--android:listSelector="@color/transparent"-->
+            <!--android:paddingBottom="@dimen/pp_padding_10"-->
+            <!--android:paddingTop="@dimen/pp_padding_10"-->
+            <!--android:scrollbars="none"-->
+            <!--android:visibility="gone"></GridView>-->
 
     </RelativeLayout>
 

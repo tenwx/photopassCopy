@@ -1,4 +1,4 @@
-package com.pictureair.photopass.editPhoto;
+package com.pictureair.photopass.editPhoto.widget;
 
 
 import android.content.Context;

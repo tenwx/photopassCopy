@@ -10,21 +10,22 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.pictureair.photopass.editPhoto.Matrix3;
-import com.pictureair.photopass.editPhoto.StickerItem;
+import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
-import com.pictureair.photopass.entity.StikerInfo;
-import com.pictureair.photopass.filter.Amaro;
-import com.pictureair.photopass.filter.BeautifyFilter;
-import com.pictureair.photopass.filter.BlurFilter;
-import com.pictureair.photopass.filter.HDRFilter;
-import com.pictureair.photopass.filter.LomoFilter;
-import com.pictureair.photopass.filter.OldFilter;
+import com.pictureair.photopass.editPhoto.bean.StikerInfo;
+import com.pictureair.photopass.editPhoto.filter.Amaro;
+import com.pictureair.photopass.editPhoto.filter.BeautifyFilter;
+import com.pictureair.photopass.editPhoto.filter.BlurFilter;
+import com.pictureair.photopass.editPhoto.filter.HDRFilter;
+import com.pictureair.photopass.editPhoto.filter.LomoFilter;
+import com.pictureair.photopass.editPhoto.filter.OldFilter;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -260,13 +261,19 @@ public class PWEditUtil {
 
     /**
      * 判断是否需要弹出对话框。
+     * @param isOnLine
      * @return
      */
-    public boolean isNeedShowDialog() {
+    public boolean isNeedShowDialog(boolean isOnLine) {
+        int count = 0;  //本地照片不会加载到 temp 目录下，网络图片会。
+        if (isOnLine){
+            count = 1;
+        }
+
         tempFile = new File(Common.TEMPPIC_PATH);
         if (tempFile != null) {
             if (tempFile.exists() && tempFile.isDirectory()) {
-                if (tempFile.list().length > 1) {
+                if (tempFile.list().length > count) {
                     return true;
                 } else {
                     return false;
@@ -441,7 +448,7 @@ public class PWEditUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        PictureAirLog.e("====","stikerInfos:"+stikerInfos.size());
+        PictureAirLog.d("====","stikerInfos:"+stikerInfos.size());
     }
 
     public ArrayList<FrameOrStikerInfo> getStikerInfos() {
@@ -514,19 +521,6 @@ public class PWEditUtil {
      * 计算出 图片真正显示的坐标。
      */
     public Rect getStickerRect(int mainBitmapHeight, int mainBitmapWidth, int mainImageHeight, int mainImageWidth, Context context){
-//        if (mainBitmap.getHeight() / (float)mainBitmap.getWidth() > mainImage.getHeight() / (float)mainImage.getWidth()) {//左右会留白
-//            displayBitmapHeight = mainImage.getHeight();//displayBitmapHeight : ? = bitmapReallyHeight : bitmapReallyWidth
-//            displayBitmapWidth = (int) (displayBitmapHeight * mainBitmap.getWidth() / (float) mainBitmap.getHeight());
-//        }else {//上下留白
-//            displayBitmapWidth = mainImage.getWidth();
-//            displayBitmapHeight = (int) (displayBitmapWidth * mainBitmap.getHeight() / (float)mainBitmap.getWidth());
-//        }
-//        leftTopX = (ScreenUtil.getScreenWidth(this) - displayBitmapWidth) / 2;
-//        rightBottomX = leftTopX + displayBitmapWidth;
-//        //leftTopY = 图片上边距＋imageview.getY
-//        //图片上边距 ＝ （imageview的高 － 图片显示在imageview上的高）／ 2
-//        leftTopY = (mainImage.getHeight() - displayBitmapHeight) / 2;
-//        rightBottomY = leftTopY + displayBitmapHeight;
         int displayBitmapHeight,displayBitmapWidth;
         if (mainBitmapHeight / (float)mainBitmapWidth > mainImageHeight / (float)mainImageWidth) {//左右会留白
             displayBitmapHeight = mainImageHeight;//displayBitmapHeight : ? = bitmapReallyHeight : bitmapReallyWidth
@@ -650,4 +644,21 @@ public class PWEditUtil {
         }
         return resultBit;
     }
+
+    /**
+     * 动态设置margin
+     * @param v
+     * @param l
+     * @param t
+     * @param r
+     * @param b
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
+    }
+
 }

@@ -23,7 +23,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.editPhoto.EditPhotoUtil;
+import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
@@ -218,7 +218,7 @@ public class EditActivityAdapter extends BaseAdapter {
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
             holderView.editImageview.setLayoutParams(layoutParam1);
 
-            EditPhotoUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
+            PWEditUtil.setMargins(holderView.itemRelativeLayout, 5, 5, 5, 5);
             holderView.editImageview.setBackgroundDrawable(new BitmapDrawable(bitmap));
             holderView.editImageview.setScaleType(ImageView.ScaleType.FIT_XY);
 //			System.out.println(position + " ---->" + frameInfos.get(position).frameThumbnailPath160);

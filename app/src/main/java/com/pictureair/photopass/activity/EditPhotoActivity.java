@@ -10,17 +10,17 @@ import com.pictureair.photopass.editPhoto.view.PWEditView;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
 public class EditPhotoActivity extends BaseActivity{
-	PWEditController pwEditController;
+	PWEditView pwEditView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         // 进编辑页即释放掉ImageLoader的缓存，尽量增大可用内存
 		ImageLoader.getInstance().clearMemoryCache();
 
-		PWEditView pwEditView = new PWEditView();
+		pwEditView = new PWEditView();
 		pwEditView.initView(this);
 
-		pwEditController = new PWEditController();
+		PWEditController pwEditController = new PWEditController();
 		pwEditController.onCreate(this,pwEditView);
 
 	}
@@ -41,7 +41,7 @@ public class EditPhotoActivity extends BaseActivity{
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			pwEditController.leftBackClik();
+			pwEditView.leftBackClik();
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);

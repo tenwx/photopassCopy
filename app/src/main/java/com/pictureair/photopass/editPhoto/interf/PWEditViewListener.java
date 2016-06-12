@@ -3,7 +3,7 @@ package com.pictureair.photopass.editPhoto.interf;
 
 import android.graphics.Matrix;
 
-import com.pictureair.photopass.editPhoto.StickerItem;
+import com.pictureair.photopass.editPhoto.widget.StickerItem;
 
 import java.util.LinkedHashMap;
 

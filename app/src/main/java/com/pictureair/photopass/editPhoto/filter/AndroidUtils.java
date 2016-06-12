@@ -1,4 +1,4 @@
-package com.pictureair.photopass.filter;
+package com.pictureair.photopass.editPhoto.filter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,7 +17,7 @@ public class AndroidUtils {
 	 */
 	public static int dipTopx(float dip, Context context) {
 	    int num = (int) TypedValue.applyDimension(
-		    TypedValue.COMPLEX_UNIT_DIP, dip, 
+		    TypedValue.COMPLEX_UNIT_DIP, dip,
 		    context.getResources().getDisplayMetrics());
 	    return num;
 	}
@@ -45,50 +45,50 @@ public class AndroidUtils {
         drawable.draw(canvas);
         return bitmap;
 	}
-	
+
 	public static int[] drawableToIntArray(Drawable drawable){
 	    Bitmap bitmap = AndroidUtils.drawableToBitmap(drawable);
-        
+
         final int bitmapWidth = bitmap.getWidth();
         final int bitmapHeight = bitmap.getHeight();
-        
+
         int[] colors = new int[bitmapWidth *  bitmapHeight];
         bitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-        
+
         return colors;
 	}
-	
+
 	public static int[] bitmapToIntArray(Bitmap bitmap){
 	    final int bitmapWidth = bitmap.getWidth();
         final int bitmapHeight = bitmap.getHeight();
-        
+
         int[] colors = new int[bitmapWidth *  bitmapHeight];
         bitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-        
+
         return colors;
 	}
-	
+
 	  /** Get Bitmap's Width **/
-	 public static int getBitmapOfWidth(Resources res, int id){ 
+	 public static int getBitmapOfWidth(Resources res, int id){
 	    try {
-	        BitmapFactory.Options options = new BitmapFactory.Options(); 
-	        options.inJustDecodeBounds = true; 
+	        BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inJustDecodeBounds = true;
 	        BitmapFactory.decodeResource(res, id, options);
-	        return options.outWidth; 
+	        return options.outWidth;
 	    } catch(Exception e) {
-	        return 0; 
-	    } 
-	 } 
-	   
+	        return 0;
+	    }
+	 }
+
 	 /** Get Bitmap's height **/
-	 public static int getBitmapOfHeight(Resources res, int id){ 
-	    try { 
-	        BitmapFactory.Options options = new BitmapFactory.Options(); 
-	        options.inJustDecodeBounds = true; 
+	 public static int getBitmapOfHeight(Resources res, int id){
+	    try {
+	        BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inJustDecodeBounds = true;
 	        BitmapFactory.decodeResource(res, id, options);
-	        return options.outHeight; 
-	    } catch(Exception e) { 
-	        return 0; 
-	   } 
+	        return options.outHeight;
+	    } catch(Exception e) {
+	        return 0;
+	   }
 	 }
 }
