@@ -125,7 +125,7 @@
             android:background="@color/pp_light_gray_background" />
 
         <com.pictureair.photopass.editPhoto.StickerView
-            android:id="@+id/sticker_panel"
+            android:id="@+id/sticker_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerInParent="true"

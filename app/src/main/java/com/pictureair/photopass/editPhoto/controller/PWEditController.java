@@ -1,15 +1,18 @@
 package com.pictureair.photopass.editPhoto.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Message;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
+import com.pictureair.photopass.editPhoto.StickerItem;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
@@ -22,6 +25,7 @@ import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by talon on 16/5/20.
@@ -39,6 +43,8 @@ public class PWEditController implements PWEditViewListener{
     private boolean isOnLine;
 
     private Bitmap mMainBitmap; // 原图的Bitmap，开始操作这个Bitmap
+    private Bitmap filterBitmap; //滤镜处理完之后的Bitmap
+
     private int rotateAngle;// 记录旋转角度
     private PictureWorksDialog pictureWorksDialog; // 询问是否保存的对话框
     EditActivityAdapter eidtAdapter;
@@ -57,6 +63,7 @@ public class PWEditController implements PWEditViewListener{
         pwEditUtil.loadFrameList(); // 加载边框 考虑放入线程。（不过需要考虑线程还没执行，就执行了其他操作，造成不同步）
         pwEditUtil.loadFilterImgPath(); //加载滤镜图片
         pwEditUtil.loadStickerList(mActivity);
+        pwEditViewInterface.updateLastAndNextUI(PhotoCommon.UnableLastAndNext);
     }
 
 
@@ -71,7 +78,8 @@ public class PWEditController implements PWEditViewListener{
         }else{
             PictureAirLog.e("====","本地图片");
             loadImageOnLocal(photoPath);
-            pwEditUtil.addPhotoEditorInfo(photoPath,PhotoCommon.EditNone,null,null,"",0);
+//            pwEditUtil.addPhotoEditorInfo(photoPath,PhotoCommon.EditNone,-1,null,"",0);
+            pwEditUtil.addPhotoEditorInfo(photoPath, PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
         }
     }
 
@@ -88,16 +96,25 @@ public class PWEditController implements PWEditViewListener{
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    PictureAirLog.e("===","photoPath:"+photoPath);
                     mMainBitmap = pwEditUtil.getOnLineBitampFormPath(photoPath);
                     mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            pwEditViewInterface.showBitmap(mMainBitmap);
+                            if (mMainBitmap != null){
+                                pwEditViewInterface.showBitmap(mMainBitmap);
+                            }else{
+                                //加载图片出错，换张图片试试
+                                pwEditViewInterface.ToastShow(R.string.load_photo_error);
+                            }
                         }
                     });
                     String path = pwEditUtil.getTempPath();
-                    pwEditUtil.saveBitmap(mMainBitmap,path);
-                    pwEditUtil.addPhotoEditorInfo(path,PhotoCommon.EditNone,null,null,"",0);
+                    if (mMainBitmap != null) {
+                        pwEditUtil.saveBitmap(mMainBitmap, path);
+                    }
+//                    pwEditUtil.addPhotoEditorInfo(path,PhotoCommon.EditNone,-1,null,"",0);
+                    pwEditUtil.addPhotoEditorInfo(path, PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
                 }
             }).start();
         }
@@ -117,8 +134,14 @@ public class PWEditController implements PWEditViewListener{
     public void leftBackClik() {
         pwEditViewInterface.leftBackClik();
         if (curEditType == PhotoCommon.EditFrame){
+            //隐藏照片边框，并显示上一次的图片。
             pwEditViewInterface.hidePhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
         }else if(curEditType == PhotoCommon.EditRotate){
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
+        }else if(curEditType == PhotoCommon.EditSticker){
+            pwEditViewInterface.hidePhotoStickerView();
+        }else if(curEditType == PhotoCommon.EditFilter){
             loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
         }
 
@@ -134,8 +157,12 @@ public class PWEditController implements PWEditViewListener{
     }
 
     @Override
-    public void saveTempPhoto() {
+    public void saveTempPhoto(final LinkedHashMap<Integer, StickerItem> addItems, final Matrix touchMatrix) {
         PictureAirLog.e("===","保存临时图片");
+        if (!AppUtil.checkPermission(mActivity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) { //检查权限
+            pwEditViewInterface.ToastShow(R.string.permission_storage_message);
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -144,10 +171,14 @@ public class PWEditController implements PWEditViewListener{
 
                 }else if(curEditType == PhotoCommon.EditFrame){
                     mMainBitmap = pwEditUtil.getFrameComposeBitmap(mActivity,mMainBitmap,curFramePosition);
+                }else if(curEditType == PhotoCommon.EditSticker){
+                    mMainBitmap = pwEditUtil.getStickerComposeBitmap(addItems, touchMatrix, mMainBitmap);
+                }else if(curEditType == PhotoCommon.EditFilter){
+                    mMainBitmap = filterBitmap;
+                    filterBitmap = null;
                 }
                 pwEditUtil.saveBitmap(mMainBitmap,path);
-
-                pwEditUtil.addPhotoEditorInfo(path, curEditType, null, null, "",rotateAngle);
+                pwEditUtil.addPhotoEditorInfo(path, curEditType, curFramePosition, pwEditUtil.getStikerInfoList(), "",rotateAngle);
                 rotateAngle = 0;
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
@@ -161,6 +192,8 @@ public class PWEditController implements PWEditViewListener{
                         }
                         if(curEditType == PhotoCommon.EditFrame){
                             pwEditViewInterface.hidePhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+                        }else if(curEditType == PhotoCommon.EditSticker){
+                            pwEditViewInterface.hidePhotoStickerView();
                         }
                     }
                 });
@@ -196,7 +229,7 @@ public class PWEditController implements PWEditViewListener{
     @Override
     public void rotateLfet90() {
         rotateAngle = rotateAngle - 90;
-        mMainBitmap = pwEditUtil.rotateImage(mMainBitmap,-90);
+        mMainBitmap = pwEditUtil.getRotateBitmap(mMainBitmap,-90);
         pwEditViewInterface.showBitmap(mMainBitmap);
         pwEditViewInterface.showTempSave();
     }
@@ -204,7 +237,7 @@ public class PWEditController implements PWEditViewListener{
     @Override
     public void rotateRight90() {
         rotateAngle = rotateAngle + 90;
-        mMainBitmap = pwEditUtil.rotateImage(mMainBitmap,90);
+        mMainBitmap = pwEditUtil.getRotateBitmap(mMainBitmap,90);
         pwEditViewInterface.showBitmap(mMainBitmap);
         pwEditViewInterface.showTempSave();
     }
@@ -212,6 +245,10 @@ public class PWEditController implements PWEditViewListener{
     @Override
     public void saveReallyPhoto() {
         PictureAirLog.e("===","保存图片按钮点击");
+        if (!AppUtil.checkPermission(mActivity.getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)) {//检查权限
+            pwEditViewInterface.ToastShow(R.string.permission_storage_message);
+            return;
+        }
         String path = pwEditUtil.getReallyPath();
         pwEditUtil.copyFile(pwEditUtil.getPhotoEditorList().get(index-1).getPhotoPath(),path);
         pwEditUtil.scanSDcard(path,mActivity);
@@ -258,8 +295,10 @@ public class PWEditController implements PWEditViewListener{
     }
 
     @Override
-    public void sticker() {
+    public void sticker(int mainImageHeight, int mainImageWidth) {
         curEditType = PhotoCommon.EditSticker;
+        pwEditViewInterface.setPhotoStickerRec(pwEditUtil.getStickerRect(mMainBitmap.getHeight(), mMainBitmap.getWidth(), mainImageHeight, mainImageWidth, mActivity));
+        pwEditViewInterface.showPhotoStickerView();//事先让StickerView显示
         eidtAdapter = new EditActivityAdapter(mActivity,mMainBitmap, new ArrayList<String>(),curEditType, pwEditUtil.getStikerInfos(), mHandler);
         pwEditViewInterface.showEditView(curEditType,eidtAdapter);
     }
@@ -300,7 +339,7 @@ public class PWEditController implements PWEditViewListener{
                 case DialogInterface.BUTTON_NEGATIVE:
                     finish();
                     break;
-                case 1111: //点击边框Item的回调
+                case PhotoCommon.OnclickFramePosition: //点击边框Item的回调
                     curEditType = PhotoCommon.EditFrame;
                     curFramePosition = msg.arg1;
 
@@ -331,6 +370,35 @@ public class PWEditController implements PWEditViewListener{
                     }else{
                         pwEditViewInterface.hidePhotoFrame(pwEditUtil.getImageLoader(), pwEditUtil.getOptions(),
                                 pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
+                        pwEditViewInterface.hideTempSave();
+                    }
+                    break;
+                case PhotoCommon.OnclickStickerPosition:
+                    curEditType = PhotoCommon.EditSticker;
+                    int stickerPosition = msg.arg1;
+                    pwEditViewInterface.showPhotoSticker(pwEditUtil.getImageLoader(),pwEditUtil.getStikerInfos().get(stickerPosition).frameOriginalPathPortrait);
+                    pwEditViewInterface.showTempSave();
+                    break;
+                case PhotoCommon.OnclickFilterPosition:
+                    final int filterPosition = msg.arg1;
+                    if (filterPosition != 0) {
+                        pwEditViewInterface.dialogShow();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                filterBitmap = pwEditUtil.getFilterComposeBitmap(mActivity,pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath()), filterPosition);
+                                mActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        pwEditViewInterface.showTempSave();
+                                        pwEditViewInterface.showBitmap(filterBitmap);
+                                    }
+                                });
+                            }
+                        }).start();
+                    }else{
+                        loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
+                        pwEditViewInterface.hideTempSave();
                     }
                     break;
 
@@ -340,5 +408,9 @@ public class PWEditController implements PWEditViewListener{
         }
     }
     private MyHandler mHandler = new MyHandler(MyApplication.getInstance());
+
+
+
+
 
 }

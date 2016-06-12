@@ -151,6 +151,7 @@ public class EditActivityAdapter extends BaseAdapter {
 
             holderView.editText.setText(filterText[position]);
             holderView.editText.setVisibility(View.VISIBLE);
+            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
         }
         if (editType == PhotoCommon.EditSticker) {//饰品
             LayoutParams layoutParams = holderView.itemRelativeLayout.getLayoutParams();
@@ -171,7 +172,7 @@ public class EditActivityAdapter extends BaseAdapter {
                 ImageLoader.getInstance().displayImage(frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
             }
             holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
-
+            holderView.itemRelativeLayout.setOnClickListener(new ItemOnClickListener(holderView, position));
         }
 
         if (editType == PhotoCommon.EditFrame) {//边框
@@ -277,27 +278,38 @@ public class EditActivityAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            if (frameInfos.get(position).onLine == 1 && frameInfos.get(position).isDownload == 0) {//网络图片，并且未下载
-				holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
-				holderView.fileSizeTextView.setVisibility(View.VISIBLE);
-				holderView.progressBar.setProgress(0);
-				downloadFrame(position, true, holderView);
-				downloadFrame(position, false, holderView);
+            if(editType == PhotoCommon.EditFrame) {
+                if (frameInfos.get(position).onLine == 1 && frameInfos.get(position).isDownload == 0) {//网络图片，并且未下载
+                    holderView.progressBar.setVisibility(View.VISIBLE);//开始下载
+                    holderView.fileSizeTextView.setVisibility(View.VISIBLE);
+                    holderView.progressBar.setProgress(0);
+                    downloadFrame(position, true, holderView);
+                    downloadFrame(position, false, holderView);
+                    if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_INVALID) {//无网络
+                        myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
 
-                if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_INVALID) {//无网络
-                    myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
+                    } else if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_MOBILE) {//使用流量
+                        showDownloadDialog(holderView, position);
 
-                } else if (AppUtil.getNetWorkType(mContext) == AppUtil.NETWORKTYPE_MOBILE) {//使用流量
-                    showDownloadDialog(holderView, position);
+                    } else {//wifi
+                        prepareDownload(holderView, position);
+                    }
 
-                } else {//wifi
-                    prepareDownload(holderView, position);
+                } else {//本地图片，或者网络图片已经下载
+                    //开始加载图片
+                    Message message = handler.obtainMessage();
+                    message.what = PhotoCommon.OnclickFramePosition;
+                    message.arg1 = position;
+                    handler.sendMessage(message);
                 }
-
-            } else {//本地图片，或者网络图片已经下载
-                //开始加载图片
+            }else if(editType == PhotoCommon.EditSticker){
                 Message message = handler.obtainMessage();
-                message.what = 1111;
+                message.what = PhotoCommon.OnclickStickerPosition;
+                message.arg1 = position;
+                handler.sendMessage(message);
+            }else if(editType == PhotoCommon.EditFilter){
+                Message message = handler.obtainMessage();
+                message.what = PhotoCommon.OnclickFilterPosition;
                 message.arg1 = position;
                 handler.sendMessage(message);
             }

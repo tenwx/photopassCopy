@@ -41,7 +41,7 @@ import java.io.OutputStream;
 
 /**
  * BitmapUtils
- * 
+ *
  * @author panyi
  */
 public class BitmapUtils {
@@ -181,7 +181,7 @@ public class BitmapUtils {
 
 	/**
 	 * 将view转为bitmap
-	 * 
+	 *
 	 * @param view
 	 * @return
 	 */
@@ -321,7 +321,7 @@ public class BitmapUtils {
 
 	/**
 	 * 截屏
-	 * 
+	 *
 	 * @param activity
 	 * @return
 	 */
@@ -335,7 +335,7 @@ public class BitmapUtils {
 
 	/**
 	 * 一个 View的图像
-	 * 
+	 *
 	 * @param view
 	 * @return
 	 */

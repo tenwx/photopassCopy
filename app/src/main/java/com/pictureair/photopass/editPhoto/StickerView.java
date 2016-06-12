@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +16,7 @@ import java.util.LinkedHashMap;
 /**
  * 贴图操作控件
  * 
- * @author panyi
+ * @author talon
  * 
  */
 public class StickerView extends View {
@@ -57,6 +58,13 @@ public class StickerView extends View {
 		rectPaint.setColor(Color.RED);
 		rectPaint.setAlpha(100);
 
+	}
+
+	public void setRec(Rect rect){
+		this.leftTopX = rect.left;
+		this.leftTopY = rect.top;
+		this.rightBottomX = rect.right;
+		this.rightBottomY = rect.bottom;
 	}
 
 	public void addBitImage(final Bitmap addBit) {
