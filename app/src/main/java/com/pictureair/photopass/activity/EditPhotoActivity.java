@@ -443,6 +443,27 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_4.png");
 		frameInfos.add(frameInfo);
 
+		frameInfo = new FrameOrStikerInfo();
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_5.png");
+		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_5.png");
+		frameInfos.add(frameInfo);
+
+		frameInfo = new FrameOrStikerInfo();
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_6t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_6t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_6.png");
+		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_6.png");
+		frameInfos.add(frameInfo);
+
+		frameInfo = new FrameOrStikerInfo();
+		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_7t.png");
+		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_7t.png");
+		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_7.png");
+		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_7.png");
+		frameInfos.add(frameInfo);
+
 //		frameInfo = new FrameOrStikerInfo();
 //		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
 //		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");

@@ -51,13 +51,17 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
     private RelativeLayout zfbLayout;
     private RelativeLayout ylLayout;
-    private RelativeLayout paypalLayout;
+    private RelativeLayout visaLayout;
     private RelativeLayout wechatLayout;
+    private RelativeLayout masterCardLayout;
+    private RelativeLayout jcbLayout;
 
     private ImageView zfButton;
     private ImageView yhkButton;
-    private ImageView paypalButton;
+    private ImageView visaButton;
     private ImageView wechatButton;
+    private ImageView masterCardButton;
+    private ImageView jcbButton;
 
     public static final int RQF_SUCCESS = 1;
     public static final int RQF_CANCEL = 2;
@@ -274,11 +278,15 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         // 支付方式选择
         zfButton = (ImageView) findViewById(R.id.imageButton1_zfb);
         yhkButton = (ImageView) findViewById(R.id.imageButton2_yhk);
-        paypalButton = (ImageView) findViewById(R.id.imageButton3_paypal);
+        visaButton = (ImageView) findViewById(R.id.imageButton_payvisa);
+        masterCardButton = (ImageView) findViewById(R.id.imageButton_paymc);
+        jcbButton = (ImageView) findViewById(R.id.imageButton_payjcb);
         wechatButton = (ImageView) findViewById(R.id.imageButton2_weixin);
         zfbLayout = (RelativeLayout) findViewById(R.id.zfb);
         ylLayout = (RelativeLayout) findViewById(R.id.yl);
-        paypalLayout = (RelativeLayout) findViewById(R.id.paypal);
+        visaLayout = (RelativeLayout) findViewById(R.id.paytype_visa);
+        masterCardLayout = (RelativeLayout) findViewById(R.id.paytype_mc);
+        jcbLayout = (RelativeLayout) findViewById(R.id.paytype_jcb);
         wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
         pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
         dialog = CustomProgressDialog.create(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
@@ -295,12 +303,16 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         sbmtButton.setOnClickListener(this);
         yhkButton.setImageResource(R.drawable.sele);
         zfButton.setImageResource(R.drawable.nosele);
-        paypalButton.setImageResource(R.drawable.nosele);
+        visaButton.setImageResource(R.drawable.nosele);
+        masterCardButton.setImageResource(R.drawable.nosele);
+        jcbButton.setImageResource(R.drawable.nosele);
         wechatButton.setImageResource(R.drawable.nosele);
 
         zfbLayout.setOnClickListener(this);
         ylLayout.setOnClickListener(this);
-        paypalLayout.setOnClickListener(this);
+        visaLayout.setOnClickListener(this);
+        masterCardLayout.setOnClickListener(this);
+        jcbLayout.setOnClickListener(this);
         wechatLayout.setOnClickListener(this);
 
         if (getIntent().getStringExtra("flag") == null) {
@@ -402,7 +414,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 payType = 0;
                 zfButton.setImageResource(R.drawable.sele);
                 yhkButton.setImageResource(R.drawable.nosele);
-                paypalButton.setImageResource(R.drawable.nosele);
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                jcbButton.setImageResource(R.drawable.nosele);
                 wechatButton.setImageResource(R.drawable.nosele);
                 PictureAirLog.v(TAG, "ZFB");
                 break;
@@ -411,16 +425,40 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 payType = 1;
                 zfButton.setImageResource(R.drawable.nosele);
                 yhkButton.setImageResource(R.drawable.sele);
-                paypalButton.setImageResource(R.drawable.nosele);
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                jcbButton.setImageResource(R.drawable.nosele);
                 wechatButton.setImageResource(R.drawable.nosele);
                 PictureAirLog.v(TAG, "YL");
                 break;
 
-            case R.id.paypal:// paypal支付
+            case R.id.paytype_visa:// paypal支付
                 payType = 6;
                 zfButton.setImageResource(R.drawable.nosele);
                 yhkButton.setImageResource(R.drawable.nosele);
-                paypalButton.setImageResource(R.drawable.sele);
+                visaButton.setImageResource(R.drawable.sele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                jcbButton.setImageResource(R.drawable.nosele);
+                wechatButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, "PAYPAL");
+                break;
+            case R.id.paytype_mc:// paypal支付
+                payType = 6;
+                zfButton.setImageResource(R.drawable.nosele);
+                yhkButton.setImageResource(R.drawable.nosele);
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.sele);
+                jcbButton.setImageResource(R.drawable.nosele);
+                wechatButton.setImageResource(R.drawable.nosele);
+                PictureAirLog.v(TAG, "PAYPAL");
+                break;
+            case R.id.paytype_jcb:// paypal支付
+                payType = 6;
+                zfButton.setImageResource(R.drawable.nosele);
+                yhkButton.setImageResource(R.drawable.nosele);
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                jcbButton.setImageResource(R.drawable.sele);
                 wechatButton.setImageResource(R.drawable.nosele);
                 PictureAirLog.v(TAG, "PAYPAL");
                 break;
@@ -429,7 +467,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 payType = 7;
                 zfButton.setImageResource(R.drawable.nosele);
                 yhkButton.setImageResource(R.drawable.nosele);
-                paypalButton.setImageResource(R.drawable.nosele);
+                visaButton.setImageResource(R.drawable.nosele);
+                masterCardButton.setImageResource(R.drawable.nosele);
+                jcbButton.setImageResource(R.drawable.nosele);
                 wechatButton.setImageResource(R.drawable.sele);
                 PictureAirLog.v(TAG, "WECHAT");
                 break;
