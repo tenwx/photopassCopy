@@ -1,6 +1,7 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -12,12 +13,14 @@ import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -1597,4 +1600,21 @@ public class AppUtil {
         return sInfo;
     }
 
+    /**
+     * 进入应用市场
+     * @param paramContext
+     * @param targetPackage 目前市场，如果为空，则让用户选择已安装的市场
+     */
+    public static void startMarketIntent(Context paramContext, String targetPackage) {
+        StringBuilder localStringBuilder = new StringBuilder().append("market://details?id=");
+        String str = paramContext.getPackageName();
+        localStringBuilder.append(str);
+        Uri localUri = Uri.parse(localStringBuilder.toString());
+        Intent intent = new Intent(Intent.ACTION_VIEW, localUri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (!TextUtils.isEmpty(targetPackage)) {
+            intent.setPackage(targetPackage);
+        }
+        paramContext.startActivity(intent);
+    }
 }

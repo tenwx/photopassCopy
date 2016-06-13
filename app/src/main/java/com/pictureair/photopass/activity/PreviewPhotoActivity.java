@@ -168,7 +168,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private float downX = 0;// 点击屏幕的X坐标
     private float downY = 0;// 点击屏幕的Y坐标
     private boolean out = false;// 是否移动到屏幕边缘
-    private boolean isFirst = false;//第一次进入标记
 
     private Dialog dia;
     private TextView buy_ppp, cancel, buynow, use_ppp, touchtoclean;
@@ -701,8 +700,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     intent.putExtra("shootTime",photoInfo.shootTime);
 //                    intent.putExtra("isUseHavedPPP", true);
                     startActivity(intent);
-
-//                    this.finish();
                 } else {
                     newToast.setTextAndShow(R.string.no_ppp_tips, Common.TOAST_SHORT_TIME);
                 }
@@ -734,7 +731,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE );
         init();//初始化UI
         PictureAirLog.out("oncreate finish----");
-//        judge();//判断 照片是否购买，并弹出相应的tips
     }
 
     private void init() {
@@ -1077,8 +1073,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
-    private boolean isTouchSpeet = false;
-
     private long touchDownTime = 0;
     private long touchUpTime = 0;
 
@@ -1154,18 +1148,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         if (vTracker.getXVelocity() > MAX_SPEED){
                             touchSpeet = "indexLast";
                             PictureAirLog.out("vTracker----> the -----<");
-//                            msg.obj = "indexLast";
-//                            msg.what = 2;
                         } else if (vTracker.getXVelocity() < -MAX_SPEED){
                             touchSpeet = "indexNext";
                             PictureAirLog.out("vTracker----> the ----->");
-//                            msg.obj = "indexNext";
-//                            msg.what = 2;
-                        }
-                        if (null != msg.obj){
-//                            isTouchSpeet = true;
-//                            previewPhotoHandler.sendMessage(msg);
-//                            touchSpeet = "";
                         }
                         break;
 
@@ -1182,6 +1167,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         PictureAirLog.v(TAG, "up");
                         if (touchUpTime - touchDownTime < 200){
                             msg.obj = touchSpeet;
+                        } else {
+                            touchSpeet = "";
                         }
                         msg.what = 2;
                         touchtoclean.setVisibility(View.VISIBLE);
@@ -1246,9 +1233,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                         startActivityForResult(intent, 1);
                     } else {
-
-//                        new PictureWorksDialog(PreviewPhotoActivity.this,getString(R.string.photo_cannot_edit_title),getString(R.string.photo_cannot_edit_content),getString(R.string.photo_cannot_edit_no),getString(R.string.photo_cannot_edit_yes),true,null).show();
-//                        newToast.setTextAndShow("这张照片不能编辑", Common.TOAST_SHORT_TIME);
                         if (pictureWorksDialog == null) {
                             pictureWorksDialog = new PictureWorksDialog(PreviewPhotoActivity.this, null,
                                     getString(R.string.photo_cannot_edit_content), null,
@@ -1316,15 +1300,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     } else {//编辑前
                         if (photoInfo.onLine == 1) {//是pp的照片
                             judgeOnePhotoDownloadFlow();
-//                            downLoadPhotos();
-                            //						ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
-                            //						list.add(photolist.get(mViewPager.getCurrentItem()));
-                            //						intent = new Intent(this, DownloadService.class);
-                            //						Bundle bundle = new Bundle();
-                            //						bundle.putParcelableArrayList("photos", list);
-                            //						intent.putExtras(bundle);
-                            //						startService(intent);
-                            //						PictureAirLog.v(TAG,"start");
                         } else {
                             newToast.setTextAndShow(R.string.neednotdownload, Common.TOAST_SHORT_TIME);
                         }

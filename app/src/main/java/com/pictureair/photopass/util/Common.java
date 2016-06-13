@@ -53,7 +53,7 @@ public class Common {
 
 
     public final static String VERSION_CODE = "1.1.1";//开发版
-    public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
+    public final static boolean PAY_DEBUG = true;// false，真实付款，true，测试付款
 
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
