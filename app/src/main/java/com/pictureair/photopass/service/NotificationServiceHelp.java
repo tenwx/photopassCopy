@@ -97,9 +97,6 @@ public class NotificationServiceHelp {
         }
     }
 
-
-
-
     /**
      * notification 中的destory方法。removeCallbacksAndMessages
      */
