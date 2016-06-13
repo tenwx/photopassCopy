@@ -26,7 +26,7 @@
             android:src="@drawable/back_white" />
 
         <TextView
-            android:id="@+id/tv_title"
+            android:id="@+id/title_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -55,7 +55,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/btn_last_step"
+                android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
@@ -64,7 +64,7 @@
                 android:src="@drawable/cancel1" />
 
             <ImageButton
-                android:id="@+id/btn_next_step"
+                android:id="@+id/btn_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
@@ -74,7 +74,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_really_save"
+            android:id="@+id/preview_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -87,7 +87,7 @@
             android:visibility="gone" />
 
         <ImageButton
-            android:id="@+id/ib_temp_save"
+            android:id="@+id/btn_onedit_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -149,7 +149,7 @@
 
         <!-- 相框 -->
         <ImageView
-            android:id="@+id/iv_photoframe"
+            android:id="@+id/framephoto_imageView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/transparent"
@@ -194,7 +194,7 @@
         android:paddingTop="@dimen/bottom_bar_padding_5">
 
         <TextView
-            android:id="@+id/tv_edit_frame"
+            android:id="@+id/edit_frame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -206,7 +206,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
-            android:id="@+id/tv_edit_filter"
+            android:id="@+id/edit_filter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -218,7 +218,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
-            android:id="@+id/tv_edit_sticker"
+            android:id="@+id/edit_accessory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -230,7 +230,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
-            android:id="@+id/tv_edit_rotate"
+            android:id="@+id/edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -252,7 +252,7 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/ll_rotate_bar"
+        android:id="@+id/font_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
