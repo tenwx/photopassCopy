@@ -49,7 +49,7 @@
     <string name="http_error_code_6045">Loading failed, Please check your network</string>
     <string name="http_error_code_6046">Loading failed, Please check your network</string>
     <string name="http_error_code_6047">Loading failed, Please check your network</string>
-    <string name="http_error_code_6048">Invalid Disney PhotoPass+</string>
+    <string name="http_error_code_6048">Invalid card number, please check and enter it again!</string>
     <string name="http_error_code_6049">This Disney PhotoPass+ has not been paid</string>
     <string name="http_error_code_6050">Invalid Code</string>
     <string name="http_error_code_6051">Invalid Disney PhotoPass</string>

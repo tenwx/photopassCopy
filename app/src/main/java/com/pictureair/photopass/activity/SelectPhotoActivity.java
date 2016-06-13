@@ -50,8 +50,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * 预览照片，总共有4大类，1，全部的照片，2，pictureair网络获取的图片，3，本软件拍的照片，4，已经购买的照片
- * 只能选择照片或者拍摄新的照片，不能做其他操作
  *
  * @author bauer_bao
  */
@@ -190,8 +188,13 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         photocount = getIntent().getIntExtra("photoCount", 1);
         context = this;
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goodsInfo");
+        PictureAirLog.out("goodsinfo---->" + goodsInfo.getGoodsKey());
         if (goodsInfo != null) {
-            photocount = goodsInfo.getEmbedPhotosCount();
+            if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
+                photocount = 10;
+            } else {
+                photocount = goodsInfo.getEmbedPhotosCount();
+            }
         }
         if (photocount == 0) {
             photocount = 1;
@@ -559,58 +562,52 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                if (photoURLlist.size() == 0) {
-                    newToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
-                } else if (photoURLlist.size() < photocount) {
-                    newToast.setTextAndShow(R.string.select_photos, Common.TOAST_SHORT_TIME);
-                } else {
-                    if (activity.equals("detailproductactivity") || activity.equals("previewproductactivity")) {
-                        //从详细商品界面进入
-                        PictureAirLog.v(TAG, "选择图片数量" + photoURLlist.size());
-                        intent = new Intent(this, PreviewProductActivity.class);
-                        intent.putExtra("goodsInfo", goodsInfo);
-                        intent.putExtra("photopath", photoURLlist);
-                        startActivity(intent);
-                    } else if (activity.equals("makegiftactivity")) {
-                        //从其他界面进来，返回新选择的照片
-                        intent = new Intent();
-                        intent.putExtra("photopath", photoURLlist);
-                        setResult(20, intent);
-                        finish();
-                    } else if (activity.equals("submitorderactivity")) {
-                        //从其他界面进来，返回新选择的照片
-                        intent = new Intent();
-                        intent.putExtra("photopath", photoURLlist);
-                        setResult(20, intent);
-                        finish();
-                    } else if (activity.equals("cartactivity")) {
-                        PictureAirLog.v(TAG, "提交按钮: " + photoURLlist.get(0).photoPathOrURL);
-                        intent = new Intent();
-                        intent.putExtra("photopath", photoURLlist);
-                        setResult(20, intent);
-                        finish();
-                    } else if (activity.equals("disney_video")) {
-                        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-                        StringBuffer photos = new StringBuffer();
-                        for (int i = 0; i < photoURLlist.size(); i++) {
-                            String photoId = photoURLlist.get(i).photoId;
-                            if (i == 0) {
-                                photos.append(photoId);
-                            } else {
-                                photos.append("," + photoId);
-                            }
+                if (activity.equals("detailproductactivity") || activity.equals("previewproductactivity")) {
+                    //从详细商品界面进入
+                    PictureAirLog.v(TAG, "选择图片数量" + photoURLlist.size());
+                    intent = new Intent(this, PreviewProductActivity.class);
+                    intent.putExtra("goodsInfo", goodsInfo);
+                    intent.putExtra("photopath", photoURLlist);
+                    startActivity(intent);
+                } else if (activity.equals("makegiftactivity")) {
+                    //从其他界面进来，返回新选择的照片
+                    intent = new Intent();
+                    intent.putExtra("photopath", photoURLlist);
+                    setResult(20, intent);
+                    finish();
+                } else if (activity.equals("submitorderactivity")) {
+                    //从其他界面进来，返回新选择的照片
+                    intent = new Intent();
+                    intent.putExtra("photopath", photoURLlist);
+                    setResult(20, intent);
+                    finish();
+                } else if (activity.equals("cartactivity")) {
+                    PictureAirLog.v(TAG, "提交按钮: " + photoURLlist.get(0).photoPathOrURL);
+                    intent = new Intent();
+                    intent.putExtra("photopath", photoURLlist);
+                    setResult(20, intent);
+                    finish();
+                } else if (activity.equals("disney_video")) {
+                    customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                    StringBuffer photos = new StringBuffer();
+                    for (int i = 0; i < photoURLlist.size(); i++) {
+                        String photoId = photoURLlist.get(i).photoId;
+                        if (i == 0) {
+                            photos.append(photoId);
+                        } else {
+                            photos.append("," + photoId);
                         }
-                        PictureAirLog.i(TAG, "photos===>" + photos.toString());
-                        API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
-                    } else if (activity.equals("mypppactivity")) {
-                        //绑定图片到ppp
-                        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-                        JSONArray photoIds = new JSONArray();
-                        for (int i = 0; i < photoURLlist.size(); i++) {
-                            photoIds.add(photoURLlist.get(i).photoId);
-                        }
-                        API1.useExperiencePPP(getIntent().getStringExtra("pppCode"), photoIds, selectPhotoHandler);
                     }
+                    PictureAirLog.i(TAG, "photos===>" + photos.toString());
+                    API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
+                } else if (activity.equals("mypppactivity")) {
+                    //绑定图片到ppp
+                    customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                    JSONArray photoIds = new JSONArray();
+                    for (int i = 0; i < photoURLlist.size(); i++) {
+                        photoIds.add(photoURLlist.get(i).photoId);
+                    }
+                    API1.useExperiencePPP(getIntent().getStringExtra("pppCode"), photoIds, selectPhotoHandler);
                 }
                 break;
             default:
@@ -619,7 +616,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     }
 
     private void isEnabled() {
-        if (photoURLlist.size() == photocount) {
+        if (photoURLlist.size() == photocount ||
+                goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//1.选择的数量和需要的数量一致，2.数码商品
             okButton.setEnabled(true);
             okButton.setTextColor(getResources().getColor(R.color.white));
             if (isDisneyVideo) {//

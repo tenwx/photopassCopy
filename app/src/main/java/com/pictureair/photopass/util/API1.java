@@ -157,6 +157,8 @@ public class API1 {
     public static final int UNIONPAY_GET_TN_SUCCESS = 4111;
     public static final int UNIONPAY_GET_TN_FAILED = 4110;
 
+    public static final int BATCH_ADD_TO_CARTS_SUCCESS = 4121;
+    public static final int BATCH_ADD_TO_CARTS_FAILED = 4120;
 
     //Shop模块 end
 
@@ -1305,7 +1307,32 @@ public class API1 {
 
             }
         });
+    }
 
+    /**
+     * 批量加入购物车
+     * @param tokenId
+     * @param goods
+     * @param handler
+     */
+    public static void batchAddToCarts(String tokenId, String goods, final Handler handler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.GOODS, goods);
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.BATCH_ADD_TO_CART, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(BATCH_ADD_TO_CARTS_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(BATCH_ADD_TO_CARTS_FAILED, status, 0).sendToTarget();
+
+            }
+        });
     }
 
     /**

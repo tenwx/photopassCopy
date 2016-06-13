@@ -1,7 +1,6 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/relativelayout_compositeimage"
@@ -13,10 +12,9 @@
         android:id="@+id/iv_image_compositeimage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/pp_margin_2"
-        android:layout_marginRight="@dimen/pp_margin_5"
+        android:layout_alignBottom="@+id/relativelayout_compositeimage"
+        android:layout_marginBottom="@dimen/pp_margin_30"
         android:gravity="center"
         android:orientation="horizontal" />
 
-</LinearLayout>
+</RelativeLayout>

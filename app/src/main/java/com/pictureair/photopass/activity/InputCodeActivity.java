@@ -5,11 +5,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.util.API1;
@@ -37,6 +42,8 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private CustomProgressDialog dialog;
 
     private EditTextWithClear inputCodeEdit;
+
+    private TextView wordSpaceTextView;
 
     private final Handler inputCodeHandler = new InputCodeHandler(this);
 
@@ -121,12 +128,52 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
         ok = (Button) findViewById(R.id.sure);
 
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);
+        wordSpaceTextView = (TextView) findViewById(R.id.scancodetextview);
+        wordSpaceTextView.setTypeface(MyApplication.getInstance().getFontBold());
+        wordSpaceTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         ok.setOnClickListener(this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
 
         setTopTitleShow(R.string.manual);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), true, inputCodeHandler);
+
+        inputCodeEdit.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                String editString = "";
+                for (int i = 0; i < s.length(); i++) {
+                    editString += " " + s.charAt(i);
+                }
+                PictureAirLog.out("editString---->" + editString);
+                if (0 == inputCodeEdit.getText().toString().length()) {
+                    if (wordSpaceTextView.isShown()) {
+                        wordSpaceTextView.setVisibility(View.INVISIBLE);
+                        wordSpaceTextView.setText(editString.trim());
+                    }
+                }else {
+                    if (!wordSpaceTextView.isShown()) {
+                        wordSpaceTextView.setVisibility(View.VISIBLE);
+                    }
+                    wordSpaceTextView.setText(editString.trim());
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+        });
     }
 
     private void hideInputMethodManager(View v) {

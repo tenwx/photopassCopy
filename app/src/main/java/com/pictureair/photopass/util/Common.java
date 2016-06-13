@@ -19,13 +19,13 @@ public class Common {
     /**
      * 域名线上服务器
      */
-    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
-    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
-    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
-    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
+//    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
+//    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
+//    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
     public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
 
     /**
@@ -43,13 +43,13 @@ public class Common {
     /**
      * 内网8.3测试服务器
      */
-//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
+    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
+    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
+    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
 
 
     public final static String VERSION_CODE = "1.1.1";//开发版
@@ -102,6 +102,7 @@ public class Common {
     public static final String ADD_TO_CART = "/api/carts";//加入购物车
     public static final String MODIFY_TO_CART = "/api/carts";//修改购物车
     public static final String DELETE_TO_CART = "/api/carts";//删除购物车
+    public static final String BATCH_ADD_TO_CART = "/api/batchAddToCarts";//批量加入购物车
     public static final String ADD_ORDER = "/api/checkOut";//用户提交订单
 
     public static final String GET_TOP_GOODS = "/ms/getTop4Goods";//获取热门商品
@@ -217,6 +218,7 @@ public class Common {
     public static final String HEADPHOTO_PATH = "headphoto";
     public static final String BGPHOTO_PAHT = "bgphoto";
     public static final String IS_DELETED_PHOTO_FROM_PP = "isDeletedPhotoFromPP";
+    public static final String GOODS = "goods";
 
     public static final int TOAST_SHORT_TIME = 100;
     //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";

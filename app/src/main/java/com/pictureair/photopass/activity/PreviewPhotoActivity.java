@@ -343,7 +343,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     touchClearBmp = null;
                 }
 
-//                isTouchSpeet = false;
                 long thisTime = System.currentTimeMillis();
                 if (null != msg.obj && !msg.obj.equals("") && thisTime - time > 1000){
                     time = System.currentTimeMillis();
@@ -1188,8 +1187,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         touchtoclean.setVisibility(View.VISIBLE);
                         break;
                 }
-//                if (!isTouchSpeet)
-                    previewPhotoHandler.sendMessage(msg);
+                previewPhotoHandler.sendMessage(msg);
             }
         }
         return true;

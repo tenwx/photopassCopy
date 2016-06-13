@@ -49,7 +49,7 @@
     <string name="http_error_code_6045">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6046">加载失败，请检查您当前的网络环境</string>
     <string name="http_error_code_6047">加载失败，请检查您当前的网络环境</string>
-    <string name="http_error_code_6048">您的迪士尼乐拍通一卡通无效</string>
+    <string name="http_error_code_6048">您输入的卡号无效，请核对后重新输入卡号！</string>
     <string name="http_error_code_6049">您的迪士尼乐拍通一卡通还未付费</string>
     <string name="http_error_code_6050">无效的卡号</string>
     <string name="http_error_code_6051">这张迪士尼乐拍通卡无效</string>

@@ -8,10 +8,10 @@ import java.util.List;
  * 商品信息
  */
 public class GoodsInfo implements Serializable {
-    private String goodsKey = "";//string, 商品key
+    private String goodsKey = "";//string, 商品key，加入购物车使用
     private String productId = "";//string,商品主键
     private String storeId = "";//string,商城主键
-    private String name = "";//string,商品名称
+    private String name = "";//string,商品名称， 用来进行判断比较
     private String nameAlias = "";//string,商品别名
     private String copywriter = "";//string,商品文案
     private String description = "";//string,商品描述

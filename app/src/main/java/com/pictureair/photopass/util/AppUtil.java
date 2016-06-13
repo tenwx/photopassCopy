@@ -545,6 +545,16 @@ public class AppUtil {
     }
 
     /**
+     * 判断是否是字母或者数字
+     */
+    public static boolean isNumOrLetters(String str) {
+        String regEx = "^[A-Za-z0-9_]+$";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+    /**
      * 隐藏键盘
      *
      * @param v

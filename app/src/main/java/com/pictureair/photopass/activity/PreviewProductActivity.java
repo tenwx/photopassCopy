@@ -59,7 +59,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private ViewGroup anim_mask_layout;//动画层
     private ImageView buyImg;// 这是在界面上跑的小图片
     private ArrayList<PhotoInfo> list;
-    private ArrayList<CartPhotosInfo> listAfterUploaded;
 
 
     private int upload_index = 0;
@@ -140,76 +139,49 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         upload_index++;
                     } else {//开始加入购物车
                         upload_index = 0;
-                        //编辑传入照片的信息
-                        JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
-                        for (int i = 0; i < list.size(); i++) {
-                            JSONObject photoid = new JSONObject();
-                            photoid.put("photoId", list.get(i).photoId);
-                            embedPhotos.add(photoid);
-                        }
-                        PictureAirLog.v(TAG, embedPhotos.toString());
-                        //请求网络,加入购物车
-                        API1.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedPhotos, handler);
+                        if (goodsInfo.getName().equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {//需要批量加入
+                            JSONArray goodsArray = new JSONArray();
+                            JSONObject goodsObject;
+                            for (int i = 0; i < list.size(); i++) {
+                                goodsObject = new JSONObject();
+                                goodsObject.put(Common.GOODS_KEY, goodsInfo.getGoodsKey());
+                                goodsObject.put(Common.QTY, 1);
 
-                    }
-                    break;
+                                JSONArray embedPhotos = new JSONArray();
+                                JSONObject embedPhoto = new JSONObject();
+                                embedPhoto.put(Common.PHOTO_ID, list.get(i).photoId);
+                                embedPhotos.add(embedPhoto);
 
-                case API1.ADD_TO_CART_SUCCESS:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    JSONObject addcart = (JSONObject) msg.obj;
-                    PictureAirLog.v(TAG, "addtocart==" + addcart);
-                    editor = sharedPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                    editor.commit();
-                    String itemidString = addcart.getString("cartId");
-
-                    if (isbuynow) {//获取订单信息，传送到下一界面
-                        Intent intent = new Intent(PreviewProductActivity.this, SubmitOrderActivity.class);
-                        ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
-                        CartItemInfo cartItemInfo = new CartItemInfo();
-                        cartItemInfo.setProductName(goodsInfo.getName());
-                        cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
-                        cartItemInfo.setEntityType(goodsInfo.getEntityType());
-                        cartItemInfo.setUnitPrice(goodsInfo.getPrice());
-                        cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
-                        cartItemInfo.setCartProductType(1);
-                        CartPhotosInfo cartPhotosInfo;
-                        listAfterUploaded.clear();
-                        for (int i = 0; i < list.size(); i++) {
-                            cartPhotosInfo = new CartPhotosInfo();
-                            cartPhotosInfo.setPhotoUrl(list.get(i).photoPathOrURL);
-                            cartPhotosInfo.setPhotoId(list.get(i).photoId);
-                            listAfterUploaded.add(cartPhotosInfo);
-                        }
-                        cartItemInfo.setEmbedPhotos(listAfterUploaded);
-                        cartItemInfo.setDescription(goodsInfo.getDescription());
-                        cartItemInfo.setQty(1);
-                        cartItemInfo.setCartId(itemidString);//会返回此数据
-                        cartItemInfo.setStoreId(goodsInfo.getStoreId());
-                        if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
-                            String[] cartProductImageUrl = new String[goodsInfo.getPictures().size()];
-                            for (int i = 0; i < goodsInfo.getPictures().size(); i++) {
-                                cartProductImageUrl[i] = goodsInfo.getPictures().get(i).getUrl();
-                                PictureAirLog.out("imageurl--->" + goodsInfo.getPictures().get(i).getUrl());
+                                goodsObject.put(Common.EMBEDPHOTOS, embedPhotos);
+                                goodsArray.add(goodsObject);
                             }
-                            cartItemInfo.setPictures(cartProductImageUrl);
+                            PictureAirLog.out("goods----->" + goodsArray.toJSONString());
+                            API1.batchAddToCarts(MyApplication.getTokenId(), goodsArray.toJSONString(), handler);
+
+                        } else {//正常加入购物车
+                            //编辑传入照片的信息
+                            JSONArray embedPhotos = new JSONArray();//放入图片的图片id数组
+                            for (int i = 0; i < list.size(); i++) {
+                                JSONObject photoid = new JSONObject();
+                                photoid.put("photoId", list.get(i).photoId);
+                                embedPhotos.add(photoid);
+                            }
+                            PictureAirLog.v(TAG, embedPhotos.toString());
+                            API1.addToCart(goodsInfo.getGoodsKey(), 1, isbuynow, embedPhotos, handler);
                         }
-                        cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
-                        orderinfoArrayList.add(cartItemInfo);
-                        intent.putExtra("orderinfo", orderinfoArrayList);
-                        intent.putExtra("activity", "previewproduct");
-                        PreviewProductActivity.this.startActivity(intent);
-
-
-                    } else {
-                        buyImg = new ImageView(PreviewProductActivity.this);// buyImg是动画的图片
-                        buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
-                        setAnim(buyImg);// 开始执行动画
                     }
                     break;
 
+                case API1.ADD_TO_CART_SUCCESS://加入购物车成功
+                    addCartSuccess(msg.obj, false);
+                    break;
+
+                case API1.BATCH_ADD_TO_CARTS_SUCCESS://批量加入购物车成功
+                    JSONObject object = (JSONObject) msg.obj;
+                    addCartSuccess(object.getJSONArray("cartItemIds"), true);
+                    break;
+
+                case API1.BATCH_ADD_TO_CARTS_FAILED:
                 case API1.ADD_TO_CART_FAILED:
                 case API1.UPLOAD_PHOTO_FAILED:
                     if (dialog.isShowing()) {
@@ -224,8 +196,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     break;
             }
         }
-
-        ;
     };
 
     @Override
@@ -239,7 +209,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         list = (ArrayList<PhotoInfo>) getIntent().getSerializableExtra("photopath");
         PictureAirLog.v(TAG, "goodsInfo name" + goodsInfo.getName());
         PictureAirLog.v(TAG, "list size" + list.size());
-        listAfterUploaded = new ArrayList<>();
         init();
     }
 
@@ -434,6 +403,86 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 
             default:
                 break;
+        }
+    }
+
+    /**
+     * 处理购物车
+     * @param result 返回结果
+     * @param isBatch 是否是批量处理
+     */
+    private void addCartSuccess(Object result, boolean isBatch){
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
+        PictureAirLog.out("result---->" + result);
+        JSONArray addcartArray;
+
+        if (isBatch) {
+            addcartArray = (JSONArray) result;
+        } else {
+            JSONObject addcart = (JSONObject) result;
+            addcartArray = new JSONArray();
+            addcartArray.add(addcart.getString("cartId"));
+        }
+
+        editor = sharedPreferences.edit();
+        editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + addcartArray.size());
+        editor.commit();
+
+        if (isbuynow) {//获取订单信息，传送到下一界面
+            Intent intent = new Intent(PreviewProductActivity.this, SubmitOrderActivity.class);
+            ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+
+            for (int i = 0; i < addcartArray.size(); i++) {
+                CartItemInfo cartItemInfo = new CartItemInfo();
+                cartItemInfo.setProductName(goodsInfo.getName());
+                cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
+                cartItemInfo.setEntityType(goodsInfo.getEntityType());
+                cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+                cartItemInfo.setPrice(goodsInfo.getPrice() * 1);
+                cartItemInfo.setCartProductType(1);
+                cartItemInfo.setDescription(goodsInfo.getDescription());
+                cartItemInfo.setQty(1);
+                cartItemInfo.setStoreId(goodsInfo.getStoreId());
+                cartItemInfo.setGoodsKey(goodsInfo.getGoodsKey());
+                cartItemInfo.setCartId(addcartArray.getString(i));//会返回此数据
+                if (goodsInfo.getPictures() != null && goodsInfo.getPictures().size() > 0) {
+                    String[] cartProductImageUrl = new String[goodsInfo.getPictures().size()];
+                    for (int j = 0; j < goodsInfo.getPictures().size(); j++) {
+                        cartProductImageUrl[j] = goodsInfo.getPictures().get(j).getUrl();
+                        PictureAirLog.out("imageurl--->" + goodsInfo.getPictures().get(j).getUrl());
+                    }
+                    cartItemInfo.setPictures(cartProductImageUrl);
+                }
+                CartPhotosInfo cartPhotosInfo;
+                ArrayList<CartPhotosInfo> listAfterUploaded = new ArrayList<>();
+                if (isBatch) {
+                    cartPhotosInfo = new CartPhotosInfo();
+                    if (i < list.size()) {
+                        cartPhotosInfo.setPhotoUrl(list.get(i).photoPathOrURL);
+                        cartPhotosInfo.setPhotoId(list.get(i).photoId);
+                    }
+                    listAfterUploaded.add(cartPhotosInfo);
+                } else {
+                    for (int j = 0; j < list.size(); j++) {
+                        cartPhotosInfo = new CartPhotosInfo();
+                        cartPhotosInfo.setPhotoUrl(list.get(j).photoPathOrURL);
+                        cartPhotosInfo.setPhotoId(list.get(j).photoId);
+                        listAfterUploaded.add(cartPhotosInfo);
+                    }
+                }
+                cartItemInfo.setEmbedPhotos(listAfterUploaded);
+                orderinfoArrayList.add(cartItemInfo);
+            }
+
+            intent.putExtra("orderinfo", orderinfoArrayList);
+            intent.putExtra("activity", "previewproduct");
+            PreviewProductActivity.this.startActivity(intent);
+        } else {
+            buyImg = new ImageView(PreviewProductActivity.this);// buyImg是动画的图片
+            buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
+            setAnim(buyImg);// 开始执行动画
         }
     }
 
