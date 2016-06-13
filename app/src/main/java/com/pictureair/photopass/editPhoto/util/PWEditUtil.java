@@ -5,19 +5,31 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
-import com.pictureair.photopass.editPhoto.bean.PhotoStikerInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.editPhoto.bean.StikerInfo;
+import com.pictureair.photopass.editPhoto.filter.Amaro;
+import com.pictureair.photopass.editPhoto.filter.BeautifyFilter;
+import com.pictureair.photopass.editPhoto.filter.BlurFilter;
+import com.pictureair.photopass.editPhoto.filter.HDRFilter;
+import com.pictureair.photopass.editPhoto.filter.LomoFilter;
+import com.pictureair.photopass.editPhoto.filter.OldFilter;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ScreenUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +40,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -53,6 +66,9 @@ public class PWEditUtil {
     private ArrayList<FrameOrStikerInfo> frameInfos; //保存边框的集合。
     private List<String> filterPathList; // 保存滤镜图片路径的集合
     private ArrayList<FrameOrStikerInfo> stikerInfos;// 饰品图片路径列表
+
+    private List<StikerInfo> stikerInfoList;
+
     public PWEditUtil() {
         photoEditorList = new ArrayList<PhotoEditorInfo>();
         frameInfos = new ArrayList<FrameOrStikerInfo>();
@@ -76,10 +92,14 @@ public class PWEditUtil {
     /**
      * 获取网络图片的 Bitmap
      * @param photoPath
-     * @return
+     * @return  如果网络图片链接打不开，就返回为空。上一级判断。
      */
     public Bitmap getOnLineBitampFormPath(String photoPath){
-        return imageLoader.loadImageSync(photoPath);
+        try {
+            return imageLoader.loadImageSync(photoPath);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     /**
@@ -95,12 +115,12 @@ public class PWEditUtil {
      * 图片旋转
      *
      * @param bit     旋转原图像
-     * @param degrees 旋转度数
+     * @param rotateAngle 旋转度数
      * @return 旋转之后的图像
      */
-    public  Bitmap rotateImage(Bitmap bit, int degrees) {
+    public  Bitmap getRotateBitmap(Bitmap bit, int rotateAngle) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
+        matrix.postRotate(rotateAngle);
         Bitmap tempBitmap = Bitmap.createBitmap(bit, 0, 0, bit.getWidth(),
                 bit.getHeight(), matrix, true);
         return tempBitmap;
@@ -139,6 +159,14 @@ public class PWEditUtil {
      * @return
      */
     public Bitmap getFrameComposeBitmap(Context mContext, Bitmap mMainBitmap, int curFramePosition){
+
+        // 如果照片不是 4:3 。需要裁减
+        if ((float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 4 / 3 || (float) mMainBitmap.getWidth() / mMainBitmap.getHeight() == (float) 3 / 4) {
+
+        } else {
+            mMainBitmap = cropBitmap(mMainBitmap, 4, 3);
+        }
+
         Bitmap heBitmap = Bitmap.createBitmap(mMainBitmap.getWidth(), mMainBitmap.getHeight(),
                 Bitmap.Config.ARGB_8888);
         Bitmap frameBitmap;
@@ -155,6 +183,7 @@ public class PWEditUtil {
                 frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
             }
         }
+
         Canvas canvas = new Canvas(heBitmap);
         Paint point = new Paint();
         point.setXfermode(new PorterDuffXfermode(
@@ -232,13 +261,19 @@ public class PWEditUtil {
 
     /**
      * 判断是否需要弹出对话框。
+     * @param isOnLine
      * @return
      */
-    public boolean isNeedShowDialog() {
+    public boolean isNeedShowDialog(boolean isOnLine) {
+        int count = 0;  //本地照片不会加载到 temp 目录下，网络图片会。
+        if (isOnLine){
+            count = 1;
+        }
+
         tempFile = new File(Common.TEMPPIC_PATH);
         if (tempFile != null) {
             if (tempFile.exists() && tempFile.isDirectory()) {
-                if (tempFile.list().length > 0) {
+                if (tempFile.list().length > count) {
                     return true;
                 } else {
                     return false;
@@ -271,22 +306,19 @@ public class PWEditUtil {
      * 纪录每次编辑的步骤
      * @param photoPath
      * @param editType
-     * @param frameBitmap
+     * @param framePosition
      * @param stikerInfoList
      * @param filterName
      * @param rotateAngle
      */
-    public void addPhotoEditorInfo(String photoPath, int editType, Bitmap frameBitmap, List<PhotoStikerInfo> stikerInfoList, String filterName, int rotateAngle){
+    public void addPhotoEditorInfo(String photoPath, int editType, int framePosition, List< StikerInfo > stikerInfoList, String filterName, int rotateAngle){
         PhotoEditorInfo photoEditorInfo = new PhotoEditorInfo();
         photoEditorInfo.setPhotoPath(photoPath);
         photoEditorInfo.setEditType(editType);
-        if (frameBitmap != null){
-            photoEditorInfo.setFrameBitmap(frameBitmap);
-        }
+        photoEditorInfo.setFramePosition(framePosition);
 
-        if (stikerInfoList != null){
-            photoEditorInfo.setStikerInfoList(stikerInfoList);
-        }
+        photoEditorInfo.setStikerInfoList(stikerInfoList);
+
         photoEditorInfo.setFilterName(filterName);
         photoEditorInfo.setRotateAngle(rotateAngle);
 
@@ -416,6 +448,7 @@ public class PWEditUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        PictureAirLog.d("====","stikerInfos:"+stikerInfos.size());
     }
 
     public ArrayList<FrameOrStikerInfo> getStikerInfos() {
@@ -435,7 +468,7 @@ public class PWEditUtil {
      * @param num2   短边的比例
      * @return
      */
-    public static Bitmap cropBitmap(Bitmap bitmap, int num1, int num2) {
+    public Bitmap cropBitmap(Bitmap bitmap, int num1, int num2) {
         if (bitmap == null) {
             return null;
         }
@@ -481,4 +514,151 @@ public class PWEditUtil {
     public DisplayImageOptions getOptions() {
         return options;
     }
+
+
+    /**
+     * 获取饰品可滑动的范围
+     * 计算出 图片真正显示的坐标。
+     */
+    public Rect getStickerRect(int mainBitmapHeight, int mainBitmapWidth, int mainImageHeight, int mainImageWidth, Context context){
+        int displayBitmapHeight,displayBitmapWidth;
+        if (mainBitmapHeight / (float)mainBitmapWidth > mainImageHeight / (float)mainImageWidth) {//左右会留白
+            displayBitmapHeight = mainImageHeight;//displayBitmapHeight : ? = bitmapReallyHeight : bitmapReallyWidth
+            displayBitmapWidth = (int) (displayBitmapHeight * mainBitmapWidth / (float) mainBitmapHeight);
+        }else {//上下留白
+            displayBitmapWidth = mainImageWidth;
+            displayBitmapHeight = (int) (displayBitmapWidth * mainBitmapHeight / (float)mainBitmapWidth);
+        }
+        int leftTopX = (ScreenUtil.getScreenWidth(context) - displayBitmapWidth) / 2;
+        int rightBottomX = leftTopX + displayBitmapWidth;
+        //leftTopY = 图片上边距＋imageview.getY
+        //图片上边距 ＝ （imageview的高 － 图片显示在imageview上的高）／ 2
+        int leftTopY = (mainImageHeight - displayBitmapHeight) / 2;
+        int rightBottomY = leftTopY + displayBitmapHeight;
+        Rect rec = new Rect(leftTopX,leftTopY,rightBottomX,rightBottomY);
+        return rec;
+    }
+
+    /**
+     * 获取 饰品压缩的Bitmap
+     * @param addItems
+     * @param touchMatrix
+     * @param bitmap
+     * @return
+     */
+    public Bitmap getStickerComposeBitmap(LinkedHashMap<Integer, StickerItem> addItems, Matrix touchMatrix, Bitmap bitmap){
+        stikerInfoList = new ArrayList<StikerInfo>();
+
+        Bitmap resultBit = Bitmap.createBitmap(bitmap).copy(
+                Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(resultBit);
+        canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));  //抗锯齿
+        float[] data = new float[9];
+        touchMatrix.getValues(data);// 底部图片变化记录矩阵原始数据
+        Matrix3 cal = new Matrix3(data);// 辅助矩阵计算类
+        Matrix3 inverseMatrix = cal.inverseMatrix();// 计算逆矩阵
+        Matrix m = new Matrix();
+        m.setValues(inverseMatrix.getValues());
+        for (Integer id : addItems.keySet()) {
+            StickerItem item = addItems.get(id);
+            item.matrix.postConcat(m);// 乘以底部图片变化矩阵
+            canvas.drawBitmap(item.bitmap, item.matrix, null);
+            stikerInfoList.add(new StikerInfo(item.bitmap, item.matrix)); //添加进去
+        }
+        return resultBit;
+    }
+
+    /**
+     * 获取滤镜Bitmap
+     * @param bitmap
+     * @param position
+     * @return  滤镜比较特殊，饰品与相框不需要滤镜效果。故应将原图先处理滤镜效果，再叠加之前图片应用的效果。
+     */
+    public Bitmap getFilterComposeBitmap(Context mContext, Bitmap bitmap, int position){
+        switch (position){
+            case 0:
+                break;
+            case 1:
+                bitmap = new LomoFilter().transform(bitmap);
+                break;
+            case 2:
+                bitmap = new Amaro().transform(bitmap);
+                break;
+            case 3:
+                bitmap = new BeautifyFilter().transform(bitmap);
+                break;
+            case 4:
+                bitmap = new HDRFilter().transform(bitmap);
+                break;
+            case 5:
+                bitmap = new BlurFilter().transform(bitmap);
+                break;
+            case 6:
+                bitmap = new OldFilter().transform(bitmap);
+                break;
+            default:
+                break;
+        }
+        bitmap = saveFilterOther(mContext, bitmap); //保存其他步骤
+        return bitmap;
+    }
+
+    /**
+     * 保存除了滤镜之外的所有步骤
+     * @param bitmap
+     * @return
+     */
+    private Bitmap saveFilterOther(Context mContext, Bitmap bitmap) {
+        for (int i = 0; i < getPhotoEditorList().size(); i++){
+            if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditFrame){
+                bitmap = getFrameComposeBitmap(mContext, bitmap, getPhotoEditorList().get(i).getFramePosition());
+            }
+            if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditSticker){
+                bitmap = saveStiker(bitmap, getPhotoEditorList().get(i).getStikerInfoList());
+            }
+            if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditRotate){
+                bitmap = getRotateBitmap(bitmap, getPhotoEditorList().get(i).getRotateAngle());
+            }
+        }
+        return bitmap;
+    }
+
+    public List<StikerInfo> getStikerInfoList() {
+        return stikerInfoList;
+    }
+
+    public void setStikerInfoList(List<StikerInfo> stikerInfoList) {
+        this.stikerInfoList = stikerInfoList;
+    }
+
+    /**
+     * 保存 饰品
+     * @param bitmap
+     * @return
+     */
+    private Bitmap saveStiker(Bitmap bitmap, List<StikerInfo> stikerInfoList) {
+        Bitmap resultBit = Bitmap.createBitmap(bitmap.copy(Bitmap.Config.ARGB_8888, true));
+        for (int i = 0; i < stikerInfoList.size(); i++) {
+            Canvas canvas = new Canvas(resultBit);
+            canvas.drawBitmap(stikerInfoList.get(i).getStickerBitmap(), stikerInfoList.get(i).getStickerMatrix(), null);
+        }
+        return resultBit;
+    }
+
+    /**
+     * 动态设置margin
+     * @param v
+     * @param l
+     * @param t
+     * @param r
+     * @param b
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
+    }
+
 }

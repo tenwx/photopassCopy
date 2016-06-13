@@ -1,4 +1,4 @@
-package com.pictureair.photopass.entity;
+package com.pictureair.photopass.editPhoto.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

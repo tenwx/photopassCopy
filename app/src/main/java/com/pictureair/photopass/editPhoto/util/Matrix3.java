@@ -1,12 +1,10 @@
-package com.pictureair.photopass.editPhoto;
+package com.pictureair.photopass.editPhoto.util;
 
 import com.pictureair.photopass.util.PictureAirLog;
 
 /**
  * 3x3
- * 
- * @author panyi
- * 
+ * @author talon
  */
 public class Matrix3 {
 	private float[] data;

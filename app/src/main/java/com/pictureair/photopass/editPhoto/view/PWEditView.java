@@ -2,6 +2,7 @@ package com.pictureair.photopass.editPhoto.view;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,11 +13,14 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
+import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 /**
@@ -25,6 +29,7 @@ import com.pictureair.photopass.widget.PictureWorksDialog;
  */
 public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     private CustomProgressDialog dialog; // Loading
+    private PWToast myToast;
     private ImageView mLeftBack;
     private Activity mActivity;
     private ImageView mLastStep,mNextStep, mMainImage, mPhotoFrame;
@@ -34,11 +39,13 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     private LinearLayout mRotetaView;
     private HorizontalListView mHorizontalListView;
 
+    private StickerView mStickerView;
+
     public void initView(Activity activity) {
         mActivity = activity;
         activity.setContentView(R.layout.activity_edit_photo);
         dialog = CustomProgressDialog.create(mActivity, mActivity.getString(R.string.dealing), false, null);
-
+        myToast = new PWToast(mActivity);
         mLeftBack = (ImageView) activity.findViewById(R.id.edit_return);
         mLastStep = (ImageView) activity.findViewById(R.id.btn_last_step);
         mNextStep = (ImageView) activity.findViewById(R.id.btn_next_step);
@@ -55,6 +62,8 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
         mFilter = (TextView) activity.findViewById(R.id.tv_edit_filter);
         mSticker = (TextView) activity.findViewById(R.id.tv_edit_sticker);
         mPhotoFrame = (ImageView) activity.findViewById(R.id.iv_photoframe);
+
+        mStickerView = (StickerView) activity.findViewById(R.id.sticker_view);
 
         mLeftBack.setOnClickListener(this);
         mLastStep.setOnClickListener(this);
@@ -83,7 +92,7 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
                 break;
             case R.id.ib_temp_save:
                 dialog.show();
-                pwEditViewListener.saveTempPhoto();
+                pwEditViewListener.saveTempPhoto(mStickerView.getBank(), mMainImage.getImageMatrix());
                 break;
             case R.id.tv_really_save:
                 pwEditViewListener.saveReallyPhoto();
@@ -104,11 +113,25 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
                 pwEditViewListener.filter();
                 break;
             case R.id.tv_edit_sticker:
-                pwEditViewListener.sticker();
+                pwEditViewListener.sticker(mMainImage.getHeight(), mMainImage.getWidth());
                 break;
 
         }
 
+    }
+
+    @Override
+    public void dialogShow() {
+        if (!dialog.isShowing()){
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void dialogDismiss() {
+        if (dialog.isShowing()){
+            dialog.dismiss();
+        }
     }
 
     @Override
@@ -139,6 +162,9 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
 
     @Override // 只要是加载了Bitmap，说明进行了编辑，就显示保存按钮。
     public void showBitmap(Bitmap bitmap) {
+        if(dialog.isShowing()){
+            dialog.dismiss();
+        }
         mMainImage.setImageBitmap(bitmap);
     }
 
@@ -193,6 +219,13 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     }
 
     @Override
+    public void hideTempSave() {
+        if(mTempSave.isShown()){
+            mTempSave.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void showReallySave() {
         mReallySave.setVisibility(View.VISIBLE);
     }
@@ -225,12 +258,39 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     @Override //隐藏之后显示一个透明层，解决 边框切换闪烁的bug
     public void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options,String framePath) {
         imageLoader.displayImage(framePath, mPhotoFrame, options);
-        if(mTempSave.isShown()){
-            mTempSave.setVisibility(View.GONE);
-        }
         if(mPhotoFrame.isShown()){
             mPhotoFrame.setVisibility(View.GONE);
         }
+    }
+
+    @Override // 显示stickerView 并且 设置可滑动的矩形范围
+    public void showPhotoStickerView() {
+        if (!mStickerView.isShown()){
+            mStickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void setPhotoStickerRec(Rect rect) {
+        mStickerView.setRec(rect);
+    }
+
+    @Override
+    public void showPhotoSticker(ImageLoader imageLoader, String stickerPath) {
+        mStickerView.addBitImage(imageLoader.loadImageSync(stickerPath)); //本地饰品，所以可以用 同步加载的方法
+    }
+
+    @Override
+    public void hidePhotoStickerView() {
+        if (mStickerView.isShown()) {
+            mStickerView.clear();
+            mStickerView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void ToastShow(int StringId) {
+        myToast.setTextAndShow(StringId, Common.TOAST_SHORT_TIME);
     }
 
     /**

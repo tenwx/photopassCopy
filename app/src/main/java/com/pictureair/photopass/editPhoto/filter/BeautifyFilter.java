@@ -1,10 +1,11 @@
-package com.pictureair.photopass.filter;
+package com.pictureair.photopass.editPhoto.filter;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-public class OldFilter extends Filter{
+public class BeautifyFilter extends Filter{
 
+	
 	 public Bitmap transform(Bitmap image) {
 		 int width = image.getWidth();
 			int height = image.getHeight();
@@ -20,24 +21,21 @@ public class OldFilter extends Filter{
 					R = Color.red(pixColor);
 					G = Color.green(pixColor);
 					B = Color.blue(pixColor);
-					newR = (int) (((double) R * 0.393) + ((double) G * 0.769) + ((double) B * 0.189));
-					newG = (int) (((double) R * 0.349) + ((double) G * 0.686) + ((double) B * 0.168));
-					newB = (int) (((double) R * 0.272) + ((double) G * 0.534) + ((double) B * 0.131));
-					// newR = (int)colorBlend(noise(), (R * 0.393) + (G * 0.769) +
-					// (B * 0.189), R);
-					// newG = (int)colorBlend(noise(), (R * 0.349) + (G * 0.686) +
-					// (B * 0.168), G);
-					// newB = (int)colorBlend(noise(), (R * 0.272) + (G * 0.534) +
-					// (B * 0.131), B);
+					newR = 255 - (255 - R) * (255 - R) / 255;
+					newG = 255 - (255 - G) * (255 - G) / 255;
+					newB = 255 - (255 - B) * (255 - B) / 255;
 					dst[pos] = Color.rgb(clamp(newR), clamp(newG), clamp(newB));
 				}
 			}
 			Bitmap acrossFlushBitmap = Bitmap.createBitmap(width, height,
 					Bitmap.Config.RGB_565);
 			acrossFlushBitmap.setPixels(dst, 0, width, 0, 0, width, height);
+
 			return acrossFlushBitmap;
 	 }
+	 
 	 public static int clamp(int c) {
 			return c > 255 ? 255 : ((c < 0) ? 0 : c);
 		}
+	
 }
