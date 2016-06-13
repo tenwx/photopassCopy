@@ -230,9 +230,14 @@ final class DecodeHandler extends Handler {
      */
     private String doOcr(Bitmap bitmap, String language) {
         PictureAirLog.out("start init--->ocr");
+        File root = new File(Common.PHOTO_SAVE_PATH);
         if (baseApi == null) {//为空
             baseApi = new TessBaseAPI();
-            baseApi.init(Common.PHOTO_SAVE_PATH, language);
+            if (root.exists() && root.isDirectory()) {
+                baseApi.init(Common.PHOTO_SAVE_PATH, language);
+            } else {
+                return "";
+            }
         }
         PictureAirLog.out("end init--->ocr");
         File tessdata = new File(Common.PHOTO_SAVE_PATH + "tessdata");

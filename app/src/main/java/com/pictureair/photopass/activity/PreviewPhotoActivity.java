@@ -1240,13 +1240,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     if (photoInfo.isHasPreset == 0) { // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
                         intent = new Intent(this, EditPhotoActivity.class);
                         if (isEdited) {//已经编辑过，取targetlist中的值
-//                            intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
-                            intent.putExtra("photoPath",((PhotoInfo)targetphotolist.get(mViewPager.getCurrentItem())).photoPathOrURL);
-                            intent.putExtra("isOnLine",((PhotoInfo)targetphotolist.get(mViewPager.getCurrentItem())).onLine == 1 ? true:false);
+                            intent.putExtra("photo", targetphotolist.get(mViewPager.getCurrentItem()));
                         } else {//没有编辑，取正常的值
-//                            intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
-                            intent.putExtra("photoPath",((PhotoInfo)photolist.get(mViewPager.getCurrentItem())).photoPathOrURL);
-                            intent.putExtra("isOnLine",((PhotoInfo)photolist.get(mViewPager.getCurrentItem())).onLine == 1 ? true:false);
+                            intent.putExtra("photo", photolist.get(mViewPager.getCurrentItem()));
                         }
                         startActivityForResult(intent, 1);
                     } else {

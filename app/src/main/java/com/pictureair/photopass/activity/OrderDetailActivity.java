@@ -85,8 +85,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
                 paymethod = getResources().getString(R.string.yhkzf);
                 break;
 
-            case 6:
-                paymethod = getResources().getString(R.string.paypalzf);
+            case 8:
+                paymethod = getResources().getString(R.string.other_ways);
                 break;
 
             case 7:

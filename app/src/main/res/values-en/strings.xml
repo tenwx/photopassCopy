@@ -285,7 +285,10 @@
     <string name="payment_ways">Payment Method</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
-    <string name="paypalzf">VISA, MasterCard, JCB</string>
+    <string name="paypalzf">Payment</string>
+    <string name="payvisa">VISA</string>
+    <string name="paymc">MasterCard</string>
+    <string name="payjcb">JCB</string>
     <string name="zfbsm">Recommended</string>
     <string name="yhksm">Supported</string>
     <string name="paypalsm">Supported</string>
@@ -300,6 +303,7 @@
     <string name="no_pay_tips">You don\'t pay anything!</string>
     <string name="no_pay_success">OK</string>
     <string name="install_wechat_first">Your mobile has not install WeChat, Please download and install to pay!</string>
+    <string name="other_ways">others</string>
     <!-- payment end -->
 
     <!-- set header start -->

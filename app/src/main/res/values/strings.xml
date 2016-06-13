@@ -285,7 +285,10 @@
     <string name="payment_ways">支付方式</string>
     <string name="zfbzf">支付宝</string>
     <string name="yhkzf">银联</string>
-    <string name="paypalzf">VISA，MasterCard，JCB</string>
+    <string name="paypalzf">支付</string>
+    <string name="payvisa">VISA</string>
+    <string name="paymc">MasterCard</string>
+    <string name="payjcb">JCB</string>
     <string name="zfbsm">推荐使用支付宝账号</string>
     <string name="yhksm">支持银联卡</string>
     <string name="paypalsm">支持国际信用卡支付</string>
@@ -300,6 +303,7 @@
     <string name="no_pay_tips">您不用额外支付任何费用</string>
     <string name="no_pay_success">确认</string>
     <string name="install_wechat_first">您的手机没有安装微信客户端，请先下载安装后再支付！</string>
+    <string name="other_ways">其他方式</string>
     <!-- payment end -->
 
     <!-- set header start -->
