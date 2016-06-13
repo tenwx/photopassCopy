@@ -140,7 +140,11 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 //获取全部的location
                 PictureAirLog.d(TAG, "get location success============" + msg.obj);
                 locationList.clear();
-                locationList.addAll(AppUtil.getLocation(getActivity().getApplicationContext(), msg.obj.toString(), false));
+                locationList.addAll(
+                        AppUtil.getLocation(
+                                getActivity().getApplicationContext(),
+                                msg.obj.toString(),
+                                false));
                 locationUtil.setLocationItemInfos(locationList, FragmentPageDiscover.this);
                 API1.getFavoriteLocations(MyApplication.getTokenId(), fragmentPageDiscoverHandler);
                 break;

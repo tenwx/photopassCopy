@@ -113,7 +113,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             case API1.GET_CART_SUCCESS:
                 PictureAirLog.v(TAG, "GET_CART_SUCCESS obg: " + msg.obj);
                 CartItemInfoJson json = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 if (json != null && json.getItems() != null && json.getItems().size() > 0) {
                     PictureAirLog.v(TAG, "GET_CART_SUCCESS cart size: " + json.getItems().size());
                     //初始化请求返回
@@ -176,7 +178,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case API1.GET_CART_FAILED://请求失败
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, cartHandler, true);
                 bottomRelativeLayout.setVisibility(View.INVISIBLE);
@@ -244,7 +248,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载购物车数据
                 PictureAirLog.v(TAG, "onclick with reload");
-                customProgressDialog = CustomProgressDialog.show(CartActivity.this, getString(R.string.is_loading), false, null);
+                if (!customProgressDialog.isShowing()) {
+                    customProgressDialog.show();
+                }
                 API1.getCarts(null, cartHandler);
                 cartInfoList.clear();
                 break;
@@ -356,7 +362,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         userId = sPreferences.getString(Common.USERINFO_ID, "");
         currencyTextView.setText(sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         discountCurrencyTv.setText("-" + sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+        customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
+        customProgressDialog.show();
         API1.getCarts(null, cartHandler);
         totalTextView.setText((int) totalPrice + "");
         listView = (ListView) findViewById(R.id.cartListView);
@@ -630,7 +637,9 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         }
         PictureAirLog.out("jsonArray" + jsonArray);
         API1.getCarts(jsonArray, cartHandler);
-        customProgressDialog.show();
+        if (!customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
     }
 
     /**

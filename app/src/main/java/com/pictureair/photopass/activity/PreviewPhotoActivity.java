@@ -193,7 +193,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int GET_LOCATION_AD = 777;
     private static final int GET_LOCATION_AD_DONE = 1001;
     private static final int CREATE_BLUR_DIALOG = 888;
-    private final int RESIZE_BLUR_IMAGE = 999;
+    private static final int RESIZE_BLUR_IMAGE = 999;
+    private static final int NO_PHOTOS_AND_RETURN = 1002;
     private static final int MAX_SPEED = 6000;
 
     private CustomDialog customdialog; //  对话框
@@ -707,6 +708,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
+            case NO_PHOTOS_AND_RETURN://没有图片
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                finish();
+                break;
+
             default:
                 break;
         }
@@ -882,6 +890,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 if (currentPosition < 0) {
                     currentPosition = 0;
+                }
+                if (photolist.size() == 0) {
+                    /**
+                     * 图片为空的情况。
+                     * 如果收到删除数据推送，本地数据处理完毕，
+                     * 但是用户正好点进图片预览，这个时候会出现为空的情况，需要finish
+                     */
+                    PictureAirLog.out("no photos need return");
+                    previewPhotoHandler.sendEmptyMessage(NO_PHOTOS_AND_RETURN);
+                    return;
                 }
                 PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
 
@@ -1314,13 +1332,13 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     return;
                 }
 
-                if (photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
-                    newToast.setTextAndShow(R.string.not_support_makegift, Common.TOAST_SHORT_TIME);
+                if (photoInfo.onLine == 0) {
+                    newToast.setTextAndShow(R.string.local_photo_not_support_makegift, Common.TOAST_SHORT_TIME);
                     return;
                 }
 
-                if (photoInfo.onLine == 0) {
-                    newToast.setTextAndShow(R.string.local_photo_not_support_makegift, Common.TOAST_SHORT_TIME);
+                if (photoInfo.locationId.equals("photoSouvenirs")) {//排除纪念照的照片
+                    newToast.setTextAndShow(R.string.not_support_makegift, Common.TOAST_SHORT_TIME);
                     return;
                 }
 
