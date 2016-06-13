@@ -259,7 +259,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
      * 速度监听
      */
     private VelocityTracker vTracker = null;
-    private String touchSpeet = "";
+    private volatile String touchSpeet = "";
+
+    long time = 0;
 
     /**
      * 处理Message
@@ -341,7 +343,10 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     touchClearBmp = null;
                 }
 
-                if (null != msg.obj && !msg.obj.equals("")){
+//                isTouchSpeet = false;
+                long thisTime = System.currentTimeMillis();
+                if (null != msg.obj && !msg.obj.equals("") && thisTime - time > 1000){
+                    time = System.currentTimeMillis();
                     if (msg.obj.equals("indexLast")){
                         indexLast();
                     }else{
@@ -1073,6 +1078,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
+    private boolean isTouchSpeet = false;
+
+    private long touchDownTime = 0;
+    private long touchUpTime = 0;
+
     public boolean onTouchEvent(MotionEvent event) {
         PictureAirLog.out("the-----onTouchEvent");
         if (!loadFailed) {
@@ -1093,6 +1103,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        touchDownTime = System.currentTimeMillis();
                         mode = MODE_DOWN;
                         PictureAirLog.v(TAG, "-------->downY---" + event.getY());
                         downX = event.getX();
@@ -1144,13 +1155,24 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         if (vTracker.getXVelocity() > MAX_SPEED){
                             touchSpeet = "indexLast";
                             PictureAirLog.out("vTracker----> the -----<");
+//                            msg.obj = "indexLast";
+//                            msg.what = 2;
                         } else if (vTracker.getXVelocity() < -MAX_SPEED){
                             touchSpeet = "indexNext";
                             PictureAirLog.out("vTracker----> the ----->");
+//                            msg.obj = "indexNext";
+//                            msg.what = 2;
+                        }
+                        if (null != msg.obj){
+//                            isTouchSpeet = true;
+//                            previewPhotoHandler.sendMessage(msg);
+//                            touchSpeet = "";
                         }
                         break;
 
                     case MotionEvent.ACTION_UP:
+                        touchUpTime = System.currentTimeMillis();
+
                         if (vTracker != null) {
                             vTracker.clear();
                             vTracker.recycle();
@@ -1159,12 +1181,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                         mode = MODE_UP;
                         PictureAirLog.v(TAG, "up");
-                        msg.obj = touchSpeet;
+                        if (touchUpTime - touchDownTime < 200){
+                            msg.obj = touchSpeet;
+                        }
                         msg.what = 2;
                         touchtoclean.setVisibility(View.VISIBLE);
                         break;
                 }
-                previewPhotoHandler.sendMessage(msg);
+//                if (!isTouchSpeet)
+                    previewPhotoHandler.sendMessage(msg);
             }
         }
         return true;
