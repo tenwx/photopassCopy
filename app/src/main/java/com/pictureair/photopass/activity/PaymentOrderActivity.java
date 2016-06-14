@@ -102,8 +102,21 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private JSONArray couponCodes;//优惠券
     private int cartCount = 0;//购物车数量
 
+    private boolean asyncTimeOut = false;
+
     private final Handler paymentOrderHandler = new PaymentOrderHandler(this);
 
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            PictureAirLog.v(TAG, "run");
+            //手动拉取信息
+            if (payAsyncResultJsonObject == null) {//没有收到推送，需要手动获取
+                asyncTimeOut = true;
+                API1.getSocketData(paymentOrderHandler);
+            }
+        }
+    };
 
     private static class PaymentOrderHandler extends Handler {
         private final WeakReference<PaymentOrderActivity> mActivity;
@@ -156,14 +169,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     dialog.show();
                 }
                 paySyncResult = true;
-                paymentOrderHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        PictureAirLog.v(TAG, "run");
-                        //手动拉取信息
-                        API1.getSocketData(paymentOrderHandler);
-                    }
-                }, 5000);
+                paymentOrderHandler.postDelayed(runnable, 5000);
 
                 break;
 
@@ -808,8 +814,14 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (baseBusEvent instanceof AsyncPayResultEvent) {
             AsyncPayResultEvent asyncPayResultEvent = (AsyncPayResultEvent) baseBusEvent;
             PictureAirLog.out("get asyncPayResultEvent----->" + asyncPayResultEvent.getAsyncPayResult());
-            payAsyncResultJsonObject = asyncPayResultEvent.getAsyncPayResult();
-            paymentOrderHandler.sendEmptyMessage(ASYNC_PAY_SUCCESS);
+
+            if (!asyncTimeOut) {//如果没有超时，需要处理
+                payAsyncResultJsonObject = asyncPayResultEvent.getAsyncPayResult();
+                //接受到推送之后，先将handler清空，然后再执行新的任务
+                paymentOrderHandler.removeCallbacks(runnable);
+
+                paymentOrderHandler.sendEmptyMessage(ASYNC_PAY_SUCCESS);
+            }
 
             //刷新列表
             EventBus.getDefault().removeStickyEvent(asyncPayResultEvent);

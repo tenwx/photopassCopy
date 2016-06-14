@@ -158,7 +158,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             } else if (resultString.contains("VID=")) {//包含VID
                 code = resultString.substring(resultString.lastIndexOf("VID=") + 4, resultString.length());  //截取字符串。
 
-            } else if (resultString.length() >= 18 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于18-22位之间，并且都是纯数字
+            } else if (resultString.length() >= 16 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于16-22位之间，并且都是纯数字
                 code = resultString;
 
             } else {//无效的卡号

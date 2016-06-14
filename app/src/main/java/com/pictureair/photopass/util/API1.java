@@ -6,7 +6,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -18,7 +17,6 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
-import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import java.io.File;
@@ -226,8 +224,8 @@ public class API1 {
     //我的模块 end
 
 
-    public static final int APK_NEED_UPDATE = 6001;
-    public static final int APK_NEED_NOT_UPDATE = 6000;
+    public static final int GET_UPDATE_SUCCESS = 6001;
+    public static final int GET_UPDATE_FAILED = 6000;
 
     public static final int DOWNLOAD_APK_SUCCESS = 6011;
     public static final int DOWNLOAD_APK_FAILED = 6010;
@@ -1598,13 +1596,13 @@ public class API1 {
 
 
     public final static String checkUpdateTestingString = "{'version': {'_id': '560245482cd4db6c0a3a21e3','appName': 'pictureAir',"
-            + "'version': '2.1.2', 'createdOn': '2015-09-23T06:06:17.371Z', "
-            + " 'mandatory': 'false',  '__v': 0, "
+            + "'version': '2.1.4', 'createdOn': '2015-09-23T06:06:17.371Z', "
+            + " 'mandatory': 'true',  '__v': 0, "
             + " 'versionOS': ['android'], "
             + " 'content': '1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；\n1、新增修改密码功能；\n2、优化注册功能；\n3、调整部分界面UI；',"
             + " 'content_EN': '1、Add password modification ;\n2、Improve register function ;\n3、Beautify UI design ;' ,'content_EN':'1、Addpasswordmodification;\n2、Improveregisterfunction;\n3、BeautifyUIdesign;',"
-            + "'downloadChannel':[ {'channel':'360',"
-            + "'downloadUrl':'http://gdown.baidu.com/data/wisegame/1f10e30a23693de1/baidushoujizhushou_16786079.apk'},"
+            + "'downloadChannel':[ {'channel':'website',"
+            + "'downloadUrl':'http://www.disneyphotopass.com.cn/downloads/android/photopass/PhotoPassV1.1.0-website.apk'},"
             + " { 'channel':'tencent',"
             + "'downloadUrl':'http://mmgr.myapp.com/myapp/gjbig/packmanage/24/2/3/102027/tencentmobilemanager5.7.0_android_build3146_102027.apk'}]}}";
 
@@ -1613,12 +1611,8 @@ public class API1 {
      * 获取最新的版本信息
      *
      * @param handler
-     * @param thisVerName
-     * @param language
      */
-    public static void checkUpdate(Context context, final Handler handler, final String thisVerName, final String language) {
-        final String channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
-        PictureAirLog.out("channel------>" + channelStr);
+    public static void checkUpdate(final Context context, final Handler handler) {
         String verson = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
@@ -1628,91 +1622,21 @@ public class API1 {
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.CHECK_VERSION, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-
                 super.onSuccess(jsonObject);
-                PictureAirLog.out("update---->" + jsonObject);
                 /**
                  * 测试使用
                  */
-//            jsonObject = JSONObject.parseObject(checkUpdateTestingString);
-
-                if (jsonObject.getJSONObject("version").getJSONArray("versionOS").toString().contains("android")) {
-                    //结果不为null，并且结果更新平台中有android，则需要更新
-                    JSONObject versionObject = jsonObject.getJSONObject("version");
-                    String versionName = versionObject.getString("version");
-                    String mandatory = versionObject.getString("mandatory");
-                    String content_EN = versionObject.getString("content_EN");
-                    String content = versionObject.getString("content");
-                    String channel = "";
-                    String downloadUrl = "";
-                    String websiteDownloadUrl = "";
-
-                    JSONArray array = versionObject.getJSONArray("downloadChannel");
-                    for (int i = 0; i < array.size(); i++) {
-                        channel = array.getJSONObject(i).getString("channel");
-                        if (channel.equals("website")) {//官网渠道
-                            websiteDownloadUrl = array.getJSONObject(i).getString("downloadUrl");
-                        }
-                        if (channelStr.equals(channel)) {
-                            downloadUrl = array.getJSONObject(i).getString("downloadUrl");
-                            break;
-                        }
-                    }
-
-                    boolean flag = false;//为false则不更新
-                    int[] number = CheckUpdateManager.verNameChangeInt(thisVerName);
-                    int[] newNumber = CheckUpdateManager.verNameChangeInt(versionName);
-                    //根据版本号判断是否需要更新
-                    for (int i = 0; i < number.length; i++) {
-                        if (number[i] < newNumber[i]) {
-                            //需要更新
-                            flag = true;
-                            break;
-                        }
-                    }
-
-                    if (TextUtils.isEmpty(downloadUrl)) {//判断下载链接是否为空
-                        if (TextUtils.isEmpty(websiteDownloadUrl)) {//官网下载链接为空
-                            flag = false;
-                        } else {
-                            downloadUrl = websiteDownloadUrl;
-                        }
-                    } else {
-
-                    }
-
-                    if (flag) {
-                        //更新
-                        String[] objsStrings = new String[4];
-                        objsStrings[0] = versionName;
-                        objsStrings[1] = mandatory;
-
-                        objsStrings[3] = downloadUrl;
-                        PictureAirLog.d("api update", language);
-
-                        if (null != language && language.equals("en")) {
-                            objsStrings[2] = content_EN;
-                        } else {
-                            objsStrings[2] = content;
-                        }
-                        Message message = new Message();
-                        message.what = APK_NEED_UPDATE;
-                        message.obj = objsStrings;
-                        handler.sendMessage(message);
-                    } else {
-                        handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
-                    }
-                } else {
-                    handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
-                }
-
+//                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
+                PictureAirLog.out("update---->" + jsonObject);
+                ACache.get(context).put(Common.UPDATE_INFO, jsonObject.toString());
+                handler.obtainMessage(GET_UPDATE_SUCCESS, jsonObject).sendToTarget();
             }
 
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
                 PictureAirLog.out("failed---->" + status);
-                handler.sendEmptyMessage(APK_NEED_NOT_UPDATE);
+                handler.sendEmptyMessage(GET_UPDATE_FAILED);
             }
         });
     }

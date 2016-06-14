@@ -303,7 +303,7 @@
     <string name="no_pay_tips">You don\'t pay anything!</string>
     <string name="no_pay_success">OK</string>
     <string name="install_wechat_first">Your mobile has not install WeChat, Please download and install to pay!</string>
-    <string name="other_ways">others</string>
+    <string name="other_ways">Others</string>
     <!-- payment end -->
 
     <!-- set header start -->

@@ -27,9 +27,9 @@ public class CheckUpdate implements BaseCheckUpdate{
 	}
 
 	@Override
-	public void checkUpdate(Context context, Handler handler, String versionName, String currentLanguage) {
+	public void checkUpdate(Context context, Handler handler) {
 		// TODO Auto-generated method stub
-		API1.checkUpdate(context, handler, versionName, currentLanguage);
+		API1.checkUpdate(context, handler);
 	}
 
 	@Override

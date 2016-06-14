@@ -1,6 +1,7 @@
 package com.pictureair.photopass.db;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -277,6 +278,15 @@ public class PictureAirDbManager {
                                 photoInfo.locationName = locationItemInfos.get(i).placeCHName;
                             }
                             break;
+                        }
+                    }
+                    if (TextUtils.isEmpty(photoInfo.locationName)) {
+                        if (language.equals(Common.ENGLISH)) {
+                            PictureAirLog.out("found favorite endligh location---->");
+                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeENName;
+                        } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                            PictureAirLog.out("found favorite chinese location---->");
+                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeCHName;
                         }
                     }
                 }
@@ -618,6 +628,15 @@ public class PictureAirDbManager {
                                 photoInfo.locationName = locationItemInfos.get(i).placeCHName;
                             }
                             break;
+                        }
+                    }
+                    if (TextUtils.isEmpty(photoInfo.locationName)) {
+                        if (language.equals(Common.ENGLISH)) {
+                            PictureAirLog.out("found favorite endligh location---->");
+                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeENName;
+                        } else if (language.equals(Common.SIMPLE_CHINESE)) {
+                            PictureAirLog.out("found favorite chinese location---->");
+                            photoInfo.locationName = locationItemInfos.get(locationItemInfos.size() - 1).placeCHName;
                         }
                     }
                     selectPhotoItemInfos.add(photoInfo);

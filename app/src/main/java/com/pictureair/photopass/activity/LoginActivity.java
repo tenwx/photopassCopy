@@ -207,7 +207,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         otherLogin.setOnClickListener(this);
 
         // 自动检查更新
-        checkUpdateManager = new CheckUpdateManager(getApplicationContext(),
+        checkUpdateManager = new CheckUpdateManager(this,
                 appPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH),
                 parentRelativeLayout);
 

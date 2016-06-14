@@ -139,7 +139,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // 自动检查更新
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        checkUpdateManager = new CheckUpdateManager(getApplicationContext(), currentLanguage,
+        checkUpdateManager = new CheckUpdateManager(this, currentLanguage,
                 parentLayout);
 
         new Thread(new Runnable() {

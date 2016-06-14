@@ -1392,55 +1392,66 @@ public class AppUtil {
         //处理网络图片
         for (int l = 0; l < photoList.size(); l++) {
             PhotoInfo info = photoList.get(l);
+            int resultPosition = -1;
             //			PictureAirLog.d(TAG, "scan photo list:"+l);
             //先挑选出相同的locationid信息
             for (int i = 0; i < locationList.size(); i++) {
                 //				PictureAirLog.d(TAG, "scan location:"+i);
                 if (info.locationId.equals(locationList.get(i).locationId) || locationList.get(i).locationIds.contains(info.locationId)) {
-                    //					PictureAirLog.d(TAG, "find the location");
-                    //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
-                    for (int j = 0; j < photoPassItemInfoList.size(); j++) {
-                        //						PictureAirLog.d(TAG, "weather already exists:"+j);
-                        if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
-                                && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
-                            info.locationName = photoPassItemInfoList.get(j).place;
-                            photoPassItemInfoList.get(j).list.add(info);
-                            date1 = sdf.parse(info.shootOn);
-                            date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
-                            if (date1.after(date2)) {
-                                photoPassItemInfoList.get(j).shootOn = info.shootOn;
-                            }
-                            clone_contains = true;
-                            break;
-                        }
-                    }
-                    if (!clone_contains) {
-                        //初始化item的信息
-                        photoItemInfo = new PhotoItemInfo();
-                        photoItemInfo.locationId = locationList.get(i).locationId;
-                        photoItemInfo.locationIds = locationList.get(i).locationIds.toString();
-                        photoItemInfo.shootTime = info.shootTime;
-                        if (language.equals(Common.SIMPLE_CHINESE)) {
-                            photoItemInfo.place = locationList.get(i).placeCHName;
-                            info.locationName = locationList.get(i).placeCHName;
-
-                        } else {
-                            photoItemInfo.place = locationList.get(i).placeENName;
-                            info.locationName = locationList.get(i).placeENName;
-
-                        }
-                        photoItemInfo.list.add(info);
-                        photoItemInfo.placeUrl = locationList.get(i).placeUrl;
-                        photoItemInfo.latitude = locationList.get(i).latitude;
-                        photoItemInfo.longitude = locationList.get(i).longitude;
-                        photoItemInfo.islove = 0;
-                        photoItemInfo.shootOn = info.shootOn;
-                        photoPassItemInfoList.add(photoItemInfo);
-                    } else {
-                        clone_contains = false;
-                    }
+                    resultPosition = i;
                     break;
                 }
+            }
+
+            if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
+                resultPosition = locationList.size() - 1;
+                info.locationId = "others";
+            }
+            //					PictureAirLog.d(TAG, "find the location");
+            //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
+            for (int j = 0; j < photoPassItemInfoList.size(); j++) {
+                //						PictureAirLog.d(TAG, "weather already exists:"+j);
+                if (info.shootTime.equals(photoPassItemInfoList.get(j).shootTime)
+                        && (info.locationId.equals(photoPassItemInfoList.get(j).locationId) || photoPassItemInfoList.get(j).locationIds.contains(info.locationId))) {
+                    info.locationName = photoPassItemInfoList.get(j).place;
+                    photoPassItemInfoList.get(j).list.add(info);
+                    date1 = sdf.parse(info.shootOn);
+                    date2 = sdf.parse(photoPassItemInfoList.get(j).shootOn);
+                    if (date1.after(date2)) {
+                        photoPassItemInfoList.get(j).shootOn = info.shootOn;
+                    }
+                    clone_contains = true;
+                    break;
+                }
+            }
+            if (!clone_contains) {
+                //初始化item的信息
+                photoItemInfo = new PhotoItemInfo();
+                photoItemInfo.locationId = locationList.get(resultPosition).locationId;
+//                if (isOther) {
+//                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString() + info.locationId;
+//                } else {
+                    photoItemInfo.locationIds = locationList.get(resultPosition).locationIds.toString();
+//                }
+                photoItemInfo.shootTime = info.shootTime;
+                if (language.equals(Common.SIMPLE_CHINESE)) {
+                    photoItemInfo.place = locationList.get(resultPosition).placeCHName;
+                    info.locationName = locationList.get(resultPosition).placeCHName;
+
+                } else {
+                    photoItemInfo.place = locationList.get(resultPosition).placeENName;
+                    info.locationName = locationList.get(resultPosition).placeENName;
+
+                }
+                photoItemInfo.list.add(info);
+                photoItemInfo.placeUrl = locationList.get(resultPosition).placeUrl;
+                photoItemInfo.latitude = locationList.get(resultPosition).latitude;
+                photoItemInfo.longitude = locationList.get(resultPosition).longitude;
+                photoItemInfo.islove = 0;
+                photoItemInfo.shootOn = info.shootOn;
+                photoPassItemInfoList.add(photoItemInfo);
+            } else {
+                clone_contains = false;
             }
         }
         return photoPassItemInfoList;

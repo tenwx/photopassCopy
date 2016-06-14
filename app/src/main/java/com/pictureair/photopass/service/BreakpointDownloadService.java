@@ -1,27 +1,21 @@
 package com.pictureair.photopass.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.Nullable;
 
-import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.FileInfo;
-import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DownloadTask;
+import com.pictureair.photopass.util.PictureAirLog;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by bass on 16/3/8.
@@ -124,7 +118,11 @@ public class BreakpointDownloadService extends Service {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Intent intent = new Intent(BreakpointDownloadService.ACTION_UPDATE);
+                intent.putExtra("onFailure", true);
+                sendBroadcast(intent);
             } finally {
+                PictureAirLog.out("get length finally----->");
                 try {
                     //关闭流
                     if (null != raf) {

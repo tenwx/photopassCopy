@@ -146,6 +146,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                 goodsObject = new JSONObject();
                                 goodsObject.put(Common.GOODS_KEY, goodsInfo.getGoodsKey());
                                 goodsObject.put(Common.QTY, 1);
+                                goodsObject.put(Common.IS_JUST_BUY, isbuynow);
 
                                 JSONArray embedPhotos = new JSONArray();
                                 JSONObject embedPhoto = new JSONObject();
