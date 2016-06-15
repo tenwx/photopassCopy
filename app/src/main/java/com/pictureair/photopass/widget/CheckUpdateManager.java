@@ -174,7 +174,7 @@ public class CheckUpdateManager {
             JSONArray array = versionObject.getJSONArray("downloadChannel");
             for (int i = 0; i < array.size(); i++) {
                 channel = array.getJSONObject(i).getString("channel");
-                if (channel.equals("website")) {//官网渠道
+                if (channel.equals("tencent")) {//官网渠道
                     websiteDownloadUrl = array.getJSONObject(i).getString("downloadUrl");
                 }
                 if (channelStr.equals(channel)) {

@@ -209,9 +209,9 @@ public class SharePop extends PopupWindow implements OnClickListener,
             shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
             shareParams.imagePath = imagePath;
         } else if ("online".equals(type)) {// 网络图片
-            shareParams.shareType = Platform.SHARE_WEBPAGE;// 以网页的形式分享图片
+            shareParams.shareType = Platform.SHARE_IMAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
             shareParams.imageUrl = imageUrl;
-            shareParams.url = shareUrl;// share_webpage的时候需要这个参数
+//            shareParams.url = shareUrl;// share_webpage的时候需要这个参数
         }
         platform.share(shareParams);
     }
@@ -230,15 +230,14 @@ public class SharePop extends PopupWindow implements OnClickListener,
         platform.setPlatformActionListener(this);// 如果没有通过审核，这个监听没有什么作用
         ShareParams shareParams = new ShareParams();
         shareParams.title = context.getString(R.string.share_app_name);
-        shareParams.text = context.getString(R.string.share_text);
         // 本地图片可以
         if ("local".equals(type)) {// 本地图片
             shareParams.shareType = Platform.SHARE_IMAGE;// 只分享图片，这个时候不需要url属性。
             shareParams.imagePath = imagePath;
         } else if ("online".equals(type)) {// 网络图片
-            shareParams.shareType = Platform.SHARE_WEBPAGE;// 以网页的形式分享图片
+            shareParams.shareType = Platform.SHARE_IMAGE;// 如果以网页的形式分享图片，则用SHARE_WEBPAGE
             shareParams.imageUrl = imageUrl;
-            shareParams.url = shareUrl;// share_webpage的时候需要这个参数
+//            shareParams.url = shareUrl;// share_webpage的时候需要这个参数
         }
         platform.share(shareParams);
     }

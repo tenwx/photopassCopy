@@ -150,6 +150,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                 PictureAirLog.out("editString---->" + editString);
                 if (0 == inputCodeEdit.getText().toString().length()) {
                     if (wordSpaceTextView.isShown()) {
+                        wordSpaceTextView.scrollTo(0, 0);//保证放大的textview正常显示
                         wordSpaceTextView.setVisibility(View.INVISIBLE);
                         wordSpaceTextView.setText(editString.trim());
                     }
