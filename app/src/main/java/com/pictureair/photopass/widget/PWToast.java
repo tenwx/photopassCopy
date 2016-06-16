@@ -19,15 +19,26 @@ import java.util.TimerTask;
  * 1. PWToast pwToast = new PWToast(context);
  *    pwToast.setTextAndShow(); 注意：可选择自己需要的方法
  *
- * 2. PWToast.setTextAndShow(); 注意：可选择自己需要的方法
- *    此方法必须要传context，并且无法cancel，如果需要cancel toast的话，请使用方式1
+ * 2. PWToast.getInstance(context).setTextAndShow(); 注意：可选择自己需要的方法
+ *    此方法无法cancel，如果需要cancel toast的话，请使用方式1
  */
 public class PWToast extends Toast {
 
     private Toast toast;
     private TextView textView;
     private Timer timer;
-    private static PWToast pwToast;
+    private static volatile PWToast pwToast;
+
+    public static PWToast getInstance(Context context) {
+        if(pwToast == null) {
+            synchronized(PWToast.class) {
+                if(pwToast == null) {
+                    pwToast = new PWToast(context);
+                }
+            }
+        }
+        return pwToast;
+    }
 
     public PWToast(Context context) {
         super(context);
@@ -118,53 +129,4 @@ public class PWToast extends Toast {
             }
         }, time);
     }
-
-    /**
-     * 直接显示PWToast
-     * @param context
-     * @param text
-     * @param time
-     */
-    public static void setTextAndShow(Context context, String text, int time){
-        if (pwToast == null) {
-            pwToast = new PWToast(context);
-        }
-        pwToast.setTextAndShow(text, time);
-    }
-
-    /**
-     * 直接显示PWToast
-     * @param stringId
-     * @param time
-     */
-    public static void setTextAndShow(Context context, int stringId, int time){
-        if (pwToast == null) {
-            pwToast = new PWToast(context);
-        }
-        pwToast.setTextAndShow(stringId, time);
-    }
-
-    /**
-     * 直接显示PWToast
-     * @param context
-     * @param text
-     */
-    public static void setTextAndShow(Context context, String text){
-        if (pwToast == null) {
-            pwToast = new PWToast(context);
-        }
-        pwToast.setTextAndShow(text);
-    }
-
-    /**
-     * 直接显示PWToast
-     * @param stringId
-     */
-    public static void setTextAndShow(Context context, int stringId){
-        if (pwToast == null) {
-            pwToast = new PWToast(context);
-        }
-        pwToast.setTextAndShow(stringId);
-    }
-
 }
