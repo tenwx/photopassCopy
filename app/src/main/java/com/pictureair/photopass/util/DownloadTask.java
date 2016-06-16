@@ -108,14 +108,14 @@ public class DownloadTask {
                             intent.putExtra("bytesWritten", mFinish * 100 / fileInfo.getLength());
                             intent.putExtra("totalSize", fileInfo.getLength());
                             context.sendBroadcast(intent);
-                            return;
+                            break;
                         }
 
                         if (System.currentTimeMillis() - time > 500) {
                             time = System.currentTimeMillis();
-                        intent.putExtra("bytesWritten", mFinish * 100 / fileInfo.getLength());
-                        intent.putExtra("totalSize", fileInfo.getLength());
-                        context.sendBroadcast(intent);
+                            intent.putExtra("bytesWritten", mFinish * 100 / fileInfo.getLength());
+                            intent.putExtra("totalSize", fileInfo.getLength());
+                            context.sendBroadcast(intent);
                         }
                         //在下载暂停时，保存下载进度
                         if (isPause) {

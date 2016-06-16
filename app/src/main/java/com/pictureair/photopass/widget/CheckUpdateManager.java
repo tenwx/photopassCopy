@@ -47,6 +47,7 @@ public class CheckUpdateManager {
     private static final int INSTALL_APK = 201;
     private static final int GENERATE_APK_FAILED = 202;
     private boolean isRegisterReceiver = false;
+    private boolean hasDestroyed = false;
     private final int UPDATE_PB = 203;
     private static final int APK_NEED_NOT_UPDATE = 204;
     private static final int APK_NEED_UPDATE = 205;
@@ -96,7 +97,7 @@ public class CheckUpdateManager {
                     break;
 
                 case API1.GET_UPDATE_FAILED:
-                    if (context != null) {
+                    if (!hasDestroyed) {
                         String updateInfo = ACache.get(context).getAsString(Common.UPDATE_INFO);
                         PictureAirLog.out("acahe--->" + updateInfo);
                         if (TextUtils.isEmpty(updateInfo)) {//缓存中没有
@@ -241,20 +242,12 @@ public class CheckUpdateManager {
         downloadURL = objsString[3];
         forceUpdate = objsString[1];
         version = objsString[0];
-        if (null == context){
+        if (hasDestroyed){
             return;
         }
         pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), objsString[2],
                 forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
         pictureWorksDialog.show();
-
-        //测试
-//        downloadURL = "http://gdown.baidu.com/data/wisegame/1f10e30a23693de1/baidushoujizhushou_16786079.apk";
-//        forceUpdate = "true";
-//        version = "3.3.3";
-//        pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), "123",
-//                forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
-//        pictureWorksDialog.show();
     }
 
     /**
@@ -331,7 +324,7 @@ public class CheckUpdateManager {
      * 确定下载
      */
     public void dialogButtonPositive() {
-        String fileName = downloadURL.substring(downloadURL.lastIndexOf("/") + 1);
+        String fileName = "SHDRPhotoPass_" + version + ".apk";
         PictureAirLog.out("apk yes --->" + fileName);
         downloadAPKFile = new File(Common.DOWNLOAD_APK_PATH + fileName);
 
@@ -358,7 +351,6 @@ public class CheckUpdateManager {
             intent.setAction(BreakpointDownloadService.ACTION_STRAT);
             intent.putExtra("fileInfo", fileInfo);
             context.startService(intent);
-//					baseCheckUpdate.downloadAPK(context,downloadURL, customProgressBarPop, version, handler);
         }
     }
 
@@ -407,6 +399,7 @@ public class CheckUpdateManager {
      * 销毁CheckUpdateManager
      */
     public void onDestroy(){
+        hasDestroyed = true;
         unregisterReceiver();
         dismissDialog();
     }
@@ -418,6 +411,7 @@ public class CheckUpdateManager {
         if (null != receiver && isRegisterReceiver){
             try{
                 context.unregisterReceiver(receiver);
+                isRegisterReceiver = false;
             }catch (Exception e){
             }
         }
@@ -431,9 +425,5 @@ public class CheckUpdateManager {
             pictureWorksDialog.dismiss();
             pictureWorksDialog = null;
         }
-        if ( null != context){
-            context = null;
-        }
     }
-
 }
