@@ -1,5 +1,6 @@
 package com.pictureair.photopass.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -33,8 +34,8 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
@@ -63,6 +64,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private static final int UPDATE_UI = 10000;
     private static final int DELETE_PHOTO = 10001;
     private boolean isDeletePhoto = false;//是否是编辑状态
+    private boolean rightDate = false;
+    private JSONArray pps;
     private MyApplication myApplication;
     private int selectedCurrent = -1;
     private int selectedTag = -1;
@@ -263,6 +266,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 } else {
                     noPhotoPassView.setVisibility(View.GONE);
                 }
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 break;
             case 2:
                 ok.setText(formaStringPPP(msg.arg1, dppp.capacity));
@@ -348,6 +354,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
+            case DialogInterface.BUTTON_POSITIVE:
+                if (rightDate) {
+                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+                    API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+                }
+                break;
+
             default:
                 break;
         }
@@ -399,6 +412,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
      * 使用已有的迪斯尼乐拍通一卡通  情况下
      */
     private void initView_selectPP1(){
+        if (!customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
         String photoPassCode = this.getIntent().getStringExtra("photoPassCode");
         final String shootTime = this.getIntent().getStringExtra("shootTime");
         String[] photoCode = null;
@@ -439,6 +455,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         ok.setText(formaStringPPP(dppp.bindInfo.size(), dppp.capacity));
         ok.setEnabled(false);
         ok.setTextColor(getResources().getColor(R.color.gray_light5));
+        if (!customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
         getPhotoUrlFromDatabase();
     }
 
@@ -526,7 +545,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 for (int i = 0; i < map.size(); i++) {
                     PictureAirLog.out("->" + map.get(i));
                 }
-                JSONArray pps = new JSONArray();
+                pps = new JSONArray();
                 tempPhotoLists = new ArrayList<>();
                 //			String binddate = null;
                 for (int j = 0; j < showPPCodeList.size(); j++) {
@@ -548,10 +567,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 }
                 if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
                         pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
+                    rightDate = false;
                     pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
                             getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
                     pictureWorksDialog.show();
                 } else {
+                    rightDate = true;
                     if(isUseHavedPPP){
                         Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
                         intent.putExtra("ppsStr",pps.toString());
@@ -559,8 +580,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         startActivity(intent);
 //                        this.finish();
                     }else{
-                        dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
-                        API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+                        pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
+                                getString(R.string.select_pp_right_date), getString(R.string.button_cancel), getString(R.string.button_ok), true, myPPHandler);
+                        pictureWorksDialog.show();
                     }
                 }
 

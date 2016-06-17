@@ -112,7 +112,9 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
             case R.id.tv_scan_ppp_code:
                 scanType = 2;
-                handler.setScanType(scanType);
+                if (handler != null) {
+                    handler.setScanType(scanType);
+                }
                 if (rlp == null) {
                     int height = ((surfaceView.getHeight() - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
                     int width = (int) (height / 85.0 * 54);

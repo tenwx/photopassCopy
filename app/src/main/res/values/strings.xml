@@ -278,6 +278,7 @@
     <string name="checkout">确定</string>
     <string name="multi_goods">迪士尼乐拍通多项商品</string>
     <string name="select_address">请选择自提地址</string>
+    <string name="special_goods">特殊商品，不享受退换服务</string>
     <!-- submit order end -->
 
     <!-- payment start -->
@@ -381,6 +382,7 @@
     <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
+    <string name="select_pp_right_date">迪士尼乐拍通一卡通只能升级连续三天日期的迪士尼乐拍通，请您确认是否继续选择升级此张迪士尼乐拍通？</string>
     <string name="outofrange">超出范围</string>
     <!-- select pp end -->
 

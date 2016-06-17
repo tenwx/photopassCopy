@@ -278,6 +278,7 @@
     <string name="checkout">OK</string>
     <string name="multi_goods">Multiple Products</string>
     <string name="select_address">Please Select Address</string>
+    <string name="special_goods">Products are non-refundable once sold</string>
     <!-- submit order end -->
 
     <!-- payment start -->
@@ -381,6 +382,7 @@
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
+    <string name="select_pp_right_date">迪士尼乐拍通一卡通只能升级连续三天日期的迪士尼乐拍通，请您确认是否继续选择升级此张迪士尼乐拍通？</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->
 

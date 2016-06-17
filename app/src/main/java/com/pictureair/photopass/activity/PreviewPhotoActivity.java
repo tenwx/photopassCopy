@@ -1141,16 +1141,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                             sec = 0;
                         }
 
-                        vTracker.addMovement(event);
-                        vTracker.computeCurrentVelocity(1000);
-                        PictureAirLog.out("vTracker----> the x velocity is "+vTracker.getXVelocity());
-                        PictureAirLog.out("vTracker----> the y velocity is "+vTracker.getYVelocity());
-                        if (vTracker.getXVelocity() > MAX_SPEED){
-                            touchSpeet = "indexLast";
-                            PictureAirLog.out("vTracker----> the -----<");
-                        } else if (vTracker.getXVelocity() < -MAX_SPEED){
-                            touchSpeet = "indexNext";
-                            PictureAirLog.out("vTracker----> the ----->");
+                        if (vTracker != null) {
+                            vTracker.addMovement(event);
+                            vTracker.computeCurrentVelocity(1000);
+                            PictureAirLog.out("vTracker----> the x velocity is "+vTracker.getXVelocity());
+                            PictureAirLog.out("vTracker----> the y velocity is "+vTracker.getYVelocity());
+                            if (vTracker.getXVelocity() > MAX_SPEED){
+                                touchSpeet = "indexLast";
+                                PictureAirLog.out("vTracker----> the -----<");
+                            } else if (vTracker.getXVelocity() < -MAX_SPEED){
+                                touchSpeet = "indexNext";
+                                PictureAirLog.out("vTracker----> the ----->");
+                            }
                         }
                         break;
 
