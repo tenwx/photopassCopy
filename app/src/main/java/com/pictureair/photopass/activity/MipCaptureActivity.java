@@ -97,8 +97,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.tv_scan_qr_code:
-                scanType = 1;
-                handler.setScanType(scanType);
+                if (handler != null) {
+                    scanType = 1;
+                    handler.setScanType(scanType);
+                } else {
+                    return;
+                }
                 ocrScanView.setVisibility(View.GONE);
                 viewfinder_view.setVisibility(View.VISIBLE);
                 tvScanQRcodeTips.setVisibility(View.VISIBLE);
@@ -111,9 +115,11 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
                 break;
             case R.id.tv_scan_ppp_code:
-                scanType = 2;
                 if (handler != null) {
+                    scanType = 2;
                     handler.setScanType(scanType);
+                } else {
+                    return;
                 }
                 if (rlp == null) {
                     int height = ((surfaceView.getHeight() - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;

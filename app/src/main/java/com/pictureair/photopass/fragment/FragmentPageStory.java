@@ -1630,7 +1630,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //扫描按钮
             case R.id.story_menu_rl:
                 if (pppPop == null ) {
-                    pppPop = new PPPPop(getActivity(), fragmentPageStoryHandler, true);
+                    pppPop = new PPPPop(getActivity(), fragmentPageStoryHandler, PPPPop.MENU_TYPE_STORY);
                 }
 
                 int[] location = new int[2];

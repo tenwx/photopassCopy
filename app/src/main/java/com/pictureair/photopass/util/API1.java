@@ -1950,12 +1950,13 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, photoId);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
+        params.put("fileType", "jpg");
+        HttpUtil1.asyncDownloadBinaryData(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
             @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
+            public void onSuccess(byte[] binaryData) {
+                super.onSuccess(binaryData);
                 PictureAirLog.e(TAG, "调用下载照片API成功");
-                handler.obtainMessage(DOWNLOAD_PHOTO_SUCCESS, jsonObject).sendToTarget();
+                handler.obtainMessage(DOWNLOAD_PHOTO_SUCCESS, binaryData).sendToTarget();
             }
 
             @Override

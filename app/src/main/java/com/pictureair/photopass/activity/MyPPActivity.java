@@ -31,10 +31,12 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
@@ -55,6 +57,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private ImageView back;
     private ListView listPP;
     private ImageView delete;
+    private RelativeLayout menuLayout;
     private ListOfPPAdapter listPPAdapter;
     private ArrayList<PPinfo> showPPCodeList;// 需要显示的List
 
@@ -86,6 +89,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private SettingUtil settingUtil;
 
     private PictureWorksDialog pictureWorksDialog;
+
+    private PPPPop pppPop;
 
     private final Handler myPPHandler = new MyPPHandler(this);
 
@@ -361,6 +366,47 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
 
+            case PPPPop.POP_DELETE://删除操作
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
+                PictureAirLog.d("==============",
+                        "点击删除按钮 showPPCodeList" + showPPCodeList.size());
+                if (isDeletePhoto) {
+                    isDeletePhoto = false;
+                    back.setImageResource(R.drawable.back_white);
+                    delete.setVisibility(View.VISIBLE);
+                    updateUI(DELETE_PHOTO);
+                } else {
+                    if (showPPCodeList.size() == 0) {
+                        return;
+                    }
+                    isDeletePhoto = true;
+                    back.setImageResource(R.drawable.cancel_my_pp);
+                    delete.setVisibility(View.GONE);
+                    updateUI(DELETE_PHOTO);
+                }
+                break;
+
+            case PPPPop.POP_SCAN://扫描
+                Intent intent = new Intent(MyPPActivity.this, MipCaptureActivity.class);
+                intent.putExtra("type", "pp");//只扫描pp
+                startActivity(intent);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
+            case PPPPop.POP_INPUT://手动输入
+                Intent intent1 = new Intent(MyPPActivity.this, InputCodeActivity.class);
+                intent1.putExtra("type", "pp");//只扫描pp
+                startActivity(intent1);
+                if (pppPop.isShowing()) {
+                    pppPop.dismiss();
+                }
+                break;
+
             default:
                 break;
         }
@@ -464,8 +510,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private void initView_notSelectPP() {
         PictureAirLog.out("not select pp");
         delete = (ImageView) findViewById(R.id.cancel);
+        pppPop = new PPPPop(this, myPPHandler, PPPPop.MENU_TYPE_PP);
+        menuLayout = (RelativeLayout) findViewById(R.id.pp_rl);
         myApplication = (MyApplication) getApplication();
-        delete.setOnClickListener(this);
+        menuLayout.setOnClickListener(this);
         // 获取PP信息
         if (!customProgressDialog.isShowing()) {
             customProgressDialog.show();
@@ -516,25 +564,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
                 break;
 
-            case R.id.cancel:// 删除按钮
-                UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
-                PictureAirLog.d("==============",
-                        "点击删除按钮 showPPCodeList" + showPPCodeList.size());
-                if (isDeletePhoto) {
-                    isDeletePhoto = false;
-                    back.setImageResource(R.drawable.back_white);
-                    delete.setVisibility(View.VISIBLE);
-                    updateUI(DELETE_PHOTO);
-                } else {
-                    if (showPPCodeList.size() == 0) {
-                        return;
-                    }
-                    isDeletePhoto = true;
-                    back.setImageResource(R.drawable.cancel_my_pp);
-                    delete.setVisibility(View.GONE);
-                    updateUI(DELETE_PHOTO);
-                }
+            case R.id.pp_rl:
+                pppPop.showAsDropDown(delete, 0, ScreenUtil.dip2px(MyPPActivity.this, 15) - 10);
                 break;
+
             //  seletePP 界面的 点击事件
             case R.id.ok://确认绑定按钮
                 HashMap<Integer, Boolean> map = listPPAdapter.getMap();

@@ -454,7 +454,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initViewCommon(){
-        pppPop = new PPPPop(this, myPPPHandler, false);
+        pppPop = new PPPPop(this, myPPPHandler, PPPPop.MENU_TYPE_PPP);
         //初始化
         newToast = new PWToast(this);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
@@ -626,8 +626,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.ppp_rl://设置按钮   + 按钮
-                int[] location = new int[2];
-                setting.getLocationOnScreen(location);
                 pppPop.showAsDropDown(setting, 0, ScreenUtil.dip2px(MyPPPActivity.this, 15) - 10);
                 break;
 

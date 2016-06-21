@@ -1483,10 +1483,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         if (next) {
             PictureAirLog.v(TAG, "--------->next");
-            currentPosition++;
+            if (currentPosition < (isEdited ? targetphotolist.size() - 1 : photolist.size() - 1)) {
+                currentPosition++;
+            } else {
+                return;
+            }
         } else {
             PictureAirLog.v(TAG, "--------->last");
-            currentPosition--;
+            if (currentPosition > 0) {
+                currentPosition--;
+            } else {
+                return;
+            }
         }
         mViewPager.setVisibility(View.VISIBLE);
         touchtoclean.setVisibility(View.GONE);
