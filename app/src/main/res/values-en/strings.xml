@@ -283,6 +283,7 @@
     <!-- payment start -->
     <string name="pay">Payment Method</string>
     <string name="payment_ways">Payment Method</string>
+    <string name="other_payment_ways">Other Payment Methods</string>
     <string name="zfbzf">Alipay</string>
     <string name="yhkzf">UnionPay</string>
     <string name="paypalzf">Payment</string>
@@ -404,6 +405,11 @@
     <string name="setting_language">Change Language</string>
     <string name="comfirm_logout">Do you want to Sign Out?</string>
     <string name="setting_language_msg">Do you want to change the language?</string>
+    <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass+</string>
+    <string name="ppp_load_all">no more data</string>
+    <string name="pull_to_refresh">pull to refresh</string>
+    <string name="release_to_refresh">release to refresh</string>
+    <string name="refreshing">refreshing…</string>
     <!-- settings end -->
 
     <!-- change language start -->

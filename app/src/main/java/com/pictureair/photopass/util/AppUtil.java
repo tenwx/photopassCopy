@@ -1628,4 +1628,13 @@ public class AppUtil {
         }
         paramContext.startActivity(intent);
     }
+
+    public static String getFormatPPCode(String originCode) {
+        if (TextUtils.isEmpty(originCode)) return "";
+        String formatRes = originCode.substring(0, 4);
+        for (int i = 0; i < 3; i++) {//4-7，8-11，12-15
+            formatRes += "-"+ originCode.substring(4 * i + 4, 4 * i + 8);
+        }
+        return formatRes;
+    }
 }

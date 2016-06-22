@@ -9,12 +9,9 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +42,9 @@ import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
+import com.pictureair.photopass.widget.pullloadlayout.MyListView;
+import com.pictureair.photopass.widget.pullloadlayout.OnRefreshListener;
+import com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -57,11 +57,11 @@ import de.greenrobot.event.Subscribe;
 /**
  * 显示用户所有的PP+或是对应某个PP而言可使用的PP+
  */
-public class MyPPPActivity extends BaseActivity implements OnClickListener {
+public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRefreshListener {
     private static final String TAG = "MyPPPActivity";
     private boolean isUseHavedPPP = false;
     private ImageView setting;
-    private ListView listPPP;
+    private MyListView listPPP;
     private ImageView back;
     private Button button_buy_ppp, button_scan_ppp; // 无PP＋时 底部的两个按钮。
     private LinearLayout ll_button_area;//无PP＋时 底部的两个按钮的区域。
@@ -75,6 +75,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     private ListOfPPPAdapter listPPPAdapter;
     private ArrayList<PPPinfo> list1;// 绑定了pp的pp+
+    private ArrayList<PPPinfo> listNormal;// 已激活未激活的pp+
+    private ArrayList<PPPinfo> listNoUse;// 已过期已用完的pp+
+    private PWToast myToast;
+
     private SharedPreferences sharedPreferences;
 
     private boolean hasOtherAvailablePPP = false;//判断是否还有其他可用的ppp
@@ -103,7 +107,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
     private ScanInfoEvent scanInfoEvent;
 
+    private int status = 0;
+    private final int normal = 1;
+    private final int unUse = 2;
+    private final int full = 3;
+    private boolean mInLayout;
+
     private final Handler myPPPHandler = new MyPPPHandler(this);
+
+    @Override
+    public void onRefresh() {
+        Message message = new Message();
+        message.what = 3;
+        myPPPHandler.sendMessageDelayed(message,1000);
+    }
 
 
     private static class MyPPPHandler extends Handler {
@@ -209,11 +226,28 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     }
                     Collections.sort(list1);
                     PictureAirLog.v(TAG, "list-=--=" + list1.size());
-                    listPPP.setVisibility(View.VISIBLE);
+                    for (int i = 0; i<list1.size(); i++) {
+                        PPPinfo info = list1.get(i);
+                        if (info.bindInfo.size() < info.capacity && info.expired == 0) {
+                            if (listNormal == null) listNormal = new ArrayList<>();
+                            listNormal.add(info);
+                        } else {
+                            if (listNoUse == null) listNoUse = new ArrayList<>();
+                            listNoUse.add(info);
+                        }
+                    }
+                    refreshLayout.setVisibility(View.VISIBLE);
                     nopppLayout.setVisibility(View.GONE);
                     ll_button_area.setVisibility(View.GONE);
-                    listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
+                    if (listNormal != null && listNormal.size() > 0) {
+                        status = normal;
+                        listPPPAdapter = new ListOfPPPAdapter(listNormal, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
+                    }else if (listNoUse != null && listNoUse.size() > 0) {
+                        status = unUse;
+                        listPPPAdapter = new ListOfPPPAdapter(listNoUse, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
+                    }
                     listPPP.setAdapter(listPPPAdapter);
+                    initLoadingView();
                 }
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 MyApplication.getInstance().setNeedRefreshPPPList(false);
@@ -381,7 +415,20 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
             case 3:
-
+                if (status != full) {
+                    if (listNoUse == null || listNoUse.size() < 1) {
+                        myToast.setTextAndShow(R.string.ppp_load_all);
+                    }else {
+                        listPPPAdapter.setArrayList(list1);
+                    }
+                    status = full;
+                    finishLoad();
+                    listPPPAdapter.notifyDataSetChanged();
+                    initLoadingView();
+                }else if (status == full){
+                    myToast.setTextAndShow(R.string.ppp_load_all);
+                    finishLoad();
+                }
                 break;
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
                 if (dialog.isShowing()) {
@@ -435,7 +482,41 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+    private void finishLoad() {
+        if (mInLayout) {
+            refreshLayout.finishRefreshing();
+        }else{
+            listPPP.finishRefreshing();
+        }
+    }
 
+    private void initLoadingView() {
+        int height = 0;
+        for(int i=0;i<listPPPAdapter.getCount();i++){
+            View temp = listPPPAdapter.getView(i,null,listPPP);
+            temp.measure(0,0);
+            height += temp.getMeasuredHeight();
+        }
+        if (height < ScreenUtil.getScreenHeight(MyPPPActivity.this) - rl_head.getHeight()) {
+            refreshLayout.setListView(listPPP);
+            refreshLayout.setFootViewVisibility(View.VISIBLE);
+            listPPP.setFootViewVisibility(View.GONE);
+            listPPP.setmNotAllowRefresh(true);
+            listPPP.removeRefreshListener();
+            refreshLayout.setOnRefreshListener(this);
+            mInLayout = true;
+        }else{
+            refreshLayout.setFootViewVisibility(View.GONE);
+            refreshLayout.setListView(null);
+            listPPP.setFootViewVisibility(View.VISIBLE);
+            refreshLayout.removeRefreshListener();
+            listPPP.setOnRefreshListener(this);
+            listPPP.setmNotAllowRefresh(false);
+            mInLayout = false;
+        }
+    }
+
+    private  RelativeLayout rl_head;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -452,7 +533,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
 
 
     }
-
     private void initViewCommon(){
         pppPop = new PPPPop(this, myPPPHandler, false);
         //初始化
@@ -466,17 +546,19 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         menuLayout = (RelativeLayout) findViewById(R.id.ppp_rl);
         setting = (ImageView) findViewById(R.id.ppp_setting);
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
-        listPPP = (ListView) findViewById(R.id.list_ppp);
+        listPPP = (MyListView) findViewById(R.id.list_ppp);
+        refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
+        rl_head = (RelativeLayout) findViewById(R.id.head);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
 
         nopppLayout.setVisibility(View.INVISIBLE);
         ll_button_area.setVisibility(View.GONE);
-        listPPP.setVisibility(View.GONE);
-
+//        listPPP.setVisibility(View.GONE);
+        refreshLayout.setVisibility(View.GONE);
         back.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
     }
-
+    private ReFreshLayout refreshLayout;
     private void initViewUseHavedPPP(){
         mTitle = (TextView) findViewById(R.id.myppp);
         mTitle.setText(R.string.select_ppp_title);
@@ -488,7 +570,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         setting.setVisibility(View.GONE);
         ok.setEnabled(false);
         ok.setTextColor(getResources().getColor(R.color.gray_light5));
-        listPPP.setVisibility(View.VISIBLE);
+        refreshLayout.setVisibility(View.VISIBLE);
         listPPPAdapter = new ListOfPPPAdapter(API1.PPPlist, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
         listPPP.setAdapter(listPPPAdapter);
     }
@@ -506,30 +588,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
         button_scan_ppp.setOnClickListener(this);
 //		optionImageView.setOnClickListener(this);
 //		optoinTextView.setOnClickListener(this);
-        listPPP.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
-                    if (list1.get(position).expericePPP == 1) {//体验卡
-                        Intent intent = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);
-                        intent.putExtra("activity", "mypppactivity");
-                        intent.putExtra("pppCode", list1.get(position).PPPCode);
-                        intent.putExtra("photoCount", 1);
-                        startActivity(intent);
-                    } else {
-                        PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
-                        ppp = list1.get(position);
-                        API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
-                    }
-                }
-
-            }
-
-        });
+        myToast = new PWToast(this);
 
     }
-
 
     //获取ppp数据
     private void GetPPPList() {
@@ -836,6 +897,10 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             pictureWorksDialog = new PictureWorksDialog(this, null, getString(R.string.update_ppp_msg), getString(R.string.update_ppp_cancel), getString(R.string.update_ppp_ok), true, myPPPHandler);
         }
         pictureWorksDialog.show();
+    }
+
+    public void pPP_Foot_Click(View view) {
+        onRefresh();
     }
 
 }

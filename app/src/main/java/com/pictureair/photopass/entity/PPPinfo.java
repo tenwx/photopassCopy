@@ -16,7 +16,7 @@ public class PPPinfo implements Parcelable , Comparable<PPPinfo>{
 
 	public String PPP_ID;//绑定的ppp的id
 	public String PPPCode;   // 对应 pppId.
-	public int capacity;//总共ppp的数量       //对应amount
+	public int capacity;//总共pp的数量       //对应amount
 	public int days;
 	public List<BindPPInfo> bindInfo = new ArrayList<BindPPInfo>();   // bindInfo 的size 对应usedNumber
 	public String ownOn;    //对应  time
