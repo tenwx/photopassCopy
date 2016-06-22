@@ -32,13 +32,13 @@ public class Common {
     /**
      * 外网可访问的8.3测试服务器
      */
-//    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
-//    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "http://211.95.27.34:3004/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
+    public static final String BASE_URL_TEST = "http://211.95.27.34:3006";
+    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
+    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
+    public final static String POLICY_AGREEMENT = "http://211.95.27.34:3004/policy.html?source=outer";  //政策 1
+    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
 
 
     /**

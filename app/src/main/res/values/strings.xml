@@ -285,6 +285,7 @@
     <!-- payment start -->
     <string name="pay">支付</string>
     <string name="payment_ways">支付方式</string>
+    <string name="other_payment_ways">更多支付方式</string>
     <string name="zfbzf">支付宝</string>
     <string name="yhkzf">银联</string>
     <string name="paypalzf">支付</string>
@@ -411,6 +412,11 @@
     <string name="setting_language">语言切换</string>
     <string name="comfirm_logout">确定退出？</string>
     <string name="setting_language_msg">您确定修改您的语言设置吗？</string>
+    <string name="ppp_deail_no_card">您还未激活任何乐拍通卡号</string>
+    <string name="ppp_load_all">没有更多数据</string>
+    <string name="pull_to_refresh">上拉可以刷新</string>
+    <string name="release_to_refresh">释放立即刷新</string>
+    <string name="refreshing">正在刷新…</string>
     <!-- settings end -->
 
     <!-- change language start -->

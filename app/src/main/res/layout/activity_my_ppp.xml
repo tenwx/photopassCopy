@@ -148,15 +148,21 @@
     </LinearLayout>
 
 
-
-    <ListView
-        android:id="@+id/list_ppp"
+    <com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout
+        android:id="@+id/ppp_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/head"
-        android:divider="@color/gray_light"
-        android:dividerHeight="@dimen/pp_height_5"
-        android:scrollbars="none"
-        android:visibility="gone" />
+        android:visibility="visible"
+        >
+            <com.pictureair.photopass.widget.pullloadlayout.MyListView
+                android:id="@+id/list_ppp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:divider="@color/gray_light"
+                android:dividerHeight="@dimen/pp_height_5"
+                android:scrollbars="none" />
+    </com.pictureair.photopass.widget.pullloadlayout.ReFreshLayout>
 
 </RelativeLayout>

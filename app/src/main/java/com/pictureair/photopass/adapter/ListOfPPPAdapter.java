@@ -1,14 +1,18 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -17,9 +21,14 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.activity.SelectPhotoActivity;
+import com.pictureair.photopass.animation.Rotate3dAnimation;
 import com.pictureair.photopass.entity.PPPinfo;
+import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -28,6 +37,7 @@ import java.util.HashMap;
 
 /**pp+数据的适配器*/
 public class ListOfPPPAdapter extends BaseAdapter {
+	private static final String TAG = "MyPPPActivity";
 	private ArrayList<?> arrayList = null;
 	private Context mContext;
 	private String pppCode = null;
@@ -39,7 +49,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private int onclickPosition;
 	private Handler handler;
 	private PWToast myToast;
-	
+	private boolean[] mInFace;
 	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
@@ -56,9 +66,25 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				.delayBeforeLoading(100)//载入图片前稍做延时可以提高整体滑动的流畅度
 				.build();
 		imageLoader = ImageLoader.getInstance();
-
+		initFaceOrNot();
 		if (isUseHavedPPP){
 			map = new HashMap<Integer, Boolean>();
+		}
+	}
+	public void initFaceOrNot() {
+		if (arrayList != null && arrayList.size() >0) {
+			if (mInFace == null) {
+				mInFace = new boolean[arrayList.size()];
+			}
+			boolean[] tmp = new boolean[arrayList.size()];
+			for (int i = 0; i < arrayList.size(); i++) {
+				if (mInFace.length > i) {
+					tmp[i] = mInFace[i];
+				}else {
+					tmp[i] = false;
+				}
+			}
+			mInFace = tmp;
 		}
 	}
 
@@ -68,6 +94,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 	public void setArrayList(ArrayList<?> arrayList) {
 		this.arrayList = arrayList;
+		initFaceOrNot();
 	}
 
 	@Override
@@ -87,8 +114,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		final ViewHolder holder;
 		PPPinfo dpp;
 		//初始化view
 		if (null == convertView) {
@@ -99,15 +126,36 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img = (ImageView)convertView.findViewById(R.id.ppp_imageView1);
 			holder.pp2_img = (ImageView)convertView.findViewById(R.id.ppp_imageView2);
 			holder.pp3_img = (ImageView)convertView.findViewById(R.id.ppp_imageView3);
-			holder.tvState =(TextView)convertView.findViewById(R.id.tv_state);
+//			holder.tvState =(TextView)convertView.findViewById(R.id.tv_state);
+			holder.tv_cardStatus = (TextView) convertView.findViewById(R.id.tv_ppp_state);
+			holder.rl_ppp_status = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_status);
+			holder.ppp_cardHeader = (RelativeLayout) convertView.findViewById(R.id.ppp_card_head);
 			holder.tvExpired = (TextView)convertView.findViewById(R.id.tv_expired);
 			holder.ppp_imageView = (ImageView) convertView.findViewById(R.id.ppp_imageView);
-			holder.pppName = (TextView) convertView.findViewById(R.id.ppp_card_name);
+//			holder.pppName = (TextView) convertView.findViewById(R.id.ppp_card_name);
 			holder.pppCardCenterCover = convertView.findViewById(R.id.card_center);
+			holder.ppp_content = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_content);
+			holder.tv_pp_num1 = (TextView) convertView.findViewById(R.id.pp_detail_num1);
+			holder.tv_pp_date1 = (TextView) convertView.findViewById(R.id.pp_detail_date1);
+			holder.tv_pp_num2 = (TextView) convertView.findViewById(R.id.pp_detail_num2);
+			holder.tv_pp_date2 = (TextView) convertView.findViewById(R.id.pp_detail_date2);
+			holder.tv_pp_num3 = (TextView) convertView.findViewById(R.id.pp_detail_num3);
+			holder.tv_pp_date3 = (TextView) convertView.findViewById(R.id.pp_detail_date3);
+			holder.tv_ppp_no_pp = (TextView) convertView.findViewById(R.id.ppp_detail_no_pp);
+			holder.ppp_detail_pp1 = (RelativeLayout) convertView.findViewById(R.id.rl_detail_pp1);
+			holder.ppp_detail_pp2 = (RelativeLayout) convertView.findViewById(R.id.rl_detail_pp2);
+			holder.ppp_detail_pp3 = (RelativeLayout) convertView.findViewById(R.id.rl_detail_pp3);
+			holder.ll_ppp_with_pp = (LinearLayout) convertView.findViewById(R.id.ppp_detail_with_pp);
+			holder.ppp_detail = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_detail);
+			holder.ppp_face = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_face);
 			ViewGroup.LayoutParams params = holder.ppp_imageView.getLayoutParams();
 			params.width = ScreenUtil.getScreenWidth(mContext);
 			params.height = params.width * 3 / 5;
 			holder.ppp_imageView.setLayoutParams(params);
+			ViewGroup.LayoutParams params1 = holder.ppp_detail.getLayoutParams();
+			params1.width = params.width;
+			params1.height = params.height;
+			holder.ppp_detail.setLayoutParams(params);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -119,6 +167,50 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.ppp_item);
 			holder.img_no_check.setOnClickListener(childClickListener);
 			holder.itemLayout.setOnClickListener(childClickListener);
+		}else{
+			childClickListener = new OnItemChildClickListener(position);
+			holder.ppp_cardHeader.setOnClickListener(childClickListener);
+			holder.ppp_content.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Rotate3dAnimation animation = null;
+					Rotate3dAnimation animation1 = null;
+					if (!mInFace[position]) {
+						animation = new Rotate3dAnimation(0, -180, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
+						animation1 = new Rotate3dAnimation(180, 360, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
+					}else{
+						animation = new Rotate3dAnimation(0,180, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
+						animation1 = new Rotate3dAnimation(180,0, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
+					}
+					animation.setDuration(500);
+					animation.setInterpolator(new LinearInterpolator());
+					animation.setAnimationListener(new Animation.AnimationListener() {
+						@Override
+						public void onAnimationStart(Animation animation) {}
+						@Override
+						public void onAnimationEnd(Animation animation) {
+							if (!mInFace[position]) {
+								hideFace(holder);
+								mInFace[position] = true;
+							}else{
+								hideOppsite(holder);
+								mInFace[position] = false;
+							}
+						}
+
+						@Override
+						public void onAnimationRepeat(Animation animation) {}
+					});
+					if (!mInFace[position]) {
+						holder.ppp_face.startAnimation(animation);
+						holder.ppp_detail.startAnimation(animation1);
+					}else{
+						holder.ppp_detail.startAnimation(animation);
+						holder.ppp_face.startAnimation(animation1);
+
+					}
+				}
+			});
 		}
 
 		dpp = (PPPinfo) arrayList.get(position);
@@ -128,17 +220,44 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	private void hideFace(ViewHolder holder) {
+		holder.ppp_face.setVisibility(View.GONE);
+		holder.ppp_detail.setVisibility(View.VISIBLE);
+	}
+
+	private void hideOppsite(ViewHolder holder) {
+		holder.ppp_face.setVisibility(View.VISIBLE);
+		holder.ppp_detail.setVisibility(View.GONE);
+	}
+
 	private class ViewHolder {
 		TextView time;//绑定的时间
 		TextView pppNumber;//ppp卡的序列号
 		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
-		TextView tvState; //状态
+//		TextView tvState; //状态
 		TextView tvExpired; //日期
 		ImageView ppp_imageView;//背景图
 		View pppCardCenterCover;
-		TextView pppName;
+//		TextView pppName;
 		ImageView img_no_check; // 左边的选择框
 		LinearLayout itemLayout;
+		TextView tv_cardStatus;//PPP卡状态
+		RelativeLayout ppp_cardHeader;//三个米奇头的外部容器
+		RelativeLayout ppp_content;
+		RelativeLayout ppp_detail;
+		RelativeLayout ppp_detail_pp1;
+		RelativeLayout ppp_detail_pp2;
+		RelativeLayout ppp_detail_pp3;
+		LinearLayout ll_ppp_with_pp;
+		RelativeLayout ppp_face;
+		RelativeLayout rl_ppp_status;
+		TextView tv_pp_num1;
+		TextView tv_pp_num2;
+		TextView tv_pp_num3;
+		TextView tv_pp_date1;
+		TextView tv_pp_date2;
+		TextView tv_pp_date3;
+		TextView tv_ppp_no_pp;
 	}
 
 
@@ -159,16 +278,17 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 		//初始化背景图片
 		ImageAware imageAware = new ImageViewAware(holder.ppp_imageView, false);
-		if (holder.ppp_imageView.getTag() == null || !holder.ppp_imageView.getTag().equals(dpp.pppCardBg)) {
-			imageLoader.displayImage(Common.PHOTO_URL + dpp.pppCardBg, imageAware, options);
-			holder.ppp_imageView.setTag(dpp.pppCardBg);
+		if (holder.ppp_imageView.getTag() == null || !holder.ppp_imageView.getTag().equals(R.drawable.ppp_face)) {//dpp.pppCardBg
+//			imageLoader.displayImage(Common.PHOTO_URL + dpp.pppCardBg, imageAware, options);
+			holder.ppp_imageView.setImageResource(R.drawable.ppp_face);
+			holder.ppp_imageView.setTag(R.drawable.ppp_face);//dpp.pppCardBg
 		}
 
 		//设置过期时间
 		if (dpp.expiredOn.equals("") || dpp.expericePPP == 1) { // 如果有效期为空。就不显示，如果不为空，就显示。
 			holder.tvExpired.setText("");
 		} else {
-			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) + AppUtil.GTMToLocal(dpp.expiredOn).substring(0, 10));
+			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) +"\n"+ AppUtil.GTMToLocal(dpp.expiredOn).substring(0, 10));
 		}
 
 		//设置过期/已用完的透明层
@@ -180,47 +300,69 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 		//初始化PPP使用情况
 		if (dpp.expericePPP == 1) {//体验卡
-			holder.pppName.setText(R.string.experiencephotopassplus);
+//			holder.pppName.setText(R.string.experiencephotopassplus);
 			holder.pp1_img.setVisibility(View.INVISIBLE);
 			holder.pp2_img.setVisibility(View.INVISIBLE);
 			holder.pp3_img.setVisibility(View.INVISIBLE);
 			if (dpp.bindInfo.size() == 0) {//未使用
-				holder.tvState.setText(R.string.no_activated);
+				holder.tv_cardStatus.setText(R.string.no_activated);
 			} else {//已使用
-				holder.tvState.setText(R.string.ppp_has_used);
+				holder.tv_cardStatus.setText(R.string.ppp_has_used);
 			}
 		} else {//普通ppp
-			holder.pppName.setText(R.string.mypage_ppp);
+//			holder.pppName.setText(R.string.mypage_ppp);
 			holder.pp1_img.setVisibility(View.VISIBLE);
 			holder.pp2_img.setVisibility(View.VISIBLE);
 			holder.pp3_img.setVisibility(View.VISIBLE);
 			switch (dpp.bindInfo.size()) {
 				case 0://全新的
-					holder.tvState.setText(R.string.no_activated);
+					holder.tv_cardStatus.setText(R.string.no_activated);
 					holder.pp1_img.setImageResource(R.drawable.no_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+					holder.tv_ppp_no_pp.setVisibility(View.VISIBLE);
+					holder.ll_ppp_with_pp.setVisibility(View.GONE);
 					break;
 
 				case 1://用过一张
-					holder.tvState.setText(R.string.activated);
+					holder.tv_cardStatus.setText(R.string.activated);
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
+					holder.ppp_detail_pp2.setVisibility(View.INVISIBLE);
+					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
+					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
+					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
 					break;
-
 				case 2://用过两张
-					holder.tvState.setText(R.string.activated);
+					holder.tv_cardStatus.setText(R.string.activated);
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
+					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
+					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
+					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
+					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
+					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
+					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate);
 					break;
 
 				case 3://全部用过
-					holder.tvState.setText(R.string.ppp_has_used);
+					holder.tv_cardStatus.setText(R.string.ppp_has_used);
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.has_ppp_icon);
+					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
+					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
+					holder.ppp_detail_pp3.setVisibility(View.VISIBLE);
+					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
+					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
+					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
+					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate);
+					holder.tv_pp_num3.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(2).customerId));
+					holder.tv_pp_date3.setText(dpp.bindInfo.get(2).bindDate);
 					break;
 
 				default:
@@ -232,23 +374,28 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					if (dpp.bindInfo.size() == 1) {//已用完
 
 					} else {//过期
-						holder.tvState.setText(R.string.ppp_has_expired);
+						holder.tv_cardStatus.setText(R.string.ppp_has_expired);
 					}
 				} else {//正常ppp卡
 					if (dpp.bindInfo.size() == 3) {//已用完
 
 					} else {//过期
-						holder.tvState.setText(R.string.ppp_has_expired);
+						holder.tv_cardStatus.setText(R.string.ppp_has_expired);
 					}
 				}
 			}
 
+			if (!mInFace[position]) {
+				hideOppsite(holder);
+			}else{
+				hideFace(holder);
+			}
 
 			//如果是选择 pp＋的状态
 			if (isUseHavedPPP) {
 				//显示单选框，隐藏状态
 				holder.img_no_check.setVisibility(View.VISIBLE);
-				holder.tvState.setVisibility(View.GONE);
+				holder.rl_ppp_status.setVisibility(View.GONE);
 
 				//判断 选择框的选中 和 非选中状态。
 				if (map.size() == 1) {
@@ -263,6 +410,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.img_no_check.setImageResource(R.drawable.nosele);
 				}
 			}
+
+
 
 		}
 	}
@@ -299,12 +448,34 @@ public class ListOfPPPAdapter extends BaseAdapter {
 						notifyDataSetChanged();
 						handler.sendEmptyMessage(2);
 						break;
+					case R.id.ppp_card_head:
+						PPPinfo info = (PPPinfo)arrayList.get(position);
+						if (info.bindInfo.size() < info.capacity && info.expired == 0) {
+							if (info.expericePPP == 1) {//体验卡
+								Intent intent = new Intent(mContext, SelectPhotoActivity.class);
+								intent.putExtra("activity", "mypppactivity");
+								intent.putExtra("pppCode", info.PPPCode);
+								intent.putExtra("photoCount", 1);
+								mContext.startActivity(intent);
+							} else {
+								PictureAirLog.v(TAG, "pppSize :" + info.PPPCode);
+//								ppp = list1.get(position);
+								API1.getPPsByPPPAndDate(info.PPPCode, handler);
+							}
+						}
+						break;
+//					case R.id.rl_ppp_content:
+//						Rotate3dAnimation rotate1 = new Rotate3dAnimation(0,180,,0.5f,10,false);
+//						rotate1.in
 
+//						break;
 					default:
 						break;
 				}
 		}
 	}
+
+
 
 
 	public HashMap<Integer, Boolean> getMap() {
