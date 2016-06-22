@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -25,6 +26,8 @@ import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.ScanInfoEvent;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -43,6 +46,9 @@ import com.pictureair.photopass.widget.PictureWorksDialog;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 
 /*
@@ -84,7 +90,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private TextView ok;
     private PPPinfo dppp;
     private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
-    private CustomProgressDialog dialog;
     private PWToast myToast;
     private SettingUtil settingUtil;
 
@@ -94,6 +99,11 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     private final Handler myPPHandler = new MyPPHandler(this);
 
+    private ScanInfoEvent scanInfoEvent;
+
+    private static final int SCAN_PP_CODE_SUCCESS = 111;
+
+    private boolean isOnResume = false;
 
     private static class MyPPHandler extends Handler{
         private final WeakReference<MyPPActivity> mActivity;
@@ -293,8 +303,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     listPP.setVisibility(View.GONE);
                 }
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
                 }
                 break;
 
@@ -355,13 +365,17 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
-                dialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             case DialogInterface.BUTTON_POSITIVE:
                 if (rightDate) {
-                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+                    if (!customProgressDialog.isShowing()) {
+                        customProgressDialog.show();
+                    }
                     API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
                 }
                 break;
@@ -407,6 +421,14 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
 
+            case SCAN_PP_CODE_SUCCESS:
+                if (isOnResume) {
+                    dealPPresult();
+                } else {
+                    myPPHandler.sendEmptyMessageDelayed(SCAN_PP_CODE_SUCCESS, 50);
+                }
+                break;
+
             default:
                 break;
         }
@@ -422,7 +444,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         isUseHavedPPP =  getIntent().getBooleanExtra("isUseHavedPPP",false);
         if (isUseHavedPPP){
             initView_selectPP1();
-            tvTitle.setText(R.string.selectionpp);  //选择PP界面
+            tvTitle.setText(R.string.selectionpp);  //通过模糊图进入的选择PP界面
         }else{
             dppp = getIntent().getParcelableExtra("ppp");
             if (dppp != null) {
@@ -504,6 +526,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         if (!customProgressDialog.isShowing()) {
             customProgressDialog.show();
         }
+        View view = LayoutInflater.from(this).inflate(R.layout.pp_header, null);
+        listPP.addHeaderView(view);
         getPhotoUrlFromDatabase();
     }
 
@@ -512,6 +536,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         delete = (ImageView) findViewById(R.id.cancel);
         pppPop = new PPPPop(this, myPPHandler, PPPPop.MENU_TYPE_PP);
         menuLayout = (RelativeLayout) findViewById(R.id.pp_rl);
+        menuLayout.setVisibility(View.VISIBLE);
         myApplication = (MyApplication) getApplication();
         menuLayout.setOnClickListener(this);
         // 获取PP信息
@@ -536,7 +561,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             PictureAirLog.out(" no select pp ---> return");
             return;
         }
-            PictureAirLog.out(" no select pp ---> not return");
+        PictureAirLog.out(" no select pp ---> not return");
 
         updateUI(UPDATE_UI);
     }
@@ -580,7 +605,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 }
                 pps = new JSONArray();
                 tempPhotoLists = new ArrayList<>();
-                //			String binddate = null;
+                String selectedString = "";
                 for (int j = 0; j < showPPCodeList.size(); j++) {
                     JSONObject jsonObject = new JSONObject();
                     if (null != map.get(j) && map.get(j)) {
@@ -591,6 +616,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                             photoInfo.photoId = showPPCodeList.get(j).getPpCode();
                             photoInfo.shootTime = showPPCodeList.get(j).getShootDate();
                             tempPhotoLists.add(photoInfo);
+                            selectedString += String.format(getString(R.string.select_pp), showPPCodeList.get(j).getPpCode(), showPPCodeList.get(j).getShootDate());
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -614,7 +640,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 //                        this.finish();
                     }else{
                         pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
-                                getString(R.string.select_pp_right_date), getString(R.string.button_cancel), getString(R.string.button_ok), true, myPPHandler);
+                                String.format(getString(R.string.select_pp_right_date), selectedString),
+                                getString(R.string.button_cancel), getString(R.string.button_ok), true, myPPHandler);
                         pictureWorksDialog.show();
                     }
                 }
@@ -630,6 +657,10 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        isOnResume = true;
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         if (!isUseHavedPPP && dppp == null) {
             PictureAirLog.out("MyPPActivity----->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
@@ -695,6 +726,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         myPPHandler.removeCallbacksAndMessages(null);
     }
 
@@ -727,8 +761,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private void goIntent() {
         Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
         API1.PPPlist.clear();
-        if (dialog.isShowing()) {
-            dialog.dismiss();
+        if (customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
         }
         startActivity(intent);
         finish();
@@ -738,7 +772,63 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
+        isOnResume = false;
     }
 
+    @Subscribe
+    public void onUserEvent(BaseBusEvent baseBusEvent) {
+        if (baseBusEvent instanceof ScanInfoEvent) {
+            scanInfoEvent = (ScanInfoEvent) baseBusEvent;
+            String result = scanInfoEvent.getResult();
+            PictureAirLog.out("mypp----->" + result);
+            if (scanInfoEvent.getCodeType().equals("pp")) {
+                myPPHandler.sendEmptyMessageDelayed(SCAN_PP_CODE_SUCCESS, 50);
+            }
+            EventBus.getDefault().removeStickyEvent(scanInfoEvent);
+        }
+    }
+
+    /**
+     * 处理扫描得到的pp
+     */
+    private void dealPPresult() {
+        String pppResultStr = scanInfoEvent.getResult();
+        String errorMessage = null;
+        if (pppResultStr.contains("ppOK")) {//ppp绑定成功，需要重新获取ppp信息
+            getPPList(pppResultStr);
+            return;
+
+        } else if (pppResultStr.equals("failed")) {//扫描失败
+            int id = scanInfoEvent.getErrorType();
+            PictureAirLog.v(TAG, "------>" + id);
+            switch (id) {
+                case R.string.http_error_code_6055:
+                    errorMessage = getString(R.string.not_pp_card);
+                    break;
+
+                default:
+                    errorMessage = getString(id);
+                    break;
+            }
+
+        } else if (pppResultStr.equals("notSame")) {//卡片类型不一致
+            errorMessage = getString(R.string.not_pp_card);
+
+        }
+        PictureWorksDialog pictureWorksDialog = new PictureWorksDialog(this, null, errorMessage, null, getString(R.string.dialog_ok1), true, myPPHandler);
+        pictureWorksDialog.show();
+    }
+
+    /**
+     * 获取pp数据
+     * 1.根据code，先从网络获取图片信息，存入数据库
+     * 2.获取最新的pp列表
+     */
+    private void getPPList(String code) {
+//        if (!customProgressDialog.isShowing()) {
+//            customProgressDialog.show();
+//        }
+//        API1.getPPSByUserId(myPPHandler);
+    }
 
 }

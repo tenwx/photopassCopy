@@ -221,8 +221,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     dialog.dismiss();
                 }
                 PictureAirLog.out("scan failed----->");
-                if (msg.obj != null) {//从ppp页面过来，需要返回
-                    EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false));
+                if (msg.obj != null) {//从ppp,PP页面过来，需要返回
+                    EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false, getIntent().getStringExtra("type")));
                     finish();
                 } else {
                     mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
@@ -234,24 +234,23 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     dialog.dismiss();
                 }
 
-                if (msg.obj != null) {//从ppp过来
+                if (msg.obj != null) {
                     Bundle bundle = (Bundle) msg.obj;
                     PictureAirLog.out("status-------->" + bundle.getInt("status"));
-                    if (bundle.getInt("status") == 1) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
-                    } else if (bundle.getInt("status") == 2) {//将pp码返回
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), bundle.getBoolean("hasBind")));
-                    } else if (bundle.getInt("status") == 3) {
+                    if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type")));
+
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS) {
                         Intent intent2 = new Intent(MipCaptureActivity.this, MyPPPActivity.class);
                         API1.PPPlist.clear();
                         startActivity(intent2);
-                    } else if (bundle.getInt("status") == 4) {
+
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putBoolean(Common.NEED_FRESH, true);
                         editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
                         editor.commit();
-                    } else if (bundle.getInt("status") == 5) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
+
                     }
                     finish();
                 } else {
@@ -377,9 +376,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             Intent intent = new Intent();
             intent.setClass(this, InputCodeActivity.class);
             intent.putExtra("type", getIntent().getStringExtra("type"));
-            intent.putExtra("needbind", getIntent().getStringExtra("needbind"));
-            intent.putExtra("binddate", getIntent().getStringExtra("binddate"));
-            intent.putExtra("pppid", getIntent().getStringExtra("pppid"));
             startActivity(intent);
             finish();
             return;
@@ -476,9 +472,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 //跳转到输入  code 的界面。
                 Intent i = new Intent(MipCaptureActivity.this, InputCodeActivity.class);
                 i.putExtra("type", getIntent().getStringExtra("type"));
-                i.putExtra("needbind", getIntent().getStringExtra("needbind"));
-                i.putExtra("binddate", getIntent().getStringExtra("binddate"));
-                i.putExtra("pppid", getIntent().getStringExtra("pppid"));
                 startActivity(i);
             default:
                 break;
@@ -556,9 +549,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                     Intent intent = new Intent();
                     intent.setClass(this, InputCodeActivity.class);
                     intent.putExtra("type", getIntent().getStringExtra("type"));
-                    intent.putExtra("needbind", getIntent().getStringExtra("needbind"));
-                    intent.putExtra("binddate", getIntent().getStringExtra("binddate"));
-                    intent.putExtra("pppid", getIntent().getStringExtra("pppid"));
                     startActivity(intent);
                     finish();
                 }

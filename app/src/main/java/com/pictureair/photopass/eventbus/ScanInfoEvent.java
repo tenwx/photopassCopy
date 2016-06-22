@@ -1,7 +1,5 @@
 package com.pictureair.photopass.eventbus;
 
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-
 /**
  * Created by bauer_bao on 15/12/28.
  */
@@ -9,11 +7,13 @@ public class ScanInfoEvent implements BaseBusEvent {
     private int errorType;
     private String result;
     private boolean hasBind;
+    private String codeType;
 
-    public ScanInfoEvent(int errorType, String result, boolean hasBind) {
+    public ScanInfoEvent(int errorType, String result, boolean hasBind, String codeType) {
         this.errorType = errorType;
         this.result = result;
         this.hasBind = hasBind;
+        this.codeType = codeType;
     }
 
     public boolean isHasBind() {
@@ -38,5 +38,13 @@ public class ScanInfoEvent implements BaseBusEvent {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public String getCodeType() {
+        return codeType;
+    }
+
+    public void setCodeType(String codeType) {
+        this.codeType = codeType;
     }
 }

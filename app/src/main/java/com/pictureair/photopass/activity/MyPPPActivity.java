@@ -682,7 +682,9 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
             scanInfoEvent = (ScanInfoEvent) baseBusEvent;
             String result = scanInfoEvent.getResult();
             PictureAirLog.out("myppp----->" + result);
-            myPPPHandler.sendEmptyMessageDelayed(SCAN_PPP_CODE_SUCCESS, 50);
+            if (scanInfoEvent.getCodeType().equals("ppp")) {
+                myPPPHandler.sendEmptyMessageDelayed(SCAN_PPP_CODE_SUCCESS, 50);
+            }
             EventBus.getDefault().removeStickyEvent(scanInfoEvent);
         }
     }
@@ -724,7 +726,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener {
                     .setCancelable(false)
                     .create();
             customdialog.show();
-        } else {//返回pp码，弹框，询问是否绑定
+        } else {//返回pp码，弹框，询问是否绑定，目前已经没有这个流程
 
             customdialog = new CustomDialog.Builder(MyPPPActivity.this)
                     .setMessage(getString(R.string.bind_pp_now))

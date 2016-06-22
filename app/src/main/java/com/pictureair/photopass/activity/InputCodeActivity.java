@@ -82,25 +82,23 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                     dialog.dismiss();
                 }
 
-                if (msg.obj != null) {//从ppp过来
+                if (msg.obj != null) {
                     Intent intent2 = new Intent();
                     Bundle bundle = (Bundle) msg.obj;
-                    if (bundle.getInt("status") == 1) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
-                    } else if (bundle.getInt("status") == 2) {//将pp码返回
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), bundle.getBoolean("hasBind")));
-                    } else if (bundle.getInt("status") == 3) {
+                    if (bundle.getInt("status") == DealCodeUtil.STATE_RETURN_MSG) {
+                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false, getIntent().getStringExtra("type")));
+
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS) {
                         intent2.setClass(InputCodeActivity.this, MyPPPActivity.class);
                         API1.PPPlist.clear();
                         startActivity(intent2);
-                    } else if (bundle.getInt("status") == 4) {
+
+                    } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putBoolean(Common.NEED_FRESH, true);
                         editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
                         editor.commit();
-                    } else if (bundle.getInt("status") == 5) {
-                        EventBus.getDefault().post(new ScanInfoEvent(0, bundle.getString("result"), false));
-                        PictureAirLog.out("scan ppp success and start back");
+
                     }
                 }
                 AppManager.getInstance().killActivity(MipCaptureActivity.class);

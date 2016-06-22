@@ -1,8 +1,10 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +26,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
+import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +41,29 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     private ImageLoader imageLoader;
     private GroupHolderView groupHolderView;
     private ChildHolderView hView;
+    private PictureWorksDialog pictureWorksDialog;
 
     private int screenWight;
 
     private Handler handler;
+
+    private int deletePosition;
+
+    private Handler adapterHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    PictureAirLog.out("ok----->");
+                    API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition).getCartItemInfos(), handler);
+                    break;
+
+                default:
+                    break;
+            }
+            return false;
+        }
+    });
 
     public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler) {
         this.context = context;
@@ -101,10 +123,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        // 布局混乱。每次都重新加载。
-//        if (groupPosition != -1) {
-//            convertView = null;
-//        }
         if (convertView == null) {
             groupHolderView = new GroupHolderView();
             convertView = mInflater.inflate(R.layout.order_item, null);
@@ -114,6 +132,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             groupHolderView.orderNumberTextView = (TextView) convertView.findViewById(R.id.order_number);
             groupHolderView.totalPriceTextView = (TextView) convertView.findViewById(R.id.order_total_price);
             groupHolderView.paymentButton = (Button) convertView.findViewById(R.id.order_payment1);
+            groupHolderView.deleteButton = (Button) convertView.findViewById(R.id.order_delete);
             groupHolderView.currencyTextView = (TextView) convertView.findViewById(R.id.order_price_currency);
             convertView.setTag(groupHolderView);
         } else {
@@ -127,11 +146,10 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             case 1:
                 //1等待买家付款
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
-                groupHolderView.paymentButton.setText(R.string.payment_order_btn);
-                groupHolderView.paymentButton.setBackgroundResource(R.drawable.button_blue);
-                groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.white));
+                groupHolderView.deleteButton.setVisibility(View.VISIBLE);
                 groupHolderView.orderStatesTextView.setText(R.string.order_unpaid);
                 groupHolderView.paymentButton.setClickable(true);
+                groupHolderView.deleteButton.setClickable(true);
                 break;
 
             case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
@@ -141,31 +159,31 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                 if (grouplist.get(groupPosition).productEntityType == 0) {
                     //3为虚拟类商品无须快递
                     groupHolderView.orderStatesTextView.setText(R.string.order_completed);
-                    groupHolderView.paymentButton.setVisibility(View.VISIBLE);
-                    groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.pp_orange));
-                    groupHolderView.paymentButton.setText(R.string.delete_order_btn);
-                    groupHolderView.paymentButton.setBackgroundColor(context.getResources().getColor(R.color.white));
+                    groupHolderView.paymentButton.setVisibility(View.GONE);
+                    groupHolderView.deleteButton.setVisibility(View.VISIBLE);
                 } else {
                     groupHolderView.orderStatesTextView.setText(R.string.order_paid);
                     groupHolderView.paymentButton.setVisibility(View.GONE);
+                    groupHolderView.deleteButton.setVisibility(View.GONE);
                 }
                 groupHolderView.paymentButton.setClickable(true);
+                groupHolderView.deleteButton.setClickable(true);
                 break;
             case 6:
                 //已付款，服务器未返回推送
                 groupHolderView.paymentButton.setVisibility(View.VISIBLE);
-                groupHolderView.paymentButton.setText(R.string.payment_order_btn);
-                groupHolderView.paymentButton.setBackgroundResource(R.drawable.button_gray);
-                groupHolderView.paymentButton.setTextColor(context.getResources().getColor(R.color.white));
+                groupHolderView.deleteButton.setVisibility(View.VISIBLE);
                 groupHolderView.orderStatesTextView.setText(R.string.order_pending);
                 groupHolderView.paymentButton.setClickable(false);
+                groupHolderView.deleteButton.setClickable(false);
 
                 break;
 
             default:
                 break;
         }
-        groupHolderView.paymentButton.setOnClickListener(new orderOnlickListener(grouplist.get(groupPosition).orderStatus, groupPosition));
+        groupHolderView.paymentButton.setOnClickListener(new orderOnlickListener(true, groupPosition));
+        groupHolderView.deleteButton.setOnClickListener(new orderOnlickListener(false, groupPosition));
         groupHolderView.currencyTextView.setText(currency);
 
         return convertView;
@@ -238,6 +256,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
         TextView currencyTextView;//币种
         TextView totalPriceTextView;//订单总价
         Button paymentButton;//支付按钮，快递按钮，再次购买按钮，三个功能
+        Button deleteButton;
     }
 
     private class ChildHolderView {
@@ -250,61 +269,56 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     }
 
     private class orderOnlickListener implements OnClickListener {
-        private int type;
+        private boolean isPay;
         private int position;
 
-        public orderOnlickListener(int type, int position) {
+        public orderOnlickListener(boolean isPay, int position) {
             // TODO Auto-generated constructor stub
-            this.type = type;
+            this.isPay = isPay;
             this.position = position;
         }
 
         @Override
         public void onClick(View v) {
             Intent intent = null;
-            switch (type) {
-                case 1://1等待买家付款
-                    intent = new Intent(context, PaymentOrderActivity.class);
+            if (isPay) {//支付
+                intent = new Intent(context, PaymentOrderActivity.class);
 
-                    intent.putExtra("flag", "order");
-                    intent.putExtra("deliveryInfo", grouplist.get(position));
-                    //childlist
-                    String orderName, orderIntroduce = null;
-                    if (childlist.get(position).getCartItemInfos().size() == 1) {
-                        orderName = childlist.get(position).getCartItemInfos().get(0).getProductName();
-                        orderIntroduce = childlist.get(position).getCartItemInfos().get(0).getProductName()
-                                + childlist.get(position).getCartItemInfos().get(0).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(0).getQty();
-                    } else {
-                        orderName = context.getString(R.string.multi_goods);
-                        for (int i = 0; i < childlist.get(position).getCartItemInfos().size(); i++) {
-                            if (i == 0) {
-                                orderIntroduce = childlist.get(position).getCartItemInfos().get(i).getProductName()
-                                        + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
-                            } else {
-                                orderIntroduce += "," + childlist.get(position).getCartItemInfos().get(i).getProductName()
-                                        + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
-                            }
+                intent.putExtra("flag", "order");
+                intent.putExtra("deliveryInfo", grouplist.get(position));
+                //childlist
+                String orderName, orderIntroduce = null;
+                if (childlist.get(position).getCartItemInfos().size() == 1) {
+                    orderName = childlist.get(position).getCartItemInfos().get(0).getProductName();
+                    orderIntroduce = childlist.get(position).getCartItemInfos().get(0).getProductName()
+                            + childlist.get(position).getCartItemInfos().get(0).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(0).getQty();
+                } else {
+                    orderName = context.getString(R.string.multi_goods);
+                    for (int i = 0; i < childlist.get(position).getCartItemInfos().size(); i++) {
+                        if (i == 0) {
+                            orderIntroduce = childlist.get(position).getCartItemInfos().get(i).getProductName()
+                                    + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
+                        } else {
+                            orderIntroduce += "," + childlist.get(position).getCartItemInfos().get(i).getProductName()
+                                    + childlist.get(position).getCartItemInfos().get(i).getUnitPrice() + "*" + childlist.get(position).getCartItemInfos().get(i).getQty();
                         }
                     }
-                    PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
-                    intent.putExtra("name", orderName);
-                    intent.putExtra("introduce", orderIntroduce);
-                    context.startActivity(intent);
-                    break;
+                }
+                PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
+                intent.putExtra("name", orderName);
+                intent.putExtra("introduce", orderIntroduce);
+                context.startActivity(intent);
 
-                case 2://2买家已付款（等待卖家发货），3卖家已发货（等待买家确认）
-                case 3:
-                case 4://4交易成功，5交易关闭,订单冻结,暂时这个功能不开放
-                case 5:
-                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position).getCartItemInfos(), handler);
-                    break;
-
-                default:
-                    break;
+            } else {//删除
+                deletePosition = position;
+                if (pictureWorksDialog == null) {
+                    pictureWorksDialog = new PictureWorksDialog(context, null, context.getString(R.string.order_delete_msg),
+                            context.getResources().getString(R.string.button_cancel), context.getResources().getString(R.string.button_ok), true, adapterHandler);
+                }
+                pictureWorksDialog.show();
             }
         }
 
     }
-
 
 }

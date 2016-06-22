@@ -42,7 +42,8 @@
             android:paddingBottom="@dimen/pp_padding_15"
             android:paddingLeft="@dimen/pp_margin_8"
             android:paddingRight="@dimen/pp_padding_8"
-            android:paddingTop="@dimen/pp_padding_15">
+            android:paddingTop="@dimen/pp_padding_15"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/cancel"

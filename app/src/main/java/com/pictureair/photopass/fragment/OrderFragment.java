@@ -25,20 +25,19 @@ import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.OrderFragmentEvent;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.OrderInfoDateSortUtil;
 import com.pictureair.photopass.util.OrderProductDateSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.pictureair.photopass.util.AppManager;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -198,22 +197,8 @@ public class OrderFragment extends Fragment {
         allOrderAdapter = new OrderListViewAdapter(context, orderList, childlist, currency, handler);
         orderListView.setGroupIndicator(null);
         orderListView.setAdapter(allOrderAdapter);
-        switch (tab) {
-            case 0://未付款
-                orderListView.setOnGroupClickListener(new GroupOnClick(0));
-                orderListView.setOnChildClickListener(new ChildOnClick(0));
-                break;
-            case 1://已付款，未收货
-                orderListView.setOnGroupClickListener(new GroupOnClick(1));
-                orderListView.setOnChildClickListener(new ChildOnClick(1));
-                break;
-            case 2://订单完成
-                orderListView.setOnGroupClickListener(new GroupOnClick(2));
-                orderListView.setOnChildClickListener(new ChildOnClick(2));
-                break;
-            default:
-                break;
-        }
+        orderListView.setOnGroupClickListener(new GroupOnClick(tab));
+        orderListView.setOnChildClickListener(new ChildOnClick(tab));
 
         if (orderList == null || orderList.size() == 0) {
             orderListView.setVisibility(View.GONE);

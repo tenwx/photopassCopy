@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
@@ -29,9 +28,6 @@ public class DealCodeUtil {
 	private String codeType;
 	private PWToast myToast;
 	private String dealWay;
-	private String needBind;
-	private String bindData;
-	private String pppId;
 	private boolean isInputAct;
 	private SharedPreferences sharedPreferences;
 
@@ -45,9 +41,19 @@ public class DealCodeUtil {
 	public static final int DEAL_CODE_SUCCESS = 3;
 
 	/**
-	 * 结果和需要的不一致
+	 * 需要返回信息
 	 */
-	public static final int STATE_NOT_SAME = 1;
+	public static final int STATE_RETURN_MSG = 1;
+
+	/**
+	 * 绑定pp成功，不需要返回信息
+	 */
+	public static final int STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS = 4;
+
+	/**
+	 * 正常流程进入，并且绑定ppp或者coupon成功，不需要将结果返回
+	 */
+	public static final int STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS = 3;
 
 	private int id = 0;
 	
@@ -120,7 +126,7 @@ public class DealCodeUtil {
 							if (dealWay.equals("ppp") || dealWay.equals("pp")) {//ppp或者pp
 								PictureAirLog.out("--------->need call back");
 								Bundle bundle = new Bundle();
-								bundle.putInt("status", STATE_NOT_SAME);
+								bundle.putInt("status", STATE_RETURN_MSG);
 								bundle.putString("result", "notSame");
 								handler.obtainMessage(DEAL_CODE_SUCCESS, bundle).sendToTarget();
 							} else {//coupon
@@ -142,52 +148,43 @@ public class DealCodeUtil {
 					}
 					break;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				case API1.BIND_PP_FAILURE://绑定pp失败
 				case API1.ADD_SCANE_CODE_FAIED://绑定失败
 					PictureAirLog.out("error code --->" + msg.arg1);
 					myToast.setTextAndShow(ReflectionUtil.getStringId(context, msg.arg1), Common.TOAST_SHORT_TIME);
 					handler.sendEmptyMessage(DEAL_CODE_FAILED);
 					break;
 
-				case API1.BIND_PP_SUCCESS://绑定pp成功
-					Bundle bundle = new Bundle();
-					bundle.putInt("status", 3);
-					handler.obtainMessage(DEAL_CODE_SUCCESS, bundle).sendToTarget();
-					break;
-
 				case API1.ADD_PP_CODE_TO_USER_SUCCESS://绑定pp成功
 					Bundle bundle2 = new Bundle();
-					bundle2.putInt("status", 4);
-					handler.obtainMessage(DEAL_CODE_SUCCESS, bundle2).sendToTarget();
+					if (dealWay != null && dealWay.equals("pp")) {//从pp进入
+						bundle2.putInt("status", STATE_RETURN_MSG);
+						bundle2.putString("result", "ppOK" + code);
+						PictureAirLog.out("scan pp ok 2222");
+						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle2).sendToTarget();
+
+					}else {
+						bundle2.putInt("status", STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS);
+						PictureAirLog.out("scan pp ok 444");
+						handler.obtainMessage(DEAL_CODE_SUCCESS, bundle2).sendToTarget();
+
+					}
 					break;
 
-				case API1.ADD_PPP_CODE_TO_USER_SUCCESS://绑定ppp成功
+				case API1.ADD_PPP_CODE_TO_USER_SUCCESS://绑定ppp或coupon成功
 					Bundle bundle3 = new Bundle();
 					PictureAirLog.out("add ppp code or coupon to user success--->" + dealWay);
 					if (msg.obj == null) {//ppp
 						if (dealWay != null && dealWay.equals("ppp")) {//从ppp进入
-							bundle3.putInt("status", 5);
+							bundle3.putInt("status", STATE_RETURN_MSG);
 							bundle3.putString("result", "pppOK");
 							PictureAirLog.out("scan ppp ok 555");
 							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
+
 						}else {
-							bundle3.putInt("status", 3);
+							bundle3.putInt("status", STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS);
 							PictureAirLog.out("scan ppp ok 333");
 							handler.obtainMessage(DEAL_CODE_SUCCESS, bundle3).sendToTarget();
+
 						}
 					} else {//coupon
 						//1.ppp,不会出现
@@ -197,7 +194,7 @@ public class DealCodeUtil {
 						PictureAirLog.out("coupon---->" + msg.obj.toString());
 						CouponInfo couponInfo = JsonUtil.getCouponInfo(((JSONObject) msg.obj).getJSONObject("PPP"));
 						//将对象放入bundle3中
-						bundle3.putInt("status", 3);
+						bundle3.putInt("status", STATE_ADD_CODE_TO_USER_NOT_RETURN_SUCCESS);
 						PictureAirLog.out("coupon---->" + couponInfo == null ? " null " : "not null");
 						bundle3.putSerializable("coupon", couponInfo);
 						PictureAirLog.out("scan coupon ok");
@@ -218,9 +215,6 @@ public class DealCodeUtil {
 		this.handler = handler;
 		myToast = new PWToast(context);
 		dealWay = intent.getStringExtra("type");
-		needBind = intent.getStringExtra("needbind");
-		bindData = intent.getStringExtra("binddate");
-		pppId = intent.getStringExtra("pppid");
 		this.isInputAct = isInputAct;
 		sharedPreferences = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME,Context.MODE_PRIVATE);
 	}
@@ -251,29 +245,20 @@ public class DealCodeUtil {
 		RequestParams params = new RequestParams();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
 		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
-		String urlString = null;
+		String urlString;
 		if ("pp".equals(type)) {
-			if (null != needBind && "false".equals(needBind)) {//如果是通过pp界面扫描的时候，此处不需要绑定pp到用户
-				JSONArray pps = new JSONArray();
-				pps.add(code);
+			PictureAirLog.out("pp");
+			params.put(Common.CUSTOMERID, code);
+			urlString = Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER;
 
-				API1.bindPPsToPPP(AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)), pps, bindData, pppId, handler2);
-				PictureAirLog.out("return");
-				return;
-			}else {//其他界面过来的话，需要绑定到user
-				PictureAirLog.out("pp");
-				params.put(Common.CUSTOMERID, code);
-				urlString = Common.BASE_URL_TEST+Common.ADD_CODE_TO_USER;
-			}
 		}else {
 			PictureAirLog.out("ppp or coupon");
 			params.put(Common.PPPCode, code);
 			urlString = Common.BASE_URL_TEST+Common.BIND_PPP_TO_USER;
+
 		}
 
 		API1.addScanCodeToUser(urlString, params, type, handler2);
-
 	}
-	
 
 }

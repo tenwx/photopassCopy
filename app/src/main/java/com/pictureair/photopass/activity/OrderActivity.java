@@ -123,7 +123,6 @@ public class OrderActivity extends BaseFragmentActivity {
                 PictureAirLog.d(TAG, "get success----");
                 viewPager.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setVisibility(View.INVISIBLE);
-                customProgressDialog.dismiss();
                 paymentOrderArrayList.clear();
                 paymentOrderChildArrayList.clear();
                 deliveryOrderArrayList.clear();
@@ -198,6 +197,7 @@ public class OrderActivity extends BaseFragmentActivity {
                     orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
                     viewPager.setAdapter(orderAdapter);
                     viewPager.setCurrentItem(orderType);
+                    viewPager.setOffscreenPageLimit(3);
                 } else {
                     OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
                     orderFragmentEvent.setOrderChildlist1(paymentOrderChildArrayList);
@@ -211,6 +211,7 @@ public class OrderActivity extends BaseFragmentActivity {
 
                     EventBus.getDefault().post(orderFragmentEvent);
                 }
+                hideProgressDialog();
 //                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
                 break;
 

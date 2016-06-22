@@ -50,15 +50,31 @@
             android:id="@+id/order_payment1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@+id/order_delete"
             android:background="@drawable/button_blue"
+            android:layout_marginRight="@dimen/pp_padding_16"
             android:focusable="false"
             android:paddingBottom="@dimen/pp_margin_5"
             android:paddingLeft="@dimen/pp_padding_16"
             android:paddingRight="@dimen/pp_padding_16"
             android:paddingTop="@dimen/pp_margin_5"
-            android:text="@string/order_unpaid"
+            android:text="@string/payment_order_btn"
             android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14" />
+
+        <Button
+            android:id="@+id/order_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button_gray_light"
+            android:focusable="false"
+            android:paddingBottom="@dimen/pp_margin_5"
+            android:paddingLeft="@dimen/pp_padding_16"
+            android:paddingRight="@dimen/pp_padding_16"
+            android:paddingTop="@dimen/pp_margin_5"
+            android:text="@string/delete"
+            android:textColor="@color/pp_dark_blue"
             android:textSize="@dimen/text_size_14" />
     </RelativeLayout>
 
