@@ -33,7 +33,8 @@
     <string name="name_is_empty">请输入昵称</string>
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
-    <string name="terms_and_policy"><a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
+    <string name="terms_of_use">使用条款</string>
+    <string name="terms_and_policy"><a href = "5">使用条款</a>和\n<a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -278,6 +279,7 @@
     <string name="checkout">确定</string>
     <string name="multi_goods">迪士尼乐拍通多项商品</string>
     <string name="select_address">请选择自提地址</string>
+    <string name="special_goods">特殊商品，不享受退换服务</string>
     <!-- submit order end -->
 
     <!-- payment start -->
@@ -382,6 +384,7 @@
     <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
+    <string name="select_pp_right_date">迪士尼乐拍通一卡通只能升级连续三天日期的迪士尼乐拍通，请您确认是否继续选择升级此张迪士尼乐拍通？</string>
     <string name="outofrange">超出范围</string>
     <!-- select pp end -->
 
@@ -509,8 +512,8 @@
     <string name="smssdk_pwd_forget">请输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
-    <string name="smssdk_explain_briefly">我已阅读并接受<a href="2">补充条款及细则</a>和<a href="1">隐私政策</a>。</string>
-    <string name="please_agree">请确认同意补充条款及细则和隐私政策</string>
+    <string name="smssdk_explain_briefly">我已阅读并同意接受<a href = "5">使用条款</a>、<a href="2">补充条款及细则</a>以及<a href="1">隐私政策</a>。</string>
+    <string name="please_agree">请确认同意使用条款、补充条款及细则和隐私政策</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
     <string name="smssdk_ok">好</string>

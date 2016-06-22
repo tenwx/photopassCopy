@@ -44,6 +44,11 @@ public class DealCodeUtil {
 	 */
 	public static final int DEAL_CODE_SUCCESS = 3;
 
+	/**
+	 * 结果和需要的不一致
+	 */
+	public static final int STATE_NOT_SAME = 1;
+
 	private int id = 0;
 	
 	
@@ -79,7 +84,7 @@ public class DealCodeUtil {
 							break;
 					}
 
-					if (dealWay != null && dealWay.equals("ppp") && //如果从ppp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
+					if (dealWay != null && (dealWay.equals("ppp") || dealWay.equals("pp")) && //如果从ppp页面或者pp页面过来，需要返回错误类型数据，并且需要跳转到对应的activity
 							!isInputAct) {//如果不是手动输入页面
 						handler.obtainMessage(DEAL_CODE_FAILED, id).sendToTarget();
 					}else {//弹出错误提示
@@ -110,12 +115,12 @@ public class DealCodeUtil {
 					}
 
 					PictureAirLog.out("codetype--->" + codeType + " dealway--->" + dealWay);
-					if (dealWay != null) {//如果从ppp或者coupon页面进来，卡的类型不一致，直接返回，退出，一致，则添加
+					if (dealWay != null) {//如果从ppp、pp或者coupon页面进来，卡的类型不一致，直接返回，退出，一致，则添加
 						if (!dealWay.equals(codeType)) {//类型不一致
-							if (dealWay.equals("ppp")) {//ppp
+							if (dealWay.equals("ppp") || dealWay.equals("pp")) {//ppp或者pp
 								PictureAirLog.out("--------->need call back");
 								Bundle bundle = new Bundle();
-								bundle.putInt("status", 1);
+								bundle.putInt("status", STATE_NOT_SAME);
 								bundle.putString("result", "notSame");
 								handler.obtainMessage(DEAL_CODE_SUCCESS, bundle).sendToTarget();
 							} else {//coupon
@@ -136,6 +141,20 @@ public class DealCodeUtil {
 						}
 					}
 					break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 				case API1.BIND_PP_FAILURE://绑定pp失败
 				case API1.ADD_SCANE_CODE_FAIED://绑定失败

@@ -14,8 +14,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.util.Base64;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
@@ -157,9 +155,9 @@ public class DownloadService extends Service {
                     break;
 
                 case API1.DOWNLOAD_PHOTO_SUCCESS://下载成功之后获取data数据，然后base64解码，然后保存。
-                    JSONObject objectSuccess;
-                    objectSuccess = JSONObject.parseObject(msg.obj.toString());
-                    saveFile(file, Base64.decodeFast(objectSuccess.getString("data")));
+                    PictureAirLog.out("get downloadInfo-----> ");
+                    byte[] result = (byte[]) msg.obj;
+                    saveFile(file, result);
                     break;
                 case API1.DOWNLOAD_PHOTO_FAILED:
                     ++failed_num;

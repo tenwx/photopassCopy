@@ -1604,7 +1604,7 @@ public class API1 {
             + "'downloadChannel':[ {'channel':'website',"
             + "'downloadUrl':'http://www.disneyphotopass.com.cn/downloads/android/photopass/PhotoPassV1.1.0-website.apk'},"
             + " { 'channel':'tencent',"
-            + "'downloadUrl':'http://mmgr.myapp.com/myapp/gjbig/packmanage/24/2/3/102027/tencentmobilemanager5.7.0_android_build3146_102027.apk'}]}}";
+            + "'downloadUrl':'http://dd.myapp.com/16891/2FA495F1283F48658CEACFF53DB6F856.apk?fsname=com.pictureair.photopass_1.1.1_4.apk'}]}}";
 
 
     /**
@@ -1612,8 +1612,13 @@ public class API1 {
      *
      * @param handler
      */
-    public static void checkUpdate(final Context context, final Handler handler) {
-        String verson = context.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
+    public static void checkUpdate(Context context, final Handler handler) {
+        if (context == null) {
+            handler.sendEmptyMessage(GET_UPDATE_FAILED);
+            return;
+        }
+        final Context c = context;
+        String verson = c.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE).getString(Common.APP_VERSION_NAME, "");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.APP_NAME, Common.APPLICATION_NAME);
@@ -1628,7 +1633,7 @@ public class API1 {
                  */
 //                jsonObject = JSONObject.parseObject(checkUpdateTestingString);
                 PictureAirLog.out("update---->" + jsonObject);
-                ACache.get(context).put(Common.UPDATE_INFO, jsonObject.toString());
+                ACache.get(c).put(Common.UPDATE_INFO, jsonObject.toString());
                 handler.obtainMessage(GET_UPDATE_SUCCESS, jsonObject).sendToTarget();
             }
 
@@ -1945,12 +1950,13 @@ public class API1 {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.PHOTOIDS, photoId);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
+        params.put("fileType", "jpg");
+        HttpUtil1.asyncDownloadBinaryData(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
             @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
+            public void onSuccess(byte[] binaryData) {
+                super.onSuccess(binaryData);
                 PictureAirLog.e(TAG, "调用下载照片API成功");
-                handler.obtainMessage(DOWNLOAD_PHOTO_SUCCESS, jsonObject).sendToTarget();
+                handler.obtainMessage(DOWNLOAD_PHOTO_SUCCESS, binaryData).sendToTarget();
             }
 
             @Override

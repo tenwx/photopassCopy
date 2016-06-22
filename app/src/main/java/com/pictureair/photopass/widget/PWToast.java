@@ -14,12 +14,31 @@ import java.util.TimerTask;
 
 /**
  * 自定义Toast
+ *
+ * How To Use:
+ * 1. PWToast pwToast = new PWToast(context);
+ *    pwToast.setTextAndShow(); 注意：可选择自己需要的方法
+ *
+ * 2. PWToast.getInstance(context).setTextAndShow(); 注意：可选择自己需要的方法
+ *    此方法无法cancel，如果需要cancel toast的话，请使用方式1
  */
 public class PWToast extends Toast {
 
     private Toast toast;
     private TextView textView;
     private Timer timer;
+    private static volatile PWToast pwToast;
+
+    public static PWToast getInstance(Context context) {
+        if(pwToast == null) {
+            synchronized(PWToast.class) {
+                if(pwToast == null) {
+                    pwToast = new PWToast(context);
+                }
+            }
+        }
+        return pwToast;
+    }
 
     public PWToast(Context context) {
         super(context);
@@ -110,5 +129,4 @@ public class PWToast extends Toast {
             }
         }, time);
     }
-
 }

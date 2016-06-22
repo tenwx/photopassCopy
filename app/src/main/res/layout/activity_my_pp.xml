@@ -34,20 +34,25 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
 
-        <ImageView
-            android:id="@+id/cancel"
+        <RelativeLayout
+            android:id="@+id/pp_rl"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:paddingBottom="@dimen/pp_padding_15"
-            android:paddingLeft="@dimen/pp_padding_14"
-            android:paddingRight="@dimen/pp_padding_14"
-            android:paddingTop="@dimen/pp_padding_15"
-            android:scaleType="centerInside"
-            android:visibility="gone"
-            android:src="@drawable/edit_my_pp" />
-        
+            android:paddingLeft="@dimen/pp_margin_8"
+            android:paddingRight="@dimen/pp_padding_8"
+            android:paddingTop="@dimen/pp_padding_15">
+
+            <ImageView
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/add_righttop" />
+        </RelativeLayout>
+
          <TextView
             android:id="@+id/ok"
             android:layout_width="wrap_content"

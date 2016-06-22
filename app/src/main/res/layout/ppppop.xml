@@ -24,6 +24,22 @@
         android:textColor="@drawable/textview_selector"
         android:textSize="@dimen/text_size_16" />
 
+    <TextView
+        android:id="@+id/deleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/pp_margin_10"
+        android:layout_weight="1"
+        android:background="@color/transparent"
+        android:drawableLeft="@drawable/ppppop_delete_button"
+        android:drawablePadding="@dimen/pp_margin_5"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="@dimen/pp_padding_10"
+        android:paddingRight="@dimen/pp_padding_10"
+        android:text="@string/delete"
+        android:textColor="@drawable/textview_selector"
+        android:textSize="@dimen/text_size_16" />
+
     <ImageView
         android:id="@+id/line"
         android:layout_width="match_parent"

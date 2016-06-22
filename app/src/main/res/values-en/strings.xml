@@ -33,7 +33,8 @@
     <string name="name_is_empty">Please enter your nickname</string>
     <string name="terms">Supplemental Terms and Conditions</string>
     <string name="policy">Privacy Policy</string>
-    <string name="terms_and_policy"><a href = "2">Supplemental Terms and Conditions</a>&amp;\n<a href = "1">Privacy Policy</a> </string>
+    <string name="terms_of_use">Terms of Use</string>
+    <string name="terms_and_policy"><a href = "5">Terms of Use</a>&amp;\n<a href = "2">Supplemental Terms and Conditions</a>&amp;\n<a href = "1">Privacy Policy</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -278,6 +279,7 @@
     <string name="checkout">OK</string>
     <string name="multi_goods">Multiple Products</string>
     <string name="select_address">Please Select Address</string>
+    <string name="special_goods">Products are non-refundable once sold</string>
     <!-- submit order end -->
 
     <!-- payment start -->
@@ -382,6 +384,7 @@
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
+    <string name="select_pp_right_date">迪士尼乐拍通一卡通只能升级连续三天日期的迪士尼乐拍通，请您确认是否继续选择升级此张迪士尼乐拍通？</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->
 
@@ -509,8 +512,8 @@
     <string name="smssdk_pwd_forget">Please enter new password</string>
     <string name="smssdk_send_verification_code">Verify</string>
     <string name="smssdk_other_sign_up">Sign Up with Email Address</string>
-    <string name="smssdk_explain_briefly"> I have read and agree to the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
-    <string name="please_agree">Please agree to Supplemental Terms and Conditions &amp; Privacy Policy</string>
+    <string name="smssdk_explain_briefly">I have read and agree to the <a href = "5">Terms of Use</a>, the <a href = "2">Supplemental Terms and Conditions</a> and <a href = "1">Privacy Policy</a>.</string>
+    <string name="please_agree">Please agree to Terms of Use, Supplemental Terms and Conditions &amp; Privacy Policy</string>
     <string name="smssdk_next">Next</string>
     <string name="smssdk_cancel">Cancel</string>
     <string name="smssdk_ok">OK</string>

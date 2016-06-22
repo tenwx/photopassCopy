@@ -102,6 +102,9 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
             webView.start(Common.BASE_URL_TEST + Common.IPAY_LINK + "?tokenId=" + MyApplication.getTokenId() + "&orderId=" + orderId + "&language=" + language + "&currency=" + currency + "&appID=" + appID);
             setTopTitleShow(R.string.paypalzf); // 设置标题
             webView.addJavascriptInterface(this, "someThing");
+        } else if (key == 5) {//使用条款
+            webView.start(Common.TERMS_OF_USE + (MyApplication.getInstance().getLanguageType().equals("en") ? "english/" : "chinese-simplified/"));
+            setTopTitleShow(R.string.terms_of_use); // 设置标题
         }
     }
 
