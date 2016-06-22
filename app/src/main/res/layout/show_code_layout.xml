@@ -24,8 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:src="@drawable/code_pic" />
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/code_tv"
