@@ -278,10 +278,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 		//初始化背景图片
 		ImageAware imageAware = new ImageViewAware(holder.ppp_imageView, false);
-		if (holder.ppp_imageView.getTag() == null || !holder.ppp_imageView.getTag().equals(R.drawable.ppp_face)) {//dpp.pppCardBg
-//			imageLoader.displayImage(Common.PHOTO_URL + dpp.pppCardBg, imageAware, options);
-			holder.ppp_imageView.setImageResource(R.drawable.ppp_face);
-			holder.ppp_imageView.setTag(R.drawable.ppp_face);//dpp.pppCardBg
+		if (holder.ppp_imageView.getTag() == null || !holder.ppp_imageView.getTag().equals(dpp.pppCardBg)) {
+			imageLoader.displayImage(Common.PHOTO_URL + dpp.pppCardBg, imageAware, options);
+			holder.ppp_imageView.setTag(dpp.pppCardBg);
 		}
 
 		//设置过期时间

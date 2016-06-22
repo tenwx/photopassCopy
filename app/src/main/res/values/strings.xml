@@ -412,11 +412,6 @@
     <string name="setting_language">语言切换</string>
     <string name="comfirm_logout">确定退出？</string>
     <string name="setting_language_msg">您确定修改您的语言设置吗？</string>
-    <string name="ppp_deail_no_card">您还未激活任何乐拍通卡号</string>
-    <string name="ppp_load_all">没有更多数据</string>
-    <string name="pull_to_refresh">上拉可以刷新</string>
-    <string name="release_to_refresh">释放立即刷新</string>
-    <string name="refreshing">正在刷新…</string>
     <!-- settings end -->
 
     <!-- change language start -->
@@ -541,4 +536,12 @@
     <string name="permission_storage_message">请先在设置中打开读写手机存储权限</string>
     <string name="permission_read_phone_state_message">请先在设置中打开设备信息权限</string>
     <!-- permission request end -->
+
+    <!--PPP manage start-->
+    <string name="ppp_deail_no_card">您还未激活任何乐拍通卡号</string>
+    <string name="ppp_load_all">没有更多数据</string>
+    <string name="pull_to_refresh">上拉可以刷新</string>
+    <string name="release_to_refresh">释放立即刷新</string>
+    <string name="refreshing">正在刷新…</string>
+    <!--PPP manage end-->
 </resources>

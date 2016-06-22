@@ -412,11 +412,6 @@
     <string name="setting_language">Change Language</string>
     <string name="comfirm_logout">Do you want to Sign Out?</string>
     <string name="setting_language_msg">Do you want to change the language?</string>
-    <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass+</string>
-    <string name="ppp_load_all">no more data</string>
-    <string name="pull_to_refresh">pull to refresh</string>
-    <string name="release_to_refresh">release to refresh</string>
-    <string name="refreshing">refreshing…</string>
     <!-- settings end -->
 
     <!-- change language start -->
@@ -541,4 +536,12 @@
     <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
     <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
     <!-- permission request end -->
+
+    <!--PPP manage start-->
+    <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass+</string>
+    <string name="ppp_load_all">no more data</string>
+    <string name="pull_to_refresh">pull to refresh</string>
+    <string name="release_to_refresh">release to refresh</string>
+    <string name="refreshing">refreshing…</string>
+    <!--PPP manage end-->
 </resources>
