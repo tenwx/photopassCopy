@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.RotateAnimation;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -20,7 +21,7 @@ import com.pictureair.photopass.R;
  * Created by pengwu on 16/6/16.
  */
 
-public class MyListView extends ListView{
+public class MyListView extends ListView implements AbsListView.OnScrollListener{
 
     boolean mIsParentMoving = false;
     private View mfoot;
@@ -75,6 +76,8 @@ public class MyListView extends ListView{
         addFooterView(mfoot);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mfoot.setVisibility(GONE);
+        requestFocusFromTouch();
+        setOnScrollListener(this);
     }
     public void setIsParentMoving (boolean move){
         mIsParentMoving = move;
@@ -105,6 +108,9 @@ public class MyListView extends ListView{
         if (mfoot.getVisibility() != VISIBLE) {
             return super.dispatchTouchEvent(ev);
         }
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            Log.e("dispatchTouchEvent","ACTION_UP");
+        }
         boolean handled = super.dispatchTouchEvent(ev);
         handled |= onTouchEvent(ev);
         return handled;
@@ -121,7 +127,15 @@ public class MyListView extends ListView{
             return super.onTouchEvent(ev);
         }else {
             setIsAbleToPull(ev);
+            Log.e("ableToPull",String.valueOf(ableToPull));
             if (ableToPull && !mIsLoading && !mNotAllowRefresh) {
+
+                if (ev.getAction() == MotionEvent.ACTION_UP) {
+                    Log.e("onTouchEvent","ACTION_UP");
+                }
+                if (ev.getAction() == MotionEvent.ACTION_UP) {
+                    Log.e("dispatchTouchEvent","ACTION_UP");
+                }
                 switch (ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mStartY = ev.getRawY();
@@ -143,9 +157,9 @@ public class MyListView extends ListView{
                             }
                         }
                         int bottomPadding = mfoot.getPaddingBottom() + (int) (space / 2);
-                        if (mfoot.getPaddingBottom() < 10) {
+//                        if (mfoot.getPaddingBottom() < 10) {
                             mfoot.setPadding(0, 0, 0, bottomPadding);
-                        }
+//                        }
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
@@ -165,7 +179,6 @@ public class MyListView extends ListView{
                 if (mState == STATUS_PULL_TO_REFRESH
                         || mState == STATUS_RELEASE_TO_REFRESH) {
                     updateHeaderView();
-                    Log.e("touch","updateView"+String.valueOf(mState));
                     lastStatus = mState;
                     // 当前正处于下拉或释放状态，通过返回true屏蔽掉ListView的滚动事件
                     return true;
@@ -193,6 +206,17 @@ public class MyListView extends ListView{
 
     public void setmNotAllowRefresh(boolean mNotAllowRefresh) {
         this.mNotAllowRefresh = mNotAllowRefresh;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        int i=0;
+        i++;
     }
 
     /**
@@ -232,7 +256,6 @@ public class MyListView extends ListView{
         @Override
         protected void onProgressUpdate(Integer... bottomMargin) {
             updateHeaderView();
-            Log.e("RefreshingTask","updateView"+String.valueOf(mState));
             mfoot.setPadding(0,0,0,bottomMargin[0]);
         }
     }

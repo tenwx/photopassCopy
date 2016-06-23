@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -530,8 +532,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
         }else{
             initView();
         }
-
-
     }
     private void initViewCommon(){
         pppPop = new PPPPop(this, myPPPHandler, PPPPop.MENU_TYPE_PPP);
@@ -897,8 +897,13 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
         pictureWorksDialog.show();
     }
 
-    public void pPP_Foot_Click(View view) {
-        onRefresh();
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                Log.e("MYPPPActiivty","ACTION_UP");
+        }
+        return super.onTouchEvent(event);
     }
 
 }
