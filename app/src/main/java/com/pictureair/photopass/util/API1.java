@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
@@ -530,10 +531,13 @@ public class API1 {
      * @param handler
      * @param timeString 根据时间获取图片信息
      */
-    public static void getPhotosByConditions(final String tokenId, final Handler handler, final String timeString) {
+    public static void getPhotosByConditions(final String tokenId, final Handler handler, final String timeString, String ppCode) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, tokenId);
         params.put(Common.LAST_UPDATE_TIME, timeString);
+        if (!TextUtils.isEmpty(ppCode)) {
+            params.put(Common.CUSTOMERID, ppCode);
+        }
         PictureAirLog.out("the time of start get photos = " + timeString);
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
             @Override

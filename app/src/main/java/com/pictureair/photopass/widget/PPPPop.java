@@ -19,7 +19,7 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 	private View pppView;
 	private TextView llBuy, llDelete, llAuto, llInput;
 	private Handler handler;
-	private ImageView line;
+	private ImageView line, lineDelete;
 	private int type;
 	public static final int POP_BUY = 9999;
 	public static final int POP_SCAN = 8888;
@@ -50,6 +50,7 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 		llAuto = (TextView) pppView.findViewById(R.id.scanTextView);
 		llInput = (TextView) pppView.findViewById(R.id.input_tv);
 		line = (ImageView) pppView.findViewById(R.id.line);
+		lineDelete = (ImageView) pppView.findViewById(R.id.line_delete);
 
 		llBuy.setOnClickListener(this);
 		llAuto.setOnClickListener(this);
@@ -60,12 +61,15 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 			line.setVisibility(View.GONE);
 			llBuy.setVisibility(View.GONE);
 			llDelete.setVisibility(View.GONE);
+			lineDelete.setVisibility(View.GONE);
 
 		} else if (type == MENU_TYPE_PP) {//pp
 			llBuy.setVisibility(View.GONE);
+			line.setVisibility(View.GONE);
 
 		} else if (type == MENU_TYPE_PPP) {//ppp
 			llDelete.setVisibility(View.GONE);
+			lineDelete.setVisibility(View.GONE);
 
 		}
 

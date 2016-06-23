@@ -44,6 +44,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     private PictureWorksDialog pictureWorksDialog;
 
     private int screenWight;
+    private int tab;
 
     private Handler handler;
 
@@ -65,12 +66,13 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
         }
     });
 
-    public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler) {
+    public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler, int tab) {
         this.context = context;
         this.currency = currency;
         this.handler = handler;
         this.grouplist = list;
         this.childlist = orderChildlist;
+        this.tab = tab;
         mInflater = LayoutInflater.from(context);
         imageLoader = ImageLoader.getInstance();
         screenWight = ScreenUtil.getScreenWidth(context) / 3 - 40;
@@ -310,12 +312,17 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                 context.startActivity(intent);
 
             } else {//删除
-                deletePosition = position;
-                if (pictureWorksDialog == null) {
-                    pictureWorksDialog = new PictureWorksDialog(context, null, context.getString(R.string.order_delete_msg),
-                            context.getResources().getString(R.string.button_cancel), context.getResources().getString(R.string.button_ok), true, adapterHandler);
+                if (tab == 0) {//未付款
+                    deletePosition = position;
+                    if (pictureWorksDialog == null) {
+                        pictureWorksDialog = new PictureWorksDialog(context, null, context.getString(R.string.order_delete_msg),
+                                context.getResources().getString(R.string.button_cancel), context.getResources().getString(R.string.button_ok), true, adapterHandler);
+                    }
+                    pictureWorksDialog.show();
+
+                } else if (tab == 2) {//已取
+                    API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition).getCartItemInfos(), handler);
                 }
-                pictureWorksDialog.show();
             }
         }
 

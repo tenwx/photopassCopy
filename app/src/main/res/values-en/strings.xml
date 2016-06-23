@@ -344,7 +344,7 @@
     <string name="order_empty_buttonString">Go Shopping</string>
     <string name="want_to_buy">There is no order history here.</string>
     <string name="order_pending">Pending</string>
-    <string name="order_delete_msg">是否确认关闭订单</string>
+    <string name="order_delete_msg">Do you confirm to delete the order?</string>
     <!-- order end -->
 
     <!-- order detail start -->

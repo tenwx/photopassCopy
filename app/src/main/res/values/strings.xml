@@ -344,7 +344,7 @@
     <string name="order_empty_buttonString">去商店看看</string>
     <string name="want_to_buy">暂无订单历史记录</string>
     <string name="order_pending">处理中</string>
-    <string name="order_delete_msg">是否确认关闭订单</string>
+    <string name="order_delete_msg">您将要删除此订单吗？</string>
     <!-- order end -->
 
     <!-- order detail start -->

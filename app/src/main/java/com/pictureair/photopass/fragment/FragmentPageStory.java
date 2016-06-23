@@ -270,7 +270,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     //数据为0，需要从网上下载
                     PictureAirLog.out("photolist size = 0");
                     //判断是否之前有成功获取过
-                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null);//获取全部图片
+                    API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null, null);//获取全部图片
                     API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
                 } else {
                     PictureAirLog.out("photolist size = " + photoPassPicList.size());
@@ -339,7 +339,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
-                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null));//获取更新信息
+                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null), null);//获取更新信息
                 API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取最新视频信息
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
                 break;
@@ -985,7 +985,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             if (!dialog.isShowing()) {
                 dialog.show();
             }
-            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null);//获取全部图片
+            API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null, null);//获取全部图片
             API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
