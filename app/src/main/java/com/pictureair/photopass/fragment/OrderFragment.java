@@ -19,7 +19,6 @@ import com.pictureair.photopass.activity.MainTabActivity;
 import com.pictureair.photopass.activity.OrderActivity;
 import com.pictureair.photopass.activity.OrderDetailActivity;
 import com.pictureair.photopass.adapter.OrderListViewAdapter;
-import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
@@ -79,7 +78,7 @@ public class OrderFragment extends Fragment {
                     // 移除第几个position。
                     Bundle b = msg.getData();
                     OrderInfo groupInfo = b.getParcelable("group");
-                    ArrayList<CartItemInfo> childInfo = (ArrayList) b.getParcelableArrayList("child");
+                    OrderProductInfo childInfo = (OrderProductInfo) b.getSerializable("child");
 
                     //删除全部订单 中的对象
                     orderList.remove(groupInfo);
@@ -291,6 +290,7 @@ public class OrderFragment extends Fragment {
 
                         childlist.clear();
                         childlist.addAll(orderFragmentEvent.getOrderChildlist());
+                        Collections.sort(childlist, new OrderProductDateSortUtil());
 
                         if (null != allOrderAdapter) {
                             allOrderAdapter.notifyDataSetChanged();
