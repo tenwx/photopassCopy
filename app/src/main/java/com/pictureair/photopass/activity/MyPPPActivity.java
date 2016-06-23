@@ -478,6 +478,23 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 break;
+            case ListOfPPPAdapter.HEAD_CLICK:
+                int position = (int)msg.obj;
+                if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
+                    if (list1.get(position).expericePPP == 1) {//体验卡
+                        Intent intent3 = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);
+                        intent3.putExtra("activity", "mypppactivity");
+                        intent3.putExtra("pppCode", list1.get(position).PPPCode);
+                        intent3.putExtra("photoCount", 1);
+                        startActivity(intent3);
+                    } else {
+                        PictureAirLog.v(TAG, "pppSize :" + list1.get(position).PPPCode);
+                        ppp = list1.get(position);
+                        API1.getPPsByPPPAndDate(ppp.PPPCode, myPPPHandler);
+                    }
+                }
+
+                break;
 
             default:
                 break;

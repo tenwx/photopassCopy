@@ -31,7 +31,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.pullloadlayout.MYTouchListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +50,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private Handler handler;
 	private PWToast myToast;
 	private boolean[] mInFace;
+	public static final int HEAD_CLICK = 555;
 	public ListOfPPPAdapter(ArrayList<?> arrayList, boolean isUseHavedPPP, Handler handler, Context mContext) {
 		this.arrayList = arrayList;
 		this.mContext = mContext;
@@ -196,7 +196,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 							}
 							Rotate3dAnimation animation1 = null;
 							if (!mInFace[position]) {
-
+								animation1 = new Rotate3dAnimation(90, 0, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,false);
 								mInFace[position] = true;
 							} else {
 								animation1 = new Rotate3dAnimation(270, 360, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,false);
@@ -484,20 +484,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 						handler.sendEmptyMessage(2);
 						break;
 					case R.id.ppp_card_head:
-						PPPinfo info = (PPPinfo)arrayList.get(position);
-						if (info.bindInfo.size() < info.capacity && info.expired == 0) {
-							if (info.expericePPP == 1) {//体验卡
-								Intent intent = new Intent(mContext, SelectPhotoActivity.class);
-								intent.putExtra("activity", "mypppactivity");
-								intent.putExtra("pppCode", info.PPPCode);
-								intent.putExtra("photoCount", 1);
-								mContext.startActivity(intent);
-							} else {
-								PictureAirLog.v(TAG, "pppSize :" + info.PPPCode);
-//								ppp = list1.get(position);
-								API1.getPPsByPPPAndDate(info.PPPCode, handler);
-							}
-						}
+						handler.obtainMessage(HEAD_CLICK,position).sendToTarget();
 						break;
 //					case R.id.rl_ppp_content:
 //						Rotate3dAnimation rotate1 = new Rotate3dAnimation(0,180,,0.5f,10,false);
