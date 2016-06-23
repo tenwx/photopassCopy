@@ -105,9 +105,6 @@ public class ReFreshLayout extends RelativeLayout{
         }
         boolean handle = super.dispatchTouchEvent(ev);
         if (ev.getAction() == MotionEvent.ACTION_DOWN || ev.getAction() == MotionEvent.ACTION_UP) {
-            if (ev.getAction() == MotionEvent.ACTION_UP) {
-                PictureAirLog.e("dispatchTouchEvent","ACTION_UP");
-            }
             handle |= onTouchEvent(ev);
         }
         return handle;
@@ -181,6 +178,7 @@ public class ReFreshLayout extends RelativeLayout{
                     }
                     allMove += res;
                     PictureAirLog.e("ontouchevent allMove",String.valueOf(allMove));
+                    PictureAirLog.e("ontouchevent",String.valueOf("ACTION_MOVE"));
                     listView.listScrollBy(0, res);
                     headerLayoutParams.bottomMargin = res + headerLayoutParams.bottomMargin;
                     header.setLayoutParams(headerLayoutParams);
@@ -200,7 +198,7 @@ public class ReFreshLayout extends RelativeLayout{
                             listener.onRefresh();
                         }
                         PictureAirLog.e("Ontouc","STATUS_RELEASE_TO_REFRESH");
-                    } else if (mState == STATUS_PULL_TO_REFRESH) {
+                    } else if (mState == STATUS_PULL_TO_REFRESH ) {
                         // 松手时如果是下拉状态，就去调用隐藏下拉头的任务
                         resetView();
                         PictureAirLog.e("ontouchevent","STATUS_PULL_TO_REFRESH");
@@ -319,7 +317,7 @@ public class ReFreshLayout extends RelativeLayout{
             final View bottomChildView = listView.getChildAt(listView.getLastVisiblePosition() - listView.getFirstVisiblePosition());
             PictureAirLog.e("listView.getHeight()",String.valueOf(listView.getHeight()));
             PictureAirLog.e("bottomChildView.getBottom()",String.valueOf(bottomChildView.getBottom()));
-            result= (listView.getHeight()<=bottomChildView.getBottom());
+            result= (listView.getHeight()>=bottomChildView.getBottom());
         }
         return  result;
     }
