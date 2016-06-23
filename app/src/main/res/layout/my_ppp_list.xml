@@ -76,10 +76,22 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/pp_padding_5"
                     >
+                    <ImageView
+                        android:id="@+id/iv_select"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/pp_margin_20"
+                        android:layout_centerVertical="true"
+                        android:clickable="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/nosele"
+                        android:visibility="gone"/>
                     <RelativeLayout
                         android:id="@+id/rl_ppp_face"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/iv_select">
                         <ImageView
                             android:id="@+id/ppp_imageView"
                             android:layout_width="match_parent"
@@ -111,18 +123,6 @@
                                 android:textColor="@color/black"
                                 />
                         </RelativeLayout>
-                        <ImageView
-                            android:id="@+id/iv_select"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/pp_margin_20"
-                            android:layout_marginTop="@dimen/pp_margin_20"
-                            android:adjustViewBounds="true"
-                            android:clickable="true"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/nosele"
-                            android:visibility="gone"/>
                         <RelativeLayout
                             android:id="@+id/card_bottom"
                             android:layout_width="match_parent"
@@ -138,6 +138,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/pp_margin_6"
                                 android:paddingBottom="@dimen/pp_padding_10"
                                 android:text="fadsfd"
                                 android:textColor="@color/pp_light_gray_press"
@@ -163,6 +164,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="invisible"
+                        android:layout_toRightOf="@id/iv_select"
                         android:background="@drawable/ppp_back">
 
                         <TextView
@@ -194,7 +196,7 @@
                                     android:textColor="@color/pp_blue"
                                     android:textSize="@dimen/text_size_18"
                                     android:gravity="center"
-                                    android:text="已激活的乐拍通卡号 ："
+                                    android:text="@string/activated_card"
                                     android:layout_centerVertical="true"
                                     />
                                 <ImageView

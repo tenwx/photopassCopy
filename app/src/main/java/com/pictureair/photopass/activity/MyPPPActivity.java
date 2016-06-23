@@ -113,7 +113,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
     private final int normal = 1;
     private final int unUse = 2;
     private final int full = 3;
-    private boolean mInLayout;
+    private ReFreshLayout refreshLayout;
 
     private final Handler myPPPHandler = new MyPPPHandler(this);
 
@@ -502,40 +502,15 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
     }
 
     private void finishLoad() {
-        if (mInLayout) {
-            refreshLayout.finishRefreshing();
-        }else{
-            listPPP.finishRefreshing();
-        }
+        refreshLayout.finishRefreshing();
     }
 
     private void initLoadingView() {
-        int height = 0;
-        for(int i=0;i<listPPPAdapter.getCount();i++){
-            View temp = listPPPAdapter.getView(i,null,listPPP);
-            temp.measure(0,0);
-            height += temp.getMeasuredHeight();
-        }
-        if (height < ScreenUtil.getScreenHeight(MyPPPActivity.this) - rl_head.getHeight()) {
-            refreshLayout.setListView(listPPP);
-            refreshLayout.setFootViewVisibility(View.VISIBLE);
-            listPPP.setFootViewVisibility(View.GONE);
-            listPPP.setmNotAllowRefresh(true);
-            listPPP.removeRefreshListener();
-            refreshLayout.setOnRefreshListener(this);
-            mInLayout = true;
-        }else{
-            refreshLayout.setFootViewVisibility(View.GONE);
-            refreshLayout.setListView(null);
-            listPPP.setFootViewVisibility(View.VISIBLE);
-            refreshLayout.removeRefreshListener();
-            listPPP.setOnRefreshListener(this);
-            listPPP.setmNotAllowRefresh(false);
-            mInLayout = false;
-        }
+        refreshLayout.setListView(listPPP);
+        refreshLayout.setOnRefreshListener(this);
     }
 
-    private  RelativeLayout rl_head;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -565,17 +540,15 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
         nopppLayout = (LinearLayout) findViewById(R.id.nopppinfo);
         listPPP = (MyListView) findViewById(R.id.list_ppp);
         refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
-        rl_head = (RelativeLayout) findViewById(R.id.head);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
 
         nopppLayout.setVisibility(View.INVISIBLE);
         ll_button_area.setVisibility(View.GONE);
-//        listPPP.setVisibility(View.GONE);
         refreshLayout.setVisibility(View.GONE);
         back.setOnClickListener(this);
         menuLayout.setOnClickListener(this);
     }
-    private ReFreshLayout refreshLayout;
+
     private void initViewUseHavedPPP(){
         mTitle = (TextView) findViewById(R.id.myppp);
         mTitle.setText(R.string.select_ppp_title);

@@ -540,9 +540,10 @@
 
     <!--PPP manage start-->
     <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass+</string>
-    <string name="ppp_load_all">no more data</string>
+    <string name="ppp_load_all">No more datas</string>
     <string name="pull_to_refresh">pull to refresh</string>
     <string name="release_to_refresh">release to refresh</string>
-    <string name="refreshing">refreshing…</string>
+    <string name="refreshing">refreshing&#8230;</string>
+    <string name="activated_card">Activated Disney PhotoPass</string>
     <!--PPP manage end-->
 </resources>

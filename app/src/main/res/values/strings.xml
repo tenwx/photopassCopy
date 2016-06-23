@@ -542,6 +542,7 @@
     <string name="ppp_load_all">没有更多数据</string>
     <string name="pull_to_refresh">上拉可以刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>
-    <string name="refreshing">正在刷新…</string>
+    <string name="refreshing">正在刷新&#8230;</string>
+    <string name="activated_card">已激活的乐拍通卡号：</string>
     <!--PPP manage end-->
 </resources>

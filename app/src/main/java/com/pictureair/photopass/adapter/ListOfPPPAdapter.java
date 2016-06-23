@@ -149,14 +149,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.ll_ppp_with_pp = (LinearLayout) convertView.findViewById(R.id.ppp_detail_with_pp);
 			holder.ppp_detail = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_detail);
 			holder.ppp_face = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_face);
-			ViewGroup.LayoutParams params = holder.ppp_imageView.getLayoutParams();
-			params.width = ScreenUtil.getScreenWidth(mContext);
-			params.height = params.width * 3 / 5;
-			holder.ppp_imageView.setLayoutParams(params);
-			ViewGroup.LayoutParams params1 = holder.ppp_detail.getLayoutParams();
-			params1.width = params.width;
-			params1.height = params.height;
-			holder.ppp_detail.setLayoutParams(params);
+			adjustLayout(holder);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -232,29 +225,17 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-//	class MyAnimationListener implements Animation.AnimationListener{
-//		ViewHolder viewHolder;
-//		public MyAnimationListener(ViewHolder holder) {
-//			this.viewHolder = holder;
-//		}
-//
-//		@Override
-//		public void onAnimationStart(Animation animation) {
-//
-//		}
-//
-//		@Override
-//		public void onAnimationEnd(Animation animation) {
-//
-////				}
-////			});
-//		}
+	private void adjustLayout(ViewHolder holder){
+		ViewGroup.LayoutParams params = holder.ppp_content.getLayoutParams();
+		params.width = ScreenUtil.getScreenWidth(mContext);
+		params.height = params.width * 3 / 5;
+		holder.pppCardCenterCover.setLayoutParams(params);
 
-//		@Override
-//		public void onAnimationRepeat(Animation animation) {
-//
-//		}
-//	}
+		ViewGroup.LayoutParams params1 = holder.pppCardCenterCover.getLayoutParams();
+		params1.width = params.width;
+		params1.height = params.height;
+		holder.pppCardCenterCover.setLayoutParams(params1);
+	}
 
 	private void hideFace(ViewHolder holder) {
 		holder.ppp_face.setVisibility(View.GONE);
@@ -270,11 +251,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		TextView time;//绑定的时间
 		TextView pppNumber;//ppp卡的序列号
 		ImageView pp1_img, pp2_img, pp3_img;//三个ppp的格子
-//		TextView tvState; //状态
 		TextView tvExpired; //日期
 		ImageView ppp_imageView;//背景图
 		View pppCardCenterCover;
-//		TextView pppName;
 		ImageView img_no_check; // 左边的选择框
 		LinearLayout itemLayout;
 		TextView tv_cardStatus;//PPP卡状态
@@ -430,7 +409,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			if (isUseHavedPPP) {
 				//显示单选框，隐藏状态
 				holder.img_no_check.setVisibility(View.VISIBLE);
-				holder.rl_ppp_status.setVisibility(View.GONE);
 
 				//判断 选择框的选中 和 非选中状态。
 				if (map.size() == 1) {
@@ -486,11 +464,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					case R.id.ppp_card_head:
 						handler.obtainMessage(HEAD_CLICK,position).sendToTarget();
 						break;
-//					case R.id.rl_ppp_content:
-//						Rotate3dAnimation rotate1 = new Rotate3dAnimation(0,180,,0.5f,10,false);
-//						rotate1.in
-
-//						break;
 					default:
 						break;
 				}
