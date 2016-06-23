@@ -321,6 +321,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     pictureWorksDialog.show();
 
                 } else if (tab == 2) {//已取
+                    PictureAirLog.out("start delete order");
                     API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition).getCartItemInfos(), handler);
                 }
             }

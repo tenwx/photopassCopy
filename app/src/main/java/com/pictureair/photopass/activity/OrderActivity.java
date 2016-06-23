@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
@@ -36,8 +37,8 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class OrderActivity extends BaseFragmentActivity {
     private List<String> orderIds;
 
     private int orderType = 0;//订单类型 异步回调使用
-    private List<OrderFragment> mFragments;
+    private List<Fragment> mFragments;
     public static final int REFRESH = 0X001;
     private static final int GET_LOCAL_PEYMENT_DONE = 111;
     private boolean getLocalPaymentDone = false;
@@ -138,7 +139,7 @@ public class OrderActivity extends BaseFragmentActivity {
             case GET_LOCAL_PEYMENT_DONE://处理订单消息
                 showTop();
                 PictureAirLog.d(TAG, "get success----");
-                viewPager.setVisibility(View.VISIBLE);
+
                 netWorkOrNoCountView.setVisibility(View.INVISIBLE);
                 paymentOrderArrayList.clear();
                 paymentOrderChildArrayList.clear();
@@ -213,23 +214,14 @@ public class OrderActivity extends BaseFragmentActivity {
                 if (null == orderAdapter) {
                     orderAdapter = new OrderViewPagerAdapter2(getSupportFragmentManager(), mFragments);
                     viewPager.setAdapter(orderAdapter);
-                    viewPager.setCurrentItem(orderType);
+                    viewPager.setVisibility(View.VISIBLE);
                     viewPager.setOffscreenPageLimit(3);
-                } else {
-                    OrderFragmentEvent orderFragmentEvent = new OrderFragmentEvent();
-                    orderFragmentEvent.setOrderChildlist1(paymentOrderChildArrayList);
-                    orderFragmentEvent.setOrderChildlist2(deliveryOrderChildArrayList);
-                    orderFragmentEvent.setOrderChildlist3(downOrderChildArrayList);
-
-                    orderFragmentEvent.setCurrency(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-                    orderFragmentEvent.setOrderInfos1(paymentOrderArrayList);
-                    orderFragmentEvent.setOrderInfos2(deliveryOrderArrayList);
-                    orderFragmentEvent.setOrderInfos3(downOrderArrayList);
-
-                    EventBus.getDefault().post(orderFragmentEvent);
+                    viewPager.setCurrentItem(orderType);
                 }
+                EventBus.getDefault().post(new OrderFragmentEvent(paymentOrderArrayList, paymentOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
+                EventBus.getDefault().post(new OrderFragmentEvent(deliveryOrderArrayList, deliveryOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
+                EventBus.getDefault().post(new OrderFragmentEvent(downOrderArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
                 hideProgressDialog();
-//                orderAdapter.expandGropu(0);//因为异步回调，所以第一次需要在此处设置展开
                 break;
 
             case API1.GET_ORDER_FAILED:
@@ -243,16 +235,6 @@ public class OrderActivity extends BaseFragmentActivity {
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, orderActivityHandler, true);
                 viewPager.setVisibility(View.INVISIBLE);
-                break;
-            case API1.DELETE_ORDER_SUCCESS:
-//				int deletePosition = msg.arg1;
-                allOrderArrayList.remove(0);
-                allOrderChildArrayList.remove(0);
-
-                deliveryOrderArrayList.remove(0);
-                deliveryOrderChildArrayList.remove(0);
-
-                orderAdapter.notifyDataSetChanged();
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件

@@ -837,8 +837,8 @@ public class PictureAirDbManager {
                                 "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ? where photoId = ?",
                                 new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
                                         photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                                        photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
-                                        photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
+                                        photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
+                                        photo.locationCountry, photo.shareURL, photo.fileSize + "",
                                         photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.photoId});
 
                         database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ?, " +
@@ -848,8 +848,8 @@ public class PictureAirDbManager {
                                 "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ? where photoId = ?",
                                 new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
                                         photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
-                                        photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
-                                        photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
+                                        photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
+                                        photo.locationCountry, photo.shareURL,  photo.fileSize + "",
                                         photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.photoId});
 
                         cursor.close();

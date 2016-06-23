@@ -20,7 +20,6 @@ import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PreviewPhotoActivity;
 import com.pictureair.photopass.activity.VideoPlayerActivity;
@@ -264,7 +263,7 @@ public class StoryFragment extends Fragment {
 		if (baseBusEvent instanceof StoryFragmentEvent) {//获取刷新数据更新页面
 			PictureAirLog.out("get data from bus");
 			StoryFragmentEvent storyFragmentEvent = (StoryFragmentEvent) baseBusEvent;
-			PictureAirLog.out("tab = "+ tab);
+			PictureAirLog.out("tab = "+ tab + "------>" + storyFragmentEvent.getTab());
 			if (storyFragmentEvent.getTab() == tab) {
 				PictureAirLog.out("start update" + tab);
 				PictureAirLog.out("storyFragmentEvent.getTab() = " + storyFragmentEvent.getTab());

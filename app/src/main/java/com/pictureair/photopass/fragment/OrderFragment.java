@@ -67,6 +67,8 @@ public class OrderFragment extends Fragment {
     private static Handler mHandler;
     private SwipeRefreshLayout refreshLayout;
 
+    private NoNetWorkOrNoCountView netWorkOrNoCountView;
+
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -79,23 +81,18 @@ public class OrderFragment extends Fragment {
                     OrderInfo groupInfo = b.getParcelable("group");
                     ArrayList<CartItemInfo> childInfo = (ArrayList) b.getParcelableArrayList("child");
 
-                    // 删除Delivery中的对象
-                    switch (tab) {
-                        case 0://未付款
-                            break;
-                        case 1://已付款，未收货
-                        case 2://订单完成
-                            //删除全部订单 中的对象
-                            orderList.remove(groupInfo);
-                            childlist.remove(childInfo);
-                            break;
-                        default:
-                            break;
-                    }
+                    //删除全部订单 中的对象
+                    orderList.remove(groupInfo);
+                    childlist.remove(childInfo);
                     if (allOrderAdapter != null) {
                         allOrderAdapter.notifyDataSetChanged();
                     }
+
+                    if (orderList == null || orderList.size() == 0) {//显示空图
+                        showNetWorkOrNoCount();
+                    }
                     break;
+
                 case API1.DELETE_ORDER_FAILED:
                     myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                     break;
@@ -131,38 +128,15 @@ public class OrderFragment extends Fragment {
         return orderFragment;
     }
 
-    /**
-     * 订单信息降序排列
-     *
-     * @param orderInfoList1
-     * @return
-     */
-    private ArrayList<OrderInfo> OrderDateSort(ArrayList<OrderInfo> orderInfoList1) {
-        Collections.sort(orderInfoList1, new OrderInfoDateSortUtil());
-        return orderInfoList1;
-    }
-
-    /**
-     * 商品信息信息降序排列
-     *
-     * @param orderInfoList1
-     * @return
-     */
-    private List<OrderProductInfo> OrderProductDateSort(List<OrderProductInfo> orderInfoList1) {
-        Collections.sort(orderInfoList1, new OrderProductDateSortUtil());
-        return orderInfoList1;
-    }
-
     @Override
     public void onAttach(Context context) {
 
         if (getArguments() != null) {
-
             orderList = getArguments().getParcelableArrayList("orderList");
-            orderList = OrderDateSort(orderList);
+            Collections.sort(orderList, new OrderInfoDateSortUtil());
 
             childlist = (List<OrderProductInfo>) getArguments().getSerializable("orderChildList");
-            childlist = OrderProductDateSort(childlist);
+            Collections.sort(childlist, new OrderProductDateSortUtil());
 
             currency = getArguments().getString("currency");
             tab = getArguments().getInt("tab");
@@ -178,7 +152,7 @@ public class OrderFragment extends Fragment {
         if (view == null) {
             view = inflater.inflate(R.layout.order_list, container, false);
         }
-        NoNetWorkOrNoCountView netWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.nonetwork);
+        netWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.nonetwork);
 
         orderListView = (ExpandableListView) view.findViewById(R.id.order_viewpager_listview1);
 
@@ -194,41 +168,31 @@ public class OrderFragment extends Fragment {
             }
         });
 
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent != null) {
+            parent.removeView(view);
+        }
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         allOrderAdapter = new OrderListViewAdapter(context, orderList, childlist, currency, handler, tab);
         orderListView.setGroupIndicator(null);
         orderListView.setAdapter(allOrderAdapter);
         orderListView.setOnGroupClickListener(new GroupOnClick(tab));
         orderListView.setOnChildClickListener(new ChildOnClick(tab));
 
-        if (orderList == null || orderList.size() == 0) {
-            orderListView.setVisibility(View.GONE);
-            refreshLayout.setVisibility(View.GONE);
-            netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
-            netWorkOrNoCountView.setVisibility(View.VISIBLE);
-        } else {
-            expandGropu(tab);
-        }
-
-//        if (null != refreshLayout)
-//            orderListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
-
-        return view;
     }
 
     //expandablelistview展开child项
-    public void expandGropu(int current) {
-        switch (current) {
-            case 0:
-            case 1:
-            case 2:
-                for (int i = 0; i < orderList.size(); i++) {
-                    if (orderListView != null) {
-                        orderListView.expandGroup(i);
-                    }
-                }
-                break;
-            default:
-                break;
+    public void expandGropu() {
+        for (int i = 0; i < orderList.size(); i++) {
+            if (orderListView != null) {
+                orderListView.expandGroup(i);
+            }
         }
     }
 
@@ -300,8 +264,8 @@ public class OrderFragment extends Fragment {
     @Subscribe
     public void onUserEvent(BaseBusEvent baseBusEvent) {
         if (baseBusEvent instanceof OrderFragmentEvent) {
-            PictureAirLog.out(TAG + "orderFragment onUserEvent----------------->");
             OrderFragmentEvent orderFragmentEvent = (OrderFragmentEvent) baseBusEvent;
+            PictureAirLog.out(TAG + "orderFragment onUserEvent----------------->" + orderFragmentEvent.getTab() + "----" + tab);
 
             switch (orderFragmentEvent.getRequest()) {
                 case 1:
@@ -319,36 +283,25 @@ public class OrderFragment extends Fragment {
                         refreshLayout.setRefreshing(false);
                     }
                     currency = orderFragmentEvent.getCurrency();
-                    switch (tab) {
-                        case 0://未付款
-                            orderList = orderFragmentEvent.getOrderInfos1();
-                            orderList = OrderDateSort(orderList);
 
-                            childlist = orderFragmentEvent.getOrderChildlist1();
-                            childlist = OrderProductDateSort(childlist);
-                            EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
-                            break;
-                        case 1://已付款，未收货
-                            orderList = orderFragmentEvent.getOrderInfos2();
-                            orderList = OrderDateSort(orderList);
+                    if (orderFragmentEvent.getTab() == tab) {
+                        orderList.clear();
+                        orderList.addAll(orderFragmentEvent.getOrderInfos());
+                        Collections.sort(orderList, new OrderInfoDateSortUtil());
 
-                            childlist = orderFragmentEvent.getOrderChildlist2();
-                            childlist = OrderProductDateSort(childlist);
-                            EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
-                            break;
-                        case 2://订单完成
-                            orderList = orderFragmentEvent.getOrderInfos3();
-                            orderList = OrderDateSort(orderList);
+                        childlist.clear();
+                        childlist.addAll(orderFragmentEvent.getOrderChildlist());
 
-                            childlist = orderFragmentEvent.getOrderChildlist3();
-                            childlist = OrderProductDateSort(childlist);
-                            EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
-                            break;
-                        default:
-                            break;
-                    }
-                    if (null != allOrderAdapter) {
-                        allOrderAdapter.notifyDataSetChanged();
+                        if (null != allOrderAdapter) {
+                            allOrderAdapter.notifyDataSetChanged();
+                        }
+
+                        if (orderList == null || orderList.size() == 0) {
+                            showNetWorkOrNoCount();
+                        } else {
+                            expandGropu();
+                        }
+                        EventBus.getDefault().removeStickyEvent(orderFragmentEvent);
                     }
                     break;
 
@@ -356,8 +309,13 @@ public class OrderFragment extends Fragment {
                     break;
 
             }
-
         }
     }
 
+    private void showNetWorkOrNoCount(){
+            orderListView.setVisibility(View.GONE);
+            refreshLayout.setVisibility(View.GONE);
+            netWorkOrNoCountView.setResult(R.string.order_empty_resultString, R.string.want_to_buy, R.string.order_empty_buttonString, R.drawable.no_order_data, handler, false);
+            netWorkOrNoCountView.setVisibility(View.VISIBLE);
+    }
 }
