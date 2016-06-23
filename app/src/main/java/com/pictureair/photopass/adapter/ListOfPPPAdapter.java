@@ -31,6 +31,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.widget.pullloadlayout.MYTouchListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,13 +175,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					Rotate3dAnimation animation = null;
-					Rotate3dAnimation animation1 = null;
 					if (!mInFace[position]) {
-						animation = new Rotate3dAnimation(0, -180, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
-						animation1 = new Rotate3dAnimation(180, 360, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
+						animation = new Rotate3dAnimation(0, -90, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f,0f,true);
 					}else{
-						animation = new Rotate3dAnimation(0,180, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
-						animation1 = new Rotate3dAnimation(180,0, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 1000f, true);
+						animation = new Rotate3dAnimation(0,90, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,true);
 					}
 					animation.setDuration(500);
 					animation.setInterpolator(new LinearInterpolator());
@@ -188,37 +186,75 @@ public class ListOfPPPAdapter extends BaseAdapter {
 						@Override
 						public void onAnimationStart(Animation animation) {}
 						@Override
-						public void onAnimationEnd(Animation animation) {
+						public void onAnimationEnd(
+								Animation animation) {
+							holder.ppp_content.clearAnimation();
 							if (!mInFace[position]) {
 								hideFace(holder);
-								mInFace[position] = true;
 							}else{
 								hideOppsite(holder);
+							}
+							Rotate3dAnimation animation1 = null;
+							if (!mInFace[position]) {
+
+								mInFace[position] = true;
+							} else {
+								animation1 = new Rotate3dAnimation(270, 360, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,false);
 								mInFace[position] = false;
 							}
+							animation1.setDuration(500);
+							animation1.setInterpolator(new LinearInterpolator());
+							animation1.setAnimationListener(new Animation.AnimationListener() {
+								@Override
+								public void onAnimationStart(Animation animation) {}
+
+								@Override
+								public void onAnimationEnd(Animation animation) {holder.ppp_content.setEnabled(true);}
+
+								@Override
+								public void onAnimationRepeat(Animation animation) {}
+							});
+							holder.ppp_content.startAnimation(animation1);
 						}
 
 						@Override
 						public void onAnimationRepeat(Animation animation) {}
 					});
-					if (!mInFace[position]) {
-						holder.ppp_face.startAnimation(animation);
-						holder.ppp_detail.startAnimation(animation1);
-					}else{
-						holder.ppp_detail.startAnimation(animation);
-						holder.ppp_face.startAnimation(animation1);
-
-					}
+					holder.ppp_content.clearAnimation();
+					holder.ppp_content.startAnimation(animation);
+					holder.ppp_content.setEnabled(false);
 				}
 			});
 		}
 
 		dpp = (PPPinfo) arrayList.get(position);
 		setView(holder, dpp, position);
-
-
 		return convertView;
 	}
+
+//	class MyAnimationListener implements Animation.AnimationListener{
+//		ViewHolder viewHolder;
+//		public MyAnimationListener(ViewHolder holder) {
+//			this.viewHolder = holder;
+//		}
+//
+//		@Override
+//		public void onAnimationStart(Animation animation) {
+//
+//		}
+//
+//		@Override
+//		public void onAnimationEnd(Animation animation) {
+//
+////				}
+////			});
+//		}
+
+//		@Override
+//		public void onAnimationRepeat(Animation animation) {
+//
+//		}
+//	}
 
 	private void hideFace(ViewHolder holder) {
 		holder.ppp_face.setVisibility(View.GONE);

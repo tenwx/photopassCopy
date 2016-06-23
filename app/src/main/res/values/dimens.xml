@@ -65,6 +65,7 @@
     <dimen name="pp_height_30">30dp</dimen>
     <dimen name="pp_height_40">40dp</dimen>
     <dimen name="pp_height_80">80dp</dimen>
+    <dimen name="pp_height_70">70dp</dimen>
     <dimen name="pp_margin_30">30dp</dimen>
     <dimen name="pp_height_25">25dp</dimen>
     <dimen name="pp_height_210">210dp</dimen>

@@ -2,6 +2,7 @@ package com.pictureair.photopass.animation;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -17,20 +18,20 @@ public class Rotate3dAnimation extends Animation {
     private final float mCenterX;
     private final float mCenterY;
     private final float mDepthZ;
-//    private final float mDepthZ2;
-    // 是否需要扭曲
+    private final float mDepthZ2;
     private final boolean mReverse;
     // 摄像头
     private Camera mCamera;
 
     public Rotate3dAnimation(float fromDegrees, float toDegrees, float centerX,
-                             float centerY, float depthZ, boolean reverse) {
+                             float centerY, float depthZ,float depthZ2,boolean reverse) {
         mFromDegrees = fromDegrees;
         mToDegrees = toDegrees;
         mCenterX = centerX;
         mCenterY = centerY;
         mDepthZ = depthZ;
-        mReverse = reverse;
+        this.mDepthZ2 = depthZ2;
+        this.mReverse = reverse;
     }
 
     @Override
@@ -53,19 +54,13 @@ public class Rotate3dAnimation extends Animation {
         final Camera camera = mCamera;
 
         final Matrix matrix = t.getMatrix();
-
         camera.save();
+        camera.translate(0.0f, 0.0f, mDepthZ2);
         if (mReverse) {
             camera.translate(0.0f, 0.0f, mDepthZ * interpolatedTime);
-        }else{
+        } else {
             camera.translate(0.0f, 0.0f, mDepthZ * (1.0f - interpolatedTime));
         }
-//        camera.translate(0.0f, 0.0f, mDepthZ2);
-//        if (degrees < (mToDegrees - fromDegrees)/2) {
-//            camera.translate(0.0f, 0.0f, mDepthZ * (1.0f - interpolatedTime));
-//        }else{
-//            camera.translate(0.0f, 0.0f, mDepthZ * interpolatedTime);
-//        }
         camera.rotateY(degrees);
         // 取得变换后的矩阵
         camera.getMatrix(matrix);
