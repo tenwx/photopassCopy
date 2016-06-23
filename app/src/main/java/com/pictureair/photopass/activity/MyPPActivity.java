@@ -103,6 +103,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     private static final int SCAN_PP_CODE_SUCCESS = 111;
 
+    private static final int SAVE_JSON_DONE = 222;
+
     private boolean isOnResume = false;
 
     private static class MyPPHandler extends Handler{
@@ -128,6 +130,20 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
+            case API1.GET_ALL_PHOTOS_BY_CONDITIONS_SUCCESS://获取图片信息成功
+                /**
+                 * 1.根据code，先从网络获取图片信息，存入数据库
+                 * 2.获取最新的pp列表
+                 */
+                PictureAirLog.out("get photos---->" + msg.obj.toString());
+                saveJsonToSQLite((JSONObject)msg.obj);
+                break;
+
+            case SAVE_JSON_DONE:
+                PictureAirLog.out("save json done----> start ");
+                API1.getPPSByUserId(myPPHandler);
+                break;
+
             case UPDATE_UI:
                 PictureAirLog.out("update ui----->");
                 showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(showPPCodeList, 1);// 根据条码从数据库获取图片
@@ -170,6 +186,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
 
+            case API1.GET_ALL_PHOTOS_BY_CONDITIONS_FAILED://获取图片失败
             case API1.REMOVE_PP_FAILED:
                 if (customProgressDialog.isShowing())
                     customProgressDialog.dismiss();
@@ -825,10 +842,29 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
      * 2.获取最新的pp列表
      */
     private void getPPList(String code) {
-//        if (!customProgressDialog.isShowing()) {
-//            customProgressDialog.show();
-//        }
-//        API1.getPPSByUserId(myPPHandler);
+        if (!customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
+
+        API1.getPhotosByConditions(MyApplication.getTokenId(), myPPHandler, null, code.replace("ppOK", ""));
+    }
+
+    /**
+     * 解析服务器返回的数据
+     *
+     * @param jsonObject json对象
+     */
+    private void saveJsonToSQLite(final JSONObject jsonObject) {
+        PictureAirLog.out("start save json");
+        new Thread() {
+            public void run() {
+                PictureAirLog.out("start save json in thread");
+                final JSONArray responseArray = jsonObject.getJSONArray("photos");
+                pictureAirDbManager.insertPhotoInfoIntoPhotoPassInfo(responseArray, false, false);
+                //通知已经处理完毕
+                myPPHandler.sendEmptyMessage(SAVE_JSON_DONE);
+            }
+        }.start();
     }
 
 }

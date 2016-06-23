@@ -194,7 +194,7 @@ public class OrderFragment extends Fragment {
             }
         });
 
-        allOrderAdapter = new OrderListViewAdapter(context, orderList, childlist, currency, handler);
+        allOrderAdapter = new OrderListViewAdapter(context, orderList, childlist, currency, handler, tab);
         orderListView.setGroupIndicator(null);
         orderListView.setAdapter(allOrderAdapter);
         orderListView.setOnGroupClickListener(new GroupOnClick(tab));

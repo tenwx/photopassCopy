@@ -527,7 +527,7 @@ public class PictureAirDbManager {
      * 根据pp列表获取对应的PPCodeInfo1列表
      *
      * @param ppCodeList ppCodeList
-     * @param type       1 代表直接进入的 PP 页面， 2 代表是从selectPP进入的
+     * @param type       1 代表直接进入的 PP 页面， 2 代表是从selectPP进入，这个情况只显示模糊图
      * @return
      */
     public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList, int type) {
@@ -561,7 +561,7 @@ public class PictureAirDbManager {
                     PictureAirLog.d("cursor cursor cursor ", "cursor :" + cursor.getCount());
                 } else {
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE +
-                            " where photoCode like ? and shootTime = ? order by shootOn", new String[]{"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
+                            " where photoCode like ? and isPay = 0 and shootTime = ? order by shootOn", new String[]{"%" + ppInfo.getPpCode() + "%", ppInfo.getShootDate()});
                 }
 
                 if (cursor != null && cursor.moveToFirst()) {
@@ -825,11 +825,33 @@ public class PictureAirDbManager {
                 }
 
                 if (!isAll) {
-                    //1.先查询数据库是否有新的数据，如果有，则忽略信息
+                    //1.先查询数据库是否有新的数据，如果有，则更新信息
                     //2.如果没有，则插入
                     PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.photoId});
-                    if (cursor.getCount() > 0) {//说明存在此数据
+                    if (cursor.getCount() > 0) {//说明存在此数据，需要更新下数据
+                        database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
+                                "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
+                                "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
+                                "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
+                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ? where photoId = ?",
+                                new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
+                                        photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
+                                        photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
+                                        photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
+                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.photoId});
+
+                        database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ?, " +
+                                "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
+                                "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
+                                "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
+                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ? where photoId = ?",
+                                new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
+                                        photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
+                                        photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
+                                        photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
+                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.photoId});
+
                         cursor.close();
                         continue;
                     } else {

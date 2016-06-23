@@ -89,6 +89,8 @@ public class OrderActivity extends BaseFragmentActivity {
     private int orderType = 0;//订单类型 异步回调使用
     private List<OrderFragment> mFragments;
     public static final int REFRESH = 0X001;
+    private static final int GET_LOCAL_PEYMENT_DONE = 111;
+    private boolean getLocalPaymentDone = false;
 //    private SwipeRefreshLayout refreshLayout;
 
     private final Handler orderActivityHandler = new OrderActivityHandler(this);
@@ -118,7 +120,22 @@ public class OrderActivity extends BaseFragmentActivity {
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
-            case API1.GET_ORDER_SUCCESS:
+            case API1.GET_ORDER_SUCCESS://获取订单数据成功
+                if (getLocalPaymentDone) {//如果本地订单消息获取成功，则处理订单
+                    PictureAirLog.out("has finish");
+                    orderActivityHandler.obtainMessage(GET_LOCAL_PEYMENT_DONE, msg.obj).sendToTarget();
+
+                } else {//延迟一会
+                    PictureAirLog.out("need delay");
+                    Message message = orderActivityHandler.obtainMessage();
+                    message.what = API1.GET_ORDER_SUCCESS;
+                    message.obj = msg.obj;
+                    orderActivityHandler.sendMessageDelayed(message, 100);
+
+                }
+                break;
+
+            case GET_LOCAL_PEYMENT_DONE://处理订单消息
                 showTop();
                 PictureAirLog.d(TAG, "get success----");
                 viewPager.setVisibility(View.VISIBLE);
@@ -282,6 +299,7 @@ public class OrderActivity extends BaseFragmentActivity {
         orderType = getIntent().getIntExtra("orderType", 0);
         PictureAirLog.v(TAG, "orderType： " + orderType);
         initView();
+        PictureAirLog.out("finish--->oncreate");
     }
 
     @Override
@@ -291,11 +309,10 @@ public class OrderActivity extends BaseFragmentActivity {
 
     //初始化
     private void initView() {
+        PictureAirLog.out("initview");
         //从网络获取数据
         mFragments = new ArrayList<>();
         getData();
-        //获取本地已付款为收到推送的order
-        getLocalPaymentOrder();
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         //获取订单接口
         // 显示进度条。
@@ -320,12 +337,15 @@ public class OrderActivity extends BaseFragmentActivity {
         matrix.postTranslate(0, 0);
         cursorImageView.setImageMatrix(matrix);// 设置动画初始位置
         initData();
+        //获取本地已付款为收到推送的order
+        getLocalPaymentOrder();
     }
 
     /**
      * 初始化数据
      */
     public void initData() {
+        PictureAirLog.out("init data---->");
         //初始化expandablelistview需要的数据
         paymentOrderArrayList = new ArrayList<>();
         deliveryOrderArrayList = new ArrayList<>();
@@ -378,13 +398,17 @@ public class OrderActivity extends BaseFragmentActivity {
      * 获取本地已付款为收到推送的order
      */
     public void getLocalPaymentOrder() {
-        orderActivityHandler.post(new Runnable() {
+        PictureAirLog.out("get local payment order");
+        new Thread() {
             @Override
             public void run() {
+                super.run();
+                PictureAirLog.out("runk------>");
                 orderIds = pictureAirDbManager.searchPaymentOrderIdDB();
                 PictureAirLog.v(TAG, "getLocalPaymentOrder orderIds:" + orderIds.size());
+                getLocalPaymentDone = true;
             }
-        });
+        }.start();
     }
 
 
