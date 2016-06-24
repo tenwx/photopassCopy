@@ -118,9 +118,10 @@
                                 android:gravity="center"
                                 android:rotation="45"
                                 android:layout_alignRight="@id/card_status"
-                                android:layout_marginTop="@dimen/pp_margin_25"
-                                android:layout_marginRight="@dimen/pp_margin_20"
+                                android:layout_marginTop="@dimen/pp_margin_30"
+                                android:layout_marginRight="@dimen/pp_margin_25"
                                 android:textColor="@color/black"
+                                android:textSize="@dimen/text_size_12"
                                 />
                         </RelativeLayout>
                         <RelativeLayout
@@ -171,11 +172,14 @@
                             android:id="@+id/ppp_detail_no_pp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/pp_padding_10"
+                            android:paddingRight="@dimen/pp_padding_10"
                             android:textColor="@color/black"
                             android:textSize="@dimen/text_size_18"
                             android:gravity="center"
-                            android:text="@string/ppp_deail_no_card"
-                            android:visibility="gone"
+                            android:text="You have not activate any Disney PhotoPass"
+                            android:lines="2"
+                            android:visibility="visible"
                             android:layout_centerVertical="true"
                             />
                         <LinearLayout

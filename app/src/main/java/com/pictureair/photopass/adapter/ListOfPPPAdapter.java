@@ -25,6 +25,7 @@ import com.pictureair.photopass.activity.SelectPhotoActivity;
 import com.pictureair.photopass.animation.Rotate3dAnimation;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.filter.AndroidUtils;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -129,6 +130,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp3_img = (ImageView)convertView.findViewById(R.id.ppp_imageView3);
 //			holder.tvState =(TextView)convertView.findViewById(R.id.tv_state);
 			holder.tv_cardStatus = (TextView) convertView.findViewById(R.id.tv_ppp_state);
+			holder.img_card_status = (ImageView) convertView.findViewById(R.id.card_status);
 			holder.rl_ppp_status = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_status);
 			holder.ppp_cardHeader = (RelativeLayout) convertView.findViewById(R.id.ppp_card_head);
 			holder.tvExpired = (TextView)convertView.findViewById(R.id.tv_expired);
@@ -157,9 +159,17 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		if (isUseHavedPPP){ // 如果是选择，注册监听事件
 			childClickListener = new OnItemChildClickListener(position);
 			holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
+			//显示单选框，隐藏状态
+			holder.img_no_check.setVisibility(View.VISIBLE);
 			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.ppp_item);
 			holder.img_no_check.setOnClickListener(childClickListener);
-			holder.itemLayout.setOnClickListener(childClickListener);
+			if (holder.img_no_check != null) {
+				holder.tv_cardStatus.setTextSize(10);
+				RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams) holder.tv_cardStatus.getLayoutParams();
+				params4.rightMargin -= AndroidUtils.dipTopx(4,mContext);
+				params4.topMargin += AndroidUtils.dipTopx(1,mContext);
+				holder.tv_cardStatus.setLayoutParams(params4);
+			}
 		}else{
 			childClickListener = new OnItemChildClickListener(position);
 			holder.ppp_cardHeader.setOnClickListener(childClickListener);
@@ -167,7 +177,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					Rotate3dAnimation animation = null;
-
 					final Rotate3dAnimation animation1;
 					if (!mInFace[position]) {
 						animation1 = new Rotate3dAnimation(90, 0, holder.ppp_content.getWidth() / 2, holder.ppp_content.getHeight() / 2, 300f, 0f,false);
@@ -233,8 +242,15 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		ViewGroup.LayoutParams params = holder.ppp_content.getLayoutParams();
 		params.width = ScreenUtil.getScreenWidth(mContext);
 		params.height = params.width * 3 / 5;
-		holder.pppCardCenterCover.setLayoutParams(params);
-
+		holder.ppp_content.setLayoutParams(params);
+		ViewGroup.LayoutParams params2 = holder.ppp_imageView.getLayoutParams();
+		params2.width = params.width;
+		params2.height = params.height;
+		holder.ppp_imageView.setLayoutParams(params2);
+		ViewGroup.LayoutParams params3 = holder.img_card_status.getLayoutParams();
+		params3.width = params.width;
+		params3.height = params.height;
+		holder.img_card_status.setLayoutParams(params3);
 		ViewGroup.LayoutParams params1 = holder.pppCardCenterCover.getLayoutParams();
 		params1.width = params.width;
 		params1.height = params.height;
@@ -277,6 +293,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		TextView tv_pp_date2;
 		TextView tv_pp_date3;
 		TextView tv_ppp_no_pp;//卡反面没有信息时的显示
+		ImageView img_card_status;
 	}
 
 
@@ -417,9 +434,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 			//如果是选择 pp＋的状态
 			if (isUseHavedPPP) {
-				//显示单选框，隐藏状态
-				holder.img_no_check.setVisibility(View.VISIBLE);
-
 				//判断 选择框的选中 和 非选中状态。
 				if (map.size() == 1) {
 					if (map.get(position) != null) {

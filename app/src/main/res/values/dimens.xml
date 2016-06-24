@@ -32,6 +32,7 @@
     <dimen name="pp_margin_32">32dp</dimen>
     <dimen name="pp_margin_20">20dp</dimen>
     <dimen name="pp_margin_25">25dp</dimen>
+    <dimen name="pp_margin_27">27dp</dimen>
     <dimen name="pp_margin_10">10dp</dimen>
     <dimen name="pp_top_bar_height">52dp</dimen>
 
@@ -94,5 +95,4 @@
 
     <dimen name="bottom_bar_65">65dp</dimen> <!-- 底部状态栏高度 -->
     <dimen name="bottom_bar_padding_5">5dp</dimen>
-
 </resources>
