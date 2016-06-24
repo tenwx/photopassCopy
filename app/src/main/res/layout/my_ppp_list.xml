@@ -177,7 +177,7 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/text_size_18"
                             android:gravity="center"
-                            android:text="You have not activate any Disney PhotoPass"
+                            android:text="@string/ppp_deail_no_card"
                             android:lines="2"
                             android:visibility="visible"
                             android:layout_centerVertical="true"
