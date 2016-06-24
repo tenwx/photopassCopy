@@ -5,13 +5,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
@@ -33,10 +31,9 @@ public class ReFreshLayout extends RelativeLayout{
     private TextView description;
     private MarginLayoutParams headerLayoutParams;
     private int hideHeaderHeight;
-    private int touchSlop;
     private MyListView listView;
     private int lastStatus = mState;
-    Scroller scroller;
+    private boolean loadOnce;
     /**
      * 下拉状态
      */
@@ -60,8 +57,15 @@ public class ReFreshLayout extends RelativeLayout{
      * 当前是否可以下拉，只有ListView滚动到头的时候才允许下拉
      */
     private boolean ableToPull;
+    /**
+     * 累计移动距离
+     * */
     private int allMove;
+    /**
+     * 表示已截取到move事件
+     * */
     private boolean isPull;
+    float lastY;
 
     public ReFreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -69,12 +73,10 @@ public class ReFreshLayout extends RelativeLayout{
         progressBar = (ProgressBar) header.findViewById(R.id.progress_bar);
         arrow = (ImageView) header.findViewById(R.id.arrow);
         description = (TextView) header.findViewById(R.id.description);
-        touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         addView(header,0);
         mIsLoading = false;
     }
-    private boolean loadOnce;
-    //    LayoutParams lp;
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -87,7 +89,6 @@ public class ReFreshLayout extends RelativeLayout{
             headerLayoutParams.bottomMargin = hideHeaderHeight;
             loadOnce = true;
         }
-
     }
 
     public void setOnRefreshListener(OnRefreshListener listener) {
@@ -116,9 +117,9 @@ public class ReFreshLayout extends RelativeLayout{
             return super.onInterceptTouchEvent(ev);
         } else {
             setIsAbleToPull(ev);
-            PictureAirLog.e("RefreshLayout", "move");
-            PictureAirLog.e("ableToPull", String.valueOf(ableToPull));
-            PictureAirLog.e("mIsLoading", String.valueOf(mIsLoading));
+            PictureAirLog.v("RefreshLayout", "move");
+            PictureAirLog.v("ableToPull", String.valueOf(ableToPull));
+            PictureAirLog.v("mIsLoading", String.valueOf(mIsLoading));
             if (ableToPull && !mIsLoading && listView != null) {
                 if (isPull) {
                     return true;
@@ -129,9 +130,9 @@ public class ReFreshLayout extends RelativeLayout{
                     if (lastY != tmpY) {
                         lastY = tmpY;
                     }
-                    PictureAirLog.e("RefreshLayout", "space");
-                    PictureAirLog.e("space", String.valueOf(space));
-                    PictureAirLog.e("allmove", String.valueOf(allMove));
+                    PictureAirLog.v("RefreshLayout", "space");
+                    PictureAirLog.v("space", String.valueOf(space));
+                    PictureAirLog.v("allmove", String.valueOf(allMove));
                     if (space > 5 && allMove >= 0) {
                         isPull = true;
                         return true;
@@ -146,7 +147,6 @@ public class ReFreshLayout extends RelativeLayout{
         return super.onInterceptTouchEvent(ev);
     }
 
-    float lastY;
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (listView == null) {
@@ -176,19 +176,25 @@ public class ReFreshLayout extends RelativeLayout{
                             mState = STATUS_PULL_TO_REFRESH;
                         }
                     }
+                    PictureAirLog.v("before res",String.valueOf(res));
+                    if (res + headerLayoutParams.bottomMargin < hideHeaderHeight) {
+                        res = hideHeaderHeight - headerLayoutParams.bottomMargin;
+                    }
+                    PictureAirLog.v("bottomMargin", String.valueOf(headerLayoutParams.bottomMargin));
+                    PictureAirLog.v("res", String.valueOf(res));
                     allMove += res;
-                    PictureAirLog.e("ontouchevent allMove",String.valueOf(allMove));
-                    PictureAirLog.e("ontouchevent",String.valueOf("ACTION_MOVE"));
-                    listView.listScrollBy(0, res);
+                    PictureAirLog.v("ontouchevent allMove",String.valueOf(allMove));
+                    PictureAirLog.v("ontouchevent",String.valueOf("ACTION_MOVE"));
+                    listView.scrollBy(0, res);
                     headerLayoutParams.bottomMargin = res + headerLayoutParams.bottomMargin;
                     header.setLayoutParams(headerLayoutParams);
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
-                    PictureAirLog.e("ontouchevent","ACTION_UP");
+                    PictureAirLog.v("ontouchevent","ACTION_UP");
                     if (mState == STATUS_RELEASE_TO_REFRESH && !mIsLoading) {
                         // 松手时如果是释放立即刷新状态，就去调用正在刷新的任务
-                        listView.listScrollBy(0,-headerLayoutParams.bottomMargin);
+                        listView.scrollBy(0,-headerLayoutParams.bottomMargin);
                         headerLayoutParams.bottomMargin = 0;
                         header.setLayoutParams(headerLayoutParams);
                         mState = STATUS_REFRESHING;
@@ -197,13 +203,13 @@ public class ReFreshLayout extends RelativeLayout{
                             mIsLoading = true;
                             listener.onRefresh();
                         }
-                        PictureAirLog.e("Ontouc","STATUS_RELEASE_TO_REFRESH");
+                        PictureAirLog.v("Ontouc","STATUS_RELEASE_TO_REFRESH");
                     } else if (mState == STATUS_PULL_TO_REFRESH ) {
                         // 松手时如果是下拉状态，就去调用隐藏下拉头的任务
                         resetView();
-                        PictureAirLog.e("ontouchevent","STATUS_PULL_TO_REFRESH");
+                        PictureAirLog.v("ontouchevent","STATUS_PULL_TO_REFRESH");
                     }
-                    PictureAirLog.e("ontouchevent","out");
+                    PictureAirLog.v("ontouchevent","out");
                     break;
             }
             // 时刻记得更新下拉头中的信息
@@ -226,7 +232,7 @@ public class ReFreshLayout extends RelativeLayout{
         headerLayoutParams.bottomMargin = hideHeaderHeight;
         header.setLayoutParams(headerLayoutParams);
         if (listView != null) {
-            listView.listScrollTo(0, 0);
+            listView.scrollTo(0, 0);
         }
         allMove = 0;
         isPull = false;
@@ -239,8 +245,6 @@ public class ReFreshLayout extends RelativeLayout{
         mState = STATUS_REFRESH_FINISHED;
         resetView();
         mIsLoading = false;
-        allMove = 0;
-        isPull = false;
     }
 
     private void updateHeaderView() {
@@ -315,8 +319,8 @@ public class ReFreshLayout extends RelativeLayout{
         boolean result=false;
         if (listView.getLastVisiblePosition() == (listView.getCount() - 1)) {
             final View bottomChildView = listView.getChildAt(listView.getLastVisiblePosition() - listView.getFirstVisiblePosition());
-            PictureAirLog.e("listView.getHeight()",String.valueOf(listView.getHeight()));
-            PictureAirLog.e("bottomChildView.getBottom()",String.valueOf(bottomChildView.getBottom()));
+            PictureAirLog.v("listView.getHeight()",String.valueOf(listView.getHeight()));
+            PictureAirLog.v("bottomChildView.getBottom()",String.valueOf(bottomChildView.getBottom()));
             result= (listView.getHeight()>=bottomChildView.getBottom());
         }
         return  result;

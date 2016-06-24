@@ -18,14 +18,6 @@ public class MyListView extends ListView{
         mScroll = new Scroller(context);
     }
 
-    public void listScrollBy(int x,int y){
-        scrollBy(x,y);
-    }
-
-    public void listScrollTo(int x, int y){
-        scrollTo(x,y);
-    }
-
     @Override
     public void computeScroll() {
         super.computeScroll();

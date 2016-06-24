@@ -154,7 +154,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-
 		if (isUseHavedPPP){ // 如果是选择，注册监听事件
 			childClickListener = new OnItemChildClickListener(position);
 			holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
@@ -168,12 +167,35 @@ public class ListOfPPPAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					Rotate3dAnimation animation = null;
+
+					final Rotate3dAnimation animation1;
 					if (!mInFace[position]) {
-						animation = new Rotate3dAnimation(0, -90, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f,0f,true);
-					}else{
-						animation = new Rotate3dAnimation(0,90, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,true);
+						animation1 = new Rotate3dAnimation(90, 0, holder.ppp_content.getWidth() / 2, holder.ppp_content.getHeight() / 2, 300f, 0f,false);
+					} else {
+						animation1 = new Rotate3dAnimation(270, 360, holder.ppp_content.getWidth() / 2, holder.ppp_content.getHeight() / 2, 300f, 0f,false);
 					}
-					animation.setDuration(500);
+					animation1.setDuration(250);
+					animation1.setInterpolator(new LinearInterpolator());
+					animation1.setAnimationListener(new Animation.AnimationListener() {
+						@Override
+						public void onAnimationStart(Animation animation) {}
+
+						@Override
+						public void onAnimationEnd(Animation animation) {
+							holder.ppp_content.setEnabled(true);
+							holder.ppp_content.clearAnimation();
+						}
+
+						@Override
+						public void onAnimationRepeat(Animation animation) {}
+					});
+
+					if (!mInFace[position]) {
+						animation = new Rotate3dAnimation(0, -90, holder.ppp_content.getWidth() / 2, holder.ppp_content.getHeight() / 2, 300f,0f,true);
+					}else{
+						animation = new Rotate3dAnimation(0,90, holder.ppp_content.getWidth() / 2, holder.ppp_content.getHeight() / 2, 300f, 0f,true);
+					}
+					animation.setDuration(250);
 					animation.setInterpolator(new LinearInterpolator());
 					animation.setAnimationListener(new Animation.AnimationListener() {
 						@Override
@@ -184,29 +206,11 @@ public class ListOfPPPAdapter extends BaseAdapter {
 							holder.ppp_content.clearAnimation();
 							if (!mInFace[position]) {
 								hideFace(holder);
+								mInFace[position] = true;
 							}else{
 								hideOppsite(holder);
-							}
-							Rotate3dAnimation animation1 = null;
-							if (!mInFace[position]) {
-								animation1 = new Rotate3dAnimation(90, 0, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,false);
-								mInFace[position] = true;
-							} else {
-								animation1 = new Rotate3dAnimation(270, 360, holder.ppp_face.getWidth() / 2, holder.ppp_face.getHeight() / 2, 300f, 0f,false);
 								mInFace[position] = false;
 							}
-							animation1.setDuration(500);
-							animation1.setInterpolator(new LinearInterpolator());
-							animation1.setAnimationListener(new Animation.AnimationListener() {
-								@Override
-								public void onAnimationStart(Animation animation) {}
-
-								@Override
-								public void onAnimationEnd(Animation animation) {holder.ppp_content.setEnabled(true);}
-
-								@Override
-								public void onAnimationRepeat(Animation animation) {}
-							});
 							holder.ppp_content.startAnimation(animation1);
 						}
 
@@ -258,21 +262,21 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		LinearLayout itemLayout;
 		TextView tv_cardStatus;//PPP卡状态
 		RelativeLayout ppp_cardHeader;//三个米奇头的外部容器
-		RelativeLayout ppp_content;
-		RelativeLayout ppp_detail;
-		RelativeLayout ppp_detail_pp1;
+		RelativeLayout ppp_content; //3个米奇头下面的内容
+		RelativeLayout ppp_detail;//卡反面内容
+		RelativeLayout ppp_detail_pp1;//卡反面对应的每一条详情
 		RelativeLayout ppp_detail_pp2;
 		RelativeLayout ppp_detail_pp3;
 		LinearLayout ll_ppp_with_pp;
-		RelativeLayout ppp_face;
-		RelativeLayout rl_ppp_status;
-		TextView tv_pp_num1;
+		RelativeLayout ppp_face;//卡正面
+		RelativeLayout rl_ppp_status;//卡的状态
+		TextView tv_pp_num1;//卡反面对应的每一条数据的信息
 		TextView tv_pp_num2;
 		TextView tv_pp_num3;
 		TextView tv_pp_date1;
 		TextView tv_pp_date2;
 		TextView tv_pp_date3;
-		TextView tv_ppp_no_pp;
+		TextView tv_ppp_no_pp;//卡反面没有信息时的显示
 	}
 
 
@@ -328,6 +332,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp1_img.setVisibility(View.VISIBLE);
 			holder.pp2_img.setVisibility(View.VISIBLE);
 			holder.pp3_img.setVisibility(View.VISIBLE);
+			holder.tv_ppp_no_pp.setVisibility(View.INVISIBLE);
+			holder.ll_ppp_with_pp.setVisibility(View.INVISIBLE);
+
 			switch (dpp.bindInfo.size()) {
 				case 0://全新的
 					holder.tv_cardStatus.setText(R.string.no_activated);
@@ -343,6 +350,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.no_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+					holder.ll_ppp_with_pp.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.INVISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
@@ -354,6 +362,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.no_ppp_icon);
+					holder.ll_ppp_with_pp.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
@@ -368,6 +377,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.pp1_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp2_img.setImageResource(R.drawable.has_ppp_icon);
 					holder.pp3_img.setImageResource(R.drawable.has_ppp_icon);
+					holder.ll_ppp_with_pp.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.VISIBLE);

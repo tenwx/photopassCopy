@@ -417,16 +417,21 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                 }
                 break;
             case 3:
-                if (status != full) {
+                if (status == normal) {
                     if (listNoUse == null || listNoUse.size() < 1) {
                         myToast.setTextAndShow(R.string.ppp_load_all);
-                    }else {
+                    } else {
                         listPPPAdapter.setArrayList(list1);
                     }
                     status = full;
                     finishLoad();
                     listPPPAdapter.notifyDataSetChanged();
+                    listPPP.setSelection(listPPP.getLastVisiblePosition()+1);
                     initLoadingView();
+                }else if (status == unUse) {
+                    status = full;
+                    myToast.setTextAndShow(R.string.ppp_load_all);
+                    finishLoad();
                 }else if (status == full){
                     myToast.setTextAndShow(R.string.ppp_load_all);
                     finishLoad();
