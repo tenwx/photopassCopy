@@ -658,7 +658,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     }else{
                         pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
                                 String.format(getString(R.string.select_pp_right_date), selectedString),
-                                getString(R.string.button_cancel), getString(R.string.button_ok), true, myPPHandler);
+                                getString(R.string.button_cancel), getString(R.string.button_ok), false, myPPHandler);
                         pictureWorksDialog.show();
                     }
                 }

@@ -92,6 +92,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
     private PictureAirDbManager pictureAirDbManager;
 
+    private static final int GET_PHOTOS_DONE = 10101;
+
 
     private static class SelectPhotoHandler extends Handler {
         private final WeakReference<SelectPhotoActivity> mActivity;
@@ -117,6 +119,39 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
+            case GET_PHOTOS_DONE:
+
+                //判断是否有照片
+                if (isBuy) {//disney video
+                    if (photoPassArrayList != null && photoPassArrayList.size() > 2) {
+                        llNullPhoto.setVisibility(View.GONE);
+                        gridView.setVisibility(View.VISIBLE);
+                        tvBubble.setAlpha(0.9f);
+                        tvBubble.setVisibility(View.VISIBLE);
+                        bubbleStart();
+                    } else {
+                        gridView.setVisibility(View.GONE);
+                        llNullPhoto.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (photoPassArrayList != null && photoPassArrayList.size() > 0) {
+                        noPhotoRelativeLayout.setVisibility(View.GONE);
+                        gridView.setVisibility(View.VISIBLE);
+                    } else {
+                        gridView.setVisibility(View.GONE);
+                        noPhotoRelativeLayout.setVisibility(View.VISIBLE);
+                        if (activity.equals("mypppactivity")) {
+                            noPhotoTextView.setText(R.string.no_photo_update);
+                            noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
+                        }
+                    }
+                }
+                photoPassAdapter.notifyDataSetChanged();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+                break;
+
             case 111:
                 if (isDisneyVideo) {
                     okButton.setText(String.format(getString(R.string.disney_video_edit_photo), msg.arg1, photocount));//更新button
@@ -204,6 +239,8 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
     //初始化函数
     private void initview() {
+        customProgressDialog = CustomProgressDialog.create(context, context.getString(R.string.is_loading), false, null);
+        customProgressDialog.show();
         //初始化资源
         newToast = new PWToast(this);
         myApplication = (MyApplication) getApplication();
@@ -247,11 +284,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         //初始化数据列表
         photoPassArrayList = new ArrayList<>();
         pictureAirDbManager = new PictureAirDbManager(this);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-        photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
-        photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
-        PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
 
         PictureAirLog.out("photocount--->" + photocount);
         if (isDisneyVideo) {
@@ -259,36 +291,21 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         } else {
             okButton.setText(String.format(getString(R.string.hasselectedphoto), 0, photocount));
         }
-
         okButton.setEnabled(false);
-        //判断是否有照片
-        if (isBuy) {//disney video
-            if (photoPassArrayList != null && photoPassArrayList.size() > 2) {
-                llNullPhoto.setVisibility(View.GONE);
-                gridView.setVisibility(View.VISIBLE);
-                tvBubble.setAlpha(0.9f);
-                tvBubble.setVisibility(View.VISIBLE);
-                bubbleStart();
-            } else {
-                gridView.setVisibility(View.GONE);
-                llNullPhoto.setVisibility(View.VISIBLE);
-                return;
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
+                photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
+                photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
+                PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
+                selectPhotoHandler.sendEmptyMessage(GET_PHOTOS_DONE);
             }
-        } else {
-            if (photoPassArrayList != null && photoPassArrayList.size() > 0) {
-                noPhotoRelativeLayout.setVisibility(View.GONE);
-                gridView.setVisibility(View.VISIBLE);
-            } else {
-                gridView.setVisibility(View.GONE);
-                noPhotoRelativeLayout.setVisibility(View.VISIBLE);
-                if (activity.equals("mypppactivity")) {
-                    noPhotoTextView.setText(R.string.no_photo_update);
-                    noPhotoImageView.setImageResource(R.drawable.no_photo_upgrade);
-                }
-//                goneOkButton();
-                return;
-            }
-        }
+        }.start();
+
         //设置默认没有选中
         photoPassAdapter = new ViewPhotoGridViewAdapter(this, photoPassArrayList);
         gridView.setAdapter(photoPassAdapter);
@@ -588,7 +605,9 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     setResult(20, intent);
                     finish();
                 } else if (activity.equals("disney_video")) {
-                    customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                    if (!customProgressDialog.isShowing()) {
+                        customProgressDialog.show();
+                    }
                     StringBuffer photos = new StringBuffer();
                     for (int i = 0; i < photoURLlist.size(); i++) {
                         String photoId = photoURLlist.get(i).photoId;
@@ -602,7 +621,9 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
                 } else if (activity.equals("mypppactivity")) {
                     //绑定图片到ppp
-                    customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                    if (!customProgressDialog.isShowing()) {
+                        customProgressDialog.show();
+                    }
                     JSONArray photoIds = new JSONArray();
                     for (int i = 0; i < photoURLlist.size(); i++) {
                         photoIds.add(photoURLlist.get(i).photoId);

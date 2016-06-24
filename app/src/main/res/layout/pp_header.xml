@@ -14,9 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pp_tip"
-        android:gravity="center"
         android:layout_marginTop="2dp"
-        android:textSize="@dimen/text_size_16"
+        android:textSize="@dimen/text_size_14"
         android:textColor="@color/pp_dark_blue"/>
 
 </LinearLayout>

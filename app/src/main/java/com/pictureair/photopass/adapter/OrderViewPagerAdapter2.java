@@ -3,9 +3,8 @@ package com.pictureair.photopass.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.view.ViewGroup;
-
-import com.pictureair.photopass.fragment.OrderFragment;
 
 import java.util.List;
 
@@ -16,10 +15,10 @@ import java.util.List;
  */
 public class OrderViewPagerAdapter2 extends FragmentStatePagerAdapter {
     private static final String TAG = "OrderViewPagerAdapter";
-    private List<OrderFragment> mFragments;
+    private List<Fragment> mFragments;
 
 
-    public OrderViewPagerAdapter2(FragmentManager fm,List<OrderFragment> mFragments) {
+    public OrderViewPagerAdapter2(FragmentManager fm, List<Fragment> mFragments) {
         super(fm);
         this.mFragments = mFragments;
     }
@@ -40,9 +39,21 @@ public class OrderViewPagerAdapter2 extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-//    @Override
-//    public int getItemPosition(Object object) {
-//        return PagerAdapter.POSITION_NONE;
-//    }
+    @Override
+    public Object instantiateItem(ViewGroup arg0, int arg1) {
+        return super.instantiateItem(arg0, arg1);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return PagerAdapter.POSITION_NONE;
+    }
+
+
+    @Override
+    public void finishUpdate(ViewGroup container) {
+        // TODO Auto-generated method stub
+        super.finishUpdate(container);
+    }
 
 }

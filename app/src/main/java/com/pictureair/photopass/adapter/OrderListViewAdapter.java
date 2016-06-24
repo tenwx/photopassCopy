@@ -56,7 +56,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
             switch (msg.what) {
                 case DialogInterface.BUTTON_POSITIVE:
                     PictureAirLog.out("ok----->");
-                    API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition).getCartItemInfos(), handler);
+                    API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition), handler);
                     break;
 
                 default:
@@ -321,7 +321,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                     pictureWorksDialog.show();
 
                 } else if (tab == 2) {//已取
-                    API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition).getCartItemInfos(), handler);
+                    PictureAirLog.out("start delete order");
+                    API1.removeOrder(grouplist.get(position).orderId, grouplist.get(position), childlist.get(position), handler);
                 }
             }
         }

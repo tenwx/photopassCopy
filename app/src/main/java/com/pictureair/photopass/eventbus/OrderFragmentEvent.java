@@ -11,69 +11,46 @@ import java.util.ArrayList;
  */
 public class OrderFragmentEvent implements BaseBusEvent {
 
-    private ArrayList<OrderInfo> orderInfos1;
-    private ArrayList<OrderInfo> orderInfos2;
-    private ArrayList<OrderInfo> orderInfos3;
-    private ArrayList<OrderProductInfo> orderChildlist1;
-    private ArrayList<OrderProductInfo> orderChildlist2;
-    private ArrayList<OrderProductInfo> orderChildlist3;
+    private ArrayList<OrderInfo> orderInfoArrayList = new ArrayList<>();
+    private ArrayList<OrderProductInfo> orderChildlist = new ArrayList<>();
     private String currency;
     private int tab;
     private int request = 0;//请求类型
 
+    public OrderFragmentEvent(ArrayList<OrderInfo> orderInfoArrayList, ArrayList<OrderProductInfo> orderChildlist, String currency, int tab) {
+        this.orderChildlist.clear();
+        this.orderInfoArrayList.clear();
+        this.orderInfoArrayList.addAll(orderInfoArrayList);
+        this.orderChildlist.addAll(orderChildlist);
+        this.currency = currency;
+        this.tab = tab;
+    }
+
+    public OrderFragmentEvent() {
+    }
+
     public int getRequest() {
         return request;
     }
+
     public void setRequest(int request) {
         this.request = request;
     }
 
-    public ArrayList<OrderInfo> getOrderInfos1() {
-        return orderInfos1;
+    public ArrayList<OrderInfo> getOrderInfos() {
+        return orderInfoArrayList;
     }
 
-    public void setOrderInfos1(ArrayList<OrderInfo> orderInfos1) {
-        this.orderInfos1 = orderInfos1;
+    public void setOrderInfos(ArrayList<OrderInfo> orderInfoArrayList) {
+        this.orderInfoArrayList = orderInfoArrayList;
     }
 
-    public ArrayList<OrderInfo> getOrderInfos2() {
-        return orderInfos2;
+    public ArrayList<OrderProductInfo> getOrderChildlist() {
+        return orderChildlist;
     }
 
-    public void setOrderInfos2(ArrayList<OrderInfo> orderInfos2) {
-        this.orderInfos2 = orderInfos2;
-    }
-
-    public ArrayList<OrderInfo> getOrderInfos3() {
-        return orderInfos3;
-    }
-
-    public void setOrderInfos3(ArrayList<OrderInfo> orderInfos3) {
-        this.orderInfos3 = orderInfos3;
-    }
-
-    public ArrayList<OrderProductInfo> getOrderChildlist1() {
-        return orderChildlist1;
-    }
-
-    public void setOrderChildlist1(ArrayList<OrderProductInfo> orderChildlist1) {
-        this.orderChildlist1 = orderChildlist1;
-    }
-
-    public ArrayList<OrderProductInfo> getOrderChildlist2() {
-        return orderChildlist2;
-    }
-
-    public void setOrderChildlist2(ArrayList<OrderProductInfo> orderChildlist2) {
-        this.orderChildlist2 = orderChildlist2;
-    }
-
-    public ArrayList<OrderProductInfo> getOrderChildlist3() {
-        return orderChildlist3;
-    }
-
-    public void setOrderChildlist3(ArrayList<OrderProductInfo> orderChildlist3) {
-        this.orderChildlist3 = orderChildlist3;
+    public void setOrderChildlist(ArrayList<OrderProductInfo> orderChildlist) {
+        this.orderChildlist = orderChildlist;
     }
 
     public String getCurrency() {
