@@ -121,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:paddingBottom="20dp"
+                        android:paddingBottom="10dp"
                         android:rotation="45"
                         android:text="fadsfadsfs"
                         android:textColor="@color/pp_dark_blue"
@@ -198,8 +198,8 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginLeft="@dimen/pp_margin_30"
-                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_marginLeft="@dimen/pp_margin_20"
+                        android:layout_marginRight="@dimen/pp_margin_20"
                         android:layout_weight="1">
 
                         <TextView
@@ -222,8 +222,8 @@
                         android:id="@+id/rl_detail_pp1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginLeft="@dimen/pp_margin_30"
-                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_marginLeft="@dimen/pp_margin_20"
+                        android:layout_marginRight="@dimen/pp_margin_20"
                         android:layout_weight="1"
                         android:visibility="gone">
 
@@ -242,6 +242,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:layout_marginRight="@dimen/pp_margin_10"
                             android:layout_toRightOf="@id/img_miqi1"
                             android:layout_toLeftOf="@+id/pp_detail_date1"
                             android:gravity="left|center_vertical"
@@ -265,8 +266,8 @@
                         android:id="@+id/rl_detail_pp2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginLeft="@dimen/pp_margin_30"
-                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_marginLeft="@dimen/pp_margin_20"
+                        android:layout_marginRight="@dimen/pp_margin_20"
                         android:layout_weight="1"
                         android:visibility="gone">
 
@@ -285,6 +286,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:layout_marginRight="@dimen/pp_margin_10"
                             android:layout_toRightOf="@id/img_miqi2"
                             android:layout_toLeftOf="@+id/pp_detail_date2"
                             android:gravity="left|center_vertical"
@@ -309,8 +311,8 @@
                         android:id="@+id/rl_detail_pp3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginLeft="@dimen/pp_margin_30"
-                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_marginLeft="@dimen/pp_margin_20"
+                        android:layout_marginRight="@dimen/pp_margin_20"
                         android:layout_weight="1"
                         android:visibility="gone">
 
@@ -329,6 +331,7 @@
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:layout_marginRight="@dimen/pp_margin_10"
                             android:layout_toRightOf="@id/img_miqi3"
                             android:layout_toLeftOf="@+id/pp_detail_date3"
                             android:gravity="left|center_vertical"

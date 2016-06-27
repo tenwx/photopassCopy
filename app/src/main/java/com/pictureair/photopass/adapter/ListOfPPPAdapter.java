@@ -22,7 +22,6 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.animation.Rotate3dAnimation;
 import com.pictureair.photopass.entity.PPPinfo;
-import com.pictureair.photopass.filter.AndroidUtils;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -318,7 +317,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		if (dpp.expiredOn.equals("") || dpp.expericePPP == 1) { // 如果有效期为空。就不显示，如果不为空，就显示。
 			holder.tvExpired.setText("");
 		} else {
-			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) +"\n"+ AppUtil.GTMToLocal(dpp.expiredOn).substring(0, 10));
+			holder.tvExpired.setText(mContext.getResources().getString(R.string.expired_on) +"\n"+ AppUtil.GTMToLocal(dpp.expiredOn).substring(0, 10).replace("-", "."));
 		}
 
 		//设置过期/已用完的透明层
@@ -366,7 +365,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp2.setVisibility(View.INVISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
 					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
-					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
+					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
 					break;
 				case 2://用过两张
 					holder.tv_cardStatus.setText(R.string.activated);
@@ -377,8 +376,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
-					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
-					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate);
+					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
+					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate.replace("-", "."));
 					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
 					holder.tv_pp_num2.setText(dpp.bindInfo.get(1).customerId);
 					break;
@@ -392,9 +391,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.VISIBLE);
-					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
-					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate);
-					holder.tv_pp_date3.setText(dpp.bindInfo.get(2).bindDate);
+					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
+					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate.replace("-", "."));
+					holder.tv_pp_date3.setText(dpp.bindInfo.get(2).bindDate.replace("-", "."));
 					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
 					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
 					holder.tv_pp_num3.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(2).customerId));

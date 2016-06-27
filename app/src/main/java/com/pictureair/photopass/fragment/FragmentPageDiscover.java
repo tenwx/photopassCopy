@@ -595,16 +595,14 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     }
 
     private void requesLocationPermission() {
+        PictureAirLog.out("request location permission");
         if (!AppUtil.checkPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                mIsAskLocationPermission = true;
-                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-                return;
-            }
+            PictureAirLog.out("1111111");
             mIsAskLocationPermission = true;
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
             return;
         }
+        PictureAirLog.out("22222222");
         startService();
     }
 
@@ -612,6 +610,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSION:
+                PictureAirLog.out("33333333333");
                 if (Manifest.permission.ACCESS_COARSE_LOCATION.equalsIgnoreCase(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startService();
                 }
