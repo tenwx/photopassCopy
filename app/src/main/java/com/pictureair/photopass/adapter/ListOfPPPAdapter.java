@@ -154,17 +154,13 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		if (isUseHavedPPP){ // 如果是选择，注册监听事件
 			childClickListener = new OnItemChildClickListener(position);
 			holder.img_no_check = (ImageView) convertView.findViewById(R.id.iv_select);
+			holder.ppp_empty_view = (ImageView) convertView.findViewById(R.id.ppp_empty_view);
 			//显示单选框，隐藏状态
 			holder.img_no_check.setVisibility(View.VISIBLE);
+			holder.ppp_empty_view.setVisibility(View.VISIBLE);
 			holder.itemLayout = (LinearLayout) convertView.findViewById(R.id.ppp_item);
 			holder.img_no_check.setOnClickListener(childClickListener);
-			if (holder.img_no_check != null) {
-				holder.tv_cardStatus.setTextSize(10);
-				RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams) holder.tv_cardStatus.getLayoutParams();
-				params4.rightMargin -= AndroidUtils.dipTopx(4,mContext);
-				params4.topMargin += AndroidUtils.dipTopx(1,mContext);
-				holder.tv_cardStatus.setLayoutParams(params4);
-			}
+			holder.itemLayout.setOnClickListener(childClickListener);
 		}else{
 			childClickListener = new OnItemChildClickListener(position);
 			holder.ppp_cardHeader.setOnClickListener(childClickListener);
@@ -291,6 +287,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		TextView tv_pp_date2;
 		TextView tv_pp_date3;
 		TextView tv_ppp_no_pp;//卡反面没有信息时的显示
+		ImageView ppp_empty_view;
 	}
 
 
@@ -349,7 +346,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.pp3_img.setVisibility(View.VISIBLE);
 			holder.tv_ppp_no_pp.setVisibility(View.INVISIBLE);
 			holder.ll_ppp_with_pp.setVisibility(View.INVISIBLE);
-
 			switch (dpp.bindInfo.size()) {
 				case 0://全新的
 					holder.tv_cardStatus.setText(R.string.no_activated);
@@ -369,7 +365,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.INVISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
-					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
+					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
 					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
 					break;
 				case 2://用过两张
@@ -381,10 +377,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
-					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
 					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
-					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
 					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate);
+					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
+					holder.tv_pp_num2.setText(dpp.bindInfo.get(1).customerId);
 					break;
 
 				case 3://全部用过
@@ -396,12 +392,12 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.VISIBLE);
-					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
 					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate);
-					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
 					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate);
-					holder.tv_pp_num3.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(2).customerId));
 					holder.tv_pp_date3.setText(dpp.bindInfo.get(2).bindDate);
+					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
+					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
+					holder.tv_pp_num3.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(2).customerId));
 					break;
 
 				default:
