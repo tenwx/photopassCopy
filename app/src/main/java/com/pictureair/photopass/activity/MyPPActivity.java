@@ -57,7 +57,6 @@ import de.greenrobot.event.Subscribe;
  */
 public class MyPPActivity extends BaseActivity implements OnClickListener {
     private final String TAG = "MyPPActivity";
-    private boolean isUseHavedPPP = false;
     private final int GET_SELECT_PP_SUCCESS = 2222;
     private final int REMOVE_PP_FROM_DB_FINISH = 3333;
     private ImageView back;
@@ -95,6 +94,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
 
     private PictureWorksDialog pictureWorksDialog;
 
+    private int dialogId;
+
     private PPPPop pppPop;
 
     private final Handler myPPHandler = new MyPPHandler(this);
@@ -104,6 +105,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private static final int SCAN_PP_CODE_SUCCESS = 111;
 
     private static final int SAVE_JSON_DONE = 222;
+
+    private static final int WRONG_DATE = 333;
+
+    private static final int WRONG_TYPE = 444;
+
+    private static final int BIND_TIP = 555;
 
     private boolean isOnResume = false;
 
@@ -389,11 +396,23 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case DialogInterface.BUTTON_POSITIVE:
-                if (rightDate) {
-                    if (!customProgressDialog.isShowing()) {
-                        customProgressDialog.show();
+                if (dialogId == WRONG_DATE) {//只是个提示，不做操作
+
+                } else if (dialogId == WRONG_TYPE) {//只是个提示，不做操作
+
+                } else if (dialogId == BIND_TIP) {//绑定的提示
+                    if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
+                            pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
+                        pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
+                                getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
+                        pictureWorksDialog.show();
+                        dialogId = WRONG_DATE;
+                    } else {
+                        if (!customProgressDialog.isShowing()) {
+                            customProgressDialog.show();
+                        }
+                        API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
                     }
-                    API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
                 }
                 break;
 
@@ -458,19 +477,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pp);
         initView();
-        isUseHavedPPP =  getIntent().getBooleanExtra("isUseHavedPPP",false);
-        if (isUseHavedPPP){
-            initView_selectPP1();
-            tvTitle.setText(R.string.selectionpp);  //通过模糊图进入的选择PP界面
-        }else{
-            dppp = getIntent().getParcelableExtra("ppp");
-            if (dppp != null) {
-                initView_selectPP();
-                tvTitle.setText(R.string.selectionpp);  //选择PP界面
-            } else {
-                initView_notSelectPP();
-                tvTitle.setText(R.string.mypage_pp); // PP 界面。
-            }
+        dppp = getIntent().getParcelableExtra("ppp");
+        if (dppp != null) {
+            initView_selectPP();
+            tvTitle.setText(R.string.selectionpp);  //选择PP界面
+        } else {
+            initView_notSelectPP();
+            tvTitle.setText(R.string.mypage_pp); // PP 界面。
         }
 
     }
@@ -641,27 +654,11 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         pps.add(jsonObject);
                     }
                 }
-                if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
-                        pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
-                    rightDate = false;
-                    pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
-                            getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
-                    pictureWorksDialog.show();
-                } else {
-                    rightDate = true;
-                    if(isUseHavedPPP){
-                        Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
-                        intent.putExtra("ppsStr",pps.toString());
-                        intent.putExtra("isUseHavedPPP", true);
-                        startActivity(intent);
-//                        this.finish();
-                    }else{
-                        pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
-                                String.format(getString(R.string.select_pp_right_date), selectedString),
-                                getString(R.string.button_cancel), getString(R.string.button_ok), false, myPPHandler);
-                        pictureWorksDialog.show();
-                    }
-                }
+                pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
+                        String.format(getString(R.string.select_pp_right_date), selectedString),
+                        getString(R.string.button_cancel), getString(R.string.button_ok), false, myPPHandler);
+                pictureWorksDialog.show();
+                dialogId = BIND_TIP;
 
                 break;
             default:
@@ -678,7 +675,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        if (!isUseHavedPPP && dppp == null) {
+        if (dppp == null) {
             PictureAirLog.out("MyPPActivity----->" + myApplication.getRefreshViewAfterBuyBlurPhoto());
             if (myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASSPAYED)) {
                 PictureAirLog.out("deal data after bought photo");
@@ -832,8 +829,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             errorMessage = getString(R.string.not_pp_card);
 
         }
-        PictureWorksDialog pictureWorksDialog = new PictureWorksDialog(this, null, errorMessage, null, getString(R.string.dialog_ok1), true, myPPHandler);
+        pictureWorksDialog = new PictureWorksDialog(this, null, errorMessage, null, getString(R.string.dialog_ok1), true, myPPHandler);
         pictureWorksDialog.show();
+        dialogId = WRONG_TYPE;
     }
 
     /**

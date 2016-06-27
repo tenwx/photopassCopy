@@ -1,361 +1,364 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ppp_item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
+
     <RelativeLayout
+        android:id="@+id/ppp_card_head"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/pp_padding_10"
+        android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingTop="@dimen/pp_padding_10">
+        android:paddingRight="@dimen/pp_margin_16">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="2015-22-20"
+            android:textColor="@color/pp_dark_blue"
+            android:textSize="@dimen/text_size_16" />
+
         <LinearLayout
-            android:id="@+id/ppp_item"
+            android:id="@+id/card_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginLeft="@dimen/pp_margin_100"
+            android:layout_toRightOf="@+id/time"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:id="@+id/ppp_card_head"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/ppp_imageView1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/pp_padding_10"
-                android:paddingBottom="@dimen/pp_padding_10"
-                android:paddingLeft="@dimen/pp_margin_16">
-                android:paddingRight="@dimen/pp_margin_16">
+                android:layout_weight="1"
+                android:padding="@dimen/pp_padding_2"
+                android:src="@drawable/has_ppp_icon" />
 
-                <TextView
-                    android:id="@+id/time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
-                    android:text="2015-22-20"
-                    android:textColor="@color/pp_dark_blue"
-                    android:textSize="@dimen/text_size_16" />
+            <ImageView
+                android:id="@+id/ppp_imageView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/pp_padding_2"
+                android:src="@drawable/has_ppp_icon" />
 
-                <LinearLayout
-                    android:id="@+id/card_top"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_toRightOf="@+id/time"
-                    android:layout_marginLeft="@dimen/pp_margin_100"
-                    >
-                    <ImageView
-                        android:id="@+id/ppp_imageView1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="@dimen/pp_padding_2"
-                        android:src="@drawable/has_ppp_icon" />
-
-                    <ImageView
-                        android:id="@+id/ppp_imageView2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="@dimen/pp_padding_2"
-                        android:src="@drawable/has_ppp_icon" />
-
-                    <ImageView
-                        android:id="@+id/ppp_imageView3"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="@dimen/pp_padding_2"
-                        android:src="@drawable/no_ppp_icon" />
-                </LinearLayout>
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <RelativeLayout
-                    android:id="@+id/rl_ppp_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/pp_padding_5"
-                    >
-                    <ImageView
-                        android:id="@+id/iv_select"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="@dimen/pp_margin_20"
-                        android:layout_centerVertical="true"
-                        android:clickable="true"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/nosele"
-                        android:visibility="gone"/>
-                    <RelativeLayout
-                        android:id="@+id/rl_ppp_face"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/iv_select">
-                        <ImageView
-                            android:id="@+id/ppp_imageView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:adjustViewBounds="true"/>
-                        <RelativeLayout
-                            android:id="@+id/rl_ppp_status"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@id/ppp_imageView"
-                            android:layout_alignRight="@id/ppp_imageView">
-                            <ImageView
-                                android:id="@+id/card_status"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ppp_status_none"
-                                android:layout_alignParentRight="true"
-                                android:adjustViewBounds="true"
-                                />
-                            <TextView
-                                android:id="@+id/tv_ppp_state"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:rotation="45"
-                                android:layout_alignRight="@id/card_status"
-                                android:layout_marginTop="@dimen/pp_margin_30"
-                                android:layout_marginRight="@dimen/pp_margin_25"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/text_size_12"
-                                />
-                        </RelativeLayout>
-                        <RelativeLayout
-                            android:id="@+id/card_bottom"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/ppp_imageView"
-                            android:layout_marginLeft="@dimen/pp_margin_30"
-                            android:layout_marginRight="@dimen/pp_margin_30"
-                            android:layout_marginBottom="@dimen/pp_margin_8">
-
-                            <TextView
-                                android:id="@+id/tv_expired"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginLeft="@dimen/pp_margin_6"
-                                android:paddingBottom="@dimen/pp_padding_10"
-                                android:text="fadsfd"
-                                android:textColor="@color/pp_light_gray_press"
-                                android:textSize="@dimen/text_small_size"
-                                android:gravity="center"/>
-
-                            <TextView
-                                android:id="@+id/ppp_number"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:padding="@dimen/pp_padding_10"
-                                android:text="fadsfd"
-                                android:textColor="@color/pp_light_gray_press"
-                                android:textSize="@dimen/text_size_14" />
-
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/rl_ppp_detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="invisible"
-                        android:layout_toRightOf="@id/iv_select"
-                        android:background="@drawable/ppp_back">
-
-                        <TextView
-                            android:id="@+id/ppp_detail_no_pp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="@dimen/pp_padding_10"
-                            android:paddingRight="@dimen/pp_padding_10"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/text_size_18"
-                            android:gravity="center"
-                            android:text="@string/ppp_deail_no_card"
-                            android:lines="2"
-                            android:visibility="visible"
-                            android:layout_centerVertical="true"
-                            />
-                        <LinearLayout
-                            android:id="@+id/ppp_detail_with_pp"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_alignParentTop="true">
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:layout_marginLeft="@dimen/pp_margin_30"
-                                android:layout_marginRight="@dimen/pp_margin_30">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/pp_blue"
-                                    android:textSize="@dimen/text_size_18"
-                                    android:gravity="center"
-                                    android:text="@string/activated_card"
-                                    android:layout_centerVertical="true"
-                                    />
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:layout_alignParentBottom="true"
-                                    android:background="@color/gray_light"/>
-                            </RelativeLayout>
-
-                            <RelativeLayout
-                                android:id="@+id/rl_detail_pp1"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:layout_marginLeft="@dimen/pp_margin_30"
-                                android:layout_marginRight="@dimen/pp_margin_30"
-                                android:visibility="gone">
-                                <ImageView
-                                    android:id="@+id/img_miqi1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/pp_detail_head"
-                                    android:layout_centerVertical="true"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginLeft="@dimen/pp_margin_10"
-                                    />
-                                <TextView
-                                    android:id="@+id/pp_detail_num1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@id/img_miqi1"
-                                    android:gravity="left|center_vertical"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/text_size_14"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginLeft="@dimen/pp_margin_10"/>
-
-                                <TextView
-                                    android:id="@+id/pp_detail_date1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:gravity="center"
-                                    android:layout_centerVertical="true"
-                                    android:textColor="@color/pp_light_gray_press"
-                                    android:textSize="@dimen/text_small_size"
-                                    android:text="2016.11.19"
-                                    android:layout_marginRight="@dimen/pp_margin_10"/>
-                            </RelativeLayout>
-                            <RelativeLayout
-                                android:id="@+id/rl_detail_pp2"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:layout_marginLeft="@dimen/pp_margin_30"
-                                android:layout_marginRight="@dimen/pp_margin_30"
-                                android:visibility="gone">
-                                <ImageView
-                                    android:id="@+id/img_miqi2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/pp_detail_head"
-                                    android:layout_centerVertical="true"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginLeft="@dimen/pp_margin_10"
-                                    />
-                                <TextView
-                                    android:id="@+id/pp_detail_num2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@id/img_miqi2"
-                                    android:gravity="left|center_vertical"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/text_size_14"
-                                    android:text="aaaaaa"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginLeft="@dimen/pp_margin_10"/>
-
-                                <TextView
-                                    android:id="@+id/pp_detail_date2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:gravity="center"
-                                    android:layout_centerVertical="true"
-                                    android:textColor="@color/pp_light_gray_press"
-                                    android:textSize="@dimen/text_small_size"
-                                    android:text="2016.11.19"
-                                    android:layout_marginRight="@dimen/pp_margin_10"/>
-                            </RelativeLayout>
-                            <RelativeLayout
-                                android:id="@+id/rl_detail_pp3"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:layout_marginLeft="@dimen/pp_margin_30"
-                                android:layout_marginRight="@dimen/pp_margin_30"
-                                android:visibility="gone">
-                                <ImageView
-                                    android:id="@+id/img_miqi3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:src="@drawable/pp_detail_head"
-                                    android:layout_centerVertical="true"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginLeft="@dimen/pp_margin_10"
-                                    />
-                                <TextView
-                                    android:id="@+id/pp_detail_num3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@id/img_miqi3"
-                                    android:gravity="left|center_vertical"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/text_size_14"
-                                    android:text="aaaaaa"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginLeft="@dimen/pp_margin_10"/>
-
-                                <TextView
-                                    android:id="@+id/pp_detail_date3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:gravity="center"
-                                    android:layout_centerVertical="true"
-                                    android:textColor="@color/pp_light_gray_press"
-                                    android:textSize="@dimen/text_small_size"
-                                    android:text="2016.11.19"
-                                    android:layout_marginRight="@dimen/pp_margin_10"/>
-                            </RelativeLayout>
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                    <RelativeLayout
-
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/pp_padding_5">
-                        <ImageView
-                            android:id="@+id/ppp_detals"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:adjustViewBounds="true"/>
-
-                    </RelativeLayout>
-                </RelativeLayout>
-                <View
-                    android:id="@+id/card_center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/ppp_cover"
-                    android:visibility="gone"
-                    />
-            </FrameLayout>
+            <ImageView
+                android:id="@+id/ppp_imageView3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/pp_padding_2"
+                android:src="@drawable/no_ppp_icon" />
         </LinearLayout>
     </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rl_ppp_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/pp_padding_5">
+
+            <ImageView
+                android:id="@+id/iv_select"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pp_margin_10"
+                android:layout_marginRight="@dimen/pp_margin_10"
+                android:clickable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/nosele"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/rl_ppp_face"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_select">
+
+                <ImageView
+                    android:id="@+id/ppp_imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:adjustViewBounds="true" />
+
+
+                <RelativeLayout
+                    android:id="@+id/rl_ppp_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/ppp_imageView"
+                    android:layout_alignTop="@id/ppp_imageView"
+                    android:background="@drawable/ppp_status_none"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_ppp_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:paddingBottom="30dp"
+                        android:rotation="45"
+                        android:text="fadsfadsfs"
+                        android:textColor="@color/pp_dark_blue"
+                        android:textSize="@dimen/text_size_12"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/card_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/ppp_imageView"
+                    android:layout_marginBottom="@dimen/pp_margin_8"
+                    android:layout_marginLeft="@dimen/pp_margin_30"
+                    android:layout_marginRight="@dimen/pp_margin_30">
+
+                    <TextView
+                        android:id="@+id/tv_expired"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/pp_margin_6"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/pp_padding_10"
+                        android:text="fadsfd"
+                        android:textColor="@color/pp_light_gray_press"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <TextView
+                        android:id="@+id/ppp_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:padding="@dimen/pp_padding_10"
+                        android:text="fadsfd"
+                        android:textColor="@color/pp_light_gray_press"
+                        android:textSize="@dimen/text_size_14" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_ppp_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_select"
+                android:background="@drawable/ppp_back"
+                android:orientation="vertical"
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/ppp_detail_no_pp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:paddingLeft="@dimen/pp_padding_10"
+                    android:paddingRight="@dimen/pp_padding_10"
+                    android:text="@string/ppp_deail_no_card"
+                    android:textColor="@color/pp_dark_blue"
+                    android:textSize="@dimen/text_size_16"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/ppp_detail_with_pp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="@dimen/pp_margin_30"
+                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:text="@string/activated_card"
+                            android:textColor="@color/pp_blue"
+                            android:textSize="@dimen/text_size_16" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/gray_light" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_detail_pp1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="@dimen/pp_margin_30"
+                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_miqi1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:src="@drawable/pp_detail_head" />
+
+                        <TextView
+                            android:id="@+id/pp_detail_num1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:layout_toRightOf="@id/img_miqi1"
+                            android:gravity="left|center_vertical"
+                            android:textColor="@color/pp_dark_blue"
+                            android:textSize="@dimen/text_size_14" />
+
+                        <TextView
+                            android:id="@+id/pp_detail_date1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/pp_margin_10"
+                            android:gravity="center"
+                            android:text="2016.11.19"
+                            android:textColor="@color/pp_light_gray_press"
+                            android:textSize="@dimen/text_size_12" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_detail_pp2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="@dimen/pp_margin_30"
+                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_miqi2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:src="@drawable/pp_detail_head" />
+
+                        <TextView
+                            android:id="@+id/pp_detail_num2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:layout_toRightOf="@id/img_miqi2"
+                            android:gravity="left|center_vertical"
+                            android:text="aaaaaa"
+                            android:textColor="@color/pp_dark_blue"
+                            android:textSize="@dimen/text_size_14" />
+
+                        <TextView
+                            android:id="@+id/pp_detail_date2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/pp_margin_10"
+                            android:gravity="center"
+                            android:text="2016.11.19"
+                            android:textColor="@color/pp_light_gray_press"
+                            android:textSize="@dimen/text_size_12" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_detail_pp3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="@dimen/pp_margin_30"
+                        android:layout_marginRight="@dimen/pp_margin_30"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_miqi3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:src="@drawable/pp_detail_head" />
+
+                        <TextView
+                            android:id="@+id/pp_detail_num3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/pp_margin_10"
+                            android:layout_toRightOf="@id/img_miqi3"
+                            android:gravity="left|center_vertical"
+                            android:text="aaaaaa"
+                            android:textColor="@color/pp_dark_blue"
+                            android:textSize="@dimen/text_size_14" />
+
+                        <TextView
+                            android:id="@+id/pp_detail_date3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/pp_margin_10"
+                            android:gravity="center"
+                            android:text="2016.11.19"
+                            android:textColor="@color/pp_light_gray_press"
+                            android:textSize="@dimen/text_size_12" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/pp_padding_5">
+
+                <ImageView
+                    android:id="@+id/ppp_detals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/card_center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ppp_cover"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>

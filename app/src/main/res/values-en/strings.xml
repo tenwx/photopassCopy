@@ -370,7 +370,7 @@
     <string name="activated">Activated</string>
     <string name="ppp_has_used">Used</string>
     <string name="ppp_has_expired">Expired</string>
-    <string name="expired_on">Expiry Date:</string>
+    <string name="expired_on">Valid till:</string>
     <string name="experiencephotopassplus">Experience Disney PhotoPass+</string>
     <string name="buy_ppp_text">Buy Disney PhotoPass+</string>
     <string name="scan_ppp_text">Scan your existing Disney PhotoPass+</string>
@@ -396,7 +396,7 @@
     <!-- select ppp start -->
     <string name="select_your_ppp">Please select your Disney PhotoPass+</string>
     <string name="select_ppp_title">Select</string>
-    <string name="update_ppp_msg">You are going to activate your photos in PhotoPass using this PhotoPass +.</string>
+    <string name="update_ppp_msg">You are going to activate your photos in PhotoPass using this PhotoPass+.</string>
     <string name="update_ppp_cancel">Cancel</string>
     <string name="update_ppp_ok">OK</string>
     <!-- select ppp end -->
@@ -540,7 +540,7 @@
 
     <!--PPP manage start-->
     <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass</string>
-    <string name="ppp_load_all">No more datas</string>
+    <string name="ppp_load_all">No more data to load!</string>
     <string name="pull_to_refresh">Pull to load</string>
     <string name="release_to_refresh">Release to load</string>
     <string name="refreshing">Loading&#8230;</string>
