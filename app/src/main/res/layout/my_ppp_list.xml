@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/pp_padding_10"
         android:paddingLeft="@dimen/pp_margin_16"
+        android:paddingRight="@dimen/pp_margin_16"
         android:paddingTop="@dimen/pp_padding_10">
         android:paddingRight="@dimen/pp_margin_16">
 
@@ -73,22 +74,30 @@
 
             <ImageView
                 android:id="@+id/iv_select"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/pp_margin_10"
-                android:layout_marginRight="@dimen/pp_margin_10"
+                android:layout_marginLeft="@dimen/pp_margin_5"
                 android:clickable="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/nosele"
                 android:visibility="gone" />
 
+            <ImageView
+                android:id="@+id/ppp_empty_view"
+                android:layout_width="10dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:id="@+id/rl_ppp_face"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_select">
+                android:layout_toRightOf="@id/iv_select"
+                android:layout_toLeftOf="@id/ppp_empty_view">
 
                 <ImageView
                     android:id="@+id/ppp_imageView"
@@ -144,13 +153,15 @@
 
                     <TextView
                         android:id="@+id/ppp_number"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@id/tv_expired"
                         android:padding="@dimen/pp_padding_10"
+                        android:gravity="right|center_vertical"
                         android:text="fadsfd"
                         android:textColor="@color/pp_light_gray_press"
-                        android:textSize="@dimen/text_size_14" />
+                        android:textSize="@dimen/text_size_14"/>
 
                 </RelativeLayout>
             </RelativeLayout>
@@ -219,8 +230,8 @@
 
                         <ImageView
                             android:id="@+id/img_miqi1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
@@ -228,14 +239,15 @@
 
                         <TextView
                             android:id="@+id/pp_detail_num1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
                             android:layout_toRightOf="@id/img_miqi1"
+                            android:layout_toLeftOf="@+id/pp_detail_date1"
                             android:gravity="left|center_vertical"
                             android:textColor="@color/pp_dark_blue"
-                            android:textSize="@dimen/text_size_14" />
+                            android:textSize="@dimen/text_size_14"/>
 
                         <TextView
                             android:id="@+id/pp_detail_date1"
@@ -261,8 +273,8 @@
 
                         <ImageView
                             android:id="@+id/img_miqi2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
@@ -275,6 +287,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
                             android:layout_toRightOf="@id/img_miqi2"
+                            android:layout_toLeftOf="@+id/pp_detail_date2"
                             android:gravity="left|center_vertical"
                             android:text="aaaaaa"
                             android:textColor="@color/pp_dark_blue"
@@ -304,8 +317,8 @@
 
                         <ImageView
                             android:id="@+id/img_miqi3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
@@ -313,11 +326,12 @@
 
                         <TextView
                             android:id="@+id/pp_detail_num3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/pp_margin_10"
                             android:layout_toRightOf="@id/img_miqi3"
+                            android:layout_toLeftOf="@+id/pp_detail_date3"
                             android:gravity="left|center_vertical"
                             android:text="aaaaaa"
                             android:textColor="@color/pp_dark_blue"
