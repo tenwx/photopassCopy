@@ -240,9 +240,14 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		holder.ppp_content.setLayoutParams(params);
 
 		ViewGroup.LayoutParams params2 = holder.ppp_imageView.getLayoutParams();
-		params2.height = params.height - ScreenUtil.dip2px(mContext, 5);
-		params2.width = (int)((params.height - ScreenUtil.dip2px(mContext, 5)) / 372f * 588);
+		params2.height = params.height;
+		params2.width = params.height * 588 / 372;
 		holder.ppp_imageView.setLayoutParams(params2);
+
+		ViewGroup.LayoutParams params3 = holder.rl_ppp_status.getLayoutParams();
+		params3.width = params.height * 145 / 372;
+		params3.height = params.height * 154 / 372;
+		holder.rl_ppp_status.setLayoutParams(params3);
 
 		ViewGroup.LayoutParams params1 = holder.pppCardCenterCover.getLayoutParams();
 		params1.width = params.width;

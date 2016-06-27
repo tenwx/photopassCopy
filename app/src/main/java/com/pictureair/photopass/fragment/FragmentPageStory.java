@@ -1080,6 +1080,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                             resultPosition = locationList.size() - 1;
                             info.locationId = "others";
                         }
+                        if (resultPosition < 0 ) {
+                            resultPosition = 0;
+                        }
 
 //                                PictureAirLog.d(TAG, "find the location");
                         //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
@@ -1527,6 +1530,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (resultPosition == -1) {//如果没有找到，说明是其他地点的照片
                     resultPosition = locationList.size() - 1;
                     info.locationId = "others";
+                }
+
+                if (resultPosition < 0 ) {
+                    resultPosition = 0;
                 }
 
                 PictureAirLog.out("找到其他的location");

@@ -1407,6 +1407,9 @@ public class AppUtil {
                 resultPosition = locationList.size() - 1;
                 info.locationId = "others";
             }
+            if (resultPosition < 0 ) {
+                resultPosition = 0;
+            }
             //					PictureAirLog.d(TAG, "find the location");
             //如果locationid一样，需要判断是否已经存在此item，如果有，在按照时间分类，没有，新建一个item
             for (int j = 0; j < photoPassItemInfoList.size(); j++) {
