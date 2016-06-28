@@ -1732,11 +1732,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private void requesPermission() {
         if (!AppUtil.checkPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                mIsAskStoragePermission = true;
-                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
-                return;
-            }
             mIsAskStoragePermission = true;
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
             return;

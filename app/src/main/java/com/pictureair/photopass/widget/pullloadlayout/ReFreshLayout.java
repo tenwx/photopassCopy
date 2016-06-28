@@ -80,7 +80,9 @@ public class ReFreshLayout extends RelativeLayout{
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if (changed && !loadOnce && listView != null) {
+        PictureAirLog.e("onLayout","onLayout");
+        if (!loadOnce && listView != null) {
+
             hideHeaderHeight = -header.getHeight();
             LayoutParams lp = (LayoutParams)(header.getLayoutParams());
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -324,5 +326,13 @@ public class ReFreshLayout extends RelativeLayout{
             result= (listView.getHeight()>=bottomChildView.getBottom());
         }
         return  result;
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == VISIBLE) {
+            loadOnce = false;
+        }
     }
 }

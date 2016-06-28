@@ -192,7 +192,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                listPPP.setVisibility(View.VISIBLE);
+                refreshLayout.setVisibility(View.VISIBLE);
                 PictureAirLog.v(TAG, "list=========" + list1.size());
                 listPPPAdapter = new ListOfPPPAdapter(list1, isUseHavedPPP, myPPPHandler,MyPPPActivity.this);
                 listPPP.setAdapter(listPPPAdapter);
@@ -200,7 +200,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
 
             case API1.GET_PPP_SUCCESS://成功获取ppp信息
                 if (API1.PPPlist.size() == 0) {
-                    listPPP.setVisibility(View.GONE);
+                    refreshLayout.setVisibility(View.GONE);
                     nopppLayout.setVisibility(View.VISIBLE);
                     ll_button_area.setVisibility(View.VISIBLE);
 
@@ -249,7 +249,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                         listPPPAdapter = new ListOfPPPAdapter(listNoUse, isUseHavedPPP, myPPPHandler, MyPPPActivity.this);
                     }
                     listPPP.setAdapter(listPPPAdapter);
-                    initLoadingView();
                 }
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 MyApplication.getInstance().setNeedRefreshPPPList(false);
@@ -280,7 +279,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                 }
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPPHandler, true);
-                listPPP.setVisibility(View.INVISIBLE);
+                refreshLayout.setVisibility(View.INVISIBLE);
                 nopppLayout.setVisibility(View.GONE);
                 ll_button_area.setVisibility(View.GONE);
                 break;
@@ -427,7 +426,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                     finishLoad();
                     listPPPAdapter.notifyDataSetChanged();
                     listPPP.setSelection(listPPP.getLastVisiblePosition()+1);
-                    initLoadingView();
                 }else if (status == unUse) {
                     status = full;
                     myToast.setTextAndShow(R.string.ppp_load_all);
@@ -510,12 +508,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
         refreshLayout.finishRefreshing();
     }
 
-    private void initLoadingView() {
-        refreshLayout.setListView(listPPP);
-        refreshLayout.setOnRefreshListener(this);
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -546,7 +538,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
         listPPP = (MyListView) findViewById(R.id.list_ppp);
         refreshLayout = (ReFreshLayout) findViewById(R.id.ppp_refresh);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
-
         nopppLayout.setVisibility(View.INVISIBLE);
         ll_button_area.setVisibility(View.GONE);
         refreshLayout.setVisibility(View.GONE);
@@ -584,6 +575,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
 //		optionImageView.setOnClickListener(this);
 //		optoinTextView.setOnClickListener(this);
         myToast = new PWToast(this);
+        refreshLayout.setListView(listPPP);
+        refreshLayout.setOnRefreshListener(this);
 
     }
 

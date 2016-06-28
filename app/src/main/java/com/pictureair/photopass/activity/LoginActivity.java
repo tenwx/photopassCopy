@@ -68,7 +68,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private String forGetPwd;
 
     private List<String> permissionList;
-    private List<String> permissionNeed;
     private static final int REQUEST_ASK_PERMISSION = 1;
     private boolean mIsAskPermission = false;
 
@@ -362,9 +361,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private boolean addPermission(List<String> permissionList, String permission) {
         if (!AppUtil.checkPermission(getApplicationContext(), permission)) {
             permissionList.add(permission);
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this,permission)) {
-                 return false;
-            }
         }
         return true;
     }
@@ -386,39 +382,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
             permissionList = new ArrayList<>();
         }
 
-        if (permissionNeed != null) {
-            permissionNeed.clear();
-        } else {
-            permissionNeed = new ArrayList<>();
-        }
-
-        if (!addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            permissionNeed.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            permissionNeed.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (!addPermission(permissionList, Manifest.permission.CAMERA)) {
-            permissionNeed.add(Manifest.permission.CAMERA);
-        }
-        if (!addPermission(permissionList, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            permissionNeed.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        }
-
-        if (!addPermission(permissionList, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            permissionNeed.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-        }
-
-        if (!addPermission(permissionList, Manifest.permission.READ_PHONE_STATE)) {
-            permissionNeed.add(Manifest.permission.READ_PHONE_STATE);
-        }
+        addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE);
+        addPermission(permissionList, Manifest.permission.CAMERA);
+        addPermission(permissionList, Manifest.permission.ACCESS_FINE_LOCATION);
+        addPermission(permissionList, Manifest.permission.ACCESS_COARSE_LOCATION);
+        addPermission(permissionList, Manifest.permission.READ_PHONE_STATE);
 
         if (permissionList.size() > 0) {
-            if (permissionNeed.size() > 0) {
-                mIsAskPermission = true;
-                ActivityCompat.requestPermissions(LoginActivity.this, permissionNeed.toArray(new String[permissionNeed.size()]), REQUEST_ASK_PERMISSION);
-                return;
-            }
             mIsAskPermission = true;
             ActivityCompat.requestPermissions(LoginActivity.this, permissionList.toArray(new String[permissionList.size()]), REQUEST_ASK_PERMISSION);
         }
