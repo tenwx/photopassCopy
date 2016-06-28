@@ -15,12 +15,10 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +32,12 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	private ViewPager mViewPager;
 	private ImageView view2, view3, view4;
 	private List<View> list;
-	private  boolean flag = false;
 	private LinearLayout pointLLayout;
 	private ImageView[] imgs;
 	private int count;
 	private int currentItem;
 	private int lastX = 0;// 获得当前X坐标
 	private int lastY = 0;
-	private TextView startNow;
 	private static final String TAG = "WelcomeActivity";
 	private String currentLanguage;// en表示英语，zh表示简体中文。
 	private SharedPreferences appSharedPreferences;
@@ -172,16 +168,11 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		case MotionEvent.ACTION_DOWN:
 			lastX = (int) arg1.getX();
 			lastY = (int) arg1.getY();
-			if (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1 && lastX > ScreenUtil.getScreenWidth(this) / 3 && lastX < ScreenUtil.getScreenWidth(this) * 2 / 3 && lastY > ScreenUtil.getScreenHeight(this) * 5 / 7 && lastY < ScreenUtil.getScreenHeight(this) * 6 / 7) {
-				handler.sendEmptyMessage(START_JUMP);
-			}
 			break;
 
 		case MotionEvent.ACTION_UP:
-			if (!flag) {
-				if ((lastX - arg1.getX() > 100) && (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1)) {// 从最后一页向右滑动
-					handler.sendEmptyMessage(START_JUMP);
-				}
+			if ((lastX - arg1.getX() > 100) && (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1)) {// 从最后一页向右滑动
+				handler.sendEmptyMessage(START_JUMP);
 			}
 		}
 		return false;

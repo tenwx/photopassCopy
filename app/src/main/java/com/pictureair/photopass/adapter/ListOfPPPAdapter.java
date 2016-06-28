@@ -235,13 +235,20 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		holder.ppp_content.setLayoutParams(params);
 
 		ViewGroup.LayoutParams params2 = holder.ppp_imageView.getLayoutParams();
-		params2.height = params.height;
-		params2.width = params.height * 588 / 372;
+		if (isUseHavedPPP) {//588，372 ppp卡面图片的大小
+			params2.width = params.width - ScreenUtil.dip2px(mContext, 30);
+			params2.height = params2.width * 372 / 588;
+
+		} else {
+			params2.height = params.height;
+			params2.width = params.height * 588 / 372;
+
+		}
 		holder.ppp_imageView.setLayoutParams(params2);
 
 		ViewGroup.LayoutParams params3 = holder.rl_ppp_status.getLayoutParams();
-		params3.width = params.height * 145 / 372;
-		params3.height = params.height * 154 / 372;
+		params3.width = params2.height * 145 / 372;//右上角三角状态图标大小145，154
+		params3.height = params2.height * 154 / 372;
 		holder.rl_ppp_status.setLayoutParams(params3);
 
 		ViewGroup.LayoutParams params1 = holder.pppCardCenterCover.getLayoutParams();

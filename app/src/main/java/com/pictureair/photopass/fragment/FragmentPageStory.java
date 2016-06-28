@@ -1425,13 +1425,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //根据数量，加入新的item
         PictureAirLog.out("all update data=" + photoPassPicList.size());
         PictureAirLog.out("all update video data=" + photoPassVideoList.size());
+        PictureAirLog.out("refreshdatacount---->" + refreshDataCount);
         PhotoItemInfo itemInfo;
         boolean findLocation = false;
         //先清除之前旧的列表
         allItemInfoList.removeAll(photoPassItemInfoList);
 
         //将图片按照location加载到list中去
-        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size() && l > 0; l++) {//遍历所要添加的图片list
+        for (int l = photoPassPicList.size() - refreshDataCount; l < photoPassPicList.size() && l >= 0; l++) {//遍历所要添加的图片list
             PictureAirLog.out("遍历照片");
             PhotoInfo info = photoPassPicList.get(l);
             //查找list_clone有图片的item，如果找到locationid，在判断是否有同一天的photos，如果有同一天的，add进去，如果没有，新建一个项
@@ -1567,7 +1568,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         refreshDataCount = 0;
 
         //将视频加载到list中去
-        for (int l = photoPassVideoList.size() - refreshVideoDataCount; l < photoPassVideoList.size(); l++) {//遍历所要添加的图片list
+        for (int l = photoPassVideoList.size() - refreshVideoDataCount; l < photoPassVideoList.size() && l >= 0; l++) {//遍历所要添加的图片list
             PictureAirLog.out("遍历照片");
             PhotoInfo info = photoPassVideoList.get(l);
             for (int j = 0; j < photoPassItemInfoList.size(); j++) {//遍历list，查找locationid一样的内容

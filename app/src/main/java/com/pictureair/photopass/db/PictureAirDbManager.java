@@ -830,6 +830,15 @@ public class PictureAirDbManager {
                     PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.photoId});
                     if (cursor.getCount() > 0) {//说明存在此数据，需要更新下数据
+
+                        if (cursor.moveToFirst()) {//清空原来的图片缓存
+                            String photoUrl = cursor.getString(cursor.getColumnIndex("originalUrl"));
+                            if (!TextUtils.isEmpty(photoUrl)) {
+                                MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
+                                DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
+                            }
+                        }
+
                         database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
                                 "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
                                 "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +

@@ -221,7 +221,7 @@ public class Common {
     public static final String IS_DELETED_PHOTO_FROM_PP = "isDeletedPhotoFromPP";
     public static final String GOODS = "goods";
 
-    public static final int TOAST_SHORT_TIME = 100;
+    public static final int TOAST_SHORT_TIME = 1000;
     //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";
     public static final String PHOTOPASS_DESCRPITION = "This picture made by PictureAir";
     //	public static final String PHOTOPASS_NAME = "Photo";

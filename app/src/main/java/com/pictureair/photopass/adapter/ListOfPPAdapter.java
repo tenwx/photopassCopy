@@ -195,26 +195,29 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                 int num = 6 - photoCount;
                 if (num > 0 && i > photoCount - 1) {
                     // 显示默认图片
-                    String defaultUrl = "";
-                    urlList.add(i, defaultUrl);
+                    urlList.add(i, "drawable://" + R.drawable.default_pp);
                 }
             }
         } else if (photoCount > 6) {
 
             holder.ppImageLayout2.setVisibility(View.VISIBLE);
             if (photoCount <= 12) {
-                holder.photoCount.setVisibility(View.GONE);
                 for (int i = 0; i < 12; i++) {
                     int num = 12 - photoCount;
                     if (num > 0 && i > photoCount - 1) {
                         // 显示默认图片
-                        String defaultUrl = "";
-                        urlList.add(i, defaultUrl);
+                        urlList.add(i, "drawable://" + R.drawable.default_pp);
                     }
                 }
-            } else {
+            }
+
+            if (photoCount >= 12) {
                 holder.photoCount.setVisibility(View.VISIBLE);
                 holder.photoCount.setText(urlList.size() + "");
+
+            } else {
+                holder.photoCount.setVisibility(View.GONE);
+
             }
 
             holder.image7.setLayoutParams(params);
@@ -232,43 +235,12 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             ImageAware imageAware11 = new ImageViewAware(holder.image11, false);
             ImageAware imageAware12 = new ImageViewAware(holder.image12, false);
 
-            String url7, url8, url9, url10, url11, url12;
-
-            if (urlList.get(6) == null || urlList.get(6).equals("")) {
-                url7 = "drawable://" + R.drawable.default_pp;
-            } else {
-                url7 = urlList.get(6);
-            }
-
-            if (urlList.get(7) == null || urlList.get(7).equals("")) {
-                url8 = "drawable://" + R.drawable.default_pp;
-            } else {
-                url8 = urlList.get(7);
-            }
-
-            if (urlList.get(8) == null || urlList.get(8).equals("")) {
-                url9 = "drawable://" + R.drawable.default_pp;
-            } else {
-                url9 = urlList.get(8);
-            }
-
-            if (urlList.get(9) == null || urlList.get(9).equals("")) {
-                url10 = "drawable://" + R.drawable.default_pp;
-            } else {
-                url10 = urlList.get(9);
-            }
-
-            if (urlList.get(10) == null || urlList.get(10).equals("")) {
-                url11 = "drawable://" + R.drawable.default_pp;
-            } else {
-                url11 = urlList.get(10);
-            }
-
-            if (urlList.get(11) == null || urlList.get(11).equals("")) {
-                url12 = "drawable://" + R.drawable.default_pp;
-            } else {
-                url12 = urlList.get(11);
-            }
+            String url7 = urlList.get(6);
+            String url8 = urlList.get(7);
+            String url9 = urlList.get(8);
+            String url10 = urlList.get(9);
+            String url11 = urlList.get(10);
+            String url12 = urlList.get(11);
 
             if (holder.image7.getTag() == null || !holder.image7.getTag().equals(url7)) {
                 ImageLoader.getInstance().displayImage(url7, imageAware7);
@@ -315,43 +287,12 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         ImageAware imageAware5 = new ImageViewAware(holder.image5, false);
         ImageAware imageAware6 = new ImageViewAware(holder.image6, false);
 
-        String url1, url2, url3, url4, url5, url6;
-
-        if (urlList.get(0) == null || urlList.get(0).equals("")) {
-            url1 = "drawable://" + R.drawable.default_pp;
-        } else {
-            url1 = urlList.get(0);
-        }
-
-        if (urlList.get(1) == null || urlList.get(1).equals("")) {
-            url2 = "drawable://" + R.drawable.default_pp;
-        } else {
-            url2 = urlList.get(1);
-        }
-
-        if (urlList.get(2) == null || urlList.get(2).equals("")) {
-            url3 = "drawable://" + R.drawable.default_pp;
-        } else {
-            url3 = urlList.get(2);
-        }
-
-        if (urlList.get(3) == null || urlList.get(3).equals("")) {
-            url4 = "drawable://" + R.drawable.default_pp;
-        } else {
-            url4 = urlList.get(3);
-        }
-
-        if (urlList.get(4) == null || urlList.get(4).equals("")) {
-            url5 = "drawable://" + R.drawable.default_pp;
-        } else {
-            url5 = urlList.get(4);
-        }
-
-        if (urlList.get(5) == null || urlList.get(5).equals("")) {
-            url6 = "drawable://" + R.drawable.default_pp;
-        } else {
-            url6 = urlList.get(5);
-        }
+        String url1 = urlList.get(0);
+        String url2 = urlList.get(1);
+        String url3 = urlList.get(2);
+        String url4 = urlList.get(3);
+        String url5 = urlList.get(4);
+        String url6 = urlList.get(5);
 
         if (holder.image1.getTag() == null || !holder.image1.getTag().equals(url1)) {
             ImageLoader.getInstance().displayImage(url1, imageAware1);

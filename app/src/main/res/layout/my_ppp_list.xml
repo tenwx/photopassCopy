@@ -85,7 +85,7 @@
 
             <ImageView
                 android:id="@+id/ppp_empty_view"
-                android:layout_width="10dp"
+                android:layout_width="5dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
@@ -125,7 +125,7 @@
                         android:rotation="45"
                         android:text="fadsfadsfs"
                         android:textColor="@color/pp_dark_blue"
-                        android:textSize="@dimen/text_size_12"/>
+                        android:textSize="@dimen/text_size_14"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -193,6 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
+                    android:paddingTop="5dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -258,7 +259,7 @@
                             android:layout_marginRight="@dimen/pp_margin_10"
                             android:gravity="center"
                             android:text="2016.11.19"
-                            android:textColor="@color/pp_light_gray_press"
+                            android:textColor="@color/pp_dark_blue"
                             android:textSize="@dimen/text_size_12" />
                     </RelativeLayout>
 
@@ -303,7 +304,7 @@
                             android:layout_marginRight="@dimen/pp_margin_10"
                             android:gravity="center"
                             android:text="2016.11.19"
-                            android:textColor="@color/pp_light_gray_press"
+                            android:textColor="@color/pp_dark_blue"
                             android:textSize="@dimen/text_size_12" />
                     </RelativeLayout>
 
@@ -348,7 +349,7 @@
                             android:layout_marginRight="@dimen/pp_margin_10"
                             android:gravity="center"
                             android:text="2016.11.19"
-                            android:textColor="@color/pp_light_gray_press"
+                            android:textColor="@color/pp_dark_blue"
                             android:textSize="@dimen/text_size_12" />
                     </RelativeLayout>
                 </LinearLayout>

@@ -374,6 +374,12 @@
     <string name="experiencephotopassplus">Experience Disney PhotoPass+</string>
     <string name="buy_ppp_text">Buy Disney PhotoPass+</string>
     <string name="scan_ppp_text">Scan your existing Disney PhotoPass+</string>
+    <string name="ppp_deail_no_card">You have not activated your Park Tickets / PhotoPass cards.</string>
+    <string name="ppp_load_all">No more data to load!</string>
+    <string name="pull_to_refresh">Swipe Upwards</string>
+    <string name="release_to_refresh">Release loading&#8230;</string>
+    <string name="refreshing">Loading&#8230;</string>
+    <string name="activated_card">Activated Disney Park Ticket / PhotoPass Card: </string>
     <!-- ppp end -->
 
     <!-- pp start -->
@@ -386,8 +392,7 @@
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
-    <string name="select_pp_right_date">You have choose to activate PhotoPass card:\n%1$s\nPhotoPass+ allows you to activate 1 PhotoPass card on three consecutive dates. OR
-3 PhotoPass cards on one single day.\nPlease confirm to continue activate the above PhotoPass card.</string>
+    <string name="select_pp_right_date">You have choose to activate PhotoPass card:\n%1$s\nPhotoPass+ allows you to activate 1 PhotoPass card on three consecutive dates. OR 3 PhotoPass cards on one single day.\nPlease confirm to continue activate the above PhotoPass card.</string>
     <string name="pp_tip">Tips: You can only upgrade PhotoPass with blurry photos, and with a different date of PhotoPass through basis having also upgrade date!</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
@@ -537,14 +542,4 @@
     <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
     <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
     <!-- permission request end -->
-
-    <!--PPP manage start-->
-    <string name="ppp_deail_no_card">You have not activate any Disney PhotoPass</string>
-    <string name="ppp_load_all">No more data to load!</string>
-    <string name="pull_to_refresh">Pull to load</string>
-    <string name="release_to_refresh">Release to load</string>
-    <string name="refreshing">Loading&#8230;</string>
-
-    <string name="activated_card">Activated Disney PhotoPass</string>
-    <!--PPP manage end-->
 </resources>
