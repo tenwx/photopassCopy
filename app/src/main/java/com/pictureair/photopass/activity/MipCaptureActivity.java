@@ -526,11 +526,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     private void requestCameraPermissionAndInit() {
         if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.CAMERA)) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(MipCaptureActivity.this, Manifest.permission.CAMERA)) {
-                mIsAskCameraPermission = true;
-                ActivityCompat.requestPermissions(MipCaptureActivity.this,new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-                return;
-            }
             mIsAskCameraPermission = true;
             ActivityCompat.requestPermissions(MipCaptureActivity.this,new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
             return;
