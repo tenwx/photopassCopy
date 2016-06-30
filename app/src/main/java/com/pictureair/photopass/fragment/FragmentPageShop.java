@@ -116,10 +116,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     noNetWorkOrNoCountView.setVisibility(View.GONE);
                     //更新界面
                     shopGoodListViewAdapter.refresh(allGoodsList);
-                    //将数据保存到缓存中
-                    if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                        ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.TIME_DAY);
-                    }
                 }
 
                 //获取收货地址列表
@@ -247,8 +243,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         String goodsByACache = "";
         if (isClearCache) {
             //清空緩存，重新拉取数据
-            ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, "");
-            ACache.get(MyApplication.getInstance()).put(Common.ACACHE_ADDRESS, "");
+            ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
+            ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);
         } else {
             //从缓层中获取数据
             goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);

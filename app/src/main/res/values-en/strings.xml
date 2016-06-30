@@ -112,6 +112,9 @@
     <string name="five_days_ago">5 days ago</string>
     <string name="six_days_ago">6 days ago</string>
     <string name="video_location">My Disney Story</string>
+    <string name="download_share_bought_photo">Want to download and share your photos?</string>
+    <string name="story_buy_ppp">Buy Disney PhotoPass+ Now</string>
+    <string name="story_scan_ppp">Activate your purchased PhotoPass+</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -359,7 +362,7 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">Disney PhotoPass+ allows you to download all your photos taken by our professional Disney PhotoPass Photographers in a single day, on up to three Park Tickets or Disney PhotoPass cards.</string>
+    <string name="instruction">With the purchase of Disney PhotoPass+, you will be able to download all photos and other digital content taken on selected attractions at the Resort from up to three (3) Park Tickets/PhotoPass cards in one (1) day or one (1) Park Ticket/PhotoPass card used during three (3) consecutive days</string>
     <string name="select_pp_hasUpgraded">You have associated this Disney PhotoPass card</string>
     <string name="not_ppp_card">Invalid Disney PhotoPass+</string>
     <string name="bind_pp_now">You have one Disney PhotoPass, do you want to bind it now?</string>
@@ -393,7 +396,7 @@
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
     <string name="select_pp_right_date">You have choose to activate PhotoPass card:\n%1$s\nPhotoPass+ allows you to activate 1 PhotoPass card on three consecutive dates. OR 3 PhotoPass cards on one single day.\nPlease confirm to continue activate the above PhotoPass card.</string>
-    <string name="pp_tip">Tips: You can only upgrade PhotoPass with blurry photos, and with a different date of PhotoPass through basis having also upgrade date!</string>
+    <string name="pp_tip">Below are your Park Tickets / PhotoPass Cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->

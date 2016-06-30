@@ -173,10 +173,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                //将数据保存到缓存中
-                if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                    ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.TIME_DAY);
-                }
 
                 break;
 

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
@@ -173,6 +172,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
             case PPPPop.POP_SCAN://扫描
                 intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
+                intent.putExtra("mode", "ocr");//默认ocr扫描
                 startActivity(intent);
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();
@@ -327,10 +327,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                         }
                         break;
                     }
-                }
-                //将数据保存到缓存中
-                if (ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS) == null || ACache.get(MyApplication.getInstance()).getAsString(Common.ALL_GOODS).equals("")) {
-                    ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, msg.obj.toString(), ACache.TIME_DAY);
                 }
                 if (dialog.isShowing()) {
                     dialog.dismiss();
@@ -694,6 +690,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
             case R.id.button_scan_ppp:
                 Intent intent = new Intent(MyPPPActivity.this, MipCaptureActivity.class);
                 intent.putExtra("type", "ppp");//只扫描ppp
+                intent.putExtra("mode", "ocr");//默认ocr扫描
                 startActivity(intent);
                 break;
             case R.id.ok: // 确定选择之后
@@ -718,7 +715,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
             if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
                 API1.getGoods(myPPPHandler);
             } else {
-                newToast.setTextAndShow(R.string.http_error_code_401, Toast.LENGTH_SHORT);
+                newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
             }
         }
 

@@ -1225,6 +1225,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
+                ACache.get(MyApplication.getInstance()).put(Common.ALL_GOODS, jsonObject.toString(), ACache.TIME_DAY);
                 handler.obtainMessage(GET_GOODS_SUCCESS, jsonObject).sendToTarget();
             }
 

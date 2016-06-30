@@ -30,10 +30,13 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.InputCodeActivity;
 import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
+import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
 import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
+import com.pictureair.photopass.entity.GoodsInfo;
+import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
@@ -48,14 +51,17 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 
 import java.io.File;
@@ -119,12 +125,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private LinearLayout noPhotoView;
     private CustomProgressDialog dialog;// 加载等待
     private ViewPager storyViewPager;
-    private LinearLayout storyNoPpToScanLinearLayout;
+    private RelativeLayout storyNoPpToScanLinearLayout;
     private ImageView storyNoPpScanImageView;
     private ImageView storyNoPhotoToDiscoverImageView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PPPPop pppPop;
+    private CustomTextView buyPPP;
+    private CustomTextView activatePPP;
+    private CustomTextView storyTopTip;
+    private CustomTextView storyScan;
+    private CustomTextView storyDiscover;
+    private CustomTextView storyNoPhotoTip;
 
     //申明类
     private MyApplication app;
@@ -138,7 +150,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ArrayList<PhotoInfo> targetMagicPhotoList = new ArrayList<>();
 
     private ArrayList<PhotoInfo> allPhotoList, pictureAirPhotoList, magicPhotoList, boughtPhotoList, favouritePhotoList, localPhotoList;
-    private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<DiscoverLocationItemInfo>();
+    private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
     private FragmentAdapter fragmentAdapter;
     private Context context;
@@ -517,6 +529,37 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     pppPop.dismiss();
                 }
                 break;
+
+            case API1.GET_GOODS_SUCCESS:
+                List<GoodsInfo> allGoodsList1 = new ArrayList<>();
+                GoodsInfo pppGoodsInfo = null;
+                GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                    allGoodsList1.addAll(goodsInfoJson.getGoods());
+                }
+                //获取PP+
+                for (GoodsInfo goodsInfo : allGoodsList1) {
+                    if (goodsInfo.getName().equals(Common.GOOD_NAME_PPP)) {
+                        pppGoodsInfo = goodsInfo;
+                        break;
+                    }
+                }
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                //跳转到PP+详情页面
+                Intent intent3 = new Intent(getActivity(), PPPDetailProductActivity.class);
+                intent3.putExtra("goods", pppGoodsInfo);
+                startActivity(intent3);
+                break;
+
+            case API1.GET_GOODS_FAILED:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
             default:
                 break;
         }
@@ -682,13 +725,19 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //获取控件
         scanIv = (ImageView) view.findViewById(R.id.story_menu_iv);
         scanLayout = (RelativeLayout) view.findViewById(R.id.story_menu_rl);
-        storyNoPpToScanLinearLayout = (LinearLayout) view.findViewById(R.id.story_no_pp_to_scan);
+        storyNoPpToScanLinearLayout = (RelativeLayout) view.findViewById(R.id.story_no_pp_to_scan);
         storyLeadBarLinearLayout = (LinearLayout) view.findViewById(R.id.story_lead_bar);
         storyNoPpScanImageView = (ImageView) view.findViewById(R.id.story_no_pp_scan);
         storyViewPager = (ViewPager) view.findViewById(R.id.story_viewPager);
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.storyNoNetWorkView);
         noPhotoView = (LinearLayout) view.findViewById(R.id.no_photo_view_relativelayout);
         storyNoPhotoToDiscoverImageView = (ImageView) view.findViewById(R.id.story_to_discover);
+        buyPPP = (CustomTextView) view.findViewById(R.id.story_buy_ppp);
+        activatePPP = (CustomTextView) view.findViewById(R.id.story_activate_ppp);
+        storyScan = (CustomTextView) view.findViewById(R.id.story_scan);
+        storyTopTip = (CustomTextView) view.findViewById(R.id.story_top_tip);
+        storyDiscover = (CustomTextView) view.findViewById(R.id.story_discover);
+        storyNoPhotoTip = (CustomTextView) view.findViewById(R.id.story_no_photo_tip);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setEnabled(false);
@@ -716,12 +765,18 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         storyNoPpScanImageView.setOnClickListener(this);
         scanLayout.setOnClickListener(this);
         storyNoPhotoToDiscoverImageView.setOnClickListener(this);
-//        more.setOnClickListener(this);
+        buyPPP.setOnClickListener(this);
+        activatePPP.setOnClickListener(this);
+        buyPPP.setTypeface(app.getFontBold());
+        activatePPP.setTypeface(app.getFontBold());
+        storyTopTip.setTypeface(app.getFontBold());
+        storyScan.setTypeface(app.getFontBold());
+        storyDiscover.setTypeface(app.getFontBold());
+        storyNoPhotoTip.setTypeface(app.getFontBold());
         //初始化数据
         scanMagicPhotoNeedCallBack = false;
         myToast = new PWToast(getActivity());
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        locationList.clear();
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
         //获取sp中的值
@@ -1646,6 +1701,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 pppPop.showAsDropDown(scanIv, 0, ScreenUtil.dip2px(getActivity(), 15) - 10);
                 break;
 
+            case R.id.story_activate_ppp:
+                i = new Intent(getActivity(), MipCaptureActivity.class);
+                i.putExtra("mode", "ocr");//默认ocr扫描
+                startActivity(i);
+                break;
+
             case R.id.story_no_pp_scan:
                 i = new Intent(getActivity(), MipCaptureActivity.class);
                 startActivity(i);
@@ -1654,6 +1715,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             case R.id.story_to_discover://跳转到Discover页面
                 PictureAirLog.out("Onclick---->Discover");
                 EventBus.getDefault().post(new MainTabSwitchEvent(MainTabSwitchEvent.DISCOVER_TAB));
+                break;
+
+            case R.id.story_buy_ppp:
+                //购买PP+，先获取商品 然后进入商品详情
+                if (!dialog.isShowing()) {
+                    dialog.show();
+                }
+                //获取商品（以后从缓存中取）
+                getGoods();
                 break;
 
             default:
@@ -1749,6 +1819,24 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void getGoods() {
+        //从缓层中获取数据
+        String goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
+        if (goodsByACache != null && !goodsByACache.equals("")) {
+            fragmentPageStoryHandler.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+        } else {
+            //从网络获取商品,先检查网络
+            if (AppUtil.getNetWorkType(MyApplication.getInstance()) != 0) {
+                API1.getGoods(fragmentPageStoryHandler);
+            } else {
+                myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+            }
         }
     }
 }

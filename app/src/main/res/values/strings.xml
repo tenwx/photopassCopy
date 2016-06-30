@@ -112,6 +112,9 @@
     <string name="five_days_ago">5天前</string>
     <string name="six_days_ago">6天前</string>
     <string name="video_location">My Disney Story</string>
+    <string name="download_share_bought_photo">您要下载及分享您已拍的照片吗？</string>
+    <string name="story_buy_ppp">购买迪士尼乐拍通一卡通</string>
+    <string name="story_scan_ppp">在此激活您已购买的乐拍通一卡通</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -359,7 +362,7 @@
     <!-- order detail end -->
 
     <!-- ppp start -->
-    <string name="instruction">只需要购买迪士尼乐拍通一卡通，即可预览下载所有当日通过乐拍通服务捕捉的高清数码照片。最多可激活当天三张乐园门票或迪士尼乐拍通卡</string>
+    <string name="instruction">购买迪士尼乐拍通一卡通，您即可下载在度假区通过迪士尼乐拍通摄影师拍摄的和在度假区指定景点上所拍摄的，并激活最多三张迪士尼乐园门票／乐拍通卡上同一天的，或同一张迪士尼乐园门票／乐拍通卡上连续三天的所有照片。</string>
     <string name="select_pp_hasUpgraded">该迪士尼乐拍通已经被绑定</string>
     <string name="not_ppp_card">这张不是迪士尼乐拍通一卡通</string>
     <string name="bind_pp_now">您有一张迪士尼乐拍通，是否现在就去绑定？</string>
@@ -393,7 +396,7 @@
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
     <string name="select_pp_right_date">您的选择是升级迪士尼乐拍通卡号：\n%1$s\n迪士尼乐拍通一卡通只能升级连续三天日期的迪士尼乐拍通，请您确认是否继续选择升级此张迪士尼乐拍通？</string>
-    <string name="pp_tip">温馨提示：您只能升级含有模糊照片的迪士尼乐拍通哦，且不同日期的同一张迪士尼乐拍通也需按日期升级！</string>
+    <string name="pp_tip">温馨提示：以下是您未激活的门票及乐拍通卡。请注意卡的日期。</string>
     <string name="select_pp">%1$s在%2$s的照片。\n</string>
     <string name="outofrange">超出范围</string>
     <!-- select pp end -->

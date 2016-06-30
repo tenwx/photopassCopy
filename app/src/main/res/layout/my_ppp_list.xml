@@ -69,7 +69,8 @@
         <RelativeLayout
             android:id="@+id/rl_ppp_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/pp_padding_5">
 
             <ImageView
                 android:id="@+id/iv_select"
@@ -121,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:paddingBottom="10dp"
+                        android:paddingBottom="20dp"
                         android:rotation="45"
                         android:text="fadsfadsfs"
                         android:textColor="@color/pp_dark_blue"

@@ -16,11 +16,13 @@ import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -92,64 +94,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private static final int REQUEST_CAMERA_PERMISSION = 3;
     private static final int FINISH_CURRENT_ACTIVITY = 4;
     private boolean mIsAskCameraPermission = false;
-    // 点击响应方法
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.tv_scan_qr_code:
-                if (handler != null) {
-                    scanType = 1;
-                    handler.setScanType(scanType);
-                } else {
-                    return;
-                }
-                ocrScanView.setVisibility(View.GONE);
-                viewfinder_view.setVisibility(View.VISIBLE);
-                tvScanQRcodeTips.setVisibility(View.VISIBLE);
-                rlMask.setVisibility(View.GONE);
-
-                tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
-                tvScanQRCode.setTextColor(getResources().getColor(R.color.pp_blue));
-
-                tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_nor), null, null);
-                tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
-                break;
-            case R.id.tv_scan_ppp_code:
-                if (handler != null) {
-                    scanType = 2;
-                    handler.setScanType(scanType);
-                } else {
-                    return;
-                }
-                if (rlp == null) {
-                    int height = ((surfaceView.getHeight() - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
-                    int width = (int) (height / 85.0 * 54);
-                    PictureAirLog.out("height---->" + height);
-                    PictureAirLog.out("width---->" + width);
-                    rlp = new RelativeLayout.LayoutParams(width, height);
-                    rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    rlLight.setLayoutParams(rlp);
-                    ViewGroup.LayoutParams layoutParams = tvCenterHint.getLayoutParams();
-                    layoutParams.width = rlp.height - 20;
-                    layoutParams.height = rlp.width - 20;
-                    PictureAirLog.out("width---->" + layoutParams.width);
-                    PictureAirLog.out("height---->" + layoutParams.height);
-                    tvCenterHint.setLayoutParams(layoutParams);
-                }
-
-                ocrScanView.setVisibility(View.VISIBLE);
-                rlMask.setVisibility(View.VISIBLE);
-                viewfinder_view.setVisibility(View.GONE);
-                tvScanQRcodeTips.setVisibility(View.GONE);
-
-                tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_sel), null, null);
-                tvScanPPPCode.setTextColor(getResources().getColor(R.color.pp_blue));
-
-                tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_nor), null, null);
-                tvScanQRCode.setTextColor(getResources().getColor(R.color.white));
-                break;
-        }
-    }
 
     @Override
     public void decodeSuccess(Result result, Bitmap bitmap) {
@@ -274,7 +218,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
-        scanType = 1; // 每次进入的时候 更改为扫描QR码的方式。
+        String mode = getIntent().getStringExtra("mode");
+        if (TextUtils.isEmpty(mode)) {
+            scanType = 1; // 每次进入的时候 更改为扫描QR码的方式。
+        } else {
+            scanType = 2;
+        }
         checkStoragePermissionAndCopyData();
         ocrScanView = (ScanView) findViewById(R.id.scan_view_line_ocr);
         tvCenterHint = (TextView) findViewById(R.id.tv_center_hint);
@@ -303,6 +252,77 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
 
+        ViewTreeObserver viewTreeObserver = tvScanPPPCode.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                tvScanPPPCode.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                setScanMode(scanType);
+            }
+        });
+
+    }
+
+    private void setScanMode(int mode){
+        if (mode == 1) {
+            ocrScanView.setVisibility(View.GONE);
+            viewfinder_view.setVisibility(View.VISIBLE);
+            tvScanQRcodeTips.setVisibility(View.VISIBLE);
+            rlMask.setVisibility(View.GONE);
+
+            tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
+            tvScanQRCode.setTextColor(getResources().getColor(R.color.pp_blue));
+
+            tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_nor), null, null);
+            tvScanPPPCode.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            if (rlp == null) {
+                int height = ((ScreenUtil.getScreenHeight(this) - ScreenUtil.getStatusBarHeight(this) - ScreenUtil.dip2px(this, 52)) / 2 - tvScanPPPCode.getHeight() - 10) * 2;
+
+                int width = (int) (height / 85.0 * 54);
+                rlp = new RelativeLayout.LayoutParams(width, height);
+                rlp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                rlLight.setLayoutParams(rlp);
+                ViewGroup.LayoutParams layoutParams = tvCenterHint.getLayoutParams();
+                layoutParams.width = rlp.height - 20;
+                layoutParams.height = rlp.width - 20;
+                PictureAirLog.out("width---->" + layoutParams.width);
+                PictureAirLog.out("height---->" + layoutParams.height);
+                tvCenterHint.setLayoutParams(layoutParams);
+            }
+
+            ocrScanView.setVisibility(View.VISIBLE);
+            rlMask.setVisibility(View.VISIBLE);
+            viewfinder_view.setVisibility(View.GONE);
+            tvScanQRcodeTips.setVisibility(View.GONE);
+
+            tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_sel), null, null);
+            tvScanPPPCode.setTextColor(getResources().getColor(R.color.pp_blue));
+
+            tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_nor), null, null);
+            tvScanQRCode.setTextColor(getResources().getColor(R.color.white));
+        }
+    }
+
+    // 点击响应方法
+    @Override
+    public void onClick(View view) {
+        if (handler != null) {
+            switch (view.getId()) {
+                case R.id.tv_scan_qr_code:
+                    scanType = 1;
+                    break;
+
+                case R.id.tv_scan_ppp_code:
+                    scanType = 2;
+                    break;
+            }
+            handler.setScanType(scanType);
+        } else {
+            return;
+        }
+        setScanMode(scanType);
     }
 
     @Override
