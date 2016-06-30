@@ -612,6 +612,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 }
             }
         }
+
+        
         PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
         intent2.putExtra("isNeedPay", isNeedPay);
         intent2.putExtra("name", orderName);
