@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -883,14 +881,4 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
         }
         pictureWorksDialog.show();
     }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                Log.e("MYPPPActiivty","ACTION_UP");
-        }
-        return super.onTouchEvent(event);
-    }
-
 }
