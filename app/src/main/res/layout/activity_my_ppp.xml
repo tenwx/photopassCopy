@@ -79,7 +79,6 @@
     <LinearLayout
         android:id="@+id/nopppinfo"
         android:background="@color/pp_light_gray_background"
-        android:padding="@dimen/pp_padding_20"
         android:layout_below="@id/head"
         android:layout_above="@+id/ll_button_area"
         android:layout_width="match_parent"
@@ -89,15 +88,15 @@
 
 
         <ImageView
-            android:layout_weight="3"
+            android:layout_weight="5"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:src="@drawable/ppp_introduce1"/>
 
 
         <TextView
-            android:layout_marginTop="@dimen/pp_margin_20"
-            android:layout_weight="1"
+            android:layout_weight="2"
+            android:layout_margin="20dp"
             android:text="@string/instruction"
             android:layout_width="wrap_content"
             android:layout_height="0dp"

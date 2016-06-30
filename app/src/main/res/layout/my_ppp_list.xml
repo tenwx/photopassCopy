@@ -79,6 +79,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/pp_margin_5"
+                android:layout_marginRight="@dimen/pp_margin_5"
                 android:clickable="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/nosele"
@@ -134,9 +135,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/ppp_imageView"
-                    android:layout_marginBottom="@dimen/pp_margin_8"
-                    android:layout_marginLeft="@dimen/pp_margin_30"
-                    android:layout_marginRight="@dimen/pp_margin_30">
+                    android:layout_alignLeft="@id/ppp_imageView"
+                    android:layout_alignRight="@id/ppp_imageView"
+                    android:layout_marginBottom="25dp"
+                    android:padding="10dp"
+                    >
 
                     <TextView
                         android:id="@+id/tv_expired"
@@ -144,11 +147,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/pp_margin_6"
+                        android:layout_marginLeft="@dimen/pp_margin_20"
                         android:gravity="center"
-                        android:paddingBottom="@dimen/pp_padding_10"
                         android:text="fadsfd"
-                        android:textColor="@color/pp_light_gray_press"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_size_12" />
 
                     <TextView
@@ -156,11 +158,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/tv_expired"
-                        android:padding="@dimen/pp_padding_10"
+                        android:layout_marginRight="@dimen/pp_margin_20"
                         android:gravity="right|center_vertical"
                         android:text="fadsfd"
-                        android:textColor="@color/pp_light_gray_press"
+                        android:textColor="@color/pp_dark_blue"
                         android:textSize="@dimen/text_size_14"/>
 
                 </RelativeLayout>

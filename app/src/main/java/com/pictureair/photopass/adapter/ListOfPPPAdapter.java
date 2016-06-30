@@ -2,6 +2,7 @@ package com.pictureair.photopass.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,6 +146,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			holder.ll_ppp_with_pp = (LinearLayout) convertView.findViewById(R.id.ppp_detail_with_pp);
 			holder.ppp_detail = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_detail);
 			holder.ppp_face = (RelativeLayout) convertView.findViewById(R.id.rl_ppp_face);
+			holder.pppLine = (RelativeLayout) convertView.findViewById(R.id.card_bottom);
 			adjustLayout(holder);
 			convertView.setTag(holder);
 		} else {
@@ -236,7 +238,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 
 		ViewGroup.LayoutParams params2 = holder.ppp_imageView.getLayoutParams();
 		if (isUseHavedPPP) {//588，372 ppp卡面图片的大小
-			params2.width = params.width - ScreenUtil.dip2px(mContext, 30);
+			params2.width = params.width - ScreenUtil.dip2px(mContext, 35);
 			params2.height = params2.width * 372 / 588;
 
 		} else {
@@ -294,6 +296,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		TextView tv_pp_date3;
 		TextView tv_ppp_no_pp;//卡反面没有信息时的显示
 		ImageView ppp_empty_view;
+		RelativeLayout pppLine;
 	}
 
 
@@ -318,6 +321,12 @@ public class ListOfPPPAdapter extends BaseAdapter {
 			PictureAirLog.out("ppp url---->" + Common.PHOTO_URL + dpp.pppCardBg);
 			imageLoader.displayImage(Common.PHOTO_URL + dpp.pppCardBg, imageAware, options);
 			holder.ppp_imageView.setTag(dpp.pppCardBg);
+		}
+
+		if (!dpp.pppCardBg.contains("ppp.")) {
+			holder.pppLine.setBackgroundResource(R.drawable.ppp_white_line);
+		} else {
+			holder.pppLine.setBackgroundColor(Color.TRANSPARENT);
 		}
 
 		//设置过期时间
