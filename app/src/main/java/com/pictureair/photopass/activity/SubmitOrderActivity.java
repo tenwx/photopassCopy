@@ -652,6 +652,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, submitOrderHandler);
                         }
                     } else {
+
+
+
+
+
+
+                        
                         //PP+/数码商品不需要地址
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
                         API1.addOrder(cartItemIds, 3, "", "", couponCodes, submitOrderHandler);
