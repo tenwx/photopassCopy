@@ -21,6 +21,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PointF;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -118,7 +119,6 @@ public class GalleryViewPager extends ViewPager {
 
     private float startX;
     private float startY;
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {

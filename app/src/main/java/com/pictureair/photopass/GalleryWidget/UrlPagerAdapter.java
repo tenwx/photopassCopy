@@ -18,15 +18,17 @@
 package com.pictureair.photopass.GalleryWidget;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.util.List;
 
 public class UrlPagerAdapter extends BasePagerAdapter {
-
     public UrlPagerAdapter(Context context, List<PhotoInfo> resources) {
         super(context, resources);
     }
@@ -36,14 +38,14 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         super.setPrimaryItem(container, position, object);
         ((GalleryViewPager) container).mCurrentView = ((UrlTouchImageView) object).getImageView();
     }
-
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
-            PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
+            PictureAirLog.v("PreviewPhotoActivity", "online and ispayed : " + position+"size:"+mResources.get(position).fileSize);
             iv.setProgressImageViewVisible(true);
             iv.setUrl(mResources.get(position).photoThumbnail_1024);
+            //iv.setUrlDelay(mResources.get(position).photoThumbnail_1024,1000);
         } else if (mResources.get(position).onLine == 0) {
 
             PictureAirLog.v("instantiateItem", "local photo : " + position + position);
@@ -55,5 +57,15 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collection.addView(iv, 0);
         return iv;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup collection, int position, Object view) {
+        super.destroyItem(collection, position, view);
+        UrlTouchImageView v= (UrlTouchImageView) view;
+        if(!v.isdown){
+            v.stopDown();
+        }
+        collection.removeView(v);
     }
 }

@@ -32,6 +32,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.lang.ref.WeakReference;
@@ -112,7 +114,15 @@ public class TouchImageView extends ImageView {
 
         init();
     }
-
+    public void setImageUrl(String url){
+        ImageLoader.getInstance().loadImage(url,null,null,new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                setImageBitmap(loadedImage);
+            }
+        });
+    }
     protected void init() {
         mTimerHandler = new TimeHandler(this);
         matrix.setTranslate(1f, 1f);

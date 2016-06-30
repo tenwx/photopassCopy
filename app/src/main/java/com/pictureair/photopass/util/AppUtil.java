@@ -151,6 +151,18 @@ public class AppUtil {
     }
 
     /**
+     *  检查电话号码是否符合规则,true为符合正确格式，false为不符合手机格式
+     */
+    public static boolean checkPhoneNumber(String phoneStr) {
+        boolean tem = true;
+//      Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+        Pattern p = Pattern.compile("^1(3|5|7|8)\\d{9}");
+        Matcher matcher = p.matcher(phoneStr);
+        tem = matcher.matches();
+
+        return tem;
+    }
+    /**
      * 获取camera中最后的一张照片路径，用于显示预览
      *
      * @return

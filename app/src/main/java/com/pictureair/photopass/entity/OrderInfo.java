@@ -33,53 +33,38 @@ public class OrderInfo implements Parcelable {
     public double actualotalPrice;//实际支付总价
     public int productEntityType;//商品虚拟／实体类型（0,1）
 
+    public InvoiceInfo invoiceInfo;//发票信息
+
 
     public OrderInfo() {
-
+        invoiceInfo=new InvoiceInfo();
     }
 
-    public static final Parcelable.Creator<OrderInfo> CREATOR = new Creator<OrderInfo>() {
-
-        @Override
-        public OrderInfo[] newArray(int size) {
-            return new OrderInfo[size];
-        }
-
-        @Override
-        public OrderInfo createFromParcel(Parcel source) {
-            return new OrderInfo(source);
-        }
-    };
-
-    private OrderInfo(Parcel source) {
-        orderId = source.readString();
-        orderTime = source.readString();
-        orderNumber = source.readString();
-        orderTotalPrice = source.readDouble();
-        orderPayMentMethod = source.readInt();
-        orderStatus = source.readInt();
-        orderIntroduce = source.readString();
-        deliveryMethod = source.readInt();
-        deliveryCustomer = source.readString();
-        deliveryHomeNumber = source.readString();
-        deliveryPhoneNumber = source.readString();
-        deliveryAddress = source.readString();
-        deliveryShipping = source.readDouble();
-        deliveryNumber = source.readString();
-        deliveryCompany = source.readString();
-        deliveryPostNumber = source.readString();
-        productPrice = source.readDouble();
-        resultPrice = source.readDouble();
-        straightwayPreferentialPrice = source.readDouble();
-        promotionPreferentialPrice = source.readDouble();
-        preferentialPrice = source.readDouble();
-        actualotalPrice = source.readDouble();
-        productEntityType = source.readInt();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+    protected OrderInfo(Parcel in) {
+        orderId = in.readString();
+        orderTime = in.readString();
+        orderNumber = in.readString();
+        orderTotalPrice = in.readDouble();
+        orderPayMentMethod = in.readInt();
+        orderStatus = in.readInt();
+        orderIntroduce = in.readString();
+        deliveryMethod = in.readInt();
+        deliveryCustomer = in.readString();
+        deliveryHomeNumber = in.readString();
+        deliveryPhoneNumber = in.readString();
+        deliveryAddress = in.readString();
+        deliveryShipping = in.readDouble();
+        deliveryNumber = in.readString();
+        deliveryCompany = in.readString();
+        deliveryPostNumber = in.readString();
+        productPrice = in.readDouble();
+        resultPrice = in.readDouble();
+        straightwayPreferentialPrice = in.readDouble();
+        promotionPreferentialPrice = in.readDouble();
+        preferentialPrice = in.readDouble();
+        actualotalPrice = in.readDouble();
+        productEntityType = in.readInt();
+        invoiceInfo = in.readParcelable(InvoiceInfo.class.getClassLoader());
     }
 
     @Override
@@ -107,6 +92,23 @@ public class OrderInfo implements Parcelable {
         dest.writeDouble(preferentialPrice);
         dest.writeDouble(actualotalPrice);
         dest.writeInt(productEntityType);
+        dest.writeParcelable(invoiceInfo, flags);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<OrderInfo> CREATOR = new Creator<OrderInfo>() {
+        @Override
+        public OrderInfo createFromParcel(Parcel in) {
+            return new OrderInfo(in);
+        }
+
+        @Override
+        public OrderInfo[] newArray(int size) {
+            return new OrderInfo[size];
+        }
+    };
 }
