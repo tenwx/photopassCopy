@@ -19,14 +19,14 @@ public class Common {
     /**
      * 域名线上服务器
      */
-//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
-//    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
-//    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
-//    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
+    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
+    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
+    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
+    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
+    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
 
     /**
      * 外网可访问的8.3测试服务器
@@ -43,14 +43,13 @@ public class Common {
     /**
      * 内网8.3测试服务器
      */
-    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
-    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
-    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
-    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
-    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s";
+//    public static final String BASE_URL_TEST = "http://192.168.8.3:3006";
+//    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
+//    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
+//    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
+//    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
 
 
     public final static String VERSION_CODE = "1.1.1";//开发版
@@ -123,7 +122,6 @@ public class Common {
     public static final String DELETE_ADDRESS = "/shopping/deleteAddress";//删除收货地址
     public static final String MODIFY_ADDRESS = "/shopping/modifyAddress";//修改收货地址
     public static final String ADD_ADDRESS = "/shopping/addAddress";//添加收货地址
-    public static final String ADDRESS_LIST = "/api/addresses";//获取收货地址列表
     public static final String GET_ALL_ORDERS = "/api/getAllOrders";//获取所有订单
     public static final String DELETE_ORDER = "/api/delOrder";//用户删除某个订单
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp

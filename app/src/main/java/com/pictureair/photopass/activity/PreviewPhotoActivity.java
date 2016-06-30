@@ -14,7 +14,6 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -27,20 +26,15 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.pictureair.jni.keygenerator.PWJniUtil;
-import com.pictureair.photopass.GalleryWidget.BasePagerAdapter;
 import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
@@ -514,15 +508,15 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case 7://操作比较耗时，会影响oncreate绘制
                 getPhotoInfoSuccess = true;
                 mViewPager = (GalleryViewPager) findViewById(R.id.viewer);
-                final UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
-//                pagerAd
-                mViewPager.setOffscreenPageLimit(0);
+                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(PreviewPhotoActivity.this, photolist);
+                mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(currentPosition, true);
                 //初始化底部索引按钮
                 updateIndexTools(true);
 
                 PictureAirLog.v(TAG, "----------------------->initing...3");
+
                 mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
                     @Override
@@ -530,11 +524,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         //初始化每张图片的love图标
                         PictureAirLog.v(TAG, "----------------------->initing...4");
                         currentPosition = arg0;
-                        //mViewPager.isScroll=false;
                     }
 
                     @Override
                     public void onPageScrolled(int arg0, float arg1, int arg2) {
+
                     }
 
                     @Override
@@ -542,17 +536,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         // TODO Auto-generated method stub
                         //				PictureAirLog.v(TAG,"--------onPageScrollStateChanged-------"+arg0);
 
-                        //PictureAirLog.v(TAG, "----------------------->initing...5");
+                        PictureAirLog.v(TAG, "----------------------->initing...5");
                         if (arg0 == 0) {//结束滑动
-                            //ImageLoader.getInstance().resume();
-
-                            PictureAirLog.v(TAG,"--------scroll end-------currentIndex:"+currentPosition);
+                            //					PictureAirLog.v(TAG,"--------scroll end-------");
                             updateIndexTools(false);//只能写在这里，不能写在onPageSelected，不然出现切换回来之后，显示错乱
                             setUmengPhotoSlide();//统计滑动图片次数
-                        }else{
-                            PictureAirLog.v(TAG,"--------pause-------");
-                            //ImageLoader.getInstance().pause();
-
                         }
                     }
                 });

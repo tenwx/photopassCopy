@@ -217,7 +217,6 @@
             android:name=".activity.ModifyPasswordActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait" />
-
         <!-- 扫描 -->
         <activity
             android:name=".activity.MipCaptureActivity"
@@ -405,11 +404,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".activity.InvoiceActivity"
-            android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.NewAddressActivity"></activity>
     </application>
 
 </manifest>

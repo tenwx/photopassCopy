@@ -169,7 +169,7 @@ public class CustomDialog extends Dialog {
             dialog.addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
             TextView tvTitle = (TextView) layout.findViewById(R.id.dia_title);
-            if (title != null) {//如果有titltee
+            if (title != null) {//如果有title
                 tvTitle.setText(title);
                 tvTitle.setVisibility(View.VISIBLE);
                 RelativeLayout relativeLayout = (RelativeLayout) layout.findViewById(R.id.dia);

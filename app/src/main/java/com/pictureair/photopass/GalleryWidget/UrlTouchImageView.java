@@ -23,7 +23,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
 import com.pictureair.photopass.R;
@@ -40,7 +38,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,9 +56,7 @@ public class UrlTouchImageView extends RelativeLayout {
     private ImageLoader imageLoader;
 
     private static final int LOAD_FILE_DONE = 1;
-    private static final int DELAY_DOWNLOAD = 101;
-    public boolean isdown;
-    public String  curUrl;
+
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -81,10 +76,7 @@ public class UrlTouchImageView extends RelativeLayout {
                     mImageView.setVisibility(VISIBLE);
                     progressImageView.setVisibility(GONE);
                     break;
-                case DELAY_DOWNLOAD:
-                    isdown = true;
-                    setUrl(curUrl);
-                    break;
+
                 default:
                     break;
             }
@@ -131,14 +123,6 @@ public class UrlTouchImageView extends RelativeLayout {
         this.addView(progressImageView);
     }
 
-    public void setUrlDelay(String url,int delay){
-        handler.sendEmptyMessageDelayed(DELAY_DOWNLOAD,delay);
-        this.curUrl = url;
-    }
-
-    public void stopDown(){
-        handler.removeMessages(DELAY_DOWNLOAD);
-    }
     /**
      * 设置图片的url
      *
@@ -156,36 +140,28 @@ public class UrlTouchImageView extends RelativeLayout {
             PictureAirLog.out("need load from network");
         }
         //使用imageloader加载图片
-        final String finalImageUrl = imageUrl;
-
-            //本地不存在，从网络上下载
-            imageLoader.loadImage(imageUrl, null, null, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view,
-                                              Bitmap loadedImage) {
-                    // TODO Auto-generated method stub
-                    super.onLoadingComplete(imageUri, view, loadedImage);
+        imageLoader.loadImage(imageUrl, null, null, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view,
+                                          Bitmap loadedImage) {
+                // TODO Auto-generated method stub
+                super.onLoadingComplete(imageUri, view, loadedImage);
 //                bitmap = loadedImage;
-                    PictureAirLog.v("PreviewPhotoActivity", "network load complete " + finalImageUrl);
-                    progressImageView.setImageResource(getImageResource(100));
-                    bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
-                    handler.sendEmptyMessage(LOAD_FILE_DONE);
+                progressImageView.setImageResource(getImageResource(100));
+                bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
+                handler.sendEmptyMessage(LOAD_FILE_DONE);
 
-                }
+            }
+        }, new ImageLoadingProgressListener() {
 
-            }, new ImageLoadingProgressListener() {
-
-                @Override
-                public void onProgressUpdate(String imageUri, View view, int current,
-                                             int total) {
-                    // TODO Auto-generated method stub
-                    PictureAirLog.v("PreviewPhotoActivity" ,"current Percent :"+ (current * 100 / total));
-                    progressImageView.setImageResource(getImageResource(current * 100 / total));
-                    ;
-                }
-            });
-
-
+            @Override
+            public void onProgressUpdate(String imageUri, View view, int current,
+                                         int total) {
+                // TODO Auto-generated method stub
+                PictureAirLog.out("current percent----->" + current * 100 / total);
+                progressImageView.setImageResource(getImageResource(current * 100 / total));;
+            }
+        });
 
     }
 

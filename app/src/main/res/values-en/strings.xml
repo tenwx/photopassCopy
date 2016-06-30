@@ -469,42 +469,6 @@
     <string name="start_delete">Your account will no longer display these photos once deleted. Confirm to delete?</string>
     <string name="edit_story_album">Select</string>
     <!-- edit story end -->
-    <!-- invoice-->
-    <string name="invoice_title">Invoice</string>
-    <string name="invoice">Invoice</string>
-    <string name="paper_invoice">Paper Invoice</string>
-    <string name="invoice_type">Type</string>
-    <string name="invoice_info">Info</string>
-    <string name="invoice_info_know">I Know</string>
-    <string name="invoice_name">Title</string>
-    <string name="invoice_personal">Personal</string>
-    <string name="invoice_company">Company</string>
-    <string name="invoice_content">Content</string>
-    <string name="invoice_photo">Photo</string>
-    <string name="invoice_service">Photo Service</string>
-    <string name="invoice_no">No Invoice</string>
-    <string name="invoice_address">Address</string>
-    <string name="invoice_input_company">Please input your company name</string>
-    <string name="invoice_new_address">New Address</string>
-    <string name="invoice_receiver_name">Name:</string>
-    <string name="invoice_mobile">Mobile Number:</string>
-    <string name="invoice_province">Choose Province:</string>
-    <string name="invoice_city">Choose City:</string>
-    <string name="invoice_country">Country:</string>
-    <string name="invoice_detail_addr">Address Detail:</string>
-
-    <!-- tips -->
-    <string name="invoice_tips_title">Please select invoice title.</string>
-    <string name="invoice_tips_address">Please add your address.</string>
-    <string name="invoice_tips_input_address">Please enter your address.</string>
-    <string name="invoice_tips_input_info">Please enter your information.</string>
-    <string name="invoice_tips_phone">Please enter your mobile number.</string>
-    <string name="invoice_tips_phone_error">Please enter correct your mobile number.</string>
-    <string name="invoice_tips_province">Please enter your country.</string>
-    <string name="invoice_tips_city">Please enter your city.</string>
-    <string name="invoice_tips_country">Please enter your region.</string>
-    <string name="invoice_tips_detail_address">Please enter your detail address.</string>
-    <!--end invoice-->
 
     <!-- 优惠卷start   文案没有，暂时中文-->
     <string name="my_coupon">My Coupon</string>
@@ -513,7 +477,6 @@
     <string name="coupon_scan">Scan</string>
     <string name="shop_price">Total</string>
     <string name="coupon_price">Coupon Discount</string>
-    <string name="invoice_price">Invoice Shipping</string>
     <string name="coupon_price1">Coupon Discount:</string>
     <string name="pay_price">Pay</string>
     <string name="coupon_count">%1$d Coupons</string>
