@@ -404,6 +404,11 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
+        <activity
+            android:name=".activity.InvoiceActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.NewAddressActivity"></activity>
 
     </application>
 

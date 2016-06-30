@@ -14,16 +14,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.keygenerator.PWJniUtil;
 import com.pictureair.photopass.MyApplication;
+import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.SendAddress;
+import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -158,6 +162,22 @@ public class API1 {
 
     public static final int BATCH_ADD_TO_CARTS_SUCCESS = 4121;
     public static final int BATCH_ADD_TO_CARTS_FAILED = 4120;
+    public static final int ADDRESS_LIST_FAILED = 4120;
+    public static final int ADDRESS_LIST_SUCCESS = 4121;
+
+    public static final int ADD_ADDRESS_LIST_FAILED = 4130;
+    public static final int ADD_ADDRESS_LIST_SUCCESS = 4131;
+
+    public static final int MODIFY_ADDRESS_LIST_FAILED = 4140;
+    public static final int MODIFY_ADDRESS_LIST_SUCCESS = 4141;
+
+    public static final int DELETE_ADDRESS_LIST_FAILED = 4150;
+    public static final int DELETE_ADDRESS_LIST_SUCCESS = 4151;
+
+    public static final int GET_INVOICE_FAILED = 4160;
+    public static final int GET_INVOICE_SUCCESS = 4161;
+
+
 
     //Shop模块 end
 
@@ -1420,7 +1440,7 @@ public class API1 {
      * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
      * @param handler      handler
      */
-    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId, JSONArray couponCodes, final Handler handler) {
+    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId, JSONArray couponCodes,JSONObject invoice, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("cartItemIds", cartItemIds.toString());
@@ -1433,7 +1453,9 @@ public class API1 {
             //自提
             params.put("outletId", outletId);
         }
-        PictureAirLog.v(TAG, "addOrder params: " + params.toString());
+        if(null != invoice)
+            params.put("invoiceInfo",invoice.toJSONString());
+        PictureAirLog.out("addorder params ------------>"+params.toString());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -1510,6 +1532,172 @@ public class API1 {
         });
     }
 
+    /**
+     * 获得发票的所有地址列表
+     *
+     * @param handler
+     */
+    public static void getInvoiceAddressList(final Handler handler ){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADDRESS_LIST_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+    /**
+     * 获取用户购物车带发票的信息
+     *
+     * @param cartIdsArray
+     * @param handler      handler
+     */
+    public static void getCartsWithInvoice(JSONArray cartIdsArray,boolean isNeedInvoice, final Handler handler) {
+        PictureAirLog.out("getCartsInvoice---》" + MyApplication.getTokenId());
+        final int flag;//表示请求类型： 初始化/选中取消选中
+        RequestParams params = new RequestParams();
+        if (cartIdsArray == null) {
+            flag = -1;
+        } else {
+            if (cartIdsArray.size() > 0) {
+                params.put("cartItemIds", cartIdsArray.toString());
+            }
+            flag = GET_CART_SUCCESS;
+        }
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
+        params.put("isNeedInvoice", isNeedInvoice);
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(GET_INVOICE_SUCCESS, flag, flag, jsonObject).sendToTarget();
+
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_INVOICE_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+    /**
+     * 添加发票的地址
+     *
+     * @param handler
+     */
+    public static void addInvoiceAddress(final Handler handler , SendAddress address){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("consignee", address.getName());
+        params.put("detailedAddress", address.getDetailAddress());
+        params.put("area", address.getArea());
+        params.put("provinces", address.getProvince());
+        params.put("city", address.getCity());
+        params.put("county", address.getCountry());
+        params.put("zip", address.getZip());
+        params.put("mobileNum", address.getMobilePhone());
+        params.put("telephone", address.getTelePhone());
+        params.put("defaultChose", address.isSelected());
+        HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("success---->" + jsonObject.toString());
+                handler.obtainMessage(ADD_ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(ADD_ADDRESS_LIST_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+    /**
+     * 修改发票的地址
+     *
+     * @param handler
+     */
+    public static void modifyInvoiceAddress(final Handler handler , SendAddress address){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("addressId", address.getAddressId());
+        params.put("consignee", address.getName());
+        params.put("detailedAddress", address.getDetailAddress());
+        params.put("area", address.getArea());
+        params.put("provinces", address.getProvince());
+        params.put("city", address.getCity());
+        params.put("county", address.getCountry());
+        params.put("zip", address.getZip());
+        params.put("mobileNum", address.getMobilePhone());
+        params.put("telephone", address.getTelePhone());
+        params.put("defaultChose", address.isSelected());
+        PictureAirLog.out("modify address ------>"+params.toString());
+        HttpUtil1.asyncPut(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+            @Override
+            public void onStart() {
+                super.onStart();
+                PictureAirLog.out("onstart------->");
+            }
+
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("modify success---->" + jsonObject.toString());
+                handler.obtainMessage(MODIFY_ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.out("modify failure---->"+status);
+                handler.obtainMessage(MODIFY_ADDRESS_LIST_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
+
+    /**
+     * 删除发票的地址
+     *
+     * @param handler
+     */
+    public static void deleteInvoiceAddress(final Handler handler , String[] ids){
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put("addressesIds", ids);
+        HttpUtil1.asyncDelete(Common.BASE_URL_TEST + Common.ADDRESS_LIST, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                handler.obtainMessage(DELETE_ADDRESS_LIST_SUCCESS, jsonObject).sendToTarget();
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(DELETE_ADDRESS_LIST_FAILED, status, 0).sendToTarget();
+
+            }
+        });
+    }
 
     /**
      * 购买单张照片
