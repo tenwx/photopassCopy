@@ -408,7 +408,9 @@
             android:name=".activity.InvoiceActivity"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.NewAddressActivity"></activity>
+        <activity android:name=".activity.NewAddressActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"></activity>
 
     </application>
 

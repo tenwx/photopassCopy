@@ -1454,7 +1454,7 @@ public class API1 {
             params.put("outletId", outletId);
         }
         if(null != invoice)
-            params.put("invoiceInfo",invoice.toJSONString());
+            params.put("invoiceInfo",invoice);
         PictureAirLog.out("addorder params ------------>"+params.toString());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
             @Override
