@@ -107,7 +107,7 @@ public class WXPayUtil {
             double price = Double.valueOf(priceString);
             PictureAirLog.out("price------>" + (int) price);
 
-            packageParams.add(new BasicNameValuePair("total_fee", Common.PAY_DEBUG ? "1" : ((int) price) * 100 + ""));// 总金额只能为整数,单位是分
+            packageParams.add(new BasicNameValuePair("total_fee", ((int) price) * 100 + ""));// 总金额只能为整数,单位是分
             packageParams.add(new BasicNameValuePair("trade_type", "APP"));// 交易类型:取值如下：JSAPI，NATIVE，APP，WAP
 
             String sign = genPackageSign(packageParams);

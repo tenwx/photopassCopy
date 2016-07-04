@@ -85,7 +85,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/pp_margin_20"
                 android:layout_toLeftOf="@+id/img"
-                android:textColor="@color/pp_gray"
+                android:textColor="@color/pp_dark_blue"
                 android:textSize="@dimen/text_size_12"
                 android:visibility="gone" />
 

@@ -548,10 +548,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         myApplication.setRefreshViewAfterBuyBlurPhoto("");
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
-        // AppManager.getInstance().killActivity(BlurActivity.class);
         AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
         AppManager.getInstance().killActivity(MakegiftActivity.class);
+        AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);
         finish();
     }
@@ -570,11 +570,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             //进入订单界面
             AppManager.getInstance().killActivity(SubmitOrderActivity.class);
             AppManager.getInstance().killActivity(PreviewProductActivity.class);
-            // AppManager.getInstance().killActivity(BlurActivity.class);
             AppManager.getInstance().killActivity(SelectPhotoActivity.class);
             AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
             AppManager.getInstance().killActivity(MakegiftActivity.class);
-
+            AppManager.getInstance().killActivity(PPPDetailProductActivity.class);
             AppManager.getInstance().killActivity(DetailProductActivity.class);
             Intent intent2 = new Intent(PaymentOrderActivity.this, OrderActivity.class);
             startActivity(intent2);
@@ -588,7 +587,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         PictureAirLog.v(TAG, "start finish expired activity");
         AppManager.getInstance().killActivity(SubmitOrderActivity.class);
         AppManager.getInstance().killActivity(PreviewProductActivity.class);
-        // AppManager.getInstance().killActivity(BlurActivity.class);
         AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
         AppManager.getInstance().killActivity(SelectPhotoActivity.class);
         AppManager.getInstance().killActivity(DetailProductActivity.class);

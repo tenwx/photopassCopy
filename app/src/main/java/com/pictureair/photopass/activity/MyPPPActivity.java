@@ -475,8 +475,12 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 break;
+
             case ListOfPPPAdapter.HEAD_CLICK:
                 int position = (int)msg.obj;
+                if (position >= list1.size()) {
+                    return;
+                }
                 if (list1.get(position).bindInfo.size() < list1.get(position).capacity && list1.get(position).expired == 0) {
                     if (list1.get(position).expericePPP == 1) {//体验卡
                         Intent intent3 = new Intent(MyPPPActivity.this, SelectPhotoActivity.class);

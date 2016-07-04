@@ -132,7 +132,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         switch (msg.what) {
             case API1.GET_ALL_LOCATION_FAILED:
                 PictureAirLog.out("get location failed");
-                String locationCache = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+                String locationCache = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
                 fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
                 break;
 

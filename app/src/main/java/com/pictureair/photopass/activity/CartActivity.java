@@ -191,6 +191,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
             case API1.DELETE_CART_FAILED:
             case API1.UPLOAD_PHOTO_FAILED:
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
+
                 isDelete = false;
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 editTextView.setEnabled(true);
@@ -218,6 +222,10 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 if (cartInfoList.size() == 0) {
                     cancelEdit();
                     ShowNoNetOrNoCountView();
+                }
+
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
                 }
                 break;
 
@@ -489,6 +497,11 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         isDelete = false;
                         return;
                     }
+
+                    if (!customProgressDialog.isShowing()) {
+                        customProgressDialog.show();
+                    }
+
                     PictureAirLog.v(TAG, "removeCartItems delete size: " + deleteCartItemInfoList.size());
                     JSONArray jsonArray = new JSONArray(deleteCartItemInfoList.size());
                     //构建数组

@@ -117,7 +117,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     //清除acahe框架的缓存数据
     private void clearCache() {
         ACache.get(this).remove(Common.ALL_GOODS);
-        ACache.get(this).remove(Common.LOCATION_INFO);
         ACache.get(this).remove(Common.ACACHE_ADDRESS);
     }
 

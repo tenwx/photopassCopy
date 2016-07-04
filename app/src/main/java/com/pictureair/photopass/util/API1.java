@@ -510,7 +510,7 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                ACache.get(context).put(Common.LOCATION_INFO, jsonObject.toString());
+                ACache.get(context).put(Common.DISCOVER_LOCATION, jsonObject.toString());
                 handler.obtainMessage(GET_ALL_LOCATION_SUCCESS, jsonObject).sendToTarget();
             }
 

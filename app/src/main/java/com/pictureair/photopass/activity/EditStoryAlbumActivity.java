@@ -240,7 +240,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ppCode = getIntent().getStringExtra("ppCode");
 
-		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.LOCATION_INFO), true));
+		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
 		customProgressDialog.show();
 		new Thread(new Runnable() {
 			@Override

@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -450,12 +451,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 if (!dialog.isShowing()){
                     dialog.show();
                 }
-                if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
+                if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {//地址获取失败
                     API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
                 } else {//地址获取成功，但是照片获取失败
                     Message message = fragmentPageStoryHandler.obtainMessage();
                     message.what = API1.GET_ALL_LOCATION_SUCCESS;
-                    message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+                    message.obj = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
                     fragmentPageStoryHandler.sendMessage(message);
                 }
                 break;
@@ -796,12 +797,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //获取API
         isLoading = true;
         //获取地点信息
-        if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {
+        if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {
             API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageStoryHandler);//获取所有的location
         } else {
             Message message = fragmentPageStoryHandler.obtainMessage();
             message.what = API1.GET_ALL_LOCATION_SUCCESS;
-            message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
+            message.obj = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
             fragmentPageStoryHandler.sendMessageDelayed(message, 200);
         }
 

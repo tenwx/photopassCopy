@@ -59,7 +59,7 @@ public class PayUtils {
         PictureAirLog.v(TAG, "introductString: " + introductString);
 
         String info = AliPayUtil.getOrderInfo(orderId, nameString,
-                introductString, Common.PAY_DEBUG ? "0.01" : priceString);
+                introductString, priceString);
         PictureAirLog.v(TAG, "info:" + info);
         // 对订单做RSA 签名
         String sign = AliPayUtil.sign(info);

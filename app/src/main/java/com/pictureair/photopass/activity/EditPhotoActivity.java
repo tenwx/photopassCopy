@@ -29,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -62,7 +61,6 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -506,23 +504,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		// TODO Auto-generated method stub
 		super.onResume();
 		if (locationItemInfos.size() == 0) {//说明不存在，需要获取所有的location地点信息
-			try {
-				com.alibaba.fastjson.JSONObject response = com.alibaba.fastjson.JSONObject.parseObject(ACache.get(this).getAsString(Common.LOCATION_INFO));
-				com.alibaba.fastjson.JSONArray resultArray = response.getJSONArray("locations");
-				for (int i = 0; i < resultArray.size(); i++) {
+			locationItemInfos.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), false));
 
-					DiscoverLocationItemInfo locationInfo = new DiscoverLocationItemInfo();
-					JSONObject object = resultArray.getJSONObject(i);
-					locationInfo = JsonUtil.getLocation(object);
-					if (locationInfo.isShow == 1) {
-						locationItemInfos.add(locationInfo);
-					}
-				}
-				locationUtil.setLocationItemInfos(locationItemInfos, this);
-			} catch (com.alibaba.fastjson.JSONException e1) {
-
-				e1.printStackTrace();
-			}
+			locationUtil.setLocationItemInfos(locationItemInfos, this);
 		}
 		locationUtil.startLocation();
 	}

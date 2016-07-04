@@ -9,25 +9,10 @@ public class Common {
     public static final String APP_NAME = "appName";
     public static final String APPLICATION_NAME = "photoPass";// app英文名字
     public static final String CHECK_VERSION = "/version/checkVersion";// 检查更新
-    public static final String PACKGE_NAME = "com.pictureair.photopass";// 应用包名
 
     public static final String APP_TYPE_PA = "pa";
     public static final String APP_TYPE_SHDRPP = "shdrpp";
     public static final String APP_TYPE_HKDLPP = "hkdlpp";
-
-
-    /**
-     * 域名线上服务器
-     */
-    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
-    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
-    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
-    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
-    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
-    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
-    public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
 
     /**
      * 外网可访问的8.3测试服务器
@@ -36,10 +21,6 @@ public class Common {
 //    public static final String PHOTO_URL = "http://211.95.27.34:4000/";
 //    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "http://211.95.27.34:3004/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://211.95.27.34:3004/terms.html?source=outer";  //条款 2
-
 
     /**
      * 内网8.3测试服务器
@@ -48,18 +29,27 @@ public class Common {
 //    public static final String PHOTO_URL = "http://192.168.8.3:4000/";
 //    public static final String ALIPAY_NOTIFY = "http://211.95.27.34:3006/api/alipayNotify";//alipay的异步通知URL
 //    public static final String WECHAT_NOTIFY = "http://211.95.27.34:3006/api/weChatNotify";//wechat的异步通知URL
-//    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
-//    public final static String POLICY_AGREEMENT = "http://192.168.8.3:3004/policy.html?source=outer";  //政策 1
-//    public final static String TERMS_AGREEMENT = "http://192.168.8.3:3004/terms.html?source=outer";  //条款 2
+
+    /**
+     * 域名线上服务器
+     */
+    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
+    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
+    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
+    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
 
 
-    public final static String VERSION_CODE = "1.1.2";//开发版
-    public final static boolean PAY_DEBUG = false;// false，真实付款，true，测试付款
+    public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";
+    public final static String CONTACT_AGREEMENT = "http://www.disneyphotopass.com.cn/contact.html?source=outer&tokenId=%1$s&lang=%2$s"; // 联系我们
+    public final static String POLICY_AGREEMENT = "https://www.shanghaidisneyresort.com/%1$sprivacy-policy/";  //隐私政策
+    public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
+    public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
+
+    public final static String VERSION_CODE = "1.1.3";//开发版
 
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId
     public static final String GET_ALL_LOCATIONS_OF_ALBUM_GROUP = "/park/getLocationsOfAlbumGroup";//获得location信息
-    public static final String IS_EXIST_PHONE = "";//判断手机号是否已经被注册
     public static final String GET_LASTEST_CONTENT = "/asset/getLatestContent";// 获取最新更新的内容
     public static final String LOGIN = "/auth/login";// 登录
     public static final String LOGOUT = "/auth/logout";// 登出
@@ -79,8 +69,6 @@ public class Common {
     public static final String GET_FAVORITE_LOCATIONS = "/user/getFavoriteLocations";// 获取用户收藏的location
     public static final String EDIT_FAVORITE_LOCATION = "/user/editFavoriteLocation";// 编辑收藏的location信息
     public static final String GET_PHOTO = "/p/getPhoto";// 根据照片Id获取相片信息
-    public static final String ADD_COMMENT = "/p/addCpmment";// 评论照片
-    public static final String SHARE_TO_SOCIAL = "/p/shareToSocial";// 分享照片
     public static final String FORGET_PWD = "/user/forgotPwd";// 忘记密码（手机号）
     public static final String FORGET_PWD_EMAIL = "/userMsg/forgotPwdMsg";// 忘记密码（邮箱）
     public static final String GET_COUPONS = "/api/getAvailableCoupon";// 从订单中查询优惠卷
@@ -88,13 +76,10 @@ public class Common {
     public static final String ADD_COUPONS = "/api/coupons";//添加优惠卷
     public static final String PREVIEW_COUPONS = "/api/previewCoupon";//使用优惠券
 
-    public static final String ADD_LIKE = "/p/addLike";// 照片点赞
-    public static final String SAVE_PHOTO = "/p/savePhto";// 保存编辑后的照片
     public static final String GET_PPPS_BY_USERID = "/ppp/getPPPsByUserId";// 获取用户的ppp列表
     public static final String GET_PPS_BY_USERID = "/user/getPPsByUserId";// 获取用户的pp列表
     public static final String GET_PPPS_BY_PP_AND_DATE = "/ppp/getPPPsByPPAndDate";// 获取当前PP及日期可用的PP+
     public static final String GET_PPS_BY_PPP_AND_DATE = "/user/getPPsByPPPAndDate";// 获取当前PPP及日期可绑定的PP
-    public static final String GET_USER_BY_MOBILE = "/user/getUserByMobile";// 通过手机号查询用户
 
     public static final String GET_STORE_BY_IP = "/api/getStoreId";//通过ip查找storeId
     public static final String GET_GOODS = "/api/goods";//获取全部商品
@@ -106,8 +91,6 @@ public class Common {
     public static final String BATCH_ADD_TO_CART = "/api/batchAddToCarts";//批量加入购物车
     public static final String ADD_ORDER = "/api/checkOut";//用户提交订单
 
-    public static final String GET_TOP_GOODS = "/ms/getTop4Goods";//获取热门商品
-    public static final String GET_PHOTO_PASS_PLUS = "/shopping/getDefaultPhotoPassPluss";//获取PPP商品
     public static final String REMOVE_CART = "/shopping/removeCart";//删除购物车信息
     public static final String MODIFY_CART = "/shopping/modifyCart";//修改购物车信息
     public static final String UPLOAD_PHOTOS = "/p/userUploadPhoto";//上传图片
@@ -116,8 +99,6 @@ public class Common {
     public static final String ADD_ON_ORDER = "/ms/AddOnOrder";//生成订单，并且获取订单信息
     public static final String BUY_PHOTO = "/api/buyPhoto";//一键放入数码商品至购物车信息
     public static final String GET_OUTLET_ID = "/api/outlets";//获取门店地址信息
-
-    public static final String GET_BANNER_GOODS = "/shopping/getBanners";//得到banner商品
 
     public static final String GET_CART_COUNT = "/shopping/getCartCount";//获取购物车的数量
     public static final String GET_ADDRESS = "/shopping/getAddresses";//获取收货地址
@@ -138,7 +119,6 @@ public class Common {
     public static final String CLEAR_PHOTO_COUNT = "/socket/clearPhotoCount"; // 接受到消息时。
     public static final String GET_SOCKET_DATA = "/socket/getSocketData"; // 返回用户未接收到的推送消息
 
-
     public static final String ME_HELP = "/help/getHelpList";
     public static final String VIDEO_GENERATEVIDEO = "/video/generateVideo";//上传照片到服务器合成视频
     public static final String GET_SHARE_URL = "/api/getShareUrl";//获取分享用的URL
@@ -152,7 +132,6 @@ public class Common {
     public static final String GET_PPPS_BY_SHOOTDATE = "/ppp/getPPPsByShootDate";//根据照片的拍摄时间获取PP+卡列表
     public static final String IPAY_LINK = "/pay/ipaylink";// ipayLink 海外支付接口。
     public static final String REMOVE_PHOTOS_FROME_PP= "/p/removePhotosFromPP";//从pp中删除照片
-
 
     //user的SharedPreferences    以及   接口参数
     public static final String UUID = "UUID";
@@ -222,15 +201,11 @@ public class Common {
     public static final String GOODS = "goods";
 
     public static final int TOAST_SHORT_TIME = 1000;
-    //	public static final String TESTING_USER_ID = "54780d447eac676ae8cdcd44";
-    public static final String PHOTOPASS_DESCRPITION = "This picture made by PictureAir";
-    //	public static final String PHOTOPASS_NAME = "Photo";
     public static final String ppp = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
     public static final String PPPCode = "PPPCode";
     public static final String bindDate = "bindDate";
     public static final String PPS = "pps";
     public static final String ppp1 = "ppp";
-    //	public static final String AUTO_BIND_PP = "autobindpp";//购买ppp之后，是否需要自动绑定标记，photoid：表示需要自动绑定；其他：不需要自动绑定
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
     public static final String LAST_UPDATE_VIDEO_TIME = "lastUpdateVideoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
@@ -256,7 +231,6 @@ public class Common {
     public static final String SHOOTDATE = "shootDate";
     public static final String PP = "pp";
 
-
     //存放sdk的目录
     public static final String ALBUM_FILE_DOWLOAD_NAME = "/Shanghai Disney PhotoPass/download";
     public static final String USER_PATH = Environment.getExternalStorageDirectory().getPath() + "/Shanghai Disney PhotoPass/user/";
@@ -272,10 +246,9 @@ public class Common {
 
     //缓存的字段
     public static final String ALL_GOODS = "allgoods";
-    public static final String LOCATION_INFO = "locationInfo";
+    public static final String DISCOVER_LOCATION = "discoverlocation";
     public static final String ACACHE_ADDRESS = "address";//收货地址缓存
     public static final String UPDATE_INFO = "updateInfo";//更新信息
-    //	public static final String CHANGE_CUR_TAB = "change_cur_tab";
 
     //photo sqlite数据库字段
     public static final String PHOTOPASS_INFO_NAME = "photopass_info.db3";
@@ -291,19 +264,7 @@ public class Common {
 
 
     //相册名称字段
-    public static final String ALBUM_ALL = "All";
-    public static final String ALBUM_PHOTOPASS = "PhotoPass";
     public static final String ALBUM_MAGIC = "Magic";
-    public static final String ALBUM_BOUGHT = "Bought";
-
-    //图片保存文件夹名字字段
-    public static final String ALBUM_FILE_PICTURE_NAME = "photopass";
-
-
-    //其他字段
-    //	public static final String PHOTOPASSPLUS = "PhotoPass+";//商品的ppp名称修改了，原来为PhotoPassPlus。暂时忘了这个字段是否涉及到其他问题，
-
-    //	public static final String BARCODEURL = "http://192.168.8.3:3001/downloadApp.html?";
 
     //app的SharePreferences
     public static final String SHARED_PREFERENCE_APP = "app";
@@ -333,7 +294,6 @@ public class Common {
     public static final String USERINFOTYPE = "userinfotype";
 
     public static final int NICKNAMETYPE = 1;
-    public static final int EMAILTYPE = 2;
     public static final int QQTYPE = 3;
 
     public static final String GOOD_NAME_PPP = "PhotoPass+";
@@ -342,13 +302,6 @@ public class Common {
     public static final String GOOD_NAME_TSHIRT = "Duffy Bear Personalised T-Shirt";
     public static final String GOOD_NAME_COOK = "Your personal cookies gift";
 
-    // 友盟参数
-//    public static final String UMENG_CHANNEL = "360";// 打包渠道
-    //		public static final String CHANNEL = "tencent";// 渠道
-//		public static final String CHANNEL = "baidu";// 渠道
-//		public static final String CHANNEL = "PICTUREAIRCOM_HOME";// 渠道
-//		public static final String CHANNEL = "PICTUREAIRCOM_PHOTO";// 渠道
-
     // 友盟自定义事件, 目前所有的事件都是 ，计数事件。 (循环纪录)
     public static final String EVENT_ONCLICK_DOWNLOAD = "event_onclick_dwonload";// 点击下载
     public static final String EVENT_DOWNLOAD_FINISH = "event_dwonload_finish";// 下载成功
@@ -356,7 +309,6 @@ public class Common {
     public static final String EVENT_PHOTO_SLIDE = "event_photo_slide";// 图片总数
     public static final String EVENT_TOTAL_PICTURES = "event_total_pictures";// 图片总数
     public static final String EVENT_CONTAIN_PICTURE_PEOPLES = "event_contain_picture_peoples";
-
 
     public static final String EVENT_ONCLICK_SHARE_QQ = "event_onclick_share_qq";// 点击qq分享
     public static final String EVENT_SHARE_QQ_FINISH = "event_share_qq_finish";// qq分享成功
@@ -384,23 +336,6 @@ public class Common {
     public static final String EVENT_ONCLICK_EDIT_PHOTO = "event_onclick_edit_photo";// 点击编辑图片按钮,删除照片时候的按钮。
     public static final String EVENT_ONCLICK_DEL_PHOTO = "event_onclick_del_photo";// 具体删除照片的按钮。
 
-
-    // 友盟sharedPreferences
-
-    public static final String IS_HAVE_PIC = "IS_HAVE_PIC";// 是否包含图片
-    public static final String PICTURE_COUNT = "PICTURE_COUNT";// 用户图片总数（PhotoPass）
-
-    // 分享参数
-    public static final int PREVIEW_SHARE = 203;
-
-
-    // 保存设置。
-    public static final String SETTING_WIFI = "onlyWifi";
-    public static final String SETTING_SYNC = "sync";
-    public static final String SETTING_NOT_FIRST_BUY_ONE_PHOTO = "notFirstGoBuyOnePhoto";
-
-    public static final String SETTING_NOT_FIRST_PP10 = "notFirstpp10";
-
     // 纪录 MainTab 中 tab 的高度。
     public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
 
@@ -413,7 +348,5 @@ public class Common {
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
-
-    public static final int BOTTOM_BAR_HEIGHT = 65; // dp 单位
 
 }
