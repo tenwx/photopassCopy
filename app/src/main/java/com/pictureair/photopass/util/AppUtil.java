@@ -72,6 +72,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -1632,12 +1633,63 @@ public class AppUtil {
         paramContext.startActivity(intent);
     }
 
-    public static String getFormatPPCode(String originCode) {
-        if (TextUtils.isEmpty(originCode)) return "";
-        String formatRes = originCode.substring(0, 4);
-        for (int i = 0; i < 3; i++) {//4-7，8-11，12-15
-            formatRes += "-"+ originCode.substring(4 * i + 4, 4 * i + 8);
+    /**
+     * 提取目标结果
+     * 1.找到对应的点(ffd9)
+     * 2.找到后创建对应长度的数组
+     * 3.对应的点之后的数据直接加入
+     *
+     * @param b
+     * @return
+     */
+    public static byte[] getRealByte2(byte[] b) {
+        byte[] result = null;
+        String stmp;//当前字节
+        String lastStmp;//上一个字节
+
+        for (int n = 1; n < b.length; n++) {
+            lastStmp = Integer.toHexString(b[n - 1] & 0XFF);
+            if (lastStmp.equals("ff")) {
+                stmp = Integer.toHexString(b[n] & 0XFF);
+                if (stmp.equals("d9")) {//创建新的字节数组
+                    result = Arrays.copyOfRange(b, n + 1, b.length);
+                    break;
+                }
+            }
         }
-        return formatRes;
+        return result;
+    }
+
+    /**
+     * 提取目标结果
+     * 1.找到对应的点(ffd9)
+     * 2.找到后创建对应长度的数组
+     * 3.对应的点之后的数据直接加入
+     *
+     * @param b
+     * @return
+     */
+    public static byte[] getRealByte1(byte[] b) {
+        byte[] result = null;
+        String stmp;//当前字节
+        String lastStmp;//上一个字节
+        int tempIndex = -1;//ffd9的临界点
+
+        for (int n = 1; n < b.length; n++) {
+            if (tempIndex != -1) {//如果已经找到位置，直接添加
+                result[n - tempIndex - 1] = b[n];
+
+            } else {//需要判断目标位置
+                lastStmp = Integer.toHexString(b[n - 1] & 0XFF);
+                if (lastStmp.equals("ff")) {
+                    stmp = Integer.toHexString(b[n] & 0XFF);
+                    if (stmp.equals("d9")) {//创建新的字节数组
+                        tempIndex = n;
+                        result = new byte[b.length - n - 1];
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

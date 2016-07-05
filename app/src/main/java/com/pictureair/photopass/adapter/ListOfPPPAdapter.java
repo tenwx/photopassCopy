@@ -410,9 +410,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
 					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate.replace("-", "."));
 					holder.tv_pp_date3.setText(dpp.bindInfo.get(2).bindDate.replace("-", "."));
-					holder.tv_pp_num1.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(0).customerId));
-					holder.tv_pp_num2.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(1).customerId));
-					holder.tv_pp_num3.setText(AppUtil.getFormatPPCode(dpp.bindInfo.get(2).customerId));
+					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
+					holder.tv_pp_num2.setText(dpp.bindInfo.get(1).customerId);
+					holder.tv_pp_num3.setText(dpp.bindInfo.get(2).customerId);
 					break;
 
 				default:
