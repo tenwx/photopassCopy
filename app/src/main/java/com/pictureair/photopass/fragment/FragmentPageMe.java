@@ -58,16 +58,15 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private boolean isCodePic = false;//是否已经生成二维码
     private boolean isShowCodePic = false;//二维码是否已经放大
 
+    private boolean hasHidden = false;
+
     private DisplayImageOptions headOptions;
 
     private PullToZoomScrollViewEx scrollView;
-    private Context context;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, null);
-        this.context = container.getContext();
         scrollView = (PullToZoomScrollViewEx) view.findViewById(R.id.scroll_view);
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_head_view, null, false);
         View zoomView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_zoom_view, null, false);
@@ -149,8 +148,13 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        // 初始化数据
-        initData();
+        if (!hasHidden) {
+            PictureAirLog.out("truely resume----->me");
+            // 初始化数据
+            initData();
+        } else {
+            PictureAirLog.out("fake resume----->me");
+        }
     }
 
     /**
@@ -368,5 +372,12 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        hasHidden = hidden;
+        PictureAirLog.out("onHiddenChanged---->me" + hidden);
     }
 }

@@ -1023,10 +1023,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public void onResume() {
-        PictureAirLog.out(TAG + "  ==onResume");
+        super.onResume();
+        if (!isVisible()) {
+            return;
+        }
+        PictureAirLog.out(TAG + "truely onresume---->story");
         if (mIsAskStoragePermission) {
             mIsAskStoragePermission = false;
-            super.onResume();;
             return;
         }
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -1077,7 +1080,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 }
             }.start();
         }
-        super.onResume();
     }
 
     @Override
@@ -1087,6 +1089,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        context = null;
     }
 
 
@@ -1097,8 +1100,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-        context = null;
         fragmentPageStoryHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
     }
 
     /**
@@ -1792,17 +1799,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     private void download(ArrayList<PhotoInfo> arrayList) {
         if (arrayList.size() > 0) {
-            Intent intent = new Intent(getContext(),
-                    DownloadService.class);
+            Intent intent = new Intent(context, DownloadService.class);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("photos", arrayList);
             intent.putExtras(bundle);
-            getContext().startService(intent);
+            context.startService(intent);
         }
     }
 
     private void requesPermission() {
-        if (!AppUtil.checkPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        if (!AppUtil.checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             mIsAskStoragePermission = true;
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
             return;

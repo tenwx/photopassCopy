@@ -16,6 +16,7 @@ import com.pictureair.photopass.util.PictureAirLog;
  * @author bauer_bao
  */
 public class FragmentPageCamera extends BaseFragment {
+    private boolean hasHidden = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         DisneyVideoTool.getIsOneGoToDisneyVideoPage(getActivity());
@@ -30,11 +31,18 @@ public class FragmentPageCamera extends BaseFragment {
 
     public void onResume() {
         super.onResume();
-        PictureAirLog.out("FragmentPageCamera" + "  ==onResume");
+        if (!hasHidden) {
+            PictureAirLog.out("FragmentPageCamera" + "  ==onResume");
+        }
     }
 
     public void onPause() {
         super.onPause();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        hasHidden = hidden;
+    }
 }

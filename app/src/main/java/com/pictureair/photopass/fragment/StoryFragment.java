@@ -239,9 +239,7 @@ public class StoryFragment extends Fragment {
 	
 	@Override
 	public void onResume() {
-//		System.out.println("storyfragment---->onresume");
 		// TODO Auto-generated method stub
-		PictureAirLog.out(tab + "storyfragment------>"+ photoInfoArrayList.size());
 		super.onResume();
 		if (!EventBus.getDefault().isRegistered(this)) {
 			EventBus.getDefault().register(this);
@@ -250,7 +248,6 @@ public class StoryFragment extends Fragment {
 	
 	@Override
 	public void onDetach() {
-//		System.out.println("storyfragment---->ondetach");
 		// TODO Auto-generated method stub
 		super.onDetach();
 		if (EventBus.getDefault().isRegistered(this)) {
@@ -326,6 +323,5 @@ public class StoryFragment extends Fragment {
 			}
 		}
 	}
-
 
 }

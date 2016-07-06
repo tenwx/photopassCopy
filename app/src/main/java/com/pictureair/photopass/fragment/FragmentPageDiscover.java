@@ -2,7 +2,6 @@ package com.pictureair.photopass.fragment;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -80,7 +79,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private Thread locationThread;
     private DiscoverLocationItemInfo info;
     private CustomProgressDialog dialog;
-    private SharedPreferences sharedPreferences;
     private LocationUtil locationUtil;
 
     //申明变量
@@ -189,8 +187,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                                 Looper.prepare();
                                 isLoading = true;
                                 PictureAirLog.d(TAG, "location is ready");
-                                discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity().getApplicationContext(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
-                                discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
                                 fragmentPageDiscoverHandler.sendEmptyMessage(FINISH_LOADING);
                             }
                         }
@@ -202,10 +198,18 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
             //加载完毕之后
             case FINISH_LOADING:
+                if (discoverLocationAdapter == null) {
+                    PictureAirLog.out("discover adapter is null");
+                    discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity().getApplicationContext(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
+                    discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
+                    discoverListView.setAdapter(discoverLocationAdapter);
+                    discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
+                } else {
+                    PictureAirLog.out("discover adapter is not null");
+                    discoverLocationAdapter.notifyDataSetChanged();
+                }
                 discoverListView.setVisibility(View.VISIBLE);
                 noNetWorkOrNoCountView.setVisibility(View.GONE);
-                discoverListView.setAdapter(discoverLocationAdapter);
-                discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
@@ -220,7 +224,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 double lat_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLatitude() : 0;//获取当前app经纬度
                 double lng_b = (locationUtil.mapLocation != null) ? locationUtil.mapLocation.getLongitude() : 0;
                 double distance = Math.round(AppUtil.getDistance(lng_a, lat_a, lng_b, lat_b));
-//				double distance = Math.round((double) AppUtil.gps2m(lat_a, lng_a, lat_b, lng_b));
                 // 距离
                 item.distanceTextView.setText(AppUtil.getSmartDistance(distance, distanceFormat));
                 double d = AppUtil.gps2d(lat_a, lng_a, lat_b, lng_b);
@@ -318,11 +321,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         locationUtil = new LocationUtil(getActivity());
         app = (MyApplication) getActivity().getApplication();
         locationStart = true;
-        locationList = new ArrayList<DiscoverLocationItemInfo>();
-        favoriteList = new ArrayList<String>();
+        locationList = new ArrayList<>();
+        favoriteList = new ArrayList<>();
         distanceFormat = NumberFormat.getNumberInstance();
         distanceFormat.setMaximumFractionDigits(1);
-        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
 
         //获取数据
         dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
@@ -334,45 +336,72 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public void onStop() {
-        PictureAirLog.d(TAG, "stop============");
-        stopService();
+        if (isVisible()) {
+            PictureAirLog.d(TAG, "stop============");
+            stopService();
+        } else {
+            PictureAirLog.out("discover need not stop");
+        }
         super.onStop();
 
     }
 
     @Override
     public void onResume() {
-        PictureAirLog.out(TAG+ "  ==onResume");
-        if (mIsAskLocationPermission) {
-            mIsAskLocationPermission = false;
-            super.onResume();
-            return;
-        }
-        isLoading = false;
-        locationStart = true;
-        requesLocationPermission();
         super.onResume();
+        if (isVisible()) {
+            PictureAirLog.out(TAG+ " truly ==onResume--->discover");
+            if (mIsAskLocationPermission) {
+                mIsAskLocationPermission = false;
+                return;
+            }
+            isLoading = false;
+            locationStart = true;
+            requesLocationPermission();
+        }
     }
 
     @Override
     public void onPause() {
-        locationStart = false;
-//		if(dialog.isShowing()){
-//			diaPictureAirLog.dismiss();
-//		}
+        if (isVisible()) {
+            PictureAirLog.out("truly pause---->discover");
+            locationStart = false;
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
         PictureAirLog.d(TAG, "ondestroy===========");
-        locationStart = false;
-        isLoading = false;
         fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {//显示发现页面，需要获取location信息与当前的坐标
+            PictureAirLog.out("show discover---->");
+            //获取数据
+            isLoading = false;
+            locationStart = true;
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
+            PictureAirLog.out("start get lcoation info");
+            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
+            requesLocationPermission();
+
+        } else {//隐藏发现页面
+            PictureAirLog.out("hide discover---->");
+            locationStart = false;
+            isLoading = false;
+            stopService();
+
+        }
     }
 
     //顶部导航栏的点击事件类
@@ -513,7 +542,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 }
             }
         }
-
     }
 
     @Override

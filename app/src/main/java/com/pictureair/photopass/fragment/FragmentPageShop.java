@@ -68,12 +68,12 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     //申明实例类
     private List<GoodsInfo> allGoodsList;//全部商品
     private ShopGoodListViewAdapter shopGoodListViewAdapter;
-    private int i;
 
     //申明其他
     private SharedPreferences sharedPreferences;
     private PWToast newToast;
 
+    private boolean hasHidden = false;
 
     private final Handler fragmentPageShopHandler = new FragmentPageShopHandler(this);
 
@@ -102,7 +102,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_GOODS_SUCCESS://成功获取商品
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 if (refreshLayout.isRefreshing()) {
                     refreshLayout.setRefreshing(false);
                 }
@@ -131,13 +133,17 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 if (refreshLayout.isRefreshing()) {
                     refreshLayout.setRefreshing(false);
                 }
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 showNetWorkView();
                 break;
 
             case API1.GET_OUTLET_ID_SUCCESS:
                 //获取自提地址成功
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
                 if (addressJson != null && addressJson.getOutlets().size() > 0) {
                     //存入缓存
@@ -149,7 +155,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
             case API1.GET_OUTLET_ID_FAILED:
                 //获取自提地址失败
-                customProgressDialog.dismiss();
+                if (customProgressDialog.isShowing()) {
+                    customProgressDialog.dismiss();
+                }
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
@@ -159,7 +167,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     return;
                 }
                 PictureAirLog.v(TAG, "onclick with reload");
-                customProgressDialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+                if (!customProgressDialog.isShowing()) {
+                    customProgressDialog.show();
+                }
                 //重新加载数据
                 initData(true);
                 break;
@@ -192,7 +202,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             cartCountTextView.setText(cartCount + "");
         }
         allGoodsList = new ArrayList<>();//初始化商品列表
-        customProgressDialog = CustomProgressDialog.show(getActivity(), getActivity().getString(R.string.is_loading), false, null);
+        customProgressDialog = CustomProgressDialog.create(getActivity(), getActivity().getString(R.string.is_loading), false, null);
+        customProgressDialog.show();
         PictureAirLog.out("currency---->" + currency);
         shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
         xListView.setAdapter(shopGoodListViewAdapter);
@@ -270,7 +281,9 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
      */
     public void showNetWorkView() {
         refreshLayout.setVisibility(View.GONE);
-        customProgressDialog.dismiss();
+        if (customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
         noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
         noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageShopHandler, true);
     }
@@ -295,12 +308,18 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
-        if (cartCount > 0) {
-            cartCountTextView.setVisibility(View.VISIBLE);
-            cartCountTextView.setText(cartCount + "");
+        if (!hasHidden) {
+            PictureAirLog.out("truely resume----->shop");
+            cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
+            if (cartCount > 0) {
+                cartCountTextView.setVisibility(View.VISIBLE);
+                cartCountTextView.setText(cartCount + "");
+            } else {
+                cartCountTextView.setVisibility(View.INVISIBLE);
+            }
+
         } else {
-            cartCountTextView.setVisibility(View.INVISIBLE);
+            PictureAirLog.out("fake resume----->shop");
         }
     }
 
@@ -320,10 +339,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
         private SwipeRefreshLayout mSwipeView;
         private AbsListView.OnScrollListener mOnScrollListener;
-
-        public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView) {
-            mSwipeView = swipeView;
-        }
 
         public SwipeListViewOnScrollListener(SwipeRefreshLayout swipeView,
                                              AbsListView.OnScrollListener onScrollListener) {
@@ -350,5 +365,11 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 mOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
             }
         }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        hasHidden = hidden;
     }
 }
