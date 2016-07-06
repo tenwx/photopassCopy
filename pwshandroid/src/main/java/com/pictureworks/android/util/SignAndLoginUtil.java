@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.R;
 import com.pictureworks.android.entity.CartItemInfoJson;
 import com.pictureworks.android.widget.CustomProgressDialog;

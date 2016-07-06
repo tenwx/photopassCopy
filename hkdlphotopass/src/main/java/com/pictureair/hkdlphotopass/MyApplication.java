@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.BuildConfig;
 import com.pictureworks.android.util.AESKeyHelper;
 import com.pictureworks.android.util.Common;

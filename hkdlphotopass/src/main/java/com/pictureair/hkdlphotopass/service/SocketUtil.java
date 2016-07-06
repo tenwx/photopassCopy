@@ -14,7 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
 import com.pictureair.hkdlphotopass.activity.MainTabActivity;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.eventbus.AsyncPayResultEvent;
 import com.pictureworks.android.eventbus.RedPointControlEvent;

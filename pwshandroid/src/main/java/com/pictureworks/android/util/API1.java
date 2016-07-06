@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.entity.CartItemInfo;
 import com.pictureworks.android.entity.OrderInfo;
 import com.pictureworks.android.entity.PPPinfo;

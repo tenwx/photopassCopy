@@ -17,7 +17,7 @@ import com.pictureworks.android.widget.CustomProgressDialog;
 import com.pictureworks.android.widget.CustomWebView;
 import com.pictureworks.android.widget.MyToast;
 import com.pictureworks.android.widget.NoNetWorkOrNoCountView;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 
 import java.lang.ref.WeakReference;
 

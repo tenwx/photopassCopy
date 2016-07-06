@@ -30,7 +30,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.adapter.ViewPhotoGridViewAdapter;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.entity.GoodsInfo;

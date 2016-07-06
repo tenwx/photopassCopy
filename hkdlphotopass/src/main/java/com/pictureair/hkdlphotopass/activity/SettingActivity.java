@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.customDialog.CustomDialog;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.util.AppExitUtil;

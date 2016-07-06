@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.R;
 import com.pictureworks.android.customDialog.CustomDialog;
 import com.pictureworks.android.db.PictureAirDbManager;

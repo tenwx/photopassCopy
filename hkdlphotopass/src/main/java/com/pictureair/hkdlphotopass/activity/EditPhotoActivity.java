@@ -36,7 +36,7 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.adapter.EditActivityAdapter;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.editPhoto.BitmapUtils;

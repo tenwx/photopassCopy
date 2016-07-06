@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.entity.FileInfo;
 import com.pictureworks.android.entity.ThreadInfo;

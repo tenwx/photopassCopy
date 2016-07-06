@@ -62,7 +62,7 @@ import com.pictureworks.android.util.UmengUtil;
 import com.pictureworks.android.widget.CustomProgressDialog;
 import com.pictureworks.android.widget.MyToast;
 import com.pictureworks.android.widget.SharePop;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 
 import java.io.File;
 import java.text.ParseException;

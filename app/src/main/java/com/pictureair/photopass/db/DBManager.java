@@ -1,7 +1,7 @@
 package com.pictureair.photopass.db;
 
 
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.util.Common;
 
 import net.sqlcipher.database.SQLiteDatabase;

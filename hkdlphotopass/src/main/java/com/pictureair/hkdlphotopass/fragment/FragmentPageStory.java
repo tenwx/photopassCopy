@@ -28,7 +28,7 @@ import com.pictureair.hkdlphotopass.activity.MipCaptureActivity;
 import com.pictureair.hkdlphotopass.activity.MyPPPActivity;
 import com.pictureair.hkdlphotopass.service.DownloadService;
 import com.pictureair.hkdlphotopass.service.SocketUtil;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.adapter.FragmentAdapter;
 import com.pictureworks.android.customDialog.CustomDialog;
 import com.pictureworks.android.db.PictureAirDbManager;

@@ -1,4 +1,4 @@
-package com.pictureair.jni.keygenerator;
+package com.pictureair.jni.ciphermanager;
 
 /**
  * Created by bauer_bao on 16/3/31.

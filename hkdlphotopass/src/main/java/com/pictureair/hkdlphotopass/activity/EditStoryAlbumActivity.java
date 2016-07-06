@@ -21,7 +21,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.hkdlphotopass.MyApplication;
 import com.pictureair.hkdlphotopass.R;
 import com.pictureair.hkdlphotopass.adapter.EditStoryPinnedListViewAdapter;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.entity.DiscoverLocationItemInfo;
 import com.pictureworks.android.entity.PhotoInfo;

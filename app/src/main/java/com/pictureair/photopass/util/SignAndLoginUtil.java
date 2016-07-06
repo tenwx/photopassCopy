@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
 import com.pictureair.photopass.widget.PWToast;

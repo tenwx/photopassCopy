@@ -1,4 +1,4 @@
-package com.pictureair.jni.keygenerator;
+package com.pictureair.jni.ciphermanager;
 
 /**
  * Created by bauer_bao on 16/3/31.
@@ -6,7 +6,7 @@ package com.pictureair.jni.keygenerator;
 public class PWJniUtil {
 
     static {
-        System.loadLibrary("PWJniUtil");
+        System.loadLibrary("pw_cipher_manager");
     }
 
     public native static String getAESKey(String appType);

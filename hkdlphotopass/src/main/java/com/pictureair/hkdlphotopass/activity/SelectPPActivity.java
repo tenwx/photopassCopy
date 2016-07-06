@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.hkdlphotopass.R;
 import com.pictureair.hkdlphotopass.adapter.ListOfPPAdapter;
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.entity.BindPPInfo;
 import com.pictureworks.android.entity.PPPinfo;

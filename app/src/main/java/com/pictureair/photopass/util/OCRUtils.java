@@ -4,7 +4,7 @@ package com.pictureair.photopass.util;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 
 /**
  * Created by talon on 16/1/10.

@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 
-import com.pictureair.jni.keygenerator.PWJniUtil;
+import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureworks.android.R;
 import com.pictureworks.android.db.PictureAirDbManager;
 import com.pictureworks.android.entity.BaseCheckUpdate;
