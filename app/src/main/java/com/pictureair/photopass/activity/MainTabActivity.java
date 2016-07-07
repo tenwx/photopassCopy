@@ -77,6 +77,8 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     //上次的tab页面，用来判断点击视频之后回到那个tab
     private int last_tab = 0;
 
+    private boolean hasCreated = false;
+
     private MyApplication application;
     private SharedPreferences sharedPreferences;
     private CheckUpdateManager checkUpdateManager;
@@ -109,6 +111,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         setContentView(R.layout.activity_main);
         application = (MyApplication) getApplication();
         handler = new Handler(this);
+        hasCreated = true;
         initView();
         setTabSelection(0);
     }
@@ -194,6 +197,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         PictureAirLog.out("maintab ==== resume");
         Intent intent1 = new Intent(this, com.pictureair.photopass.service.NotificationService.class);
         this.startService(intent1);
+        if (hasCreated) {
+            hasCreated = false;
+            return;
+        }
         if (application.getMainTabIndex() == 3) {
             PictureAirLog.out("skip to shop tab");
             setTabSelection(3);
@@ -304,6 +311,10 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      */
     private void removeFragment(){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        fragmentPageStory = (FragmentPageStory) fragmentManager.findFragmentByTag("tag1");
+        fragmentPageDiscover = (FragmentPageDiscover) fragmentManager.findFragmentByTag("tag2");
+        fragmentPageShop = (FragmentPageShop) fragmentManager.findFragmentByTag("tag4");
+        fragmentPageMe = (FragmentPageMe) fragmentManager.findFragmentByTag("tag5");
         if (fragmentPageStory != null) {
             transaction.remove(fragmentPageStory);
             fragmentPageStory = null;
@@ -346,7 +357,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 if (fragmentPageStory == null) {
                     // 如果MessageFragment为空，则创建一个并添加到界面上
                     fragmentPageStory = new FragmentPageStory();
-                    transaction.add(R.id.main_content, fragmentPageStory);
+                    transaction.add(R.id.main_content, fragmentPageStory, "tag1");
                 } else {
                     // 如果MessageFragment不为空，则直接将它显示出来
                     transaction.show(fragmentPageStory);
@@ -360,7 +371,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 if (fragmentPageDiscover == null) {
                     // 如果ContactsFragment为空，则创建一个并添加到界面上
                     fragmentPageDiscover = new FragmentPageDiscover();
-                    transaction.add(R.id.main_content, fragmentPageDiscover);
+                    transaction.add(R.id.main_content, fragmentPageDiscover, "tag2");
                 } else {
                     // 如果ContactsFragment不为空，则直接将它显示出来
                     transaction.show(fragmentPageDiscover);
@@ -374,7 +385,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 if (fragmentPageShop == null) {
                     // 如果NewsFragment为空，则创建一个并添加到界面上
                     fragmentPageShop = new FragmentPageShop();
-                    transaction.add(R.id.main_content, fragmentPageShop);
+                    transaction.add(R.id.main_content, fragmentPageShop, "tag4");
                 } else {
                     // 如果NewsFragment不为空，则直接将它显示出来
                     transaction.show(fragmentPageShop);
@@ -388,7 +399,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 if (fragmentPageMe == null) {
                     // 如果SettingFragment为空，则创建一个并添加到界面上
                     fragmentPageMe = new FragmentPageMe();
-                    transaction.add(R.id.main_content, fragmentPageMe);
+                    transaction.add(R.id.main_content, fragmentPageMe, "tag5");
                 } else {
                     // 如果SettingFragment不为空，则直接将它显示出来
                     transaction.show(fragmentPageMe);
@@ -399,6 +410,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
                 break;
         }
         transaction.commitAllowingStateLoss();
+        PictureAirLog.out("maintab---->commit");
     }
 
     /**
@@ -459,6 +471,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
      * @param transaction 用于对Fragment执行操作的事务
      */
     private void hideFragments(FragmentTransaction transaction) {
+        fragmentPageStory = (FragmentPageStory) fragmentManager.findFragmentByTag("tag1");
+        fragmentPageDiscover = (FragmentPageDiscover) fragmentManager.findFragmentByTag("tag2");
+        fragmentPageShop = (FragmentPageShop) fragmentManager.findFragmentByTag("tag4");
+        fragmentPageMe = (FragmentPageMe) fragmentManager.findFragmentByTag("tag5");
+
         if (fragmentPageStory != null) {
             transaction.hide(fragmentPageStory);
         }

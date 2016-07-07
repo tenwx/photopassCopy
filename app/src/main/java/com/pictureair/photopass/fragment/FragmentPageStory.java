@@ -98,6 +98,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private static final int SYNC_BOUGHT_PHOTOS = 1001;
     private static final int SYNC_BOUGHT_PHOTOS_DEAL_DATA_DONE = 1002;
     private static final int LOAD_PHOTO_FROM_DB = 1003;
+    private static final int GET_REFRESH_DATA_DONE = 1004;
 
     private static final String TAG = "FragmentPageStory";
     private String[] titleStrings;
@@ -119,6 +120,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private boolean scanMagicPhotoNeedCallBack;//记录是否需要重新扫描本地照片
     private boolean noPhotoViewStateRefresh = false;//无图的时候进行的刷新
     private int ppPhotoCount;
+    private boolean hasHidden = false;
 
     //申明控件
     private ImageView scanIv;
@@ -390,6 +392,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 EventBus.getDefault().post(new StoryFragmentEvent(favouritePhotoList, targetMagicPhotoList, 4));
                 break;
 
+            case GET_REFRESH_DATA_DONE://处理刷新数据成功
+                PictureAirLog.out("start sortdata");
+                sortData(false);
+                break;
+
             case SORT_COMPLETED_REFRESH:
                 //刷新广告地点
                 app.setGetADLocationSuccess(false);
@@ -614,8 +621,15 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             getVideoInfoDone = false;
             if (refreshDataCount > 0 || refreshVideoDataCount > 0) {
                 PictureAirLog.out("getrefreshdata");
-                getrefreshdata();
-                sortData(false);
+                new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        getrefreshdata();
+
+                        fragmentPageStoryHandler.sendEmptyMessage(GET_REFRESH_DATA_DONE);
+                    }
+                }.start();
 
             } else {
                 PictureAirLog.out("nomore");
@@ -715,7 +729,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        PictureAirLog.out("on create----->");
+        PictureAirLog.out("on create----->story");
         isOnCreate = true;
         View view = inflater.inflate(R.layout.fragment_story, null);
         titleStrings = new String[] {getActivity().getResources().getString(R.string.story_tab_all),
@@ -1024,7 +1038,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void onResume() {
         super.onResume();
-        if (!isVisible()) {
+        if (hasHidden) {
+            PictureAirLog.out("bu ke jian");
             return;
         }
         PictureAirLog.out(TAG + "truely onresume---->story");
@@ -1106,6 +1121,8 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        hasHidden = hidden;
+        PictureAirLog.out("hidden--->" + hidden);
     }
 
     /**
