@@ -284,7 +284,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
                 case 2:
                     PictureAirLog.out("camera tab on click");
-                    Common.TAB_HEIGHT = mTabHost.getHeight();
                     mTabHost.setCurrentTab(2);
                     application.setIsStoryTab(false);
                     break;

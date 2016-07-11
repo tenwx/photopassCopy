@@ -273,7 +273,7 @@ public class API1 {
                 try {
                     SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
                     Editor e = sp.edit();
-                    e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
+                    e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(jsonObject.getString(Common.USERINFO_TOKENID), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
                     e.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();

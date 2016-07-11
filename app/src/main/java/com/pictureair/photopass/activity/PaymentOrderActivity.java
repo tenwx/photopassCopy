@@ -492,7 +492,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
      */
     private void pay(String orderId) {
         // TODO Auto-generated method stub
-        payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
+        payUtils = new PayUtils(this, paymentOrderHandler, orderId, nameString, introductString, priceString, PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
         if (0 == payType) {// 支付宝支付方式
             try {
                 payUtils.aliPay();

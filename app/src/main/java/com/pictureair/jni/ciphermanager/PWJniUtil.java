@@ -9,7 +9,7 @@ public class PWJniUtil {
         System.loadLibrary("pw_cipher_manager");
     }
 
-    public native static String getAESKey(String appType);
+    public native static String getAESKey(String appType, int a);
 
     public native static String getAPPKey(String appType);
 

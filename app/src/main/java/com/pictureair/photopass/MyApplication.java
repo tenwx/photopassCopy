@@ -109,7 +109,7 @@ public class MyApplication extends Application {
      */
     public static String getTokenId() {
         if (tokenId == null) {
-            tokenId = AESKeyHelper.decryptString(userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
+            tokenId = AESKeyHelper.decryptString(userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
         }
         return tokenId;
     }

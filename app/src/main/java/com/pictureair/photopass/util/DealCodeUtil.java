@@ -238,13 +238,13 @@ public class DealCodeUtil {
 	 */
 	public void startDealCode(final String code){
 		this.code = code;
-		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)), handler2);
+		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler2);
 	}
 
 	private void getInfo(String code, final String type){
 		RequestParams params = new RequestParams();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
-		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
+		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
 		String urlString;
 		if ("pp".equals(type)) {
 			PictureAirLog.out("pp");

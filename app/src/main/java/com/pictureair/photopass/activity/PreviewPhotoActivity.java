@@ -565,7 +565,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case LOAD_FROM_LOCAL:
                 byte[] arg2 = null;
                 try {
-                    arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
+                    arg2 = AESKeyHelper.decrypt(dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -952,7 +952,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void loadPhotoPassPhoto(PhotoInfo loadPhotoInfo, boolean isOnCreate) {
         // TODO Auto-generated method stub
         loadPhotoSuccess = false;
-        dirFile = new File(getApplicationContext().getCacheDir() + "/" + loadPhotoInfo.photoId);//创建一个以ID为名字的文件，放入到app缓存文件下
+        dirFile = new File(getApplicationContext().getCacheDir() + "/" + loadPhotoInfo.photoId + Common.OFFSET);//创建一个以ID为名字的文件，放入到app缓存文件下
+
         PictureAirLog.v(TAG, dirFile.toString());
         PictureAirLog.v(TAG, "photo URL ------->" + loadPhotoInfo.photoThumbnail_1024);
         if (dirFile.exists()) {//如果文件存在
@@ -979,7 +980,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 public void onSuccess(byte[] binaryData) {
                     super.onSuccess(binaryData);
                     try {
-                        AESKeyHelper.encrypt(binaryData, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP));
+                        AESKeyHelper.encrypt(binaryData, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

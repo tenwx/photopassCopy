@@ -262,7 +262,6 @@ public class Common {
     public static final String AD_LOCATION = "ad_location";
     public static final String THREAD_INFO = "thread_info";
 
-
     //相册名称字段
     public static final String ALBUM_MAGIC = "Magic";
 
@@ -336,9 +335,6 @@ public class Common {
     public static final String EVENT_ONCLICK_EDIT_PHOTO = "event_onclick_edit_photo";// 点击编辑图片按钮,删除照片时候的按钮。
     public static final String EVENT_ONCLICK_DEL_PHOTO = "event_onclick_del_photo";// 具体删除照片的按钮。
 
-    // 纪录 MainTab 中 tab 的高度。
-    public static int TAB_HEIGHT = 116; //默认116，vivo手机上是这么多。 在MainTab中跳转 Camera时 会有重新赋值。
-
     //保存设置中的字段  start
     public static final String SETTING_ONLY_WIFI = "onlyWifi";  // 仅wifi的下载模式， 如果存在，是
     public static final String SETTING_AUTO_UPDATE = "autoUpdate"; // 自动更新，如果字段存在，是
@@ -348,5 +344,6 @@ public class Common {
     public static final String SETTING_FIRST_PP10 = "firstpp10"; // 是否第一次，AirPass中的照片到达十张，就提示购买 AirPass。
     public static final int CART_HEIGHT = 158;
     public static final int CART_WIDTH = 174;
+    public static final int OFFSET = 1;
 
 }

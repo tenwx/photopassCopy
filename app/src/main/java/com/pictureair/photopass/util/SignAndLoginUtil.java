@@ -75,7 +75,7 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.GET_TOKEN_ID_SUCCESS://获取tokenId成功
                 PictureAirLog.out("start sign or login");
                 if (isSign) {
-                    API1.Register(account, pwd, AESKeyHelper.decryptString(sp.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)), handler);
+                    API1.Register(account, pwd, AESKeyHelper.decryptString(sp.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler);
                 } else {
                     API1.Login(context, account, pwd, handler);
                 }
@@ -120,7 +120,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 }
 
                 if (needModifyInfo) {//需要修改个人信息
-                    API1.updateProfile(AESKeyHelper.decryptString(sp.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)),
+                    API1.updateProfile(AESKeyHelper.decryptString(sp.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)),
                             name, birthday, gender, country, "", API1.UPDATE_PROFILE_ALL, handler);
                 } else {
                     handler.sendEmptyMessage(API1.UPDATE_PROFILE_SUCCESS);

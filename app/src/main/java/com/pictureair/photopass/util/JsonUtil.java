@@ -242,7 +242,7 @@ public class JsonUtil {
     public static void getUserInfo(final Context context, JSONObject object, String account, Handler handler) throws JSONException {
         SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
-        e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(object.getString("tokenId"), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP)));
+        e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(object.getString("tokenId"), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
         PictureAirLog.out("get user info---->" + object.toString());
         JSONObject obj = object.getJSONObject("user");
         if (obj.containsKey("_id")) {

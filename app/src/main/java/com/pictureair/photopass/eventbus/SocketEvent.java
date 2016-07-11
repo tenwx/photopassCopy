@@ -1,7 +1,5 @@
 package com.pictureair.photopass.eventbus;
 
-import com.pictureair.photopass.eventbus.BaseBusEvent;
-
 /**
  * Created by bauer_bao on 16/1/6.
  */
@@ -39,6 +37,15 @@ public class SocketEvent implements BaseBusEvent {
      */
     private String photoId;
 
+    /**
+     * 处理删除/升级  图片/PP 的推送时间
+     * 目前所有的参数，都没有用到
+     * @param receiveSocket
+     * @param type
+     * @param customerId
+     * @param shootDate
+     * @param photoId
+     */
     public SocketEvent(boolean receiveSocket, int type, String customerId, String shootDate, String photoId) {
         this.receiveSocket = receiveSocket;
         this.type = type;
