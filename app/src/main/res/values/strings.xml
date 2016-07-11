@@ -34,7 +34,7 @@
     <string name="terms">补充条款及细则</string>
     <string name="policy">隐私政策</string>
     <string name="terms_of_use">使用条款</string>
-    <string name="terms_and_policy"><a href = "5">使用条款</a>和\n<a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
+    <string name="terms_and_policy"><a href="5">使用条款</a>和\n<a href="2">补充条款及细则</a>和\n<a href="1">隐私政策</a> </string>
     <!-- email register end-->
 
     <!-- select country start-->
@@ -178,6 +178,7 @@
     <string name="mypage_help">帮助</string>
     <string name="mypage_setting">设置</string>
     <string name="mypage_about">关于</string>
+    <string name="mypage_download">下载管理</string>
     <string name="mypage_opinions">联系我们</string>
     <string name="code_tips">请向迪士尼乐拍通摄影师出示此二维码关联您的照片，即可轻松预览照片。</string>
     <!-- me end -->
@@ -520,7 +521,7 @@
     <string name="smssdk_pwd_forget">请输入新密码</string>
     <string name="smssdk_send_verification_code">发送验证码</string>
     <string name="smssdk_other_sign_up">电子邮箱账户注册</string>
-    <string name="smssdk_explain_briefly">我已阅读并同意接受<a href = "5">使用条款</a>、<a href="2">补充条款及细则</a>以及<a href="1">隐私政策</a>。</string>
+    <string name="smssdk_explain_briefly">我已阅读并同意接受<a href="5">使用条款</a>、<a href="2">补充条款及细则</a>以及<a href="1">隐私政策</a>。</string>
     <string name="please_agree">请确认同意使用条款、补充条款及细则和隐私政策</string>
     <string name="smssdk_next">下一步</string>
     <string name="smssdk_cancel">取消</string>
@@ -544,5 +545,14 @@
     <!-- permission request start -->
     <string name="permission_storage_message">请先在设置中打开读写手机存储权限</string>
     <string name="permission_read_phone_state_message">请先在设置中打开设备信息权限</string>
+    <string name="title_activity_load_manage">LoadManageActivity</string>
     <!-- permission request end -->
+
+    <!-- photo download manage start -->
+    <string name="photo_download_success">"已下载"</string>
+    <string name="photo_downloading">"正在下载"</string>
+    <string name="photo_download_waiting">"等待中"</string>
+    <string name="photo_download_loading">"进行中"</string>
+    <string name="photo_download_failed">"失败"</string>
+    <!--photo download manage start-->
 </resources>

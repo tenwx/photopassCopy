@@ -261,6 +261,7 @@ public class Common {
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
     public static final String AD_LOCATION = "ad_location";
     public static final String THREAD_INFO = "thread_info";
+    public static final String PHOTOS_LOAD = "photo_load";
 
 
     //相册名称字段

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -32,6 +33,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 下载网络图片服务类
@@ -40,6 +47,8 @@ import java.util.ArrayList;
 public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
     private ArrayList<PhotoInfo> downloadList = new ArrayList<PhotoInfo>();
+    private Map<String,PhotoInfo> taskList = new HashMap<>();
+    private int currentIndex = 0;
     private int downed_num = 0;//实际下载照片数
     private int exist_num = 0 , scan_num = 0;//无需下载的照片数,扫描成功的照片数
     private int failed_num = 0;//下载失败的照片数
@@ -55,10 +64,11 @@ public class DownloadService extends Service {
     private String photoId;// 图片的photoId
     private String lastDownLoadUrl = "";
     private PWToast myToast;
+    private PhotoBind photoBind = new PhotoBind();
 
     @Override
     public IBinder onBind(Intent arg0) {
-        return null;
+        return photoBind;
     }
 
     @Override
@@ -87,9 +97,23 @@ public class DownloadService extends Service {
                     downloadList.add(photos.get(i));
                     PictureAirLog.out("downloadlist size =" + downloadList.size());
                 }
-                if (!isDownloading) {//如果当前不在下载
-                    prepareDownload();
-                    isDownloading = true;
+//                if (!isDownloading) {//如果当前不在下载
+//                    prepareDownload();
+//                    isDownloading = true;
+//                }
+                if (downloadList.size() > 0 && downloadList.size() < 3){
+                    for (int i=0; i < downloadList.size();i++){
+                        PictureAirLog.out("start download----------------->");
+                        PhotoInfo info = downloadList.get(i);
+                        taskList.put(info.photoPathOrURL,info);
+                        photoId = downloadList.get(i).photoId;
+                        downLoad(downloadList.get(0).photoPathOrURL, downloadList.get(0).photoId, downloadList.get(0).isVideo);
+                    }
+                }else if(downloadList.size() >= 3){
+
+                }else{
+                    PictureAirLog.out("finish download-------------->");
+                    handler.sendEmptyMessage(FINISH_DOWNLOAD);
                 }
             } else {
                 stopSelf();//下载服务停止
@@ -122,6 +146,7 @@ public class DownloadService extends Service {
                         PictureAirLog.out("start download----------------->");
                         photoId = downloadList.get(0).photoId;
                         downLoad(downloadList.get(0).photoPathOrURL, downloadList.get(0).photoId, downloadList.get(0).isVideo);
+
                     } else {//说明列表已经全部下载完,要对完成的结果进行处理
                         PictureAirLog.out("finish download-------------->");
                         handler.sendEmptyMessage(FINISH_DOWNLOAD);
@@ -297,6 +322,12 @@ public class DownloadService extends Service {
         // TODO Auto-generated method stub
         PictureAirLog.out("downloadService-----------> ondestroy");
         super.onDestroy();
+    }
+
+    public class PhotoBind extends Binder{
+        public DownloadService getService(){
+            return DownloadService.this;
+        }
     }
 
 }

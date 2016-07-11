@@ -178,6 +178,7 @@
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
+    <string name="mypage_download">DownLoad Manage</string>
     <string name="mypage_opinions">Contact Us</string>
     <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
@@ -545,4 +546,12 @@
     <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
     <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
     <!-- permission request end -->
+
+    <!-- photo download manage start -->
+    <string name="photo_download_success">"Already Download"</string>
+    <string name="photo_downloading">"Downloading"</string>
+    <string name="photo_download_waiting">"Waiting"</string>
+    <string name="photo_download_loading">"Loading"</string>
+    <string name="photo_download_failed">"Fail"</string>
+    <!--photo download manage start-->
 </resources>

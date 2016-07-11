@@ -35,7 +35,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     private RelativeLayout feedback;
     //    private ImageView back;
     private Button logout;
-    private TextView tvSettingLanguage;
+    private TextView tvSettingLanguage,tvAbout;
     private MyApplication application;
     private ImageView backBtn;
 
@@ -120,6 +120,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         feedback = (RelativeLayout) findViewById(R.id.sub_opinions);
         backBtn = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
+        tvAbout = (TextView) findViewById(R.id.setting_about);
         application = (MyApplication) getApplication();
 
         ibGprWifiDownload = (ImageButton) findViewById(R.id.ib_gprs_wifi_download);
@@ -131,6 +132,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         rlAutoUpdate = (RelativeLayout) findViewById(R.id.rl_auto_update);
         logout.setTypeface(MyApplication.getInstance().getFontBold());
         tvSettingLanguage.setTypeface(MyApplication.getInstance().getFontBold());
+        tvAbout.setTypeface(MyApplication.getInstance().getFontBold());
         ((TextView) findViewById(R.id.tv_feedback)).setTypeface(MyApplication.getInstance().getFontBold());
         ((TextView) findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
         ((TextView) findViewById(R.id.tv_update_photo)).setTypeface(MyApplication.getInstance().getFontBold());
@@ -139,6 +141,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         feedback.setOnClickListener(this);
         backBtn.setOnClickListener(this);
         tvSettingLanguage.setOnClickListener(this);
+        tvAbout.setOnClickListener(this);
         rlGprsWifiDoenload.setOnClickListener(this);
         rlWifiOnlyDownload.setOnClickListener(this);
         rlAutoUpdate.setOnClickListener(this);
@@ -257,6 +260,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                         }
                     });
                 }
+                break;
+            case R.id.setting_about:
+                Intent i = new Intent(MyApplication.getInstance(),AboutActivity.class);
+                startActivity(i);
                 break;
             default:
                 break;

@@ -22,6 +22,25 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
     private final String SQL_CREATE_TABLE_THREAD = "create table if not exists " + Common.THREAD_INFO + "(_id integer primary key autoincrement," +
             "thread_id integer,url text,start integer,end integer,finished integer)";
 
+    /**
+     *  _id
+     *  userId      用户id
+     *  image BLOB  缩略图
+     *  photoname   图片名
+     *  size        图片大小
+     *  date        下载日期
+     *  time        下载时间
+     * */
+    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD +
+                                                            "(_id integer primary key autoincrement," +
+                                                            "userId text," +
+                                                            "photoId text," +
+                                                            "photoName text," +
+                                                            "url text," +
+                                                            "size text," +
+                                                            "date text," +
+                                                            "time text)";
+
 
     public PictureAirDBHelper(Context context) {
         this(context, Common.PHOTOPASS_INFO_NAME);
@@ -231,6 +250,11 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
          * 线程表
          */
         db.execSQL(SQL_CREATE_TABLE_THREAD);
+
+        /**
+         * 已下载图片表
+         * */
+        db.execSQL(SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_);
 
     }
 
