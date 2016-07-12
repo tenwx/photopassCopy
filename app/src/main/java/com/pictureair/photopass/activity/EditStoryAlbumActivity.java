@@ -24,6 +24,7 @@ import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -35,11 +36,7 @@ import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -49,7 +46,7 @@ import java.util.Iterator;
  */
 public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
 	private ImageView backRelativeLayout;
-	private TextView deleteTextView, titleTextView, editTextView;
+	private TextView selectAllTextView, disAllTextView, downloadTextView, deleteTextView, titleTextView, editTextView;
 	private LinearLayout editBarLinearLayout;
 	private GridView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
@@ -57,7 +54,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private TextView noCountTextView;
 
 	private ArrayList<PhotoInfo> albumArrayList;
-	private ArrayList<PhotoInfo> localPhotoArrayList = new ArrayList<>();
 	private ArrayList<PhotoInfo> originalAlbumArrayList;
 	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
 	private ArrayList<PhotoInfo> localPhotoslist = new ArrayList<>();//选择的本地图片的list
@@ -68,6 +64,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private final static int DELETE_LOCAL_PHOTOS_DONE = 15;
 	private int tabIndex = 0;
 	private int selectCount = 0;
+	private int dialogId;
 	private PWToast myToast;
 	private CustomProgressDialog customProgressDialog;
 	private PictureAirDbManager pictureAirDbManager;
@@ -76,7 +73,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private boolean deleteNetPhotoDone = false;
 	private boolean netWorkFailed = false;
 	private String ppCode;
-	private SimpleDateFormat simpleDateFormat;
 	private SharedPreferences sharedPreferences;
 	private PictureWorksDialog pictureWorksDialog;
 
@@ -113,8 +109,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							default:
 								break;
 						}
-					} else {//有数据
-						editBarLinearLayout.setVisibility(View.VISIBLE);
 					}
 					editStoryPinnedListViewAdapter.notifyDataSetChanged();
 					break;
@@ -168,39 +162,55 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					break;
 
 				case DialogInterface.BUTTON_POSITIVE://对话框点击确认按钮
-					UmengUtil.onEvent(EditStoryAlbumActivity.this,Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
-					if (!customProgressDialog.isShowing()){
-						customProgressDialog.show();
-					}
-					new Thread() {
-						public void run() {
-							photopassPhotoslist.clear();
-							localPhotoslist.clear();
-							deleteLocalPhotoDone = false;
-							deleteNetPhotoDone = false;
-							for (int i = 0; i < albumArrayList.size(); i++) {
-								if (albumArrayList.get(i).isSelected == 1) {//选中的照片
-									if (albumArrayList.get(i).onLine == 1) {//网络照片
-										photopassPhotoslist.add(albumArrayList.get(i));
-									} else {
-										localPhotoslist.add(albumArrayList.get(i));
+					if (dialogId == 101) {
+						UmengUtil.onEvent(EditStoryAlbumActivity.this,Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
+						if (!customProgressDialog.isShowing()){
+							customProgressDialog.show();
+						}
+						new Thread() {
+							public void run() {
+								photopassPhotoslist.clear();
+								localPhotoslist.clear();
+								deleteLocalPhotoDone = false;
+								deleteNetPhotoDone = false;
+								for (int i = 0; i < albumArrayList.size(); i++) {
+									if (albumArrayList.get(i).isSelected == 1) {//选中的照片
+										if (albumArrayList.get(i).onLine == 1) {//网络照片
+											photopassPhotoslist.add(albumArrayList.get(i));
+										} else {
+											localPhotoslist.add(albumArrayList.get(i));
+										}
 									}
 								}
-							}
 
-							if (photopassPhotoslist.size() > 0) {
-								editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
-							} else {
-								deleteNetPhotoDone = true;
-							}
+								if (photopassPhotoslist.size() > 0) {
+									editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
+								} else {
+									deleteNetPhotoDone = true;
+								}
 
-							if (localPhotoslist.size() > 0) {
-								deleteLocalPhotos();
-							} else {
-								deleteLocalPhotoDone = true;
+								if (localPhotoslist.size() > 0) {
+									deleteLocalPhotos();
+								} else {
+									deleteLocalPhotoDone = true;
+								}
+							}
+						}.start();
+					} else if (dialogId == 102) {
+						//将已购买的加入下载队列中
+						ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
+						for (int i = 0; i < albumArrayList.size(); i++) {
+							if (albumArrayList.get(i).isPayed == 1) {
+								hasPayedList.add(albumArrayList.get(i));
 							}
 						}
-					}.start();
+						//开始将图片加入下载队列
+						Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
+						Bundle bundle = new Bundle();
+						bundle.putParcelableArrayList("photos", hasPayedList);
+						intent.putExtras(bundle);
+						startService(intent);
+					}
 					break;
 
 				default:
@@ -218,6 +228,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		//find控件
 		backRelativeLayout = (ImageView) findViewById(R.id.rlrt);
 		deleteTextView = (TextView) findViewById(R.id.select_delete);
+		selectAllTextView = (TextView) findViewById(R.id.select_all);
+		disAllTextView = (TextView) findViewById(R.id.select_disall);
+		downloadTextView = (TextView) findViewById(R.id.select_download);
 		editBarLinearLayout = (LinearLayout) findViewById(R.id.select_tools_linearlayout);
 		pinnedSectionListView = (GridView) findViewById(R.id.pullToRefreshPinnedSectionListView);
 		titleTextView = (TextView) findViewById(R.id.text);
@@ -231,13 +244,16 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		backRelativeLayout.setOnClickListener(this);
 		deleteTextView.setOnClickListener(this);
 		deleteTextView.setEnabled(false);
+		selectAllTextView.setOnClickListener(this);
+		disAllTextView.setOnClickListener(this);
+		downloadTextView.setOnClickListener(this);
+		downloadTextView.setEnabled(false);
 		editTextView.setOnClickListener(this);
 
 		//初始化数据
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
 		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ppCode = getIntent().getStringExtra("ppCode");
 
 		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
@@ -311,8 +327,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		}
 		if (selectCount == 0) {
 			deleteTextView.setEnabled(false);
+			downloadTextView.setEnabled(false);
+		} else if (selectCount == albumArrayList.size()) {
+			selectAllTextView.setVisibility(View.GONE);
+			disAllTextView.setVisibility(View.VISIBLE);
 		} else {
+			selectAllTextView.setVisibility(View.VISIBLE);
+			disAllTextView.setVisibility(View.GONE);
 			deleteTextView.setEnabled(true);
+			downloadTextView.setEnabled(true);
 		}
 	}
 	
@@ -329,11 +352,61 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					return;
 				}
 
-				if (pictureWorksDialog == null) {
-					pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
-							getString(R.string.start_delete), getString(R.string.button_cancel), getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
-				}
+				pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
+						getString(R.string.start_delete), getString(R.string.button_cancel), getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
 				pictureWorksDialog.show();
+				dialogId = 101;
+				break;
+
+			case R.id.select_all:
+				for (int i = 0; i < albumArrayList.size(); i++) {
+					albumArrayList.get(i).isSelected = 1;
+					albumArrayList.get(i).showMask = 1;
+				}
+				editStoryPinnedListViewAdapter.notifyDataSetChanged();
+				selectCount = albumArrayList.size();
+				selectAllTextView.setVisibility(View.GONE);
+				disAllTextView.setVisibility(View.VISIBLE);
+				deleteTextView.setEnabled(true);
+				downloadTextView.setEnabled(true);
+				break;
+
+			case R.id.select_disall:
+				for (int i = 0; i < albumArrayList.size(); i++) {
+					albumArrayList.get(i).isSelected = 0;
+					albumArrayList.get(i).showMask = 0;
+				}
+				editStoryPinnedListViewAdapter.notifyDataSetChanged();
+				selectCount = 0;
+				selectAllTextView.setVisibility(View.VISIBLE);
+				disAllTextView.setVisibility(View.GONE);
+				deleteTextView.setEnabled(false);
+				downloadTextView.setEnabled(false);
+				break;
+
+			case R.id.select_download:
+				boolean hasUnPayedItem = false;
+				for (int i = 0; i < albumArrayList.size(); i++) {
+					if (albumArrayList.get(i).isPayed == 0) {
+						hasUnPayedItem = true;
+						break;
+					}
+				}
+
+				if (hasUnPayedItem) {//弹框提示
+					pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
+							getString(R.string.edit_story_unpay_tips), getString(R.string.edit_story_reselect), getString(R.string.edit_story_confirm_download), true, editStoryAlbumHandler);
+					pictureWorksDialog.show();
+					dialogId = 102;
+				} else {
+					//直接下载
+					//开始将图片加入下载队列
+					Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelableArrayList("photos", albumArrayList);
+					intent.putExtras(bundle);
+					startService(intent);
+				}
 				break;
 
 			case R.id.pp_photos_edit:
@@ -342,7 +415,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				editStoryPinnedListViewAdapter.setEditMode(editMode);
 				editBarLinearLayout.setVisibility(View.VISIBLE);
 				titleTextView.setText(R.string.edit_story_album);
-				deleteTextView.setEnabled(false);
 				editTextView.setVisibility(View.GONE);
 				break;
 
@@ -373,6 +445,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 				}
 				selectCount = 0;
+
+				deleteTextView.setEnabled(false);
+				downloadTextView.setEnabled(false);
+				selectAllTextView.setVisibility(View.VISIBLE);
+				disAllTextView.setVisibility(View.GONE);
 			}
 			editTextView.setVisibility(View.VISIBLE);
 		} else {
@@ -444,6 +521,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private void dealAfterDeleted() {
 		if (selectCount == 0) {
 			deleteTextView.setEnabled(false);
+			downloadTextView.setEnabled(false);
 		}
 		editStoryPinnedListViewAdapter.notifyDataSetChanged();
 		if (photopassPhotoslist.size() > 0 && localPhotoslist.size() > 0) {//如果既有本地图片，又有网络图片
@@ -466,78 +544,5 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		if (customProgressDialog.isShowing()) {
 			customProgressDialog.dismiss();
 		}
-	}
-
-	/**
-	 * 获取预览图片
-	 */
-	private void getPreviewPhotos() {
-		new Thread() {
-			@Override
-			public void run() {
-				super.run();
-				tabIndex = getIntent().getIntExtra("tab", 0);
-				long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-				switch (tabIndex) {
-					case 0://all
-						localPhotoArrayList.addAll(AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
-						Collections.sort(localPhotoArrayList);
-						try {
-							albumArrayList.addAll(AppUtil.getSortedAllPhotos(EditStoryAlbumActivity.this, locationList, localPhotoArrayList,
-									pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
-									simpleDateFormat, MyApplication.getInstance().getLanguageType()));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						break;
-
-					case 1://photopass
-						try {
-							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
-									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						break;
-
-					case 2://local
-						ArrayList<PhotoInfo> localList = AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC);
-						Collections.sort(localList);
-						try {
-							localPhotoArrayList.addAll(AppUtil.startSortForPinnedListView(AppUtil.getMagicItemInfoList(EditStoryAlbumActivity.this, simpleDateFormat, localList)));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						albumArrayList.addAll(localPhotoArrayList);
-						break;
-
-					case 3://bought
-						try {
-							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
-									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						break;
-
-					case 4://favourite
-						albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(
-								pictureAirDbManager.getFavoritePhotoInfoListFromDB(EditStoryAlbumActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
-						break;
-
-					default:
-						break;
-				}
-
-				Iterator<PhotoInfo> photoInfoIterator = albumArrayList.iterator();
-				while (photoInfoIterator.hasNext()) {
-					PhotoInfo info = photoInfoIterator.next();
-					if (info.isVideo == 1) {
-						photoInfoIterator.remove();
-					}
-				}
-				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
-			}
-		}.start();
 	}
 }

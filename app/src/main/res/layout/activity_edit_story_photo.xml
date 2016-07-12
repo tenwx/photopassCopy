@@ -80,6 +80,31 @@
         android:visibility="gone">
 
         <TextView
+            android:id="@+id/select_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/edit_album_all_button"
+            android:gravity="center_horizontal|bottom"
+            android:drawablePadding="@dimen/pp_padding_5"
+            android:text="@string/edit_story_all"
+            android:textColor="@drawable/textview_selector_onclick"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/select_disall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/edit_album_disall_button"
+            android:gravity="center_horizontal|bottom"
+            android:drawablePadding="@dimen/pp_padding_5"
+            android:text="@string/edit_story_disall"
+            android:textColor="@drawable/textview_selector_onclick"
+            android:visibility="gone"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
             android:id="@+id/select_delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -88,6 +113,18 @@
             android:gravity="center_horizontal|bottom"
             android:drawablePadding="@dimen/pp_padding_5"
             android:text="@string/delete"
+            android:textColor="@drawable/textview_selector_onclick"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/select_download"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/edit_album_delete_button"
+            android:gravity="center_horizontal|bottom"
+            android:drawablePadding="@dimen/pp_padding_5"
+            android:text="@string/down"
             android:textColor="@drawable/textview_selector_onclick"
             android:textSize="@dimen/text_size_14" />
 

@@ -483,12 +483,14 @@
     <!-- tips end -->
 
     <!-- edit story start -->
-    <string name="buy">购买</string>
-    <string name="all">所有</string>
-    <string name="disall">取消</string>
+    <string name="edit_story_all">所有</string>
+    <string name="edit_story_disall">取消</string>
     <string name="delete_percent">正在删除%1$d/%2$d</string>
     <string name="start_delete">删除照片后您的账户中将不再显示此照片，请确认是否删除？</string>
     <string name="edit_story_album">编辑</string>
+    <string name="edit_story_confirm_download">确认下载</string>
+    <string name="edit_story_reselect">重新选择</string>
+    <string name="edit_story_unpay_tips">亲，选项中含有未付费的照片不能下载哦！您可继续确认下载已付费的照片哦！</string>
     <!-- edit story end -->
 
     <!-- 我的优惠券 start-->
