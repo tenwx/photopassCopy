@@ -27,7 +27,7 @@ public class NetBroadCastReciver extends BroadcastReceiver {
 //				ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
 				Intent intent1;
-				if (NetworkInfo.State.CONNECTED == info.getState()) {
+				if (info != null && NetworkInfo.State.CONNECTED == info.getState()) {
 					// 连接状态
 					PictureAirLog.d(" ＝＝＝＝＝ ", "有网络连接");
 					intent1 = new Intent(context,

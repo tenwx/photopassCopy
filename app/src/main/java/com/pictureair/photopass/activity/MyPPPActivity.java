@@ -206,6 +206,11 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putInt(Common.PPP_COUNT, API1.PPPlist.size());
                     editor.commit();
+                    list1.clear();
+                    if (listNormal == null) listNormal = new ArrayList<>();
+                    if (listNoUse == null) listNoUse = new ArrayList<>();
+                    listNormal.clear();
+                    listNoUse.clear();
                     for (int i = 0; i < API1.PPPlist.size(); i++) {
 //						PPPinfo dayOfPPP = new PPPinfo();
                         PPPinfo ppPinfo = API1.PPPlist.get(i);
@@ -229,10 +234,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener,OnRef
                     for (int i = 0; i<list1.size(); i++) {
                         PPPinfo info = list1.get(i);
                         if (info.bindInfo.size() < info.capacity && info.expired == 0) {
-                            if (listNormal == null) listNormal = new ArrayList<>();
                             listNormal.add(info);
                         } else {
-                            if (listNoUse == null) listNoUse = new ArrayList<>();
                             listNoUse.add(info);
                         }
                     }

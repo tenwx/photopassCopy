@@ -35,11 +35,7 @@ import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -57,7 +53,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private TextView noCountTextView;
 
 	private ArrayList<PhotoInfo> albumArrayList;
-	private ArrayList<PhotoInfo> localPhotoArrayList = new ArrayList<>();
 	private ArrayList<PhotoInfo> originalAlbumArrayList;
 	private ArrayList<PhotoInfo> photopassPhotoslist = new ArrayList<>();//选择的网络图片的list
 	private ArrayList<PhotoInfo> localPhotoslist = new ArrayList<>();//选择的本地图片的list
@@ -76,7 +71,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private boolean deleteNetPhotoDone = false;
 	private boolean netWorkFailed = false;
 	private String ppCode;
-	private SimpleDateFormat simpleDateFormat;
 	private SharedPreferences sharedPreferences;
 	private PictureWorksDialog pictureWorksDialog;
 
@@ -113,8 +107,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							default:
 								break;
 						}
-					} else {//有数据
-						editBarLinearLayout.setVisibility(View.VISIBLE);
 					}
 					editStoryPinnedListViewAdapter.notifyDataSetChanged();
 					break;
@@ -237,7 +229,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
 		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ppCode = getIntent().getStringExtra("ppCode");
 
 		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
@@ -466,78 +457,5 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		if (customProgressDialog.isShowing()) {
 			customProgressDialog.dismiss();
 		}
-	}
-
-	/**
-	 * 获取预览图片
-	 */
-	private void getPreviewPhotos() {
-		new Thread() {
-			@Override
-			public void run() {
-				super.run();
-				tabIndex = getIntent().getIntExtra("tab", 0);
-				long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-				switch (tabIndex) {
-					case 0://all
-						localPhotoArrayList.addAll(AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
-						Collections.sort(localPhotoArrayList);
-						try {
-							albumArrayList.addAll(AppUtil.getSortedAllPhotos(EditStoryAlbumActivity.this, locationList, localPhotoArrayList,
-									pictureAirDbManager, simpleDateFormat.format(new Date(cacheTime)),
-									simpleDateFormat, MyApplication.getInstance().getLanguageType()));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						break;
-
-					case 1://photopass
-						try {
-							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
-									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), false));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						break;
-
-					case 2://local
-						ArrayList<PhotoInfo> localList = AppUtil.getLocalPhotos(EditStoryAlbumActivity.this, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC);
-						Collections.sort(localList);
-						try {
-							localPhotoArrayList.addAll(AppUtil.startSortForPinnedListView(AppUtil.getMagicItemInfoList(EditStoryAlbumActivity.this, simpleDateFormat, localList)));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						albumArrayList.addAll(localPhotoArrayList);
-						break;
-
-					case 3://bought
-						try {
-							albumArrayList.addAll(AppUtil.getSortedPhotoPassPhotos(locationList, pictureAirDbManager,
-									simpleDateFormat.format(new Date(cacheTime)), simpleDateFormat, MyApplication.getInstance().getLanguageType(), true));
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						break;
-
-					case 4://favourite
-						albumArrayList.addAll(AppUtil.insterSortFavouritePhotos(
-								pictureAirDbManager.getFavoritePhotoInfoListFromDB(EditStoryAlbumActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
-						break;
-
-					default:
-						break;
-				}
-
-				Iterator<PhotoInfo> photoInfoIterator = albumArrayList.iterator();
-				while (photoInfoIterator.hasNext()) {
-					PhotoInfo info = photoInfoIterator.next();
-					if (info.isVideo == 1) {
-						photoInfoIterator.remove();
-					}
-				}
-				editStoryAlbumHandler.sendEmptyMessage(GET_PHOTOS_DONE);
-			}
-		}.start();
 	}
 }

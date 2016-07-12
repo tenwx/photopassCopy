@@ -103,7 +103,11 @@ public class JsonUtil {
                 StringBuffer sb = new StringBuffer();
                 sb.append(Common.PHOTO_URL).append(obj.getString("url"));
                 info.photoPathOrURL = sb.toString().trim();
+            } else {
+                info.photoPathOrURL = "";
             }
+        } else {
+            info.photoPathOrURL = "";
         }
         //获取图片的缩略图路径
         if (object.containsKey("thumbnail")) {
