@@ -59,7 +59,7 @@ public class MyApplication extends Application {
     /**
      * 主页tab需要切换的索引值
      */
-    private int mainTabIndex = 0;
+    private int mainTabIndex = -1;
     private String languageType;// 记录app选择的语言
     public int fragmentStoryLastSelectedTab = 0;// 记录story页面viewpager上次的页面序号
 
@@ -72,7 +72,7 @@ public class MyApplication extends Application {
     private boolean photoIsPaid; // 购买照片之后，返回photo页面。
     // onCreate方法不建议写耗时的操作
 
-    private boolean needRefreshOldPhotos;//不同设备之间同步，是否需要刷新之前未购买的图片
+//    private boolean needRefreshOldPhotos;//不同设备之间同步，是否需要刷新之前未购买的图片
     public Typeface typeface;//设置默认字体用
     public Typeface typefaceBold;//设置粗字体用
 
@@ -453,24 +453,6 @@ public class MyApplication extends Application {
      */
     public void setPushViedoCount(int pushViedoCount) {
         this.pushViedoCount = pushViedoCount;
-    }
-
-    /**
-     * 得到时候需要刷新原有的数据
-     *
-     * @return
-     */
-    public boolean isNeedRefreshOldPhotos() {
-        return needRefreshOldPhotos;
-    }
-
-    /**
-     * 设置是否需要刷新原有的数据
-     *
-     * @param needRefreshOldPhotos
-     */
-    public void setNeedRefreshOldPhotos(boolean needRefreshOldPhotos) {
-        this.needRefreshOldPhotos = needRefreshOldPhotos;
     }
 
     /**

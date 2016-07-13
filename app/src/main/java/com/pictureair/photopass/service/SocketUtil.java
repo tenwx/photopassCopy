@@ -125,8 +125,8 @@ public class SocketUtil {
             PictureAirLog.out("start sync bought info");
 
             EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
-        } else {//如果不是处于story页面，则设置更新变量
-            application.setNeedRefreshOldPhotos(true);
+        } else {//如果不是处于story页面
+
         }
     }
 

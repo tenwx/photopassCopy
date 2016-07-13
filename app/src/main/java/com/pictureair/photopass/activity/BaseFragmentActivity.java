@@ -23,9 +23,9 @@ public class BaseFragmentActivity extends FragmentActivity{
     private Context context;
 
     //Top bar
-    TextView topLeftTv, topTitle, topRightTv;
-    ImageView topLeftIv, topRightIv;
-    LinearLayout topLeftView, topRightView;
+    private TextView topLeftTv, topTitle, topRightTv;
+    private ImageView topLeftIv, topRightIv;
+    private LinearLayout topLeftView, topRightView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

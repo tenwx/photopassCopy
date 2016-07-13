@@ -28,6 +28,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
+import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
@@ -77,6 +78,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private static final int UPDATE_UI = 10000;
     private static final int DELETE_PHOTO = 10001;
     private boolean isDeletePhoto = false;//是否是编辑状态
+    private boolean needNotifyStoryRefresh = false;
     private JSONArray pps;
     private MyApplication myApplication;
     private int selectedCurrent = -1;
@@ -177,6 +179,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             case API1.REMOVE_PP_SUCCESS:
                 //请求删除API成功 更新界面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
+                    needNotifyStoryRefresh = true;
                     final int deletePosition = (int) msg.obj;
                     new Thread() {
                         @Override
@@ -662,6 +665,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         }
 
         if (sharedPreferences.getBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false)) {
+            needNotifyStoryRefresh = true;
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
             editor.commit();
@@ -704,6 +708,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        if (needNotifyStoryRefresh) {
+            needNotifyStoryRefresh = false;
+            PictureAirLog.out("need notify story to refresh");
+            EventBus.getDefault().post(new SocketEvent(false, -1, null, null, null));
+        }
+
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
