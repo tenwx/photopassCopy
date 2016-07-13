@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BaseCheckUpdate;
 import com.pictureair.photopass.entity.FileInfo;
@@ -32,11 +33,11 @@ import java.util.ArrayList;
 /**
  * 检查更新apk封装类
  */
-public class CheckUpdateManager {
+public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
     private BaseCheckUpdate baseCheckUpdate;
     private Context context;
     private ArrayList<String> deviceInfos;
-    private PictureWorksDialog pictureWorksDialog;
+    private PWDialog pictureWorksDialog;
     private String downloadURL, forceUpdate, currentLanguage;
     private String channelStr;
     private CustomProgressBarPop customProgressBarPop;
@@ -51,6 +52,7 @@ public class CheckUpdateManager {
     private final int UPDATE_PB = 203;
     private static final int APK_NEED_NOT_UPDATE = 204;
     private static final int APK_NEED_UPDATE = 205;
+    private static final int UPDATE_DIALOG = 206;
     private PictureAirDbManager dbDAO = null;
 
 
@@ -120,19 +122,11 @@ public class CheckUpdateManager {
                     showUpdateApkDialog(msg);
                     break;
 
-                case DialogInterface.BUTTON_POSITIVE:
-                    if (AppUtil.checkPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        dialogButtonPositive();//确认下载
-                    }else{
-                        myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
-                    }
-                    break;
-
                 case API1.DOWNLOAD_APK_FAILED:
                     PictureAirLog.out("failed");
                     customProgressBarPop.dismiss();
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-                    pictureWorksDialog.show();
+                    pictureWorksDialog.pwDilogShow();
                     break;
 
                 case INSTALL_APK:
@@ -245,9 +239,18 @@ public class CheckUpdateManager {
         if (hasDestroyed){
             return;
         }
-        pictureWorksDialog = new PictureWorksDialog(context, String.format(context.getString(R.string.update_version), version), objsString[2],
-                forceUpdate.equals("true") ? null : context.getString(R.string.cancel1), context.getString(R.string.down), false, handler);
-        pictureWorksDialog.show();
+
+        if (pictureWorksDialog == null) {
+            pictureWorksDialog = new PWDialog(context, UPDATE_DIALOG)
+                    .setPWDialogTitle(String.format(context.getString(R.string.update_version), version))
+                    .setPWDialogMessage(objsString[2])
+                    .setPWDialogNegativeButton(forceUpdate.equals("true") ? null : context.getString(R.string.cancel1))
+                    .setPWDialogPositiveButton(R.string.down)
+                    .setPWDialogContentCenter(false)
+                    .setOnPWDialogClickListener(this)
+                    .pwDialogCreate();
+        }
+        pictureWorksDialog.pwDilogShow();
     }
 
     /**
@@ -424,6 +427,21 @@ public class CheckUpdateManager {
         if (null != pictureWorksDialog){
             pictureWorksDialog.dismiss();
             pictureWorksDialog = null;
+        }
+    }
+
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                if (dialogId == UPDATE_DIALOG) {
+                    if (AppUtil.checkPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        dialogButtonPositive();//确认下载
+                    }else{
+                        myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+                    }
+                }
+                break;
         }
     }
 }

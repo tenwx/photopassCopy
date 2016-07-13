@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
@@ -41,7 +41,6 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -55,10 +54,16 @@ import de.greenrobot.event.Subscribe;
  * 显示用户所有的PP或某张PP+可绑定的PP
  * @author talon & milo
  */
-public class MyPPActivity extends BaseActivity implements OnClickListener {
+public class MyPPActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private final String TAG = "MyPPActivity";
     private final int GET_SELECT_PP_SUCCESS = 2222;
     private final int REMOVE_PP_FROM_DB_FINISH = 3333;
+    private static final int SYNC_BOUGHT_PHOTO_DIALOG = 4444;
+    private static final int BIND_TIP_DIALOG = 5555;
+    private static final int WRONG_DATE_DIALOG = 6666;
+    private static final int DELETE_API_DIALOG = 7777;
+    private static final int DEAL_PP_RESULT_DIALOG = 8888;
+
     private ImageView back;
     private ListView listPP;
     private ImageView delete;
@@ -72,12 +77,12 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private static final int UPDATE_UI = 10000;
     private static final int DELETE_PHOTO = 10001;
     private boolean isDeletePhoto = false;//是否是编辑状态
-    private boolean rightDate = false;
     private JSONArray pps;
     private MyApplication myApplication;
     private int selectedCurrent = -1;
     private int selectedTag = -1;
     private String selectedPhotoId = null;//记录已经购买了的照片的photoId
+    private int deletePosition;
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private RelativeLayout noPhotoPassView;
@@ -92,9 +97,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private PWToast myToast;
     private SettingUtil settingUtil;
 
-    private PictureWorksDialog pictureWorksDialog;
-
-    private int dialogId;
+    private PWDialog pictureWorksDialog;
 
     private PPPPop pppPop;
 
@@ -105,12 +108,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     private static final int SCAN_PP_CODE_SUCCESS = 111;
 
     private static final int SAVE_JSON_DONE = 222;
-
-    private static final int WRONG_DATE = 333;
-
-    private static final int WRONG_TYPE = 444;
-
-    private static final int BIND_TIP = 555;
 
     private boolean isOnResume = false;
 
@@ -356,25 +353,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         }
                         goIntent();
                     } else {
-                        new CustomDialog(MyPPActivity.this, R.string.first_tips_syns_msg2, R.string.first_tips_syns_no_msg2, R.string.first_tips_syns_yes_msg2, new CustomDialog.MyDialogInterface() {
+                        pictureWorksDialog.setPWDialogId(SYNC_BOUGHT_PHOTO_DIALOG)
+                                .setPWDialogMessage(R.string.first_tips_syns_msg2)
+                                .setPWDialogNegativeButton(R.string.first_tips_syns_no_msg2)
+                                .setPWDialogPositiveButton(R.string.first_tips_syns_yes_msg2)
+                                .setPWDialogContentCenter(true)
+                                .pwDilogShow();
 
-                            @Override
-                            public void yes() {
-                                // TODO Auto-generated method stub 同步更新：下载照片。
-                                settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-                                    downloadPhotoList();
-                                }
-                                goIntent();
-                            }
-
-                            @Override
-                            public void no() {
-                                // TODO Auto-generated method stub 取消：不操作
-                                settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                goIntent();
-                            }
-                        });
                     }
                     settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
                 } else {
@@ -393,27 +378,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     customProgressDialog.dismiss();
                 }
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case DialogInterface.BUTTON_POSITIVE:
-                if (dialogId == WRONG_DATE) {//只是个提示，不做操作
-
-                } else if (dialogId == WRONG_TYPE) {//只是个提示，不做操作
-
-                } else if (dialogId == BIND_TIP) {//绑定的提示
-                    if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
-                            pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
-                        pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
-                                getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
-                        pictureWorksDialog.show();
-                        dialogId = WRONG_DATE;
-                    } else {
-                        if (!customProgressDialog.isShowing()) {
-                            customProgressDialog.show();
-                        }
-                        API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
-                    }
-                }
                 break;
 
             case PPPPop.POP_DELETE://删除操作
@@ -503,6 +467,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
         editor.commit();
+        pictureWorksDialog = new PWDialog(this)
+                .setOnPWDialogClickListener(this)
+                .pwDialogCreate();
     }
 
 
@@ -582,7 +549,8 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                     @Override
                     public void deletePhoto(int position) {
                         // TODO Auto-generated method stub
-                        deleteAPI(position);// 提交删除PP
+                        deleteAPI();// 提交删除PP
+                        deletePosition = position;
                     }
                 }, false, isDeletePhoto, null, null);
 
@@ -654,11 +622,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
                         pps.add(jsonObject);
                     }
                 }
-                pictureWorksDialog = new PictureWorksDialog(MyPPActivity.this, null,
-                        String.format(getString(R.string.select_pp_right_date), selectedString),
-                        getString(R.string.button_cancel), getString(R.string.button_ok), false, myPPHandler);
-                pictureWorksDialog.show();
-                dialogId = BIND_TIP;
+
+                pictureWorksDialog.setPWDialogId(BIND_TIP_DIALOG)
+                        .setPWDialogMessage(String.format(getString(R.string.select_pp_right_date), selectedString))
+                        .setPWDialogNegativeButton(R.string.button_cancel)
+                        .setPWDialogPositiveButton(R.string.button_ok)
+                        .setPWDialogContentCenter(false)
+                        .pwDilogShow();
 
                 break;
             default:
@@ -715,24 +685,18 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
     }
 
     // 请求删除API
-    public boolean deleteAPI(final int position) {
+    public boolean deleteAPI() {
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
             return false;
         }
-        new CustomDialog(MyPPActivity.this, R.string.delete_pp, R.string.delete_pp_cancel, R.string.delete_pp_ok, new CustomDialog.MyDialogInterface() {
 
-            @Override
-            public void yes() {
-                if (!customProgressDialog.isShowing())
-                    customProgressDialog.show();
-                API1.removePPFromUser(showPPCodeList.get(position).getPpCode(), position, myPPHandler);
-            }
+        pictureWorksDialog.setPWDialogId(DELETE_API_DIALOG)
+                .setPWDialogMessage(R.string.delete_pp)
+                .setPWDialogNegativeButton(R.string.delete_pp_cancel)
+                .setPWDialogPositiveButton(R.string.delete_pp_ok)
+                .setPWDialogContentCenter(true)
+                .pwDilogShow();
 
-            @Override
-            public void no() {
-
-            }
-        });
         return false;
     }
 
@@ -829,9 +793,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
             errorMessage = getString(R.string.not_pp_card);
 
         }
-        pictureWorksDialog = new PictureWorksDialog(this, null, errorMessage, null, getString(R.string.dialog_ok1), true, myPPHandler);
-        pictureWorksDialog.show();
-        dialogId = WRONG_TYPE;
+
+        pictureWorksDialog.setPWDialogId(DEAL_PP_RESULT_DIALOG)
+                .setPWDialogMessage(errorMessage)
+                .setPWDialogNegativeButton(null)
+                .setPWDialogPositiveButton(R.string.dialog_ok1)
+                .setPWDialogContentCenter(true)
+                .pwDilogShow();
     }
 
     /**
@@ -865,4 +833,52 @@ public class MyPPActivity extends BaseActivity implements OnClickListener {
         }.start();
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_NEGATIVE) {
+            switch (dialogId) {
+                case SYNC_BOUGHT_PHOTO_DIALOG:
+                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    goIntent();
+                    break;
+            }
+
+        } else if (which == DialogInterface.BUTTON_POSITIVE) {
+            switch (dialogId) {
+                case SYNC_BOUGHT_PHOTO_DIALOG:
+                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+                        downloadPhotoList();
+                    }
+                    goIntent();
+                    break;
+
+                case BIND_TIP_DIALOG:
+                    if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
+                            pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
+                        pictureWorksDialog.setPWDialogId(WRONG_DATE_DIALOG)
+                                .setPWDialogMessage(R.string.select_pp_wrong_date)
+                                .setPWDialogNegativeButton(null)
+                                .setPWDialogPositiveButton(R.string.button_ok)
+                                .setPWDialogContentCenter(true)
+                                .pwDilogShow();
+                    } else {
+                        if (!customProgressDialog.isShowing()) {
+                            customProgressDialog.show();
+                        }
+                        API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
+                    }
+                    break;
+
+                case DELETE_API_DIALOG:
+                    if (!customProgressDialog.isShowing())
+                        customProgressDialog.show();
+                    API1.removePPFromUser(showPPCodeList.get(deletePosition).getPpCode(), deletePosition, myPPHandler);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
 }

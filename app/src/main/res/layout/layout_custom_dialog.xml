@@ -58,7 +58,7 @@
             android:layout_below="@id/dia"
             android:background="@color/gray_light3" />
 
-        <com.pictureair.photopass.customDialog.GroupButton
+        <com.pictureair.photopass.customDialog.PWDialogButton
             android:id="@+id/btn_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -36,6 +36,7 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.BitmapUtils;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
@@ -67,7 +68,6 @@ import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +79,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
-public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener {
+public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener, PWDialog.OnPWDialogClickListener {
 	//视图
 	public StickerView mStickerView;// 贴图层View
 	public Bitmap mainBitmap; //低层显示的bitmap，就是编辑的图片。
@@ -97,7 +97,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private CustomProgressDialog dialog;
 
-	private PictureWorksDialog pictureWorksDialog;
+	private PWDialog pictureWorksDialog;
 
 	//适配器
 	private EditActivityAdapter eidtAdapter; //通用的适配器
@@ -155,6 +155,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private static final int LOAD_IMAGE_FINISH = 103;
 	private static final int START_ASYNC = 105;
 
+	private static final int SAVE_PHOTO_DIALOG = 101;
+
 	private boolean loadingFrame = false;
 
 	//绘制 真是图片显示区域。 控制 饰品 与文字拖动范围
@@ -173,8 +175,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	LinkedHashMap<Integer, StickerItem> addItems;
 
 	private PWToast myToast;
-
-	// 旋转图片组件
 
 	private final Handler editPhotoHandler = new EditPhotoHandler(this);
 
@@ -303,22 +303,30 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				break;
 
-			case DialogInterface.BUTTON_POSITIVE:
-				String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
-				EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
-				scan(url);
-				EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
-				break;
-
-			case DialogInterface.BUTTON_NEGATIVE:
-				finish();
-				break;
-
 			default:
 				break;
 		}
 	}
 
+	@Override
+	public void onPWDialogButtonClicked(int which, int dialogId) {
+		switch (which) {
+			case DialogInterface.BUTTON_NEGATIVE:
+				if (dialogId == SAVE_PHOTO_DIALOG) {
+					finish();
+				}
+				break;
+
+			case DialogInterface.BUTTON_POSITIVE:
+				if (dialogId == SAVE_PHOTO_DIALOG) {
+					String url = nameFile + "/" + dateFormat.format(new Date()) + ".jpg";
+					EditPhotoUtil.copyFile(editPhotoInfoArrayList.get(index).getPhotoPath(), url);
+					scan(url);
+					EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
+				}
+				break;
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -1289,9 +1297,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	// 没有保存的时候的对话框
 	private void createIsSaveDialog() {
 		if (pictureWorksDialog == null) {
-			pictureWorksDialog = new PictureWorksDialog(this, null, getString(R.string.exit_hint), getString(R.string.button_cancel), getString(R.string.button_ok), true, editPhotoHandler);
+			pictureWorksDialog = new PWDialog(this, SAVE_PHOTO_DIALOG)
+					.setPWDialogMessage(R.string.exit_hint)
+					.setPWDialogNegativeButton(R.string.button_cancel)
+					.setPWDialogPositiveButton(R.string.button_ok)
+					.setOnPWDialogClickListener(this)
+					.pwDialogCreate();
 		}
-		pictureWorksDialog.show();
+		pictureWorksDialog.pwDilogShow();
 	}
 
 	@Override

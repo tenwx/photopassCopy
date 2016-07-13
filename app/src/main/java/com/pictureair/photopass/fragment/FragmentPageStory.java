@@ -3,6 +3,7 @@ package com.pictureair.photopass.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -33,7 +34,7 @@ import com.pictureair.photopass.activity.MipCaptureActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.PPPDetailProductActivity;
 import com.pictureair.photopass.adapter.FragmentAdapter;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
@@ -161,6 +162,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private PhotoInfo selectPhotoItemInfo;
     private ScanPhotosThread scanPhotosThread;
     private PictureAirDbManager pictureAirDbManager;
+    private PWDialog pwDialog;
     private boolean getPhotoInfoDone = false;
     private boolean getVideoInfoDone = false;
 
@@ -463,23 +465,25 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case API1.GET_PPP_SUCCESS:
                 if (ppPhotoCount >= 10 && API1.PPPlist.size() == 0 && context != null) {
-                    new CustomDialog(context, R.string.pp_first_up10_msg, R.string.pp_first_up10_no_msg, R.string.pp_first_up10_yes_msg, new CustomDialog.MyDialogInterface() {
-
-                        @Override
-                        public void yes() {
-                            // TODO Auto-generated method stub // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
-                            Intent intent = new Intent();
-                            intent.setClass(getActivity(),
-                                    MyPPPActivity.class);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void no() {
-                            // TODO Auto-generated method stub // 考虑下：不做操作
-
-                        }
-                    });
+                    if (pwDialog == null) {
+                        pwDialog = new PWDialog(context)
+                                .setPWDialogMessage(R.string.pp_first_up10_msg)
+                                .setPWDialogNegativeButton(R.string.pp_first_up10_no_msg)
+                                .setPWDialogPositiveButton(R.string.pp_first_up10_yes_msg)
+                                .setOnPWDialogClickListener(new PWDialog.OnPWDialogClickListener() {
+                                    @Override
+                                    public void onPWDialogButtonClicked(int which, int dialogId) {
+                                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                                            // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
+                                            Intent intent = new Intent();
+                                            intent.setClass(getActivity(), MyPPPActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                })
+                                .pwDialogCreate();
+                    }
+                    pwDialog.pwDilogShow();
                     settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
                 } else if (API1.PPPlist.size() > 0) {
                     settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));

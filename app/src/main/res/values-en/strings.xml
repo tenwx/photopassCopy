@@ -201,6 +201,7 @@
     <string name="not_support_makegift">Sorry we cannot print your digital souvenir photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
     <string name="photo_cannot_edit_content">Sorry, your pictures taken through the authors temporarily does not support edit</string>
+    <string name="local_photo_cannot_edit_content">Sorry, your pictures does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
     <string name="photo_cannot_edit_yes">OK</string>
     <!-- preview photo end -->

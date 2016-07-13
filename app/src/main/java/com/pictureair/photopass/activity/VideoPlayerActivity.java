@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
@@ -51,7 +51,7 @@ import java.util.ArrayList;
  *
  * @author bass
  */
-public class VideoPlayerActivity extends BaseActivity implements OnClickListener {
+public class VideoPlayerActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private final static String TAG = "VideoPlayerActivity";
     private final static int SCREEN_FULL = 0;
     private final static int SCREEN_DEFAULT = 1;
@@ -82,7 +82,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private final static int HIDE_CONTROLER = 1;
     private PhotoInfo videoInfo;
     private int mNetWorkType;  //当前网络的状态
-    private CustomDialog customdialog; //  对话框
+    private PWDialog pwDialog; //  对话框
     private PictureAirDbManager pictureAirDbManager;
     //视频实际播放的宽高//4:3默认尺寸
     private int videoHeight = 600;
@@ -589,24 +589,15 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         mNetWorkType = AppUtil.getNetWorkType(getApplicationContext());
         if (mNetWorkType == AppUtil.NETWORKTYPE_MOBILE) {
             //如果是手机流量 ，弹出对话狂
-            customdialog = new CustomDialog.Builder(context)
-                    .setMessage(getResources().getString(R.string.dialog_download_message))
-                    .setNegativeButton(getResources().getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            customdialog.dismiss();
-                        }
-                    })
-                    .setPositiveButton(getResources().getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            downloadPic();
-                            customdialog.dismiss();
-                        }
-                    })
-                    .setCancelable(false)
-                    .create();
-            customdialog.show();
+            if (pwDialog == null) {
+                pwDialog = new PWDialog(context)
+                        .setPWDialogMessage(R.string.dialog_download_message)
+                        .setPWDialogNegativeButton(R.string.dialog_cancel)
+                        .setPWDialogPositiveButton(R.string.dialog_ok)
+                        .setOnPWDialogClickListener(this)
+                        .pwDialogCreate();
+            }
+            pwDialog.pwDilogShow();
         } else if (mNetWorkType == AppUtil.NETWORKTYPE_WIFI) {
             downloadPic();
         } else {
@@ -692,4 +683,10 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         super.onDestroy();
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            downloadPic();
+        }
+    }
 }

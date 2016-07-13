@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,18 +19,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderListViewAdapter extends BaseExpandableListAdapter {
+public class OrderListViewAdapter extends BaseExpandableListAdapter implements PWDialog.OnPWDialogClickListener {
     private LayoutInflater mInflater;
     private Context context;
     private String currency;
@@ -41,7 +40,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     private ImageLoader imageLoader;
     private GroupHolderView groupHolderView;
     private ChildHolderView hView;
-    private PictureWorksDialog pictureWorksDialog;
+    private PWDialog pictureWorksDialog;
 
     private int screenWight;
     private int tab;
@@ -49,22 +48,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
     private Handler handler;
 
     private int deletePosition;
-
-    private Handler adapterHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    PictureAirLog.out("ok----->");
-                    API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition), handler);
-                    break;
-
-                default:
-                    break;
-            }
-            return false;
-        }
-    });
 
     public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler, int tab) {
         this.context = context;
@@ -251,6 +234,13 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition), handler);
+        }
+    }
+
     private class GroupHolderView {
         TextView orderStatesTextView;//订单状态
         TextView orderTimeTextView;//订单时间
@@ -315,10 +305,14 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter {
                 if (tab == 0) {//未付款
                     deletePosition = position;
                     if (pictureWorksDialog == null) {
-                        pictureWorksDialog = new PictureWorksDialog(context, null, context.getString(R.string.order_delete_msg),
-                                context.getResources().getString(R.string.button_cancel), context.getResources().getString(R.string.button_ok), true, adapterHandler);
+                        pictureWorksDialog = new PWDialog(context)
+                                .setPWDialogMessage(R.string.order_delete_msg)
+                                .setPWDialogNegativeButton(R.string.button_cancel)
+                                .setPWDialogPositiveButton(R.string.button_ok)
+                                .setOnPWDialogClickListener(OrderListViewAdapter.this)
+                                .pwDialogCreate();
                     }
-                    pictureWorksDialog.show();
+                    pictureWorksDialog.pwDilogShow();
 
                 } else if (tab == 2) {//已取
                     PictureAirLog.out("start delete order");

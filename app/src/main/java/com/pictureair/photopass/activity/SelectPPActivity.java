@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
@@ -26,7 +27,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.HashMap;
  *  解决问题：
  *  在PP界面，进入单张照片预览（模糊状态），然后点 “使用已有的迪士尼乐拍通一卡通”，进入到选择PP 界面。 返回时 选择pp 界面 如果和 pp界面 是一个activity。就会冲突
  */
-public class SelectPPActivity extends BaseActivity implements View.OnClickListener{
+public class SelectPPActivity extends BaseActivity implements View.OnClickListener, PWDialog.OnPWDialogClickListener{
     private TextView tvTitle,ok;
     private ImageView back;
     private PictureAirDbManager pictureAirDbManager;
@@ -52,7 +52,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
     private RelativeLayout noPhotoPassView;
     private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
     private PWToast myToast;
-    private PictureWorksDialog pictureWorksDialog;
+    private PWDialog pictureWorksDialog;
     private CustomProgressDialog customProgressDialog;
 
     private static class MyPPHandler extends Handler{
@@ -201,14 +201,19 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 }
                 if (AppUtil.getGapCount(pps.getJSONObject(0).getString("bindDate"),
                         pps.getJSONObject(pps.size() - 1).getString("bindDate")) > 3){
-                    pictureWorksDialog = new PictureWorksDialog(SelectPPActivity.this, null,
-                            getString(R.string.select_pp_wrong_date), null, getString(R.string.button_ok), true, myPPHandler);
-                    pictureWorksDialog.show();
+                    if (pictureWorksDialog == null) {
+                        pictureWorksDialog = new PWDialog(SelectPPActivity.this)
+                                .setPWDialogMessage(R.string.select_pp_wrong_date)
+                                .setPWDialogPositiveButton(R.string.button_ok)
+                                .setOnPWDialogClickListener(this)
+                                .pwDialogCreate();
+                    }
+                    pictureWorksDialog.pwDilogShow();
                 } else {
-                        Intent intent = new Intent(SelectPPActivity.this, MyPPPActivity.class);
-                        intent.putExtra("ppsStr",pps.toString());
-                        intent.putExtra("isUseHavedPPP", true);
-                        startActivity(intent);
+                    Intent intent = new Intent(SelectPPActivity.this, MyPPPActivity.class);
+                    intent.putExtra("ppsStr", pps.toString());
+                    intent.putExtra("isUseHavedPPP", true);
+                    startActivity(intent);
                 }
                 break;
         }
@@ -227,5 +232,8 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
         return String.format(getString(R.string.pp_ok), count1, count2);
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
 
+    }
 }

@@ -1,5 +1,6 @@
 package com.pictureair.photopass.activity;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -11,15 +12,14 @@ import android.widget.RelativeLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.util.Locale;
 
-public class SettingLanguageActivity extends BaseActivity implements OnClickListener {
+public class SettingLanguageActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private static final String TAG = "SettingLanguageActivity";
     private Configuration config;
     private DisplayMetrics dm;
@@ -36,7 +36,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private String oldLanguage = "";
     private String currentLanguage = "";   // en表示英语，zh表示简体中文。
     private SharedPreferences sharedPreferences;
-    private PictureWorksDialog pictureWorksDialog;
+    private PWDialog pictureWorksDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,40 +140,42 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
 
     // 改变语言设置时的对话框
     private void createDialog() {
-        new CustomDialog(SettingLanguageActivity.this, R.string.setting_language_msg, R.string.confirm_sync_no, R.string.confirm_sync_yes, new CustomDialog.MyDialogInterface() {
-            @Override
-            public void yes() {
-                // TODO Auto-generated method stub // 确认语言设置之后，修改状态
-
-                if (currentLanguage.equals(Common.SIMPLE_CHINESE)){
-                    currentLanguage = Common.ENGLISH;
-                }else{
-                    currentLanguage = Common.SIMPLE_CHINESE;
-                }
-                updateUI(currentLanguage);
-                if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
-                    config.locale = Locale.SIMPLIFIED_CHINESE;
-                    MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
-                } else if (currentLanguage.equals(Common.ENGLISH)) {
-                    config.locale = Locale.US;
-                    MyApplication.getInstance().setLanguageType(Common.ENGLISH);
-                }
-                getResources().updateConfiguration(config, dm);
-                //把语言写入数据库
-                SharedPreferences.Editor localEditor = sharedPreferences.edit();
-                localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
-                localEditor.commit();
-                //清除商品
-                clearCache();
-                onCreate(null);
-//                finish();
-            }
-            @Override
-            public void no() {
-                // TODO Auto-generated method stub // 取消：不做操作
-
-            }
-        });
+        if (pictureWorksDialog == null) {
+            pictureWorksDialog = new PWDialog(SettingLanguageActivity.this)
+                    .setOnPWDialogClickListener(this)
+                    .pwDialogCreate();
+        }
+        //修改语言之后，需要重新设置下文字，不然还是原来的语言
+        pictureWorksDialog.setPWDialogMessage(R.string.setting_language_msg)
+                .setPWDialogNegativeButton(R.string.confirm_sync_no)
+                .setPWDialogPositiveButton(R.string.confirm_sync_yes)
+                .pwDilogShow();
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            if (currentLanguage.equals(Common.SIMPLE_CHINESE)){
+                currentLanguage = Common.ENGLISH;
+            }else{
+                currentLanguage = Common.SIMPLE_CHINESE;
+            }
+            updateUI(currentLanguage);
+            if (currentLanguage.equals(Common.SIMPLE_CHINESE)) {
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+                MyApplication.getInstance().setLanguageType(Common.SIMPLE_CHINESE);
+            } else if (currentLanguage.equals(Common.ENGLISH)) {
+                config.locale = Locale.US;
+                MyApplication.getInstance().setLanguageType(Common.ENGLISH);
+            }
+            getResources().updateConfiguration(config, dm);
+            //把语言写入数据库
+            SharedPreferences.Editor localEditor = sharedPreferences.edit();
+            localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
+            localEditor.commit();
+            //清除商品
+            clearCache();
+            onCreate(null);
+        }
+    }
 }

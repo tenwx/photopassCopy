@@ -12,11 +12,11 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 /**
  * Created by talon on 16/5/20.
@@ -206,7 +206,7 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     }
 
     @Override
-    public void showIsSaveDialog(PictureWorksDialog pictureWorksDialog) {
+    public void showIsSaveDialog(PWDialog pictureWorksDialog) {
 //        pictureWorksDialog.show();
     }
 

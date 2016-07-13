@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EditActivityAdapter extends BaseAdapter {
+public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDialogClickListener {
     private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
     private Context mContext;
     private List<String> stickerPathList;
@@ -53,11 +53,14 @@ public class EditActivityAdapter extends BaseAdapter {
     private boolean firstFileFailOrExist = false;
     private boolean secondFileFailOrExist = false;
     private static final int UPDATE_PROGRESS = 101;//更新进度条
+    private static final int DOWNLOAD_DIALOG = 102;
     private long firstFileProgress = 0;//文件下载的进度
     private long secondFileProgress = 0;//文件下载进度
-    private CustomDialog customDialog;
+    private PWDialog pwDialog;
     private PWToast myToast;
     private PictureAirDbManager pictureAirDbManager;
+    private HolderView holderView;
+    private int position;
 
 
     private Handler downloadHandler = new Handler() {
@@ -309,47 +312,29 @@ public class EditActivityAdapter extends BaseAdapter {
      * @param position
      */
     private void showDownloadDialog(HolderView holderView, int position) {
-        customDialog = new CustomDialog.Builder(mContext)
-                .setMessage(mContext.getResources().getString(R.string.dialog_download_message))
-                .setNegativeButton(mContext.getResources().getString(R.string.dialog_cancel), new DownloadDialogOnClickListener(holderView, position))
-                .setPositiveButton(mContext.getResources().getString(R.string.dialog_ok), new DownloadDialogOnClickListener(holderView, position))
-                .setCancelable(false)
-                .create();
-        customDialog.show();
+        this.holderView = holderView;
+        this.position = position;
+
+        if (pwDialog == null) {
+            pwDialog = new PWDialog(mContext, DOWNLOAD_DIALOG)
+                    .setPWDialogMessage(R.string.dialog_download_message)
+                    .setPWDialogNegativeButton(R.string.dialog_cancel)
+                    .setPWDialogPositiveButton(R.string.dialog_ok)
+                    .setOnPWDialogClickListener(this)
+                    .pwDialogCreate();
+        }
+        pwDialog.pwDilogShow();
     }
 
-    /**
-     * 对话框点击事件监听
-     *
-     * @author bauer_bao
-     */
-    private class DownloadDialogOnClickListener implements android.content.DialogInterface.OnClickListener {
-        private HolderView holderView;
-        private int position;
-
-        public DownloadDialogOnClickListener(HolderView holderView, int position) {
-            this.holderView = holderView;
-            this.position = position;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_NEGATIVE://取消按钮
-                    PictureAirLog.out("negative button");
-                    break;
-
-                case DialogInterface.BUTTON_POSITIVE://确定按钮
-                    PictureAirLog.out("positive button");
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                if (dialogId == DOWNLOAD_DIALOG) {
                     prepareDownload(holderView, position);
-                    break;
-
-                default:
-                    break;
-            }
-            customDialog.dismiss();
+                }
+                break;
         }
-
     }
 
     /**

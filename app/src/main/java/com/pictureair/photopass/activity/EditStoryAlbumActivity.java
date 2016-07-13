@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -32,7 +33,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.Iterator;
  * @author bauer_bao
  *
  */
-public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener{
+public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener{
 	private ImageView backRelativeLayout;
 	private TextView deleteTextView, titleTextView, editTextView;
 	private LinearLayout editBarLinearLayout;
@@ -61,6 +61,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private final static int GET_PHOTOS_DONE = 13;
 	private final static int START_DELETE_NETWORK_PHOTOS = 14;
 	private final static int DELETE_LOCAL_PHOTOS_DONE = 15;
+	private final static int DELETE_DIALOG = 16;
 	private int tabIndex = 0;
 	private int selectCount = 0;
 	private PWToast myToast;
@@ -72,7 +73,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private boolean netWorkFailed = false;
 	private String ppCode;
 	private SharedPreferences sharedPreferences;
-	private PictureWorksDialog pictureWorksDialog;
+	private PWDialog pictureWorksDialog;
 
 	private Handler editStoryAlbumHandler = new Handler(new Handler.Callback() {
 		@Override
@@ -157,42 +158,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					if(deleteNetPhotoDone) {
 						dealAfterDeleted();
 					}
-					break;
-
-				case DialogInterface.BUTTON_POSITIVE://对话框点击确认按钮
-					UmengUtil.onEvent(EditStoryAlbumActivity.this,Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
-					if (!customProgressDialog.isShowing()){
-						customProgressDialog.show();
-					}
-					new Thread() {
-						public void run() {
-							photopassPhotoslist.clear();
-							localPhotoslist.clear();
-							deleteLocalPhotoDone = false;
-							deleteNetPhotoDone = false;
-							for (int i = 0; i < albumArrayList.size(); i++) {
-								if (albumArrayList.get(i).isSelected == 1) {//选中的照片
-									if (albumArrayList.get(i).onLine == 1) {//网络照片
-										photopassPhotoslist.add(albumArrayList.get(i));
-									} else {
-										localPhotoslist.add(albumArrayList.get(i));
-									}
-								}
-							}
-
-							if (photopassPhotoslist.size() > 0) {
-								editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
-							} else {
-								deleteNetPhotoDone = true;
-							}
-
-							if (localPhotoslist.size() > 0) {
-								deleteLocalPhotos();
-							} else {
-								deleteLocalPhotoDone = true;
-							}
-						}
-					}.start();
 					break;
 
 				default:
@@ -321,10 +286,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				}
 
 				if (pictureWorksDialog == null) {
-					pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
-							getString(R.string.start_delete), getString(R.string.button_cancel), getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
+					pictureWorksDialog = new PWDialog(EditStoryAlbumActivity.this, DELETE_DIALOG)
+							.setPWDialogMessage(R.string.start_delete)
+							.setPWDialogNegativeButton(R.string.button_cancel)
+							.setPWDialogPositiveButton(R.string.reset_pwd_ok)
+							.setOnPWDialogClickListener(this)
+							.pwDialogCreate();
 				}
-				pictureWorksDialog.show();
+				pictureWorksDialog.pwDilogShow();
 				break;
 
 			case R.id.pp_photos_edit:
@@ -456,6 +425,49 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 		if (customProgressDialog.isShowing()) {
 			customProgressDialog.dismiss();
+		}
+	}
+
+	@Override
+	public void onPWDialogButtonClicked(int which, int dialogId) {
+		switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				if (dialogId == DELETE_DIALOG) {
+					UmengUtil.onEvent(EditStoryAlbumActivity.this, Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
+					if (!customProgressDialog.isShowing()) {
+						customProgressDialog.show();
+					}
+					new Thread() {
+						public void run() {
+							photopassPhotoslist.clear();
+							localPhotoslist.clear();
+							deleteLocalPhotoDone = false;
+							deleteNetPhotoDone = false;
+							for (int i = 0; i < albumArrayList.size(); i++) {
+								if (albumArrayList.get(i).isSelected == 1) {//选中的照片
+									if (albumArrayList.get(i).onLine == 1) {//网络照片
+										photopassPhotoslist.add(albumArrayList.get(i));
+									} else {
+										localPhotoslist.add(albumArrayList.get(i));
+									}
+								}
+							}
+
+							if (photopassPhotoslist.size() > 0) {
+								editStoryAlbumHandler.sendEmptyMessage(START_DELETE_NETWORK_PHOTOS);
+							} else {
+								deleteNetPhotoDone = true;
+							}
+
+							if (localPhotoslist.size() > 0) {
+								deleteLocalPhotos();
+							} else {
+								deleteLocalPhotoDone = true;
+							}
+						}
+					}.start();
+				}
+				break;
 		}
 	}
 }

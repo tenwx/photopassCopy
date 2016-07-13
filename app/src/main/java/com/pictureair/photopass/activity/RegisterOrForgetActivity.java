@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -21,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
@@ -31,10 +30,8 @@ import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.RegisterOrForgetCallback;
 
-import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +40,7 @@ import java.util.regex.Pattern;
  * 手机注册
  * Created by bass on 16/4/27.
  */
-public class RegisterOrForgetActivity extends BaseActivity implements RegisterOrForgetCallback, View.OnClickListener, TextWatcher {
+public class RegisterOrForgetActivity extends BaseActivity implements RegisterOrForgetCallback, View.OnClickListener, TextWatcher, PWDialog.OnPWDialogClickListener {
     private static final String TAG = "RegisterOrForgetActivity";
     private RegisterTool registerTool;
     private String tokenId;
@@ -64,46 +61,7 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private boolean isNext = false;
     private ImageView agreeIv;
     private boolean isAgree = false;
-    private PictureWorksDialog pictureWorksDialog;
-
-    private final Handler myHandler = new MyHandler(this);
-
-    private static class MyHandler extends Handler {
-        private final WeakReference<RegisterOrForgetActivity> mActivity;
-
-        public MyHandler(RegisterOrForgetActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            mActivity.get().dealHandler(msg);
-        }
-    }
-
-    /**
-     * 处理Message
-     *
-     * @param msg
-     */
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-            case DialogInterface.BUTTON_POSITIVE://点击确定
-                registerTool.sendSMSValidateCode(currentCode + phoneStr);
-                dismiss();
-                break;
-
-            case DialogInterface.BUTTON_NEGATIVE:
-                dismiss();
-                break;
-            default:
-                break;
-        }
-    }
+    private PWDialog pictureWorksDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +153,6 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         if (null != registerTool)
             registerTool.onDestroy();
         registerTool = null;
-        myHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -483,17 +440,23 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
         dialogMsg = context.getString(R.string.smssdk_make_sure_mobile_detail,dialogMsg);
         PictureAirLog.out("diamsg--->" + dialogMsg);
 
-        /**
-         * 每次弹框有可能手机号不同，dialog目前不支持多次改动数据，所以只能每次都重新new dialog
-         */
-        pictureWorksDialog = new PictureWorksDialog(context, null, dialogMsg, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), false, myHandler);
-        pictureWorksDialog.show();
+        if (pictureWorksDialog == null) {
+            pictureWorksDialog = new PWDialog(context)
+                    .setPWDialogMessage(dialogMsg)
+                    .setPWDialogNegativeButton(R.string.cancel1)
+                    .setPWDialogPositiveButton(R.string.ok)
+                    .setPWDialogContentCenter(false)
+                    .setOnPWDialogClickListener(this)
+                    .pwDialogCreate();
+        }
+        pictureWorksDialog.setPWDialogMessage(dialogMsg)
+                .pwDilogShow();
     }
 
-    private void dismiss() {
-        if (pictureWorksDialog != null) {
-            pictureWorksDialog.dismiss();
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            registerTool.sendSMSValidateCode(currentCode + phoneStr);
         }
     }
-
 }

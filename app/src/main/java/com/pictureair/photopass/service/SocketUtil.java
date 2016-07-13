@@ -241,17 +241,21 @@ public class SocketUtil {
         PictureAirLog.v(TAG, "socketOn: message: " + message);
         if (envenStr.equals("doneOrderPay")) {//订单完成支付推送
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "doneOrderPay").sendToTarget();//清空推送，不能移动位置。
                 message = (JSONObject) message.get("c");
             }
             eventDoneOrderPay(message);
+            if (isSocketReceive) {
+                handler.obtainMessage(SOCKET_RECEIVE_DATA, "doneOrderPay").sendToTarget();//清空推送，不能移动位置。
+            }
 
         } else if (envenStr.equals("upgradedPhotos")) {//升级照片推送
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "upgradedPhoto").sendToTarget();//清空推送，不能移动位置。
                 message = message.getJSONObject("c");
             }
             eventUpgradedPhotos(message, false);
+            if (isSocketReceive) {
+                handler.obtainMessage(SOCKET_RECEIVE_DATA, "upgradedPhoto").sendToTarget();//清空推送，不能移动位置。
+            }
 
         } else if (envenStr.equals("catchOrderInfoOf" + userId)) {//下单推送
             handler.obtainMessage(SOCKET_RECEIVE_DATA, "orderSend").sendToTarget();//清空推送，不能移动位置。
@@ -268,11 +272,13 @@ public class SocketUtil {
 
         } else if (envenStr.equals("delPhotos")) {//删除图片，以及删除pp对应的逻辑
             if (isSocketReceive) {
-                handler.obtainMessage(SOCKET_RECEIVE_DATA, "delPhotos").sendToTarget();//清空推送，不能移动位置。
                 message = (JSONObject) message.get("c");
             }
             //处理删除照片的逻辑
             eventUpgradedPhotos(message, true);
+            if (isSocketReceive) {
+                handler.obtainMessage(SOCKET_RECEIVE_DATA, "delPhotos").sendToTarget();//清空推送，不能移动位置。
+            }
         }
     }
 }

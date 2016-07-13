@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.widget.PictureWorksDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 
 /**
  * Created by talon on 16/5/20.
@@ -28,7 +28,7 @@ public interface PWEditViewInterface {
 
     void leftBackClik();
 
-    void showIsSaveDialog(PictureWorksDialog pictureWorksDialog); //显示是否保存的对话框
+    void showIsSaveDialog(PWDialog pwDialog); //显示是否保存的对话框
 
     void showPhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath); //显示用户的边框
 

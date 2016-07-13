@@ -1,6 +1,7 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
@@ -30,7 +31,7 @@ import java.lang.ref.WeakReference;
  * @author talon
  *         用户功能设置
  */
-public class SettingActivity extends BaseActivity implements OnClickListener {
+public class SettingActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private SettingUtil settingUtil;
     private RelativeLayout feedback;
     //    private ImageView back;
@@ -47,10 +48,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     private SharedPreferences appSharedPreferences;
     private String currentLanguage;
     private final String TAG = "SettingActivity";
+    private static final int LOGOUT_DIALOG = 111;
+    private static final int SET_AUTO_SYNC_DIALOG = 222;
 
     //纪录是否自动更新的变量。
     private boolean isAutoUpdate = false;
     private CustomProgressDialog customProgressDialog; // loading 框
+    private PWDialog pwDialog;
 
     private final Handler settingHandler = new HelpHandler(this);
 
@@ -151,6 +155,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         appSharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         customProgressDialog = CustomProgressDialog.show(this, this.getString(R.string.is_loading), true, null);
+        pwDialog = new PWDialog(this)
+                .setOnPWDialogClickListener(this)
+                .pwDialogCreate();
         new Thread() {
             @Override
             public void run() {
@@ -168,22 +175,11 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.logout:
-                new CustomDialog(SettingActivity.this, R.string.comfirm_logout, R.string.button_cancel, R.string.button_ok, new CustomDialog.MyDialogInterface() {
-                    @Override
-                    public void yes() {
-                        // TODO Auto-generated method stub // 确定退出：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
-                        // logout 之后，清空上个用户的数据。
-                        application.setMainTabIndex(0);   // 设置 进入 app为主页
-                        //断开推送
-                        AppExitUtil.getInstance().AppLogout();
-                    }
-
-                    @Override
-                    public void no() {
-                        // TODO Auto-generated method stub // 取消退出：不做操作
-
-                    }
-                });
+                pwDialog.setPWDialogId(LOGOUT_DIALOG)
+                        .setPWDialogMessage(R.string.comfirm_logout)
+                        .setPWDialogNegativeButton(R.string.button_cancel)
+                        .setPWDialogPositiveButton(R.string.button_ok)
+                        .pwDilogShow();
 
                 break;
 
@@ -237,25 +233,11 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                         }
                     }.start();
                 }else{
-                    new CustomDialog(SettingActivity.this, R.string.confirm_sync_msg, R.string.confirm_sync_no, R.string.confirm_sync_yes, new CustomDialog.MyDialogInterface() {
-                        @Override
-                        public void yes() {
-                            // TODO Auto-generated method stub // 确认同步更新后，修改更新设置状态
-                            ibAutoUpdate.setImageResource(R.drawable.sele);
-                            isAutoUpdate = true;
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-                                }
-                            }.start();
-                        }
-                        @Override
-                        public void no() {
-                            // TODO Auto-generated method stub // 取消：不做操作
-
-                        }
-                    });
+                    pwDialog.setPWDialogId(SET_AUTO_SYNC_DIALOG)
+                            .setPWDialogMessage(R.string.confirm_sync_msg)
+                            .setPWDialogNegativeButton(R.string.confirm_sync_no)
+                            .setPWDialogPositiveButton(R.string.confirm_sync_yes)
+                            .pwDilogShow();
                 }
                 break;
             default:
@@ -295,5 +277,33 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            switch (dialogId) {
+                case LOGOUT_DIALOG:
+                    // logout 之后，清空上个用户的数据。
+                    application.setMainTabIndex(0);   // 设置 进入 app为主页
+                    //断开推送
+                    AppExitUtil.getInstance().AppLogout();
+                    break;
+
+                case SET_AUTO_SYNC_DIALOG:
+                    ibAutoUpdate.setImageResource(R.drawable.sele);
+                    isAutoUpdate = true;
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                        }
+                    }.start();
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 }

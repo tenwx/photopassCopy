@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CouponAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.entity.CouponInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -24,21 +25,21 @@ import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CouponViewInterface;
-import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
-import com.pictureair.photopass.widget.PictureWorksDialog;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 优惠卷view
  * bass
  */
-public class CouponActivity extends BaseActivity implements CouponViewInterface {
+public class CouponActivity extends BaseActivity implements CouponViewInterface, PWDialog.OnCustomerViewCallBack, PWDialog.OnPWDialogClickListener{
     private final String TAG = "CouponActivity";
+    private static final int INPUT_EDITTEXT_DIALOG = 101;
 
     private RecyclerView mRecyclerView;
     private LinearLayout llNoCoupon;
@@ -53,9 +54,9 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
 
     private CouponTool couponTool;
     private String whatPege = "";//是从什么页面进来的
-    private PictureWorksDialog pictureWorksDialog;
+    private PWDialog pictureWorksDialog;
+    private EditTextWithClear editTextWithClear;
     private DealCodeUtil dealCodeUtil;
-    public static int PREVIEW_COUPON_CODE = 10000;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
 
     private Intent mOerderIntent = null;
@@ -129,9 +130,14 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
 
             case R.id.topRightView:
                 if (pictureWorksDialog == null) {
-                    pictureWorksDialog = new PictureWorksDialog(context, null, null, getResources().getString(R.string.cancel1), getResources().getString(R.string.ok), false, R.layout.dialog_edittext, myHandler);
+                    pictureWorksDialog = new PWDialog(context, INPUT_EDITTEXT_DIALOG)
+                            .setPWDialogNegativeButton(R.string.cancel1)
+                            .setPWDialogPositiveButton(R.string.ok)
+                            .setOnPWDialogClickListener(this)
+                            .setPWDialogContentView(R.layout.dialog_edittext, this)
+                            .pwDialogCreate();
                 }
-                pictureWorksDialog.show();
+                pictureWorksDialog.pwDilogShow();
                 break;
 
             default:
@@ -168,15 +174,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case DialogInterface.BUTTON_POSITIVE://点击确定，添加code
-                    if (msg.obj.toString().length() == 0) {
-                        myToast.setTextAndShow(R.string.conpon_input_hint, Common.TOAST_SHORT_TIME);
-                    } else {
-                        showProgressBar();
-                        dealCodeUtil.startDealCode(msg.obj.toString());
-                    }
-                    break;
-
                 case DealCodeUtil.DEAL_CODE_FAILED:
                     goneProgressBar();
                     break;
@@ -362,5 +359,29 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface 
         //设置RecycerView的布局管理
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         mRecyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    @Override
+    public void initCustomerView(View view, int dialogId) {
+        if (dialogId == INPUT_EDITTEXT_DIALOG) {
+            editTextWithClear = (EditTextWithClear) view.findViewById(R.id.et_text);
+        }
+    }
+
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                if (dialogId == INPUT_EDITTEXT_DIALOG) {
+                    String result = editTextWithClear.getText().toString().trim();
+                    if (result.length() == 0) {
+                        myToast.setTextAndShow(R.string.conpon_input_hint, Common.TOAST_SHORT_TIME);
+                    } else {
+                        showProgressBar();
+                        dealCodeUtil.startDealCode(result);
+                    }
+                }
+                break;
+        }
     }
 }

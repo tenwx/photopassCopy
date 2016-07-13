@@ -14,13 +14,11 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
 
 import java.text.ParseException;
@@ -30,8 +28,6 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
     private ArrayList<PhotoInfo> list;
     private Context context;
     private LayoutInflater layoutInflater;
-    private PWToast myToast;
-    private CustomDialog customDialog;
     private ImageLoader imageLoader;
     private static final int COLUMN_COUNT = 3;
 
@@ -39,7 +35,6 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
         this.context = context;
         this.list = list;
         layoutInflater = LayoutInflater.from(context);
-        myToast = new PWToast(context);
         imageLoader = ImageLoader.getInstance();
     }
 

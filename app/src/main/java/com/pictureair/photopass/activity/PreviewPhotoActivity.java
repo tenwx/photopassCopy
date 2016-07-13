@@ -2,6 +2,7 @@ package com.pictureair.photopass.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -39,8 +40,8 @@ import com.pictureair.photopass.GalleryWidget.GalleryViewPager;
 import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.util.BlurUtil;
-import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
@@ -65,7 +66,6 @@ import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 import com.pictureair.photopass.widget.SharePop;
 
 import java.io.File;
@@ -84,7 +84,7 @@ import java.util.Locale;
  * @author bauer_bao
  */
 @SuppressLint({"FloatMath", "NewApi"})
-public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback {
+public class PreviewPhotoActivity extends BaseActivity implements OnClickListener, Handler.Callback, PWDialog.OnPWDialogClickListener {
     private SettingUtil settingUtil;
     //工具条
     private TextView editButton;
@@ -196,9 +196,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int NO_PHOTOS_AND_RETURN = 1002;
     private static final int MAX_SPEED = 6000;
 
-    private CustomDialog customdialog; //  对话框
-    private PictureWorksDialog pictureWorksDialog;
+    private static final int LOCAL_PHOTO_EDIT_DIALOG = 1003;
+    private static final int FRAME_PHOTO_EDIT_DIALOG = 1004;
+    private static final int GO_SETTING_DIALOG = 1005;
+    private static final int DOWNLOAD_DIALOG = 1006;
 
+    private PWDialog pictureWorksDialog;
 
     /**
      * 双击放大需要的尺寸，为预览容易的一半
@@ -731,6 +734,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
     private void init() {
         // TODO Auto-generated method stub
+        pictureWorksDialog = new PWDialog(this)
+                .setOnPWDialogClickListener(this)
+                .pwDialogCreate();
         previewPhotoHandler = new Handler(this);
         pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(pictureAirDbManager);
@@ -1222,6 +1228,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (photoInfo == null) {
                     return;
                 }
+                if (photoInfo.onLine == 0) {
+                    pictureWorksDialog.setPWDialogId(LOCAL_PHOTO_EDIT_DIALOG)
+                            .setPWDialogMessage(R.string.local_photo_cannot_edit_content)
+                            .setPWDialogNegativeButton(null)
+                            .setPWDialogPositiveButton(R.string.photo_cannot_edit_yes)
+                            .pwDilogShow();
+                    return;
+                }
                 if (photoInfo.isPayed == 1) {
                     if (photoInfo.isHasPreset == 0) { // 如果没有模版，就去执行编辑操作。 如果有模版就弹出提示。
                         intent = new Intent(this, EditPhotoActivity.class);
@@ -1232,12 +1246,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                         }
                         startActivityForResult(intent, 1);
                     } else {
-                        if (pictureWorksDialog == null) {
-                            pictureWorksDialog = new PictureWorksDialog(PreviewPhotoActivity.this, null,
-                                    getString(R.string.photo_cannot_edit_content), null,
-                                    getString(R.string.photo_cannot_edit_yes), true, previewPhotoHandler);
-                        }
-                        pictureWorksDialog.show();
+                        pictureWorksDialog.setPWDialogId(FRAME_PHOTO_EDIT_DIALOG)
+                                .setPWDialogMessage(R.string.photo_cannot_edit_content)
+                                .setPWDialogNegativeButton(null)
+                                .setPWDialogPositiveButton(R.string.photo_cannot_edit_yes)
+                                .pwDilogShow();
                     }
                 } else {
                     if (loadFailed) {
@@ -1835,56 +1848,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
-    // 判断 是否第一次提示 同步更新。，并弹出相应的tips  暂时取消这个设置。
-//    private void judgeBuyOnePhoto() {
-//        if (myApplication.isPhotoIsPaid()) {// 如果是 购买之后跳转过来的。
-//            if (settingUtil.isFirstTipsSyns(sharedPreferences.getString(
-//                    Common.USERINFO_ID, ""))) {
-//                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
-//                        Common.USERINFO_ID, ""))) {
-//                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-//                        downloadPic();
-//                    }
-//                } else {
-//                    new CustomDialog(PreviewPhotoActivity.this,
-//                            R.string.first_tips_syns_msg1,
-//                            R.string.first_tips_syns_no_msg1,
-//                            R.string.first_tips_syns_yes_msg1,
-//                            new CustomDialog.MyDialogInterface() {
-//                                @Override
-//                                public void yes() {
-//                                    // TODO Auto-generated method stub
-//                                    // //同步更新：下载单张照片，并且修改设置。
-//                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-//                                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-//                                        downloadPic();
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void no() {
-//                                    // TODO Auto-generated method stub // 取消；不操作
-//                                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-//                                }
-//                            });
-//                }
-//                settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences
-//                        .getString(Common.USERINFO_ID, ""));
-//            } else {
-//                if (settingUtil.isAutoUpdate(sharedPreferences.getString(
-//                        Common.USERINFO_ID, ""))) {
-//                    if (AppUtil.getNetWorkType(PreviewPhotoActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
-//                        downloadPic();
-//                    }
-//                }
-//            }
-//
-//        } else {
-//
-//        }
-//        myApplication.setPhotoIsPaid(false); // 保持 不是购买的状态。
-//    }
-
     /**
      * tips 1，网络下载流程。
      */
@@ -1893,47 +1856,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             downloadPic();
         } else {
             // 判断用户是否设置过 “仅wifi” 的选项。
-            if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(
-                    Common.USERINFO_ID, ""))) {
-                customdialog = new CustomDialog(PreviewPhotoActivity.this,
-                        R.string.one_photo_download_msg1,
-                        R.string.one_photo_download_no_msg1,
-                        R.string.one_photo_download_yes_msg1,
-                        new CustomDialog.MyDialogInterface() {
-
-                            @Override
-                            public void yes() {
-                                // TODO Auto-generated method stub
-                                // //去更改：跳转到设置界面。
-                                Intent intent = new Intent(
-                                        PreviewPhotoActivity.this,
-                                        SettingActivity.class);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void no() {
-                                // TODO Auto-generated method stub // 考虑下：弹窗消失
-                            }
-                        });
+            if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                pictureWorksDialog.setPWDialogId(GO_SETTING_DIALOG)
+                        .setPWDialogMessage(R.string.one_photo_download_msg1)
+                        .setPWDialogNegativeButton(R.string.one_photo_download_no_msg1)
+                        .setPWDialogPositiveButton(R.string.one_photo_download_yes_msg1)
+                        .pwDilogShow();
             } else {
-                customdialog = new CustomDialog(PreviewPhotoActivity.this,
-                        R.string.one_photo_download_msg2,
-                        R.string.one_photo_download_no_msg2,
-                        R.string.one_photo_download_yes_msg2,
-                        new CustomDialog.MyDialogInterface() {
-
-                            @Override
-                            public void yes() {
-                                // TODO Auto-generated method stub //继续下载：继续下载
-                                downloadPic();
-                            }
-
-                            @Override
-                            public void no() {
-                                // TODO Auto-generated method stub // 停止下载：弹窗消失
-                            }
-                        });
+                pictureWorksDialog.setPWDialogId(DOWNLOAD_DIALOG)
+                        .setPWDialogMessage(R.string.one_photo_download_msg2)
+                        .setPWDialogNegativeButton(R.string.one_photo_download_no_msg2)
+                        .setPWDialogPositiveButton(R.string.one_photo_download_yes_msg2)
+                        .pwDilogShow();
             }
         }
     }
@@ -1964,5 +1898,23 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            switch (dialogId) {
+                case GO_SETTING_DIALOG:
+                    //去更改：跳转到设置界面。
+                    Intent intent = new Intent(PreviewPhotoActivity.this, SettingActivity.class);
+                    startActivity(intent);
+                    break;
 
+                case DOWNLOAD_DIALOG:
+                    downloadPic();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
 }

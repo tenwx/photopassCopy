@@ -10,6 +10,7 @@ import android.os.Message;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
+import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
@@ -18,7 +19,6 @@ import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.PictureWorksDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * 负责逻辑性操作
  * 第一次加载网络图片时，已经把Bitmap存入了临时目录。后退的时候，从临时目录取
  */
-public class PWEditController implements PWEditViewListener{
+public class PWEditController implements PWEditViewListener, PWDialog.OnPWDialogClickListener{
 
     private Activity mActivity;
     private PWEditViewInterface pwEditViewInterface;
@@ -40,7 +40,7 @@ public class PWEditController implements PWEditViewListener{
 
     private Bitmap mMainBitmap; // 原图的Bitmap，开始操作这个Bitmap
     private int rotateAngle;// 记录旋转角度
-    private PictureWorksDialog pictureWorksDialog; // 询问是否保存的对话框
+    private PWDialog pictureWorksDialog; // 询问是否保存的对话框
     EditActivityAdapter eidtAdapter;
     int curFramePosition; // 边框的索引值
 
@@ -227,7 +227,12 @@ public class PWEditController implements PWEditViewListener{
     public void judgeIsShowDialog() {
         if(pwEditUtil.isNeedShowDialog()){ //弹出对话框
             if (pictureWorksDialog == null) {
-                pictureWorksDialog = new PictureWorksDialog(mActivity, null, mActivity.getString(R.string.exit_hint), mActivity.getString(R.string.button_cancel), mActivity.getString(R.string.button_ok), true, mHandler);
+                pictureWorksDialog = new PWDialog(mActivity)
+                        .setPWDialogMessage(R.string.exit_hint)
+                        .setPWDialogNegativeButton(R.string.button_cancel)
+                        .setPWDialogPositiveButton(R.string.button_ok)
+                        .setOnPWDialogClickListener(this)
+                        .pwDialogCreate();
             }
             pwEditViewInterface.showIsSaveDialog(pictureWorksDialog);
         }else {
@@ -280,6 +285,14 @@ public class PWEditController implements PWEditViewListener{
         }
     }
 
+    @Override
+    public void onPWDialogButtonClicked(int which, int dialogId) {
+        if (which == DialogInterface.BUTTON_NEGATIVE) {
+            finish();
+        } else if (which == DialogInterface.BUTTON_POSITIVE) {
+            saveReallyPhoto();
+        }
+    }
 
     public class MyHandler extends Handler {
         WeakReference<MyApplication> myApplication;
@@ -294,12 +307,6 @@ public class PWEditController implements PWEditViewListener{
                 return;
             }
             switch (msg.what) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    saveReallyPhoto();
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    finish();
-                    break;
                 case 1111: //点击边框Item的回调
                     curEditType = PhotoCommon.EditFrame;
                     curFramePosition = msg.arg1;
