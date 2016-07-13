@@ -1127,6 +1127,16 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         super.onHiddenChanged(hidden);
         hasHidden = hidden;
         PictureAirLog.out("hidden--->" + hidden);
+        if (!hasHidden) {
+            if (app.getPushPhotoCount() + app.getPushViedoCount() > 0) {
+                PictureAirLog.out("hidden--->开始刷新");
+                //刷新操作
+                clickToRefresh();
+            } else {
+                PictureAirLog.out("hidden--->不需要刷新");
+
+            }
+        }
     }
 
     /**
@@ -1761,6 +1771,24 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
     }
 
+    private void clickToRefresh() {
+        if (noPhotoView.isShown() || storyNoPpToScanLinearLayout.isShown()) {
+            PictureAirLog.out("do refresh when noPhotoView is showing");
+            if (!swipeRefreshLayout.isRefreshing()) {
+                noPhotoViewStateRefresh = true;
+                swipeRefreshLayout.setEnabled(true);
+                swipeRefreshLayout.setRefreshing(true);
+                Message message = fragmentPageStoryHandler.obtainMessage();
+                message.what = REFRESH;
+                fragmentPageStoryHandler.sendMessage(message);
+            }
+        } else {
+            PictureAirLog.out("do refresh when noPhotoView is not showing");
+            EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.START_REFRESH));
+
+        }
+    }
+
     /**
      * 检测story按钮的点击事件，点击了执行刷新操作
      *
@@ -1771,21 +1799,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (baseBusEvent instanceof StoryRefreshOnClickEvent) {
             StoryRefreshOnClickEvent storyRefreshOnClickEvent = (StoryRefreshOnClickEvent) baseBusEvent;
             if (storyRefreshOnClickEvent.isStoryTabClick()) {//通知页面开始刷新
-                if (noPhotoView.isShown() || storyNoPpToScanLinearLayout.isShown()) {
-                    PictureAirLog.out("do refresh when noPhotoView is showing");
-                    if (!swipeRefreshLayout.isRefreshing()) {
-                        noPhotoViewStateRefresh = true;
-                        swipeRefreshLayout.setEnabled(true);
-                        swipeRefreshLayout.setRefreshing(true);
-                        Message message = fragmentPageStoryHandler.obtainMessage();
-                        message.what = REFRESH;
-                        fragmentPageStoryHandler.sendMessage(message);
-                    }
-                } else {
-                    PictureAirLog.out("do refresh when noPhotoView is not showing");
-                    EventBus.getDefault().post(new StoryRefreshEvent(app.fragmentStoryLastSelectedTab, StoryRefreshEvent.START_REFRESH));
-
-                }
+                clickToRefresh();
             }
             EventBus.getDefault().removeStickyEvent(storyRefreshOnClickEvent);
         }
