@@ -54,14 +54,14 @@
     <string name="share">Share</string>
     <string name="share_completed">Share Successful</string>
     <string name="share_canceled">Share Canceled</string>
-    <string name="share_failed">Share Failed</string>
+    <string name="share_failed">Share Unsuccessful</string>
     <string name="weibo_oauth_regiseter">Authorization</string>
-    <string name="share_failure_wechat">Your mobile has not install WeChat, Please download and install to share!</string>
-    <string name="share_failure_weibo">Your mobile has not install Sina Weibo, Please download and install to share!</string>
-    <string name="share_failure_qzone">Your mobile has not install QQ, Please download and install to share!</string>
-    <string name="share_failure_facebook">Your mobile has not install Facebook, Please download and install to share!</string>
-    <string name="share_failure_twitter">Your mobile has not install Twitter, Please download and install to share!</string>
-    <string name="share_failure_instagram">Your mobile has not install Instagram, Please download and install to share!</string>
+    <string name="share_failure_wechat">Your mobile has not install WeChat. Please download and install to share!</string>
+    <string name="share_failure_weibo">Your mobile has not install Sina Weibo. Please download and install to share!</string>
+    <string name="share_failure_qzone">Your mobile has not install QQ. Please download and install to share!</string>
+    <string name="share_failure_facebook">Your mobile has not install Facebook. Please download and install to share!</string>
+    <string name="share_failure_twitter">Your mobile has not install Twitter. Please download and install to share!</string>
+    <string name="share_failure_instagram">Your mobile has not install Instagram. Please download and install to share!</string>
     <string name="sinaweibo">Sina Weibo</string>
     <string name="qzone">QZone</string>
     <string name="wechat">Friends</string>
@@ -100,7 +100,7 @@
     <string name="storypage_no_photo">There are no photos in your\nDisney PhotoPass account</string>
     <string name="storypage_no_pp">Your Disney PhotoPass photos will appear here</string>
     <string name="story_no_photo">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
-    <string name="no_network">Loading failed, Please check your network</string>
+    <string name="no_network">Please check your network again.</string>
     <string name="click_button_reload">Click button to reload</string>
     <string name="reload">Refresh</string>
     <string name="nomore">No more data to load!</string>
@@ -200,7 +200,7 @@
     <string name="local_photo_not_support_makegift">Sorry we cannot print your edited photos.</string>
     <string name="not_support_makegift">Sorry we cannot print your digital souvenir photos.</string>
     <string name="photo_index">%1$d/%2$d</string>
-    <string name="photo_cannot_edit_content">Sorry, your pictures taken through the authors temporarily does not support edit</string>
+    <string name="photo_cannot_edit_content">Sorry, the pictures selected is not suitable for futher edit.</string>
     <string name="local_photo_cannot_edit_content">Sorry, your pictures does not support edit</string>
     <string name="photo_cannot_edit_no">Cancel</string>
     <string name="photo_cannot_edit_yes">OK</string>
@@ -212,7 +212,7 @@
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
-    <string name="no_ppp_tips">You haven\'t any expiry PhotoPass+</string>
+    <string name="no_ppp_tips">You do not have any valid PhotoPass+</string>
     <!-- blur end -->
 
     <!-- download start -->
@@ -309,7 +309,7 @@
     <string name="submit_order">Payment Successful</string>
     <string name="no_pay_tips">You don\'t pay anything!</string>
     <string name="no_pay_success">OK</string>
-    <string name="install_wechat_first">Your mobile has not install WeChat, Please download and install to pay!</string>
+    <string name="install_wechat_first">Your mobile has not install WeChat. Please download to continue your payment.</string>
     <string name="other_ways">Others</string>
     <!-- payment end -->
 
@@ -348,7 +348,7 @@
     <string name="order_empty_buttonString">Go Shopping</string>
     <string name="want_to_buy">There is no order history here.</string>
     <string name="order_pending">Pending</string>
-    <string name="order_delete_msg">Do you confirm to delete the order?</string>
+    <string name="order_delete_msg">Confirm to delete order?</string>
     <!-- order end -->
 
     <!-- order detail start -->
@@ -396,7 +396,7 @@
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
-    <string name="select_pp_right_date">You have choose to activate PhotoPass card:\n%1$s\nPhotoPass+ allows you to activate 1 PhotoPass card on three consecutive dates. OR 3 PhotoPass cards on one single day.\nPlease confirm to continue activate the above PhotoPass card.</string>
+    <string name="select_pp_right_date">You have choose to activate PhotoPass card:\n%1$s\nPhotoPass+ allows you to activate 1 PhotoPass card on three consecutive dates or 3 PhotoPass cards in one single day.\nPlease confirm to continue activate the above PhotoPass card.</string>
     <string name="pp_tip">Below are your Park Tickets / PhotoPass Cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
@@ -477,7 +477,7 @@
     <string name="confirm_sync_yes">OK</string>
     <string name="confirm_sync_no">Cancel</string>
     <!-- 删除pp的提示-->
-    <string name="delete_pp">This Disney PhotoPass photos will not be shown once deleted.</string>
+    <string name="delete_pp">These Disney PhotoPass photos will not be shown once deleted.</string>
     <string name="delete_pp_cancel">Cancel</string>
     <string name="delete_pp_ok">Delete</string>
     <!-- tips end -->
@@ -546,7 +546,7 @@
     <string name="select_cpupon">Select Coupon</string>
     <string name="discount_price">Discount</string>
     <string name="discount_price1">Discount:</string>
-    <string name="incorrect_coupon">Incorrect Coupon</string>
+    <string name="incorrect_coupon">Invalid Coupon</string>
     <string name="coupon_incalid">This coupon cannot support for this good</string>
     <string name="coupon_expireto">Expiration Date: %1$s</string>
     <!-- 优惠卷end-->

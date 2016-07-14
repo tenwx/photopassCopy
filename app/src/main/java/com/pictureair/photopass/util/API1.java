@@ -1437,7 +1437,7 @@ public class API1 {
      * @param addressId    string用户地址id(与outletId互斥,但不能都存在)
      * @param handler      handler
      */
-    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId, JSONArray couponCodes,JSONObject invoice, final Handler handler) {
+    public static void addOrder(JSONArray cartItemIds, int deliveryType, String outletId, String addressId, JSONArray couponCodes,JSONObject invoice, String channelId, final Handler handler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("cartItemIds", cartItemIds.toString());
@@ -1452,6 +1452,10 @@ public class API1 {
         }
         if(null != invoice)
             params.put("invoiceInfo",invoice);
+
+        if (!TextUtils.isEmpty(channelId)) {
+            params.put("channelId", channelId);
+        }
         PictureAirLog.out("addorder params ------------>"+params.toString());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {
             @Override

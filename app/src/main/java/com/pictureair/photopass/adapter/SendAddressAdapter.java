@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.SendAddress;
-import com.pictureair.photopass.widget.PWToast;
 
 import java.util.List;
 
@@ -84,10 +83,10 @@ public class SendAddressAdapter extends BaseAdapter {
             }
         });
         if(list.get(position).isSelected()){
-            holder.ib.setImageResource(R.drawable.invoicesel_press);
+            holder.ib.setImageResource(R.drawable.invoice_press);
             //holder.btnDel.setVisibility(View.GONE);
         }else{
-            holder.ib.setImageResource(R.drawable.invoicesel_nor);
+            holder.ib.setImageResource(R.drawable.invoice_nor);
             //holder.btnDel.setVisibility(View.VISIBLE);
         }
         holder.btnDel.setOnClickListener(new View.OnClickListener() {

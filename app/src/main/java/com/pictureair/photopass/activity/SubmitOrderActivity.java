@@ -672,14 +672,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
 
                             invoice = assembleInvoiceJson();
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, submitOrderHandler);
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, null, submitOrderHandler);
                         }
                     } else {
-                        //PP+/数码商品不需要地址
-
+                        //PP+/数码商品不需要地址，需要检查channelId字段
+                        String channelId = null;
                         invoice = assembleInvoiceJson();
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, submitOrderHandler);
+                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, channelId, submitOrderHandler);
                     }
                 } else {
                     JSONObject invoice=null;

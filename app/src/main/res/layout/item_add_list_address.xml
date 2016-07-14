@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:src="@drawable/invoicesel_nor" />
+        android:src="@drawable/invoice_nor" />
     <TextView
         android:id="@+id/item_address_tv_name"
         android:layout_width="wrap_content"
