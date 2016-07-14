@@ -491,6 +491,7 @@
     <string name="edit_story_confirm_download">确认下载</string>
     <string name="edit_story_reselect">重新选择</string>
     <string name="edit_story_unpay_tips">亲，选项中含有未付费的照片不能下载哦！您可继续确认下载已付费的照片哦！</string>
+    <string name="edit_story_addto_downloadlist">照片已在下载列队，可去下载管理内查询，请耐心等待！</string>
     <!-- edit story end -->
 
     <!-- 优惠卷start   文案没有，暂时中文-->

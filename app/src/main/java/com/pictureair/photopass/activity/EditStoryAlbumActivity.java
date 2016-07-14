@@ -21,15 +21,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditStoryPinnedListViewAdapter;
+import com.pictureair.photopass.customDialog.CustomDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
@@ -68,6 +71,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private PWToast myToast;
 	private CustomProgressDialog customProgressDialog;
 	private PictureAirDbManager pictureAirDbManager;
+	private SettingUtil settingUtil;
 	private boolean editMode = false;
 	private boolean deleteLocalPhotoDone = false;
 	private boolean deleteNetPhotoDone = false;
@@ -197,19 +201,14 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							}
 						}.start();
 					} else if (dialogId == 102) {
-						//将已购买的加入下载队列中
-						ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
-						for (int i = 0; i < albumArrayList.size(); i++) {
-							if (albumArrayList.get(i).isPayed == 1) {
-								hasPayedList.add(albumArrayList.get(i));
-							}
-						}
-						//开始将图片加入下载队列
-						Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
-						Bundle bundle = new Bundle();
-						bundle.putParcelableArrayList("photos", hasPayedList);
-						intent.putExtras(bundle);
-						startService(intent);
+						startDownload(true);
+
+					} else if (dialogId == 104) {
+						Intent i = new Intent();
+						i.setClass(MyApplication.getInstance(), LoadManageActivity.class);
+						startActivity(i);
+						AppManager.getInstance().killActivity(MyPPActivity.class);
+						finish();
 					}
 					break;
 
@@ -219,6 +218,38 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			return false;
 		}
 	});
+
+	/**
+	 * 开始下载
+	 * @param hasUnPayPhotos 是否有未购买的图片
+     */
+	private void startDownload(boolean hasUnPayPhotos){
+		ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
+		if (hasUnPayPhotos) {
+			//将已购买的加入下载队列中
+			for (int i = 0; i < albumArrayList.size(); i++) {
+				if (albumArrayList.get(i).isPayed == 1) {
+					hasPayedList.add(albumArrayList.get(i));
+				}
+			}
+		} else {
+			hasPayedList.addAll(albumArrayList);
+		}
+
+		//开始将图片加入下载队列
+		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList("photos", hasPayedList);
+		intent.putExtras(bundle);
+		startService(intent);
+
+		//弹框提示，可以进去下载管理页面
+		pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
+				getString(R.string.edit_story_addto_downloadlist), null,
+				getString(R.string.reset_pwd_ok), true, editStoryAlbumHandler);
+		pictureWorksDialog.show();
+		dialogId = 104;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -253,6 +284,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		//初始化数据
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
+		settingUtil = new SettingUtil(pictureAirDbManager);
 		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 		ppCode = getIntent().getStringExtra("ppCode");
 
@@ -385,28 +417,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				break;
 
 			case R.id.select_download:
-				boolean hasUnPayedItem = false;
-				for (int i = 0; i < albumArrayList.size(); i++) {
-					if (albumArrayList.get(i).isPayed == 0) {
-						hasUnPayedItem = true;
-						break;
-					}
-				}
-
-				if (hasUnPayedItem) {//弹框提示
-					pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
-							getString(R.string.edit_story_unpay_tips), getString(R.string.edit_story_reselect), getString(R.string.edit_story_confirm_download), true, editStoryAlbumHandler);
-					pictureWorksDialog.show();
-					dialogId = 102;
-				} else {
-					//直接下载
-					//开始将图片加入下载队列
-					Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
-					Bundle bundle = new Bundle();
-					bundle.putParcelableArrayList("photos", albumArrayList);
-					intent.putExtras(bundle);
-					startService(intent);
-				}
+				judgeOnePhotoDownloadFlow();
 				break;
 
 			case R.id.pp_photos_edit:
@@ -420,6 +431,76 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 			default:
 				break;
+		}
+	}
+
+	private void downloadPic(){
+		boolean hasUnPayedItem = false;
+		for (int i = 0; i < albumArrayList.size(); i++) {
+			if (albumArrayList.get(i).isPayed == 0) {
+				hasUnPayedItem = true;
+				break;
+			}
+		}
+
+		if (hasUnPayedItem) {//弹框提示
+			pictureWorksDialog = new PictureWorksDialog(EditStoryAlbumActivity.this, null,
+					getString(R.string.edit_story_unpay_tips), getString(R.string.edit_story_reselect), getString(R.string.edit_story_confirm_download), true, editStoryAlbumHandler);
+			pictureWorksDialog.show();
+			dialogId = 102;
+
+		} else {
+			startDownload(false);
+		}
+	}
+
+	/**
+	 * tips 1，网络下载流程。
+	 */
+	private void judgeOnePhotoDownloadFlow() { // 如果当前是wifi，无弹窗提示。如果不是wifi，则提示。
+		if (AppUtil.getNetWorkType(EditStoryAlbumActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+			downloadPic();
+		} else {
+			// 判断用户是否设置过 “仅wifi” 的选项。
+			if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+				new CustomDialog(EditStoryAlbumActivity.this,
+						R.string.one_photo_download_msg1,
+						R.string.one_photo_download_no_msg1,
+						R.string.one_photo_download_yes_msg1,
+						new CustomDialog.MyDialogInterface() {
+
+							@Override
+							public void yes() {
+								// TODO Auto-generated method stub
+								// //去更改：跳转到设置界面。
+								Intent intent = new Intent(EditStoryAlbumActivity.this, SettingActivity.class);
+								startActivity(intent);
+							}
+
+							@Override
+							public void no() {
+								// TODO Auto-generated method stub // 考虑下：弹窗消失
+							}
+						});
+			} else {
+				new CustomDialog(EditStoryAlbumActivity.this,
+						R.string.one_photo_download_msg2,
+						R.string.one_photo_download_no_msg2,
+						R.string.one_photo_download_yes_msg2,
+						new CustomDialog.MyDialogInterface() {
+
+							@Override
+							public void yes() {
+								// TODO Auto-generated method stub //继续下载：继续下载
+								downloadPic();
+							}
+
+							@Override
+							public void no() {
+								// TODO Auto-generated method stub // 停止下载：弹窗消失
+							}
+						});
+			}
 		}
 	}
 
