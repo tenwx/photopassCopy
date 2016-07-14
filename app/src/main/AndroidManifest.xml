@@ -255,6 +255,16 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activity.InvoiceActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.NewAddressActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"/>
+
         <!-- alipay sdk begin -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"

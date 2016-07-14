@@ -32,6 +32,7 @@ import com.pictureair.photopass.adapter.SubmitOrderListViewAdapter;
 import com.pictureair.photopass.entity.Address;
 import com.pictureair.photopass.entity.AddressJson;
 import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.InvoiceInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
@@ -53,8 +54,8 @@ import java.util.List;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
-    private MyApplication myApplication;
     public static int PREVIEW_COUPON_CODE = 10000;
+    public static int PREVIEW_INVOICE_CODE = 10001;
     private TextView submitButton;
     private TextView totalpriceTextView, currencyTextView, allGoodsTextView;
 
@@ -82,10 +83,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private List<Address> addressList;
     private ListView transportListView;
     private AddressAdapter addressAdapter;
+    private InvoiceInfo invoiceInfo;//发票信息
     private int curPositon = -1;//记录选择的地址
 
 
-    private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,
+    private TextView couponCountTv, couponPriceUnitTv, couponPriceTv,invoicePriceTv,invoicePriceUnitTv,
             shopPriceUnitTv, shopPriceTv, payPriceUnitTv, payPriceTv, discountPriceUnitTv, discountPriceTv, couponSubtractTv, discountSubtractTv;
 
     private int couponCount = 0;//优惠券数量
@@ -94,6 +96,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private float straightwayPreferentialPrice = 0;//优惠立减
     private float promotionPreferentialPrice = 0;//优惠抵扣
     private float preferentialPrice = 0;//优惠减免总费用
+    private float invoicePay=0;//快递费用
     private float resultPrice = 0;//初始总费用
 
     private static final int PAY_SUCCESS = 10001;//支付成功
@@ -238,6 +241,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 PictureAirLog.v(TAG, photoIdString + "{{{{" + photoUrlString);
                 updatephotolist.set(0, itemInfo);
                 break;
+
+            case API1.GET_INVOICE_SUCCESS:
+                parseInvoicePay(msg);
+                break;
             case PAY_SUCCESS:
                 //成功跳转相应的界面
 
@@ -259,7 +266,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_order);
-        myApplication = MyApplication.getInstance();
         newToast = new PWToast(this);
         initView();
 
@@ -323,7 +329,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             infoListView.addFooterView(initHeaderAndFooterView(false, false, null));
         }
         updateShopPriceUI(true);
-
+        invoicePriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         totalpriceTextView.setText(((int) payPrice + ""));
         currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
@@ -362,6 +368,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         TextView transportTv = (TextView) view.findViewById(R.id.transport_tv);
         LinearLayout transLinearLayout = (LinearLayout) view.findViewById(R.id.transport_linearlayout);
         RelativeLayout couponCountRl = (RelativeLayout) view.findViewById(R.id.coupon_count_rl);
+        RelativeLayout invoiceRl = (RelativeLayout) view.findViewById(R.id.invoice_rl);
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shop_coupon_ll);
         View lineView = view.findViewById(R.id.coupon_line);
         couponCountRl.setOnClickListener(new OnClickListener() {
@@ -376,7 +383,22 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 startActivityForResult(intent, PREVIEW_COUPON_CODE);
             }
         });
+        invoiceRl.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //进入发票界面
+                Intent intent=new Intent(SubmitOrderActivity.this,InvoiceActivity.class);
+                if(null != invoiceInfo){
+                    Bundle b=new Bundle();
+                    b.putParcelable("invoiceInfo",invoiceInfo);
+                    intent.putExtras(b);
+                }
+                startActivityForResult(intent,PREVIEW_INVOICE_CODE);
+            }
+        });
 
+        invoicePriceTv = (TextView) view.findViewById(R.id.invoice_price_tv);
+        invoicePriceUnitTv = (TextView) view.findViewById(R.id.invoice_price_unit_tv);
         couponCountTv = (TextView) view.findViewById(R.id.coupon_count_tv);
         couponPriceUnitTv = (TextView) view.findViewById(R.id.coupon_price_unit_tv);
         couponPriceTv = (TextView) view.findViewById(R.id.coupon_price_tv);
@@ -641,20 +663,26 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
                 if (orderId == null || orderId.equals("")) {
+                    JSONObject invoice=null;
                     if (deliveryType.contains("1")) {
                         //获取收货地址
                         if (curPositon < 0) {
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes, submitOrderHandler);
+
+                            invoice = assembleInvoiceJson();
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, submitOrderHandler);
                         }
                     } else {
                         //PP+/数码商品不需要地址
+
+                        invoice = assembleInvoiceJson();
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                        API1.addOrder(cartItemIds, 3, "", "", couponCodes, submitOrderHandler);
+                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, submitOrderHandler);
                     }
                 } else {
+                    JSONObject invoice=null;
                     Intent intent2 = new Intent(SubmitOrderActivity.this, PaymentOrderActivity.class);
                     intent2.putExtra("price", totalpriceTextView.getText().toString());
                     String orderName, orderIntroduce = null;
@@ -671,11 +699,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             }
                         }
                     }
+
                     PictureAirLog.out("orderIntroduce---->" + orderIntroduce);
+
+                    invoice = assembleInvoiceJson();
                     intent2.putExtra("name", orderName);
                     intent2.putExtra("introduce", orderIntroduce);
                     intent2.putExtra("orderId", orderId);
                     intent2.putExtra("couponCodes", couponCodes.toString());
+                    intent2.putExtra("invoice",invoice);
                     //传递商品类型，用于成功后返回订单
                     if (deliveryType.contains("1")) {
                         //实体商品
@@ -694,6 +726,37 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             default:
                 break;
         }
+    }
+
+    //封装发票的jsonObject
+    public JSONObject assembleInvoiceJson(){
+        if(null != invoiceInfo && invoiceInfo.isNeedInvoice())
+        {
+            JSONObject invoice=new JSONObject();
+            invoice.put("invoiceType",0);
+            invoice.put("invoiceTitle",invoiceInfo.getTitle()==InvoiceInfo.PERSONAL?0:1);
+            if(invoiceInfo.getTitle() == InvoiceInfo.COMPANY)
+                invoice.put("invoiceCompanyName",invoiceInfo.getCompanyName());
+            invoice.put("invoiceAddressId",invoiceInfo.getAddress().getAddressId());
+            return invoice;
+        }
+        return null;
+    }
+
+    //解析发票费用
+    public void parseInvoicePay(Message msg){
+        invoicePriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        JSONObject result = (JSONObject) msg.obj;
+        if(null == result)
+            return;
+        if(result.containsKey("logisticsFee")) {
+            invoicePay = Float.valueOf(result.getString("logisticsFee"));
+            invoicePriceTv.setText((int) invoicePay+"");
+        }
+        if(result.containsKey("totalPrice"))
+            payPrice = Float.valueOf(result.getString("totalPrice"));
+        payPriceTv.setText(((int) payPrice + ""));
+        totalpriceTextView.setText(((int) payPrice + ""));
     }
 
     //选择照片
@@ -753,6 +816,15 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 if (null != cartItemIds) {
                     API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
                 }
+            }
+        }
+
+        if(resultCode == RESULT_OK && requestCode == PREVIEW_INVOICE_CODE){
+            //TODO 发票返回结果
+            invoiceInfo = data.getParcelableExtra("invoiceInfo");
+            boolean b=null!=invoicePriceTv;
+            if(null != invoiceInfo){
+                API1.getCartsWithInvoice(cartItemIds,invoiceInfo.isNeedInvoice(),submitOrderHandler);
             }
         }
 

@@ -22,6 +22,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.service.SocketUtil;
 
 import java.util.ArrayList;
@@ -521,6 +522,55 @@ public class JsonUtil {
                 orderInfo.deliveryNumber = "";
             }
 
+            //invoiceInfo
+            if(orderJsonObject.containsKey("invoiceInfo") && orderInfo.invoiceInfo!=null){
+               JSONObject jsonObject = orderJsonObject.getJSONObject("invoiceInfo");
+                if(jsonObject ==null)
+                    return orderInfo;
+                if(jsonObject.containsKey("invoiceType")){
+                    orderInfo.invoiceInfo.setType(jsonObject.getInteger("invoiceType"));
+                }
+                if(jsonObject.containsKey("invoiceTitle")){
+                    orderInfo.invoiceInfo.setTitle(jsonObject.getInteger("invoiceTitle"));
+                }
+                if(orderInfo.invoiceInfo.getTitle() == 1 && jsonObject.containsKey("invoiceCompanyName")){
+                    orderInfo.invoiceInfo.setCompanyName(jsonObject.getString("invoiceCompanyName"));
+                }
+                if(jsonObject.containsKey("invoiceContent")){
+                    orderInfo.invoiceInfo.setContent(jsonObject.getInteger("invoiceContent"));
+                }
+                if(jsonObject.containsKey("invoiceAddress")){
+                    JSONObject object = jsonObject.getJSONObject("invoiceAddress");
+                    if(object.containsKey("area")){
+                        orderInfo.invoiceInfo.getAddress().setArea(object.getString("area"));
+                    }
+                    if(object.containsKey("provinces")){
+                        orderInfo.invoiceInfo.getAddress().setProvince(object.getString("provinces"));
+                    }
+                    if(object.containsKey("city")){
+                        orderInfo.invoiceInfo.getAddress().setCity(object.getString("city"));
+                    }
+                    if(object.containsKey("county")){
+                        orderInfo.invoiceInfo.getAddress().setCountry(object.getString("county"));
+                    }
+                    if(object.containsKey("detailedAddress")){
+                        orderInfo.invoiceInfo.getAddress().setDetailAddress(object.getString("detailedAddress"));
+                    }
+                    if(object.containsKey("zip")){
+                        orderInfo.invoiceInfo.getAddress().setZip(object.getString("zip"));
+                    }
+                    if(object.containsKey("consignee")){
+                        orderInfo.invoiceInfo.getAddress().setName(object.getString("consignee"));
+                    }
+                    if(object.containsKey("mobileNum")){
+                        orderInfo.invoiceInfo.getAddress().setMobilePhone(object.getString("mobileNum"));
+                    }
+                    if(object.containsKey("telephone")){
+                        orderInfo.invoiceInfo.getAddress().setTelePhone(object.getString("telephone"));
+                    }
+                }
+            }
+
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -576,6 +626,58 @@ public class JsonUtil {
         }
         return orderDetailsArrayList;
     }
+
+    /**
+     * 获取发票地址列表
+     *
+     * @param addressJsonObject
+     * @return
+     */
+    public static ArrayList<SendAddress> getAddressList(JSONObject addressJsonObject) {
+        ArrayList<SendAddress> addressList = new ArrayList<>();
+        SendAddress address;
+        try {
+            if(addressJsonObject==null || !addressJsonObject.containsKey("addresses"))
+                return addressList;
+            JSONArray allAddressArray = addressJsonObject.getJSONArray("addresses");//得到所有的地址
+            if(allAddressArray==null || allAddressArray.size()<=0)
+                return addressList;
+
+            for(int i = 0;i<allAddressArray.size();i++){
+                JSONObject json = allAddressArray.getJSONObject(i);
+                address=new SendAddress();
+                if(json.containsKey("addressId"))
+                    address.setAddressId(json.getString("addressId"));
+                if(json.containsKey("area"))
+                    address.setArea(json.getString("area"));
+                if(json.containsKey("provinces"))
+                    address.setProvince(json.getString("provinces"));
+                if(json.containsKey("city"))
+                    address.setCity(json.getString("city"));
+                if(json.containsKey("county"))
+                    address.setCountry(json.getString("county"));
+                if(json.containsKey("detailedAddress"))
+                    address.setDetailAddress(json.getString("detailedAddress"));
+                if(json.containsKey("zip"))
+                    address.setZip(json.getString("zip"));
+                if(json.containsKey("consignee"))
+                    address.setName(json.getString("consignee"));
+                if(json.containsKey("mobileNum"))
+                    address.setMobilePhone(json.getString("mobileNum"));
+                if(json.containsKey("telephone"))
+                    address.setTelePhone(json.getString("telephone"));
+                if(json.containsKey("defaultChose"))
+                    address.setSelected(json.getBoolean("defaultChose"));
+
+                addressList.add(address);
+            }
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return addressList;
+    }
+
 
     /**
      * 获取边框信息

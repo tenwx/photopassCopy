@@ -105,6 +105,7 @@ public class Common {
     public static final String DELETE_ADDRESS = "/shopping/deleteAddress";//删除收货地址
     public static final String MODIFY_ADDRESS = "/shopping/modifyAddress";//修改收货地址
     public static final String ADD_ADDRESS = "/shopping/addAddress";//添加收货地址
+    public static final String ADDRESS_LIST = "/api/addresses";//获取收货地址列表
     public static final String GET_ALL_ORDERS = "/api/getAllOrders";//获取所有订单
     public static final String DELETE_ORDER = "/api/delOrder";//用户删除某个订单
     public static final String BIND_PPS_TO_PPP = "/ppp/bindPPsToPPP";//将pp绑定到ppp

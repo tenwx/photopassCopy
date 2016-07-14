@@ -491,6 +491,41 @@
     <string name="edit_story_album">编辑</string>
     <!-- edit story end -->
 
+    <!-- 发票-->
+    <string name="invoice_title">发票信息</string>
+    <string name="invoice">发票</string>
+    <string name="paper_invoice">纸质发票</string>
+    <string name="invoice_type">发票类型</string>
+    <string name="invoice_info">发票须知</string>
+    <string name="invoice_info_know">我知道了</string>
+    <string name="invoice_name">发票抬头</string>
+    <string name="invoice_personal">个人</string>
+    <string name="invoice_company">单位</string>
+    <string name="invoice_content">发票内容</string>
+    <string name="invoice_photo">照片</string>
+    <string name="invoice_service">影像服务</string>
+    <string name="invoice_no">不开发票</string>
+    <string name="invoice_address">邮寄地址</string>
+    <string name="invoice_input_company">请输入您的单位名称</string>
+    <string name="invoice_new_address">新增地址</string>
+    <string name="invoice_receiver_name">收货人姓名:</string>
+    <string name="invoice_mobile">手机号码:</string>
+    <string name="invoice_province">选择省份:</string>
+    <string name="invoice_city">选择城市:</string>
+    <string name="invoice_country">选择县区:</string>
+    <string name="invoice_detail_addr">详细地址:</string>
+    <string name="invoice_tips_title">请选择发票抬头</string>
+    <string name="invoice_tips_address">您没有收货地址，请添加地址</string>
+    <string name="invoice_tips_input_address">请输入您的收货地址</string>
+    <string name="invoice_tips_input_info">请填写收货人信息</string>
+    <string name="invoice_tips_phone">请填写手机号码</string>
+    <string name="invoice_tips_phone_error">请填写正确的手机号码</string>
+    <string name="invoice_tips_province">请填写省份</string>
+    <string name="invoice_tips_city">请填写城市</string>
+    <string name="invoice_tips_country">请填写乡镇</string>
+    <string name="invoice_tips_detail_address">请填写详细地址</string>
+    <!-- 发票 end-->
+
     <!-- 我的优惠券 start-->
     <string name="my_coupon">我的抵用券</string>
     <string name="coupon">抵用券</string>
@@ -498,6 +533,7 @@
     <string name="coupon_scan">扫描</string>
     <string name="shop_price">商品金额</string>
     <string name="coupon_price">抵用券抵用</string>
+    <string name="invoice_price">发票运费</string>
     <string name="coupon_price1">抵用券抵用：</string>
     <string name="pay_price">实际支付</string>
     <string name="coupon_count">有%1$d张抵用券可用</string>

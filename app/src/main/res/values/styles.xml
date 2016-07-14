@@ -54,14 +54,20 @@
     <style name="custom_checkbox" parent="@android:style/Widget.CompoundButton.CheckBox"> 
         <item name="android:button">@drawable/check_out_btn</item> 
     </style>
-    
+
     <style name="Dialog" parent="android:style/Theme.Dialog">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
-    
+
+    <style name="AddressDialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@color/pp_dark_blue</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
     <style name="NavPage">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">fill_parent</item>
