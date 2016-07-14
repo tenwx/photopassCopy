@@ -314,24 +314,20 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
      */
     public void createDialog(final int type) {
         ListView lv = new ListView(this);
-        TextView titleTv = new TextView(this);
-        titleTv.setPadding(20, 25, 20, 25);
-        titleTv.setTextSize(18);
-        titleTv.setTextColor(getResources().getColor(R.color.pp_dark_blue));
         final Dialog dialog = new Dialog(this,R.style.AddressDialog);
 
         if (type == 1) {
-            titleTv.setText(R.string.invoice_province);
+            dialog.setTitle(R.string.invoice_province);
             ProvinceAdapter pAdapter = new ProvinceAdapter(provinceList);
             lv.setAdapter(pAdapter);
 
         } else if (type == 2) {
-            titleTv.setText(R.string.invoice_city);
+            dialog.setTitle(R.string.invoice_city);
             CityAdapter cAdapter = new CityAdapter(provinceList.get(pPosition)
                     .getCity_list());
             lv.setAdapter(cAdapter);
         } else if (type == 3) {
-            titleTv.setText(R.string.invoice_country);
+            dialog.setTitle(R.string.invoice_country);
             CountyAdapter coAdapter = new CountyAdapter(provinceList
                     .get(pPosition).getCity_list().get(cPosition)
                     .getCounty_list());
@@ -400,7 +396,6 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
 
         lv.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.pp_blue)));
         lv.setDividerHeight(1);
-        lv.addHeaderView(titleTv);
         dialog.setContentView(lv);
         dialog.show();
     }

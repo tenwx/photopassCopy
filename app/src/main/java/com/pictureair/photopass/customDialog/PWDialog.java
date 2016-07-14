@@ -389,6 +389,10 @@ public class PWDialog extends Dialog {
             contentRL.setBackgroundColor(Color.WHITE);
         }
 
+        if (TextUtils.isEmpty(positiveButtonStr) && TextUtils.isEmpty(negativeButtonStr)) {
+            contentRL.setBackgroundResource(R.drawable.bg_dialog_white_content2);
+        }
+
         //检查内容
         if (contentView != null) {//检查自定义布局
 

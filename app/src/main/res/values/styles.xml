@@ -63,9 +63,9 @@
     </style>
 
     <style name="AddressDialog" parent="android:style/Theme.Dialog">
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">@drawable/bg_dialog_white_corners</item>
         <item name="android:textColor">@color/pp_dark_blue</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="NavPage">
