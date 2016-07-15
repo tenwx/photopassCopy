@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -42,7 +43,11 @@ public class CoverManager {
             mDropCover = new DropCover(activity);
         }
         params = new WindowManager.LayoutParams();
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        if (Build.VERSION.SDK_INT >= 23) {
+            params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        } else {
+            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
         params.height = WindowManager.LayoutParams.MATCH_PARENT;
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.format = PixelFormat.RGBA_8888;
@@ -88,7 +93,6 @@ public class CoverManager {
 
     /**
      * 结束移动
-     * @param target
      * @param x
      * @param y
      */
