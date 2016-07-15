@@ -26,6 +26,7 @@ import com.pictureair.photopass.activity.AboutActivity;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CouponActivity;
 import com.pictureair.photopass.activity.HelpActivity;
+import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.activity.MyPPPActivity;
 import com.pictureair.photopass.activity.OrderActivity;
@@ -47,7 +48,7 @@ import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
  */
 public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
-    private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, aboutTV, couponTV,opinionsTV;
+    private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, downLoadTV, couponTV,opinionsTV;
     private LinearLayout linearLayout1, linearLayout2, linearLayout3;
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
@@ -86,7 +87,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         pppTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_ppp);
         helpTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_help);
         settingTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_setting);
-        aboutTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_about);
+        downLoadTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_download);
         couponTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_coupon);
         opinionsTV = (TextView) scrollView.getPullRootView().findViewById(R.id.me_opinions);
 
@@ -109,7 +110,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         pppTV.setOnClickListener(this);
         helpTV.setOnClickListener(this);
         settingTV.setOnClickListener(this);
-        aboutTV.setOnClickListener(this);
+        downLoadTV.setOnClickListener(this);
         couponTV.setOnClickListener(this);
         opinionsTV.setOnClickListener(this);
 
@@ -264,8 +265,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 startActivity(i);
                 break;
 
-            case R.id.me_about:
-                i.setClass(MyApplication.getInstance(), AboutActivity.class);
+            case R.id.me_download:
+                i.setClass(MyApplication.getInstance(), LoadManageActivity.class);
                 startActivity(i);
                 break;
 

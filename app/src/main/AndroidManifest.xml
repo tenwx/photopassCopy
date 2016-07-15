@@ -225,8 +225,8 @@
         <activity
             android:name=".activity.WebViewActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <!-- Disney Video start -->
         <activity
@@ -262,6 +262,12 @@
 
         <activity
             android:name=".activity.NewAddressActivity"
+            android:configChanges="keyboard|orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.LoadManageActivity"
+            android:theme="@style/Theme.PageIndicatorDefaults"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
 

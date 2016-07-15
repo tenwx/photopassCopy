@@ -25,11 +25,14 @@ import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
@@ -45,7 +48,7 @@ import java.util.Iterator;
  */
 public class EditStoryAlbumActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener{
 	private ImageView backRelativeLayout;
-	private TextView deleteTextView, titleTextView, editTextView;
+	private TextView selectAllTextView, disAllTextView, downloadTextView, deleteTextView, titleTextView, editTextView;
 	private LinearLayout editBarLinearLayout;
 	private GridView pinnedSectionListView;
 	private EditStoryPinnedListViewAdapter editStoryPinnedListViewAdapter;
@@ -62,11 +65,17 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private final static int START_DELETE_NETWORK_PHOTOS = 14;
 	private final static int DELETE_LOCAL_PHOTOS_DONE = 15;
 	private final static int DELETE_DIALOG = 16;
+	private static final int GO_SETTING_DIALOG = 17;
+	private static final int DOWNLOAD_DIALOG = 18;
+	private static final int HAS_UNPAY_PHOTOS_DIALOG = 19;
+	private static final int GO_DOWNLOAD_ACTIVITY_DIALOG = 20;
+
 	private int tabIndex = 0;
 	private int selectCount = 0;
 	private PWToast myToast;
 	private CustomProgressDialog customProgressDialog;
 	private PictureAirDbManager pictureAirDbManager;
+	private SettingUtil settingUtil;
 	private boolean editMode = false;
 	private boolean deleteLocalPhotoDone = false;
 	private boolean deleteNetPhotoDone = false;
@@ -167,6 +176,38 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		}
 	});
 
+	/**
+	 * 开始下载
+	 * @param hasUnPayPhotos 是否有未购买的图片
+     */
+	private void startDownload(boolean hasUnPayPhotos){
+		ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
+		if (hasUnPayPhotos) {
+			//将已购买的加入下载队列中
+			for (int i = 0; i < albumArrayList.size(); i++) {
+				if (albumArrayList.get(i).isPayed == 1) {
+					hasPayedList.add(albumArrayList.get(i));
+				}
+			}
+		} else {
+			hasPayedList.addAll(albumArrayList);
+		}
+
+		//开始将图片加入下载队列
+		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList("photos", hasPayedList);
+		intent.putExtras(bundle);
+		startService(intent);
+
+		//弹框提示，可以进去下载管理页面
+		pictureWorksDialog.setPWDialogId(GO_DOWNLOAD_ACTIVITY_DIALOG)
+				.setPWDialogMessage(R.string.edit_story_addto_downloadlist)
+				.setPWDialogNegativeButton(null)
+				.setPWDialogPositiveButton(R.string.reset_pwd_ok)
+				.pwDilogShow();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -175,6 +216,9 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		//find控件
 		backRelativeLayout = (ImageView) findViewById(R.id.rlrt);
 		deleteTextView = (TextView) findViewById(R.id.select_delete);
+		selectAllTextView = (TextView) findViewById(R.id.select_all);
+		disAllTextView = (TextView) findViewById(R.id.select_disall);
+		downloadTextView = (TextView) findViewById(R.id.select_download);
 		editBarLinearLayout = (LinearLayout) findViewById(R.id.select_tools_linearlayout);
 		pinnedSectionListView = (GridView) findViewById(R.id.pullToRefreshPinnedSectionListView);
 		titleTextView = (TextView) findViewById(R.id.text);
@@ -188,11 +232,16 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		backRelativeLayout.setOnClickListener(this);
 		deleteTextView.setOnClickListener(this);
 		deleteTextView.setEnabled(false);
+		selectAllTextView.setOnClickListener(this);
+		disAllTextView.setOnClickListener(this);
+		downloadTextView.setOnClickListener(this);
+		downloadTextView.setEnabled(false);
 		editTextView.setOnClickListener(this);
 
 		//初始化数据
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
+		settingUtil = new SettingUtil(pictureAirDbManager);
 		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 		ppCode = getIntent().getStringExtra("ppCode");
 
@@ -240,6 +289,10 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				}
 			}
 		});
+
+		pictureWorksDialog = new PWDialog(this)
+				.setOnPWDialogClickListener(this)
+				.pwDialogCreate();
 	}
 
 	/**
@@ -267,8 +320,15 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		}
 		if (selectCount == 0) {
 			deleteTextView.setEnabled(false);
+			downloadTextView.setEnabled(false);
+		} else if (selectCount == albumArrayList.size()) {
+			selectAllTextView.setVisibility(View.GONE);
+			disAllTextView.setVisibility(View.VISIBLE);
 		} else {
+			selectAllTextView.setVisibility(View.VISIBLE);
+			disAllTextView.setVisibility(View.GONE);
 			deleteTextView.setEnabled(true);
+			downloadTextView.setEnabled(true);
 		}
 	}
 	
@@ -285,15 +345,41 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					return;
 				}
 
-				if (pictureWorksDialog == null) {
-					pictureWorksDialog = new PWDialog(EditStoryAlbumActivity.this, DELETE_DIALOG)
-							.setPWDialogMessage(R.string.start_delete)
-							.setPWDialogNegativeButton(R.string.button_cancel)
-							.setPWDialogPositiveButton(R.string.reset_pwd_ok)
-							.setOnPWDialogClickListener(this)
-							.pwDialogCreate();
+				pictureWorksDialog.setPWDialogId(DELETE_DIALOG)
+						.setPWDialogMessage(R.string.start_delete)
+						.setPWDialogNegativeButton(R.string.button_cancel)
+						.setPWDialogPositiveButton(R.string.reset_pwd_ok)
+						.pwDilogShow();
+				break;
+
+			case R.id.select_all:
+				for (int i = 0; i < albumArrayList.size(); i++) {
+					albumArrayList.get(i).isSelected = 1;
+					albumArrayList.get(i).showMask = 1;
 				}
-				pictureWorksDialog.pwDilogShow();
+				editStoryPinnedListViewAdapter.notifyDataSetChanged();
+				selectCount = albumArrayList.size();
+				selectAllTextView.setVisibility(View.GONE);
+				disAllTextView.setVisibility(View.VISIBLE);
+				deleteTextView.setEnabled(true);
+				downloadTextView.setEnabled(true);
+				break;
+
+			case R.id.select_disall:
+				for (int i = 0; i < albumArrayList.size(); i++) {
+					albumArrayList.get(i).isSelected = 0;
+					albumArrayList.get(i).showMask = 0;
+				}
+				editStoryPinnedListViewAdapter.notifyDataSetChanged();
+				selectCount = 0;
+				selectAllTextView.setVisibility(View.VISIBLE);
+				disAllTextView.setVisibility(View.GONE);
+				deleteTextView.setEnabled(false);
+				downloadTextView.setEnabled(false);
+				break;
+
+			case R.id.select_download:
+				judgeOnePhotoDownloadFlow();
 				break;
 
 			case R.id.pp_photos_edit:
@@ -302,12 +388,56 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				editStoryPinnedListViewAdapter.setEditMode(editMode);
 				editBarLinearLayout.setVisibility(View.VISIBLE);
 				titleTextView.setText(R.string.edit_story_album);
-				deleteTextView.setEnabled(false);
 				editTextView.setVisibility(View.GONE);
 				break;
 
 			default:
 				break;
+		}
+	}
+
+	private void downloadPic(){
+		boolean hasUnPayedItem = false;
+		for (int i = 0; i < albumArrayList.size(); i++) {
+			if (albumArrayList.get(i).isPayed == 0) {
+				hasUnPayedItem = true;
+				break;
+			}
+		}
+
+		if (hasUnPayedItem) {//弹框提示
+			pictureWorksDialog.setPWDialogId(HAS_UNPAY_PHOTOS_DIALOG)
+					.setPWDialogMessage(R.string.edit_story_unpay_tips)
+					.setPWDialogNegativeButton(R.string.edit_story_reselect)
+					.setPWDialogPositiveButton(R.string.edit_story_confirm_download)
+					.pwDilogShow();
+
+		} else {
+			startDownload(false);
+		}
+	}
+
+	/**
+	 * tips 1，网络下载流程。
+	 */
+	private void judgeOnePhotoDownloadFlow() { // 如果当前是wifi，无弹窗提示。如果不是wifi，则提示。
+		if (AppUtil.getNetWorkType(EditStoryAlbumActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
+			downloadPic();
+		} else {
+			// 判断用户是否设置过 “仅wifi” 的选项。
+			if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+				pictureWorksDialog.setPWDialogId(GO_SETTING_DIALOG)
+						.setPWDialogMessage(R.string.one_photo_download_msg1)
+						.setPWDialogNegativeButton(R.string.one_photo_download_no_msg1)
+						.setPWDialogPositiveButton(R.string.one_photo_download_yes_msg1)
+						.pwDilogShow();
+			} else {
+				pictureWorksDialog.setPWDialogId(DOWNLOAD_DIALOG)
+						.setPWDialogMessage(R.string.one_photo_download_msg2)
+						.setPWDialogNegativeButton(R.string.one_photo_download_no_msg2)
+						.setPWDialogPositiveButton(R.string.one_photo_download_yes_msg2)
+						.pwDilogShow();
+			}
 		}
 	}
 
@@ -333,6 +463,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					}
 				}
 				selectCount = 0;
+
+				deleteTextView.setEnabled(false);
+				downloadTextView.setEnabled(false);
+				selectAllTextView.setVisibility(View.VISIBLE);
+				disAllTextView.setVisibility(View.GONE);
 			}
 			editTextView.setVisibility(View.VISIBLE);
 		} else {
@@ -404,6 +539,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private void dealAfterDeleted() {
 		if (selectCount == 0) {
 			deleteTextView.setEnabled(false);
+			downloadTextView.setEnabled(false);
 		}
 		editStoryPinnedListViewAdapter.notifyDataSetChanged();
 		if (photopassPhotoslist.size() > 0 && localPhotoslist.size() > 0) {//如果既有本地图片，又有网络图片
@@ -466,6 +602,23 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 							}
 						}
 					}.start();
+				} else if (dialogId == HAS_UNPAY_PHOTOS_DIALOG) {
+					startDownload(true);
+
+				} else if (dialogId == GO_DOWNLOAD_ACTIVITY_DIALOG) {
+					Intent i = new Intent();
+					i.setClass(MyApplication.getInstance(), LoadManageActivity.class);
+					startActivity(i);
+					AppManager.getInstance().killActivity(MyPPActivity.class);
+					finish();
+
+				} else if (dialogId == GO_SETTING_DIALOG) {
+					//去更改：跳转到设置界面。
+					Intent intent = new Intent(EditStoryAlbumActivity.this, SettingActivity.class);
+					startActivity(intent);
+
+				} else if (dialogId == DOWNLOAD_DIALOG) {
+					downloadPic();
 				}
 				break;
 		}

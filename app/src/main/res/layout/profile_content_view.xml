@@ -164,19 +164,19 @@
         android:orientation="horizontal">
 
         <com.pictureair.photopass.widget.CustomTextView
-            android:id="@+id/me_about"
+            android:id="@+id/me_download"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_weight="1"
             android:drawablePadding="@dimen/pp_padding_8"
-            android:drawableTop="@drawable/about"
+            android:drawableTop="@drawable/download_manage"
             android:gravity="center"
             android:paddingBottom="@dimen/pp_padding_16"
             android:paddingLeft="@dimen/pp_padding_8"
             android:paddingRight="@dimen/pp_padding_8"
             android:paddingTop="@dimen/pp_margin_16"
-            android:text="@string/mypage_about"
+            android:text="@string/mypage_download"
             android:textColor="@color/pp_blue"
             android:textSize="@dimen/text_size_16" />
 

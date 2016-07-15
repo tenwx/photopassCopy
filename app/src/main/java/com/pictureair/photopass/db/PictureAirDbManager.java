@@ -1,5 +1,6 @@
 package com.pictureair.photopass.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -13,6 +14,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.entity.QuestionInfo;
@@ -1465,4 +1467,96 @@ public class PictureAirDbManager {
         }
     }
 
+    public List<PhotoDownLoadInfo> getLoadSuccessPhotos(String userId){
+        List<PhotoDownLoadInfo> photos = new ArrayList<>();
+        database = DBManager.getInstance().readData();
+        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
+        try {
+            if (cursor.moveToFirst()) {//判断是否photo数据
+                do {
+                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
+                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
+                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
+                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
+                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
+                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
+                    photos.add(photoInfo);
+                } while (cursor.moveToNext());
+            }
+            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return photos;
+    }
+
+    public synchronized void writeLoadSuccessPhotos(String userId,String photoId,String url,String size,String previewUrl,String shootTime,String loadTime){
+
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        try {
+//            database.execSQL("insert into " + Common.PHOTOS_LOAD + "(userId,photoId,url,size,,previewUrl,shootTime,downloadTime) values(?,?,?,?,?,?,?)",
+//                    new String[]{userId, photoId, url, size,previewUrl, shootTime,loadTime});
+            ContentValues values = new ContentValues();
+            values.put("userId", userId);
+            values.put("photoId", photoId);
+            values.put("url", url);
+            values.put("size", size);
+            values.put("previewUrl", previewUrl);
+            values.put("shootTime", shootTime);
+            values.put("downloadTime", loadTime);
+            long res = database.insert(Common.PHOTOS_LOAD, "", values);
+
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+    }
+
+    public synchronized int getDownloadPhotoCount(String userId) {
+        int count = 0;
+        database = DBManager.getInstance().readData();
+
+        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        Cursor cursor = database.rawQuery("select count(*) from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
+        try {
+            if (cursor.moveToFirst()){
+                count = cursor.getInt(0);
+            }
+            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+            return  count;
+        }
+    }
+
+    public synchronized void deleteDownloadPhoto(String userId){
+        database = DBManager.getInstance().writData();
+        int res;
+        try {
+//            database.execSQL("delete from " + Common.PHOTOS_LOAD + " where userId=?",
+//                    new String[]{userId});
+            res = database.delete(Common.PHOTOS_LOAD,"userId = ?",new String[]{userId});
+            PictureAirLog.e("deleteDownloadPhoto","count:" + res);
+        }catch (Exception e){
+            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
+        }finally {
+            DBManager.getInstance().closeDatabase();
+        }
+    }
 }

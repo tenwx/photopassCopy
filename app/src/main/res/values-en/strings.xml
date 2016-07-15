@@ -178,6 +178,7 @@
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
+    <string name="mypage_download">DownLoad Manage</string>
     <string name="mypage_opinions">Contact Us</string>
     <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
@@ -483,12 +484,15 @@
     <!-- tips end -->
 
     <!-- edit story start -->
-    <string name="buy">Shop</string>
-    <string name="all">Select All</string>
-    <string name="disall">Disselect</string>
+    <string name="edit_story_all">Select All</string>
+    <string name="edit_story_disall">Disselect</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
     <string name="start_delete">Your account will no longer display these photos once deleted. Confirm to delete?</string>
     <string name="edit_story_album">Select</string>
+    <string name="edit_story_confirm_download">确认下载</string>
+    <string name="edit_story_reselect">重新选择</string>
+    <string name="edit_story_unpay_tips">There are photos which are not purchased. Please continue to download the purchased photos only.</string>
+    <string name="edit_story_addto_downloadlist">照片已在下载列队，可去下载管理内查询，请耐心等待！</string>
     <!-- edit story end -->
 
     <!-- invoice-->
@@ -581,5 +585,20 @@
     <!-- permission request start -->
     <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
     <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
+    <string name="title_activity_load_manage">LoadManageActivity</string>
     <!-- permission request end -->
+
+    <!-- photo download manage start -->
+    <string name="photo_download_success">"Already Download"</string>
+    <string name="photo_downloading">"Downloading"</string>
+    <string name="photo_download_waiting">"Waiting"</string>
+    <string name="photo_download_loading">"Loading"</string>
+    <string name="photo_download_failed">"Fail"</string>
+    <string name="photo_download_complete">"Complete"</string>
+    <string name="photo_download_clear">"Clear"</string>
+    <string name="photo_download_nothing">"Nothing"</string>
+    <string name="photo_download_tips">"一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！"</string>
+    <string name="photo_download_to_load">"Go To Load"</string>
+    <string name="photo_download_tips2">"已下载完成的照片将保存至您的手机本地相册中,点击一下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦"</string>
+    <!--photo download manage start-->
 </resources>

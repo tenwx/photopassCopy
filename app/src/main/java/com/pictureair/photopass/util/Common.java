@@ -258,10 +258,11 @@ public class Common {
     public static final String FIRST_START_ACTIVITY_INFO_TABLE = "first_start_activity";
     public static final String HELP_QUESTION_TABLE = "help_question";
     public static final String FRAME_STICKER_TABLES = "frame_sticker";
-    public static final int PHOTOPASS_INFO_VERSION = 1;
+    public static final int PHOTOPASS_INFO_VERSION = 2;
     public static final String PAYMENT_ORDER = "payment_order";//存放已经支付但未收到支付完成推送的订单
     public static final String AD_LOCATION = "ad_location";
     public static final String THREAD_INFO = "thread_info";
+    public static final String PHOTOS_LOAD = "photo_load";
 
     //相册名称字段
     public static final String ALBUM_MAGIC = "Magic";

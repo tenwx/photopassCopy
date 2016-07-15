@@ -268,6 +268,15 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         requestLayout();
     }
 
+    public void updateTabText(int index){
+        setCurrentItem(mSelectedTabIndex);
+        PagerAdapter adapter = mViewPager.getAdapter();
+        if (null != tabViews && tabViews.size() > 0 && adapter != null) {
+            CharSequence title = adapter.getPageTitle(index);
+            tabViews.get(index).setText(title);
+        }
+    }
+
     @Override
     public void setViewPager(ViewPager view, int initialPosition) {
         setViewPager(view);
