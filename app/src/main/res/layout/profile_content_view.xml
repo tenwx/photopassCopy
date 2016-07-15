@@ -170,7 +170,7 @@
             android:layout_centerVertical="true"
             android:layout_weight="1"
             android:drawablePadding="@dimen/pp_padding_8"
-            android:drawableTop="@drawable/about"
+            android:drawableTop="@drawable/download_manage"
             android:gravity="center"
             android:paddingBottom="@dimen/pp_padding_16"
             android:paddingLeft="@dimen/pp_padding_8"

@@ -555,5 +555,11 @@
     <string name="photo_download_waiting">"Waiting"</string>
     <string name="photo_download_loading">"Loading"</string>
     <string name="photo_download_failed">"Fail"</string>
+    <string name="photo_download_complete">"Complete"</string>
+    <string name="photo_download_clear">"Clear"</string>
+    <string name="photo_download_nothing">"Nothing"</string>
+    <string name="photo_download_tips">"一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！"</string>
+    <string name="photo_download_to_load">"Go To Load"</string>
+    <string name="photo_download_tips2">"已下载完成的照片将保存至您的手机本地相册中,点击一下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦"</string>
     <!--photo download manage start-->
 </resources>

@@ -7,54 +7,23 @@ import android.graphics.Bitmap;
  */
 public class PhotoDownLoadInfo {
     private String photoId;
-    private String name;
     private String size;
-    private String date;
-    private String time;
+    private String shootTime;
+    private String loadTime;
     private String url;
+    private String previewUrl;
 
     public PhotoDownLoadInfo(){
 
     }
 
-    public PhotoDownLoadInfo(String photoId, String name, String size, String date, String time,String url) {
+    public PhotoDownLoadInfo(String photoId, String size, String shootTime, String loadTime, String url, String previewUrl) {
         this.photoId = photoId;
-        this.name = name;
         this.size = size;
-        this.date = date;
-        this.time = time;
+        this.shootTime = shootTime;
+        this.loadTime = loadTime;
         this.url = url;
-    }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+        this.previewUrl = previewUrl;
     }
 
     public String getPhotoId() {
@@ -65,11 +34,43 @@ public class PhotoDownLoadInfo {
         this.photoId = photoId;
     }
 
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getShootTime() {
+        return shootTime;
+    }
+
+    public void setShootTime(String shootTime) {
+        this.shootTime = shootTime;
+    }
+
+    public String getLoadTime() {
+        return loadTime;
+    }
+
+    public void setLoadTime(String loadTime) {
+        this.loadTime = loadTime;
+    }
+
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+
+    public void setPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
     }
 }

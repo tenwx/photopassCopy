@@ -553,8 +553,14 @@
     <!-- photo download manage start -->
     <string name="photo_download_success">"已下载"</string>
     <string name="photo_downloading">"正在下载"</string>
-    <string name="photo_download_waiting">"等待中"</string>
-    <string name="photo_download_loading">"进行中"</string>
-    <string name="photo_download_failed">"失败"</string>
+    <string name="photo_download_waiting">"等待"</string>
+    <string name="photo_download_loading">"下载中"</string>
+    <string name="photo_download_failed">"失败重试"</string>
+    <string name="photo_download_complete">"下载完成"</string>
+    <string name="photo_download_clear">"清空列表"</string>
+    <string name="photo_download_nothing">"空空如也"</string>
+    <string name="photo_download_tips">"一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！"</string>
+    <string name="photo_download_to_load">"去下载"</string>
+    <string name="photo_download_tips2">"已下载完成的照片将保存至您的手机本地相册中,点击一下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦"</string>
     <!--photo download manage start-->
 </resources>

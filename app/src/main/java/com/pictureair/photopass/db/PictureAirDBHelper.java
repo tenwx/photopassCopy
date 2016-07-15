@@ -31,15 +31,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
      *  date        下载日期
      *  time        下载时间
      * */
-    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD +
-                                                            "(_id integer primary key autoincrement," +
-                                                            "userId text," +
-                                                            "photoId text," +
-                                                            "photoName text," +
-                                                            "url text," +
-                                                            "size text," +
-                                                            "date text," +
-                                                            "time text)";
+    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists photo_load(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text)";
 
 
     public PictureAirDBHelper(Context context) {
@@ -262,11 +254,11 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         PictureAirLog.d(TAG, "update Database");
-        switch (newVersion) {
+        switch (newVersion){
             case 2://版本号为2的更新包
-
+                db.execSQL("drop table if exists " + Common.PHOTOS_LOAD);
+                db.execSQL(SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_);
                 break;
-
             default:
                 break;
         }

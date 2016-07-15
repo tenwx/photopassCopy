@@ -29,7 +29,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
     public PhotoLoadSuccessAdapter(Context context,List<PhotoDownLoadInfo> photos){
         this.mContext = context;
         this.photos = photos;
-        imageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -55,10 +55,9 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.photo_load_success_item,null);
             holder = new Holder();
             holder.img = (ImageView)convertView.findViewById(R.id.load_success_img);
-            holder.tv_name = (TextView) convertView.findViewById(R.id.load_success_name);
+            holder.tv_shootTime = (TextView) convertView.findViewById(R.id.load_success_shoottime);
             holder.tv_size = (TextView) convertView.findViewById(R.id.load_success_size);
-            holder.tv_date = (TextView) convertView.findViewById(R.id.load_success_date);
-            holder.tv_time = (TextView) convertView.findViewById(R.id.load_success_time);
+            holder.tv_loadTime = (TextView) convertView.findViewById(R.id.load_success_time);
             convertView.setTag(holder);
         }else{
             holder = (Holder) convertView.getTag();
@@ -66,24 +65,22 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
         PhotoDownLoadInfo info = photos.get(position);
         if (info != null) {
             ImageAware imageAware = new ImageViewAware(holder.img);
-            String url = info.getUrl();
-            if (holder.img.getTag() == null || !holder.img.getTag().equals(url)){
-                imageLoader.displayImage(url,imageAware);
-                holder.img.setTag(url);
+            String previewUrl = info.getPreviewUrl();
+            if (holder.img.getTag() == null || !holder.img.getTag().equals(previewUrl)){
+                imageLoader.displayImage(previewUrl,imageAware);
+                holder.img.setTag(previewUrl);
             }
-            holder.tv_name.setText(info.getName());
-            holder.tv_size.setText(info.getSize());
-            holder.tv_date.setText(info.getDate());
-            holder.tv_time.setText(info.getTime());
+            holder.tv_shootTime.setText(info.getShootTime());
+            holder.tv_size.setText(info.getSize()+"MB");
+            holder.tv_loadTime.setText(info.getLoadTime());
         }
         return convertView;
     }
 
     class Holder{
         ImageView img;
-        TextView tv_name;
+        TextView tv_shootTime;
         TextView tv_size;
-        TextView tv_date;
-        TextView tv_time;
+        TextView tv_loadTime;
     }
 }

@@ -1,96 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/pp_padding_20"
+    android:paddingTop="@dimen/pp_padding_8"
     android:paddingLeft="@dimen/pp_padding_8"
     android:paddingRight="@dimen/pp_padding_8"
-    android:paddingBottom="@dimen/pp_padding_20"
-    android:background="@color/white">
-    <ImageView
-        android:id="@+id/loading_img"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/icon_disney_null_photo"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        />
-
-    <LinearLayout
-        android:id="@+id/photo_loading_status"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical"
-        android:layout_centerVertical="true">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_14"
-            android:text="icon"
-            android:layout_marginTop="@dimen/pp_margin_16"
-            android:textColor="@color/pp_dark_blue"
-            android:gravity="left|center_vertical"
-            />
-        <TextView
-            android:id="@+id/photo_loading_tv_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_14"
-            android:gravity="left|center_vertical"
-            android:text="等待中"
-            android:textColor="@color/pp_dark_blue"
-            />
-    </LinearLayout>
-
-    <LinearLayout
+    android:paddingBottom="@dimen/pp_padding_8"
+    android:background="@color/pp_light_gray_background">
+    <RelativeLayout
+        android:id="@+id/rl_photo_loading"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/loading_img"
-        android:layout_toLeftOf="@id/photo_loading_status"
-        android:layout_marginLeft="@dimen/pp_margin_16"
-        android:layout_marginRight="@dimen/pp_margin_16"
-        android:orientation="vertical"
-        >
-        <TextView
-            android:id="@+id/photo_loading_tv_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/pp_dark_blue"
-            android:textSize="@dimen/text_size_16"
-            android:text="1234566788999"
-            android:layout_marginTop="@dimen/pp_margin_16"
-            android:gravity="center_vertical|left"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/loading_img"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/icon_disney_null_photo"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            />
+
+        <LinearLayout
+            android:id="@+id/photo_loading_status"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+            <com.pictureair.photopass.widget.AroundCircleView
+                android:id="@+id/photo_loading_img_status"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                app:textColor="@color/pp_blue"
+                app:textBgColor="@color/gray2"
+                app:textSize="2dp"
+                />
+
+            <TextView
+                android:id="@+id/photo_loading_tv_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_12"
+                android:gravity="center"
+                android:text="等待中"
+                android:textColor="@color/gray2"
+                android:layout_marginTop="@dimen/pp_margin_5"
+                />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/loading_img"
+            android:layout_toLeftOf="@id/photo_loading_status"
+            android:layout_marginLeft="@dimen/pp_margin_16"
+            android:layout_marginRight="@dimen/pp_margin_16"
+            android:orientation="vertical"
+            >
             <TextView
-                android:id="@+id/photo_loading_tv_size"
-                android:layout_width="0dp"
+                android:id="@+id/photo_loading_tv_take_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pp_dark_blue"
+                android:textSize="@dimen/text_size_14"
+                android:text="2016-11-20 17:40"
+                android:layout_marginTop="@dimen/pp_margin_16"
+                android:gravity="center_vertical|left"/>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textColor="@color/gray2"
-                android:textSize="@dimen/text_size_12"
-                android:text="传输大小/总大小"
-                android:gravity="left|center_vertical"
-                />
-            <TextView
-                android:id="@+id/photo_loading_tv_speed"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textColor="@color/gray2"
-                android:textSize="@dimen/text_size_12"
-                android:text="170.23KB/s"
-                android:gravity="right|center_vertical"/>
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/photo_loading_tv_size"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textColor="@color/gray2"
+                    android:textSize="@dimen/text_size_12"
+                    android:text="传输大小/总大小"
+                    android:gravity="left|center_vertical"
+                    />
+                <TextView
+                    android:id="@+id/photo_loading_tv_speed"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textColor="@color/gray2"
+                    android:textSize="@dimen/text_size_12"
+                    android:text="170.23KB/s"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-
-    </LinearLayout>
-
-
+    </RelativeLayout>
 </RelativeLayout>
