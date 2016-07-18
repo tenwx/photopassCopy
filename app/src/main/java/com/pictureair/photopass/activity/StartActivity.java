@@ -105,8 +105,8 @@ public class StartActivity extends BaseActivity implements Callback {
                 @Override
                 public void run() {
                     Intent intent = new Intent(StartActivity.this, tarClass);
-                    finish();
                     startActivity(intent);
+                    finish();
                 }
             }, 2000);
         } catch (NameNotFoundException e) {

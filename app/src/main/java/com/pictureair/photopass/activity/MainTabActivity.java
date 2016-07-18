@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.KeyEvent;
@@ -139,7 +140,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         // 自动检查更新
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        checkUpdateManager = new CheckUpdateManager(getApplicationContext(), currentLanguage,
+        checkUpdateManager = new CheckUpdateManager(MainTabActivity.this, currentLanguage,
                 parentLayout);
 
         new Thread(new Runnable() {
@@ -357,6 +358,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
             intent.putExtra("status", "disconnect");
             startService(intent);
             AppManager.getInstance().killAllActivity();
+            Process.killProcess(Process.myPid());
         }
     }
 
