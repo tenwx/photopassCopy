@@ -13,10 +13,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
+import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
@@ -256,7 +256,7 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     }
 
     @Override //隐藏之后显示一个透明层，解决 边框切换闪烁的bug
-    public void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options,String framePath) {
+    public void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath) {
         imageLoader.displayImage(framePath, mPhotoFrame, options);
         if(mPhotoFrame.isShown()){
             mPhotoFrame.setVisibility(View.GONE);
@@ -303,6 +303,13 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
         mTitle.setVisibility(View.VISIBLE);
         mLastStep.setVisibility(View.GONE);
         mNextStep.setVisibility(View.GONE);
+    }
+
+    /**
+     * 返回按钮
+     */
+    public void onBackKeyDown(){
+        pwEditViewListener.leftBackClik();
     }
 
 }

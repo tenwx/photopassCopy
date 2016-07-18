@@ -3,7 +3,7 @@ package com.pictureair.photopass.editPhoto.util;
 import com.pictureair.photopass.util.PictureAirLog;
 
 /**
- * 3x3
+ * 3x3矩阵
  * @author talon
  */
 public class Matrix3 {

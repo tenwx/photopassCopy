@@ -41,7 +41,7 @@ public class EditPhotoActivity extends BaseActivity{
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			pwEditView.leftBackClik();
+			pwEditView.onBackKeyDown();
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);

@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
-import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.editPhoto.bean.StikerInfo;
 import com.pictureair.photopass.editPhoto.filter.Amaro;
 import com.pictureair.photopass.editPhoto.filter.BeautifyFilter;
@@ -26,6 +24,8 @@ import com.pictureair.photopass.editPhoto.filter.BlurFilter;
 import com.pictureair.photopass.editPhoto.filter.HDRFilter;
 import com.pictureair.photopass.editPhoto.filter.LomoFilter;
 import com.pictureair.photopass.editPhoto.filter.OldFilter;
+import com.pictureair.photopass.editPhoto.widget.StickerItem;
+import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -296,11 +296,6 @@ public class PWEditUtil {
         }
         return desFile + "/" + dateFormat.format(new Date()) + ".jpg";
     }
-
-    public void saveReallyPhoto(){
-
-    }
-
 
     /**
      * 纪录每次编辑的步骤
@@ -574,7 +569,7 @@ public class PWEditUtil {
      * @param position
      * @return  滤镜比较特殊，饰品与相框不需要滤镜效果。故应将原图先处理滤镜效果，再叠加之前图片应用的效果。
      */
-    public Bitmap getFilterComposeBitmap(Context mContext, Bitmap bitmap, int position){
+    public Bitmap getFilterComposeBitmap(Context mContext, Bitmap bitmap, int position, int backStep){
         switch (position){
             case 0:
                 break;
@@ -599,7 +594,7 @@ public class PWEditUtil {
             default:
                 break;
         }
-        bitmap = saveFilterOther(mContext, bitmap); //保存其他步骤
+        bitmap = saveFilterOther(mContext, bitmap, backStep); //保存其他步骤
         return bitmap;
     }
 
@@ -608,8 +603,8 @@ public class PWEditUtil {
      * @param bitmap
      * @return
      */
-    private Bitmap saveFilterOther(Context mContext, Bitmap bitmap) {
-        for (int i = 0; i < getPhotoEditorList().size(); i++){
+    private Bitmap saveFilterOther(Context mContext, Bitmap bitmap, int backStep) {
+        for (int i = 0; i < getPhotoEditorList().size() - backStep; i++){
             if (getPhotoEditorList().get(i).getEditType() == PhotoCommon.EditFrame){
                 bitmap = getFrameComposeBitmap(mContext, bitmap, getPhotoEditorList().get(i).getFramePosition());
             }

@@ -16,9 +16,9 @@ limitations under the License.
 
 package com.pictureair.photopass.editPhoto.filter;
 
-import java.util.*;
-
 import android.graphics.Color;
+
+import java.util.Random;
 
 /**
  * Some more useful math functions for image processing.

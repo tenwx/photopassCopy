@@ -12,11 +12,11 @@ import android.os.Message;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
-import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
+import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -38,6 +38,7 @@ public class PWEditController implements PWEditViewListener{
     private PWEditViewInterface pwEditViewInterface;
     private PWEditUtil pwEditUtil = new PWEditUtil();
     private int index; // 指示着当前在第几个位置 ！
+    private int backStep = 0; // 纪录后退的步数
     private int curEditType;
     private String photoPath;
     private boolean isOnLine;
@@ -52,8 +53,9 @@ public class PWEditController implements PWEditViewListener{
 
     public void onCreate(Activity activity,PWEditViewInterface pwEditViewInterface){
         this.mActivity = activity;
-         photoPath = activity.getIntent().getStringExtra("photoPath");
-         isOnLine = activity.getIntent().getBooleanExtra("isOnLine",false);
+        backStep = 0;
+        photoPath = activity.getIntent().getStringExtra("photoPath");
+        isOnLine = activity.getIntent().getBooleanExtra("isOnLine",false);
         this.pwEditViewInterface = pwEditViewInterface;
         loadImageFormPath(photoPath, isOnLine);  //加载图片，用ImageLoader加载，故不用新开线程。
         pwEditViewInterface.setLister(this); // 加入接口，消耗内存很小，不用开线程。
@@ -76,9 +78,8 @@ public class PWEditController implements PWEditViewListener{
         if (isOnLine){
             loadImageOnLine(photoPath);
         }else{
-            PictureAirLog.d("====","本地图片");
+            PictureAirLog.v("====","本地图片");
             loadImageOnLocal(photoPath);
-//            pwEditUtil.addPhotoEditorInfo(photoPath,PhotoCommon.EditNone,-1,null,"",0);
             pwEditUtil.addPhotoEditorInfo(photoPath, PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
         }
     }
@@ -91,6 +92,7 @@ public class PWEditController implements PWEditViewListener{
         if (pwEditUtil.getFile(photoPath).exists()){
             PictureAirLog.d("====","网络图片本地存在");
             loadImageOnLocal(pwEditUtil.getFile(photoPath).toString());
+            pwEditUtil.addPhotoEditorInfo(pwEditUtil.getFile(photoPath).toString(), PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
         }else{
             PictureAirLog.d("====","网络图片本地不存在");
             new Thread(new Runnable() {
@@ -113,7 +115,6 @@ public class PWEditController implements PWEditViewListener{
                     if (mMainBitmap != null) {
                         pwEditUtil.saveBitmap(mMainBitmap, path);
                     }
-//                    pwEditUtil.addPhotoEditorInfo(path,PhotoCommon.EditNone,-1,null,"",0);
                     pwEditUtil.addPhotoEditorInfo(path, PhotoCommon.EditNone, curFramePosition, null, "",rotateAngle);
                 }
             }).start();
@@ -136,15 +137,14 @@ public class PWEditController implements PWEditViewListener{
         if (curEditType == PhotoCommon.EditFrame){
             //隐藏照片边框，并显示上一次的图片。
             pwEditViewInterface.hidePhotoFrame(pwEditUtil.getImageLoader(),pwEditUtil.getOptions(),pwEditUtil.getFrameInfos().get(0).frameThumbnailPathH160);
-            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1 - backStep).getPhotoPath());
         }else if(curEditType == PhotoCommon.EditRotate){
-            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1 - backStep).getPhotoPath());
         }else if(curEditType == PhotoCommon.EditSticker){
             pwEditViewInterface.hidePhotoStickerView();
         }else if(curEditType == PhotoCommon.EditFilter){
-            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
+            loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1 - backStep).getPhotoPath());
         }
-
 
         if (pwEditUtil.getPhotoEditorList().size() > 1){
             pwEditViewInterface.showReallySave();
@@ -178,6 +178,14 @@ public class PWEditController implements PWEditViewListener{
                     filterBitmap = null;
                 }
                 pwEditUtil.saveBitmap(mMainBitmap,path);
+
+                if (backStep > 0){
+                    for (int i = 0; i < backStep; i ++){
+                        pwEditUtil.getPhotoEditorList().remove(pwEditUtil.getPhotoEditorList().size() - 1);
+                    }
+                    backStep = 0;
+                }
+
                 pwEditUtil.addPhotoEditorInfo(path, curEditType, curFramePosition, pwEditUtil.getStikerInfoList(), "",rotateAngle);
                 rotateAngle = 0;
                 mActivity.runOnUiThread(new Runnable() {
@@ -206,6 +214,7 @@ public class PWEditController implements PWEditViewListener{
     public void lastStep() {
         PictureAirLog.d("===","上一步");
         index--;
+        backStep ++;
         mMainBitmap = pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(index - 1).getPhotoPath());
         pwEditViewInterface.showBitmap(mMainBitmap);
         pwEditViewInterface.updateLastAndNextUI(checkLastNext());
@@ -217,6 +226,7 @@ public class PWEditController implements PWEditViewListener{
         mMainBitmap = pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(index).getPhotoPath());
         pwEditViewInterface.showBitmap(mMainBitmap);
         index++;
+        backStep --;
         pwEditViewInterface.updateLastAndNextUI(checkLastNext());
     }
 
@@ -388,7 +398,7 @@ public class PWEditController implements PWEditViewListener{
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                filterBitmap = pwEditUtil.getFilterComposeBitmap(mActivity,pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath()), filterPosition);
+                                filterBitmap = pwEditUtil.getFilterComposeBitmap(mActivity,pwEditUtil.getLocalBitampFormPath(pwEditUtil.getPhotoEditorList().get(0).getPhotoPath()), filterPosition, backStep);
                                 mActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -399,7 +409,7 @@ public class PWEditController implements PWEditViewListener{
                             }
                         }).start();
                     }else{
-                        loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1).getPhotoPath());
+                        loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1 - backStep).getPhotoPath());
                         pwEditViewInterface.hideTempSave();
                     }
                     break;

@@ -27,7 +27,7 @@ public class Filter {
 
     protected Bitmap createRadialGradient() {
         RadialGradient gradient = new RadialGradient(width/2, height/2, width/2, Color.GRAY,
-                0xFF000000, android.graphics.Shader.TileMode.CLAMP);
+                0xFF000000, Shader.TileMode.CLAMP);
         Paint paint = new Paint();
         paint.setDither(true);
         paint.setShader(gradient);

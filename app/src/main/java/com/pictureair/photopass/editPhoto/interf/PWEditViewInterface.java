@@ -19,7 +19,7 @@ public interface PWEditViewInterface {
 
     void setLister(PWEditViewListener pwEditViewListener);
 
-    void showEditView(int curEditType,EditActivityAdapter editActivityAdapter); // 显示底部栏目
+    void showEditView(int curEditType, EditActivityAdapter editActivityAdapter); // 显示底部栏目
 
     void showBitmap(Bitmap bitmap);
 
@@ -39,7 +39,7 @@ public interface PWEditViewInterface {
 
     void showPhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath); //显示用户的边框
 
-    void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options,String framePath);
+    void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath);
 
     void showPhotoStickerView(); //事先操作， 显示stickerView的组件
 
