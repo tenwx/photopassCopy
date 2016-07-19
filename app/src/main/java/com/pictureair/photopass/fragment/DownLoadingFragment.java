@@ -1,5 +1,6 @@
 package com.pictureair.photopass.fragment;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -21,6 +23,7 @@ import android.widget.RelativeLayout;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
 import com.pictureair.photopass.entity.DownloadFileStatus;
@@ -47,9 +50,9 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     private Vector<DownloadFileStatus> downloadList;
     public static final int PHOTO_STATUS_UPDATE = 2222;
     public static final int PHOTO_REMOVE = 3333;
-    public static final int PHOTO_FINISH_UPDATE = 4444;
     private RelativeLayout rl_loading;
     private Button button;
+    private boolean mOnScroll = false;
 
     private  PhotoDownloadingAdapter adapter;
     private Handler serviceHandler;
@@ -77,33 +80,43 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE:
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
-                updateView(fileStatus);
+                updateView();
+                if (fileStatus != null) {
+                    if (fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE){
+                        downloadService.sendAddDownLoadMessage();
+                    }
+                }
                 break;
             case PHOTO_REMOVE:
+                PictureAirLog.e("DownLoadingFragment","PHOTO_REMOVE");
+                DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null && downloadService != null) {
-                    int downLoadListSize = downloadList.size();
+                    downloadList = downloadService.getDownloadList();
+//                    PictureAirLog.e("dealHandler","downloadList.size: "+downloadList.size());
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
 //                    PictureAirLog.e("DownLoadingFragment","dealHandler remove item success");
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
                     int oldCount = downloadService.getDatabasePhotoCount();
                     int cacheListSize = downloadService.getCacheListSize();
+//                    PictureAirLog.e("dealHandler","cacheListSize.size: "+cacheListSize);
                     int downLoadCount=0;
+                    int downLoadListSize = downloadList.size();
                     if (cacheListSize > downLoadListSize) {
                         downLoadCount = cacheListSize - downLoadListSize;
                     }
+//                    PictureAirLog.e("dealHandler","downLoadCount: "+downLoadCount);
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
+                    Activity activity = getActivity();
+                    LoadManageActivity manageActivity = null;
+                    if (activity instanceof LoadManageActivity) {
+                        manageActivity = (LoadManageActivity)activity;
+                        manageActivity.manageHandler.obtainMessage(LoadManageActivity.UPDATE_LOAD_SUCCESS_FRAGMENT,status).sendToTarget();
+                    }
+
                     downloadService.sendAddDownLoadMessage();
                 }
                 break;
-            case PHOTO_FINISH_UPDATE:
-                DownloadFileStatus satus = (DownloadFileStatus)msg.obj;
-                updateView(satus);
-                if (downloadService != null) {
-                    downloadService.sendRemoveItemMessage(satus);
-                }
-                break;
-
             default:
                 break;
         }
@@ -119,7 +132,6 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         lv_loading.setVisibility(View.GONE);
         rl_loading.setVisibility(View.GONE);
         button.setOnClickListener(this);
-
         return view;
     }
 
@@ -193,82 +205,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         unBind();
     }
 
-    private void updateView(DownloadFileStatus fileStatus){
-//        PictureAirLog.e("DownLoadingFragment","updateView");
-        int index = fileStatus.getPosition();
-        downloadList.set(index,fileStatus);
+    private void updateView(){
+        downloadList = downloadService.getDownloadList();
         adapter.setList(downloadList);
-        int visiblePos = lv_loading.getFirstVisiblePosition();
-        int offset = index - visiblePos;
-        int childCount = lv_loading.getChildCount();
-//        PictureAirLog.e("DownLoadingFragment index", "index +++++++" +index);
-//        PictureAirLog.e("DownLoadingFragment offset", "offset +++++++" +offset);
-//        PictureAirLog.e("DownLoadingFragment childCount", "childCount +++++++" +childCount);
-        //Log.e("", "index="+index+"visiblePos="+visiblePos+"offset="+offset);
-        // 只有在可见区域才更新
-        if(offset < 0 || offset > childCount){
-            if (fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE) {
-                if (downloadService != null) {
-                    downloadService.sendAddDownLoadMessage();
-                }
-            }
-            return;
-        }
-        View view = lv_loading.getChildAt(offset);
-        PhotoDownloadingAdapter.Holder holder = null;
-        if (view != null) {
-            holder = (PhotoDownloadingAdapter.Holder) view.getTag();
-        }
-        try {
-            switch (fileStatus.status) {
-                case DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING:
-                    //                PictureAirLog.e("DownLoadingFragment", "DOWNLOAD_STATE_DOWNLOADING");
-                    if (holder != null) {
-                        holder.tv_status.setText(getString(R.string.photo_download_loading));
-                        holder.tv_size.setText(fileStatus.getCurrentSize() + "MB/" + fileStatus.getTotalSize() + "MB");
-                        holder.tv_speed.setText(fileStatus.getLoadSpeed() + "KB/S");
-                        holder.img_status.setImageResource(R.drawable.photo_status_load);
-                        holder.img_status.mCanDraw = true;
-                        if (Float.valueOf(fileStatus.getTotalSize()) == 0) {
-                            holder.img_status.setProgress(0);
-                        } else {
-                            int pro = (int) ((Float.valueOf(fileStatus.getCurrentSize()) / Float.valueOf(fileStatus.getTotalSize())) * 100);
-                            holder.img_status.setProgress(pro);
-                        }
-                    }
-                    break;
-                case DownloadFileStatus.DOWNLOAD_STATE_FAILURE:
-                    //                PictureAirLog.e("DownLoadingFragment", "DOWNLOAD_STATE_FAILURE");
-                    if (holder != null) {
-                        holder.tv_status.setText(getString(R.string.photo_download_failed));
-                        holder.tv_size.setText(fileStatus.getCurrentSize() + "MB/" + fileStatus.getTotalSize() + "MB");
-                        holder.tv_speed.setText("0KB/S");
-                        holder.img_status.setImageResource(R.drawable.photo_status_error);
-                        holder.img_status.mCanDraw = false;
-                        holder.img_status.setProgress(0);
-                    }
-                    if (downloadService != null) {
-                        downloadService.sendAddDownLoadMessage();
-                    }
-                    break;
-                case DownloadFileStatus.DOWNLOAD_STATE_FINISH:
-                    //                PictureAirLog.e("DownLoadingFragment", "DOWNLOAD_STATE_FAILURE");
-                    if (holder != null) {
-                        holder.tv_status.setText(getString(R.string.photo_download_loading));
-                        holder.tv_size.setText(fileStatus.getCurrentSize() + "MB/" + fileStatus.getTotalSize() + "MB");
-                        holder.tv_speed.setText(fileStatus.getLoadSpeed() + "KB/S");
-                        holder.img_status.setImageResource(R.drawable.photo_status_load);
-                        if (Float.valueOf(fileStatus.getTotalSize()) == 0) {
-                            holder.img_status.setProgress(0);
-                        } else {
-                            int pro = (int) ((Float.valueOf(fileStatus.getCurrentSize()) / Float.valueOf(fileStatus.getTotalSize())) * 100);
-                            holder.img_status.setProgress(pro);
-                        }
-                    }
-                    break;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        adapter.notifyDataSetChanged();
     }
+
+
 }

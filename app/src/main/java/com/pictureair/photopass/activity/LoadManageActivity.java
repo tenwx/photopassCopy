@@ -1,32 +1,29 @@
 package com.pictureair.photopass.activity;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.DownLoadFramentAdapter;
-import com.pictureair.photopass.db.PictureAirDbManager;
+import com.pictureair.photopass.entity.DownloadFileStatus;
+import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.fragment.LoadSuccessFragment;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppManager;
-import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +42,40 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     DownloadService downloadService;
     DownLoadingFragment downLoadingFragment;
     LoadSuccessFragment loadSuccessFragment;
+    public final Handler manageHandler = new LoadManageHandler(this);
+    public static final int UPDATE_LOAD_SUCCESS_FRAGMENT = 6666;
+
+    public static class LoadManageHandler extends Handler {
+        private final WeakReference<LoadManageActivity> mActivity;
+
+        public LoadManageHandler(LoadManageActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            mActivity.get().dealHandler(msg);
+        }
+    }
+
+    private void dealHandler(Message msg) {
+        switch (msg.what) {
+            case UPDATE_LOAD_SUCCESS_FRAGMENT:
+                loadSuccessFragment.getDataBackground();
+                break;
+
+            default:
+
+                break;
+
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +101,14 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (position == 1) {
-            loadSuccessFragment.updateList();
-        }
+
     }
 
     @Override
     public void onPageSelected(int position) {
-
+        if (position == 1) {
+            loadSuccessFragment.updateList();
+        }
     }
 
     @Override

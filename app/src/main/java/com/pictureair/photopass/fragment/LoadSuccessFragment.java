@@ -225,4 +225,15 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         }.start();
     }
 
+    public void getDataBackground(){
+        isLoading = true;
+        new Thread(){
+            @Override
+            public void run() {
+                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getLoadSuccessPhotos(userId);
+                photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
+            }
+        }.start();
+    }
+
 }
