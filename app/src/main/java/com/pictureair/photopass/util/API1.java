@@ -2202,7 +2202,7 @@ public class API1 {
                 float usedTime = (currentTime-lastTime)/1000f;
                 float keepTime = (currentTime-startTime)/1000f;
 //                PictureAirLog.e(TAG, "onProgress usedTime "+usedTime);
-                if (usedTime > 0.1) {
+                if (usedTime > 0.2) {
                     lastTime = currentTime;
                     float downSpeed = (bytesWritten / 1000f) / keepTime;
                     String ds = decimalFormat.format(downSpeed);
@@ -2210,11 +2210,10 @@ public class API1 {
                         ds = 0+ds;
                     }
                     fileStatus.setLoadSpeed(ds);
+//                    PictureAirLog.e(TAG, "onProgress name "+ fileStatus.getUrl().substring(fileStatus.getUrl().length()-10,fileStatus.getUrl().length())+" "+fileStatus.getPosition());
                     if (adapterHandler != null) {
-                        adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, fileStatus).sendToTarget();
+                        adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
 //                      PictureAirLog.e(TAG, "onProgress sendToTarget");
-                    }else{
-                        handler.obtainMessage(DownloadService.SEND_TO_FRAGMENT, fileStatus).sendToTarget();
                     }
                 }
             }

@@ -22,10 +22,7 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.API1;
-import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.AroundCircleView;
+import com.pictureair.photopass.widget.CircleProgressImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +72,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
             holder.tv_size = (TextView) convertView.findViewById(R.id.photo_loading_tv_size);
             holder.tv_speed = (TextView) convertView.findViewById(R.id.photo_loading_tv_speed);
             holder.tv_status = (TextView) convertView.findViewById(R.id.photo_loading_tv_status);
-            holder.img_status = (AroundCircleView) convertView.findViewById(R.id.photo_loading_img_status);
+            holder.img_status = (CircleProgressImage) convertView.findViewById(R.id.photo_loading_img_status);
             convertView.setTag(holder);
         }else{
             holder = (Holder) convertView.getTag();
@@ -139,7 +136,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         public TextView tv_size;
         public TextView tv_speed;
         public TextView tv_status;
-        public AroundCircleView img_status;
+        public CircleProgressImage img_status;
     }
 
     public void setList(Vector<DownloadFileStatus> photos){
@@ -169,6 +166,8 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                 holder.tv_size.setText("0MB/0MB");
                 holder.tv_speed.setText("0KB/S");
                 holder.tv_status.setText(mContext.getString(R.string.photo_download_waiting));
+                holder.img_status.setImageResource(R.drawable.photo_status_wait);
+                holder.img_status.mCanDraw = false;
                 ArrayList<PhotoInfo> photos = new ArrayList<>();
                 PhotoInfo info = new PhotoInfo();
                 info.isVideo = fileStatus.isVideo();

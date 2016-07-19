@@ -49,6 +49,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -58,12 +61,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
     private Vector<DownloadFileStatus> downloadList = new Vector<DownloadFileStatus>();
+    private List<DownloadFileStatus> removeCache = new Vector<DownloadFileStatus>();
     private Map<String,DownloadFileStatus> taskList = new HashMap<>();
     private Map<String,DownloadFileStatus> cacheList = new HashMap<>();
     private Map<String,File> fileList = new ConcurrentHashMap<>();
     private int downed_num = 0;//实际下载照片数
     private int exist_num = 0 , scan_num = 0;//无需下载的照片数,扫描成功的照片数
     private int failed_num = 0;//下载失败的照片数
+    private boolean mFinish = false;
 
     private Context mContext = this;
     private NotificationManager manager;
@@ -71,8 +76,7 @@ public class DownloadService extends Service {
     private final static int FINISH_DOWNLOAD = 1;
     private final static int START_DOWNLOAD = 2;
     public final static int ADD_DOWNLOAD = 3;
-    public final static int SEND_TO_FRAGMENT = 4;
-    public final static int LIST_REMOVE_ITEM = 5;
+//    public final static int SEND_TO_FRAGMENT = 4;
 
     private boolean isDownloading = false;
     //    private File file;  //文件
@@ -83,6 +87,7 @@ public class DownloadService extends Service {
     private PictureAirDbManager pictureAirDbManager;
     private SharedPreferences preferences;
     private int databasePhotoCount;//未下载之前的数据库照片数量
+    private ExecutorService fixedThreadPool;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -97,6 +102,7 @@ public class DownloadService extends Service {
         myToast = new PWToast(getApplicationContext());
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
         preferences = getApplicationContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
+        fixedThreadPool = Executors.newFixedThreadPool(1);
     }
 
     @SuppressWarnings("deprecation")
@@ -104,6 +110,7 @@ public class DownloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //		serviceIntent = intent;
         PictureAirLog.out("DownloadService ----------> onStartCommand");
+        mFinish = false;
         Bundle b = intent.getExtras();
         if (b != null) {
             photos = b.getParcelableArrayList("photos");
@@ -186,6 +193,7 @@ public class DownloadService extends Service {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case START_DOWNLOAD:
+                    PictureAirLog.e("service","START_DOWNLOAD");
                     if (downloadList.size() > 0){
                             for (int i = 0; i < downloadList.size(); i++) {
                                 DownloadFileStatus fileStatus = downloadList.get(i);
@@ -194,6 +202,9 @@ public class DownloadService extends Service {
                                         fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING;
                                         fileStatus.setPosition(i);
                                         taskList.put(fileStatus.getUrl(), fileStatus);
+                                        String name = fileStatus.getUrl();
+                                        name = name.substring(name.length()-10,name.length());
+                                        PictureAirLog.e("service","START_DOWNLOAD name and positiong " + name + ""+fileStatus.getPosition());
                                         downLoad(fileStatus);
                                     } else {
                                         break;
@@ -230,7 +241,7 @@ public class DownloadService extends Service {
                     break;
 
                 case API1.DOWNLOAD_PHOTO_SUCCESS://下载成功之后获取data数据，然后base64解码，然后保存。
-                    PictureAirLog.out("get downloadInfo-----> ");
+                    PictureAirLog.e("service","DOWNLOAD_PHOTO_SUCCESS");
                     Bundle bundle = msg.getData();
                     DownloadFileStatus fileStatus = (DownloadFileStatus) bundle.get("url");
                     byte[] results = (byte[]) bundle.get("binaryData");
@@ -238,19 +249,22 @@ public class DownloadService extends Service {
                     saveFile(file, results,fileStatus);
                     break;
                 case API1.DOWNLOAD_PHOTO_FAILED:
+                    PictureAirLog.e("service","DOWNLOAD_PHOTO_FAILED");
                     synchronized (taskList){
                         ++failed_num;
                         Bundle failBundle = msg.getData();
                         DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
                         taskList.remove(failStatus.getUrl());
                         if (adapterHandler != null) {
-                            adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
+//                            adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
+                            adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE,failStatus).sendToTarget();
                         }else{
                             handler.sendEmptyMessage(ADD_DOWNLOAD);
                         }
                     }
                     break;
                 case ADD_DOWNLOAD:
+                    PictureAirLog.e("service","ADD_DOWNLOAD");
                     synchronized (taskList) {
                         if (downloadList.size() > 0) {
                             for (int i = 0; i < downloadList.size(); i++) {
@@ -269,54 +283,21 @@ public class DownloadService extends Service {
                                     }
                                 }
 
-                                if (i == downloadList.size() -1 && taskList.size() == 0){
+                                if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){
                                     handler.sendEmptyMessage(FINISH_DOWNLOAD);
+                                    mFinish = true;
                                 }
                             }
                         } else {
                             //结束
 //                            PictureAirLog.e("service", "ADD_DOWNLOAD download all");
-                            if (taskList.size() == 0) {
+                            if (taskList.size() == 0 && !mFinish) {
                                 PictureAirLog.e("service", "ADD_DOWNLOAD send  FINISH_DOWNLOAD");
                                 handler.sendEmptyMessage(FINISH_DOWNLOAD);
+                                mFinish = true;
                             }
                         }
                     }
-                    break;
-                case SEND_TO_FRAGMENT:
-                    if (adapterHandler != null) {
-                        adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE,(DownloadFileStatus)msg.obj).sendToTarget();
-                    }
-                    break;
-
-                case LIST_REMOVE_ITEM:
-
-                    DownloadFileStatus removeStatus = (DownloadFileStatus)msg.obj;
-
-                    scan_num++;
-//                  PictureAirLog.e("service","scan taskList remove synchronized");
-                    taskList.remove(removeStatus.getUrl());
-                    fileList.remove(removeStatus.getUrl());
-                    downloadList.remove(removeStatus.getPosition());
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                    String loadTime = df.format(new Date());
-                    String userId = preferences.getString(Common.USERINFO_ID, "");
-//                               PictureAirLog.e("service","scan downloadList remove "+fileStatus.getPosition() );
-                    for (String key:taskList.keySet()) {
-                        DownloadFileStatus status = taskList.get(key);
-                        if (status.getPosition() > removeStatus.getPosition()) {
-                            status.setPosition(status.getPosition() - 1);
-                        }
-                    }
-                    pictureAirDbManager.writeLoadSuccessPhotos(userId,removeStatus.getPhotoId(),removeStatus.getUrl(),removeStatus.getTotalSize(),removeStatus.getPhotoThumbnail(),removeStatus.getShootOn(),loadTime);
-
-                    if (adapterHandler != null) {
-                        adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_REMOVE,removeStatus).sendToTarget();
-//                            PictureAirLog.e("service","adapterHandler sendmessage ");
-                    }else {
-                        handler.sendEmptyMessageDelayed(ADD_DOWNLOAD,200);
-                    }
-
                     break;
 
                 default:
@@ -324,8 +305,8 @@ public class DownloadService extends Service {
             }
         }
 
-        ;
     };
+
 
     /**
      * 下载文件方法
@@ -426,10 +407,8 @@ public class DownloadService extends Service {
                         }
                         fileStatus.setLoadSpeed(ds);
                         if (adapterHandler != null) {
-                            adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, fileStatus).sendToTarget();
+                            adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
 //                          PictureAirLog.e(TAG, "onProgress sendToTarget");
-                        }else{
-                            handler.obtainMessage(DownloadService.SEND_TO_FRAGMENT, fileStatus).sendToTarget();
                         }
                     }
                 }
@@ -488,15 +467,41 @@ public class DownloadService extends Service {
         MediaScannerConnection.scanFile(this, new String[]{file}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
-                        PictureAirLog.out("okdsffads");
-                        if (adapterHandler != null) {
-                            adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_FINISH_UPDATE,fileStatus).sendToTarget();
-                        }else{
-                            Message msg;
-                            msg = handler.obtainMessage(LIST_REMOVE_ITEM);
-                            msg.obj = fileStatus;
-                            handler.sendMessageDelayed(msg,200);
+                        scan_num++;
+//                            PictureAirLog.e("service","fixedThreadPool start");
+                        taskList.remove(fileStatus.getUrl());
+                        fileList.remove(fileStatus.getUrl());
+                        downloadList.remove(fileStatus.getPosition());
+//                            PictureAirLog.e("LIST_REMOVE_ITEM","downloadList.size: "+downloadList.size());
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        final String loadTime = df.format(new Date());
+                        final String userId = preferences.getString(Common.USERINFO_ID, "");
+//                               PictureAirLog.e("service","scan downloadList remove "+fileStatus.getPosition() );
+                        for (String key:taskList.keySet()) {
+                            DownloadFileStatus status = taskList.get(key);
+                            String name = status.getUrl();
+                            name = name.substring(name.length()-10,name.length());
+                            PictureAirLog.e("service","fixedThreadPool start name and positiong " + name + ""+status.getPosition());
+                            if (status.getPosition() > fileStatus.getPosition()) {
+                                status.setPosition(status.getPosition() - 1);
+                            }
+                            PictureAirLog.e("service","fixedThreadPool end name and positiong " + name + ""+status.getPosition());
                         }
+
+                        if (adapterHandler != null) {
+                            adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_REMOVE,fileStatus).sendToTarget();
+                            adapterHandler.removeMessages(DownLoadingFragment.PHOTO_STATUS_UPDATE);
+//                                  PictureAirLog.e("service","adapterHandler sendmessage ");
+                        }else {
+                            handler.sendEmptyMessageDelayed(ADD_DOWNLOAD,200);
+                        }
+//                            PictureAirLog.e("service","fixedThreadPool end");
+                        fixedThreadPool.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                pictureAirDbManager.writeLoadSuccessPhotos(userId,fileStatus.getPhotoId(),fileStatus.getUrl(),fileStatus.getTotalSize(),fileStatus.getPhotoThumbnail(),fileStatus.getShootOn(),loadTime);
+                            }
+                        });
                     }
                 });
     }
@@ -505,6 +510,7 @@ public class DownloadService extends Service {
     public void onDestroy() {
         // TODO Auto-generated method stub
         PictureAirLog.out("downloadService-----------> ondestroy");
+        fixedThreadPool.shutdown();
         super.onDestroy();
     }
 
@@ -515,7 +521,7 @@ public class DownloadService extends Service {
     }
 
     public Vector<DownloadFileStatus> getDownloadList(){
-        return  downloadList;
+        return  new Vector<DownloadFileStatus>(downloadList);
     }
 
     public void setAdapterhandler(Handler handler){
@@ -530,18 +536,16 @@ public class DownloadService extends Service {
         handler.sendEmptyMessageDelayed(ADD_DOWNLOAD,200);
     }
 
+    public void sendFinish(){
+        handler.sendEmptyMessage(FINISH_DOWNLOAD);
+    }
+
     public int getDatabasePhotoCount(){
         return databasePhotoCount;
     }
 
     public int getCacheListSize(){
         return cacheList.size();
-    }
-
-    public void sendRemoveItemMessage(DownloadFileStatus status){
-        Message msg = handler.obtainMessage(LIST_REMOVE_ITEM);
-        msg.obj = status;
-        handler.sendMessageDelayed(msg,200);
     }
 
 }
