@@ -113,6 +113,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             } else if (resultString.length() >= 16 && resultString.length() <= 22 && AppUtil.isNumeric(resultString)) {//不包含vid，但是属于16-22位之间，并且都是纯数字
                 code = resultString;
 
+            } else if (getIntent().getStringExtra("type") == null && resultString.contains("chid=") && resultString.contains("uid=")) {//只有故事页面进入，才会判断递推号
+                code = resultString.substring(resultString.lastIndexOf("chid=") + 5, resultString.length());  //截取字符串。
+                code = code.replace("uid=", "");//这个时候拿到的数据就是：    chid&uid
+
             } else {//无效的卡号
                 newToast.setTextAndShow(R.string.http_error_code_6136, Common.TOAST_SHORT_TIME);
                 mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
@@ -120,7 +124,11 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             }
             PictureAirLog.out("code：：：" + code);
             dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-            dealCodeUtil.startDealCode(code);
+            if (code.contains("&")) {//递推
+                dealCodeUtil.startDealChidCode(code);
+            } else {//正常code
+                dealCodeUtil.startDealCode(code);
+            }
         }
     }
 
@@ -200,6 +208,18 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 } else {
                     mipCaptureHandler.sendEmptyMessageDelayed(FINISH_CURRENT_ACTIVITY, 200);
                 }
+                break;
+
+            case DealCodeUtil.DEAL_CHID_CODE_SUCCESS:
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                Bundle bundle = (Bundle) msg.obj;
+                Intent intent = new Intent(MipCaptureActivity.this, SubmitOrderActivity.class);
+                intent.putExtra("orderinfo", bundle.getSerializable("orderinfo"));
+                intent.putExtra("chid", code);
+                startActivity(intent);
+                finish();
                 break;
 
             case FINISH_CURRENT_ACTIVITY:

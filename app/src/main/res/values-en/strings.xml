@@ -124,7 +124,7 @@
     <string name="scan_intro">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
     <string name="re_scan">Retake</string>
     <string name="textview_center_hint">Please align the back of your Disney PhotoPass+ in this area</string>
-    <string name="camera_closed">Please agree camera permission in Settings</string>
+    <string name="camera_closed">Please allow PhotoPass app to have camera access in Settings</string>
     <string name="camera_closed_jump_to_manual">Please input manually cause you did not agree the camera permission</string>
     <string name="confirm_ppp_code_text_hint">Please check your PhotoPass+ password \n If the password is incorrect, please key in manually</string>
     <!-- scan end -->
@@ -178,7 +178,7 @@
     <string name="mypage_help">Help</string>
     <string name="mypage_setting">Settings</string>
     <string name="mypage_about">About</string>
-    <string name="mypage_download">DownLoad Manage</string>
+    <string name="mypage_download">Downloads</string>
     <string name="mypage_opinions">Contact Us</string>
     <string name="code_tips">Please approach Disney PhotoPass photographer to scan and associate your photos.</string>
     <!-- me end -->
@@ -208,8 +208,8 @@
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="blur_intro">Disney PhotoPass+ allows you to view and download all your photos taken by our professional Disney PhotoPass Photographers in a single day.</string>
-    <string name="up_ppp_money">Upgrade to Disney PhotoPass+</string>
+    <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card</string>
+    <string name="up_ppp_money">Yes, I want to Purchase PhotoPass+</string>
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
@@ -484,15 +484,16 @@
     <!-- tips end -->
 
     <!-- edit story start -->
-    <string name="edit_story_all">Select All</string>
-    <string name="edit_story_disall">Disselect</string>
+    <string name="edit_story_all">All</string>
+    <string name="edit_story_disall">None</string>
     <string name="delete_percent">Deleting %1$d/%2$d</string>
     <string name="start_delete">Your account will no longer display these photos once deleted. Confirm to delete?</string>
     <string name="edit_story_album">Select</string>
-    <string name="edit_story_confirm_download">确认下载</string>
-    <string name="edit_story_reselect">重新选择</string>
-    <string name="edit_story_unpay_tips">There are photos which are not purchased. Please continue to download the purchased photos only.</string>
-    <string name="edit_story_addto_downloadlist">照片已在下载列队，可去下载管理内查询，请耐心等待！</string>
+    <string name="edit_story_confirm_download">Confirm</string>
+    <string name="edit_story_reselect">Re-select</string>
+    <string name="edit_story_unpay_tips">There are some photos in your selection which are not purchased. Hence only the purchased photos will be downloaded.</string>
+    <string name="edit_story_all_unpay_tips">The selected photos has not been purchased.</string>
+    <string name="edit_story_addto_downloadlist">Your photos are now being downloaded. Please proceed to Downloads for status check.</string>
     <!-- edit story end -->
 
     <!-- invoice-->
@@ -575,30 +576,23 @@
     <string name="smssdk_pw_is_inconsistency">Password does not match</string>
     <!--SMSSDK end-->
 
-    <!-- postcard start-->
-    <string name="customized_postcard">定制明信片(三联套)</string>
-    <string name="postcard_type">款式</string>
-    <string name="preview_goods">预览商品(%1$d/%2$d)</string>
-    <string name="preview_goods_null">预览商品(0/3)</string>
-    <!-- postcard end-->
-
     <!-- permission request start -->
-    <string name="permission_storage_message">Please agree file on internal storage permission in Settings</string>
-    <string name="permission_read_phone_state_message">Please agree device info permission in Settings</string>
+    <string name="permission_storage_message">Please allow PhotoPass app to have file on internal storage access in Settings</string>
+    <string name="permission_read_phone_state_message">Please allow PhotoPass app to have device info access in Settings</string>
     <string name="title_activity_load_manage">LoadManageActivity</string>
     <!-- permission request end -->
 
     <!-- photo download manage start -->
-    <string name="photo_download_success">"Already Download"</string>
-    <string name="photo_downloading">"Downloading"</string>
-    <string name="photo_download_waiting">"Waiting"</string>
-    <string name="photo_download_loading">"Loading"</string>
-    <string name="photo_download_failed">"Fail"</string>
-    <string name="photo_download_complete">"Complete"</string>
-    <string name="photo_download_clear">"Clear"</string>
+    <string name="photo_download_success">Completed</string>
+    <string name="photo_downloading">Downloading</string>
+    <string name="photo_download_waiting">Pending</string>
+    <string name="photo_download_loading">In progress</string>
+    <string name="photo_download_failed">Failed</string>
+    <string name="photo_download_complete">Completed</string>
+    <string name="photo_download_clear">Clear List</string>
     <string name="photo_download_nothing">"Nothing"</string>
-    <string name="photo_download_tips">"一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！"</string>
-    <string name="photo_download_to_load">"Go To Load"</string>
-    <string name="photo_download_tips2">"已下载完成的照片将保存至您的手机本地相册中,点击一下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦"</string>
+    <string name="photo_download_tips">There are no photos downloaded</string>
+    <string name="photo_download_to_load">DownLoad Now</string>
+    <string name="photo_download_tips2">Your photos have been successfully downladed into your local phone album.</string>
     <!--photo download manage start-->
 </resources>

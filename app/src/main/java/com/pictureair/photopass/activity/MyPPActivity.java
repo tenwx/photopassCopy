@@ -76,8 +76,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private PictureAirDbManager pictureAirDbManager;
 
     private static final int UPDATE_UI = 10000;
-    private static final int DELETE_PHOTO = 10001;
-    private boolean isDeletePhoto = false;//是否是编辑状态
     private boolean needNotifyStoryRefresh = false;
     private JSONArray pps;
     private MyApplication myApplication;
@@ -157,16 +155,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 // 更新界面  查看pp页面
                 if (showPPCodeList != null && showPPCodeList.size() > 0) {
                     PictureAirLog.out("has ppcode ");
-                    if (!isDeletePhoto) {
-                        delete.setVisibility(View.VISIBLE);
-                    }
                     listPP.setVisibility(View.VISIBLE);
                     noPhotoPassView.setVisibility(View.GONE);
-                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
+                    listPPAdapter.refresh(showPPCodeList, true);
                 } else {
                     PictureAirLog.out("has not pp code");
                     showPPCodeList.clear();
-                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
+                    listPPAdapter.refresh(showPPCodeList, true);
                     delete.setVisibility(View.GONE);
                     listPP.setVisibility(View.INVISIBLE);
                     noPhotoPassView.setVisibility(View.VISIBLE);
@@ -202,16 +197,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 break;
 
             case REMOVE_PP_FROM_DB_FINISH://数据库更新完毕之后
-                listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
+                listPPAdapter.refresh(showPPCodeList, true);
                 if (customProgressDialog.isShowing())
                     customProgressDialog.dismiss();
-                break;
-
-            case DELETE_PHOTO:
-                //更新界面
-                if (showPPCodeList != null && showPPCodeList.size() >= 0) {
-                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
-                }
                 break;
 
             case API1.GET_PPS_SUCCESS:// 获取pp列表成功。 如果status等于 200 的时候
@@ -293,7 +281,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             // seletePP的页面
             case GET_SELECT_PP_SUCCESS:
-                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, isDeletePhoto, myPPHandler, dppp);
+                listPPAdapter = new ListOfPPAdapter(showPPCodeList, MyPPActivity.this, null, true, true, myPPHandler, dppp);
                 listPP.setAdapter(listPPAdapter);
 
                 if (showPPCodeList.size() == 0) {
@@ -381,29 +369,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                     customProgressDialog.dismiss();
                 }
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                break;
-
-            case PPPPop.POP_DELETE://删除操作
-                if (pppPop.isShowing()) {
-                    pppPop.dismiss();
-                }
-                UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
-                PictureAirLog.d("==============",
-                        "点击删除按钮 showPPCodeList" + showPPCodeList.size());
-                if (isDeletePhoto) {
-                    isDeletePhoto = false;
-                    back.setImageResource(R.drawable.back_white);
-                    delete.setVisibility(View.VISIBLE);
-                    updateUI(DELETE_PHOTO);
-                } else {
-                    if (showPPCodeList.size() == 0) {
-                        return;
-                    }
-                    isDeletePhoto = true;
-                    back.setImageResource(R.drawable.cancel_my_pp);
-                    delete.setVisibility(View.GONE);
-                    updateUI(DELETE_PHOTO);
-                }
                 break;
 
             case PPPPop.POP_SCAN://扫描
@@ -555,7 +520,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                         deleteAPI();// 提交删除PP
                         deletePosition = position;
                     }
-                }, false, isDeletePhoto, null, null);
+                }, false, true, null, null);
 
         listPP.setAdapter(listPPAdapter);
         if (showPPCodeList == null || showPPCodeList.size() <= 0) {
@@ -577,17 +542,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:// 返回按钮
-                if (isDeletePhoto) {
-                    isDeletePhoto = false;
-                    // 在删除状态下返回，不提交数据
-                    back.setImageResource(R.drawable.back_white);
-                    delete.setVisibility(View.VISIBLE);
-                    PictureAirLog.d("===========", "取消删除......");
-                    listPPAdapter.refresh(showPPCodeList, isDeletePhoto);
-                } else {
-                    finish();
-                }
-
+                finish();
                 break;
 
             case R.id.pp_rl:
@@ -883,6 +838,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 case DELETE_API_DIALOG:
                     if (!customProgressDialog.isShowing())
                         customProgressDialog.show();
+                    UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
                     API1.removePPFromUser(showPPCodeList.get(deletePosition).getPpCode(), deletePosition, myPPHandler);
                     break;
 

@@ -795,7 +795,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             isLandscape = true;
             landscapeOrientation();
         }
-        originalRadius = 120;
+        originalRadius = ScreenUtil.dip2px(this, 45);
         curRadius = originalRadius;
         dialog.show();
         getPreviewPhotos();

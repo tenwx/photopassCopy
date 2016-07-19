@@ -121,7 +121,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/edit_album_delete_button"
+            android:drawableTop="@drawable/edit_album_download_button"
             android:gravity="center_horizontal|bottom"
             android:drawablePadding="@dimen/pp_padding_5"
             android:text="@string/down"

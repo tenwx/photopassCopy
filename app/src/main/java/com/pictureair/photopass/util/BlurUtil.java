@@ -11,8 +11,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.pictureair.photopass.util.PictureAirLog;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -28,7 +26,7 @@ public class BlurUtil {
 		// 缩放尺寸
 		float scaleFactor = 6.0f;
 		// 模糊度，数字越小，高斯效果越小，越清晰
-		float radius = 3;
+		float radius = 4;
 		Bitmap overlay = Bitmap.createBitmap((int) (bkg.getWidth() / scaleFactor), (int) (bkg.getHeight() / scaleFactor), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(overlay);
 		canvas.scale(1.0f / scaleFactor, 1.0f / scaleFactor);

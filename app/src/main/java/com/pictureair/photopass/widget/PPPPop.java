@@ -17,14 +17,13 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 	private LayoutInflater inflater;
 	private Context context;
 	private View pppView;
-	private TextView llBuy, llDelete, llAuto, llInput;
+	private TextView llBuy, llAuto, llInput;
 	private Handler handler;
-	private ImageView line, lineDelete;
+	private ImageView line;
 	private int type;
 	public static final int POP_BUY = 9999;
 	public static final int POP_SCAN = 8888;
 	public static final int POP_INPUT = 7777;
-	public static final int POP_DELETE = 6666;
 
 	public static final int MENU_TYPE_STORY = 111;
 	public static final int MENU_TYPE_PP = 222;
@@ -46,30 +45,23 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 //				LayoutParams.WRAP_CONTENT));
 		setContentView(pppView);
 		llBuy = (TextView) pppView.findViewById(R.id.buyTextView);
-		llDelete = (TextView) pppView.findViewById(R.id.deleteTextView);
 		llAuto = (TextView) pppView.findViewById(R.id.scanTextView);
 		llInput = (TextView) pppView.findViewById(R.id.input_tv);
 		line = (ImageView) pppView.findViewById(R.id.line);
-		lineDelete = (ImageView) pppView.findViewById(R.id.line_delete);
 
 		llBuy.setOnClickListener(this);
 		llAuto.setOnClickListener(this);
 		llInput.setOnClickListener(this);
-		llDelete.setOnClickListener(this);
 
 		if (type == MENU_TYPE_STORY) {//story
 			line.setVisibility(View.GONE);
 			llBuy.setVisibility(View.GONE);
-			llDelete.setVisibility(View.GONE);
-			lineDelete.setVisibility(View.GONE);
 
 		} else if (type == MENU_TYPE_PP) {//pp
 			llBuy.setVisibility(View.GONE);
 			line.setVisibility(View.GONE);
 
 		} else if (type == MENU_TYPE_PPP) {//ppp
-			llDelete.setVisibility(View.GONE);
-			lineDelete.setVisibility(View.GONE);
 
 		}
 
@@ -95,10 +87,6 @@ public class PPPPop extends PopupWindow implements OnClickListener {
 
 			case R.id.input_tv:
 				handler.sendEmptyMessage(POP_INPUT);
-				break;
-
-			case R.id.deleteTextView:
-				handler.sendEmptyMessage(POP_DELETE);
 				break;
 
 			default:

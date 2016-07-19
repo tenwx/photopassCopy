@@ -33,7 +33,6 @@ import java.lang.ref.WeakReference;
  */
 public class SettingActivity extends BaseActivity implements OnClickListener, PWDialog.OnPWDialogClickListener {
     private SettingUtil settingUtil;
-    private RelativeLayout feedback;
     private Button logout;
     private TextView tvSettingLanguage,tvAbout;
     private MyApplication application;
@@ -117,7 +116,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
 
     private void initView() {
         logout = (Button) findViewById(R.id.logout);
-        feedback = (RelativeLayout) findViewById(R.id.sub_opinions);
         backBtn = (ImageView) findViewById(R.id.back);
         tvSettingLanguage = (TextView) findViewById(R.id.setting_language);
         tvAbout = (TextView) findViewById(R.id.setting_about);
@@ -133,12 +131,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         logout.setTypeface(MyApplication.getInstance().getFontBold());
         tvSettingLanguage.setTypeface(MyApplication.getInstance().getFontBold());
         tvAbout.setTypeface(MyApplication.getInstance().getFontBold());
-        ((TextView) findViewById(R.id.tv_feedback)).setTypeface(MyApplication.getInstance().getFontBold());
         ((TextView) findViewById(R.id.tv_download)).setTypeface(MyApplication.getInstance().getFontBold());
 //        ((TextView) findViewById(R.id.tv_update_photo)).setTypeface(MyApplication.getInstance().getFontBold());
 
         logout.setOnClickListener(this);
-        feedback.setOnClickListener(this);
         backBtn.setOnClickListener(this);
         tvSettingLanguage.setOnClickListener(this);
         tvAbout.setOnClickListener(this);

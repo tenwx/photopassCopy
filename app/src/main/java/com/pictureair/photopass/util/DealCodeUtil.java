@@ -12,8 +12,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.CartItemInfo;
+import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.CouponInfo;
+import com.pictureair.photopass.entity.GoodsInfo;
+import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.widget.PWToast;
+
+import java.util.ArrayList;
 
 
 /**
@@ -30,6 +36,8 @@ public class DealCodeUtil {
 	private String dealWay;
 	private boolean isInputAct;
 	private SharedPreferences sharedPreferences;
+	private GoodsInfo goodsInfo;
+	private String[] photoUrls;
 
 	/**
 	 * code处理失败
@@ -39,6 +47,11 @@ public class DealCodeUtil {
 	 * code处理成功
 	 */
 	public static final int DEAL_CODE_SUCCESS = 3;
+
+	/**
+	 * 处理递推code成功
+	 */
+	public static final int DEAL_CHID_CODE_SUCCESS = 5;
 
 	/**
 	 * 需要返回信息
@@ -154,6 +167,62 @@ public class DealCodeUtil {
 					handler.sendEmptyMessage(DEAL_CODE_FAILED);
 					break;
 
+				case API1.GET_GOODS_FAILED:
+				case API1.ADD_TO_CART_FAILED:
+					myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+					handler.sendEmptyMessage(DEAL_CODE_FAILED);
+					break;
+
+				case API1.GET_GOODS_SUCCESS:
+					//获取ppp数据，并且加入购物车
+					GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
+					ArrayList<GoodsInfo> allGoodsList = new ArrayList<>();
+					if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+						allGoodsList.addAll(goodsInfoJson.getGoods());
+					}
+					//获取PP+
+					for (GoodsInfo goods : allGoodsList) {
+						if (goods.getName().equals(Common.GOOD_NAME_PPP)) {
+							goodsInfo = goods;
+							//封装购物车宣传图
+							photoUrls = new String[goods.getPictures().size()];
+							for (int i = 0; i < goods.getPictures().size(); i++) {
+								photoUrls[i] = goods.getPictures().get(i).getUrl();
+							}
+							break;
+						}
+					}
+					API1.addToCart(goodsInfo.getGoodsKey(), 1, true, null, handler2);
+					break;
+
+				case API1.ADD_TO_CART_SUCCESS:
+					JSONObject jsonObject = (JSONObject) msg.obj;
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
+					editor.commit();
+					String cartId = jsonObject.getString("cartId");
+					//生成订单
+					ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
+					CartItemInfo cartItemInfo = new CartItemInfo();
+					cartItemInfo.setCartId(cartId);
+					cartItemInfo.setProductName(goodsInfo.getName());
+					cartItemInfo.setProductNameAlias(goodsInfo.getNameAlias());
+					cartItemInfo.setUnitPrice(goodsInfo.getPrice());
+					cartItemInfo.setEmbedPhotos(new ArrayList<CartPhotosInfo>());
+					cartItemInfo.setDescription(goodsInfo.getDescription());
+					cartItemInfo.setQty(1);
+					cartItemInfo.setStoreId(goodsInfo.getStoreId());
+					cartItemInfo.setPictures(photoUrls);
+					cartItemInfo.setPrice(goodsInfo.getPrice());
+					cartItemInfo.setCartProductType(3);
+
+					orderinfoArrayList.add(cartItemInfo);
+
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("orderinfo", orderinfoArrayList);
+					handler.obtainMessage(DEAL_CHID_CODE_SUCCESS, bundle).sendToTarget();
+					break;
+
 				case API1.ADD_PP_CODE_TO_USER_SUCCESS://绑定pp成功
 					Bundle bundle2 = new Bundle();
 					if (dealWay != null && dealWay.equals("pp")) {//从pp进入
@@ -233,12 +302,31 @@ public class DealCodeUtil {
 	}
 	
 	/**
-	 * 处理二维码
+	 * 处理正常的二维码
 	 * @param code
 	 */
-	public void startDealCode(final String code){
+	public void startDealCode(String code){
 		this.code = code;
 		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler2);
+	}
+
+	/**
+	 * 处理递推二维码
+	 * 1.获取商品数据
+	 * 2.获取ppp数据
+	 * 3.加入购物车
+	 * 4.进入下单页面
+	 * @param code
+	 */
+	public void startDealChidCode(String code){
+		this.code = code;
+		//从缓层中获取数据
+		String goodsByACache = ACache.get(context).getAsString(Common.ALL_GOODS);
+		if (TextUtils.isEmpty(goodsByACache)) {
+			API1.getGoods(handler2);
+		} else {
+			handler2.obtainMessage(API1.GET_GOODS_SUCCESS, goodsByACache).sendToTarget();
+		}
 	}
 
 	private void getInfo(String code, final String type){

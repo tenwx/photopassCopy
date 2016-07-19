@@ -45,7 +45,7 @@ public class Common {
     public final static String TERMS_AGREEMENT = "http://www.disneyphotopass.com.cn/terms.html?source=outer";  //条款 2
     public final static String TERMS_OF_USE = "https://disneytermsofuse.com/";//使用条款
 
-    public final static String VERSION_CODE = "1.1.3";//开发版
+    public final static String VERSION_CODE = "1.2.0";//开发版
 
     //接口
     public static final String GET_TOKENID = "/auth/getTokenId";// 获取匿名TokenId

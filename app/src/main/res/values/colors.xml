@@ -19,6 +19,8 @@
     <color name="pp_orange">#ff4605</color>
     <!-- 紫色，比如编辑页面的字体颜色-->
     <color name="pp_purple">#5f23c4</color>
+    <!-- 红色，只有模糊购买ppp介绍也才出现的文字颜色-->
+    <color name="pp_red">#ff4605</color>
     <!-- 半透明黑色，视频播放底部进度条 -->
     <color name="black2">#7f000000</color>
     <!-- 进度条播放的进度 -->

@@ -385,11 +385,11 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         if (cartItemIds != null) {
             if (productType == 1) {
                 //获取收货地址
-                API1.addOrder(cartItemIds, 1, outletId, "", couponCodes,null, null, paymentOrderHandler);
+                API1.addOrder(cartItemIds, 1, outletId, "", couponCodes,null, null, null, paymentOrderHandler);
 
             } else {
                 //PP+/数码商品不需要地址
-                API1.addOrder(cartItemIds, 3, "", "", couponCodes,null, null, paymentOrderHandler);
+                API1.addOrder(cartItemIds, 3, "", "", couponCodes,null, null, null, paymentOrderHandler);
 
             }
         }

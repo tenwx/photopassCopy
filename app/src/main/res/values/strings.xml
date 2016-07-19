@@ -208,8 +208,8 @@
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="blur_intro">只需购买迪士尼乐拍通一卡通，即可预览和下载所有当日通过乐拍通服务捕捉的高清数码照片</string>
-    <string name="up_ppp_money">升级成为迪士尼乐拍通一卡通</string>
+    <string name="blur_intro">迪士尼乐拍通一卡通可让您下载已关联在此乐拍通卡内同一天的所有高清照片</string>
+    <string name="up_ppp_money">我要购买迪士尼乐拍通一卡通</string>
     <string name="use_ppp">使用已有的迪士尼乐拍通一卡通</string>
     <string name="buythisphoto">购买单张数码照片</string>
     <string name="cancel1">取消</string>
@@ -371,8 +371,8 @@
     <string name="dialog_cancel">不用了，谢谢</string>
     <string name="dialog_ok">好的</string>
     <string name="dialog_ok1">我知道了</string>
-    <string name="no_activated">未激活</string>
-    <string name="activated">已激活</string>
+    <string name="no_activated">未使用</string>
+    <string name="activated">已使用</string>
     <string name="ppp_has_used">已用完</string>
     <string name="ppp_has_expired">已过期</string>
     <string name="expired_on">有效期:</string>
@@ -492,6 +492,7 @@
     <string name="edit_story_confirm_download">确认下载</string>
     <string name="edit_story_reselect">重新选择</string>
     <string name="edit_story_unpay_tips">亲，选项中含有未付费的照片不能下载哦！您可继续确认下载已付费的照片哦！</string>
+    <string name="edit_story_all_unpay_tips">当前选中的照片未付费，不可下载</string>
     <string name="edit_story_addto_downloadlist">照片已在下载列队，可去下载管理内查询，请耐心等待！</string>
     <!-- edit story end -->
 
@@ -575,13 +576,6 @@
     <string name="smssdk_pw_is_inconsistency">密码输入不一致</string>
     <!--SMSSDK end-->
 
-    <!-- postcard start-->
-    <string name="customized_postcard">定制明信片(三联套)</string>
-    <string name="postcard_type">款式</string>
-    <string name="preview_goods">预览商品(%1$d/%2$d)</string>
-    <string name="preview_goods_null">预览商品(0/3)</string>
-    <!-- postcard end-->
-
     <!-- permission request start -->
     <string name="permission_storage_message">请先在设置中打开读写手机存储权限</string>
     <string name="permission_read_phone_state_message">请先在设置中打开设备信息权限</string>
@@ -589,16 +583,16 @@
     <!-- permission request end -->
 
     <!-- photo download manage start -->
-    <string name="photo_download_success">"已下载"</string>
-    <string name="photo_downloading">"正在下载"</string>
-    <string name="photo_download_waiting">"等待"</string>
-    <string name="photo_download_loading">"下载中"</string>
-    <string name="photo_download_failed">"失败重试"</string>
-    <string name="photo_download_complete">"下载完成"</string>
-    <string name="photo_download_clear">"清空列表"</string>
+    <string name="photo_download_success">已下载</string>
+    <string name="photo_downloading">正在下载</string>
+    <string name="photo_download_waiting">等待</string>
+    <string name="photo_download_loading">下载中</string>
+    <string name="photo_download_failed">失败重试</string>
+    <string name="photo_download_complete">下载完成</string>
+    <string name="photo_download_clear">清空列表</string>
     <string name="photo_download_nothing">"空空如也"</string>
-    <string name="photo_download_tips">"一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！"</string>
-    <string name="photo_download_to_load">"去下载"</string>
-    <string name="photo_download_tips2">"已下载完成的照片将保存至您的手机本地相册中,点击一下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦"</string>
+    <string name="photo_download_tips">一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！</string>
+    <string name="photo_download_to_load">去下载</string>
+    <string name="photo_download_tips2">已下载完成的照片将保存至您的手机本地相册中，点击以下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦</string>
     <!--photo download manage start-->
 </resources>

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
@@ -672,14 +673,21 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
 
                             invoice = assembleInvoiceJson();
-                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, null, submitOrderHandler);
+                            API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, null, null, submitOrderHandler);
                         }
                     } else {
-                        //PP+/数码商品不需要地址，需要检查channelId字段
+                        //PP+/数码商品不需要地址，需要检查channelId和uid字段
+                        String channelStr = getIntent().getStringExtra("chid");
                         String channelId = null;
+                        String uid = null;
+
+                        if (!TextUtils.isEmpty(channelStr)) {
+                            channelId = channelStr.substring(0, channelStr.indexOf("&"));
+                            uid = channelStr.substring(channelStr.indexOf("&") + 1, channelStr.length());
+                        }
                         invoice = assembleInvoiceJson();
                         customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
-                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, channelId, submitOrderHandler);
+                        API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, channelId, uid, submitOrderHandler);
                     }
                 } else {
                     JSONObject invoice=null;

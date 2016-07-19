@@ -69,6 +69,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private static final int DOWNLOAD_DIALOG = 18;
 	private static final int HAS_UNPAY_PHOTOS_DIALOG = 19;
 	private static final int GO_DOWNLOAD_ACTIVITY_DIALOG = 20;
+	private static final int HAS_ALL_UNPAY_PHOTOS_DIALOG = 21;
 
 	private int tabIndex = 0;
 	private int selectCount = 0;
@@ -182,16 +183,20 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
      */
 	private void startDownload(boolean hasUnPayPhotos){
 		ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
-		if (hasUnPayPhotos) {
-			//将已购买的加入下载队列中
-			for (int i = 0; i < albumArrayList.size(); i++) {
-				if (albumArrayList.get(i).isPayed == 1) {
+		//将已购买并且已选择的加入下载队列中
+		for (int i = 0; i < albumArrayList.size(); i++) {
+			if (albumArrayList.get(i).isSelected == 1) {
+				if (hasUnPayPhotos) {
+					if (albumArrayList.get(i).isPayed == 1) {
+						hasPayedList.add(albumArrayList.get(i));
+					}
+				} else {
 					hasPayedList.add(albumArrayList.get(i));
 				}
 			}
-		} else {
-			hasPayedList.addAll(albumArrayList);
 		}
+
+		PictureAirLog.out("download list size---->" + hasPayedList.size());
 
 		//开始将图片加入下载队列
 		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
@@ -397,19 +402,18 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	}
 
 	private void downloadPic(){
-		boolean hasUnPayedItem = false;
+		int unPayCount = 0;
 		for (int i = 0; i < albumArrayList.size(); i++) {
-			if (albumArrayList.get(i).isPayed == 0) {
-				hasUnPayedItem = true;
-				break;
+			if (albumArrayList.get(i).isSelected == 1 && albumArrayList.get(i).isPayed == 0) {
+				unPayCount ++;
 			}
 		}
 
-		if (hasUnPayedItem) {//弹框提示
-			pictureWorksDialog.setPWDialogId(HAS_UNPAY_PHOTOS_DIALOG)
-					.setPWDialogMessage(R.string.edit_story_unpay_tips)
-					.setPWDialogNegativeButton(R.string.edit_story_reselect)
-					.setPWDialogPositiveButton(R.string.edit_story_confirm_download)
+		if (unPayCount > 0) {//弹框提示
+			pictureWorksDialog.setPWDialogId(unPayCount < selectCount ? HAS_UNPAY_PHOTOS_DIALOG : HAS_ALL_UNPAY_PHOTOS_DIALOG)
+					.setPWDialogMessage(unPayCount < selectCount ? R.string.edit_story_unpay_tips : R.string.edit_story_all_unpay_tips)
+					.setPWDialogNegativeButton(unPayCount < selectCount ? getString(R.string.edit_story_reselect) : null)
+					.setPWDialogPositiveButton(unPayCount < selectCount ? R.string.edit_story_confirm_download : R.string.edit_story_reselect)
 					.pwDilogShow();
 
 		} else {
