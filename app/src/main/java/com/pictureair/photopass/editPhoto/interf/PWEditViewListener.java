@@ -39,4 +39,6 @@ public interface PWEditViewListener {
 
     void sticker(int mainImageHeight, int mainImageWidth); //显示饰品，为了限定滑动区域，故传参数。
 
+    void inOrOutPlace(String locationIds, boolean in);
+
 }

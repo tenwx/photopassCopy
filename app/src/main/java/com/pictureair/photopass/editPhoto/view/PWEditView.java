@@ -18,6 +18,8 @@ import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.editPhoto.widget.StickerView;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.LocationUtil;
+import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
@@ -27,7 +29,7 @@ import com.pictureair.photopass.widget.PictureWorksDialog;
  * Created by talon on 16/5/20.
  * 负责页面的绘制，不做逻辑操作。(除了判断页面是否显示)
  */
-public class PWEditView implements View.OnClickListener, PWEditViewInterface{
+public class PWEditView implements View.OnClickListener, PWEditViewInterface, LocationUtil.OnLocationNotificationListener{
     private CustomProgressDialog dialog; // Loading
     private PWToast myToast;
     private ImageView mLeftBack;
@@ -312,4 +314,9 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
         pwEditViewListener.leftBackClik();
     }
 
+
+    @Override
+    public void inOrOutPlace(String locationIds, boolean in) {
+        pwEditViewListener.inOrOutPlace(locationIds, in);
+    }
 }

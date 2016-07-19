@@ -14,10 +14,12 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
+import com.pictureair.photopass.editPhoto.util.PWEditSPUtil;
 import com.pictureair.photopass.editPhoto.util.PWEditUtil;
 import com.pictureair.photopass.editPhoto.util.PhotoCommon;
 import com.pictureair.photopass.editPhoto.widget.StickerItem;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
+import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -36,8 +38,8 @@ public class PWEditController implements PWEditViewListener{
 
     private Activity mActivity;
     private PWEditViewInterface pwEditViewInterface;
-    private PWEditUtil pwEditUtil = new PWEditUtil();
-    private int index; // 指示着当前在第几个位置 ！
+    private PWEditUtil pwEditUtil;
+    private int index; // 指示着当前在第几  个位置 ！
     private int backStep = 0; // 纪录后退的步数
     private int curEditType;
     private String photoPath;
@@ -53,6 +55,7 @@ public class PWEditController implements PWEditViewListener{
 
     public void onCreate(Activity activity,PWEditViewInterface pwEditViewInterface){
         this.mActivity = activity;
+        pwEditUtil = new PWEditUtil(mActivity);
         backStep = 0;
         photoPath = activity.getIntent().getStringExtra("photoPath");
         isOnLine = activity.getIntent().getBooleanExtra("isOnLine",false);
@@ -66,6 +69,9 @@ public class PWEditController implements PWEditViewListener{
         pwEditUtil.loadFilterImgPath(); //加载滤镜图片
         pwEditUtil.loadStickerList(mActivity);
         pwEditViewInterface.updateLastAndNextUI(PhotoCommon.UnableLastAndNext);
+
+        // 获取网络饰品与边框
+        API1.getLastContent((String)PWEditSPUtil.getValue(mActivity,Common.GET_LAST_CONTENT_TIME,""), mHandler);
     }
 
 
@@ -315,6 +321,11 @@ public class PWEditController implements PWEditViewListener{
         pwEditViewInterface.showEditView(curEditType,eidtAdapter);
     }
 
+    @Override
+    public void inOrOutPlace(String locationIds, boolean in) {
+        pwEditUtil.inOrOutPlace(locationIds, in);
+    }
+
     /**
      * 判断可否后退或者前进。
      * @return
@@ -412,6 +423,14 @@ public class PWEditController implements PWEditViewListener{
                         loadImageOnLocal(pwEditUtil.getPhotoEditorList().get(pwEditUtil.getPhotoEditorList().size() - 1 - backStep).getPhotoPath());
                         pwEditViewInterface.hideTempSave();
                     }
+                    break;
+
+                case API1.GET_LAST_CONTENT_SUCCESS://获取更新信息成功。
+                    pwEditUtil.getLastContentSuccess(msg.obj.toString());
+                    break;
+
+                case API1.GET_LAST_CONTENT_FAILED://获取更新信息失败，不做操作
+
                     break;
 
                 default:

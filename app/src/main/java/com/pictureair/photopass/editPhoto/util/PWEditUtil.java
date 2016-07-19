@@ -1,5 +1,6 @@
 package com.pictureair.photopass.editPhoto.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.editPhoto.bean.StikerInfo;
 import com.pictureair.photopass.editPhoto.filter.Amaro;
@@ -69,13 +71,19 @@ public class PWEditUtil {
 
     private List<StikerInfo> stikerInfoList;
 
-    public PWEditUtil() {
+    private PictureAirDbManager pictureAirDbManager;
+    private ArrayList<FrameOrStikerInfo> frameFromDBInfos;//来自数据库的数据
+    private ArrayList<FrameOrStikerInfo> stickerFromDBInfos;//来自数据库的数据
+    private Activity mActivity;
+    public PWEditUtil(Activity activity) {
         photoEditorList = new ArrayList<PhotoEditorInfo>();
         frameInfos = new ArrayList<FrameOrStikerInfo>();
         filterPathList = new ArrayList<String>();
         stikerInfos = new ArrayList<FrameOrStikerInfo>();
         imageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
+        this.mActivity = activity;
+        pictureAirDbManager = new PictureAirDbManager(mActivity);
     }
 
     /**
@@ -654,6 +662,82 @@ public class PWEditUtil {
             p.setMargins(l, t, r, b);
             v.requestLayout();
         }
+    }
+
+
+    /**
+     * 获取网络边框并处理数据。
+     * 原方法，未改变
+     * @param msg
+     */
+    public void getLastContentSuccess(String msg){
+        try {
+            com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg);
+            if (resultJsonObject.containsKey("assets")) {
+                pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
+            }
+            if (resultJsonObject.containsKey("time")) {
+                PWEditSPUtil.setValue(mActivity,Common.GET_LAST_CONTENT_TIME,resultJsonObject.getString("time"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //写入数据库之后，再从数据库拿数据
+        frameFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(1);
+        for (int i = 0; i < frameFromDBInfos.size(); i++) {
+            if (frameFromDBInfos.get(i).locationId.equals("common")) {//通用边框
+                frameInfos.add(frameFromDBInfos.get(i));
+            }
+        }
+        //从数据库获取饰品信息
+        stickerFromDBInfos = pictureAirDbManager.getLastContentDataFromDB(0);
+        for (int j = 0; j < stickerFromDBInfos.size(); j++) {
+            if (stickerFromDBInfos.get(j).locationId.equals("common")) {//通用饰品
+                stikerInfos.add(stickerFromDBInfos.get(j));
+            }
+        }
+    }
+
+    /**
+     * 根据地点显示边框或者饰品。
+     * 进入或离开地点
+     * 原方法，未改变
+     */
+    private boolean loadingFrame = false;
+    public void inOrOutPlace(final String locationIds, final boolean in){
+        new Thread(){
+            public void run() {
+                while (!loadingFrame) {//等待边框处理完毕
+                    if (frameFromDBInfos != null && stickerFromDBInfos != null) {
+                        loadingFrame = true;
+                    }
+                }
+                //1.根据locationIds来判断需要显示或者隐藏的边框
+//				frameInfos.addAll(frameFromDBInfos);
+                for (int i = 0; i < frameFromDBInfos.size(); i++) {
+                    PictureAirLog.out("locationIds:"+locationIds+":locationId:"+frameFromDBInfos.get(i).locationId);
+                    if (locationIds.contains(frameFromDBInfos.get(i).locationId)) {//有属于特定地点的边框
+                        if (in) {//进入
+                            frameInfos.add(frameFromDBInfos.get(i));
+                        }else {//离开
+                            frameInfos.remove(frameFromDBInfos.get(i));
+                        }
+                    }
+                }
+//				stikerInfos.addAll(stickerFromDBInfos);
+                for (int j = 0; j < stickerFromDBInfos.size(); j++) {
+                    PictureAirLog.out("locationIds:"+locationIds+":locationId:"+stickerFromDBInfos.get(j).locationId);
+                    if (locationIds.contains(stickerFromDBInfos.get(j).locationId)) {//有属于特定地点的边框
+                        if (in) {//进入
+                            stikerInfos.add(stickerFromDBInfos.get(j));
+                        }else {//离开
+                            stikerInfos.remove(stickerFromDBInfos.get(j));
+                        }
+                    }
+                }
+            };
+        }.start();
     }
 
 }
