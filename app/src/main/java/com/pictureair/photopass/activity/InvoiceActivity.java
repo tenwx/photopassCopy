@@ -25,6 +25,7 @@ import com.pictureair.photopass.entity.InvoiceInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.EditTextWithClear;
@@ -399,11 +400,15 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private boolean checkData(){
         if(invoiceInfo.isNeedInvoice()) {
             if (invoiceInfo.getTitle() != InvoiceInfo.PERSONAL && invoiceInfo.getTitle() != InvoiceInfo.COMPANY) {
-                new PWToast(this).setTextAndShow(R.string.invoice_tips_title);
+                new PWToast(this).setTextAndShow(R.string.invoice_tips_title, Common.TOAST_SHORT_TIME);
+                return false;
+            }
+            if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY && TextUtils.isEmpty(editText.getText().toString())) {
+                PWToast.getInstance(this).setTextAndShow(R.string.invoice_input_company, Common.TOAST_SHORT_TIME);
                 return false;
             }
             if (null == addressAdapter || addressAdapter.getCurIndex() < 0) {
-                new PWToast(this).setTextAndShow(R.string.invoice_tips_address);
+                new PWToast(this).setTextAndShow(R.string.invoice_tips_address, Common.TOAST_SHORT_TIME);
                 return false;
             }
         }

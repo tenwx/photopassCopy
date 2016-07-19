@@ -1,5 +1,6 @@
 package com.pictureair.photopass.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -425,6 +426,11 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	 * tips 1，网络下载流程。
 	 */
 	private void judgeOnePhotoDownloadFlow() { // 如果当前是wifi，无弹窗提示。如果不是wifi，则提示。
+		if (!AppUtil.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+			return;
+		}
+
 		if (AppUtil.getNetWorkType(EditStoryAlbumActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
 			downloadPic();
 		} else {
