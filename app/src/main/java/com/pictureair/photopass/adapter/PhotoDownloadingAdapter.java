@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -35,14 +36,12 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
 
     private Context mContext;
     private Vector<DownloadFileStatus> photos;
-    private ImageLoader imageLoader;
     private ListView listView;
     private OnItemClickListener childClickListener;
 
     public PhotoDownloadingAdapter(Context context,Vector<DownloadFileStatus> photos){
         this.mContext = context;
         this.photos = photos;
-        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -83,7 +82,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         if (fileStatus != null) {
             ImageAware imageAware = new ImageViewAware(holder.img);
             if (holder.img.getTag() == null || !holder.img.getTag().equals(fileStatus.getPhotoThumbnail())) {
-                imageLoader.displayImage(fileStatus.getPhotoThumbnail(),imageAware);
+                ImageLoader.getInstance().displayImage(fileStatus.getPhotoThumbnail(),imageAware);
                 holder.img.setTag(fileStatus.getPhotoThumbnail());
             }
             switch (fileStatus.status) {
@@ -113,6 +112,15 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                     holder.tv_speed.setText("0KB/S");
                     holder.tv_status.setText(mContext.getString(R.string.photo_download_failed));
                     holder.img_status.setImageResource(R.drawable.photo_status_error);
+                    holder.img_status.mCanDraw = false;
+                    holder.img_status.setProgress(0);
+                    break;
+
+                case DownloadFileStatus.DOWNLOAD_STATE_RECONNECT:
+                    holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                    holder.tv_speed.setText("0KB/S");
+                    holder.tv_status.setText(mContext.getString(R.string.photo_download_reconnect));
+                    holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
                     holder.img_status.mCanDraw = false;
                     holder.img_status.setProgress(0);
                     break;
@@ -163,10 +171,11 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                 fileStatus.setCurrentSize("0");
                 fileStatus.setLoadSpeed("0");
                 fileStatus.setTotalSize("0");
+
                 holder.tv_size.setText("0MB/0MB");
                 holder.tv_speed.setText("0KB/S");
-                holder.tv_status.setText(mContext.getString(R.string.photo_download_waiting));
-                holder.img_status.setImageResource(R.drawable.photo_status_wait);
+                holder.tv_status.setText(mContext.getString(R.string.photo_download_reconnect));
+                holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
                 holder.img_status.mCanDraw = false;
                 ArrayList<PhotoInfo> photos = new ArrayList<>();
                 PhotoInfo info = new PhotoInfo();
@@ -174,6 +183,8 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                 info.photoPathOrURL = fileStatus.getUrl();
                 info.photoId = fileStatus.getPhotoId();
                 info.shootOn = fileStatus.getShootOn();
+                info.failedTime = fileStatus.getFailedTime();
+
                 photos.add(info);
                 Intent intent = new Intent(mContext, DownloadService.class);
                 Bundle bundle = new Bundle();

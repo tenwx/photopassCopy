@@ -106,9 +106,9 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onPageSelected(int position) {
-        if (position == 1) {
-            loadSuccessFragment.updateList();
-        }
+//        if (position == 1) {
+//            loadSuccessFragment.updateList();
+//        }
     }
 
     @Override

@@ -40,6 +40,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public int videoHeight;//视频文件高
 
 	public int isHasPreset; // 照片是否有模版，0，代表没有模板，1，代表有模版
+	public String failedTime;
 
 	public static final Parcelable.Creator<PhotoInfo> CREATOR = new Creator<PhotoInfo>() {
 
@@ -87,6 +88,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		videoWidth = source.readInt();
 		videoHeight = source.readInt();
 		isHasPreset = source.readInt();
+		failedTime = source.readString();
 	}
 
 	@Override
@@ -124,6 +126,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeInt(videoWidth);
 		dest.writeInt(videoHeight);
 		dest.writeInt(isHasPreset);
+		dest.writeString(failedTime);
 	}
 
 	@Override

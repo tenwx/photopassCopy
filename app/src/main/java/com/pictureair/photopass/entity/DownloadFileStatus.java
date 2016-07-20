@@ -17,10 +17,12 @@ public class DownloadFileStatus implements Parcelable{
     private int position;
     private String photoThumbnail;
     public String shootOn;
+    private String failedTime;
     public static final int DOWNLOAD_STATE_DOWNLOADING = 0x01;
     public static final int DOWNLOAD_STATE_WAITING = 0x02;
     public static final int DOWNLOAD_STATE_FAILURE = 0x03;
     public static final int DOWNLOAD_STATE_FINISH = 0x04;
+    public static final int DOWNLOAD_STATE_RECONNECT = 0x05;
     public int status = DOWNLOAD_STATE_WAITING;
 
 
@@ -39,9 +41,10 @@ public class DownloadFileStatus implements Parcelable{
         this.position = source.readInt();
         this.photoThumbnail = source.readString();
         this.shootOn = source.readString();
+        this.failedTime = source.readString();
     }
 
-    public DownloadFileStatus(String url, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn) {
+    public DownloadFileStatus(String url, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,String failedTime) {
         this.url = url;
         this.currentSize = currentSize;
         this.totalSize = totalSize;
@@ -50,6 +53,7 @@ public class DownloadFileStatus implements Parcelable{
         this.isVideo = isVideo;
         this.photoThumbnail = photoThumbnail;
         this.shootOn = shootOn;
+        this.failedTime = failedTime;
     }
 
     public String getUrl() {
@@ -132,6 +136,14 @@ public class DownloadFileStatus implements Parcelable{
         this.shootOn = shootOn;
     }
 
+    public String getFailedTime() {
+        return failedTime;
+    }
+
+    public void setFailedTime(String failedTime) {
+        this.failedTime = failedTime;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -149,6 +161,7 @@ public class DownloadFileStatus implements Parcelable{
         dest.writeInt(position);
         dest.writeString(photoThumbnail);
         dest.writeString(shootOn);
+        dest.writeString(failedTime);
     }
 
     public static final Parcelable.Creator<DownloadFileStatus> CREATOR = new Creator<DownloadFileStatus>() {

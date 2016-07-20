@@ -14,9 +14,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by pengwu on 16/7/8.
@@ -82,5 +84,9 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
         TextView tv_shootTime;
         TextView tv_size;
         TextView tv_loadTime;
+    }
+
+    public void setPhotos(List<PhotoDownLoadInfo> list){
+        this.photos = list;
     }
 }

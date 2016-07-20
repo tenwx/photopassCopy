@@ -68,6 +68,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1703,5 +1704,20 @@ public class AppUtil {
             }
         }
         return result;
+    }
+
+    public static String getFormatCurrentTime(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String loadTime = df.format(new Date());
+        return loadTime;
+    }
+
+    public static String formatData(long data){
+        DecimalFormat decimalFormat=new DecimalFormat(".00");
+        String str = decimalFormat.format(data);
+        if (str.indexOf(".") == 0){
+            str = 0+str;
+        }
+        return str;
     }
 }
