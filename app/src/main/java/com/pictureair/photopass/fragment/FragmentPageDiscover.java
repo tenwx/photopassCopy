@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -329,7 +330,19 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         //获取数据
         dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
         PictureAirLog.out("start get lcoation info");
-        API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
+
+        String expireTime = ACache.get(getActivity()).getAsString(Common.CACHE_LOCATION_TIMER);
+        String locationCache = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
+
+        if (TextUtils.isEmpty(expireTime) || TextUtils.isEmpty(locationCache)) {
+            //超时 或者 没有location数据，需要重新获取
+            //此处不需要直接将location的信息添加时间。因为其他地方没有做为空的处理，做起来也比较麻烦，添加了很多逻辑，因此使用另一个变量来记录时间
+            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
+            ACache.get(getActivity()).put(Common.CACHE_LOCATION_TIMER, "time", ACache.TIME_DAY);//记录访问记录，设置一天缓存时间
+        } else {
+            //直接获取缓存内容
+            fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
+        }
 
         return view;
     }

@@ -55,25 +55,6 @@
         android:textColor="@color/gray1"
         android:textSize="@dimen/text_size_14" />
 
-    <Button
-        android:id="@+id/item_address_btn_del"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/item_address_ib"
-        android:paddingBottom="@dimen/pp_margin_16"
-        android:paddingLeft="@dimen/pp_padding_16"
-        android:paddingRight="@dimen/pp_padding_8"
-        android:paddingTop="@dimen/pp_margin_6"
-        android:background="@color/transparent"
-        android:focusable="false"
-        android:gravity="center"
-        android:focusableInTouchMode="false"
-        android:text="@string/delete"
-        android:textColor="@color/pp_blue"
-        android:textSize="@dimen/text_size_14"
-        android:visibility="invisible" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/pp_height_1"
@@ -88,7 +69,6 @@
         android:layout_below="@id/item_address_tv_name"
         android:layout_marginRight="@dimen/pp_margin_16"
         android:layout_marginTop="@dimen/pp_margin_16"
-        android:maxLines="3"
         android:text="上海市浦东新区"
         android:textColor="@color/pp_dark_blue"
         android:textSize="@dimen/text_size_14" />

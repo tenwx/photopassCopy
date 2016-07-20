@@ -21,14 +21,11 @@ public class SendAddressAdapter extends BaseAdapter {
     Context mContext;
     private int curIndex = -1;
     private boolean modifying;//是否正在修改中，正在修改中不允许点击,这样防止频繁点击ib造成多次请求卡顿。
-    //NoScrollListView listView;
     public SendAddressAdapter(Context context, List<SendAddress> arrayList) {
         mContext = context;
         this.list = arrayList;
         setCurIndex();
-        //this.listView=listView;
     }
-
 
     @Override
     public int getCount() {
@@ -55,15 +52,12 @@ public class SendAddressAdapter extends BaseAdapter {
             holder.nameTv= (TextView) convertView.findViewById(R.id.item_address_tv_name);
             holder.phoneTv= (TextView) convertView.findViewById(R.id.item_address_tv_phone);
             holder.addressTv= (TextView) convertView.findViewById(R.id.item_address_tv);
-            holder.btnDel= (Button) convertView.findViewById(R.id.item_address_btn_del);
             holder.btnModi= (Button) convertView.findViewById(R.id.item_address_btn_modi);
             convertView.setTag(holder);
         }else{
             holder= (ViewHolder) convertView.getTag();
         }
-        holder.btnModi.setVisibility(View.VISIBLE);
-        holder.btnDel.setVisibility(View.INVISIBLE);
-        holder.ib.setOnClickListener(new View.OnClickListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!modifying) {
@@ -75,32 +69,16 @@ public class SendAddressAdapter extends BaseAdapter {
                 }
             }
         });
-        convertView.setOnClickListener(new View.OnClickListener() {
+        if(list.get(position).isSelected()){
+            holder.ib.setImageResource(R.drawable.invoice_press);
+        }else{
+            holder.ib.setImageResource(R.drawable.invoice_nor);
+        }
+        holder.btnModi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(null!=itemListener)
                     itemListener.editItem(position);
-            }
-        });
-        if(list.get(position).isSelected()){
-            holder.ib.setImageResource(R.drawable.invoice_press);
-            //holder.btnDel.setVisibility(View.GONE);
-        }else{
-            holder.ib.setImageResource(R.drawable.invoice_nor);
-            //holder.btnDel.setVisibility(View.VISIBLE);
-        }
-        holder.btnDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(null!=itemListener)
-                    itemListener.deleteItem(position);
-            }
-        });
-        holder.btnModi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.btnDel.setVisibility(View.VISIBLE);
-                holder.btnModi.setVisibility(View.INVISIBLE);
             }
         });
         holder.nameTv.setText(list.get(position).getName());
@@ -170,10 +148,9 @@ public class SendAddressAdapter extends BaseAdapter {
         }else
             curIndex=-1;
     }
-    public  interface AddressItemListener{
-        public void deleteItem(int position);
-        public void editItem(int position);
-        public void clickItem(int position, SendAddress address);
+    public interface AddressItemListener{
+        void editItem(int position);
+        void clickItem(int position, SendAddress address);
     }
 
     public AddressItemListener itemListener;
@@ -186,7 +163,6 @@ public class SendAddressAdapter extends BaseAdapter {
         public ImageButton ib;
         public TextView phoneTv;
         public TextView addressTv;
-        public Button btnDel;
         public Button btnModi;
     }
 }
