@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -45,8 +46,8 @@ import java.util.List;
 public class NewAddressActivity extends BaseActivity implements View.OnClickListener {
     private String AddressXML;// xml格式的中国省市区信息
     private List<ProvinceModel> provinceList; // 地址列表
-    private boolean isCity = true;
-    private boolean isCounty = true;
+    private boolean isCity = false;
+    private boolean isCounty = false;
     private String upName;
     private String upPhone;
     private String upProvince;
@@ -289,18 +290,23 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
             case R.id.newaddress_city_btn:
                 if (isCity == true) {
                     createDialog(2);
+                } else {
+                    new PWToast(this).setTextAndShow(R.string.invoice_tips_province, Common.TOAST_SHORT_TIME);
                 }
                 break;
             case R.id.newaddress_country_btn:
                 if (isCounty == true) {
                     createDialog(3);
+                } else {
+                    new PWToast(this).setTextAndShow(R.string.invoice_tips_province_or_city, Common.TOAST_SHORT_TIME);
                 }
                 break;
             case R.id.newaddress_ok:
-//
+                hideInputMethodManager(v);
                 sendIntent();
                 break;
             case R.id.newaddress_back:
+                hideInputMethodManager(v);
                 finish();
                 break;
         }
@@ -529,36 +535,45 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
 
     public boolean checkData(){
         if(TextUtils.isEmpty(nameET.getText().toString())) {
-            new PWToast(this).setTextAndShow(R.string.invoice_tips_input_info);
+            new PWToast(this).setTextAndShow(R.string.invoice_tips_input_info, Common.TOAST_SHORT_TIME);
             return false;
         }
         if(TextUtils.isEmpty(phoneET.getText().toString())) {
-            new PWToast(this).setTextAndShow(R.string.invoice_tips_phone);
+            new PWToast(this).setTextAndShow(R.string.invoice_tips_phone, Common.TOAST_SHORT_TIME);
             return false;
         }else{
             if(!AppUtil.checkPhoneNumber(phoneET.getText().toString())) {
-                new PWToast(this).setTextAndShow(R.string.invoice_tips_phone_error);
+                new PWToast(this).setTextAndShow(R.string.invoice_tips_phone_error, Common.TOAST_SHORT_TIME);
                 return false;
             }
         }
         if(TextUtils.isEmpty(detailAddrET.getText().toString())) {
-            new PWToast(this).setTextAndShow(R.string.invoice_tips_detail_address);
+            new PWToast(this).setTextAndShow(R.string.invoice_tips_detail_address, Common.TOAST_SHORT_TIME);
             return false;
         }
         if(MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
             if (TextUtils.isEmpty(provBtn.getText().toString())) {
-                new PWToast(this).setTextAndShow(R.string.invoice_tips_province);
+                new PWToast(this).setTextAndShow(R.string.invoice_tips_province, Common.TOAST_SHORT_TIME);
                 return false;
             }
             if (TextUtils.isEmpty(cityBtn.getText().toString())) {
-                new PWToast(this).setTextAndShow(R.string.invoice_tips_city);
+                new PWToast(this).setTextAndShow(R.string.invoice_tips_city, Common.TOAST_SHORT_TIME);
                 return false;
             }
             if (TextUtils.isEmpty(countryBtn.getText().toString())) {
-                new PWToast(this).setTextAndShow(R.string.invoice_tips_country);
+                new PWToast(this).setTextAndShow(R.string.invoice_tips_country, Common.TOAST_SHORT_TIME);
                 return false;
             }
         }
         return true;
+    }
+
+    private void hideInputMethodManager(View v) {
+		/* 隐藏软键盘 */
+        InputMethodManager imm = (InputMethodManager) v.getContext()
+                .getSystemService(INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+        }
     }
 }

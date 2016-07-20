@@ -527,6 +527,7 @@
     <string name="invoice_tips_phone_error">请填写正确的手机号码</string>
     <string name="invoice_tips_province">请填写省份</string>
     <string name="invoice_tips_city">请填写城市</string>
+    <string name="invoice_tips_province_or_city">请填写省份/城市</string>
     <string name="invoice_tips_country">请填写乡镇</string>
     <string name="invoice_tips_detail_address">请填写详细地址</string>
     <!-- 发票 end-->

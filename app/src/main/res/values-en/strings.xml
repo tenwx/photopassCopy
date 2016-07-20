@@ -209,7 +209,7 @@
 
     <!-- blur start -->
     <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card</string>
-    <string name="up_ppp_money">Yes, I want to Purchase PhotoPass+</string>
+    <string name="up_ppp_money">Yes, I want to Buy PhotoPass+</string>
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>
     <string name="cancel1">Cancel</string>
@@ -517,18 +517,19 @@
     <string name="invoice_mobile">Mobile Number:</string>
     <string name="invoice_province">Choose Province:</string>
     <string name="invoice_city">Choose City:</string>
-    <string name="invoice_country">Country:</string>
+    <string name="invoice_country">County:</string>
     <string name="invoice_detail_addr">Address Detail:</string>
     <string name="invoice_tips_title">Please select invoice title.</string>
     <string name="invoice_tips_address">Please add your address.</string>
     <string name="invoice_tips_input_address">Please enter your address.</string>
-    <string name="invoice_tips_input_info">Please enter your information.</string>
-    <string name="invoice_tips_phone">Please enter your mobile number.</string>
-    <string name="invoice_tips_phone_error">Please enter correct your mobile number.</string>
-    <string name="invoice_tips_province">Please enter your country.</string>
-    <string name="invoice_tips_city">Please enter your city.</string>
-    <string name="invoice_tips_country">Please enter your region.</string>
-    <string name="invoice_tips_detail_address">Please enter your detail address.</string>
+    <string name="invoice_tips_input_info">Please enter your information</string>
+    <string name="invoice_tips_phone">Please enter your mobile number</string>
+    <string name="invoice_tips_phone_error">Please enter correct your mobile number</string>
+    <string name="invoice_tips_province">Please enter your country</string>
+    <string name="invoice_tips_city">Please enter your city</string>
+    <string name="invoice_tips_country">Please enter your region</string>
+    <string name="invoice_tips_province_or_city">Please enter your country/city</string>
+    <string name="invoice_tips_detail_address">Please enter your detail address</string>
     <!--end invoice-->
 
     <!-- 优惠卷start   文案没有，暂时中文-->
