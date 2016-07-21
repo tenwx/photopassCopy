@@ -4,8 +4,10 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -27,6 +29,7 @@ import com.pictureair.photopass.widget.FontResource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -78,6 +81,9 @@ public class MyApplication extends Application {
 
     private boolean isStoryTab = true;//记录是否是处于storyTab
 
+    private Configuration config;
+    private DisplayMetrics displayMetrics;
+
 
     @Override
     public void onCreate() {
@@ -95,11 +101,40 @@ public class MyApplication extends Application {
         instance = this;
         userInfosharedPreferences = this.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         appSP = this.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE);
+        initLanguage();
         // 初始化友盟
         UmengUtil.initUmeng();
         initImageLoader(getApplicationContext());
         codeList = new ArrayList<HashMap<String, String>>();
         PictureAirLog.out("application on create--->");
+    }
+
+    private void initLanguage(){
+        config = getResources().getConfiguration();
+        displayMetrics = getResources().getDisplayMetrics();
+        //获取手机设置的语言
+        languageType = appSP.getString(Common.LANGUAGE_TYPE, "");
+        if (!languageType.equals("")) {//语言不为空
+            if (languageType.equals(Common.ENGLISH)) {
+                config.locale = Locale.US;
+            } else if (languageType.equals(Common.SIMPLE_CHINESE)) {
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+            }
+        } else {//语言为空，说明第一次进入
+            PictureAirLog.out("langeuange is null---->" + config.locale.getLanguage());
+            PictureAirLog.out("langeuange is null---->" + config.locale);
+            if (config.locale.getLanguage().equals(Common.SIMPLE_CHINESE)) {
+                languageType = Common.SIMPLE_CHINESE;
+                config.locale = Locale.SIMPLIFIED_CHINESE;
+            } else {
+                languageType = Common.ENGLISH;
+                config.locale = Locale.US;
+            }
+        }
+        getResources().updateConfiguration(config, displayMetrics);
+        SharedPreferences.Editor editor = appSP.edit();
+        editor.putString(Common.LANGUAGE_TYPE, languageType);
+        editor.commit();
     }
 
     /**
@@ -332,6 +367,7 @@ public class MyApplication extends Application {
         if (languageType == null || languageType.equals("")) {
             languageType = appSP.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
         }
+        PictureAirLog.out("language---->" + languageType);
         return languageType;
 
     }

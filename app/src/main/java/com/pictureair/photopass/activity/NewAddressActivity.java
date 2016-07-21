@@ -63,7 +63,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
     private ImageView backIV;
     private Button provBtn,cityBtn,countryBtn;
     private EditTextWithClear nameET,phoneET,detailAddrET;
-    private TextView okTv, deleteTv;
+    private TextView editTv, deleteTv, addTv, titleTv;
     private SendAddress address;
     private LinearLayout provinceLL,cityLL,countryLL;
     private View provinceLine,cityLine,countryLine;
@@ -138,9 +138,13 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
                     break;
                 }
             }
+            addTv.setVisibility(View.GONE);
+            titleTv.setText(R.string.invoice_edit_address);
 
         } else {
+            titleTv.setText(R.string.invoice_new_address);
             deleteTv.setVisibility(View.GONE);
+            editTv.setVisibility(View.GONE);
             // 初始化列表下标
             pPosition = 0;
             cPosition = 0;
@@ -159,16 +163,19 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
         nameET= (EditTextWithClear) findViewById(R.id.newaddress_name_et);
         phoneET= (EditTextWithClear) findViewById(R.id.newaddress_phone_et);
         detailAddrET= (EditTextWithClear) findViewById(R.id.newaddress_detail_addr_et);
-        okTv= (TextView) findViewById(R.id.newaddress_ok);
+        titleTv = (TextView) findViewById(R.id.newaddress_title);
+        editTv= (TextView) findViewById(R.id.newaddress_ok);
         backIV= (ImageView) findViewById(R.id.newaddress_back);
         deleteTv = (TextView) findViewById(R.id.delete_address);
+        addTv = (TextView) findViewById(R.id.new_address);
 
         provBtn.setOnClickListener(this);
         cityBtn.setOnClickListener(this);
         countryBtn.setOnClickListener(this);
-        okTv.setOnClickListener(this);
+        editTv.setOnClickListener(this);
         backIV.setOnClickListener(this);
         deleteTv.setOnClickListener(this);
+        addTv.setOnClickListener(this);
         setFilterListener();
     }
 
@@ -356,6 +363,8 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
                     new PWToast(this).setTextAndShow(R.string.invoice_tips_province_or_city, Common.TOAST_SHORT_TIME);
                 }
                 break;
+
+            case R.id.new_address:
             case R.id.newaddress_ok:
                 hideInputMethodManager(v);
                 sendIntent();

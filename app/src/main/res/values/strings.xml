@@ -513,6 +513,7 @@
     <string name="invoice_address">邮寄地址</string>
     <string name="invoice_input_company">请输入您的单位名称</string>
     <string name="invoice_new_address">新增地址</string>
+    <string name="invoice_edit_address">修改地址</string>
     <string name="invoice_receiver_name">收货人姓名:</string>
     <string name="invoice_mobile">手机号码:</string>
     <string name="invoice_province">选择省份:</string>
