@@ -592,6 +592,9 @@
     <string name="photo_download_reconnect">重连中</string>
     <string name="photo_download_complete">下载完成</string>
     <string name="photo_download_clear">清空列表</string>
+    <string name="photo_download_reconnect_all">一键重连</string>
+    <string name="photo_download_clear_failed">清空失败列表</string>
+    <string name="photo_download_clear_tips">下载完成后才可以清除</string>
     <string name="photo_download_nothing">"空空如也"</string>
     <string name="photo_download_tips">一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！</string>
     <string name="photo_download_to_load">去下载</string>

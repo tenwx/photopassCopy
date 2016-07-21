@@ -1650,12 +1650,29 @@ public class PictureAirDbManager {
         }
     }
 
-    public synchronized void deleteDownloadPhoto(String userId){
+    public synchronized int deleteDownloadPhoto(String userId){
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        int res = 0;
+        try {
+            res = database.delete(Common.PHOTOS_LOAD,"userId = ?",new String[]{userId});
+            PictureAirLog.e("deleteDownloadPhoto","count:" + res);
+            database.setTransactionSuccessful();
+        }catch (Exception e){
+            PictureAirLog.e(TAG, "删除失败：" + e.getMessage());
+        }finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+            return res;
+        }
+    }
+
+    public synchronized void deleteDownloadFailPhoto(String userId){
         database = DBManager.getInstance().writData();
         database.beginTransaction();
         int res;
         try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ?",new String[]{userId});
+            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ?",new String[]{userId,"false"});
             PictureAirLog.e("deleteDownloadPhoto","count:" + res);
             database.setTransactionSuccessful();
         }catch (Exception e){

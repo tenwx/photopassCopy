@@ -2156,7 +2156,8 @@ public class API1 {
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);
-                PictureAirLog.e(TAG, "调用下载照片API成功");
+                PictureAirLog.e("onSuccess", "photoid: "+fileStatus.getPhotoId());
+//                PictureAirLog.e(TAG, "调用下载照片API成功");
                 Message msg =  handler.obtainMessage();
                 msg.what = DOWNLOAD_PHOTO_SUCCESS;
                 Bundle bundle = new Bundle();
@@ -2170,7 +2171,8 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
+//                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
+                PictureAirLog.e("onFailure", "photoid: "+fileStatus.getPhotoId());
 //              handler.obtainMessage(DOWNLOAD_PHOTO_FAILED, status, 0).sendToTarget();
                 Message msg =  handler.obtainMessage();
                 msg.what = DOWNLOAD_PHOTO_FAILED;

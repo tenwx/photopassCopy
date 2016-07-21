@@ -35,6 +35,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
+import com.pictureair.photopass.eventbus.DownLoadCountUpdateEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppUtil;
@@ -72,6 +73,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private Button button_toload;
     private Button btn_clear;
     PhotoLoadSuccessAdapter adapter;
+    private int deleteCount;
 
     private static class PhotoLoadSuccessHandler extends Handler{
         private final WeakReference<LoadSuccessFragment> mActivity;
@@ -116,6 +118,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 rl_load_success.setVisibility(View.VISIBLE);
                 ll_load_success.setVisibility(View.GONE);
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1));
+                EventBus.getDefault().post(new DownLoadCountUpdateEvent(0));
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
@@ -124,10 +127,13 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 if (msg.obj != null) {
                     photos = (List<PhotoDownLoadInfo>)(msg.obj);
                     if (adapter != null){
+                        ll_load_success.setVisibility(View.VISIBLE);
+                        rl_load_success.setVisibility(View.GONE);
                         adapter.setPhotos(photos);
                         adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }else{
-                        if (photos != null || photos.size()>0) {
+                        if (photos != null && photos.size()>0) {
                             ll_load_success.setVisibility(View.VISIBLE);
                             rl_load_success.setVisibility(View.GONE);
                             adapter = new PhotoLoadSuccessAdapter(MyApplication.getInstance(), photos);
@@ -230,7 +236,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 new Thread(){
                     @Override
                     public void run() {
-                        pictureAirDbManager.deleteDownloadPhoto(userId);
+                        int res = pictureAirDbManager.deleteDownloadPhoto(userId);
                         photoLoadSuccessHandler.sendEmptyMessage(DELETE_SUCCESS);
                     }
                 }.start();

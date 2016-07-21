@@ -167,7 +167,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         public void onClick(View v) {
             DownloadFileStatus fileStatus = photos.get(position);
             if (fileStatus!= null && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE){
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
+                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
                 fileStatus.setCurrentSize("0");
                 fileStatus.setLoadSpeed("0");
                 fileStatus.setTotalSize("0");
@@ -189,7 +189,8 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                 Intent intent = new Intent(mContext, DownloadService.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("photos", photos);
-                bundle.putInt("posiotion",position);
+                bundle.putInt("reconnect",1);
+                bundle.putInt("one",0);
                 intent.putExtras(bundle);
                 mContext.startService(intent);
             }

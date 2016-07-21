@@ -8,10 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/pp_padding_8"
             android:paddingRight="@dimen/pp_padding_8">
@@ -47,12 +47,17 @@
             android:layout_height="@dimen/pp_height_2"
             android:background="@drawable/dash_line"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <ListView
             android:id="@+id/lv_load_success"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/gray_light3"
             android:dividerHeight="@dimen/pp_height_2"/>
+        </LinearLayout>
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/rl_load_success"

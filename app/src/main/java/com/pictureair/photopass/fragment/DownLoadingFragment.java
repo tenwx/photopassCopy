@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -36,6 +37,7 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -57,11 +59,16 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public static final int PHOTO_REMOVE = 3333;
     public static final int SERVICE_LOAD_SUCCESS = 4444;
     public static final int DOWNLOAD_FINISH = 5555;
+    public static final int REMOVE_FAILED_PHOTOS = 6666;
     private RelativeLayout rl_loading;
+    private LinearLayout ll_loading;
+    private Button btn_reconnect;
+    private Button btn_clear_failed;
     private Button button;
     private PictureAirDbManager pictureAirDbManager;
     private  PhotoDownloadingAdapter adapter;
     private CustomProgressDialog dialog;
+    private PWToast myToast;
 
     private final Handler adapterHandler = new AdapterHandler(this);
 
@@ -108,7 +115,8 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
                     int oldCount = downloadService.getDatabasePhotoCount();
                     PictureAirLog.e("dealHandler","oldCount: "+oldCount);
-                    int cacheListSize = downloadService.getCacheListSize();
+//                    int cacheListSize = downloadService.getCacheListSize();
+                    int cacheListSize = downloadService.getToLoadCount();
                     PictureAirLog.e("dealHandler","cacheListSize.size: "+cacheListSize);
                     int downLoadCount=0;
                     int downLoadListSize = downloadList.size();
@@ -133,12 +141,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 if (adapter == null) {
                     downloadList = downloadService.getDownloadList();
                     if (downloadList != null && downloadList.size() >0) {
-                        lv_loading.setVisibility(View.VISIBLE);
+                        ll_loading.setVisibility(View.VISIBLE);
                         rl_loading.setVisibility(View.GONE);
                         adapter = new PhotoDownloadingAdapter(MyApplication.getInstance(),downloadList);
                         lv_loading.setAdapter(adapter);
                     }else{
-                        lv_loading.setVisibility(View.GONE);
+                        ll_loading.setVisibility(View.GONE);
                         rl_loading.setVisibility(View.VISIBLE);
                     }
                 }else{
@@ -147,18 +155,39 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
                 int oldCount = downloadService.getDatabasePhotoCount();
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(oldCount,1));
+                int cacheListSize = downloadService.getToLoadCount();
+                int downLoadListSize =0;
+                if (downloadList != null) {
+                    downLoadListSize = downloadList.size();
+                }
+                int downLoadCount=0;
+                if (cacheListSize > downLoadListSize) {
+                    downLoadCount = cacheListSize - downLoadListSize;
+                }
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
                 activitySendMsg(null);
                 downloadService.startDownload();
                 break;
             case DOWNLOAD_FINISH:
                 Vector<DownloadFileStatus> list = downloadService.getDownloadList();
                 if (list == null || list.size() == 0) {
-                    lv_loading.setVisibility(View.GONE);
+                    ll_loading.setVisibility(View.GONE);
                     rl_loading.setVisibility(View.VISIBLE);
                 }
                 activitySendMsg(null);
+                break;
 
+            case REMOVE_FAILED_PHOTOS:
+                downloadList = downloadService.getDownloadList();
+                if (downloadList != null && downloadList.size() > 0) {
+                    adapter.setList(downloadList);
+                    adapter.notifyDataSetChanged();
+                }else{
+                    ll_loading.setVisibility(View.GONE);
+                    rl_loading.setVisibility(View.VISIBLE);
+
+                }
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
                 break;
             default:
                 break;
@@ -181,10 +210,16 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         lv_loading = (ListView) view.findViewById(R.id.lv_downloading);
         rl_loading = (RelativeLayout) view.findViewById(R.id.rl_downloading);
         button = (Button) view.findViewById(R.id.downloading_btn_toload);
+        btn_reconnect = (Button) view.findViewById(R.id.loading_connect);
+        btn_clear_failed = (Button) view.findViewById(R.id.loading_clear_fail);
+        ll_loading = (LinearLayout) view.findViewById(R.id.ll_downloading);
         dialog = CustomProgressDialog.create(getContext(), getString(R.string.is_loading), false, null);
-        lv_loading.setVisibility(View.GONE);
+        myToast = new PWToast(MyApplication.getInstance());
+        ll_loading.setVisibility(View.GONE);
         rl_loading.setVisibility(View.GONE);
         button.setOnClickListener(this);
+        btn_reconnect.setOnClickListener(this);
+        btn_clear_failed.setOnClickListener(this);
         return view;
     }
 
@@ -207,7 +242,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     dialog.show();
                 }
                 if (downloadList != null && downloadList.size() >0) {
-                    lv_loading.setVisibility(View.VISIBLE);
+                    ll_loading.setVisibility(View.VISIBLE);
                     rl_loading.setVisibility(View.GONE);
                     adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
                     lv_loading.setAdapter(adapter);
@@ -233,12 +268,50 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.downloading_btn_toload:
-                Intent i = new Intent();
-                i.setClass(MyApplication.getInstance(), MyPPActivity.class);
-                startActivity(i);
+                Intent intent = new Intent();
+                intent.setClass(MyApplication.getInstance(), MyPPActivity.class);
+                startActivity(intent);
                 getActivity().finish();
                 break;
 
+            case R.id.loading_connect:
+                ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
+                if (downloadList != null && downloadList.size() >0) {
+                    for (int i=0;i<downloadList.size();i++) {
+                        DownloadFileStatus fileStatus = downloadList.get(i);
+                        if(fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE) {
+                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
+                            PhotoInfo info = new PhotoInfo();
+                            info.isVideo = fileStatus.isVideo();
+                            info.photoPathOrURL = fileStatus.getUrl();
+                            info.photoId = fileStatus.getPhotoId();
+                            info.shootOn = fileStatus.getShootOn();
+                            info.failedTime = fileStatus.getFailedTime();
+                            list.add(info);
+                        }
+                    }
+                    adapter.setList(downloadList);
+                    adapter.notifyDataSetChanged();
+                    Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("photos", list);
+                    bundle.putInt("reconnect",1);
+                    bundle.putInt("one",1);
+                    intent1.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent1);
+                }
+                break;
+
+            case R.id.loading_clear_fail:
+                if (downloadService.isDownloading()){
+                    myToast.setTextAndShow(R.string.photo_download_clear_tips, Common.TOAST_SHORT_TIME);
+                }else {
+                    if (dialog != null && !dialog.isShowing()) {
+                        dialog.show();
+                    }
+                    downloadService.sendClearFailedMsg();
+                }
+                break;
             default:
                 break;
         }
