@@ -184,6 +184,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
      */
 	private void startDownload(boolean hasUnPayPhotos){
 		ArrayList<PhotoInfo> hasPayedList = new ArrayList<>();
+		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
 		//将已购买并且已选择的加入下载队列中
 		for (int i = 0; i < albumArrayList.size(); i++) {
 			if (albumArrayList.get(i).isSelected == 1) {
@@ -195,12 +196,20 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					hasPayedList.add(albumArrayList.get(i));
 				}
 			}
+
+			if (i != 0 && (i % 50 == 0) && (i != albumArrayList.size() - 1)) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
+				//开始将图片加入下载队列
+				Bundle bundle = new Bundle();
+				bundle.putParcelableArrayList("photos", hasPayedList);
+				intent.putExtras(bundle);
+				startService(intent);
+				hasPayedList.clear();
+			}
 		}
 
 		PictureAirLog.out("download list size---->" + hasPayedList.size());
 
 		//开始将图片加入下载队列
-		Intent intent = new Intent(EditStoryAlbumActivity.this, DownloadService.class);
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("photos", hasPayedList);
 		intent.putExtras(bundle);

@@ -513,6 +513,7 @@
     <string name="invoice_address">Address</string>
     <string name="invoice_input_company">Please input your company name</string>
     <string name="invoice_new_address">New Address</string>
+    <string name="invoice_edit_address">Edit Address</string>
     <string name="invoice_receiver_name">Name:</string>
     <string name="invoice_mobile">Mobile Number:</string>
     <string name="invoice_province">Choose Province:</string>

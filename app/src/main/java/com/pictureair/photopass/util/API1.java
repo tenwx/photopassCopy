@@ -21,7 +21,6 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import java.io.File;
@@ -1461,6 +1460,7 @@ public class API1 {
 
         if (!TextUtils.isEmpty(channelId)) {
             params.put("channelId", channelId);
+            params.put("uId", uid);
         }
         PictureAirLog.out("addorder params ------------>"+params.toString());
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.ADD_ORDER, params, new HttpCallback() {

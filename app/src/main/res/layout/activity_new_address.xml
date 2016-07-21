@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:scrollbars="none">
+    android:background="@color/white">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_top_bar_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:background="@color/pp_blue">
+
+        <ImageView
+            android:id="@+id/newaddress_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/back_white" />
+
+        <TextView
+            android:id="@+id/newaddress_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/invoice_new_address"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/new_address"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:paddingRight="@dimen/pp_margin_16"
+            android:paddingLeft="@dimen/pp_margin_16"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14" />
+
+    </RelativeLayout>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/head"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_top_bar_height"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            android:background="@color/pp_blue">
-
-            <ImageView
-                android:id="@+id/newaddress_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingBottom="@dimen/pp_padding_15"
-                android:paddingLeft="@dimen/pp_padding_14"
-                android:paddingRight="@dimen/pp_padding_14"
-                android:paddingTop="@dimen/pp_padding_15"
-                android:scaleType="centerInside"
-                android:src="@drawable/back_white" />
-
-            <TextView
-                android:id="@+id/newaddress_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/invoice_new_address"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16" />
-
-            <TextView
-                android:id="@+id/newaddress_ok"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="@dimen/pp_margin_16"
-                android:text="@string/ok"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_14" />
-        </RelativeLayout>
+        android:layout_above="@+id/newaddress_ok"
+        android:layout_below="@+id/head"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,22 +73,20 @@
 
                 <TextView
                     android:id="@+id/address_name_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="@string/invoice_receiver_name"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.pictureair.photopass.widget.EditTextWithClear
                     android:id="@+id/newaddress_name_et"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_weight="3"
-                    android:background="@drawable/edittext_bg_gray"
+                    android:layout_marginLeft="@dimen/pp_margin_8"
+                    android:background="@null"
                     android:hint="test"
                     android:imeOptions="actionNext"
                     android:inputType="text"
@@ -112,21 +114,19 @@
 
                 <TextView
                     android:id="@+id/address_phone_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="@string/invoice_mobile"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.pictureair.photopass.widget.EditTextWithClear
                     android:id="@+id/newaddress_phone_et"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_weight="3"
-                    android:background="@drawable/edittext_bg_gray"
+                    android:layout_marginLeft="@dimen/pp_margin_8"
+                    android:background="@null"
                     android:hint="test"
                     android:imeOptions="actionNext"
                     android:inputType="number"
@@ -156,21 +156,20 @@
 
                 <TextView
                     android:id="@+id/address_province_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="@string/invoice_province"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
                 <Button
                     android:id="@+id/newaddress_province_btn"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_weight="3"
-                    android:background="@drawable/button_blue_shape_and_selector2"
+                    android:layout_marginLeft="@dimen/pp_margin_8"
+                    android:background="@null"
+                    android:gravity="left"
                     android:hint="test"
                     android:padding="@dimen/pp_padding_8"
                     android:textColor="@color/pp_dark_blue"
@@ -198,21 +197,20 @@
 
                 <TextView
                     android:id="@+id/address_city_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="@string/invoice_city"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
                 <Button
                     android:id="@+id/newaddress_city_btn"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_weight="3"
-                    android:background="@drawable/button_blue_shape_and_selector2"
+                    android:layout_marginLeft="@dimen/pp_margin_8"
+                    android:background="@null"
+                    android:gravity="left"
                     android:hint="test"
                     android:padding="@dimen/pp_padding_8"
                     android:textColor="@color/pp_dark_blue"
@@ -240,21 +238,20 @@
 
                 <TextView
                     android:id="@+id/address_country_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="@string/invoice_country"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
                 <Button
                     android:id="@+id/newaddress_country_btn"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_weight="3"
-                    android:background="@drawable/button_blue_shape_and_selector2"
+                    android:layout_marginLeft="@dimen/pp_margin_8"
+                    android:background="@null"
+                    android:gravity="left"
                     android:hint="test"
                     android:padding="@dimen/pp_padding_8"
                     android:textColor="@color/pp_dark_blue"
@@ -281,21 +278,19 @@
 
                 <TextView
                     android:id="@+id/address_detail_addr_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="@string/invoice_detail_addr"
                     android:textColor="@color/pp_dark_blue"
                     android:textSize="@dimen/text_size_16" />
 
                 <com.pictureair.photopass.widget.EditTextWithClear
                     android:id="@+id/newaddress_detail_addr_et"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/pp_margin_16"
-                    android:layout_weight="3"
-                    android:background="@drawable/edittext_bg_gray"
+                    android:layout_marginLeft="@dimen/pp_margin_8"
+                    android:background="@null"
                     android:hint="test"
                     android:maxLength="200"
                     android:padding="@dimen/pp_padding_8"
@@ -309,5 +304,42 @@
                 android:layout_height="@dimen/pp_height_1dp"
                 android:background="@color/pp_light_gray_normal" />
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <View
+        android:id="@+id/empty_address_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pp_margin_16"
+        android:layout_alignParentBottom="true" />
+
+    <TextView
+        android:id="@+id/delete_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/empty_address_view"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:layout_marginTop="@dimen/pp_margin_16"
+        android:background="@drawable/button_sign_shape_and_selector"
+        android:gravity="center"
+        android:padding="@dimen/pp_padding_10"
+        android:text="@string/delete"
+        android:textColor="@color/pp_blue"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/newaddress_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/delete_address"
+        android:layout_marginLeft="@dimen/pp_margin_16"
+        android:layout_marginRight="@dimen/pp_margin_16"
+        android:layout_marginTop="@dimen/pp_margin_16"
+        android:background="@drawable/button_blue_shape_and_selector"
+        android:gravity="center"
+        android:padding="@dimen/pp_padding_10"
+        android:text="@string/reset_pwd_ok"
+        android:textColor="@drawable/textview_selector_blue_white"
+        android:textSize="@dimen/text_size_16" />
+
+</RelativeLayout>

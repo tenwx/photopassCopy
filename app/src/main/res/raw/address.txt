@@ -41,7 +41,7 @@
       <area name="宝坻区" index="33" />
       <area name="宁河县" index="34" />
       <area name="静海县" index="35" />
-      <area name="蓟  县" index="36" />
+      <area name="蓟县" index="36" />
     </city>
   </province>
   <province name="河北省">
@@ -50,7 +50,7 @@
       <area name="桥东区" index="38" />
       <area name="桥西区" index="39" />
       <area name="新华区" index="40" />
-      <area name="郊  区" index="41" />
+      <area name="郊区" index="41" />
       <area name="井陉矿区" index="42" />
       <area name="井陉县" index="43" />
       <area name="正定县" index="44" />
@@ -63,7 +63,7 @@
       <area name="无极县" index="51" />
       <area name="平山县" index="52" />
       <area name="元氏县" index="53" />
-      <area name="赵  县" index="54" />
+      <area name="赵县" index="54" />
       <area name="辛集市" index="55" />
       <area name="藁城市" index="56" />
       <area name="晋州市" index="57" />
@@ -75,9 +75,9 @@
       <area name="路北区" index="61" />
       <area name="古冶区" index="62" />
       <area name="开平区" index="63" />
-      <area name="新  区" index="64" />
+      <area name="新区" index="64" />
       <area name="丰润县" index="65" />
-      <area name="滦  县" index="66" />
+      <area name="滦县" index="66" />
       <area name="滦南县" index="67" />
       <area name="乐亭县" index="68" />
       <area name="迁西县" index="69" />
@@ -105,15 +105,15 @@
       <area name="临漳县" index="87" />
       <area name="成安县" index="88" />
       <area name="大名县" index="89" />
-      <area name="涉  县" index="90" />
-      <area name="磁  县" index="91" />
+      <area name="涉县" index="90" />
+      <area name="磁县" index="91" />
       <area name="肥乡县" index="92" />
       <area name="永年县" index="93" />
-      <area name="邱  县" index="94" />
+      <area name="邱县" index="94" />
       <area name="鸡泽县" index="95" />
       <area name="广平县" index="96" />
       <area name="馆陶县" index="97" />
-      <area name="魏  县" index="98" />
+      <area name="魏县" index="98" />
       <area name="曲周县" index="99" />
       <area name="武安市" index="100" />
     </city>
@@ -125,14 +125,14 @@
       <area name="内丘县" index="105" />
       <area name="柏乡县" index="106" />
       <area name="隆尧县" index="107" />
-      <area name="任  县" index="108" />
+      <area name="任县" index="108" />
       <area name="南和县" index="109" />
       <area name="宁晋县" index="110" />
       <area name="巨鹿县" index="111" />
       <area name="新河县" index="112" />
       <area name="广宗县" index="113" />
       <area name="平乡县" index="114" />
-      <area name="威  县" index="115" />
+      <area name="威县" index="115" />
       <area name="清河县" index="116" />
       <area name="临西县" index="117" />
       <area name="南宫市" index="118" />
@@ -148,18 +148,18 @@
       <area name="阜平县" index="126" />
       <area name="徐水县" index="127" />
       <area name="定兴县" index="128" />
-      <area name="唐  县" index="129" />
+      <area name="唐县" index="129" />
       <area name="高阳县" index="130" />
       <area name="容城县" index="131" />
       <area name="涞源县" index="132" />
       <area name="望都县" index="133" />
       <area name="安新县" index="134" />
-      <area name="易  县" index="135" />
+      <area name="易县" index="135" />
       <area name="曲阳县" index="136" />
-      <area name="蠡  县" index="137" />
+      <area name="蠡县" index="137" />
       <area name="顺平县" index="138" />
       <area name="博野县" index="139" />
-      <area name="雄  县" index="140" />
+      <area name="雄县" index="140" />
       <area name="涿州市" index="141" />
       <area name="定州市" index="142" />
       <area name="安国市" index="143" />
@@ -175,7 +175,7 @@
       <area name="康保县" index="151" />
       <area name="沽源县" index="152" />
       <area name="尚义县" index="153" />
-      <area name="蔚  县" index="154" />
+      <area name="蔚县" index="154" />
       <area name="阳原县" index="155" />
       <area name="怀安县" index="156" />
       <area name="万全县" index="157" />
@@ -200,15 +200,15 @@
     <city name="沧州市" index="11">
       <area name="新华区" index="173" />
       <area name="运河区" index="174" />
-      <area name="沧  县" index="175" />
-      <area name="青  县" index="176" />
+      <area name="沧县" index="175" />
+      <area name="青县" index="176" />
       <area name="东光县" index="177" />
       <area name="海兴县" index="178" />
       <area name="盐山县" index="179" />
       <area name="肃宁县" index="180" />
       <area name="南皮县" index="181" />
       <area name="吴桥县" index="182" />
-      <area name="献  县" index="183" />
+      <area name="献县" index="183" />
       <area name="孟村回族自治县" index="184" />
       <area name="泊头市" index="185" />
       <area name="任丘市" index="186" />
@@ -234,7 +234,7 @@
       <area name="饶阳县" index="202" />
       <area name="安平县" index="203" />
       <area name="故城县" index="204" />
-      <area name="景  县" index="205" />
+      <area name="景县" index="205" />
       <area name="阜城县" index="206" />
       <area name="冀州市" index="207" />
       <area name="深州市" index="208" />
@@ -254,8 +254,8 @@
       <area name="古交市" index="218" />
     </city>
     <city name="大同市" index="15">
-      <area name="城  区" index="219" />
-      <area name="矿  区" index="220" />
+      <area name="城区" index="219" />
+      <area name="矿区" index="220" />
       <area name="南郊区" index="221" />
       <area name="新荣区" index="222" />
       <area name="阳高县" index="223" />
@@ -267,15 +267,15 @@
       <area name="大同县" index="229" />
     </city>
     <city name="阳泉市" index="16">
-      <area name="城  区" index="230" />
-      <area name="矿  区" index="231" />
-      <area name="郊  区" index="232" />
+      <area name="城区" index="230" />
+      <area name="矿区" index="231" />
+      <area name="郊区" index="232" />
       <area name="平定县" index="233" />
-      <area name="盂  县" index="234" />
+      <area name="盂县" index="234" />
     </city>
     <city name="长治市" index="17">
-      <area name="城  区" index="235" />
-      <area name="郊  区" index="236" />
+      <area name="城区" index="235" />
+      <area name="郊区" index="236" />
       <area name="长治县" index="237" />
       <area name="襄垣县" index="238" />
       <area name="屯留县" index="239" />
@@ -284,12 +284,12 @@
       <area name="壶关县" index="242" />
       <area name="长子县" index="243" />
       <area name="武乡县" index="244" />
-      <area name="沁  县" index="245" />
+      <area name="沁县" index="245" />
       <area name="沁源县" index="246" />
       <area name="潞城市" index="247" />
     </city>
     <city name="晋城市" index="18">
-      <area name="城  区" index="248" />
+      <area name="城区" index="248" />
       <area name="沁水县" index="249" />
       <area name="阳城县" index="250" />
       <area name="陵川县" index="251" />
@@ -300,7 +300,7 @@
       <area name="朔城区" index="254" />
       <area name="平鲁区" index="255" />
       <area name="山阴县" index="256" />
-      <area name="应  县" index="257" />
+      <area name="应县" index="257" />
       <area name="右玉县" index="258" />
       <area name="怀仁县" index="259" />
     </city>
@@ -309,7 +309,7 @@
       <area name="原平市" index="261" />
       <area name="定襄县" index="262" />
       <area name="五台县" index="263" />
-      <area name="代  县" index="264" />
+      <area name="代县" index="264" />
       <area name="繁峙县" index="265" />
       <area name="宁武县" index="266" />
       <area name="静乐县" index="267" />
@@ -326,11 +326,11 @@
       <area name="汾阳市" index="276" />
       <area name="文水县" index="277" />
       <area name="交城县" index="278" />
-      <area name="兴  县" index="279" />
-      <area name="临  县" index="280" />
+      <area name="兴县" index="279" />
+      <area name="临县" index="280" />
       <area name="柳林县" index="281" />
       <area name="石楼县" index="282" />
-      <area name="岚  县" index="283" />
+      <area name="岚县" index="283" />
       <area name="方山县" index="284" />
       <area name="中阳县" index="285" />
       <area name="交口县" index="286" />
@@ -344,7 +344,7 @@
       <area name="昔阳县" index="292" />
       <area name="寿阳县" index="293" />
       <area name="太谷县" index="294" />
-      <area name="祁  县" index="295" />
+      <area name="祁县" index="295" />
       <area name="平遥县" index="296" />
       <area name="灵石县" index="297" />
     </city>
@@ -356,15 +356,15 @@
       <area name="翼城县" index="302" />
       <area name="襄汾县" index="303" />
       <area name="洪洞县" index="304" />
-      <area name="古  县" index="305" />
+      <area name="古县" index="305" />
       <area name="安泽县" index="306" />
       <area name="浮山县" index="307" />
-      <area name="吉  县" index="308" />
+      <area name="吉县" index="308" />
       <area name="乡宁县" index="309" />
-      <area name="蒲  县" index="310" />
+      <area name="蒲县" index="310" />
       <area name="大宁县" index="311" />
       <area name="永和县" index="312" />
-      <area name="隰  县" index="313" />
+      <area name="隰县" index="313" />
       <area name="汾西县" index="314" />
     </city>
     <city name="运城市" index="24">
@@ -377,8 +377,8 @@
       <area name="新绛县" index="321" />
       <area name="稷山县" index="322" />
       <area name="闻喜县" index="323" />
-      <area name="夏  县" index="324" />
-      <area name="绛  县" index="325" />
+      <area name="夏县" index="324" />
+      <area name="绛县" index="325" />
       <area name="平陆县" index="326" />
       <area name="垣曲县" index="327" />
     </city>
@@ -388,7 +388,7 @@
       <area name="新城区" index="328" />
       <area name="回民区" index="329" />
       <area name="玉泉区" index="330" />
-      <area name="郊  区" index="331" />
+      <area name="郊区" index="331" />
       <area name="土默特左旗" index="332" />
       <area name="托克托县" index="333" />
       <area name="和林格尔县" index="334" />
@@ -401,7 +401,7 @@
       <area name="青山区" index="339" />
       <area name="石拐矿区" index="340" />
       <area name="白云矿区" index="341" />
-      <area name="郊  区" index="342" />
+      <area name="郊区" index="342" />
       <area name="土默特右旗" index="343" />
       <area name="固阳县" index="344" />
       <area name="达尔罕茂明安联合旗" index="345" />
@@ -577,7 +577,7 @@
       <area name="凌河区" index="479" />
       <area name="太和区" index="480" />
       <area name="黑山县" index="481" />
-      <area name="义  县" index="482" />
+      <area name="义县" index="482" />
       <area name="凌海市" index="483" />
       <area name="北宁市" index="484" />
     </city>
@@ -732,7 +732,7 @@
       <area name="呼兰区" index="596" />
       <area name="依兰县" index="597" />
       <area name="方正县" index="598" />
-      <area name="宾  县" index="599" />
+      <area name="宾县" index="599" />
       <area name="巴彦县" index="600" />
       <area name="木兰县" index="601" />
       <area name="通河县" index="602" />
@@ -822,7 +822,7 @@
       <area name="向阳区" index="674" />
       <area name="前进区" index="675" />
       <area name="东风区" index="676" />
-      <area name="郊  区" index="677" />
+      <area name="郊区" index="677" />
       <area name="桦南县" index="678" />
       <area name="桦川县" index="679" />
       <area name="汤原县" index="680" />
@@ -917,7 +917,7 @@
       <area name="崇安区" index="749" />
       <area name="南长区" index="750" />
       <area name="北塘区" index="751" />
-      <area name="郊  区" index="752" />
+      <area name="郊区" index="752" />
       <area name="马山区" index="753" />
       <area name="江阴市" index="754" />
       <area name="宜兴市" index="755" />
@@ -929,8 +929,8 @@
       <area name="九里区" index="759" />
       <area name="贾汪区" index="760" />
       <area name="泉山区" index="761" />
-      <area name="丰  县" index="762" />
-      <area name="沛  县" index="763" />
+      <area name="丰县" index="762" />
+      <area name="沛县" index="763" />
       <area name="铜山县" index="764" />
       <area name="睢宁县" index="765" />
       <area name="新沂市" index="766" />
@@ -940,7 +940,7 @@
       <area name="天宁区" index="768" />
       <area name="钟楼区" index="769" />
       <area name="戚墅堰区" index="770" />
-      <area name="郊  区" index="771" />
+      <area name="郊区" index="771" />
       <area name="溧阳市" index="772" />
       <area name="金坛市" index="773" />
       <area name="武进市" index="774" />
@@ -949,7 +949,7 @@
       <area name="沧浪区" index="775" />
       <area name="平江区" index="776" />
       <area name="金阊区" index="777" />
-      <area name="郊  区" index="778" />
+      <area name="郊区" index="778" />
       <area name="常熟市" index="779" />
       <area name="张家港市" index="780" />
       <area name="昆山市" index="781" />
@@ -988,7 +988,7 @@
       <area name="淮安市" index="808" />
     </city>
     <city name="盐城市" index="81">
-      <area name="城  区" index="809" />
+      <area name="城区" index="809" />
       <area name="响水县" index="810" />
       <area name="滨海县" index="811" />
       <area name="阜宁县" index="812" />
@@ -1000,7 +1000,7 @@
     </city>
     <city name="扬州市" index="82">
       <area name="广陵区" index="818" />
-      <area name="郊  区" index="819" />
+      <area name="郊区" index="819" />
       <area name="宝应县" index="820" />
       <area name="邗江县" index="821" />
       <area name="仪征市" index="822" />
@@ -1055,7 +1055,7 @@
       <area name="镇海区" index="859" />
       <area name="象山县" index="860" />
       <area name="宁海县" index="861" />
-      <area name="鄞  县" index="862" />
+      <area name="鄞县" index="862" />
       <area name="余姚市" index="863" />
       <area name="慈溪市" index="864" />
       <area name="奉化市" index="865" />
@@ -1075,7 +1075,7 @@
     </city>
     <city name="嘉兴市" index="89">
       <area name="秀城区" index="877" />
-      <area name="郊  区" index="878" />
+      <area name="郊区" index="878" />
       <area name="嘉善县" index="879" />
       <area name="海盐县" index="880" />
       <area name="海宁市" index="881" />
@@ -1110,7 +1110,7 @@
     </city>
     <city name="衢州市" index="93">
       <area name="柯城区" index="904" />
-      <area name="衢  县" index="905" />
+      <area name="衢县" index="905" />
       <area name="常山县" index="906" />
       <area name="开化县" index="907" />
       <area name="龙游县" index="908" />
@@ -1150,7 +1150,7 @@
       <area name="东市区" index="932" />
       <area name="中市区" index="933" />
       <area name="西市区" index="934" />
-      <area name="郊  区" index="935" />
+      <area name="郊区" index="935" />
       <area name="长丰县" index="936" />
       <area name="肥东县" index="937" />
       <area name="肥西县" index="938" />
@@ -1168,7 +1168,7 @@
       <area name="东市区" index="946" />
       <area name="中市区" index="947" />
       <area name="西市区" index="948" />
-      <area name="郊  区" index="949" />
+      <area name="郊区" index="949" />
       <area name="怀远县" index="950" />
       <area name="五河县" index="951" />
       <area name="固镇县" index="952" />
@@ -1196,13 +1196,13 @@
     <city name="铜陵市" index="103">
       <area name="铜官山区" index="967" />
       <area name="狮子山区" index="968" />
-      <area name="郊  区" index="969" />
+      <area name="郊区" index="969" />
       <area name="铜陵县" index="970" />
     </city>
     <city name="安庆市" index="104">
       <area name="迎江区" index="971" />
       <area name="大观区" index="972" />
-      <area name="郊  区" index="973" />
+      <area name="郊区" index="973" />
       <area name="怀宁县" index="974" />
       <area name="枞阳县" index="975" />
       <area name="潜山县" index="976" />
@@ -1216,9 +1216,9 @@
       <area name="屯溪区" index="982" />
       <area name="黄山区" index="983" />
       <area name="徽州区" index="984" />
-      <area name="歙  县" index="985" />
+      <area name="歙县" index="985" />
       <area name="休宁县" index="986" />
-      <area name="黟  县" index="987" />
+      <area name="黟县" index="987" />
       <area name="祁门县" index="988" />
     </city>
     <city name="滁州市" index="106">
@@ -1244,14 +1244,14 @@
     <city name="宿州市" index="108">
       <area name="墉桥区" index="1005" />
       <area name="砀山县" index="1006" />
-      <area name="萧  县" index="1007" />
+      <area name="萧县" index="1007" />
       <area name="灵璧县" index="1008" />
-      <area name="泗  县" index="1009" />
+      <area name="泗县" index="1009" />
     </city>
     <city name="六安市" index="109">
       <area name="金安区" index="1010" />
       <area name="裕安区" index="1011" />
-      <area name="寿  县" index="1012" />
+      <area name="寿县" index="1012" />
       <area name="霍邱县" index="1013" />
       <area name="舒城县" index="1014" />
       <area name="金寨县" index="1015" />
@@ -1262,7 +1262,7 @@
       <area name="宁国市" index="1018" />
       <area name="郎溪县" index="1019" />
       <area name="广德县" index="1020" />
-      <area name="泾  县" index="1021" />
+      <area name="泾县" index="1021" />
       <area name="旌德县" index="1022" />
       <area name="绩溪县" index="1023" />
     </city>
@@ -1271,7 +1271,7 @@
       <area name="庐江县" index="1025" />
       <area name="无为县" index="1026" />
       <area name="含山县" index="1027" />
-      <area name="和  县" index="1028" />
+      <area name="和县" index="1028" />
     </city>
     <city name="池州市" index="112">
       <area name="贵池区" index="1029" />
@@ -1391,7 +1391,7 @@
       <area name="西湖区" index="1119" />
       <area name="青云谱区" index="1120" />
       <area name="湾里区" index="1121" />
-      <area name="郊  区" index="1122" />
+      <area name="郊区" index="1122" />
       <area name="南昌县" index="1123" />
       <area name="新建县" index="1124" />
       <area name="安义县" index="1125" />
@@ -1435,7 +1435,7 @@
     </city>
     <city name="赣州市" index="128">
       <area name="章贡区" index="1153" />
-      <area name="赣  县" index="1154" />
+      <area name="赣县" index="1154" />
       <area name="信丰县" index="1155" />
       <area name="大余县" index="1156" />
       <area name="上犹县" index="1157" />
@@ -1604,7 +1604,7 @@
     </city>
     <city name="泰安市" index="141">
       <area name="泰山区" index="1294" />
-      <area name="郊  区" index="1295" />
+      <area name="郊区" index="1295" />
       <area name="宁阳县" index="1296" />
       <area name="东平县" index="1297" />
       <area name="新泰市" index="1298" />
@@ -1620,7 +1620,7 @@
       <area name="东港区" index="1304" />
       <area name="岚山区" index="1305" />
       <area name="五莲县" index="1306" />
-      <area name="莒  县" index="1307" />
+      <area name="莒县" index="1307" />
     </city>
     <city name="莱芜市" index="144">
       <area name="莱城区" index="1308" />
@@ -1634,7 +1634,7 @@
       <area name="郯城县" index="1314" />
       <area name="沂水县" index="1315" />
       <area name="苍山县" index="1316" />
-      <area name="费  县" index="1317" />
+      <area name="费县" index="1317" />
       <area name="平邑县" index="1318" />
       <area name="莒南县" index="1319" />
       <area name="蒙阴县" index="1320" />
@@ -1642,7 +1642,7 @@
     </city>
     <city name="德州市" index="146">
       <area name="德城区" index="1322" />
-      <area name="陵  县" index="1323" />
+      <area name="陵县" index="1323" />
       <area name="宁津县" index="1324" />
       <area name="庆云县" index="1325" />
       <area name="临邑县" index="1326" />
@@ -1656,10 +1656,10 @@
     <city name="聊城市" index="147">
       <area name="东昌府区" index="1333" />
       <area name="阳谷县" index="1334" />
-      <area name="莘  县" index="1335" />
+      <area name="莘县" index="1335" />
       <area name="茌平县" index="1336" />
       <area name="东阿县" index="1337" />
-      <area name="冠  县" index="1338" />
+      <area name="冠县" index="1338" />
       <area name="高唐县" index="1339" />
       <area name="临清市" index="1340" />
     </city>
@@ -1674,10 +1674,10 @@
     </city>
     <city name="菏泽地区" index="149">
       <area name="菏泽市" index="1348" />
-      <area name="曹  县" index="1349" />
+      <area name="曹县" index="1349" />
       <area name="定陶县" index="1350" />
       <area name="成武县" index="1351" />
-      <area name="单  县" index="1352" />
+      <area name="单县" index="1352" />
       <area name="巨野县" index="1353" />
       <area name="郓城县" index="1354" />
       <area name="鄄城县" index="1355" />
@@ -1704,8 +1704,8 @@
       <area name="顺河回族区" index="1370" />
       <area name="鼓楼区" index="1371" />
       <area name="南关区" index="1372" />
-      <area name="郊  区" index="1373" />
-      <area name="杞  县" index="1374" />
+      <area name="郊区" index="1373" />
+      <area name="杞县" index="1374" />
       <area name="通许县" index="1375" />
       <area name="尉氏县" index="1376" />
       <area name="开封县" index="1377" />
@@ -1717,11 +1717,11 @@
       <area name="廛河回族区" index="1381" />
       <area name="涧西区" index="1382" />
       <area name="吉利区" index="1383" />
-      <area name="郊  区" index="1384" />
+      <area name="郊区" index="1384" />
       <area name="孟津县" index="1385" />
       <area name="新安县" index="1386" />
       <area name="栾川县" index="1387" />
-      <area name="嵩  县" index="1388" />
+      <area name="嵩县" index="1388" />
       <area name="汝阳县" index="1389" />
       <area name="宜阳县" index="1390" />
       <area name="洛宁县" index="1391" />
@@ -1734,9 +1734,9 @@
       <area name="石龙区" index="1396" />
       <area name="湛河区" index="1397" />
       <area name="宝丰县" index="1398" />
-      <area name="叶  县" index="1399" />
+      <area name="叶县" index="1399" />
       <area name="鲁山县" index="1400" />
-      <area name="郏  县" index="1401" />
+      <area name="郏县" index="1401" />
       <area name="舞钢市" index="1402" />
       <area name="汝州市" index="1403" />
     </city>
@@ -1744,25 +1744,25 @@
       <area name="文峰区" index="1404" />
       <area name="北关区" index="1405" />
       <area name="铁西区" index="1406" />
-      <area name="郊  区" index="1407" />
+      <area name="郊区" index="1407" />
       <area name="安阳县" index="1408" />
       <area name="汤阴县" index="1409" />
-      <area name="滑  县" index="1410" />
+      <area name="滑县" index="1410" />
       <area name="内黄县" index="1411" />
       <area name="林州市" index="1412" />
     </city>
     <city name="鹤壁市" index="155">
       <area name="鹤山区" index="1413" />
       <area name="山城区" index="1414" />
-      <area name="郊  区" index="1415" />
-      <area name="浚  县" index="1416" />
-      <area name="淇  县" index="1417" />
+      <area name="郊区" index="1415" />
+      <area name="浚县" index="1416" />
+      <area name="淇县" index="1417" />
     </city>
     <city name="新乡市" index="156">
       <area name="红旗区" index="1418" />
       <area name="新华区" index="1419" />
       <area name="北站区" index="1420" />
-      <area name="郊  区" index="1421" />
+      <area name="郊区" index="1421" />
       <area name="新乡县" index="1422" />
       <area name="获嘉县" index="1423" />
       <area name="原阳县" index="1424" />
@@ -1780,7 +1780,7 @@
       <area name="修武县" index="1434" />
       <area name="博爱县" index="1435" />
       <area name="武陟县" index="1436" />
-      <area name="温  县" index="1437" />
+      <area name="温县" index="1437" />
       <area name="沁阳市" index="1438" />
       <area name="孟州市" index="1439" />
     </city>
@@ -1788,7 +1788,7 @@
       <area name="华龙区" index="1440" />
       <area name="清丰县" index="1441" />
       <area name="南乐县" index="1442" />
-      <area name="范  县" index="1443" />
+      <area name="范县" index="1443" />
       <area name="台前县" index="1444" />
       <area name="濮阳县" index="1445" />
     </city>
@@ -1810,7 +1810,7 @@
     <city name="三门峡市" index="161">
       <area name="湖滨区" index="1457" />
       <area name="渑池县" index="1458" />
-      <area name="陕  县" index="1459" />
+      <area name="陕县" index="1459" />
       <area name="卢氏县" index="1460" />
       <area name="义马市" index="1461" />
       <area name="灵宝市" index="1462" />
@@ -1834,7 +1834,7 @@
       <area name="梁园区" index="1476" />
       <area name="睢阳区" index="1477" />
       <area name="民权县" index="1478" />
-      <area name="睢  县" index="1479" />
+      <area name="睢县" index="1479" />
       <area name="宁陵县" index="1480" />
       <area name="柘城县" index="1481" />
       <area name="虞城县" index="1482" />
@@ -1846,12 +1846,12 @@
       <area name="平桥区" index="1486" />
       <area name="罗山县" index="1487" />
       <area name="光山县" index="1488" />
-      <area name="新  县" index="1489" />
+      <area name="新县" index="1489" />
       <area name="商城县" index="1490" />
       <area name="固始县" index="1491" />
       <area name="潢川县" index="1492" />
       <area name="淮滨县" index="1493" />
-      <area name="息  县" index="1494" />
+      <area name="息县" index="1494" />
     </city>
     <city name="周口市" index="165">
       <area name="周口市" index="1495" />
@@ -1908,11 +1908,11 @@
     <city name="十堰市" index="170">
       <area name="茅箭区" index="1535" />
       <area name="张湾区" index="1536" />
-      <area name="郧  县" index="1537" />
+      <area name="郧县" index="1537" />
       <area name="郧西县" index="1538" />
       <area name="竹山县" index="1539" />
       <area name="竹溪县" index="1540" />
-      <area name="房  县" index="1541" />
+      <area name="房县" index="1541" />
       <area name="丹江口市" index="1542" />
     </city>
     <city name="宜昌市" index="171">
@@ -2027,7 +2027,7 @@
       <area name="石峰区" index="1627" />
       <area name="天元区" index="1628" />
       <area name="株洲县" index="1629" />
-      <area name="攸  县" index="1630" />
+      <area name="攸县" index="1630" />
       <area name="茶陵县" index="1631" />
       <area name="炎陵县" index="1632" />
       <area name="醴陵市" index="1633" />
@@ -2083,7 +2083,7 @@
       <area name="鼎城区" index="1673" />
       <area name="安乡县" index="1674" />
       <area name="汉寿县" index="1675" />
-      <area name="澧  县" index="1676" />
+      <area name="澧县" index="1676" />
       <area name="临澧县" index="1677" />
       <area name="桃源县" index="1678" />
       <area name="石门县" index="1679" />
@@ -2098,7 +2098,7 @@
     <city name="益阳市" index="189">
       <area name="资阳区" index="1685" />
       <area name="赫山区" index="1686" />
-      <area name="南  县" index="1687" />
+      <area name="南县" index="1687" />
       <area name="桃江县" index="1688" />
       <area name="安化县" index="1689" />
       <area name="沅江市" index="1690" />
@@ -2122,7 +2122,7 @@
       <area name="祁阳县" index="1704" />
       <area name="东安县" index="1705" />
       <area name="双牌县" index="1706" />
-      <area name="道  县" index="1707" />
+      <area name="道县" index="1707" />
       <area name="江永县" index="1708" />
       <area name="宁远县" index="1709" />
       <area name="蓝山县" index="1710" />
@@ -2264,7 +2264,7 @@
     </city>
     <city name="梅州市" index="206">
       <area name="梅江区" index="1816" />
-      <area name="梅  县" index="1817" />
+      <area name="梅县" index="1817" />
       <area name="大埔县" index="1818" />
       <area name="丰顺县" index="1819" />
       <area name="五华县" index="1820" />
@@ -2273,7 +2273,7 @@
       <area name="兴宁市" index="1823" />
     </city>
     <city name="汕尾市" index="207">
-      <area name="城  区" index="1824" />
+      <area name="城区" index="1824" />
       <area name="海丰县" index="1825" />
       <area name="陆河县" index="1826" />
       <area name="陆丰市" index="1827" />
@@ -2375,7 +2375,7 @@
       <area name="蝶山区" index="1901" />
       <area name="市郊区" index="1902" />
       <area name="苍梧县" index="1903" />
-      <area name="藤  县" index="1904" />
+      <area name="藤县" index="1904" />
       <area name="蒙山县" index="1905" />
       <area name="岑溪市" index="1906" />
     </city>
@@ -2406,7 +2406,7 @@
     </city>
     <city name="玉林市" index="222">
       <area name="玉州区" index="1924" />
-      <area name="容  县" index="1925" />
+      <area name="容县" index="1925" />
       <area name="陆川县" index="1926" />
       <area name="博白县" index="1927" />
       <area name="兴业县" index="1928" />
@@ -2520,8 +2520,8 @@
       <area name="丰都县" index="2014" />
       <area name="垫江县" index="2015" />
       <area name="武隆县" index="2016" />
-      <area name="忠  县" index="2017" />
-      <area name="开  县" index="2018" />
+      <area name="忠县" index="2017" />
+      <area name="开县" index="2018" />
       <area name="云阳县" index="2019" />
       <area name="奉节县" index="2020" />
       <area name="巫山县" index="2021" />
@@ -2549,7 +2549,7 @@
       <area name="金堂县" index="2039" />
       <area name="双流县" index="2040" />
       <area name="温江县" index="2041" />
-      <area name="郫  县" index="2042" />
+      <area name="郫县" index="2042" />
       <area name="新都县" index="2043" />
       <area name="大邑县" index="2044" />
       <area name="蒲江县" index="2045" />
@@ -2564,12 +2564,12 @@
       <area name="贡井区" index="2052" />
       <area name="大安区" index="2053" />
       <area name="沿滩区" index="2054" />
-      <area name="荣  县" index="2055" />
+      <area name="荣县" index="2055" />
       <area name="富顺县" index="2056" />
     </city>
     <city name="攀枝花市" index="234">
-      <area name="东  区" index="2057" />
-      <area name="西  区" index="2058" />
+      <area name="东区" index="2057" />
+      <area name="西区" index="2058" />
       <area name="仁和区" index="2059" />
       <area name="米易县" index="2060" />
       <area name="盐边县" index="2061" />
@@ -2578,7 +2578,7 @@
       <area name="江阳区" index="2062" />
       <area name="纳溪区" index="2063" />
       <area name="龙马潭区" index="2064" />
-      <area name="泸  县" index="2065" />
+      <area name="泸县" index="2065" />
       <area name="合江县" index="2066" />
       <area name="叙永县" index="2067" />
       <area name="古蔺县" index="2068" />
@@ -2596,7 +2596,7 @@
       <area name="游仙区" index="2076" />
       <area name="三台县" index="2077" />
       <area name="盐亭县" index="2078" />
-      <area name="安  县" index="2079" />
+      <area name="安县" index="2079" />
       <area name="梓潼县" index="2080" />
       <area name="北川县" index="2081" />
       <area name="平武县" index="2082" />
@@ -2655,8 +2655,8 @@
       <area name="南溪县" index="2123" />
       <area name="江安县" index="2124" />
       <area name="长宁县" index="2125" />
-      <area name="高  县" index="2126" />
-      <area name="珙  县" index="2127" />
+      <area name="高县" index="2126" />
+      <area name="珙县" index="2127" />
       <area name="筠连县" index="2128" />
       <area name="兴文县" index="2129" />
       <area name="屏山县" index="2130" />
@@ -2671,11 +2671,11 @@
     <city name="达川地区" index="245">
       <area name="达川市" index="2136" />
       <area name="万源市" index="2137" />
-      <area name="达  县" index="2138" />
+      <area name="达县" index="2138" />
       <area name="宣汉县" index="2139" />
       <area name="开江县" index="2140" />
       <area name="大竹县" index="2141" />
-      <area name="渠  县" index="2142" />
+      <area name="渠县" index="2142" />
     </city>
     <city name="雅安地区" index="246">
       <area name="雅安市" index="2143" />
@@ -2689,8 +2689,8 @@
     </city>
     <city name="阿坝藏族羌族自治州" index="247">
       <area name="汶川县" index="2151" />
-      <area name="理  县" index="2152" />
-      <area name="茂  县" index="2153" />
+      <area name="理县" index="2152" />
+      <area name="茂县" index="2153" />
       <area name="松潘县" index="2154" />
       <area name="九寨沟县" index="2155" />
       <area name="金川县" index="2156" />
@@ -3025,7 +3025,7 @@
     <city name="临沧地区" index="277">
       <area name="临沧县" index="2422" />
       <area name="凤庆县" index="2423" />
-      <area name="云  县" index="2424" />
+      <area name="云县" index="2424" />
       <area name="永德县" index="2425" />
       <area name="镇康县" index="2426" />
       <area name="双江拉祜族佤族布朗族傣族自治县" index="2427" />
@@ -3098,7 +3098,7 @@
       <area name="聂荣县" index="2482" />
       <area name="安多县" index="2483" />
       <area name="申扎县" index="2484" />
-      <area name="索  县" index="2485" />
+      <area name="索县" index="2485" />
       <area name="班戈县" index="2486" />
       <area name="巴青县" index="2487" />
       <area name="尼玛县" index="2488" />
@@ -3119,7 +3119,7 @@
       <area name="墨脱县" index="2499" />
       <area name="波密县" index="2500" />
       <area name="察隅县" index="2501" />
-      <area name="朗  县" index="2502" />
+      <area name="朗县" index="2502" />
     </city>
   </province>
   <province name="陕西省">
@@ -3135,13 +3135,13 @@
       <area name="长安县" index="2511" />
       <area name="蓝田县" index="2512" />
       <area name="周至县" index="2513" />
-      <area name="户  县" index="2514" />
+      <area name="户县" index="2514" />
       <area name="高陵县" index="2515" />
     </city>
     <city name="铜川市" index="286">
-      <area name="城  区" index="2516" />
-      <area name="郊  区" index="2517" />
-      <area name="耀  县" index="2518" />
+      <area name="城区" index="2516" />
+      <area name="郊区" index="2517" />
+      <area name="耀县" index="2518" />
       <area name="宜君县" index="2519" />
     </city>
     <city name="宝鸡市" index="287">
@@ -3151,11 +3151,11 @@
       <area name="凤翔县" index="2523" />
       <area name="岐山县" index="2524" />
       <area name="扶风县" index="2525" />
-      <area name="眉  县" index="2526" />
-      <area name="陇  县" index="2527" />
+      <area name="眉县" index="2526" />
+      <area name="陇县" index="2527" />
       <area name="千阳县" index="2528" />
       <area name="麟游县" index="2529" />
-      <area name="凤  县" index="2530" />
+      <area name="凤县" index="2530" />
       <area name="太白县" index="2531" />
     </city>
     <city name="咸阳市" index="288">
@@ -3164,10 +3164,10 @@
       <area name="渭城区" index="2534" />
       <area name="三原县" index="2535" />
       <area name="泾阳县" index="2536" />
-      <area name="乾  县" index="2537" />
+      <area name="乾县" index="2537" />
       <area name="礼泉县" index="2538" />
       <area name="永寿县" index="2539" />
-      <area name="彬  县" index="2540" />
+      <area name="彬县" index="2540" />
       <area name="长武县" index="2541" />
       <area name="旬邑县" index="2542" />
       <area name="淳化县" index="2543" />
@@ -3176,7 +3176,7 @@
     </city>
     <city name="渭南市" index="289">
       <area name="临渭区" index="2546" />
-      <area name="华  县" index="2547" />
+      <area name="华县" index="2547" />
       <area name="潼关县" index="2548" />
       <area name="大荔县" index="2549" />
       <area name="合阳县" index="2550" />
@@ -3196,7 +3196,7 @@
       <area name="志丹县" index="2562" />
       <area name="吴旗县" index="2563" />
       <area name="甘泉县" index="2564" />
-      <area name="富  县" index="2565" />
+      <area name="富县" index="2565" />
       <area name="洛川县" index="2566" />
       <area name="宜川县" index="2567" />
       <area name="黄龙县" index="2568" />
@@ -3206,9 +3206,9 @@
       <area name="汉台区" index="2570" />
       <area name="南郑县" index="2571" />
       <area name="城固县" index="2572" />
-      <area name="洋  县" index="2573" />
+      <area name="洋县" index="2573" />
       <area name="西乡县" index="2574" />
-      <area name="勉  县" index="2575" />
+      <area name="勉县" index="2575" />
       <area name="宁强县" index="2576" />
       <area name="略阳县" index="2577" />
       <area name="镇巴县" index="2578" />
@@ -3245,7 +3245,7 @@
       <area name="定边县" index="2603" />
       <area name="绥德县" index="2604" />
       <area name="米脂县" index="2605" />
-      <area name="佳  县" index="2606" />
+      <area name="佳县" index="2606" />
       <area name="吴堡县" index="2607" />
       <area name="清涧县" index="2608" />
       <area name="子洲县" index="2609" />
@@ -3314,19 +3314,19 @@
       <area name="陇西县" index="2652" />
       <area name="渭源县" index="2653" />
       <area name="临洮县" index="2654" />
-      <area name="漳  县" index="2655" />
-      <area name="岷  县" index="2656" />
+      <area name="漳县" index="2655" />
+      <area name="岷县" index="2656" />
     </city>
     <city name="陇南地区" index="304">
       <area name="武都县" index="2657" />
       <area name="宕昌县" index="2658" />
-      <area name="成  县" index="2659" />
-      <area name="康  县" index="2660" />
-      <area name="文  县" index="2661" />
+      <area name="成县" index="2659" />
+      <area name="康县" index="2660" />
+      <area name="文县" index="2661" />
       <area name="西和县" index="2662" />
-      <area name="礼  县" index="2663" />
+      <area name="礼县" index="2663" />
       <area name="两当县" index="2664" />
-      <area name="徽  县" index="2665" />
+      <area name="徽县" index="2665" />
     </city>
     <city name="平凉地区" index="305">
       <area name="平凉市" index="2666" />
@@ -3340,11 +3340,11 @@
     <city name="庆阳地区" index="306">
       <area name="西峰市" index="2673" />
       <area name="庆阳县" index="2674" />
-      <area name="环  县" index="2675" />
+      <area name="环县" index="2675" />
       <area name="华池县" index="2676" />
       <area name="合水县" index="2677" />
       <area name="正宁县" index="2678" />
-      <area name="宁  县" index="2679" />
+      <area name="宁县" index="2679" />
       <area name="镇原县" index="2680" />
     </city>
     <city name="临夏回族自治州" index="307">

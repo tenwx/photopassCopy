@@ -97,18 +97,24 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             case API1.ADDRESS_LIST_SUCCESS://获取所有地址列表
                 initAddressData(msg);
                 break;
+
             case API1.ADD_ADDRESS_LIST_SUCCESS://添加新地址
                 addAddressItem(newAddAddress,msg);
                 break;
-            case API1.MODIFY_ADDRESS_LIST_SUCCESS://修改地址
-                updateAddressItem(newAddAddress,curEditItemPosition);
-            case API1.MODIFY_ADDRESS_LIST_FAILED://修改地址失败
-                addressAdapter.setModifying(false);
-                break;
-            case API1.DELETE_ADDRESS_LIST_SUCCESS://删除地址
-                deleteAddressItem(curEditItemPosition);
+
+            case API1.ADD_ADDRESS_LIST_FAILED:
+                PWToast.getInstance(this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
+            case API1.MODIFY_ADDRESS_LIST_SUCCESS://修改地址
+                updateAddressItem(newAddAddress,curEditItemPosition);
+                addressAdapter.setModifying(false);
+                break;
+
+            case API1.MODIFY_ADDRESS_LIST_FAILED://修改地址失败
+                addressAdapter.setModifying(false);
+                PWToast.getInstance(this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
+                break;
         }
     }
 
@@ -329,14 +335,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         addressAdapter=new SendAddressAdapter(this,listData);
         addressAdapter.setAddressItemListener(new SendAddressAdapter.AddressItemListener() {
             @Override
-            public void deleteItem(int position) {
-                curEditItemPosition=position;
-                String[] ids=new String[1];
-                ids[0]=listData.get(position).getAddressId();
-                API1.deleteInvoiceAddress(invoiceHandler,ids);
-            }
-
-            @Override
             public void editItem(int position) {
                 curEditItemPosition=position;
                 Intent intent=new Intent(InvoiceActivity.this,NewAddressActivity.class);
@@ -372,10 +370,16 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                     }
                     break;
                 case MODI_ADDRESS://修改地址
-                    address=parseModifyAddressData(data,curEditItemPosition);
-                    if(null!=address){
-                        newAddAddress=address;
-                        API1.modifyInvoiceAddress(invoiceHandler,address);
+                    if (data.getBooleanExtra("isDeleteAdd", false)) {
+                        //删除操作
+                        deleteAddressItem(curEditItemPosition);
+
+                    } else {
+                        address=parseModifyAddressData(data);
+                        if(null!=address){
+                            newAddAddress=address;
+                            API1.modifyInvoiceAddress(invoiceHandler,address);
+                        }
                     }
                     break;
             }
@@ -429,7 +433,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         return address;
     }
 
-    private SendAddress parseModifyAddressData(Intent data,int position){
+    private SendAddress parseModifyAddressData(Intent data){
         SendAddress address = parseAddressData(data);
         if(address == null)
             return null;
