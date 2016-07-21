@@ -31,7 +31,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
      *  date        下载日期
      *  time        下载时间
      * */
-    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists photo_load(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text)";
+    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists photo_load(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text,isVideo integer,failedTime text,success text)";
 
     public PictureAirDBHelper(Context context) {
         this(context, Common.PHOTOPASS_INFO_NAME);

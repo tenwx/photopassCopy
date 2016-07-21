@@ -589,6 +589,7 @@
     <string name="photo_download_waiting">等待</string>
     <string name="photo_download_loading">下载中</string>
     <string name="photo_download_failed">失败重试</string>
+    <string name="photo_download_reconnect">重连中</string>
     <string name="photo_download_complete">下载完成</string>
     <string name="photo_download_clear">清空列表</string>
     <string name="photo_download_nothing">"空空如也"</string>

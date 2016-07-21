@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,11 +27,15 @@ import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
+import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DownloadFileStatus;
+import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.service.DownloadService;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.CustomProgressDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -50,12 +55,13 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     private Vector<DownloadFileStatus> downloadList;
     public static final int PHOTO_STATUS_UPDATE = 2222;
     public static final int PHOTO_REMOVE = 3333;
+    public static final int SERVICE_LOAD_SUCCESS = 4444;
+    public static final int DOWNLOAD_FINISH = 5555;
     private RelativeLayout rl_loading;
     private Button button;
-    private boolean mOnScroll = false;
-
+    private PictureAirDbManager pictureAirDbManager;
     private  PhotoDownloadingAdapter adapter;
-    private Handler serviceHandler;
+    private CustomProgressDialog dialog;
 
     private final Handler adapterHandler = new AdapterHandler(this);
 
@@ -77,6 +83,9 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void dealHandler(Message msg) {
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE:
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
@@ -90,7 +99,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             case PHOTO_REMOVE:
                 PictureAirLog.e("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
-                if (downloadList != null && downloadService != null) {
+                if (downloadList != null) {
                     downloadList = downloadService.getDownloadList();
 //                    PictureAirLog.e("dealHandler","downloadList.size: "+downloadList.size());
                     adapter.setList(downloadList);
@@ -98,14 +107,16 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 //                    PictureAirLog.e("DownLoadingFragment","dealHandler remove item success");
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
                     int oldCount = downloadService.getDatabasePhotoCount();
+                    PictureAirLog.e("dealHandler","oldCount: "+oldCount);
                     int cacheListSize = downloadService.getCacheListSize();
-//                    PictureAirLog.e("dealHandler","cacheListSize.size: "+cacheListSize);
+                    PictureAirLog.e("dealHandler","cacheListSize.size: "+cacheListSize);
                     int downLoadCount=0;
                     int downLoadListSize = downloadList.size();
+                    PictureAirLog.e("dealHandler","downloadList.size: "+downLoadListSize);
                     if (cacheListSize > downLoadListSize) {
                         downLoadCount = cacheListSize - downLoadListSize;
                     }
-//                    PictureAirLog.e("dealHandler","downLoadCount: "+downLoadCount);
+                    PictureAirLog.e("dealHandler","downLoadCount: "+downLoadCount);
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
                     Activity activity = getActivity();
                     LoadManageActivity manageActivity = null;
@@ -117,11 +128,52 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     downloadService.sendAddDownLoadMessage();
                 }
                 break;
+
+            case SERVICE_LOAD_SUCCESS:
+                if (adapter == null) {
+                    downloadList = downloadService.getDownloadList();
+                    if (downloadList != null && downloadList.size() >0) {
+                        lv_loading.setVisibility(View.VISIBLE);
+                        rl_loading.setVisibility(View.GONE);
+                        adapter = new PhotoDownloadingAdapter(MyApplication.getInstance(),downloadList);
+                        lv_loading.setAdapter(adapter);
+                    }else{
+                        lv_loading.setVisibility(View.GONE);
+                        rl_loading.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    adapter.setList(downloadList);
+                    adapter.notifyDataSetChanged();
+                }
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
+                int oldCount = downloadService.getDatabasePhotoCount();
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(oldCount,1));
+                activitySendMsg(null);
+                downloadService.startDownload();
+                break;
+            case DOWNLOAD_FINISH:
+                Vector<DownloadFileStatus> list = downloadService.getDownloadList();
+                if (list == null || list.size() == 0) {
+                    lv_loading.setVisibility(View.GONE);
+                    rl_loading.setVisibility(View.VISIBLE);
+                }
+                activitySendMsg(null);
+
+                break;
             default:
                 break;
         }
     }
-    Button btn;
+
+    private void activitySendMsg(DownloadFileStatus fileStatus) {
+        Activity activity = getActivity();
+        LoadManageActivity manageActivity = null;
+        if (activity instanceof LoadManageActivity) {
+            manageActivity = (LoadManageActivity)activity;
+            manageActivity.manageHandler.obtainMessage(LoadManageActivity.UPDATE_LOAD_SUCCESS_FRAGMENT,fileStatus).sendToTarget();
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,6 +181,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         lv_loading = (ListView) view.findViewById(R.id.lv_downloading);
         rl_loading = (RelativeLayout) view.findViewById(R.id.rl_downloading);
         button = (Button) view.findViewById(R.id.downloading_btn_toload);
+        dialog = CustomProgressDialog.create(getContext(), getString(R.string.is_loading), false, null);
         lv_loading.setVisibility(View.GONE);
         rl_loading.setVisibility(View.GONE);
         button.setOnClickListener(this);
@@ -138,6 +191,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
         bindService();
     }
 
@@ -148,17 +202,23 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             downloadService = photoBind.getService();
             if (downloadService != null) {
                 downloadList = downloadService.getDownloadList();
+                downloadService.setAdapterhandler(adapterHandler);
+                if (dialog != null && !dialog.isShowing()) {
+                    dialog.show();
+                }
                 if (downloadList != null && downloadList.size() >0) {
                     lv_loading.setVisibility(View.VISIBLE);
                     rl_loading.setVisibility(View.GONE);
                     adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
                     lv_loading.setAdapter(adapter);
-                    downloadService.setAdapterhandler(adapterHandler);
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
                 }else{
-                    rl_loading.setVisibility(View.VISIBLE);
-                    lv_loading.setVisibility(View.GONE);
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 0));
+                    Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
+                    ArrayList<PhotoInfo> photos = new ArrayList<>();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("photos", photos);
+                    intent.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent);
                 }
 
             }
@@ -202,6 +262,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onDestroy() {
         super.onDestroy();
+//        unBind();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         unBind();
     }
 

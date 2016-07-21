@@ -589,6 +589,7 @@
     <string name="photo_download_waiting">Pending</string>
     <string name="photo_download_loading">In progress</string>
     <string name="photo_download_failed">Failed</string>
+    <string name="photo_download_reconnect">Reconnecting</string>
     <string name="photo_download_complete">Completed</string>
     <string name="photo_download_clear">Clear List</string>
     <string name="photo_download_nothing">"Nothing"</string>

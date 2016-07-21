@@ -12,18 +12,22 @@ public class PhotoDownLoadInfo {
     private String loadTime;
     private String url;
     private String previewUrl;
+    private int isVideo;
+    private String failedTime;
 
     public PhotoDownLoadInfo(){
 
     }
 
-    public PhotoDownLoadInfo(String photoId, String size, String shootTime, String loadTime, String url, String previewUrl) {
+    public PhotoDownLoadInfo(String photoId, String size, String shootTime, String loadTime, String url, String previewUrl,int isVideo,String failedTime) {
         this.photoId = photoId;
         this.size = size;
         this.shootTime = shootTime;
         this.loadTime = loadTime;
         this.url = url;
         this.previewUrl = previewUrl;
+        this.isVideo = isVideo;
+        this.failedTime = failedTime;
     }
 
     public String getPhotoId() {
@@ -72,5 +76,21 @@ public class PhotoDownLoadInfo {
 
     public void setPreviewUrl(String previewUrl) {
         this.previewUrl = previewUrl;
+    }
+
+    public int getIsVideo() {
+        return isVideo;
+    }
+
+    public void setIsVideo(int isVideo) {
+        this.isVideo = isVideo;
+    }
+
+    public String getFailedTime() {
+        return failedTime;
+    }
+
+    public void setFailedTime(String failedTime) {
+        this.failedTime = failedTime;
     }
 }

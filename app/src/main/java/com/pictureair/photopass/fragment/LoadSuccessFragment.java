@@ -2,13 +2,16 @@ package com.pictureair.photopass.fragment;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -26,11 +29,14 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
+import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
 import com.pictureair.photopass.adapter.PhotoLoadSuccessAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
+import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -59,12 +65,13 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private final Handler photoLoadSuccessHandler= new PhotoLoadSuccessHandler(this);
     public static final int LOAD_FROM_DATABASE = 1111;
     public static final int DELETE_SUCCESS = 2233;
+    public static final int GET_PHOTO_BACKGROUND = 3344;
     List<PhotoDownLoadInfo> photos;
     private RelativeLayout rl_load_success;
     private LinearLayout ll_load_success;
     private Button button_toload;
     private Button btn_clear;
-
+    PhotoLoadSuccessAdapter adapter;
 
     private static class PhotoLoadSuccessHandler extends Handler{
         private final WeakReference<LoadSuccessFragment> mActivity;
@@ -91,7 +98,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     if (photos != null && photos.size() >0) {
                         ll_load_success.setVisibility(View.VISIBLE);
                         rl_load_success.setVisibility(View.GONE);
-                        PhotoLoadSuccessAdapter adapter = new PhotoLoadSuccessAdapter(getContext(), photos);
+                        adapter = new PhotoLoadSuccessAdapter(MyApplication.getInstance(), photos);
                         lv_success.setAdapter(adapter);
                         EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1));
                     }else{
@@ -113,10 +120,32 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     dialog.dismiss();
                 }
                 break;
+            case GET_PHOTO_BACKGROUND:
+                if (msg.obj != null) {
+                    photos = (List<PhotoDownLoadInfo>)(msg.obj);
+                    if (adapter != null){
+                        adapter.setPhotos(photos);
+                        adapter.notifyDataSetChanged();
+                    }else{
+                        if (photos != null || photos.size()>0) {
+                            ll_load_success.setVisibility(View.VISIBLE);
+                            rl_load_success.setVisibility(View.GONE);
+                            adapter = new PhotoLoadSuccessAdapter(MyApplication.getInstance(), photos);
+                            lv_success.setAdapter(adapter);
+                        }else{
+                            rl_load_success.setVisibility(View.VISIBLE);
+                            ll_load_success.setVisibility(View.GONE);
+                        }
+
+                    }
+                }
+                isLoading = false;
+                break;
             default:
                 break;
         }
     }
+
 
     @Nullable
     @Override
@@ -169,7 +198,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        if (!isLoading) {
+        if (!isLoading && (photos == null || photos.size() == 0)) {
             isLoading = true;
             if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
@@ -177,11 +206,12 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             new Thread(){
                 @Override
                 public void run() {
-                    List<PhotoDownLoadInfo> photos = pictureAirDbManager.getLoadSuccessPhotos(userId);
+                    List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
                     photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
                 }
             }.start();
         }
+
     }
 
     @Override
@@ -219,7 +249,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         new Thread(){
             @Override
             public void run() {
-                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getLoadSuccessPhotos(userId);
+                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
                 photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
             }
         }.start();
@@ -230,10 +260,14 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         new Thread(){
             @Override
             public void run() {
-                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getLoadSuccessPhotos(userId);
-                photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
+                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
+                photoLoadSuccessHandler.obtainMessage(GET_PHOTO_BACKGROUND,photos).sendToTarget();
             }
         }.start();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
