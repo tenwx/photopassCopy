@@ -592,10 +592,12 @@
     <string name="photo_download_failed">Failed</string>
     <string name="photo_download_reconnect">Reconnecting</string>
     <string name="photo_download_complete">Completed</string>
+    <string name="photo_not_exists">Not Exist</string>
     <string name="photo_download_clear">Clear List</string>
     <string name="photo_download_reconnect_all">Reconnect</string>
     <string name="photo_download_clear_failed">Clear Failed List</string>
     <string name="photo_download_clear_tips">Download completed before you can clear</string>
+    <string name="photo_download_not_exists">File not exists</string>
     <string name="photo_download_nothing">"Nothing"</string>
     <string name="photo_download_tips">There are no photos downloaded</string>
     <string name="photo_download_to_load">DownLoad Now</string>

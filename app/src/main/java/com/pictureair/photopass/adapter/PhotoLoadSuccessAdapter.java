@@ -1,6 +1,7 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.media.Image;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
@@ -60,6 +61,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             holder.tv_shootTime = (TextView) convertView.findViewById(R.id.load_success_shoottime);
             holder.tv_size = (TextView) convertView.findViewById(R.id.load_success_size);
             holder.tv_loadTime = (TextView) convertView.findViewById(R.id.load_success_time);
+            holder.tv_status = (TextView) convertView.findViewById(R.id.load_success_status);
             convertView.setTag(holder);
         }else{
             holder = (Holder) convertView.getTag();
@@ -75,6 +77,13 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             holder.tv_shootTime.setText(info.getShootTime());
             holder.tv_size.setText(info.getSize()+"MB");
             holder.tv_loadTime.setText(info.getLoadTime());
+            if (info.isExists()){
+                holder.tv_status.setText(R.string.photo_download_complete);
+                holder.tv_status.setTextColor(Color.parseColor("#8E8E8E"));
+            }else{
+                holder.tv_status.setText(R.string.photo_not_exists);
+                holder.tv_status.setTextColor(Color.RED);
+            }
         }
         return convertView;
     }
@@ -84,6 +93,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
         TextView tv_shootTime;
         TextView tv_size;
         TextView tv_loadTime;
+        TextView tv_status;
     }
 
     public void setPhotos(List<PhotoDownLoadInfo> list){

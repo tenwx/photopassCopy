@@ -75,29 +75,18 @@
             android:src="@drawable/download_manager_download"
             android:layout_centerHorizontal="true"
             />
-        <TextView
-            android:id="@+id/load_success_show_text1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/load_success_show_img"
-            android:textSize="20sp"
-            android:text="@string/photo_download_nothing"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:textColor="@color/pp_dark_blue"/>
 
         <TextView
             android:id="@+id/load_success_show_text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/load_success_show_text1"
+            android:layout_below="@id/load_success_show_img"
             android:textSize="@dimen/text_size_14"
             android:textColor="@color/gray2"
             android:text="@string/photo_download_tips"
             android:gravity="center"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="80dp"
             />
         <Button
             android:id="@+id/load_success_btn_toload"

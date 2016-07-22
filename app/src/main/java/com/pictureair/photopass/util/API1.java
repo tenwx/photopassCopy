@@ -2156,8 +2156,7 @@ public class API1 {
             @Override
             public void onSuccess(byte[] binaryData) {
                 super.onSuccess(binaryData);
-                PictureAirLog.e("onSuccess", "photoid: "+fileStatus.getPhotoId());
-//                PictureAirLog.e(TAG, "调用下载照片API成功");
+                PictureAirLog.e(TAG, "调用下载照片API成功");
                 Message msg =  handler.obtainMessage();
                 msg.what = DOWNLOAD_PHOTO_SUCCESS;
                 Bundle bundle = new Bundle();
@@ -2171,9 +2170,7 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-//                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
-                PictureAirLog.e("onFailure", "photoid: "+fileStatus.getPhotoId());
-//              handler.obtainMessage(DOWNLOAD_PHOTO_FAILED, status, 0).sendToTarget();
+                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
                 Message msg =  handler.obtainMessage();
                 msg.what = DOWNLOAD_PHOTO_FAILED;
                 Bundle bundle = new Bundle();
@@ -2207,7 +2204,6 @@ public class API1 {
                 long currentTime = System.currentTimeMillis();
                 float usedTime = (currentTime-lastTime)/1000f;
                 float keepTime = (currentTime-startTime)/1000f;
-//                PictureAirLog.e(TAG, "onProgress usedTime "+usedTime);
                 if (usedTime > 0.2) {
                     lastTime = currentTime;
                     float downSpeed = (bytesWritten / 1000f) / keepTime;
@@ -2216,10 +2212,8 @@ public class API1 {
                         ds = 0+ds;
                     }
                     fileStatus.setLoadSpeed(ds);
-//                    PictureAirLog.e(TAG, "onProgress name "+ fileStatus.getUrl().substring(fileStatus.getUrl().length()-10,fileStatus.getUrl().length())+" "+fileStatus.getPosition());
                     if (adapterHandler != null) {
                         adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
-//                      PictureAirLog.e(TAG, "onProgress sendToTarget");
                     }
                 }
             }

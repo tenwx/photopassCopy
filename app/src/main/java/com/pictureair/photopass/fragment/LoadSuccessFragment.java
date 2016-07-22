@@ -42,6 +42,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -74,6 +75,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private Button btn_clear;
     PhotoLoadSuccessAdapter adapter;
     private int deleteCount;
+    private PWToast myToast;
 
     private static class PhotoLoadSuccessHandler extends Handler{
         private final WeakReference<LoadSuccessFragment> mActivity;
@@ -131,7 +133,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                         rl_load_success.setVisibility(View.GONE);
                         adapter.setPhotos(photos);
                         adapter.notifyDataSetChanged();
-                        adapter.notifyDataSetChanged();
                     }else{
                         if (photos != null && photos.size()>0) {
                             ll_load_success.setVisibility(View.VISIBLE);
@@ -168,6 +169,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         button_toload.setOnClickListener(this);
         btn_clear.setOnClickListener(this);
         dialog = CustomProgressDialog.create(getContext(), getString(R.string.is_loading), false, null);
+        myToast = new PWToast(MyApplication.getInstance());
         lv_success.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -184,6 +186,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     intent.setAction(android.content.Intent.ACTION_VIEW);
                     intent.setDataAndType(Uri.fromFile(photo), "image/*");
                     startActivity(intent);
+                }else{
+                    myToast.setTextAndShow(R.string.photo_download_not_exists, Common.TOAST_SHORT_TIME);
                 }
             }
         });
@@ -204,7 +208,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        if (!isLoading && (photos == null || photos.size() == 0)) {
+        if (!isLoading) {
             isLoading = true;
             if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
@@ -213,6 +217,20 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 @Override
                 public void run() {
                     List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
+                    if (photos != null && photos.size() >0) {
+                        for (int i = 0; i < photos.size();i++) {
+                            PhotoDownLoadInfo downLoadInfo = photos.get(i);
+                            String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
+                            PictureAirLog.out("filename=" + fileName);
+                            String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
+                            File photo = new File(loadUrl);
+                            if (photo.exists()) {
+                                downLoadInfo.setExists(true);
+                            }else{
+                                downLoadInfo.setExists(false);
+                            }
+                        }
+                    }
                     photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
                 }
             }.start();
@@ -247,26 +265,26 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    public void updateList(){
-        isLoading = true;
-        if (dialog != null && !dialog.isShowing()) {
-            dialog.show();
-        }
-        new Thread(){
-            @Override
-            public void run() {
-                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
-                photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
-            }
-        }.start();
-    }
-
     public void getDataBackground(){
         isLoading = true;
         new Thread(){
             @Override
             public void run() {
                 List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
+                if (photos != null && photos.size() >0) {
+                    for (int i = 0; i < photos.size();i++) {
+                        PhotoDownLoadInfo downLoadInfo = photos.get(i);
+                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
+                        PictureAirLog.out("filename=" + fileName);
+                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
+                        File photo = new File(loadUrl);
+                        if (photo.exists()) {
+                            downLoadInfo.setExists(true);
+                        }else{
+                            downLoadInfo.setExists(false);
+                        }
+                    }
+                }
                 photoLoadSuccessHandler.obtainMessage(GET_PHOTO_BACKGROUND,photos).sendToTarget();
             }
         }.start();
