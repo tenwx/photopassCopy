@@ -14,7 +14,6 @@ public class PhotoDownLoadInfo {
     private String previewUrl;
     private int isVideo;
     private String failedTime;
-    private boolean exists;
 
     public PhotoDownLoadInfo(){
 
@@ -93,13 +92,5 @@ public class PhotoDownLoadInfo {
 
     public void setFailedTime(String failedTime) {
         this.failedTime = failedTime;
-    }
-
-    public boolean isExists() {
-        return exists;
-    }
-
-    public void setExists(boolean exists) {
-        this.exists = exists;
     }
 }

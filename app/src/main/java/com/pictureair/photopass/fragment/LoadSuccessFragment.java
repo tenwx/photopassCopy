@@ -58,7 +58,6 @@ import de.greenrobot.event.Subscribe;
 public class LoadSuccessFragment extends BaseFragment implements View.OnClickListener{
 
     private ListView lv_success;
-    PhotoLoadSuccessAdapter photoLoadSuccessAdapter;
     private CustomProgressDialog dialog;
     private boolean isLoading;
     private PictureAirDbManager pictureAirDbManager;
@@ -73,7 +72,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private LinearLayout ll_load_success;
     private Button button_toload;
     private Button btn_clear;
-    PhotoLoadSuccessAdapter adapter;
+    private PhotoLoadSuccessAdapter adapter;
     private int deleteCount;
     private PWToast myToast;
 
@@ -181,14 +180,10 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 PictureAirLog.out("filename=" + fileName);
                 String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
                 File photo = new File(loadUrl);
-                if (photo.exists()) {
-                    Intent intent = new Intent();
-                    intent.setAction(android.content.Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(photo), "image/*");
-                    startActivity(intent);
-                }else{
-                    myToast.setTextAndShow(R.string.photo_download_not_exists, Common.TOAST_SHORT_TIME);
-                }
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(photo), "image/*");
+                startActivity(intent);
             }
         });
 
@@ -208,7 +203,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        if (!isLoading) {
+        if (!isLoading && photos == null) {
             isLoading = true;
             if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
@@ -217,20 +212,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 @Override
                 public void run() {
                     List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
-                    if (photos != null && photos.size() >0) {
-                        for (int i = 0; i < photos.size();i++) {
-                            PhotoDownLoadInfo downLoadInfo = photos.get(i);
-                            String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
-                            PictureAirLog.out("filename=" + fileName);
-                            String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
-                            File photo = new File(loadUrl);
-                            if (photo.exists()) {
-                                downLoadInfo.setExists(true);
-                            }else{
-                                downLoadInfo.setExists(false);
-                            }
-                        }
-                    }
                     photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
                 }
             }.start();
@@ -271,20 +252,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             @Override
             public void run() {
                 List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
-                if (photos != null && photos.size() >0) {
-                    for (int i = 0; i < photos.size();i++) {
-                        PhotoDownLoadInfo downLoadInfo = photos.get(i);
-                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
-                        PictureAirLog.out("filename=" + fileName);
-                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
-                        File photo = new File(loadUrl);
-                        if (photo.exists()) {
-                            downLoadInfo.setExists(true);
-                        }else{
-                            downLoadInfo.setExists(false);
-                        }
-                    }
-                }
                 photoLoadSuccessHandler.obtainMessage(GET_PHOTO_BACKGROUND,photos).sendToTarget();
             }
         }.start();

@@ -77,13 +77,6 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             holder.tv_shootTime.setText(info.getShootTime());
             holder.tv_size.setText(info.getSize()+"MB");
             holder.tv_loadTime.setText(info.getLoadTime());
-            if (info.isExists()){
-                holder.tv_status.setText(R.string.photo_download_complete);
-                holder.tv_status.setTextColor(Color.parseColor("#8E8E8E"));
-            }else{
-                holder.tv_status.setText(R.string.photo_not_exists);
-                holder.tv_status.setTextColor(Color.RED);
-            }
         }
         return convertView;
     }

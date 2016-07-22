@@ -3,6 +3,7 @@ package com.pictureair.photopass.service;
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -97,6 +98,9 @@ public class DownloadService extends Service {
     private ExecutorService fixedThreadPool;
     private CountDownLatch countDownLatch;
     private boolean mSartNotificate = false;
+    private boolean hasPhotos = false;
+    private boolean hasPhotos2 = false;
+    String lastUrl = new String();
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -135,6 +139,7 @@ public class DownloadService extends Service {
                 //将新的数据放入到下载队列的末尾
                 synchronized (taskList) {
                     if (reconnect > -1) {
+                        mSartNotificate = false;
                         if (photos.size() >0 && downloadList.size() >0) {
                             int ifOne = b.getInt("one",-1);
                             for (int i=0;i<photos.size();i++) {
@@ -152,6 +157,8 @@ public class DownloadService extends Service {
                         }
                     } else {
                         if (photos.size() >0) {
+                            hasPhotos = true;
+                            hasPhotos2 = true;
                             countDownLatch = new CountDownLatch(photos.size());
                         }
                         for (int i = 0; i < photos.size(); i++) {
@@ -167,6 +174,7 @@ public class DownloadService extends Service {
                                 ++toLoadCount;
                                 countDownLatch.countDown();
                             }else{
+                                lastUrl = file.toString();
                                 ++downed_num;
                                 PictureAirLog.out("onStartCommand downed_num："+downed_num);
                                 PictureAirLog.e("onStartCommand","file exists");
@@ -220,6 +228,11 @@ public class DownloadService extends Service {
     private void prepareDownload() {
         // TODO Auto-generated method stub
         PictureAirLog.out("DownloadService ----------> preparedownload");
+        if (hasPhotos) {
+            hasPhotos = false;
+            mSartNotificate = true;
+            startNotification();
+        }
         fixedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -297,24 +310,33 @@ public class DownloadService extends Service {
                     }else{
                         PictureAirLog.out("finish download-------------->");
                         mFinish = true;
-                        stopSelf();//下载服务停止
-                        downed_num = 0;
-                        failed_num = 0;
-                        isDownloading = false;
+                        if (hasPhotos2){
+                            hasPhotos2 = false;
+                            handler.sendEmptyMessage(FINISH_DOWNLOAD);
+                        }else {
+                            stopSelf();//下载服务停止
+                            downed_num = 0;
+                            failed_num = 0;
+                            isDownloading = false;
+                        }
                     }
 
                     break;
                 case FINISH_DOWNLOAD://下载结束
-                    failed_num = downloadList.size();
                     //如果下载数目一致，提示用户下载完毕，并且让service停止掉
                     PictureAirLog.out("下载完毕,共下载了" + downed_num + "张照片，失败了" + failed_num + "张");
                     String notificationDetail = String.format(mContext.getString(R.string.download_detail1), downed_num);
                     if (failed_num >0) {
                         notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
                     }
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(lastUrl)), "image/*");
+                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+
                     Notification notification = new NotificationCompat.Builder(mContext).
                             setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
-                            .setContentText(notificationDetail).
+                            .setContentText(notificationDetail).setContentIntent(pendingIntent).
                                     setWhen(System.currentTimeMillis()).setTicker(notificationDetail).build();
                     notification.flags = Notification.FLAG_AUTO_CANCEL;//通知栏可以自动删除
                     notification.defaults = Notification.DEFAULT_SOUND;//默认下载完成声音
@@ -341,6 +363,7 @@ public class DownloadService extends Service {
                 case API1.DOWNLOAD_PHOTO_FAILED://下载失败
                     PictureAirLog.out("downloadService----------->DOWNLOAD_PHOTO_FAILED");
                     synchronized (taskList) {
+                        failed_num++;
                         Bundle failBundle = msg.getData();
                         final DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
                         taskList.remove(failStatus.getUrl());
@@ -380,7 +403,6 @@ public class DownloadService extends Service {
                                         break;
                                     }
                                 }
-
                                 if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){
                                     handler.sendEmptyMessage(FINISH_DOWNLOAD);
                                     mFinish = true;
@@ -407,6 +429,7 @@ public class DownloadService extends Service {
                                 --toLoadCount;
                             }
                         }
+                        failed_num = 0;
                         fixedThreadPool.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -585,6 +608,7 @@ public class DownloadService extends Service {
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
                         PictureAirLog.out("downloadService-----------> scan");
+                        lastUrl = file;
                         scan_num++;
                         taskList.remove(fileStatus.getUrl());
                         fileList.remove(fileStatus.getUrl());

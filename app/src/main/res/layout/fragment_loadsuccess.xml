@@ -46,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/pp_height_2"
             android:background="@drawable/dash_line"
+            android:layerType="software"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/gray_light3"
-            android:dividerHeight="@dimen/pp_height_2"/>
+            android:dividerHeight="@dimen/pp_height_1"/>
         </LinearLayout>
     </LinearLayout>
     <RelativeLayout

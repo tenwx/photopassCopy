@@ -592,13 +592,11 @@
     <string name="photo_download_failed">失败重试</string>
     <string name="photo_download_reconnect">重连中</string>
     <string name="photo_download_complete">下载完成</string>
-    <string name="photo_not_exists">图片不存在</string>
     <string name="photo_download_clear">清空列表</string>
     <string name="photo_download_reconnect_all">一键重连</string>
     <string name="photo_download_clear_failed">清空失败列表</string>
     <string name="photo_download_clear_tips">下载完成后才可以清除</string>
-    <string name="photo_download_not_exists">本地文件不存在</string>
-    <string name="photo_download_nothing">"空空如也"</string>
+    <string name="photo_download_not_exists">源文件已删除</string>
     <string name="photo_download_tips">一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！</string>
     <string name="photo_download_to_load">去下载</string>
     <string name="photo_download_tips2">已下载完成的照片将保存至您的手机本地相册中，点击以下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦</string>
