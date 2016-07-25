@@ -375,14 +375,12 @@ public class HttpUtil1 {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-                PictureAirLog.e("asyncDownloadBinaryData", "onSuccess");
                 httpCallback.onSuccess(binaryData);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
-//                PictureAirLog.e(TAG, error.toString());
-                PictureAirLog.e("asyncDownloadBinaryData", "failed");
+                PictureAirLog.e(TAG, error.toString());
                 httpCallback.onFailure(statusCode);
             }
 

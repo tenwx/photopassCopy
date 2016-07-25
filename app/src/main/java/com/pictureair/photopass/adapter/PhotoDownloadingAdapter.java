@@ -28,6 +28,7 @@ import com.pictureair.photopass.widget.CircleProgressImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by pengwu on 16/7/11.
@@ -35,11 +36,11 @@ import java.util.Vector;
 public class PhotoDownloadingAdapter extends BaseAdapter {
 
     private Context mContext;
-    private Vector<DownloadFileStatus> photos;
+    private CopyOnWriteArrayList<DownloadFileStatus> photos;
     private ListView listView;
     private OnItemClickListener childClickListener;
 
-    public PhotoDownloadingAdapter(Context context,Vector<DownloadFileStatus> photos){
+    public PhotoDownloadingAdapter(Context context,CopyOnWriteArrayList<DownloadFileStatus> photos){
         this.mContext = context;
         this.photos = photos;
     }
@@ -147,7 +148,7 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         public CircleProgressImage img_status;
     }
 
-    public void setList(Vector<DownloadFileStatus> photos){
+    public void setList(CopyOnWriteArrayList<DownloadFileStatus> photos){
         this.photos = photos;
     }
 

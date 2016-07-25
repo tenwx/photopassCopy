@@ -1575,7 +1575,7 @@ public class PictureAirDbManager {
             if (cursor.moveToFirst()) {//判断是否photo数据
                 int id = cursor.getInt(cursor.getColumnIndex("_id"));
                 database.execSQL("update " + Common.PHOTOS_LOAD + " set size = ?,downloadTime = ?,failedTime = ?,success=? where _id = ?", new Object[]{fileStatus.getTotalSize(),loadTime,"","true",id});
-                PictureAirLog.e("updateFailedPhotos","success");
+//                PictureAirLog.e("updateFailedPhotos","success");
             }
             database.setTransactionSuccessful();
         }catch (Exception e){
@@ -1599,9 +1599,9 @@ public class PictureAirDbManager {
             if (cursor.moveToFirst()) {//判断是否photo数据
                 int id = cursor.getInt(cursor.getColumnIndex("_id"));
                 database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ? where _id = ?", new Object[]{fileStatus.getFailedTime(),id});
-                PictureAirLog.e("updateOrInsertFailedPhotos","update");
+//                PictureAirLog.e("updateOrInsertFailedPhotos","update");
             }else{
-                PictureAirLog.e("updateOrInsertFailedPhotos","insert");
+//                PictureAirLog.e("updateOrInsertFailedPhotos","insert");
                 ContentValues values = new ContentValues();
                 values.put("userId", userId);
                 values.put("photoId", fileStatus.getPhotoId());
@@ -1656,7 +1656,7 @@ public class PictureAirDbManager {
         database.beginTransaction();
         int res = 0;
         try {
-            res = database.delete(Common.PHOTOS_LOAD,"userId = ?",new String[]{userId});
+            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success=?",new String[]{userId,"true"});
             PictureAirLog.e("deleteDownloadPhoto","count:" + res);
             database.setTransactionSuccessful();
         }catch (Exception e){
