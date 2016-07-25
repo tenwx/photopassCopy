@@ -996,6 +996,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         localPhotoInfo.onLine = 0;
                         localPhotoInfo.isVideo = 0;
                         localPhotoInfo.isHasPreset = 0;
+                        localPhotoInfo.isEncrypted = 0;
                         localPhotoList.add(localPhotoInfo);
                     }
                 }

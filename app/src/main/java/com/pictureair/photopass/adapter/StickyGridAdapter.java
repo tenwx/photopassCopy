@@ -100,7 +100,7 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
 
         if (mViewHolder.mImageView.getTag() == null || !mViewHolder.mImageView.getTag().equals(photoUrl)) {//加载图片
             ImageAware imageAware = new ImageViewAware(mViewHolder.mImageView, false);
-            imageLoader.displayImage(photoUrl, imageAware);
+            imageLoader.displayImage(photoUrl, AppUtil.isEncrypted(list.get(position).isEncrypted), imageAware);
             mViewHolder.mImageView.setTag(photoUrl);
         }
 

@@ -297,6 +297,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                         CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
                         cartPhotosInfo.setPhotoUrl(photoList.get(i).photoPathOrURL);
                         cartPhotosInfo.setPhotoId(photoList.get(i).photoId);
+                        cartPhotosInfo.setIsEncrypted(photoList.get(i).isEncrypted);
                         photoListAfterUpload.add(cartPhotosInfo);
                     }
 
@@ -393,8 +394,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         }
         photoList = new ArrayList<PhotoInfo>();
         photoListAfterUpload = new ArrayList<>();
-        PhotoInfo itemInfo = new PhotoInfo();
-        itemInfo = getIntent().getParcelableExtra("selectPhoto");
+        PhotoInfo itemInfo = getIntent().getParcelableExtra("selectPhoto");
 //		if (Common.ALBUM_PHOTOPASS.equals(getIntent().getStringExtra("albums"))) {//网络图片
 //			photourl = getIntent().getStringExtra("thumbnailURL");//获取照片路径
 //			idString = getIntent().getStringExtra("photoId");

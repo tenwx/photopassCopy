@@ -530,7 +530,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
 
         switch (v.getId()) {
             case R.id.ll_share:
-                sharePop.setshareinfo(null, videoInfo.shareURL, "online", videoInfo.photoId, SharePop.SHARE_VIDEO_TYOE, videoPlayerHandler);
+                sharePop.setshareinfo(null, videoInfo.shareURL, videoInfo.shareURL, "online", videoInfo.photoId, SharePop.SHARE_VIDEO_TYOE, 0, videoPlayerHandler);
                 sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.ll_download:

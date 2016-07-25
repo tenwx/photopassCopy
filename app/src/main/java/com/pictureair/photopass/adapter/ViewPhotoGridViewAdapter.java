@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -166,20 +167,24 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
             holderView.imageview_maskImageView.setVisibility(View.VISIBLE);
             holderView.imageview_select.setVisibility(View.INVISIBLE);
         }
+        String photoUrl = null;
         if (selectPhotoItemInfo.onLine == 0) {
             PictureAirLog.out("开始加载图片");
             PictureAirLog.out("加载原图---------->" + selectPhotoItemInfo.photoPathOrURL);
-            UniversalImageLoadTool.loadImage("file://" + selectPhotoItemInfo.photoPathOrURL, holderView.imageView_photo);
+            photoUrl = "file://" + selectPhotoItemInfo.photoPathOrURL;
             PictureAirLog.out("-------->原图加载完毕");
         } else if (selectPhotoItemInfo.onLine == 1) {
             if (selectPhotoItemInfo.isPayed == 1) {//如果已经购买，显示512的缩略图
                 PictureAirLog.out("开始加载512图片" + selectPhotoItemInfo.photoThumbnail_512);
-                UniversalImageLoadTool.loadImage(Common.PHOTO_URL + selectPhotoItemInfo.photoThumbnail_512, holderView.imageView_photo);
+                photoUrl = Common.PHOTO_URL + selectPhotoItemInfo.photoThumbnail_512;
+
             } else {//反之显示128的缩略图
                 PictureAirLog.out("开始加载128图片" + selectPhotoItemInfo.photoThumbnail);
-                UniversalImageLoadTool.loadImage(selectPhotoItemInfo.photoThumbnail, holderView.imageView_photo);
+                photoUrl = selectPhotoItemInfo.photoThumbnail;
+
             }
         }
+        UniversalImageLoadTool.loadImage(photoUrl, AppUtil.isEncrypted(selectPhotoItemInfo.isEncrypted), holderView.imageView_photo);
 
         if (selectPhotoItemInfo.showMask == 0) {//隐藏遮罩
             holderView.imageview_maskImageView.setVisibility(View.GONE);

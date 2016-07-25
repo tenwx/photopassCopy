@@ -19,6 +19,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
+import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
@@ -112,6 +113,9 @@ public class API1 {
 
     public static final int DELETE_PHOTOS_SUCCESS = 2101;
     public static final int DELETE_PHOTOS_FAILED = 2100;
+
+    public static final int GET_NEW_PHOTOS_INFO_FAILED = 2110;
+    public static final int GET_NEW_PHOTOS_INFO_SUCCESS = 2111;
 
     /**
      * 发现
@@ -578,6 +582,43 @@ public class API1 {
                 } else {//获取当前照片
                     handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
                 }
+            }
+        });
+    }
+
+    /**
+     * 获取照片的最新数据
+     *
+     * @param tokenId
+     * @param handler
+     */
+    public static void getNewPhotosInfo(String tokenId, String photoId, final int id, final Handler handler) {
+        RequestParams params = new RequestParams();
+        JSONArray ids = new JSONArray();
+        ids.add(photoId);
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.EPPP_IDS, ids.toJSONString());
+
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("jsonobject---->" + jsonObject.toString());
+                JSONArray photos = jsonObject.getJSONArray("photos");
+                if (photos.size() > 0) {
+                    PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                    PictureAirLog.out("jsonobject---->" + photoInfo.photoThumbnail_1024);
+                    handler.obtainMessage(GET_NEW_PHOTOS_INFO_SUCCESS, id, 0, photoInfo.photoThumbnail_1024).sendToTarget();
+
+                } else {
+                    handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, 401, 0).sendToTarget();
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, status, 0).sendToTarget();
             }
         });
     }

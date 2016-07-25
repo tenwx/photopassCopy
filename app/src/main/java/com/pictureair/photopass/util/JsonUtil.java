@@ -172,6 +172,16 @@ public class JsonUtil {
             info.isHasPreset = 0;
         }
 
+        //是否加密
+        if (object.containsKey("enImage")) {
+            PictureAirLog.out("has enimage info----->" + object.getBooleanValue("enImage"));
+            info.isEncrypted = (object.getBooleanValue("enImage")) ? 1 : 0;
+
+        } else {
+            info.isEncrypted = 0;
+
+        }
+
         info.isChecked = 0;
         info.isSelected = 0;
         info.isLove = 0;
@@ -227,6 +237,7 @@ public class JsonUtil {
         info.isChecked = 0;
         info.isSelected = 0;
         info.isLove = 0;
+        info.isEncrypted = 0;
         info.isUploaded = 0;
         info.showMask = 0;
         info.lastModify = 0l;

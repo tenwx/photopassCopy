@@ -463,6 +463,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     if (i < list.size()) {
                         cartPhotosInfo.setPhotoUrl(list.get(i).photoPathOrURL);
                         cartPhotosInfo.setPhotoId(list.get(i).photoId);
+                        cartPhotosInfo.setIsEncrypted(list.get(i).isEncrypted);
                     }
                     listAfterUploaded.add(cartPhotosInfo);
                 } else {
@@ -470,6 +471,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         cartPhotosInfo = new CartPhotosInfo();
                         cartPhotosInfo.setPhotoUrl(list.get(j).photoPathOrURL);
                         cartPhotosInfo.setPhotoId(list.get(j).photoId);
+                        cartPhotosInfo.setIsEncrypted(list.get(i).isEncrypted);
                         listAfterUploaded.add(cartPhotosInfo);
                     }
                 }

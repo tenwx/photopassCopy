@@ -111,7 +111,7 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		}
 		if (viewHolder.imageView.getTag() == null || !viewHolder.imageView.getTag().equals(photoUrl)) {//加载图片
 			ImageAware imageAware = new ImageViewAware(viewHolder.imageView, false);
-			imageLoader.displayImage(photoUrl, imageAware);
+			imageLoader.displayImage(photoUrl, AppUtil.isEncrypted(photoList.get(position).isEncrypted), imageAware);
 			viewHolder.imageView.setTag(photoUrl);
 		}
 		if (editMode) {

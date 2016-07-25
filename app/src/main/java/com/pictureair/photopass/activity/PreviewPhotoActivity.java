@@ -985,13 +985,17 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 @Override
                 public void onSuccess(byte[] binaryData) {
                     super.onSuccess(binaryData);
+                    byte[] data = AppUtil.getRealByte(binaryData);
+                    if (data == null) {
+                        data = binaryData;
+                    }
                     try {
-                        AESKeyHelper.encrypt(binaryData, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
+                        AESKeyHelper.encrypt(data, dirFile.toString(), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, Common.OFFSET));
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    oriClearBmp = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
+                    oriClearBmp = BitmapFactory.decodeByteArray(data, 0, data.length);
                     previewPhotoHandler.sendEmptyMessage(LOAD_FROM_NETWORK);
                     loadPhotoSuccess = true;
                 }
@@ -1273,14 +1277,16 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
-                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
+                        sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);
                     } else {//编辑前
                         //判断图片是本地还是网路图片
                         if (photoInfo.onLine == 1) {//网络图片
                             sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
-                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
+                                    photolist.get(mViewPager.getCurrentItem()).photoThumbnail,
+                                    "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE,
+                                    photolist.get(mViewPager.getCurrentItem()).isEncrypted, previewPhotoHandler);
                         } else {
-                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, "local", null, SharePop.SHARE_PHOTO_TYPE, previewPhotoHandler);
+                            sharePop.setshareinfo(photolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);
                         }
 
                     }
@@ -1537,6 +1543,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 selectPhotoItemInfo.isPayed = 1;
                 selectPhotoItemInfo.isVideo = 0;
                 selectPhotoItemInfo.isHasPreset = 0;
+                selectPhotoItemInfo.isEncrypted = 0;
 
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);

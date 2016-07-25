@@ -31,7 +31,7 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
      *  date        下载日期
      *  time        下载时间
      * */
-    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists photo_load(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text,isVideo integer,failedTime text,success text)";
+    private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD + "(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text,isVideo integer,failedTime text,success text)";
 
     public PictureAirDBHelper(Context context) {
         this(context, Common.PHOTOPASS_INFO_NAME);
@@ -103,7 +103,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                         "fileSize integer, " +
                         "videoWidth integer, " +
                         "videoHeight integer, " +
-                        "isHasPreset integer)"
+                        "isHasPreset integer, " +
+                        "enImg integer)"
         );
 
         /**
@@ -153,7 +154,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
                         "videoWidth integer, " +
                         "videoHeight integer, " +
                         "isOnLine integer," +
-                        "isHasPreset integer)"
+                        "isHasPreset integer, " +
+                        "enImg integer)"
         );
 
         /**
@@ -252,16 +254,22 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
     //如果数据库的版本号不一致，会执行onUpgrade函数
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        PictureAirLog.d(TAG, "update Database");
-        switch (newVersion){
-            case 2://版本号为2的更新包
-                db.execSQL("drop table if exists " + Common.PHOTOS_LOAD);
-                db.execSQL(SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_);
-                break;
-            default:
-                break;
+        PictureAirLog.d(TAG, "update sqlite--->" + oldVersion + " ,new--->" + newVersion);
+
+        int upgradeVersion  = oldVersion;
+        if (upgradeVersion == 1) {//从版本1更新到版本2
+            db.execSQL(SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_);
+            db.execSQL("ALTER TABLE " + Common.PHOTOPASS_INFO_TABLE + " ADD enImg INTEGER default '0'");
+            db.execSQL("ALTER TABLE " + Common.FAVORITE_INFO_TABLE + " ADD enImg INTEGER default '0'");
+            upgradeVersion = 2;
+        }
+
+        if (upgradeVersion == 2) {
+            upgradeVersion = 3;
+        }
+
+        if (upgradeVersion == 3) {
+            upgradeVersion = 4;
         }
     }
-
-
 }

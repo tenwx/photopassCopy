@@ -133,6 +133,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private Editor editor;
 
 	private boolean isOnlinePic = false;
+	private boolean isEncrypted = false;
 	private Filter filter;
 	private Bitmap newImage; // 滤镜处理过的bitmap
 
@@ -203,7 +204,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private void dealHandler(Message msg) {
 		switch (msg.what) {
 			case 9999: //加载网络图片。
-				mainBitmap = imageLoader.loadImageSync(photoURL);
+				mainBitmap = imageLoader.loadImageSync(photoURL, isEncrypted);
 				mainImage.setImageBitmap(mainBitmap);
 				if (dialog.isShowing()) {
 					dialog.dismiss();
@@ -496,6 +497,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			//网络图片。
 			photoURL = photoInfo.photoThumbnail_1024;
 			isOnlinePic = true;
+			isEncrypted = AppUtil.isEncrypted(photoInfo.isEncrypted);
 			loadOnlineImg(photoURL);
 		}else{
 			//本地图片

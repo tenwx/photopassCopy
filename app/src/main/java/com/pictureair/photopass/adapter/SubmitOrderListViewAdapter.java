@@ -18,6 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -128,7 +129,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
                         photoUrl = Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl();
                     }
                     PictureAirLog.v(TAG, "getPhotoUrl() != null" + photoUrl);
-                    imageLoader.displayImage(photoUrl, imageView);
+                    imageLoader.displayImage(photoUrl, AppUtil.isEncrypted(gridviewlist.get(i).getIsEncrypted()), imageView);
                 }
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id

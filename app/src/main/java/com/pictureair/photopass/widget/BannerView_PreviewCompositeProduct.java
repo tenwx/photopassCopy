@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.CompositeImageProductAdapter;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -90,11 +91,13 @@ public class BannerView_PreviewCompositeProduct extends LinearLayout {
                 }
             }
 
+            boolean isEncrypted = AppUtil.isEncrypted(list.get(i).isEncrypted);
+
             PictureAirLog.v(TAG, "good name--------->" + goodName);
             PictureAirLog.v(TAG, "photo path--------->" + photopathString);
             //新建view
             compositeImageProductView = new CompositeImageProductView(getContext(), goodsUrl, viewWidth, viewHeight, photopathString,
-                    goodWidth, goodHeight, marginLeft, marginTop, photoWidth, photoHeight, degree, maskBottom, maskTop, goodName);
+                    goodWidth, goodHeight, marginLeft, marginTop, photoWidth, photoHeight, degree, maskBottom, maskTop, goodName, isEncrypted);
             bannerViewList.add(compositeImageProductView);
             adapter.notifyDataSetChanged();//图片改了之后，要通知适配器改变数据
         }

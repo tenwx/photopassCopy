@@ -21,6 +21,7 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
             PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
             iv.setProgressImageViewVisible(true);
-            iv.setUrl(mResources.get(position).photoThumbnail_1024);
+            iv.setUrl(mResources.get(position).photoThumbnail_1024, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
         } else if (mResources.get(position).onLine == 0) {
 
             PictureAirLog.v("instantiateItem", "local photo : " + position + position);

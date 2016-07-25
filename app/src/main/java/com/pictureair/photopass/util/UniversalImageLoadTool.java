@@ -20,13 +20,13 @@ public class UniversalImageLoadTool {
 	 * @param uri
 	 * @param imageView
 	 */
-	public static void loadImage(final String uri, final ImageView imageView){
+	public static void loadImage(final String uri, boolean isEncrypted, final ImageView imageView){
 		if (imageView.getTag() == null || !imageView.getTag().toString().equals(uri)) {
 			PictureAirLog.out("no tag"+"___"+uri);
 			if (imageView.getTag() != null) {
 				PictureAirLog.out("old tag is "+imageView.getTag().toString());
 			}
-			imageLoader.displayImage(uri, imageView, new ImageLoadingListener() {
+			imageLoader.displayImage(uri, isEncrypted, imageView, new ImageLoadingListener() {
 
 				@Override
 				public void onLoadingStarted(String imageUri, View view) {

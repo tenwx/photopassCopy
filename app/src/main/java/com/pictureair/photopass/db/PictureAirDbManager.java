@@ -68,13 +68,13 @@ public class PictureAirDbManager {
         try {
             if (setLove) {//添加收藏
                 PictureAirLog.d(TAG, "start add___" + database + "___" + photoInfoDBHelper);
-                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                database.execSQL("insert into " + Common.FAVORITE_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         new String[]{userId, photoInfo.photoId, photoInfo.photoPassCode, photoInfo.shootTime,
                                 photoInfo.photoPathOrURL, photoInfo.photoThumbnail, photoInfo.photoThumbnail_512,
                                 photoInfo.photoThumbnail_1024, photoInfo.locationId, photoInfo.shootOn, photoInfo.isLove + "",
                                 photoInfo.isPayed + "", photoInfo.locationName, photoInfo.locationCountry,
                                 photoInfo.shareURL, photoInfo.isVideo + "", photoInfo.fileSize + "",
-                                photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "", photoInfo.isHasPreset + ""});
+                                photoInfo.videoWidth + "", photoInfo.videoHeight + "", photoInfo.onLine + "", photoInfo.isHasPreset + "", photoInfo.isEncrypted + ""});
             } else {//取消收藏
 
                 if (photoInfo.onLine == 1) {
@@ -250,6 +250,7 @@ public class PictureAirDbManager {
                 photoInfo.videoHeight = Integer.valueOf(cursor.getString(cursor.getColumnIndex("videoHeight")));
                 photoInfo.onLine = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isOnLine")));
                 photoInfo.isHasPreset = Integer.valueOf(cursor.getString(cursor.getColumnIndex("isHasPreset")));
+                photoInfo.isEncrypted = Integer.valueOf(cursor.getString(cursor.getColumnIndex("enImg")));
                 if (photoInfo.isPayed == 0) {//如果为0，检查photo表是否是已经购买状态
                     cursor1 = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ? and isPay = ?", new String[]{photoInfo.photoId, "1"});
                     if (cursor1.getCount() > 0) {
@@ -846,23 +847,23 @@ public class PictureAirDbManager {
                                 "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
                                 "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
                                 "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
-                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ? where photoId = ?",
+                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
                                 new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
                                         photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
                                         photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
                                         photo.locationCountry, photo.shareURL, photo.fileSize + "",
-                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.photoId});
+                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
 
                         database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set photoCode = ?, " +
                                 "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
                                 "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
                                 "isPay = ?, locationName = ?, locationCountry = ?, shareURL = ?," +
-                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ? where photoId = ?",
+                                "fileSize = ?, videoWidth = ?, videoHeight = ?, isHasPreset = ?, enImg = ? where photoId = ?",
                                 new String[]{photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
                                         photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
                                         photo.locationId, photo.shootOn, photo.isPayed + "", photo.locationName,
                                         photo.locationCountry, photo.shareURL,  photo.fileSize + "",
-                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.photoId});
+                                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
 
                         cursor.close();
                         continue;
@@ -873,12 +874,12 @@ public class PictureAirDbManager {
 
                 resultArrayList.add(photo);
                 //将数据插入到数据库
-                database.execSQL("insert into " + Common.PHOTOPASS_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
+                database.execSQL("insert into " + Common.PHOTOPASS_INFO_TABLE + " values(null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[]{
                         photo.photoId, photo.photoPassCode, photo.shootTime, photo.photoPathOrURL,
                         photo.photoThumbnail, photo.photoThumbnail_512, photo.photoThumbnail_1024,
                         photo.locationId, photo.shootOn, 0 + "", photo.isPayed + "", photo.locationName,
                         photo.locationCountry, photo.shareURL, photo.isVideo + "", photo.fileSize + "",
-                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + ""});
+                        photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + ""});
             }
 
             database.setTransactionSuccessful();

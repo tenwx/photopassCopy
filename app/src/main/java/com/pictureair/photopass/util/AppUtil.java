@@ -846,6 +846,7 @@ public class AppUtil {
                 temp.videoWidth = temp2.videoWidth;
                 temp.videoHeight = temp2.videoHeight;
                 temp.isHasPreset = temp2.isHasPreset;
+                temp.isEncrypted = temp2.isEncrypted;
                 tempInfos.add(temp);
             }
         }
@@ -1273,6 +1274,7 @@ public class AppUtil {
                         selectPhotoItemInfo.onLine = 0;
                         selectPhotoItemInfo.isVideo = 0;
                         selectPhotoItemInfo.isHasPreset = 0;
+                        selectPhotoItemInfo.isEncrypted = 0;
                         resultList.add(selectPhotoItemInfo);
                         PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
                     }
@@ -1618,6 +1620,7 @@ public class AppUtil {
         sInfo.videoHeight = cursor.getInt(cursor.getColumnIndex("videoHeight"));
         sInfo.videoWidth = cursor.getInt(cursor.getColumnIndex("videoWidth"));
         sInfo.isHasPreset = cursor.getInt(cursor.getColumnIndex("isHasPreset"));
+        sInfo.isEncrypted = cursor.getInt(cursor.getColumnIndex("enImg"));
         sInfo.onLine = 1;
         sInfo.isChecked = 0;
         sInfo.isSelected = 0;
@@ -1655,7 +1658,7 @@ public class AppUtil {
      * @param b
      * @return
      */
-    public static byte[] getRealByte2(byte[] b) {
+    public static byte[] getRealByte(byte[] b) {
         byte[] result = null;
         String stmp;//当前字节
         String lastStmp;//上一个字节
@@ -1665,45 +1668,24 @@ public class AppUtil {
             if (lastStmp.equals("ff")) {
                 stmp = Integer.toHexString(b[n] & 0XFF);
                 if (stmp.equals("d9")) {//创建新的字节数组
+                    PictureAirLog.d(TAG, "the data----> n---->" + n + ";length--->" + b.length);
                     result = Arrays.copyOfRange(b, n + 1, b.length);
                     break;
                 }
             }
         }
-        return result;
-    }
 
-    /**
-     * 提取目标结果
-     * 1.找到对应的点(ffd9)
-     * 2.找到后创建对应长度的数组
-     * 3.对应的点之后的数据直接加入
-     *
-     * @param b
-     * @return
-     */
-    public static byte[] getRealByte1(byte[] b) {
-        byte[] result = null;
-        String stmp;//当前字节
-        String lastStmp;//上一个字节
-        int tempIndex = -1;//ffd9的临界点
-
-        for (int n = 1; n < b.length; n++) {
-            if (tempIndex != -1) {//如果已经找到位置，直接添加
-                result[n - tempIndex - 1] = b[n];
-
-            } else {//需要判断目标位置
-                lastStmp = Integer.toHexString(b[n - 1] & 0XFF);
-                if (lastStmp.equals("ff")) {
-                    stmp = Integer.toHexString(b[n] & 0XFF);
-                    if (stmp.equals("d9")) {//创建新的字节数组
-                        tempIndex = n;
-                        result = new byte[b.length - n - 1];
-                    }
+        boolean hasEncryptionData = false;
+        if (result != null && result.length > 1) {
+            stmp = Integer.toHexString(result[0] & 0XFF);
+            if (stmp.equals("ff")) {
+                String nextStmp = Integer.toHexString(result[1] & 0XFF);
+                if (nextStmp.equals("d8")) {//有需要的内容
+                    hasEncryptionData = true;
                 }
             }
         }
-        return result;
+        return hasEncryptionData ? result : null;
     }
 
     public static String getFormatCurrentTime(){
@@ -1719,5 +1701,14 @@ public class AppUtil {
             str = 0+str;
         }
         return str;
+    }
+
+    /**
+     * 检查是否需要解密数据
+     * @param isEncrypted
+     * @return
+     */
+    public static boolean isEncrypted(int isEncrypted) {
+        return isEncrypted == 1;
     }
 }

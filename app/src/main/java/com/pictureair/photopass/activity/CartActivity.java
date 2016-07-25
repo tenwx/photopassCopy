@@ -752,6 +752,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             CartPhotosInfo cartPhotosInfo = new CartPhotosInfo();
             cartPhotosInfo.setPhotoUrl(photoInfo.photoThumbnail);//缩略图
             cartPhotosInfo.setPhotoId(photoInfo.photoId);
+            cartPhotosInfo.setIsEncrypted(photoInfo.isEncrypted);
             oriphoto.add(cartPhotosInfo);
         }
 

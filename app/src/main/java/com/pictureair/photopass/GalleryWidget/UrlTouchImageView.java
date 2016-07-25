@@ -128,7 +128,7 @@ public class UrlTouchImageView extends RelativeLayout {
      *
      * @param imageUrl 网络图片路径
      */
-    public void setUrl(String imageUrl) {
+    public void setUrl(String imageUrl, boolean isEncrypted) {
         //1.获取需要显示文件的文件名
         String fileString = AppUtil.getReallyFileName(imageUrl,0);
         //2、判断文件是否存在sd卡中
@@ -140,7 +140,7 @@ public class UrlTouchImageView extends RelativeLayout {
             PictureAirLog.out("need load from network");
         }
         //使用imageloader加载图片
-        imageLoader.loadImage(imageUrl, null, null, new SimpleImageLoadingListener() {
+        imageLoader.loadImage(imageUrl, isEncrypted, null, null, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view,
                                           Bitmap loadedImage) {

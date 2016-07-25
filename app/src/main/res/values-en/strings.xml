@@ -599,6 +599,6 @@
     <string name="photo_download_nothing">"Nothing"</string>
     <string name="photo_download_tips">There are no photos downloaded</string>
     <string name="photo_download_to_load">DownLoad Now</string>
-    <string name="photo_download_tips2">Your photos have been successfully downladed into your local phone album.</string>
+    <string name="photo_download_tips2">Your photos have been successfully downloaded into your local phone album.</string>
     <!--photo download manage start-->
 </resources>

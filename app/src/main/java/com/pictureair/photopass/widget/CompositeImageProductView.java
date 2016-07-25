@@ -44,7 +44,7 @@ public class CompositeImageProductView extends RelativeLayout{
 	private int goodWidth, goodHeight, marginLeft, marginTop, photoWidth, photoHeight, maskBottom, maskTop, viewWidth, viewHeight;
 	private float degree;
 	private String goodName;
-	
+	private boolean isEncrypted;
 	
 	public CompositeImageProductView(Context context) {
 		super(context);
@@ -69,7 +69,8 @@ public class CompositeImageProductView extends RelativeLayout{
 	 */
 	public CompositeImageProductView(Context context, String goodURL, final int viewWidth, final int viewHeight, final String photoURL, 
 			final int goodWidth, final int goodHeight, final int marginLeft, final int marginTop,
-			final int photoWidth, final int photoHeight, final float degree, final int maskBottom, final int maskTop, final String goodName) {
+			final int photoWidth, final int photoHeight, final float degree, final int maskBottom,
+									 final int maskTop, final String goodName, boolean isEncrypted) {
 		this(context);
 		// TODO Auto-generated constructor stub
 		layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -96,6 +97,7 @@ public class CompositeImageProductView extends RelativeLayout{
 		this.maskTop = maskTop;
 		this.goodName = goodName;
 		this.context = context;
+		this.isEncrypted = isEncrypted;
 		PictureAirLog.out("------------googURL--->"+goodURL);
 		PictureAirLog.out("name---->" + goodName);
 		//如果以下商品需要加载商品图片
@@ -170,9 +172,9 @@ public class CompositeImageProductView extends RelativeLayout{
 				params.height = viewHeight;
 				onlySelectedImageView.setLayoutParams(params);
 				if (goodName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-					imageLoader.displayImage(msg.obj.toString(), onlySelectedImageView);
+					imageLoader.displayImage(msg.obj.toString(), isEncrypted, onlySelectedImageView);
 				}else {
-					imageLoader.loadImage(msg.obj.toString(), new SimpleImageLoadingListener(){
+					imageLoader.loadImage(msg.obj.toString(), isEncrypted, new SimpleImageLoadingListener(){
 						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 							PictureAirLog.out("load success");
 							//对于获取成功的图片，进行截取
@@ -303,7 +305,7 @@ public class CompositeImageProductView extends RelativeLayout{
 				addView(photoImageView);
 				PictureAirLog.out("------------->"+msg.obj.toString());
 				if (goodName.equals("mug")) {//直接显示，同时处理mask层
-					imageLoader.displayImage(msg.obj.toString(), photoImageView);
+					imageLoader.displayImage(msg.obj.toString(), isEncrypted, photoImageView);
 					//添加mask层
 					handler.sendEmptyMessage(LOAD_SELECTED_IMAGE_FOR_MUG_CASE);
 					
@@ -319,7 +321,7 @@ public class CompositeImageProductView extends RelativeLayout{
 					m.obj = msg.obj;
 					handler.sendMessage(m);
 				}else {//直接显示
-					imageLoader.displayImage(msg.obj.toString(), photoImageView);
+					imageLoader.displayImage(msg.obj.toString(), isEncrypted, photoImageView);
 					
 				}
 				break;
@@ -327,7 +329,7 @@ public class CompositeImageProductView extends RelativeLayout{
 			case LOAD_SELECTED_IMAGE_FOR_IPHONE_CASE://手机壳
 				
 				/*************************对添加的图片进行处理********************************/
-				imageLoader.loadImage(msg.obj.toString(), new SimpleImageLoadingListener(){
+				imageLoader.loadImage(msg.obj.toString(), isEncrypted, new SimpleImageLoadingListener(){
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						PictureAirLog.out("load success");
 						//获取遮罩层图片
@@ -402,7 +404,7 @@ public class CompositeImageProductView extends RelativeLayout{
 
 			case LOAD_SELECTED_IMAGE_FOR_KEYCHAIN_CASE://钥匙圈
 				/*************************对添加的图片进行处理********************************/
-				imageLoader.loadImage(msg.obj.toString(), new SimpleImageLoadingListener(){
+				imageLoader.loadImage(msg.obj.toString(), isEncrypted, new SimpleImageLoadingListener(){
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						Matrix matrix = new Matrix();
 						matrix.setSkew(degree, 0);
