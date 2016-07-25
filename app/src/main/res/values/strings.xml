@@ -114,7 +114,7 @@
     <string name="video_location">My Disney Story</string>
     <string name="download_share_bought_photo">您要下载及分享您已拍的照片吗？</string>
     <string name="story_buy_ppp">购买迪士尼乐拍通一卡通</string>
-    <string name="story_scan_ppp">在此激活您已购买的乐拍通一卡通</string>
+    <string name="story_scan_ppp">激活您已购买的乐拍通一卡通</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -397,9 +397,9 @@
     <string name="select_your_pp">请选择您的迪士尼乐拍通</string>
     <string name="no_photopass_update">您还没有符合升级的迪士尼乐拍通！</string>
     <string name="select_pp_wrong_date">只能选择连续三天的迪士尼乐拍通卡</string>
-    <string name="select_pp_right_date">您的选择是升级迪士尼乐拍通卡号：\n%1$s\n迪士尼乐拍通一卡通只能升级连续三天日期的迪士尼乐拍通，请您确认是否继续选择升级此张迪士尼乐拍通？</string>
-    <string name="pp_tip">温馨提示：以下是您未激活的门票及乐拍通卡。请注意卡的日期。</string>
-    <string name="select_pp">%1$s在%2$s的照片。\n</string>
+    <string name="select_pp_right_date">您选择激活以下迪士尼门票／乐拍通卡号：\n%1$s\n迪士尼乐拍通一卡通能让您激活同一天三张门票／乐拍通卡，或者连续三天的同一张门票／乐拍通卡。\n是否确认继续选择激活此门票／乐拍通卡？</string>
+    <string name="pp_tip">以下是您未激活的迪士尼门票／乐拍通卡。在激活前，请注意卡的日期。</string>
+    <string name="select_pp">%1$s在%2$s的照片\n</string>
     <string name="outofrange">超出范围</string>
     <!-- select pp end -->
 
@@ -491,9 +491,9 @@
     <string name="edit_story_album">编辑</string>
     <string name="edit_story_confirm_download">确认下载</string>
     <string name="edit_story_reselect">重新选择</string>
-    <string name="edit_story_unpay_tips">亲，选项中含有未付费的照片不能下载哦！您可继续确认下载已付费的照片哦！</string>
+    <string name="edit_story_unpay_tips">您选择中含有未付费的照片\n您只可确认下载已付费的照片</string>
     <string name="edit_story_all_unpay_tips">当前选中的照片未付费，不可下载</string>
-    <string name="edit_story_addto_downloadlist">照片已在下载列队，可去下载管理内查询，请耐心等待！</string>
+    <string name="edit_story_addto_downloadlist">照片已在下载列队\n可去下载管理内查询，请耐心等待！</string>
     <!-- edit story end -->
 
     <!-- 发票-->
@@ -597,8 +597,8 @@
     <string name="photo_download_clear_failed">清空失败列表</string>
     <string name="photo_download_clear_tips">下载完成后才可以清除</string>
     <string name="photo_download_not_exists">源文件已删除</string>
-    <string name="photo_download_tips">一张照片也没有，\n可以去迪士尼乐拍通页面选择照片批量下载哦！</string>
+    <string name="photo_download_tips">未有已下载完成的照片</string>
     <string name="photo_download_to_load">去下载</string>
-    <string name="photo_download_tips2">已下载完成的照片将保存至您的手机本地相册中，点击以下列表可预览照片，当您在手机本地相册中删除该照片，则提示无法预览哦</string>
+    <string name="photo_download_tips2">已下载完成的照片将保存至您的手机本地相册中，点击以下列表可预览照片。</string>
     <!--photo download manage start-->
 </resources>

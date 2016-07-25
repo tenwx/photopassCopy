@@ -187,6 +187,13 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
                     //需要更新
                     flag = true;
                     break;
+
+                } else if (number[i] == newNumber[i]){
+                    continue;
+
+                } else {
+                    break;
+
                 }
             }
 

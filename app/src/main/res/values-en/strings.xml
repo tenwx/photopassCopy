@@ -91,7 +91,7 @@
     <string name="story_tab_favorite">Favorite</string>
     <string name="story_other_en">Others</string>
     <string name="story_other_ch">其他</string>
-    <string name="story_no_pp">Please scan your Park Ticket / Disney PhotoPass card to start associating your photos.</string>
+    <string name="story_no_pp">Please scan your Disney Park Ticket/PhotoPass card to preview your photos.</string>
     <string name="story_scan">Scan</string>
     <string name="no_photo_in_airpass">Look out for Disney PhotoPass Photographers to start capturing your magical moments!</string>
     <string name="no_photo_in_magiccam">Collect all your edited photos!</string>
@@ -114,7 +114,7 @@
     <string name="video_location">My Disney Story</string>
     <string name="download_share_bought_photo">Want to download and share your photos?</string>
     <string name="story_buy_ppp">Buy Disney PhotoPass+ Now</string>
-    <string name="story_scan_ppp">Activate your purchased PhotoPass+</string>
+    <string name="story_scan_ppp">Activate Your Purchased PhotoPass+</string>
     <!-- story end -->
 
     <!-- scan start -->
@@ -379,7 +379,7 @@
     <string name="experiencephotopassplus">Experience Disney PhotoPass+</string>
     <string name="buy_ppp_text">Buy Disney PhotoPass+</string>
     <string name="scan_ppp_text">Scan your existing Disney PhotoPass+</string>
-    <string name="ppp_deail_no_card">You have not activated your Park Tickets / PhotoPass cards.</string>
+    <string name="ppp_deail_no_card">You have not activate any Disney\nPark Ticket / PhotoPass card.</string>
     <string name="ppp_load_all">No more data to load!</string>
     <string name="pull_to_refresh">Swipe Upwards</string>
     <string name="release_to_refresh">Release loading&#8230;</string>
@@ -397,8 +397,8 @@
     <string name="select_your_pp">Please select your Disney PhotoPass</string>
     <string name="no_photopass_update">You do not have an active Disney PhotoPass to activate.</string>
     <string name="select_pp_wrong_date">The chosen dates should be within three consecutive days</string>
-    <string name="select_pp_right_date">You have choose to activate PhotoPass card:\n%1$s\nPhotoPass+ allows you to activate 1 PhotoPass card on three consecutive dates or 3 PhotoPass cards in one single day.\nPlease confirm to continue activate the above PhotoPass card.</string>
-    <string name="pp_tip">Below are your Park Tickets / PhotoPass Cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
+    <string name="select_pp_right_date">You have chosen to activate this Disney Park Ticket/PhotoPass card:\n%1$s\nDisney PhotoPass+ allows you to activate 3 Park Tickets/PhotoPass cards in one single day, OR 1 Park Ticket/PhotoPass card on 3 consecutive days.\nPlease confirm to continue the activation of the above Park Ticket/PhotoPass card.</string>
+    <string name="pp_tip">Below are your Disney Park Tickets/PhotoPass cards with non-activated photos. Before activation, please take note of the date of the cards.</string>
     <string name="select_pp">%1$s on %2$s\n</string>
     <string name="outofrange">Out of range</string>
     <!-- select pp end -->
@@ -490,10 +490,10 @@
     <string name="start_delete">Your account will no longer display these photos once deleted. Confirm to delete?</string>
     <string name="edit_story_album">Select</string>
     <string name="edit_story_confirm_download">Confirm</string>
-    <string name="edit_story_reselect">Re-select</string>
-    <string name="edit_story_unpay_tips">There are some photos in your selection which are not purchased. Hence only the purchased photos will be downloaded.</string>
+    <string name="edit_story_reselect">Re-Select</string>
+    <string name="edit_story_unpay_tips">Some photos selected are not purchased.\nOnly purchased photos will be downloaded.</string>
     <string name="edit_story_all_unpay_tips">The selected photos has not been purchased.</string>
-    <string name="edit_story_addto_downloadlist">Your photos are now being downloaded. Please proceed to Downloads for status check.</string>
+    <string name="edit_story_addto_downloadlist">Downloading in progress.\nClick on Downloads to check on the status.</string>
     <!-- edit story end -->
 
     <!-- invoice-->
@@ -597,8 +597,8 @@
     <string name="photo_download_clear_failed">Clear Failed List</string>
     <string name="photo_download_clear_tips">Download completed before you can clear</string>
     <string name="photo_download_not_exists">Deleted</string>
-    <string name="photo_download_tips">There are no photos downloaded</string>
+    <string name="photo_download_tips">There are no photos downloading in progress</string>
     <string name="photo_download_to_load">DownLoad Now</string>
-    <string name="photo_download_tips2">Your photos have been successfully downloaded into your local phone album.</string>
+    <string name="photo_download_tips2">Your photos have been successfully downloaded into your local photo album. You can click on the photos below to view them.</string>
     <!--photo download manage start-->
 </resources>
