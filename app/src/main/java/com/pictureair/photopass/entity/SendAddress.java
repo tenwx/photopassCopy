@@ -3,12 +3,12 @@ package com.pictureair.photopass.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
+import com.pictureair.photopass.util.PictureAirLog;
 
 /**
  * Created by jiaxing on 16/5/19.
  */
-public class SendAddress implements Parcelable {
+public class SendAddress implements Parcelable, Comparable<SendAddress> {
     private String addressId;
     private String area;
     private String name;
@@ -170,5 +170,18 @@ public class SendAddress implements Parcelable {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+    @Override
+    public int compareTo(SendAddress another) {
+        if (this.isSelected() && !another.isSelected()){
+            PictureAirLog.out("order--->-1-1-1-1-1");
+            return -1;//排后面
+        } else if (!this.isSelected() && another.isSelected()) {
+            PictureAirLog.out("order--->11111111");
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

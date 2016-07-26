@@ -34,6 +34,7 @@ import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InvoiceActivity extends BaseActivity implements View.OnClickListener {
@@ -124,6 +125,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         PictureAirLog.out("resi;t===>" + resultJsonObject.toJSONString());
         listData.clear();
         listData.addAll(JsonUtil.getAddressList(resultJsonObject));
+        Collections.sort(listData);
     }
 
     @Override
