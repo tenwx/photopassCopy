@@ -8,11 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="80dp"
@@ -53,6 +54,7 @@
             android:layout_height="@dimen/pp_height_2"
             android:background="@drawable/dash_line"
             android:layerType="software"
+            android:visibility="gone"
             />
     <ListView
         android:id="@+id/lv_downloading"

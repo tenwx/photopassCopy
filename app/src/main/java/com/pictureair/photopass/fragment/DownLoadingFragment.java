@@ -98,7 +98,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         }
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE:
-                PictureAirLog.e("dealHandler","PHOTO_STATUS_UPDATE");
+                PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
                 updateView();
                 if (fileStatus != null) {
@@ -108,19 +108,19 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 break;
             case PHOTO_REMOVE:
-                PictureAirLog.e("DownLoadingFragment","PHOTO_REMOVE");
+                PictureAirLog.v("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null) {
                     downloadList = downloadService.getDownloadList();
-                    PictureAirLog.e("PHOTO_REMOVE","downloadList.size: "+downloadList.size());
+                    PictureAirLog.v("PHOTO_REMOVE","downloadList.size: "+downloadList.size());
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
-//                    PictureAirLog.e("DownLoadingFragment","dealHandler remove item success");
+//                    PictureAirLog.v("DownLoadingFragment","dealHandler remove item success");
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
                     int oldCount = downloadService.getDatabasePhotoCount();
-                    PictureAirLog.e("PHOTO_REMOVE","oldCount: "+oldCount);
+                    PictureAirLog.v("PHOTO_REMOVE","oldCount: "+oldCount);
                     int downLoadCount=downloadService.getDowned_num();
-                    PictureAirLog.e("PHOTO_REMOVE","downLoadCount: "+downLoadCount);
+                    PictureAirLog.v("PHOTO_REMOVE","downLoadCount: "+downLoadCount);
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
                     Activity activity = getActivity();
                     LoadManageActivity manageActivity = null;
@@ -135,30 +135,30 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
             case SERVICE_LOAD_SUCCESS:
                 if (adapter == null) {
-                    PictureAirLog.e("SERVICE_LOAD_SUCCESS","adapter= null ");
+                    PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter= null ");
                     downloadList = downloadService.getDownloadList();
                     if (downloadList != null && downloadList.size() >0) {
                         ll_loading.setVisibility(View.VISIBLE);
                         rl_loading.setVisibility(View.GONE);
-                        PictureAirLog.e("SERVICE_LOAD_SUCCESS","new adapter ");
+                        PictureAirLog.v("SERVICE_LOAD_SUCCESS","new adapter ");
                         adapter = new PhotoDownloadingAdapter(MyApplication.getInstance(),downloadList);
                         lv_loading.setAdapter(adapter);
                     }else{
-                        PictureAirLog.e("SERVICE_LOAD_SUCCESS","nothing ");
+                        PictureAirLog.v("SERVICE_LOAD_SUCCESS","nothing ");
                         ll_loading.setVisibility(View.GONE);
                         rl_loading.setVisibility(View.VISIBLE);
                     }
                 }else{
-                    PictureAirLog.e("SERVICE_LOAD_SUCCESS","adapter!= null ");
+                    PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter!= null ");
                     downloadList = downloadService.getDownloadList();
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
                 int oldCount = downloadService.getDatabasePhotoCount();
-                PictureAirLog.e("SERVICE_LOAD_SUCCESS","oldCount: "+oldCount);
+                PictureAirLog.v("SERVICE_LOAD_SUCCESS","oldCount: "+oldCount);
                 int downLoadCount=downloadService.getDowned_num();
-                PictureAirLog.e("SERVICE_LOAD_SUCCESS","downLoadCount: "+downLoadCount);
+                PictureAirLog.v("SERVICE_LOAD_SUCCESS","downLoadCount: "+downLoadCount);
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
                 activitySendMsg(null);
                 downloadService.startDownload();
@@ -251,7 +251,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     bundle.putParcelableArrayList("photos", photos);
                     intent.putExtras(bundle);
                     MyApplication.getInstance().startService(intent);
-                    PictureAirLog.e("onServiceConnected","false");
+                    PictureAirLog.v("onServiceConnected","false");
                 }
 
             }
@@ -345,7 +345,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void updateView(){
-        PictureAirLog.e("updateView","updateView");
+        PictureAirLog.v("updateView","updateView");
         downloadList = downloadService.getDownloadList();
         adapter.setList(downloadList);
         adapter.notifyDataSetChanged();

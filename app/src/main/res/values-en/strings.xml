@@ -598,6 +598,7 @@
     <string name="photo_download_clear_tips">Download completed before you can clear</string>
     <string name="photo_download_not_exists">Deleted</string>
     <string name="photo_download_tips">There are no photos downloading in progress</string>
+    <string name="photo_download_success_tips">There are no photos downloaded</string>
     <string name="photo_download_to_load">DownLoad Now</string>
     <string name="photo_download_tips2">Your photos have been successfully downloaded into your local photo album. You can click on the photos below to view them.</string>
     <!--photo download manage start-->

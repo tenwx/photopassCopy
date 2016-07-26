@@ -597,7 +597,8 @@
     <string name="photo_download_clear_failed">清空失败列表</string>
     <string name="photo_download_clear_tips">下载完成后才可以清除</string>
     <string name="photo_download_not_exists">源文件已删除</string>
-    <string name="photo_download_tips">未有已下载完成的照片</string>
+    <string name="photo_download_tips">未有正在下载中的照片</string>
+    <string name="photo_download_success_tips">未有已下载完成的照片</string>
     <string name="photo_download_to_load">去下载</string>
     <string name="photo_download_tips2">已下载完成的照片将保存至您的手机本地相册中，点击以下列表可预览照片。</string>
     <!--photo download manage start-->

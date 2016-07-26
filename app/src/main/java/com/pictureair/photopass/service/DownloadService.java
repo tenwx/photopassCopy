@@ -177,7 +177,7 @@ public class DownloadService extends Service {
                                 lastUrl = file.toString();
                                 ++downed_num;
                                 PictureAirLog.out("onStartCommand downed_num："+downed_num);
-                                PictureAirLog.e("onStartCommand","file exists");
+                                PictureAirLog.v("onStartCommand","file exists");
                                 exist_num++;
 //                                ++toLoadCount;
                                 fixedThreadPool.execute(new Runnable() {
@@ -204,7 +204,7 @@ public class DownloadService extends Service {
                     isDownloading = true;
                 }else{
                     if (adapterHandler != null) {
-                        PictureAirLog.e("onStartCommand","isDownloading = true");
+                        PictureAirLog.v("onStartCommand","isDownloading = true");
                         adapterHandler.sendEmptyMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS);
                     }
                 }
@@ -279,7 +279,7 @@ public class DownloadService extends Service {
             switch (msg.what) {
                 case START_DOWNLOAD:
                     PictureAirLog.out("downloadService----------->START_DOWNLOAD");
-                    PictureAirLog.e("handleMessage","START_DOWNLOAD");
+                    PictureAirLog.v("handleMessage","START_DOWNLOAD");
                     if (downloadList.size() > 0){
                         for (int i = 0; i < downloadList.size(); i++) {
                             DownloadFileStatus fileStatus = downloadList.get(i);
@@ -368,7 +368,7 @@ public class DownloadService extends Service {
                         final DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
                         taskList.remove(failStatus.getUrl());
                         if (adapterHandler != null) {
-                            PictureAirLog.e("handleMessage","DOWNLOAD_PHOTO_FAILED");
+                            PictureAirLog.v("handleMessage","DOWNLOAD_PHOTO_FAILED");
                             adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
                         } else {
                             handler.sendEmptyMessage(ADD_DOWNLOAD);
@@ -396,7 +396,7 @@ public class DownloadService extends Service {
                                         taskList.put(status.getUrl(), status);
                                         downLoad(status);
                                         if (adapterHandler != null) {
-                                            PictureAirLog.e("handleMessage","ADD_DOWNLOAD");
+                                            PictureAirLog.v("handleMessage","ADD_DOWNLOAD");
                                             adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                                         }
                                     } else {
@@ -490,7 +490,7 @@ public class DownloadService extends Service {
                 @Override
                 public void onSuccess(byte[] binaryData) {
                     super.onSuccess(binaryData);
-                    PictureAirLog.e("downloadImgOrVideo", "调用下载照片API成功");
+                    PictureAirLog.v("downloadImgOrVideo", "调用下载照片API成功");
                     Message msg =  handler.obtainMessage();
                     msg.what = API1.DOWNLOAD_PHOTO_SUCCESS;
                     Bundle bundle = new Bundle();
@@ -504,7 +504,7 @@ public class DownloadService extends Service {
                 @Override
                 public void onFailure(int status) {
                     super.onFailure(status);
-                    PictureAirLog.e("downloadImgOrVideo", "调用下载照片API失败：错误代码：" + status);
+                    PictureAirLog.v("downloadImgOrVideo", "调用下载照片API失败：错误代码：" + status);
                     Message msg =  handler.obtainMessage();
                     msg.what = API1.DOWNLOAD_PHOTO_FAILED;
                     Bundle bundle = new Bundle();
@@ -624,7 +624,7 @@ public class DownloadService extends Service {
 
                         if (adapterHandler != null) {
                             adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_REMOVE,fileStatus).sendToTarget();
-                            PictureAirLog.e("scan","scan");
+                            PictureAirLog.v("scan","scan");
                             adapterHandler.removeMessages(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                         }else {
                             handler.sendEmptyMessageDelayed(ADD_DOWNLOAD,200);

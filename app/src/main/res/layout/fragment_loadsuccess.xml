@@ -84,7 +84,7 @@
             android:layout_below="@id/load_success_show_img"
             android:textSize="@dimen/text_size_14"
             android:textColor="@color/gray2"
-            android:text="@string/photo_download_tips"
+            android:text="@string/photo_download_success_tips"
             android:gravity="center"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="80dp"
