@@ -208,7 +208,7 @@
     <!-- preview photo end -->
 
     <!-- blur start -->
-    <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card</string>
+    <string name="blur_intro">Disney PhotoPass+ allows you to download all your high resolution photos associated in this PhotoPass card within the day</string>
     <string name="up_ppp_money">Yes, I want to Buy PhotoPass+</string>
     <string name="use_ppp">Activate your purchased PhotoPass+</string>
     <string name="buythisphoto">Purchase Single Digital Photo</string>

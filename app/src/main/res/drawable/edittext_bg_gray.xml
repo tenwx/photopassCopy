@@ -8,6 +8,6 @@
     <stroke
         android:dashGap="0dp"
         android:width="@dimen/pp_height_1"
-        android:color="@color/pp_blue" />
+        android:color="@color/pp_gray" />
 
 </shape>

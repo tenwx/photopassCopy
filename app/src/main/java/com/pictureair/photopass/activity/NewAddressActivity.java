@@ -52,6 +52,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
     private List<ProvinceModel> provinceList; // 地址列表
     private boolean isCity = false;
     private boolean isCounty = false;
+    private boolean isEnglishAdressMode = false;
     private String upName;
     private String upPhone;
     private String upProvince;
@@ -103,6 +104,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
         setContentView(R.layout.activity_new_address);
         initView();
         if (MyApplication.getInstance().getLanguageType().equals(Common.ENGLISH)) {
+            isEnglishAdressMode = true;
             provinceLL.setVisibility(View.GONE);
             cityLL.setVisibility(View.GONE);
             countryLL.setVisibility(View.GONE);
@@ -591,9 +593,15 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
             upName = nameET.getText().toString().trim();
             upPhone = phoneET.getText().toString().trim();
             upAddress = detailAddrET.getText().toString().trim();
-            upProvince = provBtn.getText().toString().trim();
-            upCity = cityBtn.getText().toString().trim();
-            upCountry = countryBtn.getText().toString().trim();
+            if (isEnglishAdressMode) {
+                upProvince = "";
+                upCity = "";
+                upCountry = "";
+            } else {
+                upProvince = provBtn.getText().toString().trim();
+                upCity = cityBtn.getText().toString().trim();
+                upCountry = countryBtn.getText().toString().trim();
+            }
 
             Intent intent = new Intent();
             intent.putExtra("name", upName);

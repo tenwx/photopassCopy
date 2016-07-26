@@ -143,23 +143,23 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             invoiceInfo = getIntent().getParcelableExtra("invoiceInfo");
 
             if (invoiceInfo.getTitle() == InvoiceInfo.PERSONAL) {
-                personIb.setImageResource(R.drawable.sele);
-                companyIb.setImageResource(R.drawable.nosele);
+                personIb.setImageResource(R.drawable.invoice_press);
+                companyIb.setImageResource(R.drawable.invoice_nor);
                 if (editText.getVisibility() == View.VISIBLE)
                     editText.setVisibility(View.GONE);
 
             } else {
-                personIb.setImageResource(R.drawable.nosele);
-                companyIb.setImageResource(R.drawable.sele);
+                personIb.setImageResource(R.drawable.invoice_nor);
+                companyIb.setImageResource(R.drawable.invoice_press);
                 if (editText.getVisibility() != View.VISIBLE)
                     editText.setVisibility(View.VISIBLE);
                 editText.setText(invoiceInfo.getCompanyName());
             }
             checkInvoice = invoiceInfo.isNeedInvoice();
             if (checkInvoice) {
-                noInvoice.setImageResource(R.drawable.nosele);
+                noInvoice.setImageResource(R.drawable.invoice_nor);
             } else {
-                noInvoice.setImageResource(R.drawable.sele);
+                noInvoice.setImageResource(R.drawable.invoice_press);
             }
 
         }
@@ -220,6 +220,24 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         API1.getInvoiceAddressList(invoiceHandler);
     }
 
+    /**
+     * 点击键盘之外，隐藏键盘
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (AppUtil.isShouldHideInput(v, ev)) {
+                hideInputMethodManager(v);
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
 
     private void setFilterListener(){
         scrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -229,14 +247,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 return false;
             }
         });
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    hideInputMethodManager(v);
-                }
-            }
-        });
+
         editText.addTextChangedListener(new TextWatcher() {
             int cou = 0;
 
@@ -277,8 +288,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()){
             case R.id.invoice_personal_ib:
             case R.id.invoice_personal_rl:
-                personIb.setImageResource(R.drawable.sele);
-                companyIb.setImageResource(R.drawable.nosele);
+                personIb.setImageResource(R.drawable.invoice_press);
+                companyIb.setImageResource(R.drawable.invoice_nor);
                 if(editText.getVisibility()==View.VISIBLE)
                     editText.setVisibility(View.GONE);
 
@@ -287,8 +298,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.invoice_company_ib:
             case R.id.invoice_company_rl:
-                personIb.setImageResource(R.drawable.nosele);
-                companyIb.setImageResource(R.drawable.sele);
+                personIb.setImageResource(R.drawable.invoice_nor);
+                companyIb.setImageResource(R.drawable.invoice_press);
                 if(editText.getVisibility()!=View.VISIBLE)
                     editText.setVisibility(View.VISIBLE);
 
@@ -313,9 +324,9 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             case R.id.invoice_nocheck_ib:
             case R.id.invoice_nocheck:
                 if(checkInvoice){
-                    noInvoice.setImageResource(R.drawable.sele);
+                    noInvoice.setImageResource(R.drawable.invoice_press);
                 }else{
-                    noInvoice.setImageResource(R.drawable.nosele);
+                    noInvoice.setImageResource(R.drawable.invoice_nor);
                 }
                 checkInvoice = !checkInvoice;
                 invoiceInfo.setNeedInvoice(checkInvoice);

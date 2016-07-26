@@ -163,12 +163,14 @@ public class PayUtils {
 
             resultunifiedorder = result;
             PictureAirLog.d("===============", result.toString());
-
-            // 生成签名参数
-            PayReq req = wxPayUtil.getPayReq(sb, resultunifiedorder);
-            // 调用微信支付
-            wxPayUtil.sendPayReq(msgApi, req);
-
+            if (result.toString().equals("{}")) {
+                handler.sendEmptyMessage(PaymentOrderActivity.RQF_ERROR);
+            } else {
+                // 生成签名参数
+                PayReq req = wxPayUtil.getPayReq(sb, resultunifiedorder);
+                // 调用微信支付
+                wxPayUtil.sendPayReq(msgApi, req);
+            }
         }
 
         @Override
@@ -187,8 +189,10 @@ public class PayUtils {
             PictureAirLog.d("orion", entity);
             // 把生成的支付订单post生成预付单
             byte[] buf = Util.httpPost(url, entity);
-
-            String content = new String(buf);
+            String content = "";
+            if (buf != null) {
+                content = new String(buf);
+            }
             PictureAirLog.d("orion", content);
             Map<String, String> xml = wxPayUtil.decodeXml(content);
 

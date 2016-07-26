@@ -129,7 +129,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:background="@null"
-                    android:src="@drawable/nosele" />
+                    android:src="@drawable/invoice_nor" />
             </RelativeLayout>
             <View
                 android:layout_width="match_parent"
@@ -154,7 +154,7 @@
                     android:layout_centerVertical="true"
                     android:paddingRight="@dimen/pp_padding_16"
                     android:background="@null"
-                    android:src="@drawable/nosele" />
+                    android:src="@drawable/invoice_nor" />
             </RelativeLayout>
             <View
                 android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                 android:layout_centerVertical="true"
                 android:paddingRight="@dimen/pp_padding_16"
                 android:background="@null"
-                android:src="@drawable/nosele" />
+                android:src="@drawable/invoice_nor" />
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
