@@ -103,7 +103,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                     PictureAirLog.out("tokenid----->" + MyApplication.getTokenId());
                     PictureAirLog.e(TAG, "拿到了分享链接：" + shareUrl);
 
-                    if ("online".equals(type) && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
+                    if ("online".equals(type) && (msg.arg1 == R.id.wechat || msg.arg1 == R.id.wechat_moments || msg.arg1 == R.id.sina) && isEncrypted == 1) {//如果是微信分享，并且分享的是网络图片，并且有加密
                         API1.getNewPhotosInfo(MyApplication.getTokenId(), photoId, msg.arg1, mHandler);
 
                     } else {
@@ -338,7 +338,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * @param shareUrl
      * @param type      本地还是网络的标记
      */
-    private void sinaShare(Context context, String imagePath, String thumbnailUrl, String imageUrl,
+    private void sinaShare(Context context, String imagePath, String imageUrl,
                            String shareUrl, String type) {
         Platform platform = ShareSDK.getPlatform(context, SinaWeibo.NAME);
 
@@ -349,7 +349,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
         if ("local".equals(type)) {// 本地图片
             shareParams.setImagePath(imagePath);
         } else if ("online".equals(type)) {// 网络图片，未审核的不支持网络图片，所以只能把链接分享出来
-            shareParams.setImageUrl(thumbnailUrl);
+            shareParams.setImageUrl(imageUrl);
 //            shareParams.setUrl(shareUrl);
         }
         platform.share(shareParams);
@@ -492,7 +492,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                 if (type.equals("local")) {// 本地
                     createThumbNail(id);
                 } else {
-                    sinaShare(context, imagePath, thumbnailUrl, imageUrl, shareUrl, type);
+                    sinaShare(context, imagePath, imageUrl, shareUrl, type);
                 }
                 break;
 
@@ -621,7 +621,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                                         break;
 
                                     case R.id.sina:
-                                        sinaShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                                        sinaShare(context, shareFile.toString(), imageUrl, shareUrl, type);
                                         break;
 
                                     case R.id.qq:
