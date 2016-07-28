@@ -12,10 +12,8 @@ import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.pictureair.photopass.BuildConfig;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.Common;
 
 
 public class AboutActivity extends BaseActivity {
@@ -53,11 +51,7 @@ public class AboutActivity extends BaseActivity {
 
         getVersionCode();
         logo_text.setTypeface(MyApplication.getInstance().getFontBold());
-        if (BuildConfig.LOG_DEBUG) {//研发版本
-            developVersion = "V" + Common.VERSION_CODE;
-        } else {//发布版本
-            developVersion = "V" + versionName;
-        }
+        developVersion = "V" + versionName;
         developTextView.setText(developVersion);
     }
 

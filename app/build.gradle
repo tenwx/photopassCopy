@@ -8,8 +8,8 @@ android {
         applicationId "com.pictureair.photopass"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 6
-        versionName "1.2.0"
+        versionCode 7
+        versionName "1.2.1"
 
         /**
          * 历史版本
@@ -27,6 +27,9 @@ android {
          *
          * versionCode 5 //将默认渠道包更新为tencent
          * versionName "1.1.2"
+         *
+         * versionCode 6
+         * versionName "1.2.0"
          */
 
     }
