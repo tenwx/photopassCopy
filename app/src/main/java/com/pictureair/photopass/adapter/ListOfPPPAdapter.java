@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -381,7 +382,7 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp2.setVisibility(View.INVISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
 					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
-					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
+					holder.tv_pp_date1.setText(replace(dpp.bindInfo.get(0).bindDate));
 					break;
 				case 2://用过两张
 					holder.tv_cardStatus.setText(R.string.activated);
@@ -392,8 +393,8 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.INVISIBLE);
-					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
-					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate.replace("-", "."));
+					holder.tv_pp_date1.setText(replace(dpp.bindInfo.get(0).bindDate));
+					holder.tv_pp_date2.setText(replace(dpp.bindInfo.get(1).bindDate));
 					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
 					holder.tv_pp_num2.setText(dpp.bindInfo.get(1).customerId);
 					break;
@@ -407,9 +408,9 @@ public class ListOfPPPAdapter extends BaseAdapter {
 					holder.ppp_detail_pp1.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp2.setVisibility(View.VISIBLE);
 					holder.ppp_detail_pp3.setVisibility(View.VISIBLE);
-					holder.tv_pp_date1.setText(dpp.bindInfo.get(0).bindDate.replace("-", "."));
-					holder.tv_pp_date2.setText(dpp.bindInfo.get(1).bindDate.replace("-", "."));
-					holder.tv_pp_date3.setText(dpp.bindInfo.get(2).bindDate.replace("-", "."));
+					holder.tv_pp_date1.setText(replace(dpp.bindInfo.get(0).bindDate));
+					holder.tv_pp_date2.setText(replace(dpp.bindInfo.get(1).bindDate));
+					holder.tv_pp_date3.setText(replace(dpp.bindInfo.get(2).bindDate));
 					holder.tv_pp_num1.setText(dpp.bindInfo.get(0).customerId);
 					holder.tv_pp_num2.setText(dpp.bindInfo.get(1).customerId);
 					holder.tv_pp_num3.setText(dpp.bindInfo.get(2).customerId);
@@ -503,8 +504,13 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		}
 	}
 
-
-
+	private String replace(String oldStr){
+		if (TextUtils.isEmpty(oldStr)) {
+			return "";
+		} else {
+			return oldStr.replace("-", ".");
+		}
+	}
 
 	public HashMap<Integer, Boolean> getMap() {
 		return map;

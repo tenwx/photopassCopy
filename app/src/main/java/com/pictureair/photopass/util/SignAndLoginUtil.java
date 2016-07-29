@@ -45,20 +45,9 @@ public class SignAndLoginUtil implements Handler.Callback {
     private static final String TAG = "SignAndLoginUtil";
     private int id = 0;
 
-    public SignAndLoginUtil(Context c, String account, String pwdStr, boolean isSign, boolean needModifyInfo,
-                            String name, String birthday, String gender, String country, OnLoginSuccessListener onLoginSuccessListener) {
+    public SignAndLoginUtil(Context c, OnLoginSuccessListener onLoginSuccessListener) {
         this.context = c;
-        this.account = account;
-        this.pwd = pwdStr;
-        this.isSign = isSign;
-        this.name = name;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.country = country;
-        this.needModifyInfo = needModifyInfo;
         this.onLoginSuccessListener = onLoginSuccessListener;
-        PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
-        start();
     }
 
     @Override
@@ -66,9 +55,7 @@ public class SignAndLoginUtil implements Handler.Callback {
 
         switch (msg.what) {
             case API1.GET_TOKEN_ID_FAILED://获取tokenId失败
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -100,9 +87,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         id = ReflectionUtil.getStringId(context, msg.arg1);
                         break;
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 editor = sp.edit();
                 editor.putString(Common.USERINFO_TOKENID, null);
                 editor.commit();
@@ -139,9 +124,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         id = ReflectionUtil.getStringId(context, msg.arg1);
                         break;
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 editor = sp.edit();
                 editor.putString(Common.USERINFO_TOKENID, null);
                 editor.commit();
@@ -157,9 +140,7 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.GET_CART_FAILED://获取购物车失败
             case API1.GET_STOREID_FAILED://获取storeId失败
                 id = ReflectionUtil.getStringId(context, msg.arg1);
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 editor = sp.edit();
                 editor.putString(Common.USERINFO_TOKENID, null);
                 editor.commit();
@@ -198,9 +179,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 break;
 
             case API1.GET_STOREID_SUCCESS://获取storeId成功
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 PictureAirLog.v(TAG, "get storeid success");
                 JSONObject jsonObject = JSONObject.parseObject(msg.obj.toString());
                 Editor editor = sp.edit();
@@ -221,17 +200,21 @@ public class SignAndLoginUtil implements Handler.Callback {
      * 登录成功之后的跳转
      */
     private void loginsuccess() {
-        if (customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
+        dismissDialog();
         onLoginSuccessListener.loginSuccess();
     }
 
-    /**
-     * 开始登录
-     */
-    private void start() {
-        PictureAirLog.v(TAG, "start login or sign");
+    public void start(String account, String pwdStr, boolean isSign, boolean needModifyInfo,
+                            String name, String birthday, String gender, String country) {
+        this.account = account;
+        this.pwd = pwdStr;
+        this.isSign = isSign;
+        this.name = name;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.country = country;
+        this.needModifyInfo = needModifyInfo;
+        PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
         myToast = new PWToast(context);
         customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
         sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
@@ -242,6 +225,17 @@ public class SignAndLoginUtil implements Handler.Callback {
         } else {
             PictureAirLog.v(TAG, "has tokenid");
             handler.sendEmptyMessage(API1.GET_TOKEN_ID_SUCCESS);
+        }
+    }
+
+    public void destroy(){
+        dismissDialog();
+        customProgressDialog = null;
+    }
+
+    private void dismissDialog(){
+        if (customProgressDialog != null && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
         }
     }
 

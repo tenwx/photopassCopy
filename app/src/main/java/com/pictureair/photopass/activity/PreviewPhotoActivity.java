@@ -903,6 +903,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     previewPhotoHandler.sendEmptyMessage(NO_PHOTOS_AND_RETURN);
                     return;
                 }
+                if (currentPosition > photolist.size() - 1) {//出现的情况就是，刚点进去，同步删除的处理将数据库删除了，需要取最后一个数据
+                    currentPosition = photolist.size() - 1;
+                }
                 PhotoInfo currentPhotoInfo = photolist.get(currentPosition);
 
                 PictureAirLog.out("photolist size ---->" + photolist.size());

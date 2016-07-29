@@ -39,6 +39,8 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     // 申明其他类
     private PWToast myToast;
 
+    private SignAndLoginUtil signAndLoginUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,7 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
     private void initView() {
         loginUrl.append(Common.BASE_URL_TEST).append(Common.LOGIN);// 链接地址
         myToast = new PWToast(OtherLoginActivity.this);// 获取toast
+        signAndLoginUtil = new SignAndLoginUtil(this, this);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.user_login);
         sign = (Button) findViewById(R.id.sign);
@@ -147,8 +150,8 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
 
                     case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
-                        new SignAndLoginUtil(OtherLoginActivity.this, userName.getText().toString().trim(), password
-                                .getText().toString(), false, false, null, null, null, null, OtherLoginActivity.this);
+                        signAndLoginUtil.start(userName.getText().toString().trim(), password
+                                .getText().toString(), false, false, null, null, null, null);
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
@@ -212,4 +215,11 @@ public class OtherLoginActivity extends BaseActivity implements OnClickListener,
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (signAndLoginUtil != null) {
+            signAndLoginUtil.destroy();
+        }
+    }
 }

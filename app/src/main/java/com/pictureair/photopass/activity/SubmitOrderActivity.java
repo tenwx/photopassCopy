@@ -142,13 +142,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             case API1.GET_COUPON_SUCCESS:
                 JSONObject couponJson = (JSONObject) msg.obj;
                 couponCount = couponJson.getInteger("amount");
-                customProgressDialog.dismiss();
+                dismissDialog();
                 //更新界面
                 updateShopPriceUI(true);
 
                 break;
             case API1.GET_COUPON_FAILED:
-                customProgressDialog.dismiss();
+                dismissDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                 break;
@@ -164,7 +164,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 payPrice = Float.valueOf(json.getString("totalPrice"));//实际支付总价
 
                 //更新界面
-                customProgressDialog.dismiss();
+                dismissDialog();
                 if (straightwayPreferentialPrice == 0) {
                     updateShopPriceUI(true);
                 } else {
@@ -174,7 +174,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             case API1.PREVIEW_COUPON_FAILED:
                 //使用优惠码失败
                 PictureAirLog.v(TAG, "PREVIEW_COUPON_FAILED code：" + msg.arg1);
-                customProgressDialog.dismiss();
+                dismissDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                 break;
@@ -206,7 +206,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 PictureAirLog.v(TAG, "ADD_ORDER_SUCCESS" + msg.obj);
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 orderId = jsonObject.getString("orderCode");
-                customProgressDialog.dismiss();
+                dismissDialog();
                 if (orderId != null && !orderId.isEmpty()) {
                     goToPayActivity(true);
                 }
@@ -215,7 +215,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
             case API1.ADD_ORDER_FAILED:
                 PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
-                customProgressDialog.dismiss();
+                dismissDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                 //提交订单失败，购物车数量恢复
@@ -283,6 +283,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         allGoodsTextView = (TextView) findViewById(R.id.good_count);
         submitButton.setOnClickListener(this);
         customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
+        customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
         list = (ArrayList<CartItemInfo>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
@@ -341,7 +342,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      * 获取优惠信息
      */
     public void getCoupons() {
-        customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+        showDialog();
         API1.getCartItemCoupons(submitOrderHandler, cartItemIds);
     }
 
@@ -670,7 +671,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                         if (curPositon < 0) {
                             newToast.setTextAndShow(R.string.select_address, Common.TOAST_SHORT_TIME);
                         } else {
-                            customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                            showDialog();
 
                             invoice = assembleInvoiceJson();
                             API1.addOrder(cartItemIds, 1, addressList.get(curPositon).getOutletId(), "", couponCodes,invoice, null, null, submitOrderHandler);
@@ -686,7 +687,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                             uid = channelStr.substring(channelStr.indexOf("&") + 1, channelStr.length());
                         }
                         invoice = assembleInvoiceJson();
-                        customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                        showDialog();
                         API1.addOrder(cartItemIds, 3, "", "", couponCodes,invoice, channelId, uid, submitOrderHandler);
                     }
                 } else {
@@ -809,7 +810,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         }
         if (resultCode == RESULT_OK && requestCode == PREVIEW_COUPON_CODE) {
             //选择优惠码返回 请求API使用优惠券
-            customProgressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+            showDialog();
             couponCodes = JSONArray.parseArray(data.getExtras().getString("couponCodes"));
             couponCount = data.getExtras().getInt("couponCount", 0);
             if (couponCount == 0) {
@@ -854,6 +855,19 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         submitOrderHandler.removeCallbacksAndMessages(null);
+        dismissDialog();
+    }
+
+    private void dismissDialog(){
+        if (customProgressDialog != null && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
+    }
+
+    private void showDialog(){
+        if (customProgressDialog != null && !customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
     }
 
     private class MyURLSpan extends ClickableSpan {

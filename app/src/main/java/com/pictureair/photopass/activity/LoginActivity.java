@@ -71,6 +71,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private static final int REQUEST_ASK_PERMISSION = 1;
     private boolean mIsAskPermission = false;
 
+    private SignAndLoginUtil signAndLoginUtil;
+
     private final Handler loginHandler = new LoginHandler(this);
 
     private static class LoginHandler extends Handler {
@@ -135,8 +137,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
                 break;
 
             case API1.FIND_PWD_SUCCESS:
-                new SignAndLoginUtil(LoginActivity.this, forGetphoto,
-                        forGetPwd, false, false, null, null, null, null, LoginActivity.this);// 登录
+                signAndLoginUtil.start(forGetphoto, forGetPwd, false, false, null, null, null, null);// 登录
                 break;
 
             case START_AGREEMENT_WEBVIEW:
@@ -185,6 +186,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
         appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);// userInfo
 
         myToast = new PWToast(LoginActivity.this);// 获取toast
+        signAndLoginUtil = new SignAndLoginUtil(this, this);
         parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
         login = (Button) findViewById(R.id.login);// 登录按钮
         sign = (Button) findViewById(R.id.sign);// 注册按钮
@@ -290,8 +292,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
                     case AppUtil.PWD_SHORT:// 小于6位
                     case AppUtil.PWD_AVAILABLE:// 密码可用
-                        new SignAndLoginUtil(LoginActivity.this, countryCode + userName.getText().toString().trim(),
-                                password.getText().toString(), false, false, null, null, null, null, this);// 登录
+                        signAndLoginUtil.start(countryCode + userName.getText().toString().trim(),
+                                password.getText().toString(), false, false, null, null, null, null);// 登录
                         break;
 
                     case AppUtil.PWD_EMPTY:// 空
@@ -343,11 +345,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (checkUpdateManager != null) {
             checkUpdateManager.onDestroy();
         }
         loginHandler.removeCallbacksAndMessages(null);
+        if (signAndLoginUtil != null) {
+            signAndLoginUtil.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override

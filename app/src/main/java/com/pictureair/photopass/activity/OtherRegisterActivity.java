@@ -55,12 +55,14 @@ public class OtherRegisterActivity extends BaseActivity implements
     private String mYear_Str = "1996";// 初始化
     private String mMonth_Str = "01";
     private String mDay_Str = "01";
-    View view = null;
+    private View view = null;
 
     private SelectDateWeidget selectDateWeidget;
 
     private ImageView agreeIv;
     private boolean isAgree = false;
+
+    private SignAndLoginUtil signAndLoginUtil;
 
     /*
      * 监听性别 性别只能是两种 male 或female
@@ -161,6 +163,7 @@ public class OtherRegisterActivity extends BaseActivity implements
         }
 
         myToast = new PWToast(OtherRegisterActivity.this);
+        signAndLoginUtil = new SignAndLoginUtil(this, this);
 //		getDateYMD();
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.smssdk_regist);
@@ -293,8 +296,7 @@ public class OtherRegisterActivity extends BaseActivity implements
                                 myToast.setTextAndShow(R.string.name_is_empty,
                                         Common.TOAST_SHORT_TIME);
                             } else if (isAgree) {
-                                new SignAndLoginUtil(OtherRegisterActivity.this, email, pwd, true, true,
-                                    name, birthday, sex, countryCode, OtherRegisterActivity.this);
+                                signAndLoginUtil.start(email, pwd, true, true, name, birthday, sex, countryCode);
                             } else {
                                 myToast.setTextAndShow(R.string.please_agree, Common.TOAST_SHORT_TIME);
                             }
@@ -362,6 +364,9 @@ public class OtherRegisterActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         otherRegisterHandler.removeCallbacksAndMessages(null);
+        if (signAndLoginUtil != null) {
+            signAndLoginUtil.destroy();
+        }
     }
 
     @Override

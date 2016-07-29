@@ -22,6 +22,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     public static final String SIGN_ACTIVITY = "sign";
     public static final String FORGET_ACTIVITY = "forget";
     private String whatActivity = "";
+    private SignAndLoginUtil signAndLoginUtil;
 
     private Handler handler = new Handler() {
         @Override
@@ -86,11 +87,9 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
 
     private void validateSuccess() {
         if (whatActivity.equals(SIGN_ACTIVITY))
-            new SignAndLoginUtil(context, phone, pwd, true, false,
-                    null, null, null, null, this);
+            signAndLoginUtil.start(phone, pwd, true, false, null, null, null, null);
         else if (whatActivity.equals(FORGET_ACTIVITY))
-            new SignAndLoginUtil(context, phone,
-                    pwd, false, false, null, null, null, null, this);// 登录
+            signAndLoginUtil.start(phone, pwd, false, false, null, null, null, null);// 登录
     }
 
     public RegisterTool(String tokenId, Context context, RegisterOrForgetCallback registerView, String languageType) {
@@ -98,6 +97,7 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
         this.context = context;
         this.registerOrForgetView = registerView;
         this.languageType = languageType;
+        signAndLoginUtil = new SignAndLoginUtil(context, this);
     }
 
     public void submit(String validateCode, String phone, String pwd) {
@@ -118,7 +118,10 @@ public class RegisterTool implements SignAndLoginUtil.OnLoginSuccessListener {
     }
 
     public void onDestroy() {
-
+        if (signAndLoginUtil != null) {
+            signAndLoginUtil.destroy();
+        }
+        registerOrForgetView.goneDialog();
     }
 
     public void forgetPwd(String pwd) {

@@ -1443,7 +1443,7 @@ public class AppUtil {
                     break;
                 }
             }
-            if (!clone_contains) {
+            if (!clone_contains && locationList.size() > 0) {
                 //初始化item的信息
                 photoItemInfo = new PhotoItemInfo();
                 photoItemInfo.locationId = locationList.get(resultPosition).locationId;
@@ -1487,19 +1487,18 @@ public class AppUtil {
         DiscoverLocationItemInfo locationInfo;
         try {
             JSONObject response = JSONObject.parseObject(locationJson);
-            if (response == null) {
-                return result;
-            }
-            JSONArray resultArray = response.getJSONArray("locations");
-            for (int i = 0; i < resultArray.size(); i++) {
-                JSONObject object = resultArray.getJSONObject(i);
-                locationInfo = JsonUtil.getLocation(object);
-                if (!showPhoto) {//不需要显示照片
-                    if (locationInfo.isShow == 1) {
+            if (response != null) {
+                JSONArray resultArray = response.getJSONArray("locations");
+                for (int i = 0; i < resultArray.size(); i++) {
+                    JSONObject object = resultArray.getJSONObject(i);
+                    locationInfo = JsonUtil.getLocation(object);
+                    if (!showPhoto) {//不需要显示照片
+                        if (locationInfo.isShow == 1) {
+                            result.add(locationInfo);
+                        }
+                    } else {
                         result.add(locationInfo);
                     }
-                } else {
-                    result.add(locationInfo);
                 }
             }
         } catch (JSONException e) {
