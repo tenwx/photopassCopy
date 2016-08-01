@@ -389,10 +389,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.BUY_PHOTO_SUCCESS:
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->buy photo success");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
@@ -418,10 +415,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.BUY_PHOTO_FAILED:
                 //购买失败
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->by foto fild");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
@@ -447,27 +441,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.GET_GOODS_FAILED:
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->get gds fild");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.ADD_TO_CART_FAILED:
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->add to crt fild");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                 break;
 
             case API1.ADD_TO_CART_SUCCESS:
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->add cart succe");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 editor = sharedPreferences.edit();
                 editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
@@ -548,10 +533,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case LOAD_FROM_NETWORK:
                 //添加模糊
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->network");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 if (null != oriClearBmp) {
                     PictureAirLog.v(TAG, "bitmap 2 not null");
                     initBlur();
@@ -575,10 +557,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (null != arg2)
                     oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->local");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 if (null != oriClearBmp) {
                     initBlur();
                 }
@@ -605,10 +584,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     //从网络获取
                     API1.getADLocations(oldPositon, previewPhotoHandler);
                 }
-                if (dialog.isShowing()) {
-                    PictureAirLog.out("dismiss--->ad");
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 break;
 
             case GET_LOCATION_AD_DONE:
@@ -709,9 +685,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case NO_PHOTOS_AND_RETURN://没有图片
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissDialog();
                 finish();
                 break;
 
@@ -1048,9 +1022,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
             PictureAirLog.v(TAG, "need show blur view");
             image01.setVisibility(View.INVISIBLE);
-            if (!dialog.isShowing()) {
-                dialog.show();
-            }
+            showDialog();
             touchtoclean.setVisibility(View.VISIBLE);
             blurFraRelativeLayout.setVisibility(View.VISIBLE);
             currentPhotoADTextView.setVisibility(View.GONE);
@@ -1065,10 +1037,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             PictureAirLog.out("set enable in other conditions");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);
-            if (dialog.isShowing()) {
-                PictureAirLog.out("dismiss--->other");
-                dialog.dismiss();
-            }
+            dismissDialog();
         }
 
         if (isLandscape) {//横屏模式
@@ -1395,9 +1364,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (photoInfo == null) {
                     return;
                 }
-                if (!dialog.isShowing()) {
-                    dialog.show();
-                }
+                showDialog();
                 API1.buyPhoto(photoInfo.photoId, previewPhotoHandler);
                 dia.dismiss();
                 break;
@@ -1409,9 +1376,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     return;
                 }
-                if (!dialog.isShowing()) {
-                    dialog.show();
-                }
+                showDialog();
                 //获取商品
                 getALlGoods();
                 dia.dismiss();
@@ -1627,6 +1592,19 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (maskBmp != null) {
             maskBmp.recycle();
             maskBmp = null;
+        }
+        dismissDialog();
+    }
+
+    private void dismissDialog(){
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
+    private void showDialog(){
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
         }
     }
 

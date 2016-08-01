@@ -207,6 +207,9 @@ public class StoryFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 
+			if (position < 0) {
+				position = 0;
+			}
 			if (photoInfoArrayList.get(position).isVideo == 1) {
 				PictureAirLog.v(TAG,"点击了视频");
 				PhotoInfo info = photoInfoArrayList.get(position);

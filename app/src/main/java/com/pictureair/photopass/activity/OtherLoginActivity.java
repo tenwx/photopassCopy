@@ -15,14 +15,13 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SignAndLoginUtil;
-import com.pictureair.photopass.widget.PWToast;
-
-import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.widget.EditTextWithClear;
+import com.pictureair.photopass.widget.PWToast;
 
 public class OtherLoginActivity extends BaseActivity implements OnClickListener, SignAndLoginUtil.OnLoginSuccessListener {
     private static final String TAG = "OtherLoginActivity";

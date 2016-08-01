@@ -96,7 +96,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.ADDRESS_LIST_SUCCESS://获取所有地址列表
-                initAddressData(msg);
+                getAddressData(msg);
                 break;
 
             case API1.ADD_ADDRESS_LIST_SUCCESS://添加新地址
@@ -123,7 +123,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         JSONObject resultJsonObject = (JSONObject) msg.obj;
 
         PictureAirLog.out("resi;t===>" + resultJsonObject.toJSONString());
-        listData.clear();
         listData.addAll(JsonUtil.getAddressList(resultJsonObject));
         Collections.sort(listData);
     }
@@ -174,10 +173,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         personIb=(ImageButton) findViewById(R.id.invoice_personal_ib);
         companyRl=(RelativeLayout) findViewById(R.id.invoice_company_rl);
         companyIb=(ImageButton) findViewById(R.id.invoice_company_ib);
-//        photoRl=(RelativeLayout) findViewById(R.id.invoice_photo_rl);
-//        photoIb=(ImageButton) findViewById(R.id.invoice_photo_ib);
-//        serviceRl=(RelativeLayout) findViewById(R.id.invoice_service_rl);
-//        serviceIb=(ImageButton) findViewById(R.id.invoice_service_ib);
         nocheckRl= (RelativeLayout) findViewById(R.id.invoice_nocheck);
         noInvoice=(ImageButton) findViewById(R.id.invoice_nocheck_ib);
         editText= (EditTextWithClear) findViewById(R.id.invoice_et);
@@ -194,10 +189,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         personIb.setOnClickListener(this);
         companyRl.setOnClickListener(this);
         companyIb.setOnClickListener(this);
-//        photoRl.setOnClickListener(this);
-//        photoIb.setOnClickListener(this);
-//        serviceRl.setOnClickListener(this);
-//        serviceIb.setOnClickListener(this);
         nocheckRl.setOnClickListener(this);
         noInvoice.setOnClickListener(this);
         backIV.setOnClickListener(this);
@@ -212,13 +203,32 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
             }
         });
 
-//        personIb.setImageResource(R.drawable.sele);
-//        photoIb.setImageResource(R.drawable.sele);
-       setFilterListener();
+        setFilterListener();
+        addressAdapter=new SendAddressAdapter(this,listData);
+        addressAdapter.setAddressItemListener(new SendAddressAdapter.AddressItemListener() {
+            @Override
+            public void editItem(int position) {
+                curEditItemPosition=position;
+                Intent intent=new Intent(InvoiceActivity.this,NewAddressActivity.class);
+                Bundle b=new Bundle();
+                b.putParcelable("address", listData.get(position));
+                intent.putExtras(b);
+                startActivityForResult(intent,MODI_ADDRESS);
+            }
+
+            @Override
+            public void clickItem(int position,SendAddress address) {
+                curEditItemPosition=position;
+                newAddAddress=address;
+                API1.modifyInvoiceAddress(invoiceHandler,address);
+            }
+        });
+
+        listAddress.setAdapter(addressAdapter);
     }
 
     //加载地址
-    public void loadData(){
+    private void loadData(){
         API1.getInvoiceAddressList(invoiceHandler);
     }
 
@@ -341,33 +351,6 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 break;
         }
     }
-
-    //初始化地址列表
-    private void initAddressData(Message msg){
-        getAddressData(msg);
-        addressAdapter=new SendAddressAdapter(this,listData);
-        addressAdapter.setAddressItemListener(new SendAddressAdapter.AddressItemListener() {
-            @Override
-            public void editItem(int position) {
-                curEditItemPosition=position;
-                Intent intent=new Intent(InvoiceActivity.this,NewAddressActivity.class);
-                Bundle b=new Bundle();
-                b.putParcelable("address",listData.get(position));
-                intent.putExtras(b);
-                startActivityForResult(intent,MODI_ADDRESS);
-            }
-
-            @Override
-            public void clickItem(int position,SendAddress address) {
-                curEditItemPosition=position;
-                newAddAddress=address;
-                API1.modifyInvoiceAddress(invoiceHandler,address);
-            }
-        });
-
-        listAddress.setAdapter(addressAdapter);
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

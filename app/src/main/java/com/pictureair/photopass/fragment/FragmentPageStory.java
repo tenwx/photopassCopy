@@ -1834,7 +1834,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     }
 
     private void download(ArrayList<PhotoInfo> arrayList) {
-        if (arrayList.size() > 0) {
+        if (context != null && arrayList.size() > 0) {
             Intent intent = new Intent(context, DownloadService.class);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("photos", arrayList);

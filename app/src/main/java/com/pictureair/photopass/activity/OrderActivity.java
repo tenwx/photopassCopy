@@ -512,6 +512,7 @@ public class OrderActivity extends BaseFragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         orderActivityHandler.removeCallbacksAndMessages(null);
+        hideProgressDialog();
     }
 
     /**
