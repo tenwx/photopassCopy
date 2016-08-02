@@ -22,7 +22,6 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.ListOfPPAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
-import com.pictureair.photopass.entity.BindPPInfo;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
@@ -166,9 +165,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                     listPP.setVisibility(View.INVISIBLE);
                     noPhotoPassView.setVisibility(View.VISIBLE);
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 break;
 
             case API1.REMOVE_PP_SUCCESS:
@@ -190,16 +187,14 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case API1.GET_ALL_PHOTOS_BY_CONDITIONS_FAILED://获取图片失败
             case API1.REMOVE_PP_FAILED:
-                if (customProgressDialog.isShowing())
-                    customProgressDialog.dismiss();
+                dismissDialog();
                 // 请求删除API失败
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             case REMOVE_PP_FROM_DB_FINISH://数据库更新完毕之后
                 listPPAdapter.refresh(showPPCodeList, true);
-                if (customProgressDialog.isShowing())
-                    customProgressDialog.dismiss();
+                dismissDialog();
                 break;
 
             case API1.GET_PPS_SUCCESS:// 获取pp列表成功。 如果status等于 200 的时候
@@ -262,9 +257,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
             case API1.GET_PPS_FAILED:// 获取pp列表失败
 //                myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 netWorkOrNoCountView.setVisibility(View.VISIBLE);
                 netWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, myPPHandler, true);
                 noPhotoPassView.setVisibility(View.GONE);
@@ -273,9 +266,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 
                 break;
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
-                if (!customProgressDialog.isShowing()) {
-                    customProgressDialog.show();
-                }
+                showDialog();
                 API1.getPPSByUserId(myPPHandler);
                 break;
 
@@ -293,9 +284,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 } else {
                     noPhotoPassView.setVisibility(View.GONE);
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 break;
             case 2:
                 ok.setText(formaStringPPP(msg.arg1, dppp.capacity));
@@ -315,9 +304,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     listPP.setVisibility(View.GONE);
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 break;
 
 //                case API1.FAILURE://连接失败
@@ -365,9 +352,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 break;
 
             case API1.BIND_PPS_DATE_TO_PP_FAILED: //绑定失败。
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissDialog();
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
@@ -440,47 +425,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                 .pwDialogCreate();
     }
 
-
-    /**
-     * 使用已有的迪斯尼乐拍通一卡通  情况下
-     */
-    private void initView_selectPP1(){
-        if (!customProgressDialog.isShowing()) {
-            customProgressDialog.show();
-        }
-        String photoPassCode = this.getIntent().getStringExtra("photoPassCode");
-        final String shootTime = this.getIntent().getStringExtra("shootTime");
-        String[] photoCode = null;
-        if (photoPassCode.contains(",")){
-            photoCode = photoPassCode.split(",");
-        }
-        ok = (TextView) findViewById(R.id.ok);
-        ok.setVisibility(View.VISIBLE);
-        ok.setOnClickListener(this);
-        ok.setText(formaStringPPP(0, 1));
-        ok.setEnabled(false);
-        ok.setTextColor(getResources().getColor(R.color.gray_light5));
-        final String[] finalPhotoCode = photoCode;
-        new Thread() {
-            public void run() {
-                ArrayList<PPinfo> PPlist = new ArrayList<PPinfo>(); //创造一个List。
-                for (int i = 0; i< finalPhotoCode.length; i++){
-                    PPinfo pPinfo = new PPinfo();
-                    pPinfo.setPpCode(finalPhotoCode[i]);
-                    pPinfo.setShootDate(shootTime);
-                    PPlist.add(pPinfo);
-                }
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(PPlist, 2);
-
-                dppp = new PPPinfo();
-                dppp.capacity = 1;
-                dppp.bindInfo = new ArrayList<BindPPInfo>();
-
-                myPPHandler.sendEmptyMessage(GET_SELECT_PP_SUCCESS);
-            }
-        }.start();
-    }
-
     private void initView_selectPP() {
         ok = (TextView) findViewById(R.id.ok);
         ok.setVisibility(View.VISIBLE);
@@ -488,9 +432,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         ok.setText(formaStringPPP(dppp.bindInfo.size(), dppp.capacity));
         ok.setEnabled(false);
         ok.setTextColor(getResources().getColor(R.color.gray_light5));
-        if (!customProgressDialog.isShowing()) {
-            customProgressDialog.show();
-        }
+        showDialog();
         View view = LayoutInflater.from(this).inflate(R.layout.pp_header, null);
         listPP.addHeaderView(view);
         getPhotoUrlFromDatabase();
@@ -505,9 +447,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         myApplication = (MyApplication) getApplication();
         menuLayout.setOnClickListener(this);
         // 获取PP信息
-        if (!customProgressDialog.isShowing()) {
-            customProgressDialog.show();
-        }
+        showDialog();
         API1.getPPSByUserId(myPPHandler);
         // pPCodeList = getIntent().getParcelableArrayListExtra("pPCodeList");
         showPPCodeList = new ArrayList<PPinfo>();
@@ -624,9 +564,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
             editor.commit();
-            if (!customProgressDialog.isShowing()) {
-                customProgressDialog.show();
-            }
+            showDialog();
             updateUI(UPDATE_UI);
         }
     }
@@ -673,6 +611,19 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             EventBus.getDefault().unregister(this);
         }
         myPPHandler.removeCallbacksAndMessages(null);
+        dismissDialog();
+    }
+
+    private void showDialog(){
+        if (customProgressDialog != null && !customProgressDialog.isShowing()) {
+            customProgressDialog.show();
+        }
+    }
+
+    private void dismissDialog(){
+        if (customProgressDialog != null && customProgressDialog.isShowing()) {
+            customProgressDialog.dismiss();
+        }
     }
 
 
@@ -704,9 +655,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private void goIntent() {
         Intent intent = new Intent(MyPPActivity.this, MyPPPActivity.class);
         API1.PPPlist.clear();
-        if (customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
+        dismissDialog();
         startActivity(intent);
         finish();
     }
@@ -773,9 +722,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
      * 2.获取最新的pp列表
      */
     private void getPPList(String code) {
-        if (!customProgressDialog.isShowing()) {
-            customProgressDialog.show();
-        }
+        showDialog();
 
         API1.getPhotosByConditions(MyApplication.getTokenId(), myPPHandler, null, code.replace("ppOK", ""));
     }
@@ -828,16 +775,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                                 .setPWDialogContentCenter(true)
                                 .pwDilogShow();
                     } else {
-                        if (!customProgressDialog.isShowing()) {
-                            customProgressDialog.show();
-                        }
+                        showDialog();
                         API1.bindPPsDateToPPP(pps, dppp.PPPCode, myPPHandler);
                     }
                     break;
 
                 case DELETE_API_DIALOG:
-                    if (!customProgressDialog.isShowing())
-                        customProgressDialog.show();
+                    showDialog();
                     UmengUtil.onEvent(MyPPActivity.this,Common.EVENT_ONCLICK_DEL_PP); //友盟统计
                     API1.removePPFromUser(showPPCodeList.get(deletePosition).getPpCode(), deletePosition, myPPHandler);
                     break;

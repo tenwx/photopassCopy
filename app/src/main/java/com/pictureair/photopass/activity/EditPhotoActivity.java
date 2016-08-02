@@ -81,9 +81,9 @@ import java.util.List;
 //显示的时候用压缩过的bitmap，合成的时候，用原始的bitmap
 public class EditPhotoActivity extends BaseActivity implements OnClickListener, LocationUtil.OnLocationNotificationListener, PWDialog.OnPWDialogClickListener {
 	//视图
-	public StickerView mStickerView;// 贴图层View
-	public Bitmap mainBitmap; //低层显示的bitmap，就是编辑的图片。
-	public ImageView mainImage; // 原始图
+	private StickerView mStickerView;// 贴图层View
+	private Bitmap mainBitmap; //低层显示的bitmap，就是编辑的图片。
+	private ImageView mainImage; // 原始图
 
 	private ImageLoader imageLoader;
 	private DisplayImageOptions options;
@@ -206,20 +206,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			case 9999: //加载网络图片。
 				mainBitmap = imageLoader.loadImageSync(photoURL, isEncrypted);
 				mainImage.setImageBitmap(mainBitmap);
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
+				dismissDialog();
 				break;
 			case LOAD_IMAGE_FINISH:
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
-				break;
-
 			case INIT_DATA_FINISHED:
-				if (dialog.isShowing()) {
-					dialog.dismiss();
-				}
+				dismissDialog();
 				break;
 
 			case START_ASYNC:
@@ -551,34 +542,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 			//编辑边框。
 			case R.id.edit_frame:
-//
-//			System.out.println(ssss.equals("---"));
-//
-
 				titleTextView.setText(R.string.frames);
 				onEditStates();
 				eidtAdapter = new EditActivityAdapter(EditPhotoActivity.this,mainBitmap, new ArrayList<String>(),1, frameInfos, editPhotoHandler);
 				top_HorizontalListView.setAdapter(eidtAdapter);
 				top_HorizontalListView.setOnItemClickListener(null);
-//			top_HorizontalListView
-//			.setOnItemClickListener(new OnItemClickListener() {
-//				//加载边框。
-//				@Override
-//				public void onItemClick(AdapterView<?> parent,
-//						View view, int position, long id) {
-//					// TODO Auto-generated method stub
-//					curFramePosition = position;
-//					//							loadframe(position);
-//					editType = 1;
-//					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
-//					dialog.show();
-//					Message msg = handler.obtainMessage();
-//					msg.obj = position;
-//					msg.what = 1111;
-//					handler.sendMessage(msg);
-//				}
-//			});
 				break;
+
 			case R.id.edit_filter:
 				onEditStates();
 				titleTextView.setText(R.string.magicbrush);
@@ -735,7 +705,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
 					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-					dialog.show();
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
@@ -743,7 +712,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							scan(url);
 							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
 							Looper.prepare();
-							dialog.dismiss();
+							dismissDialog();
 							Looper.loop();
 						}
 					}).start();
@@ -953,22 +922,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			PictureAirLog.out("file exists");
 			loadImage(file.toString());
 		}else{
-			//如果sd卡不存在，判断是否在缓存种。
-//			System.out.println("file not exists");
-//			// 获取在缓存中的文件的名字
-//			final File dirfile = new File(this.getCacheDir() + "/"
-//					+ photoInfo.photoId);
-//			System.out.println("dirfile = " + dirfile.toString());
-//			if (dirfile.exists()) {// 5、如果缓存存在，则从缓存中获取图片信息
-//				System.out.println("cache exists");
-//				Log.e(TAG,"缓存存在");
-//				loadImage(dirfile.toString());
-//			}else{
-//				 Log.e(TAG,"缓存不存在");
 			editPhotoHandler.sendEmptyMessage(9999); //加载网络图片。
-				//如果缓存不存在，从网上获取。 因为是从前面的页面跳转过来，所以图片都会存在缓存或者sd卡。所以没有必要从网上获取。
-
-//			}
 		}
 	}
 
@@ -1021,7 +975,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 	private final class SaveStickersTask extends
 			AsyncTask<Bitmap, Void, Bitmap> {
-		private CustomProgressDialog dialog;
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
 			// System.out.println("保存贴图!");
@@ -1091,20 +1044,15 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					}
 				}
 
-
-
 				Canvas canvas = new Canvas(heBitmap);
 				Paint point = new Paint();
-				point.setXfermode(new PorterDuffXfermode(
-						android.graphics.PorterDuff.Mode.SRC_OVER));
+				point.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_OVER));
 				Matrix matrix2 = new Matrix();
-				matrix2.postScale(
-						(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
+				matrix2.postScale((float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
 						(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
 
-										frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
-												frameBitmap.getWidth(), frameBitmap.getHeight(),
-												matrix2, true);
+				frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
+						frameBitmap.getWidth(), frameBitmap.getHeight(),matrix2, true);
 
 				canvas.drawBitmap(mainBitmap, 0, 0, point);
 //				canvas.drawBitmap(frameBitmap, matrix2, point);
@@ -1117,11 +1065,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				index = editPhotoInfoArrayList.size() - 1;
 
 				return heBitmap;
-//				}else{
-//					.
-//					Log.e("应用原图", "没有边框");
-//					return heBitmap;  // 不应用边框时，显示原图。
-//				}
 			}
 			return null;
 		}
@@ -1129,13 +1072,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
-			dialog.dismiss();
+			dismissDialog();
 		}
 
 		@Override
 		protected void onCancelled(Bitmap result) {
 			super.onCancelled(result);
-			dialog.dismiss();
+			dismissDialog();
 		}
 
 		@Override
@@ -1149,7 +1092,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			exitEditStates();
 			preview_save.setVisibility(View.VISIBLE);
 			check();
-			dialog.dismiss();
+			dismissDialog();
 
 		}
 
@@ -1157,7 +1100,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		protected void onPreExecute() {
 			super.onPreExecute();
 			dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.saving), false, null);
-			dialog.show();
 
 		}
 	}
@@ -1171,10 +1113,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 */
 	private final class ExcuteFilterTask extends
 			AsyncTask<Bitmap, Void, Bitmap> {
-		private CustomProgressDialog dialog;
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
 			// System.out.println("保存贴图!");
+			if (params[0] == null) {
+				return null;
+			}
 			if (filter instanceof LomoFi) {
 				newImage = ((LomoFi) filter).transform(params[0]);
 			} else if (filter instanceof EarlyBird) {
@@ -1203,27 +1147,28 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
-			dialog.dismiss();
+			dismissDialog();
 		}
 
 		@Override
 		protected void onCancelled(Bitmap result) {
 			super.onCancelled(result);
-			dialog.dismiss();
+			dismissDialog();
 		}
 
 		@Override
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
-			mainImage.setImageBitmap(result);
-			dialog.dismiss();
+			if (result != null) {
+				mainImage.setImageBitmap(result);
+			}
+			dismissDialog();
 		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 			dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
-			dialog.show();
 
 		}
 	}
@@ -1257,7 +1202,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 			}
 		} else {// 没有边框
-			dialog.dismiss();
+			dismissDialog();
 			frameImageView.setVisibility(View.INVISIBLE);
 		}
 	}
@@ -1319,6 +1264,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap = null;
 		}
 		editPhotoHandler.removeCallbacksAndMessages(null);
+		dismissDialog();
+	}
+
+	private void dismissDialog() {
+		if (dialog != null && dialog.isShowing()) {
+			dialog.dismiss();
+		}
 	}
 
 

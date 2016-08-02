@@ -145,6 +145,9 @@ public class EditPhotoUtil {
      * @param filePath
      */
     public static void saveBitmap(Bitmap bm, String filePath) {
+        if (bm == null) {
+            return;
+        }
         File f = new File(filePath);
         if (f.exists()) {
             f.delete();
