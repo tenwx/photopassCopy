@@ -1474,7 +1474,7 @@ public class PictureAirDbManager {
         database = DBManager.getInstance().readData();
         database.beginTransaction();
         PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ?", new String[]{userId,success?"true":"false"});
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? order by downloadTime", new String[]{userId,success?"true":"false"});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
                 do {

@@ -12,8 +12,6 @@ import android.widget.ImageView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.DownLoadFramentAdapter;
-import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
@@ -106,9 +104,6 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onPageSelected(int position) {
-//        if (position == 1) {
-//            loadSuccessFragment.updateList();
-//        }
     }
 
     @Override

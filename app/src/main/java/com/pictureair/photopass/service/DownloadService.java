@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
+import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
@@ -53,6 +54,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -64,17 +66,12 @@ import de.greenrobot.event.Subscribe;
 public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
     private CopyOnWriteArrayList<DownloadFileStatus> downloadList = new CopyOnWriteArrayList<DownloadFileStatus>();
-    private List<DownloadFileStatus> removeCache = new Vector<DownloadFileStatus>();
     private Map<String,DownloadFileStatus> taskList = new HashMap<>();
-//    private Map<String,DownloadFileStatus> cacheList = new HashMap<>();
-    private int toLoadCount = 0;
     private Map<String,File> fileList = new ConcurrentHashMap<>();
-    private int downed_num = 0;//实际下载照片数
-    private int exist_num = 0 , scan_num = 0;//无需下载的照片数,扫描成功的照片数
+    private AtomicInteger downed_num = new AtomicInteger(0);//实际下载照片数
     private int failed_num = 0;//下载失败的照片数
     private boolean mFinish = false;
     private boolean mIsErrorsAdd = false;
-    private boolean reconnect = false;
 //    private boolean clear
 
     private Context mContext = this;
@@ -84,17 +81,14 @@ public class DownloadService extends Service {
     private final static int START_DOWNLOAD = 2;
     public final static int ADD_DOWNLOAD = 3;
     public final static int CLEAR_FAILED = 4;
-//    public final static int SEND_TO_FRAGMENT = 4;
 
     private boolean isDownloading = false;
-    //    private File file;  //文件
-//    private String photoId;// 图片的photoId
     private PWToast myToast;
     private PhotoBind photoBind = new PhotoBind();
     private Handler adapterHandler;
     private PictureAirDbManager pictureAirDbManager;
     private SharedPreferences preferences;
-    private int databasePhotoCount;//未下载之前的数据库照片数量
+    private AtomicInteger databasePhotoCount = new AtomicInteger(0);//未下载之前的数据库照片数量
     private ExecutorService fixedThreadPool;
     private CountDownLatch countDownLatch;
     private boolean mSartNotificate = false;
@@ -110,8 +104,7 @@ public class DownloadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        PictureAirLog.out("downloadService ---------> onCreate" + downed_num + "_" + failed_num);
-        PictureAirLog.out("onCreate downed_num："+downed_num);
+        PictureAirLog.out("downloadService ---------> onCreate" + downed_num.get() + "_" + failed_num);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         myToast = new PWToast(getApplicationContext());
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
@@ -138,7 +131,7 @@ public class DownloadService extends Service {
             } else if (photos != null) {
                 //将新的数据放入到下载队列的末尾
                 synchronized (taskList) {
-                    if (reconnect > -1) {
+                    if (reconnect > -1) {//需要重连的走这个流程
                         mSartNotificate = false;
                         if (photos.size() >0 && downloadList.size() >0) {
                             int ifOne = b.getInt("one",-1);
@@ -154,8 +147,10 @@ public class DownloadService extends Service {
                                     }
                                 }
                             }
+                            failed_num -= photos.size();
+                            if (failed_num <0) failed_num = 0;
                         }
-                    } else {
+                    } else {//正常下载走这个
                         if (photos.size() >0) {
                             hasPhotos = true;
                             hasPhotos2 = true;
@@ -171,30 +166,29 @@ public class DownloadService extends Service {
                             final File file = new File(filedir + "/" + fileName);
                             if (!file.exists()) {
                                 downloadList.add(fileStatus);
-                                ++toLoadCount;
                                 countDownLatch.countDown();
-                            }else{
-                                lastUrl = file.toString();
-                                ++downed_num;
-                                PictureAirLog.out("onStartCommand downed_num："+downed_num);
+                            }else{//图片已存在则直接保存数据库，不去下载
+                                lastUrl = fileStatus.getUrl();
+                                downed_num.incrementAndGet();
+                                PictureAirLog.out("onStartCommand downed_num："+downed_num.get());
                                 PictureAirLog.v("onStartCommand","file exists");
-                                exist_num++;
-//                                ++toLoadCount;
-                                fixedThreadPool.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        long fileLength = file.length()/1000/1000;
-                                        String formatLength = AppUtil.formatData(fileLength);
-                                        fileStatus.setTotalSize(formatLength);
-                                        String userId = preferences.getString(Common.USERINFO_ID, "");
-                                        String loadTime = AppUtil.getFormatCurrentTime();
-                                        pictureAirDbManager.insertLoadSuccessPhotos(userId,fileStatus,loadTime,true);
-                                        countDownLatch.countDown();
-                                    }
-                                });
+                                if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+                                    fixedThreadPool.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            long fileLength = file.length() / 1000 / 1000;
+                                            String formatLength = AppUtil.formatData(fileLength);
+                                            fileStatus.setTotalSize(formatLength);
+                                            String userId = preferences.getString(Common.USERINFO_ID, "");
+                                            String loadTime = AppUtil.getFormatCurrentTime();
+                                            pictureAirDbManager.insertLoadSuccessPhotos(userId, fileStatus, loadTime, true);
+                                            countDownLatch.countDown();
+                                        }
+                                    });
+                                }
                             }
                             PictureAirLog.out("downloadlist size =" + downloadList.size());
-                            PictureAirLog.out("onStartCommand downed_num："+downed_num);
+                            PictureAirLog.out("onStartCommand downed_num："+downed_num.get());
                         }
                     }
                 }
@@ -233,51 +227,52 @@ public class DownloadService extends Service {
             mSartNotificate = true;
             startNotification();
         }
-        fixedThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (countDownLatch != null){
-                        countDownLatch.await();
-                    }
-                    String userId = preferences.getString(Common.USERINFO_ID, "");
+        if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+            fixedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (countDownLatch != null) {
+                            countDownLatch.await();
+                        }
+                        String userId = preferences.getString(Common.USERINFO_ID, "");
 
-                    PictureAirLog.out("prepareDownload>>>>>>>>>>>>>read database");
-                    databasePhotoCount = pictureAirDbManager.getDownloadPhotoCount(userId,true);
-                    databasePhotoCount -= downed_num;
-                    PictureAirLog.out("prepareDownload>>>>>>>>>>databasePhotoCount:" +databasePhotoCount);
-                    if (!mIsErrorsAdd){
-                        mIsErrorsAdd = true;
-                        List<PhotoDownLoadInfo> infos = pictureAirDbManager.getPhotos(userId,false);
-                        if (infos != null && infos.size() >0) {
+                        PictureAirLog.out("prepareDownload>>>>>>>>>>>>>read database");
+                        int count = pictureAirDbManager.getDownloadPhotoCount(userId, true);
+                        count -= downed_num.get();
+                        databasePhotoCount.set(count);
+                        PictureAirLog.out("prepareDownload>>>>>>>>>>databasePhotoCount:" + databasePhotoCount);
+                        if (!mIsErrorsAdd) {
+                            mIsErrorsAdd = true;
+                            List<PhotoDownLoadInfo> infos = pictureAirDbManager.getPhotos(userId, false);
+                            if (infos != null && infos.size() > 0) {
 
-                            for (int i = 0;i<infos.size();i++) {
-                                PhotoDownLoadInfo info = infos.get(i);
-                                DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "0", "0", "0", info.getPhotoId(), info.getIsVideo(),info.getPreviewUrl(),info.getShootTime(),info.getFailedTime());
-                                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                                downloadList.add(fileStatus);
-                                ++toLoadCount;
-
+                                for (int i = 0; i < infos.size(); i++) {
+                                    PhotoDownLoadInfo info = infos.get(i);
+                                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "0", "0", "0", info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), info.getFailedTime());
+                                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                                    downloadList.add(fileStatus);
+                                }
                             }
                         }
+                        if (adapterHandler != null) {
+                            adapterHandler.sendEmptyMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS);
+                        } else {
+                            handler.sendEmptyMessage(START_DOWNLOAD);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    if (adapterHandler != null) {
-                        adapterHandler.sendEmptyMessage(DownLoadingFragment.SERVICE_LOAD_SUCCESS);
-                    }else {
-                        handler.sendEmptyMessage(START_DOWNLOAD);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
+        }
     }
 
     //下载文件成功之后的回调函数
     Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
-                case START_DOWNLOAD:
+                case START_DOWNLOAD://开始下载
                     PictureAirLog.out("downloadService----------->START_DOWNLOAD");
                     PictureAirLog.v("handleMessage","START_DOWNLOAD");
                     if (downloadList.size() > 0){
@@ -301,13 +296,13 @@ public class DownloadService extends Service {
                             if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){
                                 mFinish = true;
                                 stopSelf();//下载服务停止
-                                downed_num = 0;
+                                downed_num.set(0);
                                 failed_num = 0;
                                 isDownloading = false;
-                                PictureAirLog.out("START_DOWNLOAD downed_num："+downed_num);
+                                PictureAirLog.out("START_DOWNLOAD downed_num："+downed_num.get());
                             }
                         }
-                    }else{
+                    }else{//从数据库中查找出所有下载失败的照片无法直接下载，会从这里结束
                         PictureAirLog.out("finish download-------------->");
                         mFinish = true;
                         if (hasPhotos2){
@@ -315,7 +310,7 @@ public class DownloadService extends Service {
                             handler.sendEmptyMessage(FINISH_DOWNLOAD);
                         }else {
                             stopSelf();//下载服务停止
-                            downed_num = 0;
+                            downed_num.set(0);
                             failed_num = 0;
                             isDownloading = false;
                         }
@@ -324,15 +319,17 @@ public class DownloadService extends Service {
                     break;
                 case FINISH_DOWNLOAD://下载结束
                     //如果下载数目一致，提示用户下载完毕，并且让service停止掉
-                    PictureAirLog.out("下载完毕,共下载了" + downed_num + "张照片，失败了" + failed_num + "张");
-                    String notificationDetail = String.format(mContext.getString(R.string.download_detail1), downed_num);
+                    PictureAirLog.out("下载完毕,共下载了" + downed_num.get() + "张照片，失败了" + failed_num + "张");
+                    String notificationDetail = String.format(mContext.getString(R.string.download_detail1), downed_num.get());
                     if (failed_num >0) {
-                        notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num, failed_num);
+                        notificationDetail = String.format(mContext.getString(R.string.download_detail2), downed_num.get(), failed_num);
                     }
-                    Intent intent = new Intent();
-                    intent.setAction(android.content.Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(new File(lastUrl)), "image/*");
-                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+                    Intent intent = new Intent(mContext, DownloadPhotoPreviewActivity.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putInt("position",-1);
+                    bundle1.putString("path",lastUrl);
+                    intent.putExtras(bundle1);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     Notification notification = new NotificationCompat.Builder(mContext).
                             setSmallIcon(R.drawable.pp_icon).setAutoCancel(true).setContentTitle(mContext.getString(R.string.app_name))
@@ -343,10 +340,10 @@ public class DownloadService extends Service {
 
                     stopSelf();//下载服务停止
                     manager.notify(0, notification);
-                    downed_num = 0;
+                    downed_num.set(0);
                     failed_num = 0;
                     isDownloading = false;
-                    PictureAirLog.out("FINISH_DOWNLOAD downed_num："+downed_num);
+                    PictureAirLog.out("FINISH_DOWNLOAD downed_num："+downed_num.get());
                     if (adapterHandler != null) {
                         adapterHandler.sendEmptyMessage(DownLoadingFragment.DOWNLOAD_FINISH);
                     }
@@ -367,19 +364,22 @@ public class DownloadService extends Service {
                         Bundle failBundle = msg.getData();
                         final DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
                         taskList.remove(failStatus.getUrl());
-                        if (adapterHandler != null) {
-                            PictureAirLog.v("handleMessage","DOWNLOAD_PHOTO_FAILED");
-                            adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
-                        } else {
-                            handler.sendEmptyMessage(ADD_DOWNLOAD);
-                        }
+
                         final String userId = preferences.getString(Common.USERINFO_ID, "");
-                        fixedThreadPool.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                pictureAirDbManager.updateOrInsertFailedPhotos(userId, failStatus);
-                            }
-                        });
+                        if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+                            fixedThreadPool.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pictureAirDbManager.updateOrInsertFailedPhotos(userId, failStatus);
+                                    if (adapterHandler != null) {
+                                        PictureAirLog.v("handleMessage","DOWNLOAD_PHOTO_FAILED");
+                                        adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
+                                    } else {
+                                        handler.sendEmptyMessage(ADD_DOWNLOAD);
+                                    }
+                                }
+                            });
+                        }
                     }
                     break;
                 case ADD_DOWNLOAD://添加下载任务
@@ -403,7 +403,7 @@ public class DownloadService extends Service {
                                         break;
                                     }
                                 }
-                                if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){
+                                if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){//当下载队列中都是下载错误的数据时，控制结束下载
                                     handler.sendEmptyMessage(FINISH_DOWNLOAD);
                                     mFinish = true;
                                 }
@@ -426,20 +426,21 @@ public class DownloadService extends Service {
                             DownloadFileStatus deleteStatus = iterator.next();
                             if (deleteStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE) {
                                 downloadList.remove(deleteStatus);
-                                --toLoadCount;
                             }
                         }
                         failed_num = 0;
-                        fixedThreadPool.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                String userId = preferences.getString(Common.USERINFO_ID, "");
-                                pictureAirDbManager.deleteDownloadFailPhoto(userId);
-                                if (adapterHandler != null) {
-                                    adapterHandler.sendEmptyMessage(DownLoadingFragment.REMOVE_FAILED_PHOTOS);
+                        if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+                            fixedThreadPool.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String userId = preferences.getString(Common.USERINFO_ID, "");
+                                    pictureAirDbManager.deleteDownloadFailPhoto(userId);
+                                    if (adapterHandler != null) {
+                                        adapterHandler.sendEmptyMessage(DownLoadingFragment.REMOVE_FAILED_PHOTOS);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                     break;
 
@@ -584,8 +585,8 @@ public class DownloadService extends Service {
                 if (stream != null) {
                     stream.flush();
                     stream.close();
-                    ++downed_num;
-                    PictureAirLog.out("saveFile()>>>>>>>>>> downed_num："+downed_num);
+                    downed_num.incrementAndGet();
+                    PictureAirLog.out("saveFile()>>>>>>>>>> downed_num："+downed_num.get());
                     // 使用友盟统计下载成功次数
                     UmengUtil.onEvent(mContext, Common.EVENT_DOWNLOAD_FINISH);
                     scan(file.toString(),fileStatus);
@@ -608,8 +609,7 @@ public class DownloadService extends Service {
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
                         PictureAirLog.out("downloadService-----------> scan");
-                        lastUrl = file;
-                        scan_num++;
+                        lastUrl = fileStatus.getUrl();
                         taskList.remove(fileStatus.getUrl());
                         fileList.remove(fileStatus.getUrl());
                         downloadList.remove(fileStatus.getPosition());
@@ -629,18 +629,20 @@ public class DownloadService extends Service {
                         }else {
                             handler.sendEmptyMessageDelayed(ADD_DOWNLOAD,200);
                         }
-                        fixedThreadPool.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
-                                    PictureAirLog.out("scanfile() >>>>>>> insertLoadSuccessPhotos");
-                                    pictureAirDbManager.insertLoadSuccessPhotos(userId, fileStatus, loadTime, true);
-                                } else{
-                                    PictureAirLog.out("scanfile() >>>>>>> updateFailedPhotos");
-                                    pictureAirDbManager.updateFailedPhotos(userId,fileStatus,loadTime);
+                        if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+                            fixedThreadPool.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
+                                        PictureAirLog.out("scanfile() >>>>>>> insertLoadSuccessPhotos");
+                                        pictureAirDbManager.insertLoadSuccessPhotos(userId, fileStatus, loadTime, true);
+                                    } else {
+                                        PictureAirLog.out("scanfile() >>>>>>> updateFailedPhotos");
+                                        pictureAirDbManager.updateFailedPhotos(userId, fileStatus, loadTime);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
     }
@@ -649,9 +651,7 @@ public class DownloadService extends Service {
     public void onDestroy() {
         // TODO Auto-generated method stub
         PictureAirLog.out("downloadService-----------> ondestroy");
-        fixedThreadPool.shutdown();
         downloadList.clear();
-        toLoadCount = 0;
         mSartNotificate = false;
         if (EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
@@ -688,7 +688,7 @@ public class DownloadService extends Service {
     }
 
 
-    public int getDatabasePhotoCount(){
+    public AtomicInteger getDatabasePhotoCount(){
         return databasePhotoCount;
     }
 
@@ -709,12 +709,18 @@ public class DownloadService extends Service {
     public void onUserEvent(BaseBusEvent baseBusEvent) {
         if (baseBusEvent instanceof DownLoadCountUpdateEvent) {
             DownLoadCountUpdateEvent event = (DownLoadCountUpdateEvent)baseBusEvent;
-            databasePhotoCount = event.getUpdateCount();
-            downed_num = 0;
+            databasePhotoCount.set(0);
+            int count = downed_num.get();
+            count -= event.getUpdateCount();
+            if (count < 0){
+                downed_num.set(0);
+            }else{
+                downed_num.set(count);
+            }
         }
     }
 
-    public int getDowned_num(){
+    public AtomicInteger getDowned_num(){
         return downed_num;
     }
 

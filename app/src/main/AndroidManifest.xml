@@ -265,11 +265,16 @@
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
 
+        <!-- download photo begin -->
         <activity
             android:name=".activity.LoadManageActivity"
             android:theme="@style/Theme.PageIndicatorDefaults"
             android:configChanges="keyboard|orientation"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.DownloadPhotoPreviewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <!-- download photo end -->
 
         <!-- alipay sdk begin -->
         <activity

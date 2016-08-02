@@ -601,5 +601,6 @@
     <string name="photo_download_success_tips">There are no photos downloaded</string>
     <string name="photo_download_to_load">DownLoad Now</string>
     <string name="photo_download_tips2">Your photos have been successfully downloaded into your local photo album. You can click on the photos below to view them.</string>
+    <string name="photo_download_preview">Phtoto Preview</string>
     <!--photo download manage start-->
 </resources>
