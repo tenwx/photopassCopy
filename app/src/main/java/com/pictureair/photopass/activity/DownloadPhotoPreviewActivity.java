@@ -52,7 +52,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private SharedPreferences sharedPreferences;
 
     private RelativeLayout titleBar;
-    private LinearLayout indexBar;
     private static final String TAG = "PreviewPhotoActivity";
 
     //图片显示框架
@@ -63,13 +62,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
      * 是否是横屏模式
      */
     private boolean isLandscape = false;
-
-    //底部切换索引按钮
-    private TextView lastPhotoImageView;
-    private TextView nextPhotoImageView;
-    private TextView currentPhotoIndexTextView;
-    private TextView currentPhotoInfoTextView;
-    private TextView currentPhotoADTextView;
 
     private CustomProgressDialog dialog;// 等待加载视图
 
@@ -103,7 +95,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         switch (msg.what) {
             case 7:
                 mViewPager = (GalleryViewPager) findViewById(R.id.download_preview_viewer);
-                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist);
+                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist,1);
                 mViewPager.setOffscreenPageLimit(2);
                 mViewPager.setAdapter(pagerAdapter);
                 mViewPager.setCurrentItem(currentPosition, true);
@@ -165,22 +157,9 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.download_preview_back);
         locationTextView = (TextView) findViewById(R.id.download_preview_title);
-
-        lastPhotoImageView = (TextView) findViewById(R.id.download_preview_index_last);
-        nextPhotoImageView = (TextView) findViewById(R.id.download_preview_index_next);
-        currentPhotoInfoTextView = (TextView) findViewById(R.id.download_preview_index_time);
-        currentPhotoIndexTextView = (TextView) findViewById(R.id.download_preview_current_index);
-        currentPhotoADTextView = (TextView) findViewById(R.id.download_preview_photo_ad_intro_tv);
-
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.download_preview_fra_layout);
-
         titleBar = (RelativeLayout) findViewById(R.id.download_preview_titlebar);
-        indexBar = (LinearLayout) findViewById(R.id.download_preview_index_bar);
-
         returnImageView.setOnClickListener(this);
-        lastPhotoImageView.setOnClickListener(this);
-        nextPhotoImageView.setOnClickListener(this);
-
         PictureAirLog.v(TAG, "----------------------->initing...1");
 
         Configuration cf = getResources().getConfiguration();
@@ -277,7 +256,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private void portraitOrientation() {
         isLandscape = false;
         titleBar.setVisibility(View.VISIBLE);
-        indexBar.setVisibility(View.VISIBLE);
         if (mViewPager != null) {
             mViewPager.setBackgroundColor(getResources().getColor(R.color.pp_light_gray_background));
         }
@@ -295,7 +273,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         }
         photoFraRelativeLayout.setBackgroundColor(Color.BLACK);
         titleBar.setVisibility(View.GONE);
-        indexBar.setVisibility(View.GONE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
@@ -352,34 +329,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             case R.id.download_preview_back:
                 doBack();
                 break;
-            case R.id.download_preview_index_last:
-                indexLast();
-                break;
-
-            case R.id.download_preview_index_next:
-                indexNext();
-                break;
         }
-    }
-
-    /**
-     * 上一张
-     */
-    private void indexLast(){
-        PictureAirLog.v(TAG, "--------->last");
-        lastPhotoImageView.setEnabled(false);
-        nextPhotoImageView.setEnabled(false);
-        changeTab(false);
-    }
-
-    /**
-     * 下一张
-     */
-    private void indexNext(){
-        PictureAirLog.v(TAG, "--------->next");
-        lastPhotoImageView.setEnabled(false);
-        nextPhotoImageView.setEnabled(false);
-        changeTab(true);
     }
 
     /**
@@ -414,29 +364,10 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         //初始化图片收藏按钮，需要判断isLove=1或者是否在数据库中
         photoInfo = photolist.get(currentPosition);
 
-        //更新title地点名称
-//        locationTextView.setText(photoInfo.locationName);
-
         //更新序列号
-        currentPhotoIndexTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1,photolist.size()));
-        currentPhotoInfoTextView.setText(photoInfo.shootOn.substring(0, 16));
-        //更新上一张下一张按钮
-        if (currentPosition == 0) {
-            lastPhotoImageView.setVisibility(View.INVISIBLE);
-        } else {
-            lastPhotoImageView.setVisibility(View.VISIBLE);
-        }
-        if (currentPosition ==  photolist.size() - 1) {
-            nextPhotoImageView.setVisibility(View.INVISIBLE);
-        } else {
-            nextPhotoImageView.setVisibility(View.VISIBLE);
-        }
+        locationTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1,photolist.size()));
 
-        //如果是未购买图片，判断是否是第一次进入，如果是，则显示引导图层
-        currentPhotoADTextView.setVisibility(View.GONE);
         PictureAirLog.out("set enable in other conditions");
-        lastPhotoImageView.setEnabled(true);
-        nextPhotoImageView.setEnabled(true);
         if (dialog.isShowing()) {
             PictureAirLog.out("dismiss--->other");
             dialog.dismiss();
