@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
@@ -24,6 +23,7 @@ import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.entity.OrderProductInfo;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
@@ -37,7 +37,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
     private ArrayList<OrderInfo> grouplist;//group信息
     private List<OrderProductInfo> childlist;//child信息
     private ArrayList<ImageView> gridlayoutList;
-    private ImageLoader imageLoader;
     private GroupHolderView groupHolderView;
     private ChildHolderView hView;
     private PWDialog pictureWorksDialog;
@@ -57,7 +56,6 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         this.childlist = orderChildlist;
         this.tab = tab;
         mInflater = LayoutInflater.from(context);
-        imageLoader = ImageLoader.getInstance();
         screenWight = ScreenUtil.getScreenWidth(context) / 3 - 40;
     }
 
@@ -195,9 +193,9 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
         }
         //初始化控件值
         if (childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl().contains("http")) {
-            imageLoader.displayImage(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl(), hView.goodsImageView);
+            GlideUtil.load(context, childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl(), hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl(), hView.goodsImageView);
+            GlideUtil.load(context, Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).getCartProductImageUrl(), hView.goodsImageView);
         }
         hView.goodsName.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getProductName());
         hView.goodsCount.setText(childlist.get(groupPosition).getCartItemInfos().get(childPosition).getQty() + "");
@@ -215,7 +213,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
                 params.width = screenWight;
                 params.height = screenWight;
                 imageView.setLayoutParams(params);
-                imageLoader.displayImage(Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos().get(i).getPhotoUrl(), imageView);
+                GlideUtil.load(context, Common.PHOTO_URL + childlist.get(groupPosition).getCartItemInfos().get(childPosition).getEmbedPhotos().get(i).getPhotoUrl(), imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(childPosition * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);

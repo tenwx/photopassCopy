@@ -1,7 +1,6 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -16,16 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.animation.Rotate3dAnimation;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
@@ -39,8 +34,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 	private ArrayList<?> arrayList = null;
 	private Context mContext;
 	private String pppCode = null;
-	private ImageLoader imageLoader;
-	private DisplayImageOptions options;
 	private boolean isUseHavedPPP;
 	private OnItemChildClickListener childClickListener;
 	private HashMap<Integer, Boolean> map;//统计被勾选的子项 只能选一张PP+.
@@ -55,16 +48,6 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		this.isUseHavedPPP = isUseHavedPPP;
 		this.handler = handler;
 		myToast = new PWToast(mContext);
-		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.drawable.ic_discover_loading)
-				.showImageOnFail(R.drawable.ic_discover_failed)
-				.cacheInMemory(true)
-				.cacheOnDisk(true)
-				.imageScaleType(ImageScaleType.NONE)
-				.bitmapConfig(Bitmap.Config.RGB_565)//设置为RGB565比起默认的ARGB_8888要节省大量的内存
-				.delayBeforeLoading(100)//载入图片前稍做延时可以提高整体滑动的流畅度
-				.build();
-		imageLoader = ImageLoader.getInstance();
 		initFaceOrNot();
 		if (isUseHavedPPP){
 			map = new HashMap<Integer, Boolean>();
@@ -317,11 +300,10 @@ public class ListOfPPPAdapter extends BaseAdapter {
 		holder.pppNumber.setText(pppCode);
 
 		//初始化背景图片
-		ImageAware imageAware = new ImageViewAware(holder.ppp_imageView, false);
-		if (holder.ppp_imageView.getTag() == null || !holder.ppp_imageView.getTag().equals(dpp.pppCardBg)) {
+		if (holder.ppp_imageView.getTag(R.id.glide_image_tag) == null || !holder.ppp_imageView.getTag(R.id.glide_image_tag).equals(dpp.pppCardBg)) {
 			PictureAirLog.out("ppp url---->" + Common.PHOTO_URL + dpp.pppCardBg);
-			imageLoader.displayImage(Common.PHOTO_URL + dpp.pppCardBg, imageAware, options);
-			holder.ppp_imageView.setTag(dpp.pppCardBg);
+			GlideUtil.load(mContext, Common.PHOTO_URL + dpp.pppCardBg, R.drawable.ic_discover_loading, R.drawable.ic_discover_failed, holder.ppp_imageView);
+			holder.ppp_imageView.setTag(R.id.glide_image_tag, dpp.pppCardBg);
 		}
 
 		if (!dpp.pppCardBg.contains("ppp.")) {

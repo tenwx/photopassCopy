@@ -19,7 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
@@ -36,10 +35,9 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.UniversalImageLoadTool;
 import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -241,7 +239,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 FragmentPageShop.this.startActivity(intent);
             }
         });
-        xListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, new PauseOnScrollListener(UniversalImageLoadTool.getImageLoader(), true, true)));
+        xListView.setOnScrollListener(new SwipeListViewOnScrollListener(refreshLayout, null));
 
         initData(false);//初始化数据
         return view;

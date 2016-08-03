@@ -17,10 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 /**
@@ -32,7 +33,6 @@ public class CompositeImageProductView extends RelativeLayout{
 	private LayoutInflater layoutInflater;
 	private ImageView goodsImageView, photoImageView, maskImageView, onlySelectedImageView;
 	private RelativeLayout relativeLayout;
-	private ImageLoader imageLoader;
 	private Context context;
 	
 	private final int LOAD_SELECTED_IMAGE = 1;
@@ -48,7 +48,6 @@ public class CompositeImageProductView extends RelativeLayout{
 	
 	public CompositeImageProductView(Context context) {
 		super(context);
-		imageLoader = ImageLoader.getInstance();
 	}
 	
 	/**
@@ -103,46 +102,27 @@ public class CompositeImageProductView extends RelativeLayout{
 		//如果以下商品需要加载商品图片
 		if (goodName.equals("canvas")||goodName.equals("iphone5Case")||goodName.equals("keyChain")||goodName.equals("mug")) {
 			onlySelectedImageView.setVisibility(View.INVISIBLE);
-			imageLoader.loadImage(Common.BASE_URL_TEST + goodURL, new SimpleImageLoadingListener(){
+			GlideUtil.load(getContext(), Common.BASE_URL_TEST + goodURL, new SimpleTarget<Bitmap>() {
 				@Override
-				public void onLoadingComplete(String imageUri, View view,
-						Bitmap loadedImage) {
-					super.onLoadingComplete(imageUri, view, loadedImage);
-					
+				public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
 					/**********************************************************************************/
 					//判断网络获取的图片的大小，需要进行缩放操作
 					//loadedImage的大小和viewWidth、viewHeight做比较
 					Matrix matrix = new Matrix();
 					PictureAirLog.out("wh"+loadedImage.getWidth()+"___"+loadedImage.getHeight());
 					PictureAirLog.out("wh"+viewWidth+"___"+viewHeight);
-//					if (loadedImage.getWidth() > viewWidth || loadedImage.getHeight() > viewHeight) {//大于预览框
-//						if (loadedImage.getWidth() / (float) viewWidth < loadedImage.getHeight() / (float) viewHeight) {//按照高度缩放比例
-//							scale = loadedImage.getHeight() / (float) viewHeight;
-//						}else {//根据宽度缩放比例
-//							scale = loadedImage.getWidth() / (float) viewWidth;
-//						}
-//						matrix.setScale(scale, scale);
-//						loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
-//					}
-					
-//					if (loadedImage.getWidth() <= viewWidth && loadedImage.getHeight() <= viewHeight) {//小于预览框
-						if (loadedImage.getWidth() / (float) viewWidth < loadedImage.getHeight() / (float) viewHeight) {//按照高度缩放比例
-							float scale =  viewHeight / (float) loadedImage.getHeight();
-							matrix.setScale(scale, scale);
-							PictureAirLog.out("scale-1>"+scale);
-						}else {//根据宽度缩放比例
-							float scale =  viewWidth / (float) loadedImage.getWidth();
-							PictureAirLog.out("scale-2>"+scale);
-							matrix.setScale(scale, scale);
-						}
-//						PictureAirLog.out("scale->"+scale);
-						loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
-					
-//					}
-					
+					if (loadedImage.getWidth() / (float) viewWidth < loadedImage.getHeight() / (float) viewHeight) {//按照高度缩放比例
+						float scale =  viewHeight / (float) loadedImage.getHeight();
+						matrix.setScale(scale, scale);
+						PictureAirLog.out("scale-1>"+scale);
+					}else {//根据宽度缩放比例
+						float scale =  viewWidth / (float) loadedImage.getWidth();
+						PictureAirLog.out("scale-2>"+scale);
+						matrix.setScale(scale, scale);
+					}
+					loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
 					/**********************************************************************************/
-					
-					
+
 					//加载完商品图片之后，加载选择的照片
 					goodsImageView.setImageBitmap(loadedImage);
 					PictureAirLog.out("jjjooooooooj="+goodsImageView.getWidth()+"_"+goodsImageView.getHeight());
@@ -150,7 +130,7 @@ public class CompositeImageProductView extends RelativeLayout{
 					message.what = LOAD_SELECTED_IMAGE;
 					message.obj = photoURL;
 					handler.sendMessageDelayed(message, 500);
-					
+
 				}
 			});
 		}else {//其他商品，直接显示选择的照片
@@ -172,10 +152,12 @@ public class CompositeImageProductView extends RelativeLayout{
 				params.height = viewHeight;
 				onlySelectedImageView.setLayoutParams(params);
 				if (goodName.equals(Common.GOOD_NAME_SINGLE_DIGITAL)) {
-					imageLoader.displayImage(msg.obj.toString(), isEncrypted, onlySelectedImageView);
+					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, onlySelectedImageView);
 				}else {
-					imageLoader.loadImage(msg.obj.toString(), isEncrypted, new SimpleImageLoadingListener(){
-						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap> () {
+
+						@Override
+						public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
 							PictureAirLog.out("load success");
 							//对于获取成功的图片，进行截取
 							int clipStartX = 0;
@@ -187,12 +169,12 @@ public class CompositeImageProductView extends RelativeLayout{
 							if (goodName.equals("4R Print")) {//3：2的截图
 								if (bitmapWidht * 2 == bitmapHeight * 3 || bitmapWidht * 3 == bitmapHeight * 2) {//如果本来就是3：2的，直接显示
 									//直接显示
-									
+
 								}else {//需要截取
 									PictureAirLog.out("w&h"+bitmapWidht+"_"+bitmapHeight);
 									if (bitmapHeight > bitmapWidht) {//竖着
 										if (bitmapHeight / (float) bitmapWidht > 1.5) {//截取多余的高度
-											
+
 											clipStartX = 0;
 											clipWidth = bitmapWidht;
 											clipHeight = bitmapWidht * 3 / 2;
@@ -204,10 +186,10 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipWidth = bitmapHeight * 2 / 3;
 											clipStartX = (bitmapWidht - clipWidth) / 2;
 										}
-										
+
 									}else {//横着
 										if (bitmapWidht / (float) bitmapHeight < 1.5) {//截取多余的高度
-											
+
 											clipStartX = 0;
 											clipWidth = bitmapWidht;
 											clipHeight = bitmapWidht * 2 / 3;
@@ -219,7 +201,7 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipWidth = bitmapHeight * 3 / 2;
 											clipStartX = (bitmapWidht - clipWidth) / 2;
 										}
-										
+
 									}
 									PictureAirLog.out("x:"+clipStartX+"y:"+clipStartY+"w:"+clipWidth+"h:"+clipHeight);
 									loadedImage = Bitmap.createBitmap(loadedImage, clipStartX, clipStartY, clipWidth, clipHeight);
@@ -227,12 +209,12 @@ public class CompositeImageProductView extends RelativeLayout{
 							}else if (goodName.equals(Common.GOOD_NAME_6R)||goodName.equals(Common.GOOD_NAME_COOK)||goodName.equals(Common.GOOD_NAME_TSHIRT)) {//4：3的截图
 								if (bitmapWidht * 3 == bitmapHeight * 4 || bitmapWidht * 4 == bitmapHeight * 3) {//如果本来就是4：3的，直接显示
 									//直接显示
-									
+
 								}else {//需要截取
 									PictureAirLog.out("w&h"+bitmapWidht+"_"+bitmapHeight);
 									if (bitmapHeight > bitmapWidht) {//竖着
 										if (bitmapHeight / (float) bitmapWidht > 4 / 3.0) {//截取多余的高度
-											
+
 											clipStartX = 0;
 											clipWidth = bitmapWidht;
 											clipHeight = (int) (bitmapWidht * 4 / 3.0);
@@ -244,10 +226,10 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipWidth = (int) (bitmapHeight * 3 / 4.0);
 											clipStartX = (bitmapWidht - clipWidth) / 2;
 										}
-										
+
 									}else {//横着
 										if (bitmapWidht / (float) bitmapHeight < 4 / 3.0) {//截取多余的高度
-											
+
 											clipStartX = 0;
 											clipWidth = bitmapWidht;
 											clipHeight = (int) (bitmapWidht * 3 / 4.0);
@@ -259,15 +241,15 @@ public class CompositeImageProductView extends RelativeLayout{
 											clipWidth = (int) (bitmapHeight * 4 / 3.0);
 											clipStartX = (bitmapWidht - clipWidth) / 2;
 										}
-										
+
 									}
 									PictureAirLog.out("x:"+clipStartX+"y:"+clipStartY+"w:"+clipWidth+"h:"+clipHeight);
 									loadedImage = Bitmap.createBitmap(loadedImage, clipStartX, clipStartY, clipWidth, clipHeight);
 								}
 							}
-							
+
 							onlySelectedImageView.setImageBitmap(loadedImage);
-						};
+						}
 					});
 				}
 				break;
@@ -305,7 +287,7 @@ public class CompositeImageProductView extends RelativeLayout{
 				addView(photoImageView);
 				PictureAirLog.out("------------->"+msg.obj.toString());
 				if (goodName.equals("mug")) {//直接显示，同时处理mask层
-					imageLoader.displayImage(msg.obj.toString(), isEncrypted, photoImageView);
+					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, photoImageView);
 					//添加mask层
 					handler.sendEmptyMessage(LOAD_SELECTED_IMAGE_FOR_MUG_CASE);
 					
@@ -321,16 +303,17 @@ public class CompositeImageProductView extends RelativeLayout{
 					m.obj = msg.obj;
 					handler.sendMessage(m);
 				}else {//直接显示
-					imageLoader.displayImage(msg.obj.toString(), isEncrypted, photoImageView);
-					
+					GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, photoImageView);
 				}
 				break;
 				
 			case LOAD_SELECTED_IMAGE_FOR_IPHONE_CASE://手机壳
 				
 				/*************************对添加的图片进行处理********************************/
-				imageLoader.loadImage(msg.obj.toString(), isEncrypted, new SimpleImageLoadingListener(){
-					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+				GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap>() {
+
+					@Override
+					public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
 						PictureAirLog.out("load success");
 						//获取遮罩层图片
 						Bitmap mask = BitmapFactory.decodeResource(getResources(), maskBottom);
@@ -340,10 +323,10 @@ public class CompositeImageProductView extends RelativeLayout{
 						Canvas mCanvas = new Canvas(result);
 						Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 						paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));//参数的意思是，重叠的部分显示下面的
-						PictureAirLog.out("selected image width and height:"+loadedImage.getWidth()+"_"+loadedImage.getHeight());
+						PictureAirLog.out("selected image width and height:" + loadedImage.getWidth() + "_" + loadedImage.getHeight());
 						//对loadedimage进行缩放，使得高度和商品mask的高度一致
 						Matrix matrix = new Matrix();
-						float scale = (float)mask.getHeight()/loadedImage.getHeight();
+						float scale = (float)mask.getHeight() / loadedImage.getHeight();
 						matrix.setScale(scale, scale);
 						loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
 						PictureAirLog.out("selected image width and height:"+loadedImage.getWidth()+"_"+loadedImage.getHeight());
@@ -354,14 +337,14 @@ public class CompositeImageProductView extends RelativeLayout{
 						paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
 						Bitmap topBitmap = BitmapFactory.decodeResource(getResources(), maskTop);
 						mCanvas.drawBitmap(topBitmap, 0, 0, paint);
-						
+
 						paint.setXfermode(null);
 						//回收资源
 						mask.recycle();
 						topBitmap.recycle();
 						loadedImage.recycle();
 						photoImageView.setImageBitmap(result);
-					};
+					}
 				});
 				break;
 				
@@ -404,13 +387,14 @@ public class CompositeImageProductView extends RelativeLayout{
 
 			case LOAD_SELECTED_IMAGE_FOR_KEYCHAIN_CASE://钥匙圈
 				/*************************对添加的图片进行处理********************************/
-				imageLoader.loadImage(msg.obj.toString(), isEncrypted, new SimpleImageLoadingListener(){
-					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+				GlideUtil.load(getContext(), msg.obj.toString(), isEncrypted, new SimpleTarget<Bitmap>() {
+					@Override
+					public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
 						Matrix matrix = new Matrix();
 						matrix.setSkew(degree, 0);
 						loadedImage = Bitmap.createBitmap(loadedImage, 0, 0, loadedImage.getWidth(), loadedImage.getHeight(), matrix, true);
 						photoImageView.setImageBitmap(loadedImage);
-					};
+					}
 				});
 				break;
 				

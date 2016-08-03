@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -18,20 +17,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.nineoldandroids.view.ViewHelper;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.LocationItem;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
@@ -63,13 +60,7 @@ public class DiscoverLocationAdapter extends BaseAdapter {
     public static final int STOPLOCATION = 104;
     private static final String TAG = "DicoverLocationAdapter";
 
-    private SharedPreferences sharedPreferences;
-
     private HashMap<String, Integer> activatedLocationMap;
-
-    private DisplayImageOptions options;
-
-    private ImageLoader imageLoader;
 
     private LocationItem lastOpenLocationItem;
 
@@ -83,8 +74,11 @@ public class DiscoverLocationAdapter extends BaseAdapter {
 
     private ViewGroup.LayoutParams layoutParams;
 
+    private Context context;
+
     public DiscoverLocationAdapter(ArrayList<DiscoverLocationItemInfo> list, Context context, Handler hander, AMapLocation location, float x) {
         this.list = list;
+        this.context = context;
         this.mHandler = hander;
         this.mLocation = location;
         this.x = x;
@@ -93,10 +87,6 @@ public class DiscoverLocationAdapter extends BaseAdapter {
         layoutInflater = LayoutInflater.from(context);
         screenWidth = ScreenUtil.getScreenWidth(context);
         activatedLocationMap = new HashMap<>();
-        sharedPreferences = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.ic_discover_loading).
-                showImageOnFail(R.drawable.ic_discover_failed).cacheInMemory(true).cacheOnDisk(true).build();
-        imageLoader = ImageLoader.getInstance();
         lastOpenLocationItem = null;
     }
 
@@ -214,26 +204,22 @@ public class DiscoverLocationAdapter extends BaseAdapter {
             viewHolder.locationDetailInfoTextView.setText(info.placeDetailENIntroduce);
         }
         //设置背景图片
-        if (viewHolder.locationPhotoImageView.getTag() != null && viewHolder.locationPhotoImageView.getTag().equals(info.placeUrl)) {//直接显示，不需要tag
+        if (viewHolder.locationPhotoImageView.getTag(R.id.glide_image_tag) != null &&
+                viewHolder.locationPhotoImageView.getTag(R.id.glide_image_tag).equals(info.placeUrl)) {//直接显示，不需要tag
         } else {
-            ImageAware imageAware = new ImageViewAware(viewHolder.locationPhotoImageView, false);
-
-            imageLoader.displayImage(info.placeUrl, imageAware, options);
-            viewHolder.locationPhotoImageView.setTag(info.placeUrl);
+            GlideUtil.load(context, info.placeUrl, R.drawable.ic_discover_loading, R.drawable.ic_discover_failed, viewHolder.locationPhotoImageView);
+            viewHolder.locationPhotoImageView.setTag(R.id.glide_image_tag, info.placeUrl);
         }
         //设置模糊背景图片
-        if (viewHolder.locationBlurPhotoImageView.getTag() != null && viewHolder.locationBlurPhotoImageView.getTag().equals(info.placeUrl)) {
+        if (viewHolder.locationBlurPhotoImageView.getTag(R.id.glide_image_tag) != null
+                && viewHolder.locationBlurPhotoImageView.getTag(R.id.glide_image_tag).equals(info.placeUrl)) {
         } else {
-            ImageAware imageAware = new ImageViewAware(viewHolder.locationBlurPhotoImageView, false);
-            viewHolder.locationBlurPhotoImageView.setTag(info.placeUrl);
+            viewHolder.locationBlurPhotoImageView.setTag(R.id.glide_image_tag, info.placeUrl);
             final ImageView imageView = viewHolder.locationBlurPhotoImageView;
-            imageLoader.displayImage(info.placeUrl, imageAware, options, new SimpleImageLoadingListener() {
+            GlideUtil.load(context, info.placeUrl, R.drawable.ic_discover_loading, R.drawable.ic_discover_failed, new SimpleTarget<Bitmap>() {
                 @Override
-                public void onLoadingComplete(String imageUri, View view,
-                                              Bitmap loadedImage) {
-                    // TODO Auto-generated method stub
-                    super.onLoadingComplete(imageUri, view, loadedImage);
-                    imageView.setImageBitmap(BlurUtil.blur(loadedImage));
+                public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                    imageView.setImageBitmap(BlurUtil.blur(bitmap));
                 }
             });
         }

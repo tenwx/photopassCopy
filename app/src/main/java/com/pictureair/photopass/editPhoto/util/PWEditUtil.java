@@ -9,14 +9,12 @@ import android.graphics.PorterDuffXfermode;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.editPhoto.bean.PhotoStikerInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.io.File;
@@ -38,9 +36,6 @@ public class PWEditUtil {
     private File desFile; //保存文件的目标目录
     private File tempFile; //保存文件的临时目录
 
-    private ImageLoader imageLoader;
-    private DisplayImageOptions options;
-
     private ArrayList<PhotoEditorInfo> photoEditorList; //纪录编辑照片的步骤
     private SimpleDateFormat dateFormat;
 
@@ -58,8 +53,6 @@ public class PWEditUtil {
         frameInfos = new ArrayList<FrameOrStikerInfo>();
         filterPathList = new ArrayList<String>();
         stikerInfos = new ArrayList<FrameOrStikerInfo>();
-        imageLoader = ImageLoader.getInstance();
-        options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
     }
 
     /**
@@ -70,25 +63,6 @@ public class PWEditUtil {
         photoPath = AppUtil.getReallyFileName(photoPath,0);
         File file = new File(Common.PHOTO_DOWNLOAD_PATH + photoPath);
         return file;
-    }
-
-
-    /**
-     * 获取网络图片的 Bitmap
-     * @param photoPath
-     * @return
-     */
-    public Bitmap getOnLineBitampFormPath(String photoPath){
-        return imageLoader.loadImageSync(photoPath);
-    }
-
-    /**
-     * 获取本地图片的 Bitmap
-     * @param photoPath
-     * @return
-     */
-    public Bitmap getLocalBitampFormPath(String photoPath){
-        return imageLoader.loadImageSync("file:///" + photoPath);
     }
 
     /**
@@ -142,37 +116,36 @@ public class PWEditUtil {
         Bitmap heBitmap = Bitmap.createBitmap(mMainBitmap.getWidth(), mMainBitmap.getHeight(),
                 Bitmap.Config.ARGB_8888);
         Bitmap frameBitmap;
-        if (mMainBitmap.getWidth()<mMainBitmap.getHeight()) {
+        String photoUrl;
+        if (mMainBitmap.getWidth() < mMainBitmap.getHeight()) {
             if(frameInfos.get(curFramePosition).onLine == 1){
-                frameBitmap = imageLoader.loadImageSync("file://" + mContext.getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
+                photoUrl = "file://" + mContext.getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0);
             }else{
-                frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+                photoUrl = frameInfos.get(curFramePosition).frameOriginalPathPortrait;
             }
         }else{
             if(frameInfos.get(curFramePosition).onLine == 1){
-                frameBitmap = imageLoader.loadImageSync("file://" + mContext.getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
+                photoUrl = "file://" + mContext.getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0);
             }else{
-                frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+                photoUrl = frameInfos.get(curFramePosition).frameOriginalPathLandscape;
             }
         }
         Canvas canvas = new Canvas(heBitmap);
         Paint point = new Paint();
-        point.setXfermode(new PorterDuffXfermode(
-                android.graphics.PorterDuff.Mode.SRC_OVER));
-        Matrix matrix2 = new Matrix();
-        matrix2.postScale(
-                (float) mMainBitmap.getWidth() / (frameBitmap.getWidth()),
-                (float) mMainBitmap.getHeight() / (frameBitmap.getHeight()));
-
-        frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
-                frameBitmap.getWidth(), frameBitmap.getHeight(),
-                matrix2, true);
-
+        point.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_OVER));
         canvas.drawBitmap(mMainBitmap, 0, 0, point);
-//				canvas.drawBitmap(frameBitmap, matrix2, point);
-        canvas.drawBitmap(frameBitmap, 0,0, point);
-        matrix2.reset();
-        frameBitmap.recycle();
+
+        frameBitmap = GlideUtil.load(mContext, photoUrl, mMainBitmap.getWidth(), mMainBitmap.getHeight());
+        if (frameBitmap != null) {
+            Matrix matrix2 = new Matrix();
+            matrix2.postScale((float) mMainBitmap.getWidth() / (frameBitmap.getWidth()),
+                    (float) mMainBitmap.getHeight() / (frameBitmap.getHeight()));
+
+            frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0, frameBitmap.getWidth(), frameBitmap.getHeight(), matrix2, true);
+            canvas.drawBitmap(frameBitmap, 0,0, point);
+            matrix2.reset();
+            frameBitmap.recycle();
+        }
         return heBitmap;
     }
 
@@ -359,10 +332,10 @@ public class PWEditUtil {
     public void loadFrameList(){
         for (int i=0; i<framePathStr.length; i++){
             FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
-            frameInfo.frameThumbnailPathH160 = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][0]);
-            frameInfo.frameThumbnailPathV160 = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][1]);
-            frameInfo.frameOriginalPathLandscape = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][2]);
-            frameInfo.frameOriginalPathPortrait = ImageDownloader.Scheme.ASSETS.wrap(framePathStr[i][3]);
+            frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(framePathStr[i][0]);
+            frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(framePathStr[i][1]);
+            frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(framePathStr[i][2]);
+            frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(framePathStr[i][3]);
             frameInfos.add(frameInfo);
         }
     }
@@ -472,13 +445,5 @@ public class PWEditUtil {
         Bitmap bmp = Bitmap.createBitmap(bitmap, retX, retY, nw, nh, null,
                 false);
         return bmp;
-    }
-
-    public ImageLoader getImageLoader() {
-        return imageLoader;
-    }
-
-    public DisplayImageOptions getOptions() {
-        return options;
     }
 }

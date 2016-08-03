@@ -1,9 +1,6 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.media.Image;
-import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
+import com.pictureair.photopass.util.GlideUtil;
 
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by pengwu on 16/7/8.
@@ -28,11 +21,9 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
 
     private List<PhotoDownLoadInfo> photos;
     private Context mContext;
-    private ImageLoader imageLoader;
     public PhotoLoadSuccessAdapter(Context context,List<PhotoDownLoadInfo> photos){
         this.mContext = context;
         this.photos = photos;
-        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -68,11 +59,10 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
         }
         PhotoDownLoadInfo info = photos.get(position);
         if (info != null) {
-            ImageAware imageAware = new ImageViewAware(holder.img);
             String previewUrl = info.getPreviewUrl();
-            if (holder.img.getTag() == null || !holder.img.getTag().equals(previewUrl)){
-                imageLoader.displayImage(previewUrl,imageAware);
-                holder.img.setTag(previewUrl);
+            if (holder.img.getTag(R.id.glide_image_tag) == null || !holder.img.getTag(R.id.glide_image_tag).equals(previewUrl)){
+                GlideUtil.load(mContext, previewUrl, holder.img);
+                holder.img.setTag(R.id.glide_image_tag, previewUrl);
             }
             holder.tv_shootTime.setText(info.getShootTime());
             holder.tv_size.setText(info.getSize()+"MB");
