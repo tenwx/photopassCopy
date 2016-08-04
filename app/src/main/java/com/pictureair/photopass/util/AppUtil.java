@@ -1693,12 +1693,9 @@ public class AppUtil {
         return loadTime;
     }
 
-    public static String formatData(long data){
-        DecimalFormat decimalFormat=new DecimalFormat(".00");
+    public static String formatData(double data){
+        DecimalFormat decimalFormat=new DecimalFormat("0.00");
         String str = decimalFormat.format(data);
-        if (str.indexOf(".") == 0){
-            str = 0+str;
-        }
         return str;
     }
 

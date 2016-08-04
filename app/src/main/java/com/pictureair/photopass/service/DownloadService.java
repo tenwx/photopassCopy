@@ -183,7 +183,7 @@ public class DownloadService extends Service {
                                 fixedThreadPool.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        long fileLength = file.length()/1000/1000;
+                                        double fileLength = file.length()/1000d/1000d;
                                         String formatLength = AppUtil.formatData(fileLength);
                                         fileStatus.setTotalSize(formatLength);
                                         String userId = preferences.getString(Common.USERINFO_ID, "");

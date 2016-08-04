@@ -211,8 +211,17 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             new Thread(){
                 @Override
                 public void run() {
-                    List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
-                    photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE,photos).sendToTarget();
+                   try{
+                       List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
+                       if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
+                           photos = pictureAirDbManager.getPhotos(userId, true);
+                       }
+                       if (photoLoadSuccessHandler != null) {
+                           photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE, photos).sendToTarget();
+                       }
+                   }catch (Exception e){
+
+                   }
                 }
             }.start();
         }
@@ -251,8 +260,17 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         new Thread(){
             @Override
             public void run() {
-                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
-                photoLoadSuccessHandler.obtainMessage(GET_PHOTO_BACKGROUND,photos).sendToTarget();
+                try{
+                    List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
+                    if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
+                        photos = pictureAirDbManager.getPhotos(userId, true);
+                    }
+                    if (photoLoadSuccessHandler != null){
+                        photoLoadSuccessHandler.obtainMessage(GET_PHOTO_BACKGROUND, photos).sendToTarget();
+                    }
+                }catch (Exception e){
+
+                }
             }
         }.start();
     }

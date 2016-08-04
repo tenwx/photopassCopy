@@ -2229,14 +2229,10 @@ public class API1 {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
-                float currentSize = bytesWritten/1000f/1000f;
-                float total = totalSize/1000f/1000f;
-                DecimalFormat decimalFormat=new DecimalFormat(".00");
-                String c = decimalFormat.format(currentSize);
-                if (c.indexOf(".") == 0){
-                    c = 0+c;
-                }
-                String t = decimalFormat.format(total);
+                double currentSize = bytesWritten/1000d/1000d;
+                double total = totalSize/1000d/1000d;
+                String c = AppUtil.formatData(currentSize);
+                String t = AppUtil.formatData(total);
                 if (t.indexOf(".") == 0) {
                     t=0+t;
                 }
@@ -2247,8 +2243,8 @@ public class API1 {
                 float keepTime = (currentTime-startTime)/1000f;
                 if (usedTime > 0.2) {
                     lastTime = currentTime;
-                    float downSpeed = (bytesWritten / 1000f) / keepTime;
-                    String ds = decimalFormat.format(downSpeed);
+                    double downSpeed = (bytesWritten / 1000d) / keepTime;
+                    String ds = AppUtil.formatData(downSpeed);
                     if (ds.indexOf(".") == 0) {
                         ds = 0+ds;
                     }

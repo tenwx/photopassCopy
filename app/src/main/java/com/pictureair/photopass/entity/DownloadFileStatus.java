@@ -2,6 +2,7 @@ package com.pictureair.photopass.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by pengwu on 16/7/12.
@@ -69,6 +70,14 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setCurrentSize(String currentSize) {
+        if (!TextUtils.isEmpty(currentSize)){
+            if (currentSize.indexOf(",")>0){
+                currentSize = currentSize.replace(",",".");
+            }
+            if (currentSize.indexOf("，")>0){
+                currentSize = currentSize.replace("，",".");
+            }
+        }
         this.currentSize = currentSize;
     }
 
@@ -77,6 +86,14 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setTotalSize(String totalSize) {
+        if (!TextUtils.isEmpty(totalSize)){
+            if (totalSize.indexOf(",")>0){
+                totalSize = totalSize.replace(",",".");
+            }
+            if (totalSize.indexOf("，")>0){
+                totalSize = totalSize.replace("，",".");
+            }
+        }
         this.totalSize = totalSize;
     }
 
@@ -85,6 +102,14 @@ public class DownloadFileStatus implements Parcelable{
     }
 
     public void setLoadSpeed(String loadSpeed) {
+        if (!TextUtils.isEmpty(loadSpeed)){
+            if (loadSpeed.indexOf(",")>0){
+                loadSpeed = loadSpeed.replace(",",".");
+            }
+            if (loadSpeed.indexOf("，")>0){
+                loadSpeed = loadSpeed.replace("，",".");
+            }
+        }
         this.loadSpeed = loadSpeed;
     }
 
