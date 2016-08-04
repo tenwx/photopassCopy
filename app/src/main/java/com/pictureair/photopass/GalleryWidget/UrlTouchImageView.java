@@ -56,6 +56,7 @@ public class UrlTouchImageView extends RelativeLayout {
     private ImageLoader imageLoader;
 
     private static final int LOAD_FILE_DONE = 1;
+    private int defaultType;
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -241,7 +242,11 @@ public class UrlTouchImageView extends RelativeLayout {
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap == null) {
                 mImageView.setScaleType(ScaleType.CENTER);
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
+                if (defaultType == 0) {
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
+                }else if (defaultType == 1){
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.preview_error);
+                }
                 mImageView.setImageBitmap(bitmap);
             } else {
                 mImageView.setScaleType(ScaleType.MATRIX);
@@ -296,5 +301,9 @@ public class UrlTouchImageView extends RelativeLayout {
         }
 
         return result;
+    }
+
+    public void setDefaultType(int defaultType) {
+        this.defaultType = defaultType;
     }
 }

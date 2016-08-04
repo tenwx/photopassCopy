@@ -28,8 +28,14 @@ import java.util.List;
 
 public class UrlPagerAdapter extends BasePagerAdapter {
 
-    public UrlPagerAdapter(Context context, List<PhotoInfo> resources) {
+    private int defaultType;
+    public UrlPagerAdapter(Context context,List<PhotoInfo> resources){
         super(context, resources);
+        this.defaultType = 0;
+    }
+    public UrlPagerAdapter(Context context, List<PhotoInfo> resources,int defaultType) {
+        super(context, resources);
+        this.defaultType = defaultType;
     }
 
     @Override
@@ -41,6 +47,7 @@ public class UrlPagerAdapter extends BasePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
+        iv.setDefaultType(defaultType);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
             PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
             iv.setProgressImageViewVisible(true);

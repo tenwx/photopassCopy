@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
 import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
@@ -118,8 +119,9 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             case DELETE_SUCCESS:
                 rl_load_success.setVisibility(View.VISIBLE);
                 ll_load_success.setVisibility(View.GONE);
+                int delCount = (int)msg.obj;
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1));
-                EventBus.getDefault().post(new DownLoadCountUpdateEvent(0));
+                EventBus.getDefault().post(new DownLoadCountUpdateEvent(delCount));
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
@@ -175,29 +177,25 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 if (photos == null || photos.size() == 0) {
                     return;
                 }
-                PhotoDownLoadInfo downLoadInfo = photos.get(position);
-                String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
-                PictureAirLog.out("filename=" + fileName);
-                String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
-                File photo = new File(loadUrl);
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(photo), "image/*");
+                Intent intent = new Intent(MyApplication.getInstance(), DownloadPhotoPreviewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("position",position);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
 
+        pictureAirDbManager = new PictureAirDbManager(getContext());
+        sPreferences = getContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
+        if (TextUtils.isEmpty(userId)) {
+            userId = sPreferences.getString(Common.USERINFO_ID, "");
+        }
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        pictureAirDbManager = new PictureAirDbManager(getContext());
-        sPreferences = getContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        if (TextUtils.isEmpty(userId)) {
-            userId = sPreferences.getString(Common.USERINFO_ID, "");
-        }
     }
 
     @Override
@@ -236,7 +234,9 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     @Override
                     public void run() {
                         int res = pictureAirDbManager.deleteDownloadPhoto(userId);
-                        photoLoadSuccessHandler.sendEmptyMessage(DELETE_SUCCESS);
+                        Message msg = photoLoadSuccessHandler.obtainMessage(DELETE_SUCCESS);
+                        msg.obj = res;
+                        msg.sendToTarget();
                     }
                 }.start();
 

@@ -31,7 +31,6 @@ import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DownloadFileStatus;
-import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.service.DownloadService;
@@ -43,12 +42,10 @@ import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 
 /**
  * Created by pengwu on 16/7/8.
@@ -97,7 +94,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             dialog.dismiss();
         }
         switch (msg.what) {
-            case PHOTO_STATUS_UPDATE:
+            case PHOTO_STATUS_UPDATE://更新listview
                 PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
                 updateView();
@@ -107,7 +104,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     }
                 }
                 break;
-            case PHOTO_REMOVE:
+            case PHOTO_REMOVE://下载成功后删除
                 PictureAirLog.v("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null) {
@@ -117,11 +114,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     adapter.notifyDataSetChanged();
 //                    PictureAirLog.v("DownLoadingFragment","dealHandler remove item success");
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
-                    int oldCount = downloadService.getDatabasePhotoCount();
+                    AtomicInteger oldCount = downloadService.getDatabasePhotoCount();
                     PictureAirLog.v("PHOTO_REMOVE","oldCount: "+oldCount);
-                    int downLoadCount=downloadService.getDowned_num();
+                    AtomicInteger downLoadCount=downloadService.getDowned_num();
                     PictureAirLog.v("PHOTO_REMOVE","downLoadCount: "+downLoadCount);
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
+                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1));
                     Activity activity = getActivity();
                     LoadManageActivity manageActivity = null;
                     if (activity instanceof LoadManageActivity) {
@@ -133,7 +130,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 break;
 
-            case SERVICE_LOAD_SUCCESS:
+            case SERVICE_LOAD_SUCCESS://DownloadService 绑定成功，更新页面，设置下载数量
                 if (adapter == null) {
                     PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter= null ");
                     downloadList = downloadService.getDownloadList();
@@ -155,15 +152,15 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     adapter.notifyDataSetChanged();
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
-                int oldCount = downloadService.getDatabasePhotoCount();
+                AtomicInteger oldCount = downloadService.getDatabasePhotoCount();
                 PictureAirLog.v("SERVICE_LOAD_SUCCESS","oldCount: "+oldCount);
-                int downLoadCount=downloadService.getDowned_num();
+                AtomicInteger downLoadCount=downloadService.getDowned_num();
                 PictureAirLog.v("SERVICE_LOAD_SUCCESS","downLoadCount: "+downLoadCount);
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount+oldCount,1));
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1));
                 activitySendMsg(null);
                 downloadService.startDownload();
                 break;
-            case DOWNLOAD_FINISH:
+            case DOWNLOAD_FINISH://下载完成，此时downloadservice中已没有可下载任务，页面显示没有下载中的照片
                 CopyOnWriteArrayList<DownloadFileStatus> list = downloadService.getDownloadList();
                 if (list == null || list.size() == 0) {
                     ll_loading.setVisibility(View.GONE);
@@ -172,7 +169,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 activitySendMsg(null);
                 break;
 
-            case REMOVE_FAILED_PHOTOS:
+            case REMOVE_FAILED_PHOTOS://表示已删除所有下载失败的照片，更新页面
                 downloadList = downloadService.getDownloadList();
                 if (downloadList != null && downloadList.size() > 0) {
                     adapter.setList(downloadList);
@@ -215,14 +212,14 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         button.setOnClickListener(this);
         btn_reconnect.setOnClickListener(this);
         btn_clear_failed.setOnClickListener(this);
+        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+        bindService();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
-        bindService();
     }
 
     private ServiceConnection conn = new ServiceConnection() {
@@ -244,7 +241,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
                     lv_loading.setAdapter(adapter);
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
-                }else{
+                }else{//如果downloadservice中没有等待下载的数据，bindservice不去走onstartcommand，此时用startservice运行一遍onstartcommand
                     Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
                     ArrayList<PhotoInfo> photos = new ArrayList<>();
                     Bundle bundle = new Bundle();
@@ -332,7 +329,6 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        unBind();
     }
 
     @Override
