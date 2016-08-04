@@ -204,7 +204,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				GlideUtil.load(this, photoURL, isEncrypted, new SimpleTarget<Bitmap>() {
 					@Override
 					public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-						mainBitmap = bitmap;
+						mainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 						mainImage.setImageBitmap(mainBitmap);
 						dismissDialog();
 					}
@@ -527,7 +527,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					finish();
 				}
 				break;
-			case R.id.btn_left_back:
+			case R.id.btn_left_back://编辑的时候，不适用当前编辑
 				leftback();
 				break;
 
@@ -587,7 +587,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							GlideUtil.load(EditPhotoActivity.this, editPhotoInfoArrayList.get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
 								@Override
 								public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-									mainBitmap = bitmap;
+									mainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 									editPhotoHandler.sendEmptyMessage(START_ASYNC);
 								}
 							});
@@ -645,7 +645,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				});
 				break;
 			case R.id.btn_onedit_save: //保存到临时目录
-
 				if (index == 0){ //只要是从原图开始操作，就清空 editPhotoInfoArrayList
 					editPhotoInfoArrayList.clear();
 					addEditPhotoInfo(photoURL,0,null,null,"",0);
@@ -705,7 +704,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				check();
 				break;
-			case R.id.btn_cancel: //返回按钮。
+			case R.id.btn_cancel: //后退按钮。
 				if (index == -1) {
 					index = editPhotoInfoArrayList.size() - 1;
 				}
@@ -843,8 +842,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
 		@Override
 		protected Bitmap doInBackground(String... params) {
-			Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth,
-					imageHeight);
+			Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth, imageHeight);
 			if(AppUtil.getExifOrientation(params[0])!=0){ // 修改图片显示方向问题。
 				bitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(params[0]),bitmap);
 			}
@@ -862,16 +860,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap = result;
 
 			if (mainBitmap != null) {
-//				if(AppUtil.getExifOrientation(photoURL)!=0){
-//					mainBitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(photoURL),mainBitmap);
-//				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
-//			PictureAirLog.d("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
 			if (null != editPhotoHandler){
 				editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
 			}
-			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
 	}
 
@@ -892,6 +885,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			PictureAirLog.out("file exists");
 			loadImage(file.toString());
 		}else{
+			PictureAirLog.out("file not exist");
 			editPhotoHandler.sendEmptyMessage(9999); //加载网络图片。
 		}
 	}
@@ -1083,8 +1077,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			AsyncTask<Bitmap, Void, Bitmap> {
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
-			// System.out.println("保存贴图!");
-			if (params[0] == null) {
+			if (params[0] == null || params[0].isRecycled()) {
 				return null;
 			}
 			if (filter instanceof LomoFi) {
@@ -1476,14 +1469,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				frameImageView.setVisibility(View.INVISIBLE);
 			}
 			//恢复到没有裁减的状态。
-			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+			if (editPhotoInfoArrayList.size() == 1 || index == 0){ //代表最初的图片。
 				if (photoInfo.onLine == 1) {
 					loadOnlineImg(photoURL);
 				}else{
 					loadImage(photoURL);
 				}
 			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-//						loadImage(pathList.get(pathList.size() - 1));
+				loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
 			}
 		}
 
