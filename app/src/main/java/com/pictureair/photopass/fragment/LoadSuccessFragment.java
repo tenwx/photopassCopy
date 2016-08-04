@@ -209,21 +209,10 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
             new Thread(){
                 @Override
                 public void run() {
-                   try{
-                       List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
-                       if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
-                           photos = pictureAirDbManager.getPhotos(userId, true);
-                       }
-                       if (photoLoadSuccessHandler != null) {
-                           photoLoadSuccessHandler.obtainMessage(LOAD_FROM_DATABASE, photos).sendToTarget();
-                       }
-                   }catch (Exception e){
-
-                   }
+                    loadPhotos(LOAD_FROM_DATABASE);
                 }
             }.start();
         }
-
     }
 
     @Override
@@ -260,17 +249,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         new Thread(){
             @Override
             public void run() {
-                try{
-                    List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
-                    if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
-                        photos = pictureAirDbManager.getPhotos(userId, true);
-                    }
-                    if (photoLoadSuccessHandler != null){
-                        photoLoadSuccessHandler.obtainMessage(GET_PHOTO_BACKGROUND, photos).sendToTarget();
-                    }
-                }catch (Exception e){
-
-                }
+                loadPhotos(GET_PHOTO_BACKGROUND);
             }
         }.start();
     }
@@ -279,4 +258,19 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     public void onDestroy() {
         super.onDestroy();
     }
+
+    private void loadPhotos(int what){
+        try{
+            List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
+            if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
+                photos = pictureAirDbManager.getPhotos(userId, true);
+            }
+            if (photoLoadSuccessHandler != null){
+                photoLoadSuccessHandler.obtainMessage(what, photos).sendToTarget();
+            }
+        }catch (Exception e){
+
+        }
+    }
+
 }

@@ -71,12 +71,7 @@ public class DownloadFileStatus implements Parcelable{
 
     public void setCurrentSize(String currentSize) {
         if (!TextUtils.isEmpty(currentSize)){
-            if (currentSize.indexOf(",")>0){
-                currentSize = currentSize.replace(",",".");
-            }
-            if (currentSize.indexOf("，")>0){
-                currentSize = currentSize.replace("，",".");
-            }
+            currentSize = format(currentSize);
         }
         this.currentSize = currentSize;
     }
@@ -87,12 +82,7 @@ public class DownloadFileStatus implements Parcelable{
 
     public void setTotalSize(String totalSize) {
         if (!TextUtils.isEmpty(totalSize)){
-            if (totalSize.indexOf(",")>0){
-                totalSize = totalSize.replace(",",".");
-            }
-            if (totalSize.indexOf("，")>0){
-                totalSize = totalSize.replace("，",".");
-            }
+            totalSize = format(totalSize);
         }
         this.totalSize = totalSize;
     }
@@ -103,12 +93,7 @@ public class DownloadFileStatus implements Parcelable{
 
     public void setLoadSpeed(String loadSpeed) {
         if (!TextUtils.isEmpty(loadSpeed)){
-            if (loadSpeed.indexOf(",")>0){
-                loadSpeed = loadSpeed.replace(",",".");
-            }
-            if (loadSpeed.indexOf("，")>0){
-                loadSpeed = loadSpeed.replace("，",".");
-            }
+            loadSpeed = format(loadSpeed);
         }
         this.loadSpeed = loadSpeed;
     }
@@ -201,4 +186,14 @@ public class DownloadFileStatus implements Parcelable{
             return new DownloadFileStatus(source);
         }
     };
+
+    private String format(String str){
+        if (str.indexOf(",")>0){
+            str = str.replace(",",".");
+        }
+        if (str.indexOf("，")>0){
+            str = str.replace("，",".");
+        }
+        return str;
+    }
 }
