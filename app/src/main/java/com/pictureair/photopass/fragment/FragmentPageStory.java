@@ -629,9 +629,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     @Override
                     public void run() {
                         super.run();
-                        getrefreshdata();
-
-                        fragmentPageStoryHandler.sendEmptyMessage(GET_REFRESH_DATA_DONE);
+                        synchronized (this) {
+                            getrefreshdata();
+                            fragmentPageStoryHandler.sendEmptyMessage(GET_REFRESH_DATA_DONE);
+                        }
                     }
                 }.start();
 
