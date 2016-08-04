@@ -1144,22 +1144,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 */
 	private void loadframe(int position) {
 		if (position != 0) {// 如果不为0，表示有边框
-			frameImageView.setVisibility(View.VISIBLE);
 			if (frameInfos.get(position).onLine == 1) {//网络图片，这个时候已经下载，所以直接取本地图片路径
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
 					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait,0),
-							new ImageloaderListener(frameImageView));
+							new ImageloaderListener());
 				}else{
 					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape,0),
-							new ImageloaderListener(frameImageView));
+							new ImageloaderListener());
 				}
 			}else {//本地图片
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathPortrait, new ImageloaderListener(frameImageView));
+					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathPortrait, new ImageloaderListener());
 				}else{
-					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathLandscape, new ImageloaderListener(frameImageView));
+					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathLandscape, new ImageloaderListener());
 				}
 			}
 		} else {// 没有边框
@@ -1172,10 +1171,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 * Imageloader 加载监听类，目的是监听加载完毕的事件
 	 */
 	private class ImageloaderListener extends SimpleTarget<Bitmap> {
-		private ImageView imageView;
-		public ImageloaderListener(ImageView imageView) {
-			this.imageView = imageView;
-		}
 
 		@Override
 		public void onLoadStarted(Drawable drawable) {
@@ -1189,7 +1184,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
 			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
-			imageView.setImageBitmap(bitmap);
+			frameImageView.setImageBitmap(bitmap);
+			frameImageView.setVisibility(View.VISIBLE);
 		}
 
 		@Override
