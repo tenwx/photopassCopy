@@ -1512,6 +1512,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 selectPhotoItemInfo.isVideo = 0;
                 selectPhotoItemInfo.isHasPreset = 0;
                 selectPhotoItemInfo.isEncrypted = 0;
+                selectPhotoItemInfo.isRefreshInfo = 0;
 
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);

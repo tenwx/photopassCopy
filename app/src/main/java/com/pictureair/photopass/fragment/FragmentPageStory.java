@@ -997,6 +997,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         localPhotoInfo.isVideo = 0;
                         localPhotoInfo.isHasPreset = 0;
                         localPhotoInfo.isEncrypted = 0;
+                        localPhotoInfo.isRefreshInfo = 0;
                         localPhotoList.add(localPhotoInfo);
                     }
                 }
@@ -1400,36 +1401,43 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                     //比较时间，按照时间排序
                     for (int i = 0; i < boughtItemInfoList.get(j).list.size(); i++) {
-                        try {
-                            Date date1 = sdf.parse(boughtItemInfoList.get(j).list.get(i).shootOn);
-                            Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
-                            Date date3 = sdf.parse(boughtItemInfoList.get(j).shootOn);
-                            info.locationName = boughtItemInfoList.get(j).place;
-
-                            if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
-                                PictureAirLog.out("the lastest time, need add");
-                                boughtItemInfoList.get(j).list.add(i, info);
-                                if (date2.after(date3)) {//当前时间date3之后
-                                    boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
-                                }
+                        if (info.isRefreshInfo == 1) {//如果需要刷新旧数据，需要遍历比对photoid，并且替换对应信息
+                            if (info.photoId.equals(boughtItemInfoList.get(j).list.get(i).photoId)) {
+                                boughtItemInfoList.get(j).list.get(i).photoPathOrURL = info.photoPathOrURL;
+                                boughtItemInfoList.get(j).list.get(i).photoThumbnail = info.photoThumbnail;
+                                boughtItemInfoList.get(j).list.get(i).photoThumbnail_512 = info.photoThumbnail_512;
+                                boughtItemInfoList.get(j).list.get(i).photoThumbnail_1024 = info.photoThumbnail_1024;
                                 break;
-                            } else {
-                                if (i == (boughtItemInfoList.get(j).list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
-                                    PictureAirLog.out("the last position, need add");
-                                    boughtItemInfoList.get(j).list.add(info);
+                            }
+                        } else {
+                            try {
+                                Date date1 = sdf.parse(boughtItemInfoList.get(j).list.get(i).shootOn);
+                                Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                                Date date3 = sdf.parse(boughtItemInfoList.get(j).shootOn);
+                                info.locationName = boughtItemInfoList.get(j).place;
+
+                                if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
+                                    PictureAirLog.out("the lastest time, need add");
+                                    boughtItemInfoList.get(j).list.add(i, info);
                                     if (date2.after(date3)) {//当前时间date3之后
                                         boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
                                     }
                                     break;
                                 } else {
-
-                                    PictureAirLog.out("scan next------>");
+                                    if (i == (boughtItemInfoList.get(j).list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
+                                        PictureAirLog.out("the last position, need add");
+                                        boughtItemInfoList.get(j).list.add(info);
+                                        if (date2.after(date3)) {//当前时间date3之后
+                                            boughtItemInfoList.get(j).shootOn = info.shootOn;//更新shootOn的时间
+                                        }
+                                        break;
+                                    }
                                 }
-                            }
-                        } catch (ParseException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }//获取列表中的时间
+                            } catch (ParseException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }//获取列表中的时间
+                        }
                     }
                     isContains = true;
                     break;
@@ -1442,13 +1450,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 photoItemInfo.locationId = info.locationId;
                 photoItemInfo.locationIds = locationIds;
                 photoItemInfo.shootTime = info.shootTime;
-//                if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
-//                    photoItemInfo.place = locationList.get(position).placeCHName;
-//
-//                } else {
-                    photoItemInfo.place = placeName;
-
-//                }
+                photoItemInfo.place = placeName;
                 photoItemInfo.list.add(info);
                 photoItemInfo.placeUrl = placeUrl;
                 photoItemInfo.latitude = latitude;
@@ -1456,11 +1458,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 photoItemInfo.islove = 0;
                 photoItemInfo.shootOn = info.shootOn;
                 boughtItemInfoList.add(photoItemInfo);
-            } else {
-                isContains = false;
             }
-        } else {
-
         }
     }
 
@@ -1476,37 +1474,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         PictureAirLog.d(TAG, "----------->get magic photos" + targetMagicPhotoList.size() + "____" + magicItemInfoList.size());
         magicItemInfoList.clear();//添加之前，先清除，防止添加pp/pp+造成数据重复添加
         magicItemInfoList.addAll(AppUtil.getMagicItemInfoList(getActivity(), sdf, targetMagicPhotoList));
-//        PhotoItemInfo photoItemInfo;
-//        boolean clone_contains = false;
-//        Date date1;
-//        Date date2;
-//        for (int i = 0; i < targetMagicPhotoList.size(); i++) {
-//            PictureAirLog.out("photo shoot time is " + targetMagicPhotoList.get(i).shootOn);
-//            for (int j = 0; j < magicItemInfoList.size(); j++) {
-//                if (targetMagicPhotoList.get(i).shootTime.equals(magicItemInfoList.get(j).shootTime)) {
-//                    magicItemInfoList.get(j).list.add(targetMagicPhotoList.get(i));
-//                    date1 = sdf.parse(targetMagicPhotoList.get(i).shootOn);
-//                    date2 = sdf.parse(magicItemInfoList.get(j).shootOn);
-//                    if (date1.after(date2)) {
-//                        magicItemInfoList.get(j).shootOn = targetMagicPhotoList.get(i).shootOn;
-//                    }
-//                    clone_contains = true;
-//                    break;
-//                }
-//            }
-//            //判断是否需要new
-//            if (!clone_contains) {//如果之前没有找到，说明需要new
-//                photoItemInfo = new PhotoItemInfo();
-//                PictureAirLog.out("shootTime:" + targetMagicPhotoList.get(i).shootTime);
-//                photoItemInfo.shootTime = targetMagicPhotoList.get(i).shootTime;
-//                photoItemInfo.place = getString(R.string.story_tab_magic);
-//                photoItemInfo.list.add(targetMagicPhotoList.get(i));
-//                photoItemInfo.shootOn = targetMagicPhotoList.get(i).shootOn;
-//                magicItemInfoList.add(photoItemInfo);
-//            } else {
-//                clone_contains = false;
-//            }
-//        }
     }
 
     /**
@@ -1534,40 +1501,43 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             for (int j = 0; j < photoPassItemInfoList.size(); j++) {//遍历list，查找locationid一样的内容
                 PictureAirLog.out("遍历地址");
                 PhotoItemInfo p = photoPassItemInfoList.get(j);
-                if (p.locationId == null) {//此item为视频，直接跳过
-//                    continue;
+                if (p.locationId == null) {
                     p.locationId = "others";
                 }
-                if (info.locationId.equals(p.locationId) || p.locationIds.contains(info.locationId)) {//如果locationId和photo的locationid一样
-                    PictureAirLog.out("location一样");
-                    findLocation = true;
-                    if (info.shootTime.equals(p.shootTime)) {//如果shoottime一致，则插入到列表中
-                        PictureAirLog.out("shootTime一致，直接插入列表");
-                        //比较时间，按照时间排序
-                        for (int i = 0; i < p.list.size(); i++) {
-                            try {
-                                //									PictureAirLog.out("date1--->"+p.list.get(i).shootOn);
-                                //									PictureAirLog.out("date2--->"+info.shootOn);
-                                Date date1 = sdf.parse(p.list.get(i).shootOn);
-                                Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
-                                Date date3 = sdf.parse(p.shootOn);
-                                info.locationName = p.place;
 
-                                //									PictureAirLog.out("date1--->"+date1);
-                                //									PictureAirLog.out("date2--->"+date2);
-                                if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
-                                    PictureAirLog.out("the lastest time, need add");
-                                    p.list.add(i, info);
-                                    PictureAirLog.out("size->" + p.list.size());
-                                    if (date2.after(date3)) {//当前时间date3之后
-                                        p.shootOn = info.shootOn;//更新shootOn的时间
-                                    }
-                                    addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
-                                    break;
-                                } else {
-                                    if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
-                                        PictureAirLog.out("the last position, need add");
-                                        p.list.add(info);
+                if (info.isRefreshInfo == 1) {//需要更新lisa中的数据
+                    findLocation = true;
+                    if ((info.locationId.equals(p.locationId) || p.locationIds.contains(info.locationId)) && info.shootTime.equals(p.shootTime)) {//地点和日期一致，比对photoid，替换url
+                        for (int i = 0; i < p.list.size(); i++) {
+                            if (p.list.get(i).photoId.equals(info.photoId)) {
+                                p.list.get(i).photoThumbnail_1024 = info.photoThumbnail_1024;
+                                p.list.get(i).photoThumbnail_512 = info.photoThumbnail_512;
+                                p.list.get(i).photoThumbnail = info.photoThumbnail;
+                                p.list.get(i).photoPathOrURL = info.photoPathOrURL;
+                                addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                } else {
+                    if (info.locationId.equals(p.locationId) || p.locationIds.contains(info.locationId)) {//如果locationId和photo的locationid一样
+                        PictureAirLog.out("location一样");
+                        findLocation = true;
+                        if (info.shootTime.equals(p.shootTime)) {//如果shoottime一致，则插入到列表中
+                            PictureAirLog.out("shootTime一致，直接插入列表");
+                            //比较时间，按照时间排序
+                            for (int i = 0; i < p.list.size(); i++) {
+                                try {
+                                    Date date1 = sdf.parse(p.list.get(i).shootOn);
+                                    Date date2 = sdf.parse(info.shootOn);//获取列表中的时间
+                                    Date date3 = sdf.parse(p.shootOn);
+                                    info.locationName = p.place;
+                                    //									PictureAirLog.out("date1--->"+date1);
+                                    //									PictureAirLog.out("date2--->"+date2);
+                                    if (date2.after(date1)) {//需要添加的时间是最新的，显示在最前面
+                                        PictureAirLog.out("the lastest time, need add");
+                                        p.list.add(i, info);
                                         PictureAirLog.out("size->" + p.list.size());
                                         if (date2.after(date3)) {//当前时间date3之后
                                             p.shootOn = info.shootOn;//更新shootOn的时间
@@ -1575,40 +1545,46 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                         addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
                                         break;
                                     } else {
+                                        if (i == (p.list.size() - 1)) {//如果已经在最后一张了，直接添加在最后面
+                                            PictureAirLog.out("the last position, need add");
+                                            p.list.add(info);
+                                            PictureAirLog.out("size->" + p.list.size());
+                                            if (date2.after(date3)) {//当前时间date3之后
+                                                p.shootOn = info.shootOn;//更新shootOn的时间
+                                            }
+                                            addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
+                                            break;
+                                        } else {
 
-                                        PictureAirLog.out("scan next------>");
+                                            PictureAirLog.out("scan next------>");
+                                        }
                                     }
-                                }
-                            } catch (ParseException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }//获取列表中的时间
+                                } catch (ParseException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }//获取列表中的时间
+                            }
+                        } else {//时间不一致，新建列表
+                            PictureAirLog.out("时间不一致，新建列表");
+                            itemInfo = new PhotoItemInfo();
+                            itemInfo.locationId = p.locationId;
+                            itemInfo.locationIds = p.locationIds;
+                            itemInfo.shootTime = info.shootTime;
+                            itemInfo.place = p.place;
+                            info.locationName = p.place;
+                            itemInfo.list.add(0, info);
+                            PictureAirLog.out("size->" + itemInfo.list.size());
+                            itemInfo.placeUrl = p.placeUrl;
+                            itemInfo.latitude = p.latitude;
+                            itemInfo.longitude = p.longitude;
+                            itemInfo.shootOn = info.shootOn;
+                            //							itemInfo.gps = p.gps;
+                            itemInfo.islove = p.islove;
+                            photoPassItemInfoList.add(0, itemInfo);//放置到列表的顶部
+                            addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
                         }
-                        //							PictureAirLog.out("after add new photo------>");
-                        //记录当前的列表的索引
-                        //							needmove = j;
-                    } else {//时间不一致，新建列表
-                        PictureAirLog.out("时间不一致，新建列表");
-                        itemInfo = new PhotoItemInfo();
-                        itemInfo.locationId = p.locationId;
-                        itemInfo.locationIds = p.locationIds;
-                        itemInfo.shootTime = info.shootTime;
-                        itemInfo.place = p.place;
-                        info.locationName = p.place;
-                        itemInfo.list.add(0, info);
-                        PictureAirLog.out("size->" + itemInfo.list.size());
-                        itemInfo.placeUrl = p.placeUrl;
-                        itemInfo.latitude = p.latitude;
-                        itemInfo.longitude = p.longitude;
-                        itemInfo.shootOn = info.shootOn;
-                        //							itemInfo.gps = p.gps;
-                        itemInfo.islove = p.islove;
-                        photoPassItemInfoList.add(0, itemInfo);//放置到列表的顶部
-
-                        addRefreshDataToBoughtList(info, p.locationIds, p.place, p.placeUrl, p.latitude, p.longitude);
+                        break;
                     }
-                    //					}
-                    break;
                 }
             }
             if (findLocation) {//如果之前已经找到了对应的位置
@@ -1635,11 +1611,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.out("找到其他的location");
                 itemInfo = new PhotoItemInfo();
                 itemInfo.locationId = locationList.get(resultPosition).locationId;
-//                if (isOther) {//把属于other的地点拼接到后面
-//                    itemInfo.locationIds = locationList.get(resultPosition).locationIds.toString() + info.locationId;
-//                } else {
-                    itemInfo.locationIds = locationList.get(resultPosition).locationIds.toString();
-//                }
+                itemInfo.locationIds = locationList.get(resultPosition).locationIds.toString();
                 itemInfo.shootTime = info.shootTime;
                 if (MyApplication.getInstance().getLanguageType().equals(Common.SIMPLE_CHINESE)) {
                     itemInfo.place = locationList.get(resultPosition).placeCHName;
@@ -1718,9 +1690,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         refreshVideoDataCount = 0;
 
         allItemInfoList.addAll(photoPassItemInfoList);
-        PictureAirLog.out("start-----------> all sort");
         Collections.sort(allItemInfoList);//对all进行排序
-        PictureAirLog.out("start-----------> photoPass sort");
         Collections.sort(photoPassItemInfoList);
     }
 

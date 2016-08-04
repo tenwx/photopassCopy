@@ -822,11 +822,9 @@ public class PictureAirDbManager {
                                         photo.locationCountry, photo.shareURL,  photo.fileSize + "",
                                         photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
 
-                        cursor.close();
-                        continue;
-                    } else {
-                        cursor.close();
+                        photo.isRefreshInfo = 1;
                     }
+                    cursor.close();
                 }
 
                 resultArrayList.add(photo);

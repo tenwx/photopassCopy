@@ -69,17 +69,7 @@ android {
     }
 
     productFlavors {
-
-        wandoujia {}
-        baidu {}
-        qh360 {}
-        tencent {}
-        xiaomi {}
-        googleplay {}
-        PICTUREAIRCOM_HOME {}
-        PICTUREAIRCOM_PHOTO {}
         pw_test {}
-        website {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
