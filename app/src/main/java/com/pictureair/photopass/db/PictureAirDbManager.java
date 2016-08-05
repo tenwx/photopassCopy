@@ -20,6 +20,7 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.PhotoItemInfo;
 import com.pictureair.photopass.entity.QuestionInfo;
 import com.pictureair.photopass.entity.ThreadInfo;
+import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 数据库操作管理封装类，以后所有的数据库操作，都在这里进行
@@ -1562,6 +1565,7 @@ public class PictureAirDbManager {
         } finally {
             database.endTransaction();
             DBManager.getInstance().closeDatabase();
+            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0,0,true));
         }
     }
 
@@ -1586,6 +1590,7 @@ public class PictureAirDbManager {
             }
             database.endTransaction();
             DBManager.getInstance().closeDatabase();
+            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0,0,true));
         }
     }
 

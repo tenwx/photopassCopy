@@ -49,6 +49,10 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -76,6 +80,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private PhotoLoadSuccessAdapter adapter;
     private int deleteCount;
     private PWToast myToast;
+    private ExecutorService executorService;
 
     private static class PhotoLoadSuccessHandler extends Handler{
         private final WeakReference<LoadSuccessFragment> mActivity;
@@ -104,11 +109,11 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                         rl_load_success.setVisibility(View.GONE);
                         adapter = new PhotoLoadSuccessAdapter(MyApplication.getInstance(), photos);
                         lv_success.setAdapter(adapter);
-                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1));
+                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1,false));
                     }else{
                         rl_load_success.setVisibility(View.VISIBLE);
                         ll_load_success.setVisibility(View.GONE);
-                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1));
+                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
                     }
                 }
                 isLoading = false;
@@ -120,7 +125,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 rl_load_success.setVisibility(View.VISIBLE);
                 ll_load_success.setVisibility(View.GONE);
                 int delCount = (int)msg.obj;
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1));
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
                 EventBus.getDefault().post(new DownLoadCountUpdateEvent(delCount));
                 if (dialog.isShowing()) {
                     dialog.dismiss();
@@ -190,6 +195,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         if (TextUtils.isEmpty(userId)) {
             userId = sPreferences.getString(Common.USERINFO_ID, "");
         }
+        executorService = Executors.newFixedThreadPool(1);
         return view;
     }
 
@@ -246,12 +252,16 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
 
     public void getDataBackground(){
         isLoading = true;
-        new Thread(){
-            @Override
-            public void run() {
-                loadPhotos(GET_PHOTO_BACKGROUND);
+        if (executorService != null) {
+            if (!executorService.isShutdown()) {
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPhotos(GET_PHOTO_BACKGROUND);
+                    }
+                });
             }
-        }.start();
+        }
     }
 
     @Override

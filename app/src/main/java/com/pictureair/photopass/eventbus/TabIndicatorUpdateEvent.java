@@ -11,9 +11,11 @@ public class TabIndicatorUpdateEvent implements BaseBusEvent{
      * */
     private int whichSide;
 
-    public TabIndicatorUpdateEvent(int count,int whichSide){
+    private boolean databaseUpdate = false;
+    public TabIndicatorUpdateEvent(int count,int whichSide,boolean databaseUpdate){
         this.dataBasePhotoCount = count;
         this.whichSide = whichSide;
+        this.databaseUpdate = databaseUpdate;
     }
 
     public int getDataBasePhotoCount(){
@@ -22,6 +24,10 @@ public class TabIndicatorUpdateEvent implements BaseBusEvent{
 
     public int getWhichSide(){
         return whichSide;
+    }
+
+    public boolean isDatabaseUpdate(){
+        return databaseUpdate;
     }
 
 }

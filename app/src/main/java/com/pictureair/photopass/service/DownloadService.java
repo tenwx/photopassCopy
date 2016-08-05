@@ -130,66 +130,64 @@ public class DownloadService extends Service {
                 stopSelf();//下载服务停止
             } else if (photos != null) {
                 //将新的数据放入到下载队列的末尾
-                synchronized (taskList) {
-                    if (reconnect > -1) {//需要重连的走这个流程
-                        mSartNotificate = false;
-                        if (photos.size() >0 && downloadList.size() >0) {
-                            int ifOne = b.getInt("one",-1);
-                            for (int i=0;i<photos.size();i++) {
-                                PhotoInfo info = photos.get(i);
-                                for (int j=0;j<downloadList.size();j++) {
-                                    DownloadFileStatus fileStatus = downloadList.get(j);
-                                    if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT) {
-                                        fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
-                                        if (ifOne == 0) {
-                                            break;
-                                        }
+                if (reconnect > -1) {//需要重连的走这个流程
+                    mSartNotificate = false;
+                    if (photos.size() >0 && downloadList.size() >0) {
+                        int ifOne = b.getInt("one",-1);
+                        for (int i=0;i<photos.size();i++) {
+                            PhotoInfo info = photos.get(i);
+                            for (int j=0;j<downloadList.size();j++) {
+                                DownloadFileStatus fileStatus = downloadList.get(j);
+                                if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT) {
+                                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
+                                    if (ifOne == 0) {
+                                        break;
                                     }
                                 }
                             }
-                            failed_num -= photos.size();
-                            if (failed_num <0) failed_num = 0;
                         }
-                    } else {//正常下载走这个
-                        if (photos.size() >0) {
-                            hasPhotos = true;
-                            hasPhotos2 = true;
-                            countDownLatch = new CountDownLatch(photos.size());
-                        }
-                        for (int i = 0; i < photos.size(); i++) {
-                            PhotoInfo photoInfo = photos.get(i);
-                            final DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo,photoInfo.photoThumbnail,photoInfo.shootOn,"");
-                            String fileName = AppUtil.getReallyFileName(fileStatus.getUrl(),fileStatus.isVideo());
-                            PictureAirLog.out("filename=" + fileName);
-                            File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
-                            filedir.mkdirs();
-                            final File file = new File(filedir + "/" + fileName);
-                            if (!file.exists()) {
-                                downloadList.add(fileStatus);
-                                countDownLatch.countDown();
-                            }else{//图片已存在则直接保存数据库，不去下载
-                                lastUrl = fileStatus.getUrl();
-                                downed_num.incrementAndGet();
-                                PictureAirLog.out("onStartCommand downed_num："+downed_num.get());
-                                PictureAirLog.v("onStartCommand","file exists");
-                                if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
-                                    fixedThreadPool.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            double fileLength = file.length() / 1000d / 1000d;
-                                            String formatLength = AppUtil.formatData(fileLength);
-                                            fileStatus.setTotalSize(formatLength);
-                                            String userId = preferences.getString(Common.USERINFO_ID, "");
-                                            String loadTime = AppUtil.getFormatCurrentTime();
-                                            pictureAirDbManager.insertLoadSuccessPhotos(userId, fileStatus, loadTime, true);
-                                            countDownLatch.countDown();
-                                        }
-                                    });
-                                }
-                            }
-                            PictureAirLog.out("downloadlist size =" + downloadList.size());
+                        failed_num -= photos.size();
+                        if (failed_num <0) failed_num = 0;
+                    }
+                } else {//正常下载走这个
+                    if (photos.size() >0) {
+                        hasPhotos = true;
+                        hasPhotos2 = true;
+                        countDownLatch = new CountDownLatch(photos.size());
+                    }
+                    for (int i = 0; i < photos.size(); i++) {
+                        PhotoInfo photoInfo = photos.get(i);
+                        final DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo,photoInfo.photoThumbnail,photoInfo.shootOn,"");
+                        String fileName = AppUtil.getReallyFileName(fileStatus.getUrl(),fileStatus.isVideo());
+                        PictureAirLog.out("filename=" + fileName);
+                        File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
+                        filedir.mkdirs();
+                        final File file = new File(filedir + "/" + fileName);
+                        if (!file.exists()) {
+                            downloadList.add(fileStatus);
+                            countDownLatch.countDown();
+                        }else{//图片已存在则直接保存数据库，不去下载
+                            lastUrl = fileStatus.getUrl();
+                            downed_num.incrementAndGet();
                             PictureAirLog.out("onStartCommand downed_num："+downed_num.get());
+                            PictureAirLog.v("onStartCommand","file exists");
+                            if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+                                fixedThreadPool.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        double fileLength = file.length() / 1000d / 1000d;
+                                        String formatLength = AppUtil.formatData(fileLength);
+                                        fileStatus.setTotalSize(formatLength);
+                                        String userId = preferences.getString(Common.USERINFO_ID, "");
+                                        String loadTime = AppUtil.getFormatCurrentTime();
+                                        pictureAirDbManager.insertLoadSuccessPhotos(userId, fileStatus, loadTime, true);
+                                        countDownLatch.countDown();
+                                    }
+                                });
+                            }
                         }
+                        PictureAirLog.out("downloadlist size =" + downloadList.size());
+                        PictureAirLog.out("onStartCommand downed_num："+downed_num.get());
                     }
                 }
 
@@ -359,62 +357,58 @@ public class DownloadService extends Service {
                     break;
                 case API1.DOWNLOAD_PHOTO_FAILED://下载失败
                     PictureAirLog.out("downloadService----------->DOWNLOAD_PHOTO_FAILED");
-                    synchronized (taskList) {
-                        failed_num++;
-                        Bundle failBundle = msg.getData();
-                        final DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
-                        taskList.remove(failStatus.getUrl());
+                    failed_num++;
+                    Bundle failBundle = msg.getData();
+                    final DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
+                    taskList.remove(failStatus.getUrl());
 
-                        final String userId = preferences.getString(Common.USERINFO_ID, "");
-                        if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
-                            fixedThreadPool.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pictureAirDbManager.updateOrInsertFailedPhotos(userId, failStatus);
-                                    if (adapterHandler != null) {
-                                        PictureAirLog.v("handleMessage","DOWNLOAD_PHOTO_FAILED");
-                                        adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
-                                    } else {
-                                        handler.sendEmptyMessage(ADD_DOWNLOAD);
-                                    }
+                    final String userId = preferences.getString(Common.USERINFO_ID, "");
+                    if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
+                        fixedThreadPool.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                pictureAirDbManager.updateOrInsertFailedPhotos(userId, failStatus);
+                                if (adapterHandler != null) {
+                                    PictureAirLog.v("handleMessage","DOWNLOAD_PHOTO_FAILED");
+                                    adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
+                                } else {
+                                    handler.sendEmptyMessage(ADD_DOWNLOAD);
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                     break;
                 case ADD_DOWNLOAD://添加下载任务
                     PictureAirLog.out("downloadService----------->ADD_DOWNLOAD");
-                    synchronized (taskList) {
-                        if (downloadList.size() > 0) {
-                            for (int i = 0; i < downloadList.size(); i++) {
-                                DownloadFileStatus status = downloadList.get(i);
-                                if (status.status == DownloadFileStatus.DOWNLOAD_STATE_WAITING) {
-                                    if (taskList.size() < 3) {
-                                        status.status = DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING;
-                                        status.setPosition(i);
-                                        PictureAirLog.out("ADD_DOWNLOAD photoid and positiong " + status.getPhotoId() +" "+status.getPosition());
-                                        taskList.put(status.getUrl(), status);
-                                        downLoad(status);
-                                        if (adapterHandler != null) {
-                                            PictureAirLog.v("handleMessage","ADD_DOWNLOAD");
-                                            adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
-                                        }
-                                    } else {
-                                        break;
+                    if (downloadList.size() > 0) {
+                        for (int i = 0; i < downloadList.size(); i++) {
+                            DownloadFileStatus status = downloadList.get(i);
+                            if (status.status == DownloadFileStatus.DOWNLOAD_STATE_WAITING) {
+                                if (taskList.size() < 3) {
+                                    status.status = DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING;
+                                    status.setPosition(i);
+                                    PictureAirLog.out("ADD_DOWNLOAD photoid and positiong " + status.getPhotoId() +" "+status.getPosition());
+                                    taskList.put(status.getUrl(), status);
+                                    downLoad(status);
+                                    if (adapterHandler != null) {
+                                        PictureAirLog.v("handleMessage","ADD_DOWNLOAD");
+                                        adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                                     }
-                                }
-                                if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){//当下载队列中都是下载错误的数据时，控制结束下载
-                                    handler.sendEmptyMessage(FINISH_DOWNLOAD);
-                                    mFinish = true;
+                                } else {
+                                    break;
                                 }
                             }
-                        } else {
-                            //结束
-                            if (taskList.size() == 0 && !mFinish) {
-                                PictureAirLog.out("ADD_DOWNLOAD send  FINISH_DOWNLOAD");
+                            if (i == downloadList.size() -1 && taskList.size() == 0 && !mFinish){//当下载队列中都是下载错误的数据时，控制结束下载
                                 handler.sendEmptyMessage(FINISH_DOWNLOAD);
                                 mFinish = true;
                             }
+                        }
+                    } else {
+                        //结束
+                        if (taskList.size() == 0 && !mFinish) {
+                            PictureAirLog.out("ADD_DOWNLOAD send  FINISH_DOWNLOAD");
+                            handler.sendEmptyMessage(FINISH_DOWNLOAD);
+                            mFinish = true;
                         }
                     }
                     break;
@@ -523,17 +517,10 @@ public class DownloadService extends Service {
                 @Override
                 public void onProgress(long bytesWritten, long totalSize) {
                     super.onProgress(bytesWritten, totalSize);
-                    float currentSize = bytesWritten/1000f/1000f;
-                    float total = totalSize/1000f/1000f;
-                    DecimalFormat decimalFormat=new DecimalFormat(".00");
-                    String c = decimalFormat.format(currentSize);
-                    if (c.indexOf(".") == 0){
-                        c = 0+c;
-                    }
-                    String t = decimalFormat.format(total);
-                    if (t.indexOf(".") == 0) {
-                        t=0+t;
-                    }
+                    double currentSize = bytesWritten/1000d/1000d;
+                    double total = totalSize/1000d/1000d;
+                    String c = AppUtil.formatData(currentSize);
+                    String t = AppUtil.formatData(total);
                     fileStatus.setCurrentSize(c);
                     fileStatus.setTotalSize(t);
                     long currentTime = System.currentTimeMillis();
@@ -541,11 +528,8 @@ public class DownloadService extends Service {
                     float keepTime = (currentTime-startTime)/1000f;
                     if (usedTime > 0.2) {
                         lastTime = currentTime;
-                        float downSpeed = (bytesWritten / 1000f) / keepTime;
-                        String ds = decimalFormat.format(downSpeed);
-                        if (ds.indexOf(".") == 0) {
-                            ds = 0+ds;
-                        }
+                        double downSpeed = (bytesWritten / 1000d) / keepTime;
+                        String ds = AppUtil.formatData(downSpeed);
                         fileStatus.setLoadSpeed(ds);
                         if (adapterHandler != null) {
                             adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);

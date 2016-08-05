@@ -273,7 +273,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.DownloadPhotoPreviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"/>
         <!-- download photo end -->
 
         <!-- alipay sdk begin -->

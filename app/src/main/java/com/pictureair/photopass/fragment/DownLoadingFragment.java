@@ -113,19 +113,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
 //                    PictureAirLog.v("DownLoadingFragment","dealHandler remove item success");
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
+                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
                     AtomicInteger oldCount = downloadService.getDatabasePhotoCount();
                     PictureAirLog.v("PHOTO_REMOVE","oldCount: "+oldCount);
                     AtomicInteger downLoadCount=downloadService.getDowned_num();
                     PictureAirLog.v("PHOTO_REMOVE","downLoadCount: "+downLoadCount);
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1));
-                    Activity activity = getActivity();
-                    LoadManageActivity manageActivity = null;
-                    if (activity instanceof LoadManageActivity) {
-                        manageActivity = (LoadManageActivity)activity;
-                        manageActivity.manageHandler.obtainMessage(LoadManageActivity.UPDATE_LOAD_SUCCESS_FRAGMENT,status).sendToTarget();
-                    }
-
+                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1,false));
                     downloadService.sendAddDownLoadMessage();
                 }
                 break;
@@ -151,13 +144,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
                 }
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0,false));
                 AtomicInteger oldCount = downloadService.getDatabasePhotoCount();
                 PictureAirLog.v("SERVICE_LOAD_SUCCESS","oldCount: "+oldCount);
                 AtomicInteger downLoadCount=downloadService.getDowned_num();
                 PictureAirLog.v("SERVICE_LOAD_SUCCESS","downLoadCount: "+downLoadCount);
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1));
-                activitySendMsg(null);
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1,false));
                 downloadService.startDownload();
                 break;
             case DOWNLOAD_FINISH://下载完成，此时downloadservice中已没有可下载任务，页面显示没有下载中的照片
@@ -166,7 +158,6 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     ll_loading.setVisibility(View.GONE);
                     rl_loading.setVisibility(View.VISIBLE);
                 }
-                activitySendMsg(null);
                 break;
 
             case REMOVE_FAILED_PHOTOS://表示已删除所有下载失败的照片，更新页面
@@ -179,19 +170,10 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     rl_loading.setVisibility(View.VISIBLE);
 
                 }
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0));
+                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
                 break;
             default:
                 break;
-        }
-    }
-
-    private void activitySendMsg(DownloadFileStatus fileStatus) {
-        Activity activity = getActivity();
-        LoadManageActivity manageActivity = null;
-        if (activity instanceof LoadManageActivity) {
-            manageActivity = (LoadManageActivity)activity;
-            manageActivity.manageHandler.obtainMessage(LoadManageActivity.UPDATE_LOAD_SUCCESS_FRAGMENT,fileStatus).sendToTarget();
         }
     }
 
@@ -240,7 +222,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     rl_loading.setVisibility(View.GONE);
                     adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
                     lv_loading.setAdapter(adapter);
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0));
+                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0,false));
                 }else{//如果downloadservice中没有等待下载的数据，bindservice不去走onstartcommand，此时用startservice运行一遍onstartcommand
                     Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
                     ArrayList<PhotoInfo> photos = new ArrayList<>();

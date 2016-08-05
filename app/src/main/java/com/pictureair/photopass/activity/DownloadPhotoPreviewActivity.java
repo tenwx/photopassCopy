@@ -169,14 +169,15 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             landscapeOrientation();
         }
         dialog.show();
-        getPreviewPhotos();
+        getPreviewPhotos(getIntent());
     }
 
-    private void getPreviewPhotos() {
+    private void getPreviewPhotos(Intent intent) {
+        final Intent intent1 = intent;
         new Thread(){
             @Override
             public void run() {
-                Bundle bundle = getIntent().getExtras();
+                Bundle bundle = intent1.getExtras();
                 currentPosition = bundle.getInt("position", 0);
                 photolist = new ArrayList<PhotoInfo>();
                 SharedPreferences sPreferences = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
@@ -248,6 +249,16 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 previewPhotoHandler.sendEmptyMessage(7);
             }
         }.start();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        PictureAirLog.e("DownloadPhotoPreviewActivity","onNewIntent");
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+        getPreviewPhotos(intent);
     }
 
     /**

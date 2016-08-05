@@ -40,39 +40,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     DownloadService downloadService;
     DownLoadingFragment downLoadingFragment;
     LoadSuccessFragment loadSuccessFragment;
-    public final Handler manageHandler = new LoadManageHandler(this);
     public static final int UPDATE_LOAD_SUCCESS_FRAGMENT = 6666;
-
-    public static class LoadManageHandler extends Handler {
-        private final WeakReference<LoadManageActivity> mActivity;
-
-        public LoadManageHandler(LoadManageActivity activity){
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            mActivity.get().dealHandler(msg);
-        }
-    }
-
-    private void dealHandler(Message msg) {
-        switch (msg.what) {
-            case UPDATE_LOAD_SUCCESS_FRAGMENT:
-                loadSuccessFragment.getDataBackground();
-                break;
-
-            default:
-
-                break;
-
-
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,16 +100,21 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
         PictureAirLog.v("LoadManageActivity onUserEvent","onUserEvent");
         if (baseBusEvent instanceof TabIndicatorUpdateEvent) {
             TabIndicatorUpdateEvent updateEvent = (TabIndicatorUpdateEvent)baseBusEvent;
-            int count = updateEvent.getDataBasePhotoCount();
-            if (updateEvent.getWhichSide() == 0) {
-                titles[0] = getResources().getString(R.string.photo_downloading)+" ("+count+") ";
-            }else if (updateEvent.getWhichSide() == 1){
-                titles[1] = getResources().getString(R.string.photo_download_success)+" ("+count+") ";
+            if(!updateEvent.isDatabaseUpdate()) {
+                int count = updateEvent.getDataBasePhotoCount();
+                if (updateEvent.getWhichSide() == 0) {
+                    titles[0] = getResources().getString(R.string.photo_downloading) + " (" + count + ") ";
+                } else if (updateEvent.getWhichSide() == 1) {
+                    titles[1] = getResources().getString(R.string.photo_download_success) + " (" + count + ") ";
+                }
+                if (adapter != null) {
+                    adapter.setTitle(titles);
+                }
+                indicator.updateTabText(updateEvent.getWhichSide());
+            }else{
+                if (loadSuccessFragment != null)
+                    loadSuccessFragment.getDataBackground();
             }
-            if (adapter != null) {
-                adapter.setTitle(titles);
-            }
-            indicator.updateTabText(updateEvent.getWhichSide());
         }
     }
 

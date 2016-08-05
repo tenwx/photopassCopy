@@ -2233,9 +2233,6 @@ public class API1 {
                 double total = totalSize/1000d/1000d;
                 String c = AppUtil.formatData(currentSize);
                 String t = AppUtil.formatData(total);
-                if (t.indexOf(".") == 0) {
-                    t=0+t;
-                }
                 fileStatus.setCurrentSize(c);
                 fileStatus.setTotalSize(t);
                 long currentTime = System.currentTimeMillis();
@@ -2245,9 +2242,6 @@ public class API1 {
                     lastTime = currentTime;
                     double downSpeed = (bytesWritten / 1000d) / keepTime;
                     String ds = AppUtil.formatData(downSpeed);
-                    if (ds.indexOf(".") == 0) {
-                        ds = 0+ds;
-                    }
                     fileStatus.setLoadSpeed(ds);
                     if (adapterHandler != null) {
                         adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
