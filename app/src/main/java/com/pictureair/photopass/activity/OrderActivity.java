@@ -36,8 +36,8 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -82,7 +82,7 @@ public class OrderActivity extends BaseFragmentActivity {
 
     private static String TAG = "OrderActivity";
 
-    private CustomProgressDialog customProgressDialog;
+    private PWProgressDialog pwProgressDialog;
     private PWToast myToast;
     private PictureAirDbManager pictureAirDbManager;
     private List<String> orderIds;
@@ -359,20 +359,20 @@ public class OrderActivity extends BaseFragmentActivity {
      * 显示菊花
      */
     private void showProgressDialog() {
-        if (null != customProgressDialog && !customProgressDialog.isShowing()) {
-            customProgressDialog.show();
+        if (null == pwProgressDialog) {
+            pwProgressDialog = new PWProgressDialog(this)
+                    .setPWProgressDialogMessage(R.string.is_loading)
+                    .pwProgressDialogCreate();
         }
-        if (null == customProgressDialog) {
-            customProgressDialog = CustomProgressDialog.show(OrderActivity.this, getString(R.string.connecting), false, null);
-        }
+        pwProgressDialog.pwProgressDialogShow();
     }
 
     /**
      * 隐藏菊花
      */
     private void hideProgressDialog() {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
+        if (null != pwProgressDialog) {
+            pwProgressDialog.pwProgressDialogDismiss();
         }
     }
 

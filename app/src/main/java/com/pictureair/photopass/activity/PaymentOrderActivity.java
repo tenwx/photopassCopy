@@ -31,7 +31,6 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 import com.unionpay.UPPayAssistEx;
 
@@ -78,7 +77,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private PictureAirDbManager pictureAirDbManager;
     private boolean paySyncResult = false;
     private org.json.JSONObject payAsyncResultJsonObject;
-    private CustomProgressDialog dialog;
 
     private int payType = 1;// 支付类型 0 支付宝 1 银联 2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal 7
     private PayUtils payUtils;
@@ -165,9 +163,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             case API1.ADD_ORDER_SUCCESS:
                 PictureAirLog.v(TAG, "RQF_SUCCESS orderid: " + orderid);
                 //支付成功后：出现等待弹窗，5秒后进入订单页面。其中接收推送，若没有推送则将订单ID写入数据库，状态为灰色不可点击
-                if (!dialog.isShowing()) {
-                    dialog.show();
-                }
+                showPWProgressDialog();
                 paySyncResult = true;
                 paymentOrderHandler.postDelayed(runnable, 5000);
 
@@ -185,9 +181,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
             case API1.UNIONPAY_GET_TN_SUCCESS://获取银联TN成功
                 PictureAirLog.v(TAG, "UNIONPAY_GET_TN_SUCCESS: ");
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
                 if (msg.obj == null || (msg.obj).toString().length() == 0) {
                     PictureAirLog.v(TAG, "msg.obj: " + msg.obj);
@@ -212,9 +206,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid, sPreferences);
                 }
                 if (!isSuccess) {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
+                    dismissPWProgressDialog();
                     if (payAsyncResultJsonObject == null) {
                         pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
                     }
@@ -225,9 +217,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 break;
             case API1.GET_SOCKET_DATA_FAILED:
                 //获取推送失败
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 PictureAirLog.v(TAG, "GET_SOCKET_DATA_FAILED: " + msg.arg1);
                 if (payAsyncResultJsonObject == null) {
                     pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
@@ -239,18 +229,14 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 
             case API1.UNIONPAY_GET_TN_FAILED://获取银联TN失败
                 PictureAirLog.v(TAG, "UNIONPAY_GET_TN_FAILED: ");
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 paymentOrderHandler.sendEmptyMessage(RQF_ERROR);
                 break;
 
             case API1.ADD_ORDER_FAILED:
                 PictureAirLog.e(TAG, "ADD_ORDER_FAILED cade: " + msg.arg1);
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 Intent errorIntent = new Intent(PaymentOrderActivity.this, OrderActivity.class);
                 startActivity(errorIntent);
@@ -295,7 +281,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         jcbLayout = (RelativeLayout) findViewById(R.id.paytype_jcb);
         wechatLayout = (RelativeLayout) findViewById(R.id.weixin);
         pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
-        dialog = CustomProgressDialog.create(PaymentOrderActivity.this, getString(R.string.is_loading), false, null);
     }
 
     private void init() {
@@ -379,9 +364,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
      * 提交订单（无需付钱的情况）
      */
     public void checkOut() {
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
+        showPWProgressDialog();
         if (cartItemIds != null) {
             if (productType == 1) {
                 //获取收货地址
@@ -509,9 +492,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 newToast.setTextAndShow(R.string.permission_read_phone_state_message, Common.TOAST_SHORT_TIME);
                 sbmtButton.setEnabled(true);
             } else {
-                if (!dialog.isShowing()) {
-                    dialog.show();
-                }
+                showPWProgressDialog();
                 PictureAirLog.out("========orderId" + orderId);
                 API1.getUnionPayTN(orderId, paymentOrderHandler);
             }
@@ -727,9 +708,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
 //        SharedPreferences.Editor editor = sPreferences.edit();
 //        editor.putBoolean(Common.NEED_FRESH, true);
 //        editor.commit();
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissPWProgressDialog();
         SuccessAfterPayment();
         startActivity(intent);
         finish();

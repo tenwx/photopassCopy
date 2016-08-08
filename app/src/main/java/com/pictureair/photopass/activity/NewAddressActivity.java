@@ -30,7 +30,6 @@ import com.pictureair.photopass.util.CityModel;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CountyModel;
 import com.pictureair.photopass.util.ProvinceModel;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -68,16 +67,13 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
     private SendAddress address;
     private LinearLayout provinceLL,cityLL,countryLL;
     private View provinceLine,cityLine,countryLine;
-    private CustomProgressDialog customProgressDialog;
 
     private Handler newAddressHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case API1.DELETE_ADDRESS_LIST_SUCCESS:
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
+                    dismissPWProgressDialog();
                     Intent intent = new Intent();
                     intent.putExtra("isDeleteAdd", true);
                     setResult(RESULT_OK, intent);
@@ -85,9 +81,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
                     break;
 
                 case API1.DELETE_ADDRESS_LIST_FAILED:
-                    if (customProgressDialog.isShowing()) {
-                        customProgressDialog.dismiss();
-                    }
+                    dismissPWProgressDialog();
                     PWToast.getInstance(NewAddressActivity.this).setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
 
@@ -239,13 +233,6 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
-        // 初始化button数据
-//        provBtn.setText(provinceList.get(0).getProvince());
-//        cityBtn.setText(provinceList.get(0).getCity_list().get(0).getCity());
-//        countryBtn.setText(provinceList.get(0).getCity_list().get(0)
-//                .getCounty_list().get(0).getCounty());
-
-        customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
     }
 
     /**
@@ -378,9 +365,7 @@ public class NewAddressActivity extends BaseActivity implements View.OnClickList
 
             case R.id.delete_address:
                 //执行删除操作
-                if (!customProgressDialog.isShowing()) {
-                    customProgressDialog.show();
-                }
+                showPWProgressDialog();
                 String[] ids = new String[1];
                 ids[0] = address.getAddressId();
                 API1.deleteInvoiceAddress(newAddressHandler, ids);

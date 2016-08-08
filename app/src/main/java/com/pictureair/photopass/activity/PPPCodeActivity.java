@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,8 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.eventbus.ScanInfoEvent;
@@ -26,7 +23,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -39,22 +35,12 @@ import de.greenrobot.event.EventBus;
 public class PPPCodeActivity extends BaseActivity implements View.OnClickListener, View.OnKeyListener {
 
     private String[] resultList;
-    private TextView tvConfirmHint, tvManulInputIntro;
-
     private ImageView ivShowResult;
     private Button btnConfirmScanPppCode, btnReScanPppCode;
-    private LinearLayout lvButtom;
-
-    private Button ok;
     private EditText input1, input2, input3, input4;
-    private SharedPreferences sp;
     private PWToast newToast;
     private String inputValue1, inputValue2, inputValue3, inputValue4;
     private DealCodeUtil dealCodeUtil;
-
-    private CustomProgressDialog dialog;
-
-    private LinearLayout comfirmPPPLayout;
 
     private final Handler pppCodeHandler = new PPPCodeHandler(this);
 
@@ -89,15 +75,11 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case DealCodeUtil.DEAL_CODE_FAILED:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             case DealCodeUtil.DEAL_CODE_SUCCESS:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
 
                 if (msg.obj != null) {
                     Intent intent2 = new Intent();
@@ -133,22 +115,16 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initview() {
-        tvConfirmHint = (TextView) findViewById(R.id.tv_confirm_hint);
         ivShowResult = (ImageView) findViewById(R.id.iv_show_result);
         btnConfirmScanPppCode = (Button) findViewById(R.id.btn_confirm_scan_ppp_code);
         btnConfirmScanPppCode.setOnClickListener(this);
         btnReScanPppCode = (Button) findViewById(R.id.btn_re_scan_ppp_code);
         btnReScanPppCode.setOnClickListener(this);
-        lvButtom = (LinearLayout) findViewById(R.id.lv_buttom);
-
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         input1 = (EditText) findViewById(R.id.input1);
         input2 = (EditText) findViewById(R.id.input2);
         input3 = (EditText) findViewById(R.id.input3);
         input4 = (EditText) findViewById(R.id.input4);
-
-        comfirmPPPLayout = (LinearLayout) findViewById(R.id.comfirm_ppp_layout);
 
         setTopLeftValueAndShow(R.drawable.back_white, true);
 
@@ -357,7 +333,7 @@ public class PPPCodeActivity extends BaseActivity implements View.OnClickListene
                 } else {
                     //如果有键盘显示，把键盘取消掉
                     hideInputMethodManager(v);
-                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                    showPWProgressDialog();
                     PictureAirLog.out("code is --->" + input1.getText().toString());
 //				dealCodeUtil.startDealCode("DPPPRU6CC7M5J6MM");
                     dealCodeUtil.startDealCode(inputValue1.trim().toUpperCase() + inputValue2.trim().toUpperCase() + inputValue3.trim().toUpperCase() + inputValue4.trim().toUpperCase());

@@ -37,7 +37,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
@@ -59,7 +58,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private SwipeRefreshLayout refreshLayout;
     private ListView xListView;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
-    private CustomProgressDialog customProgressDialog;
 
     //申明变量
     private int cartCount = 0; // 记录数据库中有几条记录
@@ -102,9 +100,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.GET_GOODS_SUCCESS://成功获取商品
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 if (refreshLayout.isRefreshing()) {
                     refreshLayout.setRefreshing(false);
                 }
@@ -133,17 +129,13 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 if (refreshLayout.isRefreshing()) {
                     refreshLayout.setRefreshing(false);
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 showNetWorkView();
                 break;
 
             case API1.GET_OUTLET_ID_SUCCESS:
                 //获取自提地址成功
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 AddressJson addressJson = JsonTools.parseObject((JSONObject) msg.obj, AddressJson.class);
                 if (addressJson != null && addressJson.getOutlets().size() > 0) {
                     //存入缓存
@@ -155,9 +147,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
             case API1.GET_OUTLET_ID_FAILED:
                 //获取自提地址失败
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
@@ -167,9 +157,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     return;
                 }
                 PictureAirLog.v(TAG, "onclick with reload");
-                if (!customProgressDialog.isShowing()) {
-                    customProgressDialog.show();
-                }
+                showPWProgressDialog();
                 //重新加载数据
                 initData(true);
                 break;
@@ -202,8 +190,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             cartCountTextView.setText(cartCount + "");
         }
         allGoodsList = new ArrayList<>();//初始化商品列表
-        customProgressDialog = CustomProgressDialog.create(getActivity(), getActivity().getString(R.string.is_loading), false, null);
-        customProgressDialog.show();
+        showPWProgressDialog();
         PictureAirLog.out("currency---->" + currency);
         shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
         xListView.setAdapter(shopGoodListViewAdapter);
@@ -281,9 +268,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
      */
     public void showNetWorkView() {
         refreshLayout.setVisibility(View.GONE);
-        if (customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
+        dismissPWProgressDialog();
         noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
         noNetWorkOrNoCountView.setResult(R.string.no_network, R.string.click_button_reload, R.string.reload, R.drawable.no_network, fragmentPageShopHandler, true);
     }
@@ -327,9 +312,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         fragmentPageShopHandler.removeCallbacksAndMessages(null);
-        if (customProgressDialog != null && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
     }
 
     /**

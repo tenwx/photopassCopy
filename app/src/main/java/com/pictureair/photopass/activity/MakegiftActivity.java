@@ -52,7 +52,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
@@ -71,7 +70,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
     private ImageView returnLayout;
     private ImageView cartButton;
-    private TextView selectButton;
     private Button buyButton;
     private Button addtocartButton;
     private TextView cartcountTextView, currencytextview;
@@ -84,8 +82,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private boolean isbuynow = false;
     private BannerView_PreviewCompositeProduct bannerView_Makegift;
 
-    private String photourl;
-    private String idString;
     private ArrayList<PhotoInfo> photoList;
     private ArrayList<CartPhotosInfo> photoListAfterUpload;//图片上传之后的list
     //选择商品popupwindow
@@ -101,9 +97,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private TextView addressTextView;
     private int recordcount;
 
-    private CustomProgressDialog progressDialog;
     private CustomProgressBarPop progressBarPop;
-
 
     private PWToast newToast;
 
@@ -170,16 +164,11 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     addressTextView.setVisibility(View.GONE);
                 }
 
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-
+                dismissPWProgressDialog();
                 break;
 
             case API1.GET_GOODS_FAILED://获取商品失败
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -354,7 +343,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         returnLayout = (ImageView) findViewById(R.id.rt);
         returnLayout.setOnClickListener(this);
         cartButton = (ImageView) findViewById(R.id.button_cart);
-        selectButton = (TextView) findViewById(R.id.product_name_tv);
         productNameLl = (LinearLayout) findViewById(R.id.product_name_ll);
         buyButton = (Button) findViewById(R.id.button_buy);
         addtocartButton = (Button) findViewById(R.id.button_addtocart);
@@ -372,7 +360,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         addtocartButton.setOnClickListener(this);
         cartcountTextView = (TextView) findViewById(R.id.textview_cart_count);
         cartcountTextView.setOnClickListener(this);
-        progressDialog = CustomProgressDialog.show(this, getString(R.string.is_loading), true, null);
+        showPWProgressDialog();
         allList = new ArrayList<>();
         originalGoodsList = new ArrayList<>();
         //从缓层中获取数据

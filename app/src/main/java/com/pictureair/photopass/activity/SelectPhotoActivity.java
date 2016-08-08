@@ -41,7 +41,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -80,7 +79,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private boolean isBuy = false;//只显示已购买的照片
     private LinearLayout llNullPhoto;
     private PopupWindow popupWindow;
-    private CustomProgressDialog customProgressDialog;
     private Context context;
     //底部view
     private LinearLayout llDisneyVideoFoot, llShopPhoto;
@@ -147,9 +145,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     }
                 }
                 photoPassAdapter.notifyDataSetChanged();
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             case 111:
@@ -163,9 +159,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
             case API1.UPLOAD_PHOTO_MAKE_VIDEO_SUCCESS:
                 // 发送成功
-                if (null != customProgressDialog && customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 clearData();
                 initPopWindow();
                 break;
@@ -173,19 +167,14 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
             case API1.UPLOAD_PHOTO_MAKE_VIDEO_FAILED://制作视频失败
             case API1.ADD_PHOTO_TO_PPP_FAILED://升级照片失败
                 // 处理失败，数据错误
-//                    initPopWindow();
-                if (null != customProgressDialog && customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(getString(ReflectionUtil.getStringId(context, msg.arg1)), Common.TOAST_SHORT_TIME);
                 PictureAirLog.e(TAG, "处理失败，数据错误" + getString(ReflectionUtil.getStringId(context, msg.arg1)));
                 break;
 
             case API1.ADD_PHOTO_TO_PPP_SUCCESS://升级照片成功
                 PictureAirLog.out("add photo to ppp success");
-                if (null != customProgressDialog && customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 /**
                  * 1.kill掉多余的activity
                  * 2.跳转到图片清晰页面预览图片
@@ -239,8 +228,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
 
     //初始化函数
     private void initview() {
-        customProgressDialog = CustomProgressDialog.create(context, context.getString(R.string.is_loading), false, null);
-        customProgressDialog.show();
+        showPWProgressDialog();
         //初始化资源
         newToast = new PWToast(this);
         myApplication = (MyApplication) getApplication();
@@ -605,9 +593,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     setResult(20, intent);
                     finish();
                 } else if (activity.equals("disney_video")) {
-                    if (!customProgressDialog.isShowing()) {
-                        customProgressDialog.show();
-                    }
+                    showPWProgressDialog();
                     StringBuffer photos = new StringBuffer();
                     for (int i = 0; i < photoURLlist.size(); i++) {
                         String photoId = photoURLlist.get(i).photoId;
@@ -621,9 +607,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                     API1.uploadPhotoMakeVideo(photos.toString(), selectPhotoHandler);
                 } else if (activity.equals("mypppactivity")) {
                     //绑定图片到ppp
-                    if (!customProgressDialog.isShowing()) {
-                        customProgressDialog.show();
-                    }
+                    showPWProgressDialog();
                     JSONArray photoIds = new JSONArray();
                     for (int i = 0; i < photoURLlist.size(); i++) {
                         photoIds.add(photoURLlist.get(i).photoId);

@@ -23,7 +23,6 @@ import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SettingUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 import java.lang.ref.WeakReference;
 
@@ -48,7 +47,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
     private final String TAG = "SettingActivity";
     private static final int LOGOUT_DIALOG = 111;
 
-    private CustomProgressDialog customProgressDialog; // loading 框
     private PWDialog pwDialog;
 
     private final Handler settingHandler = new HelpHandler(this);
@@ -72,26 +70,19 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
     }
 
     private void dealHandler(Message msg) {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
-
+        dismissPWProgressDialog();
         switch (msg.what){
             case 1:
                 ibGprWifiDownload.setImageResource(R.drawable.nosele);
                 ibWifiOnlyDownload.setImageResource(R.drawable.sele);
                 break;
+
             case 2:
                 ibGprWifiDownload.setImageResource(R.drawable.sele);
                 ibWifiOnlyDownload.setImageResource(R.drawable.nosele);
                 break;
-            case 3:
-//                isAutoUpdate = true;
-//                ibAutoUpdate.setImageResource(R.drawable.sele);
-                break;
-            case 4:
-//                isAutoUpdate = false;
-//                ibAutoUpdate.setImageResource(R.drawable.nosele);
+
+            default:
                 break;
 
         }
@@ -149,7 +140,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         appSharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
-        customProgressDialog = CustomProgressDialog.show(this, this.getString(R.string.is_loading), true, null);
+        showPWProgressDialog(true);
         pwDialog = new PWDialog(this)
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
@@ -216,39 +207,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
                     }
                 }.start();
                 break;
-//            case R.id.ib_auto_update:
-//            case R.id.rl_auto_update: // 自动更新。  选择框提示。
-//                if (isAutoUpdate == true){ //如果是自动更新
-//                    ibAutoUpdate.setImageResource(R.drawable.nosele);
-//                    isAutoUpdate = false;
-//                    new Thread() {
-//                        @Override
-//                        public void run() {
-//                            settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-//                        }
-//                    }.start();
-//                }else{
-//                    new CustomDialog(SettingActivity.this, R.string.confirm_sync_msg, R.string.confirm_sync_no, R.string.confirm_sync_yes, new CustomDialog.MyDialogInterface() {
-//                        @Override
-//                        public void yes() {
-//                            // TODO Auto-generated method stub // 确认同步更新后，修改更新设置状态
-//                            ibAutoUpdate.setImageResource(R.drawable.sele);
-//                            isAutoUpdate = true;
-//                            new Thread() {
-//                                @Override
-//                                public void run() {
-//                                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
-//                                }
-//                            }.start();
-//                        }
-//                        @Override
-//                        public void no() {
-//                            // TODO Auto-generated method stub // 取消：不做操作
-//
-//                        }
-//                    });
-//                }
-//                break;
+
             case R.id.setting_about:
                 Intent i = new Intent(MyApplication.getInstance(),AboutActivity.class);
                 startActivity(i);

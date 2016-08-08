@@ -28,7 +28,7 @@ android {
          * versionCode 5 //将默认渠道包更新为tencent
          * versionName "1.1.2"
          *
-         * versionCode 6
+         * versionCode 6 //数据库升级，添加一个字段
          * versionName "1.2.0"
          */
 

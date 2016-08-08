@@ -15,7 +15,6 @@ import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewInterface;
 import com.pictureair.photopass.editPhoto.interf.PWEditViewListener;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 
 /**
@@ -23,7 +22,6 @@ import com.pictureair.photopass.widget.HorizontalListView;
  * 负责页面的绘制，不做逻辑操作。(除了判断页面是否显示)
  */
 public class PWEditView implements View.OnClickListener, PWEditViewInterface{
-    private CustomProgressDialog dialog; // Loading
     private ImageView mLeftBack;
     private Activity mActivity;
     private ImageView mLastStep,mNextStep, mMainImage, mPhotoFrame;

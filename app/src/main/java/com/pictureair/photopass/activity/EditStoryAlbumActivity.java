@@ -35,7 +35,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
@@ -75,7 +74,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private int tabIndex = 0;
 	private int selectCount = 0;
 	private PWToast myToast;
-	private CustomProgressDialog customProgressDialog;
 	private PictureAirDbManager pictureAirDbManager;
 	private SettingUtil settingUtil;
 	private boolean editMode = false;
@@ -91,9 +89,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 				case GET_PHOTOS_DONE://获取图片成功
-					if (customProgressDialog.isShowing()) {
-						customProgressDialog.dismiss();
-					}
+					dismissPWProgressDialog();
 					if (albumArrayList.size() == 0){
 						noCountView.setVisibility(View.VISIBLE);
 						switch (tabIndex) {
@@ -240,8 +236,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		noCountView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
 		noCountTextView = (TextView) findViewById(R.id.no_photo_textView);
 		editTextView = (TextView) findViewById(R.id.pp_photos_edit);
-		//删除图片进度条
-		customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
 
 		//绑定监听
 		backRelativeLayout.setOnClickListener(this);
@@ -261,7 +255,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		ppCode = getIntent().getStringExtra("ppCode");
 
 		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
-		customProgressDialog.show();
+		showPWProgressDialog();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -578,9 +572,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			noCountTextView.setText(R.string.no_photo_in_airpass);
 		}
 
-		if (customProgressDialog.isShowing()) {
-			customProgressDialog.dismiss();
-		}
+		dismissPWProgressDialog();
 	}
 
 	@Override
@@ -589,9 +581,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			case DialogInterface.BUTTON_POSITIVE:
 				if (dialogId == DELETE_DIALOG) {
 					UmengUtil.onEvent(EditStoryAlbumActivity.this, Common.EVENT_ONCLICK_DEL_PHOTO); //统计点删除的事件。（友盟）
-					if (!customProgressDialog.isShowing()) {
-						customProgressDialog.show();
-					}
+					showPWProgressDialog();
 					new Thread() {
 						public void run() {
 							photopassPhotoslist.clear();

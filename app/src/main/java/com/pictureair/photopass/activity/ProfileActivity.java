@@ -20,7 +20,6 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
@@ -41,9 +40,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
     private SelectDateWeidget selectDateWeidget;
 
-    private CustomProgressDialog dialog;
     private String countryCode;//国家简码
-//    private CountryPage countryPage;
 
     private final Handler profileHandler = new ProfileHandler(this);
 
@@ -72,29 +69,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
      */
     private void dealHandler(Message msg) {
         switch (msg.what) {
-            case 1://国家
-//                String[] countrys = (String[])msg.obj;
-//                /**
-//                 * countrys[1] 手机区号
-//                 * countrys[0] 国家名称
-//                 * countrys[4] 国家简码
-//                 */
-//                countryString = countrys[0];
-//                countryCode = countrys[4];
-//
-//                if (!isNetWorkConnect(this)) {
-//                    newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
-//                    return;
-//                }
-//                dialog = CustomProgressDialog.show(this,
-//                        getString(R.string.connecting), false, null);
-////                if (null != countryPage){
-////                    countryPage.finish();
-////                }
-//                API1.updateProfile(sp.getString(Common.USERINFO_TOKENID, ""), sp.getString(Common.USERINFO_NICKNAME, ""),
-//                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-//                        countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
-                break;
             case SelectDateWeidget.SUBMIT_SELECT_DATE://确认日期
                 if (!isNetWorkConnect(MyApplication.getInstance())) {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
@@ -102,8 +76,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 }
                 Bundle bundle = (Bundle) msg.obj;
                 birthdayString = bundle.getString("year") + "-" + bundle.getString("month") + "-" + bundle.getString("day");
-                dialog = CustomProgressDialog.show(ProfileActivity.this,
-                        getString(R.string.connecting), false, null);
+                showPWProgressDialog();
                 API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""), birthdayString,
                         sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""),
                         "", API1.UPDATE_PROFILE_BIRTHDAY, profileHandler);
@@ -114,8 +87,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                dialog = CustomProgressDialog.show(ProfileActivity.this,
-                        getString(R.string.connecting), false, null);
+                showPWProgressDialog();
                 API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""),
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), genderString,
                         sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_GENDER, profileHandler);
@@ -123,9 +95,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 
 
             case API1.UPDATE_PROFILE_FAILED:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
@@ -166,9 +136,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 e.putString(Common.USERINFO_COUNTRY, countryCode);
                 e.putString(Common.USERINFO_GENDER, genderString);
                 e.commit();
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             default:
@@ -336,8 +304,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                dialog = CustomProgressDialog.show(this,
-                        getString(R.string.connecting), false, null);
+                showPWProgressDialog();
                 API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""),
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
                         countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
@@ -351,8 +318,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 nickNameString = data.getStringExtra("nickName");
-                dialog = CustomProgressDialog.show(this,
-                        getString(R.string.connecting), false, null);
+                showPWProgressDialog();
                 API1.updateProfile(MyApplication.getTokenId(), nickNameString,
                         sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
                         sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);

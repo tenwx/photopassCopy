@@ -14,7 +14,6 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomWebView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
@@ -25,7 +24,6 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     private CustomWebView webView;
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
     private PWToast myToast;
-    private CustomProgressDialog customProgressDialog;
     private int key;
 
     private final Handler myHandler = new MyHandler(this);
@@ -55,7 +53,7 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
                     myToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     break;
                 }
-                showDialog();
+                showPWProgressDialog();
                 netWorkOrNoCountView.setVisibility(View.GONE);
                 getData();
                 break;
@@ -173,41 +171,18 @@ public class WebViewActivity extends BaseActivity implements CustomWebView.MyWeb
     @Override
     public void loading() {
         webView.setVisibility(View.GONE);
-        showDialog();
+        showPWProgressDialog();
     }
 
     @Override
     public void loadFinish() {
         webView.setVisibility(View.VISIBLE);
-        goneDialog();
-    }
-
-    /**
-     * GONE DIALOG
-     */
-    private void goneDialog(){
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
-    }
-
-    /**
-     * SHOW DIALOG
-     */
-    private void showDialog(){
-        if (null == customProgressDialog) {
-            customProgressDialog = CustomProgressDialog.show(WebViewActivity.this, getString(R.string.is_loading), false, null);
-        }
-        if (!customProgressDialog.isShowing()){
-            customProgressDialog.show();
-        }
-
+        dismissPWProgressDialog();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         myHandler.removeCallbacksAndMessages(null);
-        goneDialog();
     }
 }

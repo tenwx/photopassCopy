@@ -259,8 +259,8 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
         int upgradeVersion  = oldVersion;
         if (upgradeVersion == 1) {//从版本1更新到版本2
             db.execSQL(SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_);
-            db.execSQL("ALTER TABLE " + Common.PHOTOPASS_INFO_TABLE + " ADD enImg INTEGER default '0'");
-            db.execSQL("ALTER TABLE " + Common.FAVORITE_INFO_TABLE + " ADD enImg INTEGER default '0'");
+            db.execSQL("ALTER TABLE " + Common.PHOTOPASS_INFO_TABLE + " ADD enImg INTEGER default '0';");
+            db.execSQL("ALTER TABLE " + Common.FAVORITE_INFO_TABLE + " ADD enImg INTEGER default '0';");
             upgradeVersion = 2;
         }
 

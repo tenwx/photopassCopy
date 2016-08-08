@@ -64,7 +64,6 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
 
@@ -146,7 +145,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private TextView currentPhotoInfoTextView;
     private TextView currentPhotoADTextView;
 
-    private CustomProgressDialog dialog;// 等待加载视图
     private Bitmap oriBlurBmp = null;// 原图的模糊图
     private Bitmap oriClearBmp = null;// 原图
     private Bitmap touchClearBmp = null;// 圆圈图
@@ -389,7 +387,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.BUY_PHOTO_SUCCESS:
-                dismissDialog();
+                dismissPWProgressDialog();
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
@@ -415,7 +413,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.BUY_PHOTO_FAILED:
                 //购买失败
-                dismissDialog();
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
@@ -441,18 +439,18 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case API1.GET_GOODS_FAILED:
-                dismissDialog();
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.ADD_TO_CART_FAILED:
-                dismissDialog();
+                dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                 break;
 
             case API1.ADD_TO_CART_SUCCESS:
-                dismissDialog();
+                dismissPWProgressDialog();
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 editor = sharedPreferences.edit();
                 editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
@@ -533,7 +531,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case LOAD_FROM_NETWORK:
                 //添加模糊
-                dismissDialog();
+                dismissPWProgressDialog();
                 if (null != oriClearBmp) {
                     PictureAirLog.v(TAG, "bitmap 2 not null");
                     initBlur();
@@ -557,7 +555,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (null != arg2)
                     oriClearBmp = BitmapFactory.decodeByteArray(arg2, 0, arg2.length);
-                dismissDialog();
+                dismissPWProgressDialog();
                 if (null != oriClearBmp) {
                     initBlur();
                 }
@@ -584,7 +582,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     //从网络获取
                     API1.getADLocations(oldPositon, previewPhotoHandler);
                 }
-                dismissDialog();
+                dismissPWProgressDialog();
                 break;
 
             case GET_LOCATION_AD_DONE:
@@ -685,7 +683,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case NO_PHOTOS_AND_RETURN://没有图片
-                dismissDialog();
+                dismissPWProgressDialog();
                 finish();
                 break;
 
@@ -719,7 +717,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         matrix = new Matrix();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
-        dialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
         sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
 
@@ -771,7 +768,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         }
         originalRadius = ScreenUtil.dip2px(this, 45);
         curRadius = originalRadius;
-        dialog.show();
+        showPWProgressDialog();
         getPreviewPhotos();
     }
 
@@ -1022,7 +1019,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (photoInfo.isPayed == 0 && photoInfo.onLine == 1) {//未购买的图片
             PictureAirLog.v(TAG, "need show blur view");
             image01.setVisibility(View.INVISIBLE);
-            showDialog();
+            showPWProgressDialog();
             touchtoclean.setVisibility(View.VISIBLE);
             blurFraRelativeLayout.setVisibility(View.VISIBLE);
             currentPhotoADTextView.setVisibility(View.GONE);
@@ -1037,7 +1034,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             PictureAirLog.out("set enable in other conditions");
             lastPhotoImageView.setEnabled(true);
             nextPhotoImageView.setEnabled(true);
-            dismissDialog();
+            dismissPWProgressDialog();
         }
 
         if (isLandscape) {//横屏模式
@@ -1364,7 +1361,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (photoInfo == null) {
                     return;
                 }
-                showDialog();
+                showPWProgressDialog();
                 API1.buyPhoto(photoInfo.photoId, previewPhotoHandler);
                 dia.dismiss();
                 break;
@@ -1376,7 +1373,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     dia.dismiss();
                     return;
                 }
-                showDialog();
+                showPWProgressDialog();
                 //获取商品
                 getALlGoods();
                 dia.dismiss();
@@ -1592,19 +1589,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         if (maskBmp != null) {
             maskBmp.recycle();
             maskBmp = null;
-        }
-        dismissDialog();
-    }
-
-    private void dismissDialog(){
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
-    private void showDialog(){
-        if (dialog != null && !dialog.isShowing()) {
-            dialog.show();
         }
     }
 

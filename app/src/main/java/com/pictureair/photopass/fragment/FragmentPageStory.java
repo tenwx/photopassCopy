@@ -59,7 +59,6 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
@@ -127,7 +126,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ImageView scanIv;
     private RelativeLayout scanLayout;
     private LinearLayout noPhotoView;
-    private CustomProgressDialog dialog;// 加载等待
     private ViewPager storyViewPager;
     private RelativeLayout storyNoPpToScanLinearLayout;
     private ImageView storyNoPpScanImageView;
@@ -449,17 +447,13 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 }
 
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 //重新加载数据
                 PictureAirLog.out("onclick with reload");
-                if (!dialog.isShowing()){
-                    dialog.show();
-                }
+                showPWProgressDialog();
                 if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {//地址获取失败
                     API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
                 } else {//地址获取成功，但是照片获取失败
@@ -502,9 +496,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                  * 1.重新从数据库获取一遍数据
                  * 2.更新页面
                  */
-                if (!dialog.isShowing()){
-                    dialog.show();
-                }
+                showPWProgressDialog();
 
                 new Thread(){
                     @Override
@@ -556,9 +548,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                         break;
                     }
                 }
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 //跳转到PP+详情页面
                 Intent intent3 = new Intent(getActivity(), PPPDetailProductActivity.class);
                 intent3.putExtra("goods", pppGoodsInfo);
@@ -566,9 +556,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case API1.GET_GOODS_FAILED:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
 
@@ -585,9 +573,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //将video和photo标记清空
         getVideoInfoDone = false;
         getPhotoInfoDone = false;
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissPWProgressDialog();
         if (setVisibile) {
             storyNoPpToScanLinearLayout.setVisibility(View.GONE);
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);
@@ -641,9 +627,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 myToast.setTextAndShow(R.string.nomore, Common.TOAST_SHORT_TIME);
                 fragmentPageStoryHandler.sendEmptyMessage(SORT_COMPLETED_REFRESH);
             }
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            dismissPWProgressDialog();
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
     }
@@ -766,7 +750,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         indicator.setOnPageChangeListener(this);
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
-        dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+        showPWProgressDialog();
         context = getActivity();
         pictureAirDbManager = new PictureAirDbManager(getActivity());
         settingUtil = new SettingUtil(pictureAirDbManager);
@@ -1062,18 +1046,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             Editor editor = sharedPreferences.edit();
             editor.putBoolean(Common.NEED_FRESH, false);
             editor.commit();
-            if (!dialog.isShowing()) {
-                dialog.show();
-            }
+            showPWProgressDialog();
             API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null, null);//获取全部图片
             API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
             EventBus.getDefault().post(new RedPointControlEvent(false));
         }
         if (!app.scanMagicFinish) {//app内的正常流程
             PictureAirLog.out("need scan local photos");
-            if (!dialog.isShowing()) {
-                dialog.show();
-            }
+            showPWProgressDialog();
             requesPermission();
         } else {//检查本地文件夹，属于外部原因的检查
             PictureAirLog.out("need check local photos");
@@ -1118,9 +1098,6 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     public void onDestroyView() {
         super.onDestroyView();
         PictureAirLog.out("story-----> destroy");
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
         fragmentPageStoryHandler.removeCallbacksAndMessages(null);
     }
 
@@ -1760,9 +1737,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case R.id.story_buy_ppp:
                 //购买PP+，先获取商品 然后进入商品详情
-                if (!dialog.isShowing()) {
-                    dialog.show();
-                }
+                showPWProgressDialog();
                 //获取商品（以后从缓存中取）
                 getGoods();
                 break;

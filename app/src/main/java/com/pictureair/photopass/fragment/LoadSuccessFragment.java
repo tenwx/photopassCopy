@@ -1,17 +1,10 @@
 package com.pictureair.photopass.fragment;
 
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -28,34 +21,21 @@ import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
-import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
-import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
 import com.pictureair.photopass.adapter.PhotoLoadSuccessAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.DownLoadCountUpdateEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
-import com.pictureair.photopass.service.DownloadService;
-import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
-import com.pictureair.photopass.widget.PWToast;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 
 /**
  * Created by pengwu on 16/7/8.
@@ -63,7 +43,6 @@ import de.greenrobot.event.Subscribe;
 public class LoadSuccessFragment extends BaseFragment implements View.OnClickListener{
 
     private ListView lv_success;
-    private CustomProgressDialog dialog;
     private boolean isLoading;
     private PictureAirDbManager pictureAirDbManager;
     private SharedPreferences sPreferences;
@@ -72,14 +51,12 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     public static final int LOAD_FROM_DATABASE = 1111;
     public static final int DELETE_SUCCESS = 2233;
     public static final int GET_PHOTO_BACKGROUND = 3344;
-    List<PhotoDownLoadInfo> photos;
+    private List<PhotoDownLoadInfo> photos;
     private RelativeLayout rl_load_success;
     private LinearLayout ll_load_success;
     private Button button_toload;
     private Button btn_clear;
     private PhotoLoadSuccessAdapter adapter;
-    private int deleteCount;
-    private PWToast myToast;
     private ExecutorService executorService;
 
     private static class PhotoLoadSuccessHandler extends Handler{
@@ -117,9 +94,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     }
                 }
                 isLoading = false;
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
             case DELETE_SUCCESS:
                 rl_load_success.setVisibility(View.VISIBLE);
@@ -127,9 +102,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 int delCount = (int)msg.obj;
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
                 EventBus.getDefault().post(new DownLoadCountUpdateEvent(delCount));
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
             case GET_PHOTO_BACKGROUND:
                 if (msg.obj != null) {
@@ -174,8 +147,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         ll_load_success.setVisibility(View.GONE);
         button_toload.setOnClickListener(this);
         btn_clear.setOnClickListener(this);
-        dialog = CustomProgressDialog.create(getContext(), getString(R.string.is_loading), false, null);
-        myToast = new PWToast(MyApplication.getInstance());
         lv_success.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -209,9 +180,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         super.onResume();
         if (!isLoading && photos == null) {
             isLoading = true;
-            if (dialog != null && !dialog.isShowing()) {
-                dialog.show();
-            }
+            showPWProgressDialog();
             new Thread(){
                 @Override
                 public void run() {
@@ -231,9 +200,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 getActivity().finish();
                 break;
             case R.id.load_success_clear:
-                if (dialog != null && !dialog.isShowing()) {
-                    dialog.show();
-                }
+                showPWProgressDialog();
                 new Thread(){
                     @Override
                     public void run() {

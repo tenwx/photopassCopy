@@ -24,7 +24,6 @@ import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
 import com.pictureair.photopass.widget.CustomButtonFont;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 /**
  * 忘记密码：2个页面
@@ -37,7 +36,6 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     private static final String TAG = "FindPasswordActivity";
     private Context context;
     private PWToast myToast;
-    private CustomProgressDialog customProgressDialog;
     //输入邮箱页面
     private LinearLayout llFindPwdContent;
     private EditTextWithClear etEmail;
@@ -46,12 +44,10 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     private LinearLayout llContenHint;
     private CustomButtonFont btnBackLoginPage;
 
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (null != customProgressDialog && customProgressDialog.isShowing())
-                customProgressDialog.dismiss();
+        public boolean handleMessage(Message msg) {
+            dismissPWProgressDialog();
             switch (msg.what) {
                 case API1.FIND_PWD_SUCCESS:
                     llFindPwdContent.setVisibility(View.GONE);
@@ -76,8 +72,9 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                     break;
 
             }
+            return false;
         }
-    };
+    });
 
     /**
      * 点击键盘之外，隐藏键盘
@@ -159,7 +156,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
                     return;
                 }
 
-                customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+                showPWProgressDialog();
                 API1.findPwdEmail(mHandler, etEmailStr, MyApplication.getInstance().getLanguageType(),MyApplication.getTokenId());
                 break;
 
@@ -201,7 +198,6 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
     }
 
     private void backLogin() {
-//        startActivity(new Intent(context, OtherLoginActivity.class));
         finish();
     }
 

@@ -44,7 +44,6 @@ import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -79,7 +78,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private MyApplication app;
     private Thread locationThread;
     private DiscoverLocationItemInfo info;
-    private CustomProgressDialog dialog;
     private LocationUtil locationUtil;
 
     //申明变量
@@ -213,9 +211,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 }
                 discoverListView.setVisibility(View.VISIBLE);
                 noNetWorkOrNoCountView.setVisibility(View.GONE);
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             //定位的时候
@@ -330,7 +326,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         distanceFormat.setMaximumFractionDigits(1);
 
         //获取数据
-        dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
+        showPWProgressDialog();
         PictureAirLog.out("start get lcoation info");
 
         String expireTime = ACache.get(getActivity()).getAsString(Common.CACHE_LOCATION_TIMER);
@@ -389,9 +385,6 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     public void onDestroyView() {
         PictureAirLog.d(TAG, "ondestroy===========");
         fragmentPageDiscoverHandler.removeCallbacksAndMessages(null);
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
         super.onDestroyView();
     }
 
@@ -403,9 +396,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             //获取数据
             isLoading = false;
             locationStart = true;
-            if (!dialog.isShowing()) {
-                dialog.show();
-            }
+            showPWProgressDialog();
             PictureAirLog.out("start get lcoation info");
             API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
             requesLocationPermission();

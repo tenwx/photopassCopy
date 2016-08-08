@@ -25,7 +25,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -53,7 +52,6 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
     private ArrayList<PhotoInfo> tempPhotoLists; //保存选中的 pp。 （准备升级PP＋的pp）
     private PWToast myToast;
     private PWDialog pictureWorksDialog;
-    private CustomProgressDialog customProgressDialog;
 
     private static class MyPPHandler extends Handler{
         private final WeakReference<SelectPPActivity> mActivity;
@@ -92,9 +90,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     noPhotoPassView.setVisibility(View.GONE);
                 }
-                if (customProgressDialog.isShowing()) {
-                    customProgressDialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
             case 2:
                 ok.setText(formaStringPPP(msg.arg1, dppp.capacity));
@@ -139,8 +135,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
 
         tvTitle.setText(R.string.selectionpp);  //选择PP界面
 
-        customProgressDialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
-        customProgressDialog.show();
+        showPWProgressDialog();
 
         final String[] finalPhotoCode = photoCode;
         new Thread() {

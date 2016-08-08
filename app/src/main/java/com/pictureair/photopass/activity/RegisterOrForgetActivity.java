@@ -26,7 +26,6 @@ import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.RegisterTool;
 import com.pictureair.photopass.widget.CustomButtonFont;
 import com.pictureair.photopass.widget.CustomFontManager;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.CustomTextView;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
@@ -47,7 +46,6 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
     private String languageType;
     private PWToast myToast;
     private Context context;
-    private CustomProgressDialog customProgressDialog;
     private LinearLayout rlCountry, ll_pwd_centen, ll_mobile_centen, ll_put_identify_centen;
     private CustomTextView tvCountry, tvCountryNum, tv_otherRegistered, tv_explain,dialogTvPhone;//country textview
     private EditTextWithClear et_write_phone, pwd, pwd_again, et_put_identify;
@@ -158,19 +156,12 @@ public class RegisterOrForgetActivity extends BaseActivity implements RegisterOr
 
     @Override
     public void goneDialog() {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
+        dismissPWProgressDialog();
     }
 
     @Override
     public void showDialog() {
-        if (null == customProgressDialog) {
-            customProgressDialog = CustomProgressDialog.create(this, getString(R.string.connecting), false, null);
-        }
-        if (!customProgressDialog.isShowing()) {
-            customProgressDialog.show();
-        }
+        showPWProgressDialog();
     }
 
     @Override

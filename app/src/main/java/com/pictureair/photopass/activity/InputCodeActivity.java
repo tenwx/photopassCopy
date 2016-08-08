@@ -22,7 +22,6 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -38,8 +37,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private SharedPreferences sp;
     private PWToast newToast;
     private DealCodeUtil dealCodeUtil;
-
-    private CustomProgressDialog dialog;
 
     private EditTextWithClear inputCodeEdit;
 
@@ -72,15 +69,11 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case DealCodeUtil.DEAL_CODE_FAILED:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 break;
 
             case DealCodeUtil.DEAL_CODE_SUCCESS:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
 
                 if (msg.obj != null) {
                     Intent intent2 = new Intent();
@@ -195,7 +188,7 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                 } else {
                     //如果有键盘显示，把键盘取消掉
                     hideInputMethodManager(v);
-                    dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+                    showPWProgressDialog();
                     dealCodeUtil.startDealCode(inputCodeEdit.getText().toString().toUpperCase());
                 }
                 break;

@@ -10,7 +10,7 @@ import com.alipay.sdk.app.PayTask;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.PaymentOrderActivity;
 import com.pictureair.photopass.alipay.PayResult;
-import com.pictureair.photopass.widget.CustomProgressDialog;
+import com.pictureair.photopass.widget.PWProgressDialog;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -142,22 +142,24 @@ public class PayUtils {
 
 
     private class GetPrepayIdTask extends AsyncTask<Void, Void, Map<String, String>> {
-        private CustomProgressDialog dialog;
+        private PWProgressDialog pwProgressDialog;
         StringBuffer sb = new StringBuffer();
         Map<String, String> resultunifiedorder;
         WXPayUtil wxPayUtil = new WXPayUtil(seed);
 
         @Override
         protected void onPreExecute() {
-            dialog = CustomProgressDialog.show(activity, activity.getString(R.string.is_loading), false, null);
-
+            pwProgressDialog = new PWProgressDialog(activity)
+                    .setPWProgressDialogMessage(R.string.is_loading)
+                    .pwProgressDialogCreate();
+            pwProgressDialog.pwProgressDialogShow();
         }
 
         @Override
         protected void onPostExecute(Map<String, String> result) {
             // 生成预付单的结果
-            if (dialog != null) {
-                dialog.dismiss();
+            if (null != pwProgressDialog) {
+                pwProgressDialog.pwProgressDialogDismiss();
             }
             sb.append("prepay_id\n" + result.get("prepay_id") + "\n\n");
 

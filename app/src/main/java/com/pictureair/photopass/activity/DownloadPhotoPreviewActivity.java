@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,10 +29,8 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,8 +45,6 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private ImageView returnImageView;
 
     private PictureAirDbManager pictureAirDbManager;
-    private PhotoInfo photoInfo;
-    private SharedPreferences sharedPreferences;
 
     private RelativeLayout titleBar;
     private static final String TAG = "PreviewPhotoActivity";
@@ -63,11 +58,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
      */
     private boolean isLandscape = false;
 
-    private CustomProgressDialog dialog;// 等待加载视图
-
     private RelativeLayout photoFraRelativeLayout;
-
-    private SimpleDateFormat simpleDateFormat;
 
     private Handler previewPhotoHandler;
 
@@ -130,9 +121,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 PictureAirLog.v(TAG, "----------------------->initing...6");
                 break;
             case NO_PHOTOS://没有图片
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 finish();
                 break;
         }
@@ -151,10 +140,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         // TODO Auto-generated method stub
         previewPhotoHandler = new PreViewHandler(this);
         pictureAirDbManager = new PictureAirDbManager(this);
-        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
-        dialog = CustomProgressDialog.create(this, getString(R.string.is_loading), false, null);
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.download_preview_back);
         locationTextView = (TextView) findViewById(R.id.download_preview_title);
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.download_preview_fra_layout);
@@ -168,7 +154,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             isLandscape = true;
             landscapeOrientation();
         }
-        dialog.show();
+        showPWProgressDialog();
         getPreviewPhotos(getIntent());
     }
 
@@ -255,9 +241,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         PictureAirLog.e("DownloadPhotoPreviewActivity","onNewIntent");
-        if (dialog != null && !dialog.isShowing()) {
-            dialog.show();
-        }
+        showPWProgressDialog();
         getPreviewPhotos(intent);
     }
 
@@ -344,45 +328,16 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     }
 
     /**
-     * 左右滑动切换图片
-     */
-    private void changeTab(boolean next) {
-
-        if (next) {
-            PictureAirLog.v(TAG, "--------->next");
-            if (currentPosition < photolist.size() - 1) {
-                currentPosition++;
-            } else {
-                return;
-            }
-        } else {
-            PictureAirLog.v(TAG, "--------->last");
-            if (currentPosition > 0) {
-                currentPosition--;
-            } else {
-                return;
-            }
-        }
-        mViewPager.setVisibility(View.VISIBLE);
-        mViewPager.setCurrentItem(currentPosition);
-    }
-
-    /**
      * 更新底部索引工具
      */
     private void updateIndexTools(boolean isOnCreate) {
         PictureAirLog.v(TAG, "updateIndexTools-------->" + currentPosition);
-        //初始化图片收藏按钮，需要判断isLove=1或者是否在数据库中
-        photoInfo = photolist.get(currentPosition);
 
         //更新序列号
         locationTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1,photolist.size()));
 
         PictureAirLog.out("set enable in other conditions");
-        if (dialog.isShowing()) {
-            PictureAirLog.out("dismiss--->other");
-            dialog.dismiss();
-        }
+        dismissPWProgressDialog();
 
         if (isLandscape) {//横屏模式
             if (mViewPager != null) {

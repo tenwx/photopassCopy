@@ -17,7 +17,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 
@@ -33,11 +32,9 @@ import java.util.ArrayList;
 public class HelpActivity extends BaseActivity {
     private final String TAG = "HelpActivity ";
     private Context context;
-//    private ImageView back;
     private NoNetWorkOrNoCountView noNetWorkOrNoCountView;
     private final int NOT_NETWORK = 111;
     private ArrayList<HelpInfo> helpInfos;
-    private CustomProgressDialog customProgressDialog;
     private ListView mListView;
     private HelpInfosAdapter adapte;
     private PWToast myToast;
@@ -68,9 +65,7 @@ public class HelpActivity extends BaseActivity {
      * @param msg
      */
     private void dealHandler(Message msg) {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-        }
+        dismissPWProgressDialog();
         switch (msg.what) {
             case NoNetWorkOrNoCountView.BUTTON_CLICK_WITH_RELOAD://noView的按钮响应重新加载点击事件
                 initData();
@@ -103,7 +98,6 @@ public class HelpActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
         context = this;
-        customProgressDialog = CustomProgressDialog.create(context, context.getString(R.string.is_loading), true, null);
         initView();
         initData();
     }
@@ -112,9 +106,7 @@ public class HelpActivity extends BaseActivity {
      * 初始化网络数据
      */
     private void initData() {
-        if (!customProgressDialog.isShowing()) {
-            customProgressDialog.show();
-        }
+        showPWProgressDialog();
         if (AppUtil.getNetWorkType(context) == AppUtil.NETWORKTYPE_INVALID) {
             mListView.setVisibility(View.GONE);
             noNetWorkOrNoCountView.setVisibility(View.VISIBLE);

@@ -25,7 +25,6 @@ import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.CouponViewInterface;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWToast;
@@ -46,8 +45,6 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
     private List<CouponInfo> mAllData;
     private List<CouponInfo> mSelectData;
     private ArrayList<String> mCouponCodeFromOrderPage;
-    //    private CustomTextView mBtnSubmit, mBtnScan;
-    private CustomProgressDialog customProgressDialog;
     private CouponAdapter couponAdapter;
     private Context context;
     private PWToast myToast;
@@ -234,21 +231,12 @@ public class CouponActivity extends BaseActivity implements CouponViewInterface,
 
     @Override
     public void showProgressBar() {
-        if (null == customProgressDialog) {
-            customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
-        } else {
-            if (!customProgressDialog.isShowing()) {
-                customProgressDialog.show();
-            }
-        }
+        showPWProgressDialog();
     }
 
     @Override
     public void goneProgressBar() {
-        if (null != customProgressDialog && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
-            customProgressDialog = null;
-        }
+        dismissPWProgressDialog();
     }
 
     @Override

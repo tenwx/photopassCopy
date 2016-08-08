@@ -1,13 +1,10 @@
 package com.pictureair.photopass.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,8 +13,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,10 +21,8 @@ import android.widget.RelativeLayout;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
-import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
-import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
@@ -37,7 +30,6 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -65,9 +57,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     private Button btn_reconnect;
     private Button btn_clear_failed;
     private Button button;
-    private PictureAirDbManager pictureAirDbManager;
-    private  PhotoDownloadingAdapter adapter;
-    private CustomProgressDialog dialog;
+    private PhotoDownloadingAdapter adapter;
     private PWToast myToast;
 
     private final Handler adapterHandler = new AdapterHandler(this);
@@ -90,9 +80,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void dealHandler(Message msg) {
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissPWProgressDialog();
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE://更新listview
                 PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
@@ -187,14 +175,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         btn_reconnect = (Button) view.findViewById(R.id.loading_connect);
         btn_clear_failed = (Button) view.findViewById(R.id.loading_clear_fail);
         ll_loading = (LinearLayout) view.findViewById(R.id.ll_downloading);
-        dialog = CustomProgressDialog.create(getContext(), getString(R.string.is_loading), false, null);
         myToast = new PWToast(MyApplication.getInstance());
         ll_loading.setVisibility(View.GONE);
         rl_loading.setVisibility(View.VISIBLE);
         button.setOnClickListener(this);
         btn_reconnect.setOnClickListener(this);
         btn_clear_failed.setOnClickListener(this);
-        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
         bindService();
         return view;
     }
@@ -213,9 +199,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 downloadList = downloadService.getDownloadList();
                 downloadService.setAdapterhandler(adapterHandler);
                 if (AppUtil.checkPermission(MyApplication.getInstance(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    if (dialog != null && !dialog.isShowing()) {
-                        dialog.show();
-                    }
+                    showPWProgressDialog();
                 }
                 if (downloadList != null && downloadList.size() >0) {
                     ll_loading.setVisibility(View.VISIBLE);
@@ -283,9 +267,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 if (downloadService.isDownloading()){
                     myToast.setTextAndShow(R.string.photo_download_clear_tips, Common.TOAST_SHORT_TIME);
                 }else {
-                    if (dialog != null && !dialog.isShowing()) {
-                        dialog.show();
-                    }
+                    showPWProgressDialog();
                     downloadService.sendClearFailedMsg();
                 }
                 break;

@@ -10,10 +10,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfoJson;
+import com.pictureair.photopass.widget.PWProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
-
-import com.pictureair.photopass.widget.CustomProgressDialog;
-
 
 /**
  * 接受loginActicity中传来的手机号和密码
@@ -29,7 +27,7 @@ public class SignAndLoginUtil implements Handler.Callback {
     private Editor editor;
     private PWToast myToast;
     private Context context;
-    private CustomProgressDialog customProgressDialog;
+    private PWProgressDialog pwProgressDialog;
     private OnLoginSuccessListener onLoginSuccessListener;
     private Handler handler;
     /**
@@ -55,7 +53,7 @@ public class SignAndLoginUtil implements Handler.Callback {
 
         switch (msg.what) {
             case API1.GET_TOKEN_ID_FAILED://获取tokenId失败
-                dismissDialog();
+                dismissPWProgressDialog();
                 myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -87,7 +85,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         id = ReflectionUtil.getStringId(context, msg.arg1);
                         break;
                 }
-                dismissDialog();
+                dismissPWProgressDialog();
                 editor = sp.edit();
                 editor.putString(Common.USERINFO_TOKENID, null);
                 editor.commit();
@@ -124,7 +122,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         id = ReflectionUtil.getStringId(context, msg.arg1);
                         break;
                 }
-                dismissDialog();
+                dismissPWProgressDialog();
                 editor = sp.edit();
                 editor.putString(Common.USERINFO_TOKENID, null);
                 editor.commit();
@@ -140,7 +138,7 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.GET_CART_FAILED://获取购物车失败
             case API1.GET_STOREID_FAILED://获取storeId失败
                 id = ReflectionUtil.getStringId(context, msg.arg1);
-                dismissDialog();
+                dismissPWProgressDialog();
                 editor = sp.edit();
                 editor.putString(Common.USERINFO_TOKENID, null);
                 editor.commit();
@@ -179,7 +177,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 break;
 
             case API1.GET_STOREID_SUCCESS://获取storeId成功
-                dismissDialog();
+                dismissPWProgressDialog();
                 PictureAirLog.v(TAG, "get storeid success");
                 JSONObject jsonObject = JSONObject.parseObject(msg.obj.toString());
                 Editor editor = sp.edit();
@@ -200,7 +198,7 @@ public class SignAndLoginUtil implements Handler.Callback {
      * 登录成功之后的跳转
      */
     private void loginsuccess() {
-        dismissDialog();
+        dismissPWProgressDialog();
         onLoginSuccessListener.loginSuccess();
     }
 
@@ -216,7 +214,11 @@ public class SignAndLoginUtil implements Handler.Callback {
         this.needModifyInfo = needModifyInfo;
         PictureAirLog.out("account---->" + account + ",pwd---->" + AppUtil.md5(pwdStr));
         myToast = new PWToast(context);
-        customProgressDialog = CustomProgressDialog.show(context, context.getString(R.string.is_loading), false, null);
+        pwProgressDialog = new PWProgressDialog(context)
+                .setPWProgressDialogMessage(R.string.is_loading)
+                .pwProgressDialogCreate();
+        pwProgressDialog.pwProgressDialogShow();
+
         sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         handler = new Handler(this);
         if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
@@ -229,13 +231,16 @@ public class SignAndLoginUtil implements Handler.Callback {
     }
 
     public void destroy(){
-        dismissDialog();
-        customProgressDialog = null;
+        dismissPWProgressDialog();
+        pwProgressDialog = null;
     }
 
-    private void dismissDialog(){
-        if (customProgressDialog != null && customProgressDialog.isShowing()) {
-            customProgressDialog.dismiss();
+    /**
+     * dismiss pwProgressDialog
+     */
+    private void dismissPWProgressDialog(){
+        if (null != pwProgressDialog) {
+            pwProgressDialog.pwProgressDialogDismiss();
         }
     }
 

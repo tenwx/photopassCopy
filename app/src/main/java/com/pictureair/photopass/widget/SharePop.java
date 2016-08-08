@@ -74,7 +74,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
     /**
      * 打开程序进行分享比较耗时间，所以再点击分享的时候，就显示进度条
      */
-    private CustomProgressDialog dialog;
+    private PWProgressDialog pwProgressDialog;
 
     private String shareType; // 分享类型，判断是 什么分享平台。 微信：1，qqzone：2，sina：3，twitter
 
@@ -120,9 +120,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                 case API1.GET_NEW_PHOTOS_INFO_FAILED:
                 case API1.GET_SHARE_URL_FAILED:
                     //获取url失败，1.通知notify，2、关闭sdk
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
+                    dismissDialog();
                     shareUrl = null;
                     shareId = null;
                     int resId = getStringRes(context, "http_error_code_401");
@@ -283,9 +281,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
             shareParams.site = context.getString(R.string.share_app_name);
             platform.share(shareParams);
         } else {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            dismissDialog();
             showNotification(2000,
                     context.getString(R.string.share_failure_qzone));
         }
@@ -321,9 +317,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
             // shareParams.site = context.getString(R.string.app_name);
             platform.share(shareParams);
         } else {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            dismissDialog();
             showNotification(2000,
                     context.getString(R.string.share_failure_qzone));
         }
@@ -378,9 +372,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
             }
             platform.share(shareParams);
         } else {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            dismissDialog();
             showNotification(2000,
                     context.getString(R.string.share_failure_facebook));
         }
@@ -437,9 +429,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
             platform.share(shareParams);
         } else {
             PictureAirLog.i(TAG, "---> instagram分享---用户没有安装客户端");
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            dismissDialog();
             showNotification(2000,
                     context.getString(R.string.share_failure_instagram));
         }
@@ -524,7 +514,12 @@ public class SharePop extends PopupWindow implements OnClickListener,
     @Override
     public void onClick(View v) {
         // 显示进度条，等待app打开
-        dialog = CustomProgressDialog.show(context, null, false, null);
+        if (pwProgressDialog == null) {
+            pwProgressDialog = new PWProgressDialog(context)
+                    .setPWProgressDialogMessage(null)
+                    .pwProgressDialogCreate();
+        }
+        pwProgressDialog.pwProgressDialogShow();
         switch (v.getId()) {
             case R.id.wechat_moments:
             case R.id.wechat:
@@ -549,7 +544,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
                 break;
 
             case R.id.share_cancel:
-                dialog.dismiss();
+                dismissDialog();
                 ShareSDK.stopSDK();
                 break;
 
@@ -653,9 +648,9 @@ public class SharePop extends PopupWindow implements OnClickListener,
      * 将开始程序的对话框消失掉
      */
     public void dismissDialog() {
-        if (dialog != null && dialog.isShowing()) {
+        if (null != pwProgressDialog) {
             PictureAirLog.out("share pop dismiss");
-            dialog.dismiss();
+            pwProgressDialog.pwProgressDialogDismiss();
         }
     }
 
@@ -730,9 +725,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
     @Override
     public void onCancel(Platform arg0, int arg1) {
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissDialog();
         Message msg = new Message();
         msg.what = MSG_ACTION_CCALLBACK;
         msg.arg1 = 3;
@@ -743,9 +736,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
     @Override
     public void onComplete(Platform arg0, int arg1, HashMap<String, Object> arg2) {
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissDialog();
         Message msg = new Message();
         msg.what = MSG_ACTION_CCALLBACK;
         msg.arg1 = 1;
@@ -765,9 +756,7 @@ public class SharePop extends PopupWindow implements OnClickListener,
         // TODO Auto-generated method stub
         // System.out.println("error");
         arg2.printStackTrace();
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissDialog();
         Message msg = new Message();
         msg.what = MSG_ACTION_CCALLBACK;
         msg.arg1 = 2;

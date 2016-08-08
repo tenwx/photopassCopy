@@ -65,7 +65,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -94,8 +93,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private LinearLayout edittoolsbar,font_bar; // 工具条 和 底部的 旋转 bar
 
 	private HorizontalListView top_HorizontalListView;  //显示饰品的滑动条
-
-	private CustomProgressDialog dialog;
 
 	private PWDialog pictureWorksDialog;
 
@@ -206,11 +203,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			case 9999: //加载网络图片。
 				mainBitmap = imageLoader.loadImageSync(photoURL, isEncrypted);
 				mainImage.setImageBitmap(mainBitmap);
-				dismissDialog();
+				dismissPWProgressDialog();
 				break;
 			case LOAD_IMAGE_FINISH:
 			case INIT_DATA_FINISHED:
-				dismissDialog();
+				dismissPWProgressDialog();
 				break;
 
 			case START_ASYNC:
@@ -229,7 +226,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 
 				btn_onedit_save.setVisibility(View.VISIBLE);
-				dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
+				showPWProgressDialog(R.string.dealing);
 				editType = 1;
 				curFramePosition = msg.arg1;
 				loadframe(curFramePosition);
@@ -240,28 +237,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				try {
 					com.alibaba.fastjson.JSONObject resultJsonObject = com.alibaba.fastjson.JSONObject.parseObject(msg.obj.toString());
 					if (resultJsonObject.containsKey("assets")) {
-
 						pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
-
-//						if (assetsObject.has("frames")) {
-//							JSONArray framesArray = assetsObject.getJSONArray("frames");
-//							if (framesArray.length() > 0 ) {
-//								PictureAirLog.d(TAG, "frames length is " + framesArray.length());
-//								//开始解析数据，并且将数据写入数据库
-//								pictureAirDbManager.insertFrameAndStickerIntoDB(framesArray);
-//							}else {
-//								PictureAirLog.d(TAG, "has no any frames");
-//							}
-//						}
-//						if (assetsObject.has("cliparts")) {
-//							JSONArray stickersArray = assetsObject.getJSONArray("cliparts");
-//							if (stickersArray.length() > 0) {
-//								PictureAirLog.d(TAG, "stickers length is " + stickersArray.length());
-//							}else {
-//								PictureAirLog.d(TAG, "has no any stickers");
-//							}
-//						}
-
 					}
 
 					if (resultJsonObject.containsKey("time")) {
@@ -288,7 +264,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 						stikerInfos.add(stickerFromDBInfos.get(j));
 					}
 				}
-
 				break;
 
 			case API1.GET_LAST_CONTENT_FAILED://获取更新包失败
@@ -324,19 +299,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_photo);
-
 		initView();
-		dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
-//		new Thread() {
-//			public void run() {
-		//		    addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
+		showPWProgressDialog();
 		initData();
 		//开始从网络获取最新数据
 		API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
-		//		initDate();
-		//			};
-//		}.start();
-
 		myToast = new PWToast(getApplicationContext());
 	}
 
@@ -704,7 +671,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 
 				if (index == 0 && isOnlinePic == true){  //如果是网络图片，并且 index ＝ 0 的时候，就没有保存到临时文件目录的文件，故保存Bitmap
-					dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.is_loading), false, null);
+					showPWProgressDialog();
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
@@ -712,7 +679,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							scan(url);
 							EditPhotoUtil.deleteTempPic(Common.TEMPPIC_PATH);
 							Looper.prepare();
-							dismissDialog();
+							dismissPWProgressDialog();
 							Looper.loop();
 						}
 					}).start();
@@ -1072,13 +1039,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
-			dismissDialog();
+			dismissPWProgressDialog();
 		}
 
 		@Override
 		protected void onCancelled(Bitmap result) {
 			super.onCancelled(result);
-			dismissDialog();
+			dismissPWProgressDialog();
 		}
 
 		@Override
@@ -1092,15 +1059,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			exitEditStates();
 			preview_save.setVisibility(View.VISIBLE);
 			check();
-			dismissDialog();
+			dismissPWProgressDialog();
 
 		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.saving), false, null);
-
+			showPWProgressDialog(R.string.saving);
 		}
 	}
 
@@ -1147,13 +1113,13 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
-			dismissDialog();
+			dismissPWProgressDialog();
 		}
 
 		@Override
 		protected void onCancelled(Bitmap result) {
 			super.onCancelled(result);
-			dismissDialog();
+			dismissPWProgressDialog();
 		}
 
 		@Override
@@ -1162,18 +1128,15 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			if (result != null) {
 				mainImage.setImageBitmap(result);
 			}
-			dismissDialog();
+			dismissPWProgressDialog();
 		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			dialog = CustomProgressDialog.show(EditPhotoActivity.this, getString(R.string.dealing), false, null);
-
+			showPWProgressDialog(R.string.dealing);
 		}
 	}
-
-
 
 	/**
 	 * 合成边框方法
@@ -1202,7 +1165,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 			}
 		} else {// 没有边框
-			dismissDialog();
+			dismissPWProgressDialog();
 			frameImageView.setVisibility(View.INVISIBLE);
 		}
 	}
@@ -1264,15 +1227,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap = null;
 		}
 		editPhotoHandler.removeCallbacksAndMessages(null);
-		dismissDialog();
 	}
-
-	private void dismissDialog() {
-		if (dialog != null && dialog.isShowing()) {
-			dialog.dismiss();
-		}
-	}
-
 
 	@Override
 	public void inOrOutPlace(final String locationIds, final boolean in) {//位置改变之后就要改变边框的内容

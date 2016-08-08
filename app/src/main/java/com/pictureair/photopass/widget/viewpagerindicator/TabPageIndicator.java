@@ -187,7 +187,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         tabView.setFocusable(true);
         tabView.setOnClickListener(mTabClickListener);
         tabView.setText(text);
-        PictureAirLog.e(TAG, "addTab");
+        PictureAirLog.d(TAG, "addTab");
         tabViews.add(tabView);
         if (iconResId != 0) {
             tabView.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
@@ -286,7 +286,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     @Override
     public void setCurrentItem(int item) {
-        PictureAirLog.e(TAG, "setCurrentItem :" + item);
+        PictureAirLog.d(TAG, "setCurrentItem :" + item);
         if (mViewPager == null) {
             throw new IllegalStateException("ViewPager has not been bound.");
         }

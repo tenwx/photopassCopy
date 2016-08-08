@@ -36,7 +36,6 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.widget.CustomProgressDialog;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
@@ -79,7 +78,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     private PWToast newToast;
 
-    private CustomProgressDialog dialog;
     private DealCodeUtil dealCodeUtil;
     private final Handler mipCaptureHandler = new MipCaptureHandler(this);
 
@@ -97,9 +95,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     @Override
     public void decodeSuccess(Result result, Bitmap bitmap) {
-        if (dialog != null && dialog.isShowing()) {//不处理扫描结果
-
-        } else {
+        if (!isPWProgressDialogShowing()) {//处理扫描结果
             inactivityTimer.onActivity();
             playBeepSoundAndVibrate();
             String resultString = result.getText();
@@ -123,7 +119,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 return;
             }
             PictureAirLog.out("code：：：" + code);
-            dialog = CustomProgressDialog.show(this, getString(R.string.is_loading), false, null);
+            showPWProgressDialog();
             if (code.contains("&")) {//递推
                 dealCodeUtil.startDealChidCode(code);
             } else {//正常code
@@ -169,9 +165,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case DealCodeUtil.DEAL_CODE_FAILED:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 PictureAirLog.out("scan failed----->");
                 if (msg.obj != null) {//从ppp,PP页面过来，需要返回
                     EventBus.getDefault().post(new ScanInfoEvent(Integer.valueOf(msg.obj.toString()), "failed", false, getIntent().getStringExtra("type")));
@@ -182,9 +176,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
 
             case DealCodeUtil.DEAL_CODE_SUCCESS:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
 
                 if (msg.obj != null) {
                     Bundle bundle = (Bundle) msg.obj;
@@ -211,9 +203,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 break;
 
             case DealCodeUtil.DEAL_CHID_CODE_SUCCESS:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dismissPWProgressDialog();
                 Bundle bundle = (Bundle) msg.obj;
                 Intent intent = new Intent(MipCaptureActivity.this, SubmitOrderActivity.class);
                 intent.putExtra("orderinfo", bundle.getSerializable("orderinfo"));
