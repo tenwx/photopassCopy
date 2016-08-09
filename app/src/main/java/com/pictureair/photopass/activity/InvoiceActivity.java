@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.R;
@@ -45,16 +44,11 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
     private RelativeLayout personRl;
     private RelativeLayout companyRl;
     private RelativeLayout nocheckRl;
-    private RelativeLayout photoRl;
-    private RelativeLayout serviceRl;
     private ImageButton personIb;
     private ImageButton companyIb;
-    private ImageButton photoIb;
-    private ImageButton serviceIb;
     private ImageButton noInvoice;
     private ImageView backIV;
     private EditTextWithClear editText;
-    private TextView info;
     private NoScrollListView listAddress;
     private RelativeLayout sendAddressRl,newAddressRl;
     private ScrollView scrollView;
@@ -97,6 +91,8 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
         switch (msg.what) {
             case API1.ADDRESS_LIST_SUCCESS://获取所有地址列表
                 getAddressData(msg);
+                addressAdapter.setCurrentIndex(0);
+                addressAdapter.notifyDataSetChanged();
                 break;
 
             case API1.ADD_ADDRESS_LIST_SUCCESS://添加新地址
@@ -149,7 +145,7 @@ public class InvoiceActivity extends BaseActivity implements View.OnClickListene
                 if (editText.getVisibility() == View.VISIBLE)
                     editText.setVisibility(View.GONE);
 
-            } else {
+            } else if (invoiceInfo.getTitle() == InvoiceInfo.COMPANY) {
                 personIb.setImageResource(R.drawable.invoice_nor);
                 companyIb.setImageResource(R.drawable.invoice_press);
                 if (editText.getVisibility() != View.VISIBLE)
