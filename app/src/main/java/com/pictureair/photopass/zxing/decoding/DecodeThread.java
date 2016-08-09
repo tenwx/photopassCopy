@@ -24,8 +24,10 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -35,7 +37,7 @@ import java.util.concurrent.CountDownLatch;
 final class DecodeThread extends Thread {
 
     public static final String BARCODE_BITMAP = "barcode_bitmap";
-    private final Hashtable<DecodeHintType, Object> hints;
+    private final Map<DecodeHintType, Object> hints;
     private DecodeHandler handler;
     private final CountDownLatch handlerInitLatch;
     private Context context;
@@ -44,7 +46,7 @@ final class DecodeThread extends Thread {
     private DecodeHandler.OnScanResultListener onScanResultListener;
 
     DecodeThread(Context context,
-                 Vector<BarcodeFormat> decodeFormats,
+                 Collection<BarcodeFormat> decodeFormats,
                  String characterSet,
                  int scanType,
                  boolean permission,
@@ -57,13 +59,16 @@ final class DecodeThread extends Thread {
         this.onScanResultListener = onScanResultListener;
         handlerInitLatch = new CountDownLatch(1);
 
-        hints = new Hashtable<DecodeHintType, Object>(3);
+        hints = new EnumMap<>(DecodeHintType.class);
 
         if (decodeFormats == null || decodeFormats.isEmpty()) {
-            decodeFormats = new Vector<BarcodeFormat>();
-            decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
+            decodeFormats = EnumSet.noneOf(BarcodeFormat.class);
+            decodeFormats.addAll(DecodeFormatManager.PRODUCT_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.INDUSTRIAL_FORMATS);
             decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
             decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.AZTEC_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.PDF417_FORMATS);
         }
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);

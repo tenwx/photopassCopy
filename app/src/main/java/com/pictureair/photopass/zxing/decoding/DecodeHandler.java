@@ -30,6 +30,7 @@ import android.os.Message;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
+import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
@@ -41,12 +42,11 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
-import com.pictureair.photopass.zxing.camera.PlanarYUVLuminanceSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.Map;
 
 final class DecodeHandler extends Handler {
     YuvImage image;
@@ -64,11 +64,13 @@ final class DecodeHandler extends Handler {
     private OnScanResultListener onScanResultListener;
     private PWToast myToast;
 
+    private boolean running = true;
+
     public interface OnScanResultListener {
         void getResultMessage(Message msg);
     }
 
-    DecodeHandler(Context context, int scanType, boolean permission, Hashtable<DecodeHintType, Object> hints, OnScanResultListener onScanResultListener) {
+    DecodeHandler(Context context, int scanType, boolean permission, Map<DecodeHintType, Object> hints, OnScanResultListener onScanResultListener) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.context = context;
@@ -84,6 +86,9 @@ final class DecodeHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
+        if (!running) {
+            return;
+        }
         switch (message.what) {
             case R.id.decode:
                 if (scanType == 1) { // 第一种模式
@@ -95,9 +100,10 @@ final class DecodeHandler extends Handler {
                         myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
                     }
                 }
-
                 break;
+
             case R.id.quit:
+                running = false;
                 Looper.myLooper().quit();
                 releaseBaseAPI();
                 break;
@@ -127,13 +133,16 @@ final class DecodeHandler extends Handler {
         height = tmp;
 
         PlanarYUVLuminanceSource source = CameraManager.get().buildLuminanceSource(rotatedData, width, height);
-        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-        try {
-            rawResult = multiFormatReader.decodeWithState(bitmap);
-        } catch (ReaderException re) {
-            // continue
-        } finally {
-            multiFormatReader.reset();
+
+        if (source != null) {
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = multiFormatReader.decodeWithState(bitmap);
+            } catch (ReaderException re) {
+                // continue
+            } finally {
+                multiFormatReader.reset();
+            }
         }
 
         Message message = new Message();
@@ -142,10 +151,6 @@ final class DecodeHandler extends Handler {
             PictureAirLog.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
             message.what = R.id.decode_succeeded;
             message.obj = rawResult;
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
-            message.setData(bundle);
         } else {
             message.what = R.id.decode_failed;
         }
