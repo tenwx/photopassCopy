@@ -31,7 +31,9 @@ import com.pictureair.photopass.widget.ListViewImageView;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 购物车页面的ExpandableListView的适配器
@@ -373,7 +375,7 @@ public class CartInfoAdapter extends BaseAdapter {
          */
         public void modifyCart(final boolean addOrminus, final int count, final CartItemInfo cartItemInfo, final Handler handler) {
             PictureAirLog.v(TAG, "modifyCart");
-            RequestParams params = new RequestParams();
+            Map<String,Object> params = new HashMap<>();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
             params.put(Common.GOODS_KEY, cartItemInfo.getGoodsKey());
             params.put(Common.QTY, count);

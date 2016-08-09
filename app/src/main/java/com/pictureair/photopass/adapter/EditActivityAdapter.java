@@ -28,6 +28,7 @@ import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.ResponseCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -495,8 +496,8 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
+            public void onProgress(long bytesWritten, long totalSize,boolean done) {
+                super.onProgress(bytesWritten, totalSize,done);
                 if (firstTime) {
                     firstFileProgress = bytesWritten * 50 / totalSize;
                 } else {

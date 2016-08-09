@@ -51,7 +51,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class SubmitOrderActivity extends BaseActivity implements OnClickListener {
     private static final String TAG = "SubmitOrderActivity";
@@ -795,11 +800,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             } else {
                 String photourl = updatephotolist.get(0).photoPathOrURL;
                 // 需要上传选择的图片
-                RequestParams params = new RequestParams();
+                Map<String,RequestBody> params = new HashMap<>();
                 PictureAirLog.v(TAG, "上传的图片URL" + photourl);
+                File file = new File(photourl);
                 try {
-                    params.put("file", new File(photourl), "application/octet-stream");
-                    params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+                    RequestBody requestParams = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
+                    RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
+                    params.put("file\";filename=\""+file.getName(), fileBody);
+                    params.put(Common.USERINFO_TOKENID,requestParams);
                     API1.SetPhoto(params, submitOrderHandler, requestCode, customProgressBarPop);
 //					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
                     customProgressBarPop.show(0);

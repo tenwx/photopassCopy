@@ -20,6 +20,8 @@ import com.pictureair.photopass.entity.GoodsInfoJson;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -330,7 +332,7 @@ public class DealCodeUtil {
 	}
 
 	private void getInfo(String code, final String type){
-		RequestParams params = new RequestParams();
+		Map<String,Object> params = new HashMap<>();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
 		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
 		String urlString;

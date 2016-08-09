@@ -1,17 +1,14 @@
 package com.pictureair.photopass.util;
 
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
 
 /**
- * Created by milo on 15/12/7.
- * 定义Http 操作回调接口
+ * Created by pengwu on 16/8/5.
  */
 public interface HttpInterface {
-
     /**
      * 请求成功，jsonArray
      *
@@ -60,11 +57,6 @@ public interface HttpInterface {
      * @param bytesWritten long
      * @param totalSize    long
      */
-    void onProgress(long bytesWritten, long totalSize);
-
-    /**
-     * 开始
-     */
-    void onStart();
+    void onProgress(long bytesWritten, long totalSize, boolean done);
 
 }

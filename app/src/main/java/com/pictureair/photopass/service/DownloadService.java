@@ -33,6 +33,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
+import com.pictureair.photopass.util.ResponseCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
@@ -42,13 +43,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -476,12 +476,12 @@ public class DownloadService extends Service {
             API1.downLoadPhotos(handler, fileStatus,adapterHandler);
         } else {//video
             String downloadURL = Common.PHOTO_URL + fileStatus.getUrl();
-            RequestParams params = new RequestParams();
+            Map<String,Object> params = new HashMap<>();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
             params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
             HttpUtil1.asyncDownloadBinaryData(downloadURL, params, new HttpCallback() {
-                long startTime;
-                long lastTime;
+                long startTime = System.currentTimeMillis();
+                long lastTime = startTime;
                 @Override
                 public void onSuccess(byte[] binaryData) {
                     super.onSuccess(binaryData);
@@ -515,8 +515,8 @@ public class DownloadService extends Service {
                 }
 
                 @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
+                public void onProgress(long bytesWritten, long totalSize,boolean done) {
+                    super.onProgress(bytesWritten, totalSize,done);
                     double currentSize = bytesWritten/1000d/1000d;
                     double total = totalSize/1000d/1000d;
                     String c = AppUtil.formatData(currentSize);
@@ -535,13 +535,6 @@ public class DownloadService extends Service {
                             adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                         }
                     }
-                }
-
-                @Override
-                public void onStart() {
-                    super.onStart();
-                    startTime = System.currentTimeMillis();
-                    lastTime = startTime;
                 }
             });
         }

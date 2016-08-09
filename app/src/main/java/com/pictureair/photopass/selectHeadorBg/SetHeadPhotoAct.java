@@ -34,6 +34,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * 头像选取
@@ -192,10 +197,14 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     }
                     try {
                         // 需要更新服务器中用户头像图片信息
-                        RequestParams params = new RequestParams();
-                        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-                        params.put("updateType", "avatar");
-                        params.put("file", headPhoto);
+                        Map<String, RequestBody> params = new HashMap<>();
+                        RequestBody requestParams1 = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
+                        RequestBody requestParams2 = RequestBody.create(MediaType.parse("text/plain"),"avatar");
+                        RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),headPhoto);
+                        params.put("file\";filename=\""+headPhoto.getName(), fileBody);
+                        params.put(Common.USERINFO_TOKENID,requestParams1);
+                        params.put("updateType",requestParams2);
+
                         API1.updateUserImage(params, setHeadPhotoHandler, 0, dialog);
                     } catch (FileNotFoundException ee) {
                         // TODO Auto-generated catch block

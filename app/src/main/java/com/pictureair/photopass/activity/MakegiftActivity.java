@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
@@ -59,7 +60,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class MakegiftActivity extends BaseActivity implements OnClickListener {
     //选择商品的horizontalscrollview的popupwindow
@@ -218,10 +225,13 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                             String photourl = photoList.get(upload_index).photoPathOrURL;
                             PictureAirLog.out("上传的图片URL" + photourl);
                             // 需要上传选择的图片
-                            RequestParams params = new RequestParams();
+                            File file = new File(photourl);
+                            Map<String,RequestBody> params = new HashMap<>();
                             try {
-                                params.put("file", new File(photourl), "application/octet-stream");
-                                params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+                                RequestBody requestParams = RequestBody.create(MediaType.parse("text/plain"),MyApplication.getTokenId());
+                                RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
+                                params.put("file\";filename=\""+file.getName(), fileBody);
+                                params.put(Common.USERINFO_TOKENID,requestParams);
                                 API1.SetPhoto(params, makeGiftHandler, upload_index, progressBarPop);
                             } catch (FileNotFoundException e) {
                                 // TODO Auto-generated catch block
