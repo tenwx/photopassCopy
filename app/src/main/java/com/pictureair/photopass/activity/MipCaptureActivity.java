@@ -116,7 +116,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 return;
             }
             PictureAirLog.out("code：：：" + code);
-            showPWProgressDialog();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showPWProgressDialog();
+                }
+            });
             if (code.contains("&")) {//递推
                 dealCodeUtil.startDealChidCode(code);
             } else {//正常code
@@ -305,6 +310,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 PictureAirLog.out("width---->" + layoutParams.width);
                 PictureAirLog.out("height---->" + layoutParams.height);
                 tvCenterHint.setLayoutParams(layoutParams);
+                CameraManager.get().setOCRFrameRect(width, height);
             }
 
             ocrScanView.setVisibility(View.VISIBLE);

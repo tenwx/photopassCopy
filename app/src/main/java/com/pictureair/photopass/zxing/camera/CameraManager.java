@@ -50,6 +50,7 @@ public final class CameraManager {
     private AutoFocusManager autoFocusManager;
     private Rect framingRect;
     private Rect framingRectInPreview;
+    private Rect ocrFramingRect;
     private boolean initialized;
     private boolean previewing;
     private int requestedCameraId = OpenCameraInterface.NO_REQUESTED_CAMERA;
@@ -230,28 +231,24 @@ public final class CameraManager {
      * @return The rectangle to draw on screen in window coordinates.
      */
     public Rect getFramingRect() {
-        PictureAirLog.out("get framing rect");
         if (framingRect == null) {
-        PictureAirLog.out("framing rect null");
             if (camera == null) {
-        PictureAirLog.out("camera null");
                 return null;
             }
             int width = ScreenUtil.getScreenWidth(context) / 2;//边长为屏宽的四分之二
             int topOffset = ScreenUtil.getScreenHeight(context) * 4 / 15;
             int leftOffset = width / 2;//两边间隔为屏宽的四分之一
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + width);//正方形
-//      Log.d(TAG, "Calculated framing rect: " + framingRect);
         }
         return framingRect;
     }
 
+    public void setOCRFrameRect(int width, int height) {
+        ocrFramingRect = new Rect(0, 0, 0 + width, 0 + height);
+    }
+
     public Rect getOCRFrameRect(){
-        int width = ScreenUtil.getScreenWidth(context) / 3 * 2;
-        int topOffset = 0;
-        int leftOffset = 0;
-        Rect framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + ScreenUtil.getScreenWidth(context) / 3 * 2 * 85 / 54);
-        return framingRect;
+        return ocrFramingRect;
     }
 
     /**

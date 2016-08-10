@@ -41,7 +41,6 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener, Clos
     private final Context activity;
     private MediaPlayer mediaPlayer;
     private boolean playBeep;
-    private boolean vibrate;
 
     public BeepManager(Context activity) {
         this.activity = activity;
@@ -51,7 +50,6 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener, Clos
 
     public synchronized void updatePrefs() {
         playBeep = shouldBeep(activity);
-        vibrate = true;
         if (playBeep && mediaPlayer == null) {
             // The volume on STREAM_SYSTEM is not adjustable, and users found it too loud,
             // so we now play on the music stream.
@@ -60,13 +58,14 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener, Clos
     }
 
     public synchronized void playBeepSoundAndVibrate() {
+        if (playBeep && mediaPlayer == null) {
+            updatePrefs();
+        }
         if (playBeep && mediaPlayer != null) {
             mediaPlayer.start();
         }
-        if (vibrate) {
-            Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(VIBRATE_DURATION);
-        }
+        Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(VIBRATE_DURATION);
     }
 
     private static boolean shouldBeep(Context activity) {
