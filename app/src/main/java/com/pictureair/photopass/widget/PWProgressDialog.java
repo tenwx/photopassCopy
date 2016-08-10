@@ -20,6 +20,8 @@ import com.pictureair.photopass.util.ScreenUtil;
  *
  * 具体使用，已写入baseActivity，并且重载多重常用的显示方法
  *
+ * 注意点，show和dismiss必须要在main线程中执行
+ *
  * @author bauer_bao
  */
 public class PWProgressDialog extends Dialog {
