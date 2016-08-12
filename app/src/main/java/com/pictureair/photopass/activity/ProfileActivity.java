@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +19,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.wheelview.SelectDateWeidget;
 
@@ -31,7 +31,6 @@ import java.lang.ref.WeakReference;
 public class ProfileActivity extends BaseActivity implements OnClickListener {
     private TextView tvNickName, tvGender, tvBirthday, countryTv, accountTv;
     private RelativeLayout nn, g, bd, countryRL, item_password;
-    private SharedPreferences sp;
     private PWToast newToast;
     private String nickNameString, genderString, birthdayString, countryString;
     private RelativeLayout isSelectMale, isSelectFemale;
@@ -77,8 +76,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 Bundle bundle = (Bundle) msg.obj;
                 birthdayString = bundle.getString("year") + "-" + bundle.getString("month") + "-" + bundle.getString("day");
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""), birthdayString,
-                        sp.getString(Common.USERINFO_GENDER, "").toLowerCase(), sp.getString(Common.USERINFO_COUNTRY, ""),
+                API1.updateProfile(MyApplication.getTokenId(),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""), birthdayString,
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase(),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""),
                         "", API1.UPDATE_PROFILE_BIRTHDAY, profileHandler);
                 break;
 
@@ -88,9 +89,11 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""),
-                        sp.getString(Common.USERINFO_BIRTHDAY, ""), genderString,
-                        sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_GENDER, profileHandler);
+                API1.updateProfile(MyApplication.getTokenId(),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, ""), genderString,
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""), "",
+                        API1.UPDATE_PROFILE_GENDER, profileHandler);
                 break;
 
 
@@ -130,12 +133,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                         break;
                 }
 
-                SharedPreferences.Editor e = sp.edit();
-                e.putString(Common.USERINFO_BIRTHDAY, birthdayString);
-                e.putString(Common.USERINFO_NICKNAME, nickNameString);
-                e.putString(Common.USERINFO_COUNTRY, countryCode);
-                e.putString(Common.USERINFO_GENDER, genderString);
-                e.commit();
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, birthdayString);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, nickNameString);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, countryCode);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, genderString);
                 dismissPWProgressDialog();
                 break;
 
@@ -148,7 +149,6 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_profile);
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         newToast = new PWToast(this);
         initView();
         initData();
@@ -178,13 +178,13 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initData() {
-        nickNameString = sp.getString(Common.USERINFO_NICKNAME, "");
+        nickNameString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, "");
         if (!"".equals(nickNameString)) {
             tvNickName.setText(nickNameString);
             tvNickName.setTextColor(getResources().getColor(R.color.pp_blue));
         }
 
-        genderString = sp.getString(Common.USERINFO_GENDER, "").toLowerCase();
+        genderString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase();
         if (genderString.equals("male") || genderString.equals("男")) {
             tvGender.setText(R.string.male);
             tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
@@ -193,14 +193,14 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
             tvGender.setTextColor(getResources().getColor(R.color.pp_blue));
         }
 
-        birthdayString = sp.getString(Common.USERINFO_BIRTHDAY, "");
+        birthdayString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, "");
         if (!"".equals(birthdayString.trim())) {
             tvBirthday.setText(birthdayString);
             tvBirthday.setTextColor(getResources().getColor(R.color.pp_blue));
         }
 
         // 设置国家
-        countryString = sp.getString(Common.USERINFO_COUNTRY, "");
+        countryString = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, "");
         PictureAirLog.out("coutry----->" + countryString);
         if (null != countryString && !countryString.equals("")){
             countryString = AppUtil.getCountryByCountryCode(countryString, this);
@@ -208,8 +208,8 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
             countryRL.setEnabled(false);
         }
 
-        if (!sp.getString(Common.USERINFO_ACCOUNT, "").equals("")) {// email
-            accountTv.setText(sp.getString(Common.USERINFO_ACCOUNT, ""));
+        if (!SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "").equals("")) {// email
+            accountTv.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, ""));
             accountTv.setTextColor(getResources().getColor(R.color.pp_blue));
         }
     }
@@ -305,8 +305,10 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 showPWProgressDialog();
-                API1.updateProfile(MyApplication.getTokenId(), sp.getString(Common.USERINFO_NICKNAME, ""),
-                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
+                API1.updateProfile(MyApplication.getTokenId(),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, ""),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase(),
                         countryCode, "", API1.UPDATE_PROFILE_COUNTRY, profileHandler);
             }
         }
@@ -320,8 +322,9 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
                 nickNameString = data.getStringExtra("nickName");
                 showPWProgressDialog();
                 API1.updateProfile(MyApplication.getTokenId(), nickNameString,
-                        sp.getString(Common.USERINFO_BIRTHDAY, ""), sp.getString(Common.USERINFO_GENDER, "").toLowerCase(),
-                        sp.getString(Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, ""),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, "").toLowerCase(),
+                        SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, ""), "", API1.UPDATE_PROFILE_NAME, profileHandler);
                 break;
 
             default:

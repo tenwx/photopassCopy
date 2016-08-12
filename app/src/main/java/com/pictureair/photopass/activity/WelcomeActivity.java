@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +18,7 @@ import android.widget.LinearLayout;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,6 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 	private int lastY = 0;
 	private static final String TAG = "WelcomeActivity";
 	private String currentLanguage;// en表示英语，zh表示简体中文。
-	private SharedPreferences appSharedPreferences;
 	private static final int START_JUMP = 1001;
 	private Handler handler = new Handler(new Handler.Callback() {
 		@Override
@@ -73,8 +72,7 @@ public class WelcomeActivity extends BaseActivity implements OnPageChangeListene
 		mViewPager.setOnTouchListener(this);
 		LayoutInflater inflater = LayoutInflater.from(WelcomeActivity.this);
 		list = new ArrayList<View>();
-		appSharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
-		currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
+		currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
 		initpage(inflater);
 
 	}

@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,6 +21,7 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.EditTextWithClear;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -34,7 +34,6 @@ import de.greenrobot.event.EventBus;
  */
 public class InputCodeActivity extends BaseActivity implements OnClickListener{
     private Button ok;
-    private SharedPreferences sp;
     private PWToast newToast;
     private DealCodeUtil dealCodeUtil;
 
@@ -87,10 +86,9 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
                         startActivity(intent2);
 
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putBoolean(Common.NEED_FRESH, true);
-                        editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
-                        editor.commit();
+                        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+                        int currentPPcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0);
+                        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, currentPPcount + 1);
 
                     }
                 }
@@ -115,7 +113,6 @@ public class InputCodeActivity extends BaseActivity implements OnClickListener{
     }
 
     private void initview() {
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         ok = (Button) findViewById(R.id.sure);
 
         inputCodeEdit = (EditTextWithClear) findViewById(R.id.input_manaul_edittext);

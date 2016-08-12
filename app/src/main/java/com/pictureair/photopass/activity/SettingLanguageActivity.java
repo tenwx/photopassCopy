@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -16,6 +15,7 @@ import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.util.Locale;
 
@@ -27,15 +27,12 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
     private RelativeLayout back;
     private RelativeLayout languageChinese;
     private RelativeLayout languageEnglish;
-//    private RelativeLayout save;
-//    private TextView saveTv;
 
     private ImageView chineseSeleted;
     private ImageView englishSeleted;
 
     private String oldLanguage = "";
     private String currentLanguage = "";   // en表示英语，zh表示简体中文。
-    private SharedPreferences sharedPreferences;
     private PWDialog pictureWorksDialog;
 
     @Override
@@ -54,8 +51,6 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         back = (RelativeLayout) findViewById(R.id.back_set);
         languageChinese = (RelativeLayout) findViewById(R.id.language_chinese);
         languageEnglish = (RelativeLayout) findViewById(R.id.language_english);
-//        save = (RelativeLayout) findViewById(R.id.save);
-//        saveTv = (TextView) findViewById(R.id.save_tv);
 
         chineseSeleted = (ImageView) findViewById(R.id.chinese_imageView);
         englishSeleted = (ImageView) findViewById(R.id.english_imageView);
@@ -65,8 +60,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
         languageChinese.setOnClickListener(this);
         languageEnglish.setOnClickListener(this);
 
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
-        oldLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
+        oldLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         currentLanguage = oldLanguage;
 
         PictureAirLog.out("current language---->" + currentLanguage);
@@ -170,9 +164,7 @@ public class SettingLanguageActivity extends BaseActivity implements OnClickList
             }
             getResources().updateConfiguration(config, dm);
             //把语言写入数据库
-            SharedPreferences.Editor localEditor = sharedPreferences.edit();
-            localEditor.putString(Common.LANGUAGE_TYPE, currentLanguage);
-            localEditor.commit();
+            SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, currentLanguage);
             //清除商品
             clearCache();
             onCreate(null);

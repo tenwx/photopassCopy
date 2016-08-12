@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,9 +29,10 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -67,8 +66,6 @@ public class CartActivity extends BaseActivity implements OnClickListener {
     private int disSelectedCount = 0;//记录已经取消选中的个数
 
     private CartInfoAdapter cartAdapter;
-
-    private SharedPreferences sPreferences;
 
     private CustomProgressBarPop dialog;
 
@@ -107,6 +104,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
      * @param msg
      */
     private void dealHandler(Message msg) {
+        int currentCartCounts;
         switch (msg.what) {
             case API1.GET_CART_SUCCESS:
                 PictureAirLog.v(TAG, "GET_CART_SUCCESS obg: " + msg.obj);
@@ -129,9 +127,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                         line.setVisibility(View.VISIBLE);
 
                         //保存购物车数量
-                        Editor cartEditor = sPreferences.edit();
-                        cartEditor.putInt(Common.CART_COUNT, cartItemInfoJson.getTotalCount());
-                        cartEditor.commit();
+                        SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, cartItemInfoJson.getTotalCount());
                     } else {
                         cartItemInfoJson.setPreferentialPrice(json.getPreferentialPrice());
                         cartItemInfoJson.setTotalPrice(json.getTotalPrice());
@@ -165,9 +161,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
                 } else {
                     //保存购物车数量
-                    Editor cartEditor = sPreferences.edit();
-                    cartEditor.putInt(Common.CART_COUNT, 0);
-                    cartEditor.commit();
+                    SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                     ShowNoNetOrNoCountView();
                 }
 
@@ -207,9 +201,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 //更新界面
                 cartAdapter.refresh(cartInfoList);
                 //保存购物车数量
-                Editor editor = sPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) - deleteCount);
-                editor.commit();
+                currentCartCounts = SPUtils.getInt(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCounts - deleteCount);
                 paymentButton.setBackgroundResource(R.color.gray_light3);
                 if (cartInfoList.size() == 0) {
                     cancelEdit();
@@ -274,9 +267,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 cartItemInfoJson.setTotalCount(cartItemInfoJson.getTotalCount() - 1);
                 cartItemInfoJson.setTotalPrice(cartItemInfoJson.getTotalPrice() - (int) msg.obj);
 
-                Editor editor2 = sPreferences.edit();
-                editor2.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) - 1);
-                editor2.commit();
+                currentCartCounts = SPUtils.getInt(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCounts - 1);
                 break;
 
             case CartInfoAdapter.ADDCOUNT:// 加数量
@@ -293,9 +285,8 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 cartItemInfoJson.setTotalCount(cartItemInfoJson.getTotalCount() + 1);
                 cartItemInfoJson.setTotalPrice(cartItemInfoJson.getTotalPrice() - (int) msg.obj);
 
-                Editor editor1 = sPreferences.edit();
-                editor1.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                editor1.commit();
+                currentCartCounts = SPUtils.getInt(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(CartActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCounts + 1);
                 break;
 
             case CartInfoAdapter.SELECTED:// 选中item
@@ -354,15 +345,15 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         bottomRelativeLayout = (RelativeLayout) findViewById(R.id.linearLayout1);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.noNetWorkView);
 
-        sPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        userId = sPreferences.getString(Common.USERINFO_ID, "");
-        currencyTextView.setText(sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        discountCurrencyTv.setText("-" + sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        String currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
+        currencyTextView.setText(currency);
+        discountCurrencyTv.setText("-" + currency);
         showPWProgressDialog();
         API1.getCarts(null, cartHandler);
         totalTextView.setText((int) totalPrice + "");
         listView = (ListView) findViewById(R.id.cartListView);
-        cartAdapter = new CartInfoAdapter(this, sPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), cartInfoList, userId, cartHandler);
+        cartAdapter = new CartInfoAdapter(this, currency, cartInfoList, userId, cartHandler);
         listView.setAdapter(cartAdapter);
         cartItemInfoJson = new CartItemInfoJson();
         selectCartInfoList = new ArrayList<>();

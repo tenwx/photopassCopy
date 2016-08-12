@@ -1,9 +1,7 @@
 package com.pictureair.photopass;
 
-import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -22,13 +20,12 @@ import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CrashHandler;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.FontResource;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -38,18 +35,11 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 public class MyApplication extends Application {
     private static MyApplication instance;
-    private static SharedPreferences userInfosharedPreferences, appSP;
     private static String tokenId;
     private boolean isLogin;
     private boolean needScanPhoto = false;// 判断是否有新的照片被保存，用来扫描更新显示新保存的照片，只针对编辑图片时候的保存
     private int pushPhotoCount = 0;// 推送图片的数量，作为是否刷新的标记
     private int pushViedoCount = 0; // 推送视频的数量。
-    private ArrayList<HashMap<String, String>> codeList;// 记录登录之前扫描的pp或者ppp
-    //    public ArrayList<PhotoInfo> photoPassPicList;// 所有的从服务器返回的photopass图片的信息
-//    public ArrayList<PhotoInfo> photoPassVideoList;// 所有的从服务器返回的photopass图片的信息
-//    public ArrayList<PhotoInfo> magicPicList;// 所有的使用magic相机拍出来的图片的信息
-//    public ArrayList<PhotoItemInfo> boughtPicList;// 所有已经购买的图片的信息
-//    public ArrayList<PhotoItemInfo> allPicList;// 所有的图片信息
     private boolean needRefreshPPPList = false;// 记录是否需要更新ppp列表
     public boolean scanMagicFinish = false;// 记录是否已经扫面过magic相册
     public boolean needScanFavoritePhotos = false;//记录是否需要扫描收藏图片
@@ -68,14 +58,8 @@ public class MyApplication extends Application {
 
     private String isBuyingPhotoId;
     private String isBuyingTabName;
-    // private HashMap<String, Boolean> isBuyingPhotoFromAlbumHashMap = new
-    // HashMap<String,
-    // Boolean>();//记录是否从相册页面购买的单张照片（此处的相册有两处，第一次ViewOrSelectActivity页面，第二处是LocationPhotosAct）
     private String refreshViewAfterBuyBlurPhoto = "";// 记录是否购买完单张之后刷新页面
-    private boolean photoIsPaid; // 购买照片之后，返回photo页面。
-    // onCreate方法不建议写耗时的操作
 
-//    private boolean needRefreshOldPhotos;//不同设备之间同步，是否需要刷新之前未购买的图片
     public Typeface typeface;//设置默认字体用
     public Typeface typefaceBold;//设置粗字体用
 
@@ -83,7 +67,6 @@ public class MyApplication extends Application {
 
     private Configuration config;
     private DisplayMetrics displayMetrics;
-
 
     @Override
     public void onCreate() {
@@ -99,13 +82,10 @@ public class MyApplication extends Application {
             handler.init(getApplicationContext());
         }
         instance = this;
-        userInfosharedPreferences = this.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        appSP = this.getSharedPreferences(Common.SHARED_PREFERENCE_APP, Context.MODE_PRIVATE);
         initLanguage();
         // 初始化友盟
         UmengUtil.initUmeng();
         initImageLoader(getApplicationContext());
-        codeList = new ArrayList<HashMap<String, String>>();
         PictureAirLog.out("application on create--->");
     }
 
@@ -113,7 +93,7 @@ public class MyApplication extends Application {
         config = getResources().getConfiguration();
         displayMetrics = getResources().getDisplayMetrics();
         //获取手机设置的语言
-        languageType = appSP.getString(Common.LANGUAGE_TYPE, "");
+        languageType = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, "");
         if (!languageType.equals("")) {//语言不为空
             if (languageType.equals(Common.ENGLISH)) {
                 config.locale = Locale.US;
@@ -132,9 +112,7 @@ public class MyApplication extends Application {
             }
         }
         getResources().updateConfiguration(config, displayMetrics);
-        SharedPreferences.Editor editor = appSP.edit();
-        editor.putString(Common.LANGUAGE_TYPE, languageType);
-        editor.commit();
+        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, languageType);
     }
 
     /**
@@ -144,7 +122,8 @@ public class MyApplication extends Application {
      */
     public static String getTokenId() {
         if (tokenId == null) {
-            tokenId = AESKeyHelper.decryptString(userInfosharedPreferences.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
+            tokenId = AESKeyHelper.decryptString(SPUtils.getString(MyApplication.getInstance().getApplicationContext(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null),
+                    PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0));
         }
         return tokenId;
     }
@@ -155,26 +134,6 @@ public class MyApplication extends Application {
     public static void clearTokenId() {
         tokenId = null;
     }
-
-    /**
-     * 判断启动的进程是否为主进程，防止因为百度定位的独立进程启动导致onCreate被执行两次
-     *
-     * @param context
-     * @return String
-     */
-    private String getCurProcessName(Context context) {
-        int pid = android.os.Process.myPid();
-        ActivityManager mActivityManager = (ActivityManager) context
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
-                .getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                return appProcess.processName;
-            }
-        }
-        return null;
-    }
-
 
     /**
      * 初始化imageLoader
@@ -304,42 +263,6 @@ public class MyApplication extends Application {
     }
 
     /**
-     * 获取登录前扫描pp或者ppp数据的个数
-     *
-     * @return
-     */
-    public int getCodeListSize() {
-        return codeList.size();
-    }
-
-    /**
-     * 获取已扫描的对象
-     *
-     * @param position
-     * @return
-     */
-    public HashMap<String, String> getCodeListItem(int position) {
-        return codeList.get(position);
-
-    }
-
-    /**
-     * 添加已扫描的卡的信息
-     *
-     * @param obj
-     */
-    public void addObject2CodeList(HashMap<String, String> obj) {
-        codeList.add(obj);
-    }
-
-    /**
-     * 清除存放已扫描卡得列表
-     */
-    public void clearCodeList() {
-        codeList.clear();
-    }
-
-    /**
      * 获取是否需要刷新ppplist的状态
      *
      * @return
@@ -365,7 +288,7 @@ public class MyApplication extends Application {
     public String getLanguageType() {
 
         if (languageType == null || languageType.equals("")) {
-            languageType = appSP.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
+            languageType = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         }
         PictureAirLog.out("language---->" + languageType);
         return languageType;
@@ -435,24 +358,6 @@ public class MyApplication extends Application {
      */
     public String getRefreshViewAfterBuyBlurPhoto() {
         return refreshViewAfterBuyBlurPhoto;
-    }
-
-    /**
-     * 获取图片是否已经购买
-     *
-     * @return
-     */
-    public boolean isPhotoIsPaid() {
-        return photoIsPaid;
-    }
-
-    /**
-     * 设置图片是否已经购买
-     *
-     * @param photoIsPaid
-     */
-    public void setPhotoIsPaid(boolean photoIsPaid) {
-        this.photoIsPaid = photoIsPaid;
     }
 
     /**

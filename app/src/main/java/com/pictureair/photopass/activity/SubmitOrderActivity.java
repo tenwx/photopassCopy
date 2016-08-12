@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,6 +42,7 @@ import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -63,7 +63,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private ListView infoListView;
     private SubmitOrderListViewAdapter submitorderAdapter;
 
-    private SharedPreferences sharedPreferences;
     private ArrayList<PhotoInfo> updatephotolist;
     private float totalprice = 0;
     private int cartCount = 0;
@@ -77,6 +76,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private JSONArray cartItemIds;
     private JSONObject cartItemId;
     private String orderId = "";
+    private String currency;
     private String deliveryType = "3";//物流方式 (1和3拼接在一起的)
     private float disPrice = 0;
     private List<Address> addressList;
@@ -217,9 +217,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
 
                 //提交订单失败，购物车数量恢复
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
-                editor.commit();
+                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + cartCount);
                 break;
 
             case API1.UPLOAD_PHOTO_FAILED:
@@ -271,8 +270,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     }
 
     private void initView() {
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.submitorder);
         totalpriceTextView = (TextView) findViewById(R.id.submitorder_textView3);
@@ -283,7 +280,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
         list = (ArrayList<CartItemInfo>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
-        submitorderAdapter = new SubmitOrderListViewAdapter(this, list, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), submitOrderHandler);
+        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        submitorderAdapter = new SubmitOrderListViewAdapter(this, list, currency, submitOrderHandler);
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);
         infoListView.addHeaderView(initHeaderAndFooterView(true, false, null));
@@ -328,9 +326,9 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             infoListView.addFooterView(initHeaderAndFooterView(false, false, null));
         }
         updateShopPriceUI(true);
-        invoicePriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        invoicePriceUnitTv.setText(currency);
         totalpriceTextView.setText(((int) payPrice + ""));
-        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        currencyTextView.setText(currency);
         allGoodsTextView.setText(String.format(getString(R.string.all_goods), list.size()));
 
     }
@@ -490,10 +488,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
      * 更新商品优惠信息
      */
     public void updateShopPriceUI(boolean isCount) {
-        couponPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        shopPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        payPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
-        discountPriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        couponPriceUnitTv.setText(currency);
+        shopPriceUnitTv.setText(currency);
+        payPriceUnitTv.setText(currency);
+        discountPriceUnitTv.setText(currency);
         if (isCount) {
             if (couponCount == 0) {
                 couponCountTv.setText(R.string.no_coupon1);
@@ -501,7 +499,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
             }
         } else {
-            couponCountTv.setText("-" + sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY) + (int) straightwayPreferentialPrice);
+            couponCountTv.setText("-" + currency + (int) straightwayPreferentialPrice);
         }
 
         PictureAirLog.out("(int) straightwayPreferentialPrice " + (int) straightwayPreferentialPrice);
@@ -649,9 +647,8 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 }
 
                 //确认订单后 减掉购物项
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) - cartCount);
-                editor.commit();
+                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount - cartCount);
 
                 PictureAirLog.v(TAG, "onClick" + deliveryType);
                 //判断结算价格是否为0（优惠后的价格）为0，出弹窗提示，确认直接支付成功；不为0，正常支付
@@ -751,7 +748,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     //解析发票费用
     public void parseInvoicePay(Message msg){
-        invoicePriceUnitTv.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        invoicePriceUnitTv.setText(currency);
         JSONObject result = (JSONObject) msg.obj;
         if(null == result)
             return;

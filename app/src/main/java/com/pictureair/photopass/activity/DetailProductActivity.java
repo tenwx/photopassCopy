@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +30,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_Detail;
 import com.pictureair.photopass.widget.PWToast;
@@ -61,8 +60,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 
     //申明实例类
     private GoodsInfo goodsInfo;
-    private SharedPreferences sharedPreferences;
-    private Editor editor;
     private PWToast myToast;
 
     //申明变量
@@ -97,9 +94,8 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.ADD_TO_CART_SUCCESS:
-                editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                editor.commit();
+                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
                 buyImg = new ImageView(DetailProductActivity.this);// buyImg是动画的图片
                 buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
                 setAnim(buyImg);
@@ -147,7 +143,6 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
 
         //初始化数据
         myToast = new PWToast(this);
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         goodsInfo = (GoodsInfo) getIntent().getSerializableExtra("goods");
         if (null != goodsInfo) {
@@ -156,7 +151,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
         }
         promotionPrice.setTypeface(MyApplication.getInstance().getFontBold());
         currencyTextView.setTypeface(MyApplication.getInstance().getFontBold());
-        currencyTextView.setText(sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        currencyTextView.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY));
         if (null != goodsInfo) {
             promotionPrice.setText(goodsInfo.getPrice() + "");
         }
@@ -240,7 +235,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
      */
     private void updateCartCount() {
         // TODO Auto-generated method stub
-        recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
+        recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             cartCountTextView.setVisibility(View.INVISIBLE);
         } else {
@@ -347,7 +342,7 @@ public class DetailProductActivity extends BaseActivity implements OnClickListen
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         v.setVisibility(View.GONE);//控件消失
-                        int i = sharedPreferences.getInt(Common.CART_COUNT, 0);
+                        int i = SPUtils.getInt(DetailProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                         if (i <= 0) {
                             cartCountTextView.setVisibility(View.INVISIBLE);
                         } else {

@@ -1,8 +1,6 @@
 package com.pictureair.photopass.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,9 +34,10 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UniversalImageLoadTool;
-import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -68,7 +67,6 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private ShopGoodListViewAdapter shopGoodListViewAdapter;
 
     //申明其他
-    private SharedPreferences sharedPreferences;
     private PWToast newToast;
 
     private boolean hasHidden = false;
@@ -179,9 +177,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.shopNoNetWorkView);
 
         //初始化数据
-        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);//获取购物车数量
-        currency = sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
+        cartCount = SPUtils.getInt(getActivity(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);//获取购物车数量
+        currency = SPUtils.getString(getActivity(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
         //设置购物车数量
         if (cartCount <= 0) {
             cartCountTextView.setVisibility(View.INVISIBLE);
@@ -295,7 +292,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         super.onResume();
         if (!hasHidden) {
             PictureAirLog.out("truely resume----->shop");
-            cartCount = sharedPreferences.getInt(Common.CART_COUNT, 0);
+            cartCount = SPUtils.getInt(getActivity(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
             if (cartCount > 0) {
                 cartCountTextView.setVisibility(View.VISIBLE);
                 cartCountTextView.setText(cartCount + "");

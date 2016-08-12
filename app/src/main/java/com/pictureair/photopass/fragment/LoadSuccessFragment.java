@@ -1,8 +1,6 @@
 package com.pictureair.photopass.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +26,7 @@ import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.eventbus.DownLoadCountUpdateEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private ListView lv_success;
     private boolean isLoading;
     private PictureAirDbManager pictureAirDbManager;
-    private SharedPreferences sPreferences;
     private String userId = "";
     private final Handler photoLoadSuccessHandler= new PhotoLoadSuccessHandler(this);
     public static final int LOAD_FROM_DATABASE = 1111;
@@ -162,9 +160,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         });
 
         pictureAirDbManager = new PictureAirDbManager(getContext());
-        sPreferences = getContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         if (TextUtils.isEmpty(userId)) {
-            userId = sPreferences.getString(Common.USERINFO_ID, "");
+            userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         }
         executorService = Executors.newFixedThreadPool(1);
         return view;

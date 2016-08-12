@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import static android.os.Handler.Callback;
 
@@ -43,8 +44,7 @@ public class StartActivity extends BaseActivity implements Callback {
             versionTextView.setText("V" + info.versionName);
             code = spApp.getInt(Common.APP_VERSION_CODE, 0);
             PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
-            SharedPreferences sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-            String _id = sp.getString(Common.USERINFO_ID, null);
+            String _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
             if (_id != null) {//之前登录过，直接进入主页面
                 tarClass = MainTabActivity.class;
 

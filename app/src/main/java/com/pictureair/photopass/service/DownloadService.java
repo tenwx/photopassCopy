@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Binder;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -42,13 +42,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -87,14 +85,14 @@ public class DownloadService extends Service {
     private PhotoBind photoBind = new PhotoBind();
     private Handler adapterHandler;
     private PictureAirDbManager pictureAirDbManager;
-    private SharedPreferences preferences;
     private AtomicInteger databasePhotoCount = new AtomicInteger(0);//未下载之前的数据库照片数量
     private ExecutorService fixedThreadPool;
     private CountDownLatch countDownLatch;
     private boolean mSartNotificate = false;
     private boolean hasPhotos = false;
     private boolean hasPhotos2 = false;
-    String lastUrl = new String();
+    private String lastUrl = new String();
+    private String userId;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -108,8 +106,8 @@ public class DownloadService extends Service {
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         myToast = new PWToast(getApplicationContext());
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
-        preferences = getApplicationContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         fixedThreadPool = Executors.newFixedThreadPool(1);
+        userId = SPUtils.getString(getApplicationContext(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -178,7 +176,6 @@ public class DownloadService extends Service {
                                         double fileLength = file.length() / 1000d / 1000d;
                                         String formatLength = AppUtil.formatData(fileLength);
                                         fileStatus.setTotalSize(formatLength);
-                                        String userId = preferences.getString(Common.USERINFO_ID, "");
                                         String loadTime = AppUtil.getFormatCurrentTime();
                                         pictureAirDbManager.insertLoadSuccessPhotos(userId, fileStatus, loadTime, true);
                                         countDownLatch.countDown();
@@ -233,8 +230,6 @@ public class DownloadService extends Service {
                         if (countDownLatch != null) {
                             countDownLatch.await();
                         }
-                        String userId = preferences.getString(Common.USERINFO_ID, "");
-
                         PictureAirLog.out("prepareDownload>>>>>>>>>>>>>read database");
                         int count = pictureAirDbManager.getDownloadPhotoCount(userId, true);
                         count -= downed_num.get();
@@ -362,7 +357,6 @@ public class DownloadService extends Service {
                     final DownloadFileStatus failStatus = (DownloadFileStatus) failBundle.get("url");
                     taskList.remove(failStatus.getUrl());
 
-                    final String userId = preferences.getString(Common.USERINFO_ID, "");
                     if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
                         fixedThreadPool.execute(new Runnable() {
                             @Override
@@ -427,7 +421,6 @@ public class DownloadService extends Service {
                             fixedThreadPool.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    String userId = preferences.getString(Common.USERINFO_ID, "");
                                     pictureAirDbManager.deleteDownloadFailPhoto(userId);
                                     if (adapterHandler != null) {
                                         adapterHandler.sendEmptyMessage(DownLoadingFragment.REMOVE_FAILED_PHOTOS);
@@ -598,7 +591,6 @@ public class DownloadService extends Service {
                         fileList.remove(fileStatus.getUrl());
                         downloadList.remove(fileStatus.getPosition());
                         final String loadTime = AppUtil.getFormatCurrentTime();
-                        final String userId = preferences.getString(Common.USERINFO_ID, "");
                         for (String key:taskList.keySet()) {
                             DownloadFileStatus status = taskList.get(key);
                             if (status.getPosition() > fileStatus.getPosition()) {

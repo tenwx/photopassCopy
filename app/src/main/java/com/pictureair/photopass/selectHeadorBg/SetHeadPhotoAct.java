@@ -1,8 +1,6 @@
 package com.pictureair.photopass.selectHeadorBg;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,10 +18,11 @@ import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseActivity;
-import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -44,13 +43,11 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     private final static int IMAGE_CODE = 0; // 这里的IMAGE_CODE是自己任意定义的
     private ImageView clip;
     private ImageView back;
-    private SharedPreferences sp;
     private CustomProgressBarPop dialog;
     private PWToast myToast;
     private File headPhoto;
 
     private final Handler setHeadPhotoHandler = new SetHeadPhotoHandler(this);
-
 
     private static class SetHeadPhotoHandler extends Handler{
         private final WeakReference<SetHeadPhotoAct> mActivity;
@@ -78,9 +75,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
             case API1.UPDATE_USER_IMAGE_SUCCESS:
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 String imageUrl = jsonObject.getString("imageUrl");
-                Editor e = sp.edit();
-                e.putString(Common.USERINFO_HEADPHOTO, imageUrl);
-                e.apply();
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, imageUrl);
 
                 //上传成功之后，需要将临时的头像文件的名字改为正常的名字
                 File oldFile = new File(Common.USER_PATH + Common.HEADPHOTO_PATH);
@@ -125,7 +120,6 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         setContentView(R.layout.activity_set_head_photo);
         myToast = new PWToast(this);

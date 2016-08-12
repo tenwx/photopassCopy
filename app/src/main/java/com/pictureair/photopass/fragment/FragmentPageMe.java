@@ -1,8 +1,6 @@
 package com.pictureair.photopass.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.activity.AboutActivity;
 import com.pictureair.photopass.activity.BaseFragment;
 import com.pictureair.photopass.activity.CouponActivity;
 import com.pictureair.photopass.activity.HelpActivity;
@@ -37,6 +34,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.pulltozoomview.PullToZoomScrollViewEx;
 
@@ -52,7 +50,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private LinearLayout linearLayout1, linearLayout2, linearLayout3;
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
-    private SharedPreferences sp;
     private String userPPCode = "";//用户PP号
     private String qrCodeUrl = "";
     private String avatarUrl = "";//用户头像url
@@ -126,8 +123,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         });
 
         //初始化控件
-        sp = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        userPPCode = sp.getString(Common.USERINFO_USER_PP, "");
+        userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
         qrCodeUrl = Common.BARCODEURL + userPPCode;
         //设置头像ImageLoader参数
         headOptions = new DisplayImageOptions.Builder()
@@ -165,12 +161,12 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private void initData() {
         isShowCodePic = false;
         isCodePic = false;
-        if ("".equals(sp.getString(Common.USERINFO_NICKNAME, ""))) {
-            name.setText(sp.getString(Common.USERINFO_ACCOUNT, "PhotoPass"));
+        if ("".equals(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""))) {
+            name.setText(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ACCOUNT, "PhotoPass"));
         } else {
-            name.setText(sp.getString(Common.USERINFO_NICKNAME, ""));
+            name.setText(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, ""));
         }
-        avatarUrl = sp.getString(Common.USERINFO_HEADPHOTO, null);
+        avatarUrl = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
         setCodePic();//设置二维码
         setHeadImage();//设置头像
     }

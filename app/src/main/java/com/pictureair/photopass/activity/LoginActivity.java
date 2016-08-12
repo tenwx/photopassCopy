@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +26,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SignAndLoginUtil;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.EditTextWithClear;
@@ -58,7 +58,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     private final int START_AGREEMENT_WEBVIEW = 22;
     private static final int START_CHECK_UPDATE = 33;
     // 申明其他类
-    private SharedPreferences appPreferences;
     private PWToast myToast;
     // 区号,国家
     private String countryCode = "86";
@@ -183,8 +182,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
     }
 
     private void initview() {
-        appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);// userInfo
-
         myToast = new PWToast(LoginActivity.this);// 获取toast
         signAndLoginUtil = new SignAndLoginUtil(this, this);
         parentRelativeLayout = (RelativeLayout) findViewById(R.id.login_parent);
@@ -209,7 +206,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
         // 自动检查更新
         checkUpdateManager = new CheckUpdateManager(this,
-                appPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH),
+                SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH),
                 parentRelativeLayout);
 
         new Thread(new Runnable() {

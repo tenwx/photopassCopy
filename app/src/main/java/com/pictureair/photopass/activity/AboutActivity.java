@@ -20,7 +20,6 @@ public class AboutActivity extends BaseActivity {
     private TextView logo_text;
     private TextView developTextView;
     private TextView tvTermsPolicy;
-    private String versionCode;
     private String versionName;
     private String developVersion;
 
@@ -63,7 +62,6 @@ public class AboutActivity extends BaseActivity {
         try {
             PackageManager manager = this.getPackageManager();
             PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
-            versionCode = info.versionCode + "";
             versionName = info.versionName;
         } catch (Exception e) {
             e.printStackTrace();

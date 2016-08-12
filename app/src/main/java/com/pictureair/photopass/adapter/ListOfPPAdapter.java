@@ -2,7 +2,6 @@ package com.pictureair.photopass.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -24,6 +23,7 @@ import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -54,8 +54,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
     private PPPinfo pppInfo;
     private boolean isDeletePP;
 
-    private SharedPreferences sharedPreferences;
-
     private String userPP;
 
     public ListOfPPAdapter(ArrayList<PPinfo> list, Context mContext, final doDeletePhotoListener deleteListner,
@@ -82,9 +80,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             useNumber = pppInfo.bindInfo.size();
         }
 
-        sharedPreferences = mContext.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        userPP = sharedPreferences.getString(Common.USERINFO_USER_PP, "");
-
+        userPP = SPUtils.getString(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.pictureair.photopass.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.SharePop;
@@ -66,7 +66,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     private TextView tvLoding;
     private PWToast myToast;
     private SharePop sharePop;
-    private SharedPreferences sharedPreferences;
 
     private Context context;
     private LinearLayout llControler, llShow, llShare, llDownload;
@@ -161,7 +160,7 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
                     verticalScreen();
                 }
                 //更新收藏图标
-                if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                if (videoInfo.isLove == 1 || pictureAirDbManager.checkLovePhoto(videoInfo, SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""))) {
                     videoInfo.isLove = 1;
                     ivIsLove.setImageResource(R.drawable.discover_like);
                 } else {
@@ -215,7 +214,6 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
         getIsOnline();//读取网络视频还是本地
         sharePop = new SharePop(context);
         pictureAirDbManager = new PictureAirDbManager(context);
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         myToast = new PWToast(context);
         setTopLeftValueAndShow(R.drawable.back_white,true);
         setTopTitleShow(R.string.my_disney_story);
@@ -624,12 +622,12 @@ public class VideoPlayerActivity extends BaseActivity implements OnClickListener
     public boolean isLoveEvent() {
         if (videoInfo.isLove == 1) {
             PictureAirLog.d(TAG, "cancel love");
-            pictureAirDbManager.setPictureLove(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), false);
+            pictureAirDbManager.setPictureLove(videoInfo, SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), false);
             videoInfo.isLove = 0;
             ivIsLove.setImageResource(R.drawable.discover_no_like);
         } else {
             PictureAirLog.d(TAG, "add love");
-            pictureAirDbManager.setPictureLove(videoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), true);
+            pictureAirDbManager.setPictureLove(videoInfo, SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), true);
             videoInfo.isLove = 1;
             ivIsLove.setImageResource(R.drawable.discover_like);
         }

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -41,7 +39,6 @@ import com.pictureair.photopass.GalleryWidget.UrlPagerAdapter;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
-import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartItemInfoJson;
@@ -55,12 +52,14 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -103,7 +102,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private MyApplication myApplication;
     private PictureAirDbManager pictureAirDbManager;
     private PhotoInfo photoInfo;
-    private SharedPreferences sharedPreferences;
 
     private RelativeLayout titleBar;
     private LinearLayout toolsBar, indexBar;
@@ -403,9 +401,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 CartItemInfo cartItemInfo = cartItemInfoList.get(0);
                 cartItemInfo.setCartProductType(2);
                 orderinfo.add(cartItemInfo);
-                Editor editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                editor.commit();
+                int curCarts = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, curCarts + 1);
                 intent.putExtra("orderinfo", orderinfo);
 //                intent.putExtra("isBack", "1");//取消付款后是否回到当前页面
                 startActivity(intent);
@@ -452,9 +449,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case API1.ADD_TO_CART_SUCCESS:
                 dismissPWProgressDialog();
                 JSONObject jsonObject = (JSONObject) msg.obj;
-                editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                editor.commit();
+                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
                 String cartId = jsonObject.getString("cartId");
 
                 //生成订单
@@ -621,7 +617,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     @Override
                     public void run() {
                         previewPhotoHandler.obtainMessage(GET_FAVORITE_DATA_DONE, oldPosition, 0,
-                                pictureAirDbManager.checkLovePhoto(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""))).sendToTarget();
+                                pictureAirDbManager.checkLovePhoto(photoInfo,
+                                        SPUtils.getString(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""))).sendToTarget();
                     }
                 }).start();
                 break;
@@ -661,10 +658,8 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 //                        AppManager.getInstance().killActivity(MyPPActivity.class);
 //                    }
                     //将 tabname 存入sp
-                    SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新
-                    editor1.putString("tabName", tabName);
-                    editor1.putInt("currentPosition", currentPosition);
-                    editor1.commit();
+                    SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName", tabName);
+                    SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition", currentPosition);
 
                     dia.dismiss();
 
@@ -717,7 +712,6 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
         matrix = new Matrix();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PictureAirLog.out("oncreate----->2");
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         returnImageView = (ImageView) findViewById(R.id.button1_shop_rt);
 
         locationTextView = (TextView) findViewById(R.id.preview_location);
@@ -825,7 +819,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 } else if (tabName.equals("favourite")) {//获取收藏图片
                     locationList.addAll(AppUtil.getLocation(PreviewPhotoActivity.this, ACache.get(PreviewPhotoActivity.this).getAsString(Common.DISCOVER_LOCATION), true));
                     photolist.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this, sharedPreferences.getString(Common.USERINFO_ID, ""), simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(PreviewPhotoActivity.this,
+                                    SPUtils.getString(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""),
+                                    simpleDateFormat.format(new Date(cacheTime)), locationList, MyApplication.getInstance().getLanguageType())));
 
                 } else if (tabName.equals("editStory")){//编辑PP照片页面
                     String ppCode = bundle.getString("ppCode");
@@ -858,7 +854,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 if (currentPosition == -2) {//绑定PP后返回
                     String ppsStr = bundle.getString("ppsStr");
                     refreshPP(photolist,ppsStr);
-                    currentPosition = sharedPreferences.getInt("currentPosition",0);
+                    currentPosition = SPUtils.getInt(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, "currentPosition",0);
                 }
 
                 if (currentPosition < 0) {
@@ -1182,12 +1178,12 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (photoInfo.isLove == 1) {
                     PictureAirLog.d(TAG, "cancel love");
-                    pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), false);
+                    pictureAirDbManager.setPictureLove(photoInfo, SPUtils.getString(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), false);
                     photoInfo.isLove = 0;
                     loveImageButton.setImageResource(R.drawable.discover_no_like);
                 } else {
                     PictureAirLog.d(TAG, "add love");
-                    pictureAirDbManager.setPictureLove(photoInfo, sharedPreferences.getString(Common.USERINFO_ID, ""), true);
+                    pictureAirDbManager.setPictureLove(photoInfo, SPUtils.getString(PreviewPhotoActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), true);
                     photoInfo.isLove = 1;
                     loveImageButton.setImageResource(R.drawable.discover_like);
                 }
@@ -1828,7 +1824,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             downloadPic();
         } else {
             // 判断用户是否设置过 “仅wifi” 的选项。
-            if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+            if (settingUtil.isOnlyWifiDownload(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""))) {
                 pictureWorksDialog.setPWDialogId(GO_SETTING_DIALOG)
                         .setPWDialogMessage(R.string.one_photo_download_msg1)
                         .setPWDialogNegativeButton(R.string.one_photo_download_no_msg1)

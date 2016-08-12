@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -41,6 +40,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -85,7 +85,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
     private TextView tvBubble, tvDisneyNullPhoto;
     private TranslateAnimation shakeBubble;
     private boolean isDisneyVideo = false;
-    private SharedPreferences sharedPreferences;
     private final Handler selectPhotoHandler = new SelectPhotoHandler(this);
 
     private PictureAirDbManager pictureAirDbManager;
@@ -189,9 +188,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 bundle.putString("tab", "other");
                 bundle.putParcelableArrayList("photos", photoURLlist);
                 intent.putExtra("bundle", bundle);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Common.NEED_FRESH, true);
-                editor.commit();
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 AppManager.getInstance().killActivity(MyPPPActivity.class);
                 myApplication.setMainTabIndex(0);
                 startActivity(intent);
@@ -247,8 +244,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         okButton = (TextView) findViewById(R.id.button1);
         ivDisneyNullPhoto = (ImageView) findViewById(R.id.iv_disney_null_photo);
         tvDisneyNullPhoto = (TextView) findViewById(R.id.tv_disney_null_photo);
-
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
 
         /*
          * 更新标题

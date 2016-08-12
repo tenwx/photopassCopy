@@ -1,9 +1,7 @@
 package com.pictureair.photopass.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,6 +20,7 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
 
 import java.lang.ref.WeakReference;
@@ -41,9 +40,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
     private RelativeLayout rlGprsWifiDoenload, rlWifiOnlyDownload;
 
     // 用于显示的 按钮。
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences appSharedPreferences;
     private String currentLanguage;
+    private String userId;
     private final String TAG = "SettingActivity";
     private static final int LOGOUT_DIALOG = 111;
 
@@ -137,9 +135,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
 //        ibAutoUpdate.setOnClickListener(this);
 
         settingUtil = new SettingUtil(new PictureAirDbManager(this));
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        appSharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
-        currentLanguage = appSharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
+        userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
+        currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         showPWProgressDialog(true);
         pwDialog = new PWDialog(this)
                 .setOnPWDialogClickListener(this)
@@ -184,8 +181,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
                 new Thread() {
                     @Override
                     public void run() {
-                        if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
-                            settingUtil.deleteSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                        if (settingUtil.isOnlyWifiDownload(userId)) {
+                            settingUtil.deleteSettingOnlyWifiStatus(userId);
                         } else {
 
                         }
@@ -200,9 +197,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
                 new Thread() {
                     @Override
                     public void run() {
-                        if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                        if (settingUtil.isOnlyWifiDownload(userId)) {
                         } else {
-                            settingUtil.insertSettingOnlyWifiStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                            settingUtil.insertSettingOnlyWifiStatus(userId);
                         }
                     }
                 }.start();
@@ -221,13 +218,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
      * 判断当前的设置模式，并且作出相应的视图。
      */
     private void judgeSettingStatus() {
-        if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+        if (settingUtil.isOnlyWifiDownload(userId)) {
             settingHandler.sendEmptyMessage(1);
         } else {
             settingHandler.sendEmptyMessage(2);
         }
 
-        if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+        if (settingUtil.isAutoUpdate(userId)) {
             settingHandler.sendEmptyMessage(3);
         } else {
             settingHandler.sendEmptyMessage(4);

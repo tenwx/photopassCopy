@@ -2,8 +2,6 @@ package com.pictureair.photopass.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +29,7 @@ import com.pictureair.photopass.eventbus.StoryRefreshEvent;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 
 import java.util.ArrayList;
@@ -48,9 +47,7 @@ public class StoryFragment extends Fragment {
 	private ArrayList<PhotoInfo> targetArrayList;
 	private ArrayList<PhotoInfo> photoInfoArrayList;
 	private int tab;
-//	private MyApplication application;
 	private View view;
-	private SharedPreferences countShare;
 	private SwipeRefreshLayout refreshLayout;
 	private static Handler handler;
 	
@@ -137,26 +134,21 @@ public class StoryFragment extends Fragment {
 		 * airpass需要统计用户图片数量
 		 */
 		if (tab == 1) {
-			countShare = getContext().getSharedPreferences("Umeng", 0);
-			int countLocal = countShare.getInt("count", 0);
-			boolean isCount = countShare.getBoolean("isCount", false);
+			int countLocal = SPUtils.getInt(getContext(), "Umeng", "count", 0);
+			boolean isCount = SPUtils.getBoolean(getContext(), "Umeng", "isCount", false);
 			if (!isCount) {
 				UmengUtil.onEvent(getContext(), Common.EVENT_CONTAIN_PICTURE_PEOPLES);
-				Editor editor = countShare.edit();
-				editor.putBoolean("isCount", true);
-			    editor.commit();
+				SPUtils.put(getContext(), "Umeng", "isCount", true);
 			}
 			
 			if ( countLocal == photoInfoArrayList.size()) {
 				//不记录。
 			}else{
 				if (photoInfoArrayList.size() > countLocal) {
-					 Editor editor = countShare.edit();
-					 editor.putInt("count", photoInfoArrayList.size());
-					 editor.commit();
-					 int i = Math.abs((photoInfoArrayList.size() - countLocal));
-					 for (int j = 0; j < i; j++) {
-						 UmengUtil.onEvent(getContext(), Common.EVENT_TOTAL_PICTURES);
+					SPUtils.put(getContext(), "Umeng", "count", photoInfoArrayList.size());
+					int i = Math.abs((photoInfoArrayList.size() - countLocal));
+					for (int j = 0; j < i; j++) {
+						UmengUtil.onEvent(getContext(), Common.EVENT_TOTAL_PICTURES);
 					}
 				}
 			}
