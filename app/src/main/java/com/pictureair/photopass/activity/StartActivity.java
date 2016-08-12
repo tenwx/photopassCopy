@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import static android.os.Handler.Callback;
  * @author bauer_bao
  */
 public class StartActivity extends BaseActivity implements Callback {
-    private SharedPreferences spApp;
     private int code = 0;
     private TextView versionTextView;
     private static final String TAG = "StartActivity";
@@ -34,7 +32,6 @@ public class StartActivity extends BaseActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        spApp = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         handler = new Handler(this);
         versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
 
@@ -42,7 +39,7 @@ public class StartActivity extends BaseActivity implements Callback {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
             int versionCode = info.versionCode;
             versionTextView.setText("V" + info.versionName);
-            code = spApp.getInt(Common.APP_VERSION_CODE, 0);
+            code = SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, 0);
             PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
             String _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
             if (_id != null) {//之前登录过，直接进入主页面
@@ -50,10 +47,8 @@ public class StartActivity extends BaseActivity implements Callback {
 
             } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
                 tarClass = WelcomeActivity.class;
-                SharedPreferences.Editor editor = spApp.edit();
-                editor.putInt(Common.APP_VERSION_CODE, versionCode);
-                editor.putString(Common.APP_VERSION_NAME, info.versionName);
-                editor.commit();
+                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, versionCode);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_NAME, info.versionName);
 
 //            } else if (code == versionCode) {//无登录过，并且不是第一次安装，并且版本一致，进入登录页面
 //                tarClass = LoginActivity.class;

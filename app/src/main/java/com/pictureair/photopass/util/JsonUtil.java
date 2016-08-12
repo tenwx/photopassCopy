@@ -1085,10 +1085,10 @@ public class JsonUtil {
      * @param isMainPage    是否是主页面拉取信息
      * @param orderId       当前提交的订单
      */
-    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId, SharedPreferences sharedPreferences) {
+    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId) {
         PictureAirLog.v("dealGetSocketData: ", "jsonObjectStr: " + jsonObjectStr);
         boolean isdonePayOrder = false;
-        SocketUtil socketUtil = new SocketUtil(context, null, sharedPreferences);
+        SocketUtil socketUtil = new SocketUtil(context, null);
         try {
             org.json.JSONObject jsonObject = new org.json.JSONObject(jsonObjectStr);
             //支付完成的推送donePayOrders

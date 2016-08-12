@@ -12,8 +12,11 @@ public class SPUtils {
      * @param object
      */
     public static void put(Context context, String spName, String key, Object object) {
+        PictureAirLog.out("start get sp--->");
         SharedPreferences sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
+        PictureAirLog.out("end get sp--->");
         SharedPreferences.Editor editor = sp.edit();
+        PictureAirLog.out("end set sp--->");
 
         if (object instanceof String) {
             editor.putString(key, (String) object);
@@ -29,6 +32,7 @@ public class SPUtils {
             editor.putString(key, object.toString());
         }
         editor.apply();
+        PictureAirLog.out("end apply sp--->");
     }
 
     /**
