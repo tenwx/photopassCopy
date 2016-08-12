@@ -1,8 +1,6 @@
 package com.pictureair.photopass.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
 
@@ -23,8 +21,6 @@ public class SignAndLoginUtil implements Handler.Callback {
     private String pwd;
     private String account;
     private String name, birthday, gender, country;
-    private SharedPreferences sp;
-    private Editor editor;
     private PWToast myToast;
     private Context context;
     private PWProgressDialog pwProgressDialog;
@@ -60,7 +56,10 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.GET_TOKEN_ID_SUCCESS://获取tokenId成功
                 PictureAirLog.out("start sign or login");
                 if (isSign) {
-                    API1.Register(account, pwd, AESKeyHelper.decryptString(sp.getString(Common.USERINFO_TOKENID, null), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler);
+                    API1.Register(account, pwd,
+                            AESKeyHelper.decryptString(
+                                    SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null),
+                                    PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler);
                 } else {
                     API1.Login(context, account, pwd, handler);
                 }
@@ -71,9 +70,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                     case 6035://token过期
                         id = R.string.http_error_code_401;
                         PictureAirLog.v(TAG, "tokenExpired");
-                        editor = sp.edit();
-                        editor.putString(Common.USERINFO_TOKENID, null);
-                        editor.commit();
+                        SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                         break;
 
                     case 6031://用户名不存在
@@ -86,24 +83,24 @@ public class SignAndLoginUtil implements Handler.Callback {
                         break;
                 }
                 dismissPWProgressDialog();
-                editor = sp.edit();
-                editor.putString(Common.USERINFO_TOKENID, null);
-                editor.commit();
+                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
             case API1.LOGIN_SUCCESS://登录成功
-                String headUrl = sp.getString(Common.USERINFO_HEADPHOTO, null);
+                String headUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
                 if (headUrl != null) {//头像不为空，下载头像文件
                     API1.downloadHeadFile(Common.PHOTO_URL + headUrl, Common.USER_PATH, Common.HEADPHOTO_PATH);
                 }
-                String bgUrl = sp.getString(Common.USERINFO_BGPHOTO, null);
+                String bgUrl = SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BGPHOTO, null);
                 if (bgUrl != null) {//背景不为空，下载背景文件
                     API1.downloadHeadFile(Common.PHOTO_URL + bgUrl, Common.USER_PATH, Common.BGPHOTO_PAHT);
                 }
 
                 if (needModifyInfo) {//需要修改个人信息
-                    API1.updateProfile(AESKeyHelper.decryptString(sp.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)),
+                    API1.updateProfile(AESKeyHelper.decryptString(
+                            SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""),
+                            PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)),
                             name, birthday, gender, country, "", API1.UPDATE_PROFILE_ALL, handler);
                 } else {
                     handler.sendEmptyMessage(API1.UPDATE_PROFILE_SUCCESS);
@@ -123,9 +120,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         break;
                 }
                 dismissPWProgressDialog();
-                editor = sp.edit();
-                editor.putString(Common.USERINFO_TOKENID, null);
-                editor.commit();
+                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -139,9 +134,7 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.GET_STOREID_FAILED://获取storeId失败
                 id = ReflectionUtil.getStringId(context, msg.arg1);
                 dismissPWProgressDialog();
-                editor = sp.edit();
-                editor.putString(Common.USERINFO_TOKENID, null);
-                editor.commit();
+                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -149,12 +142,10 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.UPDATE_PROFILE_SUCCESS:
                 if (needModifyInfo) {
                     //需要将个人信息保存部分
-                    editor = sp.edit();
-                    editor.putString(Common.USERINFO_COUNTRY, country);
-                    editor.putString(Common.USERINFO_GENDER, gender);
-                    editor.putString(Common.USERINFO_BIRTHDAY, birthday);
-                    editor.putString(Common.USERINFO_NICKNAME, name);
-                    editor.apply();
+                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_COUNTRY, country);
+                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_GENDER, gender);
+                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_BIRTHDAY, birthday);
+                    SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_NICKNAME, name);
                 }
                 PictureAirLog.v(TAG, "start get cart");
                 PictureAirLog.out("start get cart");
@@ -168,9 +159,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                 if (cartItemInfoJson != null && cartItemInfoJson.getItems() != null && cartItemInfoJson.getItems().size() > 0) {
                     cartCount = cartItemInfoJson.getTotalCount();
                 }
-                Editor ed = sp.edit();
-                ed.putInt(Common.CART_COUNT, cartCount);
-                ed.commit();
+                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, cartCount);
                 PictureAirLog.out("start get pp");
                 //获取StoreId
                 API1.getStoreId(handler);
@@ -180,10 +169,8 @@ public class SignAndLoginUtil implements Handler.Callback {
                 dismissPWProgressDialog();
                 PictureAirLog.v(TAG, "get storeid success");
                 JSONObject jsonObject = JSONObject.parseObject(msg.obj.toString());
-                Editor editor = sp.edit();
-                editor.putString(Common.CURRENCY, jsonObject.getString("currency"));
-                editor.putString(Common.STORE_ID, jsonObject.getString("storeId"));
-                editor.commit();
+                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, jsonObject.getString("currency"));
+                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.STORE_ID, jsonObject.getString("storeId"));
                 //登录成功，跳转界面
                 loginsuccess();
                 break;
@@ -219,9 +206,8 @@ public class SignAndLoginUtil implements Handler.Callback {
                 .pwProgressDialogCreate();
         pwProgressDialog.pwProgressDialogShow();
 
-        sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         handler = new Handler(this);
-        if (null == sp.getString(Common.USERINFO_TOKENID, null)) {
+        if (null == SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null)) {
             PictureAirLog.v(TAG, "no tokenid");
             API1.getTokenId(context, handler);
         } else {

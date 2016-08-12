@@ -37,9 +37,9 @@ public class HttpUtil1 {
             asyncHttpClient.setMaxConnections(10);// 设置最大连接数
             //设置的重试次数、重试间隔，解决服务器重复处理数据的问题，这里不设置重连次数
             asyncHttpClient.setMaxRetriesAndTimeout(0, 2 * 1000);
-            asyncHttpClient.setTimeout(5 * 1000);//// 设置获取连接的最大等待时间
-            asyncHttpClient.setConnectTimeout(60 * 1000);//设置连接超时时间
-            asyncHttpClient.setResponseTimeout(20 * 1000);//设置响应超时时间
+            asyncHttpClient.setTimeout(10 * 1000);//// 设置从连接池中获取连接的最大等待时间
+            asyncHttpClient.setConnectTimeout(60 * 1000);//设置连接超时时间，指服务器开始返回到结束返回的时间
+            asyncHttpClient.setResponseTimeout(60 * 1000);//设置响应超时时间，指手机开始请求到服务器开始返回的时间
             asyncHttpClient.setThreadPool(threadPool);//设置线程池，方便线程管理，重用
             if (BuildConfig.LOG_DEBUG) {
                 asyncHttpClient.setLoggingEnabled(true);

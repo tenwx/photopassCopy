@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +35,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.CheckUpdateManager;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.dropview.CoverManager;
@@ -80,7 +80,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     private boolean hasCreated = false;
 
     private MyApplication application;
-    private SharedPreferences sharedPreferences;
     private CheckUpdateManager checkUpdateManager;
     private String currentLanguage;
 
@@ -159,8 +158,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
         AppExitUtil.getInstance().AppLogin();
 
         // 自动检查更新
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
-        currentLanguage = sharedPreferences.getString(Common.LANGUAGE_TYPE, Common.ENGLISH);
+        currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
         checkUpdateManager = new CheckUpdateManager(this, currentLanguage, parentLayout);
 
         new Thread(new Runnable() {

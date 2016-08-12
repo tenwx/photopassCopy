@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Binder;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.PWToast;
 
@@ -85,7 +85,6 @@ public class DownloadService extends Service {
     private PhotoBind photoBind = new PhotoBind();
     private Handler adapterHandler;
     private PictureAirDbManager pictureAirDbManager;
-    private SharedPreferences preferences;
     private AtomicInteger databasePhotoCount = new AtomicInteger(0);//未下载之前的数据库照片数量
     private ExecutorService fixedThreadPool;
     private CountDownLatch countDownLatch;
@@ -106,9 +105,8 @@ public class DownloadService extends Service {
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         myToast = new PWToast(getApplicationContext());
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
-        preferences = getApplicationContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        userId = preferences.getString(Common.USERINFO_ID, "");
         fixedThreadPool = Executors.newFixedThreadPool(1);
+        userId = SPUtils.getString(getApplicationContext(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -226,7 +224,6 @@ public class DownloadService extends Service {
             hasPhotos = false;
             startNotification();
         }
-
         PictureAirLog.out("prepareDownload>>>>>>>>>>>>>read database");
         int count = pictureAirDbManager.getDownloadPhotoCount(userId, "true");
         count -= repeatCount.get();

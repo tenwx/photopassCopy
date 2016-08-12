@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -49,6 +47,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
@@ -77,8 +76,6 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
     private ViewGroup anim_mask_layout;//动画层
     private ImageView buyImg;// 这是在界面上跑的小图片
-    private SharedPreferences sp;
-    private Editor editor;
     private boolean isbuynow = false;
     private BannerView_PreviewCompositeProduct bannerView_Makegift;
 
@@ -267,9 +264,8 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 }
                 JSONObject addcart = JSONObject.parseObject(msg.obj.toString());
                 PictureAirLog.v(TAG, "addtocart==" + addcart);
-                editor = sp.edit();
-                editor.putInt(Common.CART_COUNT, sp.getInt(Common.CART_COUNT, 0) + 1);
-                editor.commit();
+                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
                 String itemidString = addcart.getString("cartId");
                 if (isbuynow) {//获取订单信息，传送到下一界面
                     Intent intent = new Intent(MakegiftActivity.this, SubmitOrderActivity.class);
@@ -330,11 +326,9 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     }
 
     private void init() {
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-
         newToast = new PWToast(this);
         currencytextview = (TextView) findViewById(R.id.textView2);
-        currencytextview.setText(sp.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY));
+        currencytextview.setText(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY));
         priceTextView = (TextView) findViewById(R.id.textview_productprice);
         introduceTextView = (TextView) findViewById(R.id.product_detail);
         addressTextView = (TextView) findViewById(R.id.detail_receive_address);
@@ -373,7 +367,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
             message.obj = goodsByACache;
             makeGiftHandler.sendMessage(message);
         }
-        recordcount = sp.getInt(Common.CART_COUNT, 0);
+        recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             cartcountTextView.setVisibility(View.INVISIBLE);
         } else {
@@ -565,7 +559,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        recordcount = sp.getInt(Common.CART_COUNT, 0);
+        recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             cartcountTextView.setVisibility(View.INVISIBLE);
         } else {
@@ -610,7 +604,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     newToast.setTextAndShow(R.string.http_error_code_5005, Toast.LENGTH_SHORT);
                     return;
                 }
-                if (null != sp.getString(Common.USERINFO_ID, null)) {
+                if (null != SPUtils.getString(MakegiftActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null)) {
                     Message message = makeGiftHandler.obtainMessage();
                     message.what = API1.UPLOAD_PHOTO_SUCCESS;
                     isbuynow = true;//buy now
@@ -628,7 +622,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     newToast.setTextAndShow(R.string.http_error_code_5005, Toast.LENGTH_SHORT);
                     return;
                 }
-                if (null != sp.getString(Common.USERINFO_ID, null)) {
+                if (null != SPUtils.getString(MakegiftActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null)) {
                     Message message = makeGiftHandler.obtainMessage();
                     message.what = API1.UPLOAD_PHOTO_SUCCESS;
                     isbuynow = false;//add to cart
@@ -759,7 +753,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     public void onAnimationEnd(Animation animation) {
                         // TODO Auto-generated method stub
                         v.setVisibility(View.GONE);//控件消失
-                        int i = sp.getInt(Common.CART_COUNT, 0);
+                        int i = SPUtils.getInt(MakegiftActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                         if (i <= 0) {
                             cartcountTextView.setVisibility(View.INVISIBLE);
                         } else {

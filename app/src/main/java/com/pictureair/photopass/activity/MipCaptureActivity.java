@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.DealCodeUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.zxing.camera.CameraManager;
@@ -73,7 +73,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private boolean vibrate;
     private RelativeLayout.LayoutParams rlp;
     private SurfaceView surfaceView;
-    private SharedPreferences sp;
     private String code;
 
     private PWToast newToast;
@@ -119,7 +118,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 return;
             }
             PictureAirLog.out("code：：：" + code);
-            showPWProgressDialog();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showPWProgressDialog();
+                }
+            });
             if (code.contains("&")) {//递推
                 dealCodeUtil.startDealChidCode(code);
             } else {//正常code
@@ -190,10 +194,9 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                         startActivity(intent2);
 
                     } else if (bundle.getInt("status") == DealCodeUtil.STATE_ADD_PP_TO_USER_NOT_RETURN_SUCCESS) {
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putBoolean(Common.NEED_FRESH, true);
-                        editor.putInt(Common.PP_COUNT, sp.getInt(Common.PP_COUNT, 0) + 1);
-                        editor.commit();
+                        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
+                        int currentPPCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0);
+                        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, currentPPCount + 1);
 
                     }
                     finish();
@@ -240,7 +243,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 //        tvCenterHint.setRotation(90);
 
         newToast = new PWToast(this);
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);

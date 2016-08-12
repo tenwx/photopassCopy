@@ -2,7 +2,6 @@ package com.pictureair.photopass.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,7 +34,6 @@ public class DealCodeUtil {
 	private PWToast myToast;
 	private String dealWay;
 	private boolean isInputAct;
-	private SharedPreferences sharedPreferences;
 	private GoodsInfo goodsInfo;
 	private String[] photoUrls;
 
@@ -197,9 +195,8 @@ public class DealCodeUtil {
 
 				case API1.ADD_TO_CART_SUCCESS:
 					JSONObject jsonObject = (JSONObject) msg.obj;
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-					editor.commit();
+					int currentCartCount = SPUtils.getInt(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+					SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
 					String cartId = jsonObject.getString("cartId");
 					//生成订单
 					ArrayList<CartItemInfo> orderinfoArrayList = new ArrayList<>();
@@ -285,7 +282,6 @@ public class DealCodeUtil {
 		myToast = new PWToast(context);
 		dealWay = intent.getStringExtra("type");
 		this.isInputAct = isInputAct;
-		sharedPreferences = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME,Context.MODE_PRIVATE);
 	}
 
 	/**
@@ -307,7 +303,7 @@ public class DealCodeUtil {
 	 */
 	public void startDealCode(String code){
 		this.code = code;
-		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler2);
+		API1.checkCodeAvailable(code, AESKeyHelper.decryptString(SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)), handler2);
 	}
 
 	/**
@@ -332,7 +328,7 @@ public class DealCodeUtil {
 	private void getInfo(String code, final String type){
 		RequestParams params = new RequestParams();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
-		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(SPUtils.getString(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
 		String urlString;
 		if ("pp".equals(type)) {
 			PictureAirLog.out("pp");

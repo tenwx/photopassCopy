@@ -2,7 +2,6 @@ package com.pictureair.photopass.service;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 
@@ -29,7 +28,6 @@ public class NotificationServiceHelp {
     private final String TAG = "NotificationServiceHelp";
     private final int SOCKET_CONNECT_SUCCESS = 1111;
     private Context mContext;
-    private SharedPreferences preferences;
     private static SocketIO socket;
     private boolean isConnected = false; // socket是否链接的状态。（ 如果判断socket 是否为空，这个变量是不是可以不要 ）
     private SocketUtil socketUtil;
@@ -55,8 +53,7 @@ public class NotificationServiceHelp {
 
     public NotificationServiceHelp(Context context) {
         mContext = context;
-        preferences = mContext.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-        socketUtil = new SocketUtil(mContext, notificationHandler, preferences);
+        socketUtil = new SocketUtil(mContext, notificationHandler);
     }
 
     /**

@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +33,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
@@ -70,7 +70,6 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private ListOfPPAdapter listPPAdapter;
     private ArrayList<PPinfo> showPPCodeList;// 需要显示的List
 
-    private SharedPreferences sharedPreferences;
     private PictureAirDbManager pictureAirDbManager;
 
     private static final int UPDATE_UI = 10000;
@@ -80,6 +79,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
     private int selectedCurrent = -1;
     private int selectedTag = -1;
     private String selectedPhotoId = null;//记录已经购买了的照片的photoId
+    private String userId;
     private int deletePosition;
 
     private NoNetWorkOrNoCountView netWorkOrNoCountView;
@@ -314,16 +314,13 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
 //                    break;
 
             case API1.BIND_PPS_DATE_TO_PP_SUCESS://绑定成功
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Common.NEED_FRESH, true);
-                editor.commit();
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 ((MyApplication) getApplication()).setNeedRefreshPPPList(true);
 //                    goIntent(); //备注。
 //                     tips。如果绑定成功。
-                if (settingUtil.isFirstTipsSyns(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                if (settingUtil.isFirstTipsSyns(userId)) {
                     //如果没有设置过。
-                    if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                    if (settingUtil.isAutoUpdate(userId)) {
                         if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
                             downloadPhotoList(); // 下载。
                         }
@@ -337,9 +334,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
                                 .pwDilogShow();
 
                     }
-                    settingUtil.insertSettingFirstTipsSynsStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    settingUtil.insertSettingFirstTipsSynsStatus(userId);
                 } else {
-                    if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                    if (settingUtil.isAutoUpdate(userId)) {
                         // 下载。
                         if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
                             downloadPhotoList();
@@ -407,16 +404,14 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         pictureAirDbManager = new PictureAirDbManager(this);
         settingUtil = new SettingUtil(pictureAirDbManager);
         myToast = new PWToast(this);
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         listPP = (ListView) findViewById(R.id.list_pp);
         tvTitle = (TextView) findViewById(R.id.mypp);
         back = (ImageView) findViewById(R.id.back);
         netWorkOrNoCountView = (NoNetWorkOrNoCountView) findViewById(R.id.nonetwork_view);
         noPhotoPassView = (RelativeLayout) findViewById(R.id.no_photo_relativelayout);
         back.setOnClickListener(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
-        editor.commit();
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false);
+        userId = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         pictureWorksDialog = new PWDialog(this)
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
@@ -556,11 +551,9 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
             }
         }
 
-        if (sharedPreferences.getBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false)) {
+        if (SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false)) {
             needNotifyStoryRefresh = true;
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, false);
-            editor.commit();
+            SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, false);
             showPWProgressDialog();
             updateUI(UPDATE_UI);
         }
@@ -733,7 +726,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         if (which == DialogInterface.BUTTON_NEGATIVE) {
             switch (dialogId) {
                 case SYNC_BOUGHT_PHOTO_DIALOG:
-                    settingUtil.deleteSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    settingUtil.deleteSettingAutoUpdateStatus(userId);
                     goIntent();
                     break;
             }
@@ -741,7 +734,7 @@ public class MyPPActivity extends BaseActivity implements OnClickListener, PWDia
         } else if (which == DialogInterface.BUTTON_POSITIVE) {
             switch (dialogId) {
                 case SYNC_BOUGHT_PHOTO_DIALOG:
-                    settingUtil.insertSettingAutoUpdateStatus(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    settingUtil.insertSettingAutoUpdateStatus(userId);
                     if (AppUtil.getNetWorkType(MyPPActivity.this) == AppUtil.NETWORKTYPE_WIFI) {
                         downloadPhotoList();
                     }

@@ -256,6 +256,7 @@ public class JsonUtil {
      * 用户信息解析
      */
     public static void getUserInfo(final Context context, JSONObject object, String account, Handler handler) throws JSONException {
+        //此处不建议使用SPUtil类
         SharedPreferences sp = context.getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
         e.putString(Common.USERINFO_TOKENID, AESKeyHelper.encryptString(object.getString("tokenId"), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
@@ -1085,10 +1086,10 @@ public class JsonUtil {
      * @param isMainPage    是否是主页面拉取信息
      * @param orderId       当前提交的订单
      */
-    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId, SharedPreferences sharedPreferences) {
+    public static boolean dealGetSocketData(Context context, String jsonObjectStr, boolean isMainPage, String orderId) {
         PictureAirLog.v("dealGetSocketData: ", "jsonObjectStr: " + jsonObjectStr);
         boolean isdonePayOrder = false;
-        SocketUtil socketUtil = new SocketUtil(context, null, sharedPreferences);
+        SocketUtil socketUtil = new SocketUtil(context, null);
         try {
             org.json.JSONObject jsonObject = new org.json.JSONObject(jsonObjectStr);
             //支付完成的推送donePayOrders

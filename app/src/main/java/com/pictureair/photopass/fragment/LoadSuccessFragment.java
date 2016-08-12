@@ -36,6 +36,7 @@ import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -55,7 +56,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private ListView lv_success;
     private boolean isLoading;
     private PictureAirDbManager pictureAirDbManager;
-    private SharedPreferences sPreferences;
     private String userId = "";
     private final Handler photoLoadSuccessHandler= new PhotoLoadSuccessHandler(this);
     public static final int LOAD_FROM_DATABASE = 1111;
@@ -268,9 +268,8 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         });
         ll_pop.setVisibility(View.GONE);
         pictureAirDbManager = new PictureAirDbManager(getContext());
-        sPreferences = getContext().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
         if (TextUtils.isEmpty(userId)) {
-            userId = sPreferences.getString(Common.USERINFO_ID, "");
+            userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         }
         executorService = Executors.newFixedThreadPool(1);
         selectPhotos = new CopyOnWriteArrayList<>();

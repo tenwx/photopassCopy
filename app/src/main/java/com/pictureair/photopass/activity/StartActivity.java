@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -9,12 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PhotoDownLoadInfoSortUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,6 @@ import static android.os.Handler.Callback;
  * @author bauer_bao
  */
 public class StartActivity extends BaseActivity implements Callback {
-    private SharedPreferences spApp;
     private int code = 0;
     private String _id;
     private TextView versionTextView;
@@ -35,7 +35,6 @@ public class StartActivity extends BaseActivity implements Callback {
     private Handler handler;
     private Class tarClass;
     private PictureAirDbManager pictureAirDbManager;
-    private SharedPreferences sp;
     private static final int UPDATE_SUCCESS = 1111;
     private long updateTime = 0;
     private long curTime = 0;
@@ -46,13 +45,11 @@ public class StartActivity extends BaseActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        spApp = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
         handler = new Handler(this);
         versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
-        sp = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        _id = sp.getString(Common.USERINFO_ID, null);
-        boolean update = sp.getBoolean(Common.REMOVE_REPEATE_PHOTO, false);
+        _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
+        boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, false);
         if (_id != null && !update) {
             updateTime = System.currentTimeMillis();
             new RemoveRepeatPhotoTask().start();
@@ -75,7 +72,7 @@ public class StartActivity extends BaseActivity implements Callback {
                     PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
                     int versionCode = info.versionCode;
                     versionTextView.setText("V" + info.versionName);
-                    code = spApp.getInt(Common.APP_VERSION_CODE, 0);
+                    code = SPUtils.getInt(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, 0);
                     PictureAirLog.out("code=" + code + ";versioncode=" + versionCode);
 
                     if (_id != null) {//之前登录过，直接进入主页面
@@ -83,10 +80,8 @@ public class StartActivity extends BaseActivity implements Callback {
 
                     } else if (code == 0){//没有登陆过，sp中没有这个值，第一次安装，则进入引导页
                         tarClass = WelcomeActivity.class;
-                        SharedPreferences.Editor editor = spApp.edit();
-                        editor.putInt(Common.APP_VERSION_CODE, versionCode);
-                        editor.putString(Common.APP_VERSION_NAME, info.versionName);
-                        editor.commit();
+                        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_CODE, versionCode);
+                        SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.APP_VERSION_NAME, info.versionName);
 
 //                  } else if (code == versionCode) {//无登录过，并且不是第一次安装，并且版本一致，进入登录页面
 //                      tarClass = LoginActivity.class;
@@ -138,10 +133,9 @@ public class StartActivity extends BaseActivity implements Callback {
                     }
                 }
             }
-            SharedPreferences.Editor edit = sp.edit();
-            edit.putBoolean(Common.REMOVE_REPEATE_PHOTO,true);
-            edit.commit();
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, true);
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();
+
         }
     }
 }

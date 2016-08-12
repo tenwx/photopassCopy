@@ -15,18 +15,22 @@ public class SPUtils {
         SharedPreferences sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
-        if (object instanceof String) {
-            editor.putString(key, (String) object);
-        } else if (object instanceof Integer) {
-            editor.putInt(key, (Integer) object);
-        } else if (object instanceof Boolean) {
-            editor.putBoolean(key, (Boolean) object);
-        } else if (object instanceof Float) {
-            editor.putFloat(key, (Float) object);
-        } else if (object instanceof Long) {
-            editor.putLong(key, (Long) object);
-        } else {
-            editor.putString(key, object.toString());
+        if (object == null) {//如果为null，则需要做清除操作
+            editor.remove(key);
+        } else {//做插入操作
+            if (object instanceof String) {
+                editor.putString(key, (String) object);
+            } else if (object instanceof Integer) {
+                editor.putInt(key, (Integer) object);
+            } else if (object instanceof Boolean) {
+                editor.putBoolean(key, (Boolean) object);
+            } else if (object instanceof Float) {
+                editor.putFloat(key, (Float) object);
+            } else if (object instanceof Long) {
+                editor.putLong(key, (Long) object);
+            } else {
+                editor.putString(key, object.toString());
+            }
         }
         editor.apply();
     }

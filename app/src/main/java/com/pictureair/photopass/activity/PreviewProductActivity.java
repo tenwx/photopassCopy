@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +34,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
@@ -63,8 +62,6 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
 
     private int upload_index = 0;
 
-    private SharedPreferences sharedPreferences;
-    private Editor editor;
     private int recordcount = 0; //记录数据库中有几条记录
     private TextView counTextView;
 
@@ -235,8 +232,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         //上传进度条
         dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
 
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
+        recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             counTextView.setVisibility(View.INVISIBLE);
         } else {
@@ -343,7 +339,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        recordcount = sharedPreferences.getInt(Common.CART_COUNT, 0);
+        recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
             counTextView.setVisibility(View.INVISIBLE);
         } else {
@@ -427,9 +423,8 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
             addcartArray.add(addcart.getString("cartId"));
         }
 
-        editor = sharedPreferences.edit();
-        editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + addcartArray.size());
-        editor.commit();
+        int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+        SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + addcartArray.size());
 
         if (isbuynow) {//获取订单信息，传送到下一界面
             Intent intent = new Intent(PreviewProductActivity.this, SubmitOrderActivity.class);
@@ -595,7 +590,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     public void onAnimationEnd(Animation animation) {
                         // TODO Auto-generated method stub
                         v.setVisibility(View.GONE);//控件消失
-                        int i = sharedPreferences.getInt(Common.CART_COUNT, 0);
+                        int i = SPUtils.getInt(PreviewProductActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
                         if (i <= 0) {
                             counTextView.setVisibility(View.INVISIBLE);
                         } else {

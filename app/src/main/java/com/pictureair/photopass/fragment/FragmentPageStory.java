@@ -5,8 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -57,6 +55,7 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.widget.CustomTextView;
@@ -157,7 +156,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private FragmentAdapter fragmentAdapter;
     private Context context;
     private SimpleDateFormat sdf;
-    private SharedPreferences sharedPreferences;
+    private String userId;
     private PWToast myToast;
     private PhotoInfo selectPhotoItemInfo;
     private ScanPhotosThread scanPhotosThread;
@@ -261,7 +260,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                 if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
                     //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
-                    if (settingUtil.isFirstPP10(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+                    if (settingUtil.isFirstPP10(userId)) {
                         //第一次 PP数量到 10 。
                         API1.getPPPSByUserId(MyApplication.getTokenId(), fragmentPageStoryHandler);
                     }
@@ -341,7 +340,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.e(TAG, "GET_SOCKET_DATA_SUCCESS: " + msg.obj.toString());
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 if (jsonObject.size() > 0) {
-                    JsonUtil.dealGetSocketData(MyApplication.getInstance().getApplicationContext(), jsonObject.toString(), true, null, sharedPreferences);
+                    JsonUtil.dealGetSocketData(MyApplication.getInstance().getApplicationContext(), jsonObject.toString(), true, null);
                 }
                 break;
 
@@ -354,8 +353,12 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case REFRESH://开始刷新
                 PictureAirLog.d(TAG, "the index of refreshing is " + msg.arg1);
-                API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, sharedPreferences.getString(Common.LAST_UPDATE_PHOTO_TIME, null), null);//获取更新信息
-                API1.getVideoList(sharedPreferences.getString(Common.LAST_UPDATE_VIDEO_TIME, null), fragmentPageStoryHandler);//获取最新视频信息
+                API1.getPhotosByConditions(MyApplication.getTokenId(),
+                        fragmentPageStoryHandler,
+                        SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, null),
+                        null);//获取更新信息
+                API1.getVideoList(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_VIDEO_TIME, null),
+                        fragmentPageStoryHandler);//获取最新视频信息
                 API1.getSocketData(fragmentPageStoryHandler);//手动拉取socket信息
                 break;
 
@@ -375,9 +378,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 app.setPushPhotoCount(0);
                 getPhotoInfoDone = true;
                 PictureAirLog.d(TAG, "deal refresh photos done");
-                Editor editor = sharedPreferences.edit();// 获取编辑器
-                editor.putInt("photoCount", 0);
-                editor.commit();// 提交修改
+                SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", 0);
                 getRefreshDataFinish();
                 break;
 
@@ -485,9 +486,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                 .pwDialogCreate();
                     }
                     pwDialog.pwDilogShow();
-                    settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    settingUtil.insertSettingFirstPP10Status(userId);
                 } else if (API1.PPPlist.size() > 0) {
-                    settingUtil.insertSettingFirstPP10Status(sharedPreferences.getString(Common.USERINFO_ID, ""));
+                    settingUtil.insertSettingFirstPP10Status(userId);
                 }
                 break;
 
@@ -663,13 +664,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                     if (isAll || responseArray.size() > 0) {//说明全部获取，需要记录时间；如果刷新的话，有数据的时候，才记录时间，否则不记录时间
                         //需要存储这个时间
-                        Editor editor = sharedPreferences.edit();
                         if (isVideo) {
-                            editor.putString(Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
+                            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_VIDEO_TIME, updatetimeString);
                         } else {
-                            editor.putString(Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
+                            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, updatetimeString);
                         }
-                        editor.commit();
                     }
 
                     if (isAll) {//如果全部获取，需要清除原有的数据
@@ -757,7 +756,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         app = (MyApplication) getActivity().getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
-        sharedPreferences = getActivity().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
+        userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
         photoPassItemInfoList = new ArrayList<>();
         magicItemInfoList = new ArrayList<>();
 
@@ -784,7 +783,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         screenWidth = ScreenUtil.getScreenWidth(FragmentPageStory.this.getActivity());
         PictureAirLog.d(TAG, "screen width = " + screenWidth);
         //获取sp中的值
-        needfresh = sharedPreferences.getBoolean(Common.NEED_FRESH, false);
+        needfresh = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
         //如果不是在story获取推送，需要从application中获取，并且全部刷新
         if (app.getPushPhotoCount() + app.getPushViedoCount() > 0) {
             if (!needfresh) {
@@ -793,9 +792,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         }
         sharedNeedFresh = needfresh;
         if (needfresh) {//如果一开始就需要全部刷新，
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean(Common.NEED_FRESH, false);
-            editor.commit();
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
         }
         //获取API
         isLoading = true;
@@ -889,7 +886,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         } else {//没有图片
             //判断是否应该显示左上角红点
 //            more.setVisibility(View.INVISIBLE);
-            if (sharedPreferences.getInt(Common.PP_COUNT, 0) < 2) {//没有扫描过
+            if (SPUtils.getInt(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PP_COUNT, 0) < 2) {//没有扫描过
                 PictureAirLog.out("viewpager---->has not scan pp");
                 //显示没有pp的情况
                 storyNoPpToScanLinearLayout.setVisibility(View.VISIBLE);
@@ -1040,12 +1037,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        if (sharedPreferences.getBoolean(Common.NEED_FRESH, false)) {
+        if (SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false)) {
             PictureAirLog.out("need refresh");
             app.needScanFavoritePhotos = false;//防止会重复执行，所以此处改为false
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean(Common.NEED_FRESH, false);
-            editor.commit();
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false);
             showPWProgressDialog();
             API1.getPhotosByConditions(MyApplication.getTokenId(), fragmentPageStoryHandler, null, null);//获取全部图片
             API1.getVideoList(null, fragmentPageStoryHandler);//获取全部视频信息
@@ -1075,7 +1070,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     super.run();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
 
                 }
@@ -1270,7 +1265,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     favouritePhotoList.clear();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
                     favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, sharedPreferences.getString(Common.USERINFO_ID, ""), sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
                     PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
                     fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {
@@ -1800,7 +1795,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
      * @param lists
      */
     private void downLoadPhoto(ArrayList<PhotoInfo> lists) {
-        if (settingUtil.isAutoUpdate(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+        if (settingUtil.isAutoUpdate(userId)) {
             for (int i = 0; i < lists.size(); i++) {
                 if (lists.get(i).isPayed == 1) {
                     download(lists);

@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +30,7 @@ import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PayUtils;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.PWToast;
 import com.unionpay.UPPayAssistEx;
 
@@ -72,7 +72,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     private static final String TAG = "PaymentOrderActivity";
 
     private MyApplication myApplication;
-    private SharedPreferences sPreferences;
     private PWToast newToast;
     private PictureAirDbManager pictureAirDbManager;
     private boolean paySyncResult = false;
@@ -203,12 +202,12 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 JSONObject jsonObject = (JSONObject) msg.obj;
                 boolean isSuccess = false;
                 if (jsonObject.size() > 0) {
-                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid, sPreferences);
+                    isSuccess = JsonUtil.dealGetSocketData(PaymentOrderActivity.this, jsonObject.toString(), false, orderid);
                 }
                 if (!isSuccess) {
                     dismissPWProgressDialog();
                     if (payAsyncResultJsonObject == null) {
-                        pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                        pictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
                     }
                     SuccessAfterPayment();
                     finish();
@@ -220,7 +219,7 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                 dismissPWProgressDialog();
                 PictureAirLog.v(TAG, "GET_SOCKET_DATA_FAILED: " + msg.arg1);
                 if (payAsyncResultJsonObject == null) {
-                    pictureAirDbManager.insertPaymentOrderIdDB(sPreferences.getString(Common.USERINFO_ID, ""), orderid);
+                    pictureAirDbManager.insertPaymentOrderIdDB(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""), orderid);
                 }
                 SuccessAfterPayment();
                 finish();
@@ -284,13 +283,9 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
     }
 
     private void init() {
-//        IntentFilter filter = new IntentFilter("com.payment.action");
-//        registerReceiver(broadcastReceiver, filter);
-        sPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
         newToast = new PWToast(this);
         myApplication = (MyApplication) getApplication();
 
-//		lrtLayout.setOnClickListener(this);
         sbmtButton.setOnClickListener(this);
         yhkButton.setImageResource(R.drawable.sele);
         zfButton.setImageResource(R.drawable.nosele);
@@ -674,7 +669,6 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_MYPHOTOPASS)
                     || myApplication.getRefreshViewAfterBuyBlurPhoto().equals(Common.FROM_PREVIEW_PHOTO_ACTIVITY)) {
                 PictureAirLog.v("flag is -------------------->", myApplication.getRefreshViewAfterBuyBlurPhoto());
-                myApplication.setPhotoIsPaid(true);
                 PictureAirLog.v("photoId---->", myApplication.getIsBuyingPhotoId());
                 String tab = myApplication.getIsBuyingTabName();
                 String photoId = myApplication.getIsBuyingPhotoId();
@@ -738,13 +732,11 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
         // TODO Auto-generated method stub
         super.onResume();
         if (weChatIsPaying) {
-            int resultCode = sPreferences.getInt(Common.WECHAT_PAY_STATUS, -3);
+            int resultCode = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.WECHAT_PAY_STATUS, -3);
             //处理微信返回值，
             payUtils.wxDealResult(resultCode);
             weChatIsPaying = false;
-            SharedPreferences.Editor editor = sPreferences.edit();
-            editor.putInt(Common.WECHAT_PAY_STATUS, -3);
-            editor.commit();
+            SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.WECHAT_PAY_STATUS, -3);
         }
     }
 
@@ -759,9 +751,8 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
                     CancelInPayment(true);
                 } else {
                     //0元支付  购物车数量恢复
-                    SharedPreferences.Editor editor = sPreferences.edit();
-                    editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
-                    editor.commit();
+                    int currentCartCount = SPUtils.getInt(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                    SPUtils.put(PaymentOrderActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + cartCount);
                     finish();
                 }
 
@@ -779,11 +770,10 @@ public class PaymentOrderActivity extends BaseActivity implements OnClickListene
             PictureAirLog.v(TAG, "TopViewClick onBackPressed");
             CancelInPayment(true);
         } else {
-            finish();
             //0元支付  购物车数量恢复
-            SharedPreferences.Editor editor = sPreferences.edit();
-            editor.putInt(Common.CART_COUNT, sPreferences.getInt(Common.CART_COUNT, 0) + cartCount);
-            editor.commit();
+            int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+            SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + cartCount);
+            finish();
         }
     }
 

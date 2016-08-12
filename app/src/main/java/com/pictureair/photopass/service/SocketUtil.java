@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -21,6 +20,7 @@ import com.pictureair.photopass.eventbus.SocketEvent;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +41,6 @@ public class SocketUtil {
     private ArrayList<String> syncMessageList = new ArrayList<>();
     private MyApplication application = MyApplication.getInstance();
     private Handler handler;
-    private SharedPreferences sharedPreferences;
     private String userId;
     private static final String TAG = "SocketUtil";
     public static final int SOCKET_RECEIVE_DATA = 3333;
@@ -49,12 +48,11 @@ public class SocketUtil {
     private Vibrator vibrator;
     private long[] pattern = {0, 200, 300, 200};
 
-    public SocketUtil(Context mContext, Handler handler, SharedPreferences sharedPreferences) {
+    public SocketUtil(Context mContext, Handler handler) {
         this.mContext = mContext;
         this.handler = handler;
-        this.sharedPreferences = sharedPreferences;
         pictureAirDbManager = new PictureAirDbManager(mContext);
-        userId = sharedPreferences.getString(Common.USERINFO_ID, null);
+        userId = SPUtils.getString(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         //获得震动服务
         vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
@@ -121,7 +119,7 @@ public class SocketUtil {
 
         //2.如果处于story页面，则更新数据，并且刷新列表；如果不是处于story页面，则设置更新变量
         if (application.isStoryTab() && //如果处于story页面，则更新数据，并且刷新列表
-                !sharedPreferences.getBoolean(Common.NEED_FRESH, false)) {//返回到故事页面会重新拉取数据，所以取反
+                !SPUtils.getBoolean(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, false)) {//返回到故事页面会重新拉取数据，所以取反
             PictureAirLog.out("start sync bought info");
 
             EventBus.getDefault().post(new SocketEvent(true, socketType, ppCode, shootDate, photoId));
@@ -162,12 +160,10 @@ public class SocketUtil {
             if (photoCount > 0) {
                 handler.obtainMessage(SOCKET_RECEIVE_DATA, sendType).sendToTarget();// photoCount大于0 的时候去清空
                 if (!(AppManager.getInstance().getTopActivity() instanceof MainTabActivity)) {
-                    int photoCountLocal = sharedPreferences.getInt("photoCount", 0);
+                    int photoCountLocal = SPUtils.getInt(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", 0);
                     photoCount = photoCount + photoCountLocal;
                     showNotification(mContext.getResources().getString(R.string.notifacation_new_message), mContext.getResources().getString(R.string.notifacation_new_photo));
-                    SharedPreferences.Editor editor = sharedPreferences.edit();// 获取编辑器
-                    editor.putInt("photoCount", photoCount);
-                    editor.commit();// 提交修改
+                    SPUtils.put(mContext, Common.SHARED_PREFERENCE_USERINFO_NAME, "photoCount", photoCount);
                 } else {
                     redPointHandler.sendEmptyMessage(RED_POINT);
                 }

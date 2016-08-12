@@ -4,8 +4,6 @@ package com.pictureair.photopass.activity;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -64,6 +62,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.HorizontalListView;
 import com.pictureair.photopass.widget.PWToast;
@@ -124,10 +123,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private ArrayList<EditPhotoInfo> editPhotoInfoArrayList;
 	private ArrayList<EditPhotoInfo> tempEditPhotoInfoArrayList = new ArrayList<EditPhotoInfo>(); // 用于后退前进
 	private int index = -1; // 索引。   控制图片步骤 前进后退。
-
-	private SharedPreferences sharedPreferences;
-	private SharedPreferences appPreferences;
-	private Editor editor;
 
 	private boolean isOnlinePic = false;
 	private boolean isEncrypted = false;
@@ -242,9 +237,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 					if (resultJsonObject.containsKey("time")) {
 						PictureAirLog.d(TAG, "lastest time is " + resultJsonObject.getString("time"));
-						Editor editor = appPreferences.edit();
-						editor.putString(Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
-						editor.commit();
+						SPUtils.put(this, Common.SHARED_PREFERENCE_APP, Common.GET_LAST_CONTENT_TIME, resultJsonObject.getString("time"));
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -303,7 +296,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		showPWProgressDialog();
 		initData();
 		//开始从网络获取最新数据
-		API1.getLastContent(appPreferences.getString(Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
+		API1.getLastContent(SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.GET_LAST_CONTENT_TIME, null), editPhotoHandler);
 		myToast = new PWToast(getApplicationContext());
 	}
 
@@ -441,9 +434,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 
 		dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
-
-		sharedPreferences = getSharedPreferences("pictureAir", MODE_PRIVATE);
-		appPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_APP, MODE_PRIVATE);
 
 		editPhotoInfoArrayList = new ArrayList<EditPhotoInfo>();
 
@@ -918,9 +908,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					@Override
 					public void onScanCompleted(String arg0, Uri arg1) {
 						// TODO Auto-generated method stub
-						editor = sharedPreferences.edit();
-						editor.putString(Common.LAST_PHOTO_URL, file);
-						editor.commit();
+						SPUtils.put(EditPhotoActivity.this, Common.SHARED_PREFERENCE_APP, Common.LAST_PHOTO_URL, file);
 						// 可以添加一些返回的数据过去，还有扫描最好放在返回去之后。
 						Intent intent = new Intent();
 						intent.putExtra("photoUrl", file);

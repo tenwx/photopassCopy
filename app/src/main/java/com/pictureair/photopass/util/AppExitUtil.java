@@ -1,7 +1,6 @@
 package com.pictureair.photopass.util;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
@@ -53,10 +52,7 @@ public class AppExitUtil {
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
-                    SharedPreferences sp = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MyApplication.getInstance().MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.clear();
-                    editor.commit();
+                    SPUtils.clear(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME);
 
                     ACache.get(MyApplication.getInstance()).remove(Common.ALL_GOODS);
                     ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);

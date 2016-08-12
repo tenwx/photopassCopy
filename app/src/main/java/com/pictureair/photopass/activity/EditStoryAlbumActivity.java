@@ -3,7 +3,6 @@ package com.pictureair.photopass.activity;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +32,7 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
 import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.PWToast;
@@ -81,7 +81,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private boolean deleteNetPhotoDone = false;
 	private boolean netWorkFailed = false;
 	private String ppCode;
-	private SharedPreferences sharedPreferences;
 	private PWDialog pictureWorksDialog;
 
 	private Handler editStoryAlbumHandler = new Handler(new Handler.Callback() {
@@ -149,9 +148,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					deleteNetPhotoDone = true;
 					selectCount -= photopassPhotoslist.size();
 
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.putBoolean(Common.IS_DELETED_PHOTO_FROM_PP, true);
-					editor.commit();
+					SPUtils.put(EditStoryAlbumActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.IS_DELETED_PHOTO_FROM_PP, true);
 
 					if (deleteLocalPhotoDone) {
 						dealAfterDeleted();
@@ -251,7 +248,6 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		albumArrayList = new ArrayList<>();
 		pictureAirDbManager = new PictureAirDbManager(this);
 		settingUtil = new SettingUtil(pictureAirDbManager);
-		sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 		ppCode = getIntent().getStringExtra("ppCode");
 
 		locationList.addAll(AppUtil.getLocation(getApplicationContext(), ACache.get(getApplicationContext()).getAsString(Common.DISCOVER_LOCATION), true));
@@ -438,7 +434,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 			downloadPic();
 		} else {
 			// 判断用户是否设置过 “仅wifi” 的选项。
-			if (settingUtil.isOnlyWifiDownload(sharedPreferences.getString(Common.USERINFO_ID, ""))) {
+			if (settingUtil.isOnlyWifiDownload(SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""))) {
 				pictureWorksDialog.setPWDialogId(GO_SETTING_DIALOG)
 						.setPWDialogMessage(R.string.one_photo_download_msg1)
 						.setPWDialogNegativeButton(R.string.one_photo_download_no_msg1)

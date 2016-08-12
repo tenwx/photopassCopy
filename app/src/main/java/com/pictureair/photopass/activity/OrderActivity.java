@@ -1,7 +1,6 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PWProgressDialog;
@@ -74,7 +74,6 @@ public class OrderActivity extends BaseFragmentActivity {
     private ArrayList<OrderProductInfo> downOrderChildArrayList;
     private ArrayList<CartItemInfo> cartItemInfo;
 
-    private SharedPreferences sharedPreferences;
     private int currentIndex = 0;//viewpager当前编号
     private int screenW;//屏幕宽度
 
@@ -88,6 +87,7 @@ public class OrderActivity extends BaseFragmentActivity {
     private List<String> orderIds;
 
     private int orderType = 0;//订单类型 异步回调使用
+    private String currency;
     private List<Fragment> mFragments;
     public static final int REFRESH = 0X001;
     private static final int GET_LOCAL_PEYMENT_DONE = 111;
@@ -205,9 +205,9 @@ public class OrderActivity extends BaseFragmentActivity {
                             && null != paymentOrderChildArrayList
                             && null != deliveryOrderChildArrayList
                             && null != downOrderChildArrayList) {
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, paymentOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, deliveryOrderArrayList, deliveryOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
-                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, downOrderArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, paymentOrderArrayList, paymentOrderChildArrayList, currency, 0));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, deliveryOrderArrayList, deliveryOrderChildArrayList, currency, 1));
+                        mFragments.add(OrderFragment.getInstance(orderActivityHandler, downOrderArrayList, downOrderChildArrayList, currency, 2));
                     }
                 }
 
@@ -218,9 +218,9 @@ public class OrderActivity extends BaseFragmentActivity {
                     viewPager.setOffscreenPageLimit(3);
                     viewPager.setCurrentItem(orderType);
                 }
-                EventBus.getDefault().post(new OrderFragmentEvent(paymentOrderArrayList, paymentOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 0));
-                EventBus.getDefault().post(new OrderFragmentEvent(deliveryOrderArrayList, deliveryOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 1));
-                EventBus.getDefault().post(new OrderFragmentEvent(downOrderArrayList, downOrderChildArrayList, sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY), 2));
+                EventBus.getDefault().post(new OrderFragmentEvent(paymentOrderArrayList, paymentOrderChildArrayList, currency, 0));
+                EventBus.getDefault().post(new OrderFragmentEvent(deliveryOrderArrayList, deliveryOrderChildArrayList, currency, 1));
+                EventBus.getDefault().post(new OrderFragmentEvent(downOrderArrayList, downOrderChildArrayList, currency, 2));
                 hideProgressDialog();
                 break;
 
@@ -295,7 +295,7 @@ public class OrderActivity extends BaseFragmentActivity {
         //从网络获取数据
         mFragments = new ArrayList<>();
         getData();
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
+        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
         //获取订单接口
         // 显示进度条。
         showProgressDialog();

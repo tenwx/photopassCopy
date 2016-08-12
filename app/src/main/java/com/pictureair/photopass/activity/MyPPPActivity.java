@@ -2,7 +2,6 @@ package com.pictureair.photopass.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,6 +34,7 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
 import com.pictureair.photopass.widget.PPPPop;
@@ -71,8 +71,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
     private ArrayList<PPPinfo> listNormal;// 已激活未激活的pp+
     private ArrayList<PPPinfo> listNoUse;// 已过期已用完的pp+
     private PWToast myToast;
-
-    private SharedPreferences sharedPreferences;
 
     private boolean hasOtherAvailablePPP = false;//判断是否还有其他可用的ppp
     private int currentPosition = 0;//记录选中的项的索引值
@@ -197,9 +195,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     ll_button_area.setVisibility(View.VISIBLE);
 
                 } else {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt(Common.PPP_COUNT, API1.PPPlist.size());
-                    editor.commit();
+                    SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.PPP_COUNT, API1.PPPlist.size());
                     list1.clear();
                     if (listNormal == null) listNormal = new ArrayList<>();
                     if (listNoUse == null) listNoUse = new ArrayList<>();
@@ -275,9 +271,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
 
 
             case API1.BIND_PP_SUCCESS://绑定成功
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Common.NEED_FRESH, true);
-                editor.commit();
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 list1.clear();
                 hasOtherAvailablePPP = false;
                 API1.PPPlist.clear();
@@ -338,9 +332,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
             case API1.ADD_TO_CART_SUCCESS:
                 dismissPWProgressDialog();
                 com.alibaba.fastjson.JSONObject jsonObject = (com.alibaba.fastjson.JSONObject) msg.obj;
-                editor = sharedPreferences.edit();
-                editor.putInt(Common.CART_COUNT, sharedPreferences.getInt(Common.CART_COUNT, 0) + 1);
-                editor.commit();
+                int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
                 String cartId = jsonObject.getString("cartId");
 
                 //生成订单
@@ -417,9 +410,8 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                     AppManager.getInstance().killActivity(SelectPPActivity.class);
                 }
 
-                SharedPreferences.Editor editor1 = sharedPreferences.edit();  //设置需要刷新 （其实可以不需要，不过保证数据同步，加上更保险）
-                editor1.putBoolean(Common.NEED_FRESH, true);
-                editor1.commit();
+                //设置需要刷新 （其实可以不需要，不过保证数据同步，加上更保险）
+                SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
 
                 if (AppManager.getInstance().checkActivity(PreviewPhotoActivity.class)){ //如果存在MyPPActivity，就把这个类杀掉。
                     AppManager.getInstance().killActivity(PreviewPhotoActivity.class);
@@ -428,7 +420,7 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
                 intent = new Intent(MyPPPActivity.this, PreviewPhotoActivity.class);
                 Bundle bundle1 = new Bundle();
                 bundle1.putInt("position", -2);  //代表从 pp＋绑定PP
-                bundle1.putString("tab", sharedPreferences.getString("tabName",""));
+                bundle1.putString("tab", SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, "tabName",""));
                 bundle1.putString("ppsStr",ppsStr);
                 intent.putExtra("bundle", bundle1);
                 startActivity(intent);
@@ -491,8 +483,6 @@ public class MyPPPActivity extends BaseActivity implements OnClickListener, OnRe
         pictureWorksDialog = new PWDialog(this)
                 .setOnPWDialogClickListener(this)
                 .pwDialogCreate();
-
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
 
         ll_button_area = (LinearLayout) findViewById(R.id.ll_button_area);
         back = (ImageView) findViewById(R.id.back);

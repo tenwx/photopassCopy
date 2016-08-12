@@ -1,8 +1,6 @@
 package com.pictureair.photopass.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +27,7 @@ import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.util.SPUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -166,8 +165,8 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 Bundle bundle = intent1.getExtras();
                 currentPosition = bundle.getInt("position", 0);
                 photolist = new ArrayList<PhotoInfo>();
-                SharedPreferences sPreferences = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
-                String userId = sPreferences.getString(Common.USERINFO_ID, "");
+
+                String userId = SPUtils.getString(DownloadPhotoPreviewActivity.this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
                 List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,"true");
                 if (photos != null && photos.size() >0) {
                     for (int i=0;i<photos.size();i++) {

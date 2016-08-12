@@ -1,13 +1,11 @@
 package com.pictureair.photopass.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.R;
@@ -15,6 +13,7 @@ import com.pictureair.photopass.adapter.OrderProductDetailAdapter;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.OrderInfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.widget.NoScrollListView;
 
 import java.util.ArrayList;
@@ -31,8 +30,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
     private TextView orderNumber, orderTime, payMethod, orderStatus, productPrice, address, payTotalPrice, preferentialPrice,straightwayPreferentialPrice;
     private OrderInfo orderInfo;
     private ArrayList<CartItemInfo> orderDetailArrayList;
-    private SharedPreferences sharedPreferences;
-    private LinearLayout deliveryInfo;
 
     private ImageView back;
 
@@ -67,7 +64,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         noScrollListView = (NoScrollListView) findViewById(R.id.product_detail_listview);
 
         back = (ImageView) findViewById(R.id.order_detail_return);
-        deliveryInfo = (LinearLayout) findViewById(R.id.deliveryInfo);
 
         deliveryButton.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -161,8 +157,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         orderInfo = bundle.getParcelable("groupitem");
         orderDetailArrayList = (ArrayList<CartItemInfo>) bundle.getSerializable("childitemlist");
 
-        sharedPreferences = getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, MODE_PRIVATE);
-        currency = sharedPreferences.getString(Common.CURRENCY, Common.DEFAULT_CURRENCY);
+        currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
     }
 
     @Override
