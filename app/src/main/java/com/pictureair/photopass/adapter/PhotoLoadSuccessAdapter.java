@@ -1,9 +1,6 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.media.Image;
-import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
 
 import java.util.List;
@@ -29,10 +25,12 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
     private List<PhotoDownLoadInfo> photos;
     private Context mContext;
     private ImageLoader imageLoader;
+    private boolean select;
     public PhotoLoadSuccessAdapter(Context context,List<PhotoDownLoadInfo> photos){
         this.mContext = context;
         this.photos = photos;
         imageLoader = ImageLoader.getInstance();
+        this.select = false;
     }
 
     @Override
@@ -62,6 +60,7 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             holder.tv_size = (TextView) convertView.findViewById(R.id.load_success_size);
             holder.tv_loadTime = (TextView) convertView.findViewById(R.id.load_success_time);
             holder.tv_status = (TextView) convertView.findViewById(R.id.load_success_status);
+            holder.img_select = (ImageView) convertView.findViewById(R.id.loading_success_img_select);
             convertView.setTag(holder);
         }else{
             holder = (Holder) convertView.getTag();
@@ -77,19 +76,42 @@ public class PhotoLoadSuccessAdapter extends BaseAdapter {
             holder.tv_shootTime.setText(info.getShootTime());
             holder.tv_size.setText(info.getSize()+"MB");
             holder.tv_loadTime.setText(info.getLoadTime());
+            if (!select){
+                holder.img_select.setVisibility(View.GONE);
+            }else{
+                holder.img_select.setVisibility(View.VISIBLE);
+                if (!info.isSelect){
+                    holder.img_select.setImageResource(R.drawable.nosele);
+                }else{
+                    holder.img_select.setImageResource(R.drawable.sele);
+                }
+            }
         }
         return convertView;
     }
 
-    class Holder{
-        ImageView img;
-        TextView tv_shootTime;
-        TextView tv_size;
-        TextView tv_loadTime;
-        TextView tv_status;
+    public class Holder{
+        public ImageView img;
+        public TextView tv_shootTime;
+        public TextView tv_size;
+        public TextView tv_loadTime;
+        public TextView tv_status;
+        public ImageView img_select;
     }
 
     public void setPhotos(List<PhotoDownLoadInfo> list){
         this.photos = list;
+    }
+
+    public List<PhotoDownLoadInfo> getPhotos(){
+        return photos;
+    }
+    public void setSelect(boolean select){
+        this.select = select;
+        notifyDataSetChanged();
+    }
+
+    public boolean isSelect(){
+        return select;
     }
 }

@@ -24,12 +24,16 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
 
     /**
      *  _id
-     *  userId      用户id
-     *  image BLOB  缩略图
-     *  photoname   图片名
-     *  size        图片大小
-     *  date        下载日期
-     *  time        下载时间
+     *  userId          用户id
+     *  photoId         图片id
+     *  url             图片url
+     *  size            图片大小
+     *  previewUrl      缩略图url
+     *  shootTime       拍照时间
+     *  downloadTime    下载时间
+     *  isVideo         是否视频
+     *  failedTime      失败时间（不用了）
+     *  success         下载状态，表示状态 下载成功  下载失败  下载中
      * */
     private final String SQL_CREATE_TABLE_DOWNLOAD_PHOTOS_= "create table if not exists " + Common.PHOTOS_LOAD + "(_id integer primary key autoincrement,userId text,photoId text,url text,size text,previewUrl text,shootTime text,downloadTime text,isVideo integer,failedTime text,success text)";
 
@@ -49,13 +53,6 @@ public class PictureAirDBHelper extends SQLiteOpenHelper {
     public PictureAirDBHelper(Context context, String name, int version) {
         this(context, name, null, version);
     }
-
-//    public static PictureAirDBHelper getInstance(Context context) {
-//        if (photoInfoDBHelper == null) {
-//            photoInfoDBHelper = new PictureAirDBHelper(context, Common.PHOTOPASS_INFO_NAME);
-//        }
-//        return photoInfoDBHelper;
-//    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

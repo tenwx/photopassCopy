@@ -7,24 +7,71 @@
     android:paddingRight="@dimen/pp_padding_8"
     android:paddingBottom="@dimen/pp_padding_8"
     android:background="@color/pp_light_gray_background">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
     <ImageView
         android:id="@+id/load_success_img"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/icon_disney_null_photo"
         android:scaleType="centerCrop"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:layout_marginLeft="@dimen/pp_margin_16">
-        <LinearLayout
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:id="@+id/load_success_layout"
+            android:layout_width="140dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+            <LinearLayout
+                android:id="@+id/load_success_status_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true">
+
+                <TextView
+                    android:id="@+id/load_success_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_margin_16"
+                    android:text="@string/photo_download_complete"
+                    android:gravity="center"
+                    android:textColor="@color/gray2"
+                    android:textSize="@dimen/text_size_14"/>
+
+                <TextView
+                    android:id="@+id/load_success_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pp_margin_6"
+                    android:text="2016-6-20 17:40"
+                    android:gravity="center"
+                    android:textColor="@color/gray2"
+                    android:textSize="@dimen/text_size_12"/>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/loading_success_img_select"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/nosele"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/load_success_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/load_success_img"
+            android:layout_toLeftOf="@id/load_success_layout"
+            android:layout_marginLeft="16dp">
             <TextView
                 android:id="@+id/load_success_shoottime"
                 android:layout_width="match_parent"
@@ -44,34 +91,8 @@
                 android:gravity="center_vertical|left"
                 android:textColor="@color/gray2"
                 />
-        </LinearLayout>>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/load_success_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/pp_margin_16"
-                android:text="@string/photo_download_complete"
-                android:gravity="center"
-                android:textColor="@color/gray2"
-                android:textSize="@dimen/text_size_14"/>
-
-            <TextView
-                android:id="@+id/load_success_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/pp_margin_6"
-                android:text="2016-6-20 17:40"
-                android:gravity="center"
-                android:textColor="@color/gray2"
-                android:textSize="@dimen/text_size_12"/>
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

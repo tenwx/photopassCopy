@@ -24,7 +24,12 @@ public class DownloadFileStatus implements Parcelable{
     public static final int DOWNLOAD_STATE_FAILURE = 0x03;
     public static final int DOWNLOAD_STATE_FINISH = 0x04;
     public static final int DOWNLOAD_STATE_RECONNECT = 0x05;
+    public static final int DOWNLOAD_STATE_SELECT = 0x06;
     public int status = DOWNLOAD_STATE_WAITING;
+    /**
+     * 0表示未选中 1表示选中
+     * */
+    public int select = 0;
 
 
     public DownloadFileStatus(){
@@ -43,6 +48,7 @@ public class DownloadFileStatus implements Parcelable{
         this.photoThumbnail = source.readString();
         this.shootOn = source.readString();
         this.failedTime = source.readString();
+        this.select = source.readInt();
     }
 
     public DownloadFileStatus(String url, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,String failedTime) {
@@ -172,6 +178,7 @@ public class DownloadFileStatus implements Parcelable{
         dest.writeString(photoThumbnail);
         dest.writeString(shootOn);
         dest.writeString(failedTime);
+        dest.writeInt(select);
     }
 
     public static final Parcelable.Creator<DownloadFileStatus> CREATOR = new Creator<DownloadFileStatus>() {

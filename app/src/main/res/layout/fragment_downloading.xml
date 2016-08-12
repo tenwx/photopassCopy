@@ -3,65 +3,68 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pp_light_gray_background">
-    <LinearLayout
-        android:id="@+id/ll_downloading"
+    <RelativeLayout
+        android:id="@+id/rl_list_downloading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:visibility="gone">
         <LinearLayout
+            android:id="@+id/poplayout_downloading"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:orientation="horizontal">
-            <RelativeLayout
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:padding="@dimen/pp_padding_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_downloading_select_all"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/loading_connect"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:textSize="12sp"
-                    android:text="@string/photo_download_reconnect_all"
-                    android:paddingLeft="@dimen/pp_padding_5"
-                    android:paddingRight="@dimen/pp_padding_5"
-                    android:textColor="@color/pp_dark_blue"
-                    android:background="@drawable/button_sign_shape_and_selector"
-                    android:layout_centerInParent="true"
-                    />
-            </RelativeLayout>
-            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/edit_album_all_button"
+                android:gravity="center_horizontal|bottom"
+                android:drawablePadding="@dimen/pp_padding_5"
+                android:text="@string/edit_story_all"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14"
+                />
+            <TextView
+                android:id="@+id/tv_downloading_reconnect"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1">
-                <Button
-                    android:id="@+id/loading_clear_fail"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:textSize="12sp"
-                    android:text="@string/photo_download_clear_failed"
-                    android:paddingLeft="@dimen/pp_padding_5"
-                    android:paddingRight="@dimen/pp_padding_5"
-                    android:textColor="@color/pp_dark_blue"
-                    android:background="@drawable/button_sign_shape_and_selector"
-                    android:layout_centerInParent="true"/>
-
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/edit_photo_reconnect_button"
+                android:gravity="center_horizontal|bottom"
+                android:drawablePadding="@dimen/pp_padding_5"
+                android:text="@string/photo_download_reconnect"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14"
+                />
+            <TextView
+                android:id="@+id/tv_downloading_delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/edit_album_delete_button"
+                android:gravity="center_horizontal|bottom"
+                android:drawablePadding="@dimen/pp_padding_5"
+                android:text="@string/delete"
+                android:textColor="@drawable/textview_selector_onclick"
+                android:textSize="@dimen/text_size_14"
+                />
         </LinearLayout>
-        <View
+        <ListView
+            android:id="@+id/lv_downloading"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/pp_height_2"
-            android:background="@drawable/dash_line"
-            android:layerType="software"
+            android:layout_height="match_parent"
+            android:divider="@color/gray_light3"
+            android:dividerHeight="@dimen/pp_height_1"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/poplayout_downloading"
             />
-    <ListView
-        android:id="@+id/lv_downloading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/gray_light3"
-        android:dividerHeight="@dimen/pp_height_1"
-        />
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_downloading"

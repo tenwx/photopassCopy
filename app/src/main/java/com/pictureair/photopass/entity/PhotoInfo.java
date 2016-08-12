@@ -42,6 +42,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public int isHasPreset; // 照片是否有模版，0，代表没有模板，1，代表有模版
 	public String failedTime;
 	public int isEncrypted;//是否加密 0：未加密；1：已加密
+	public int selectPos;//被勾选的位置
 
 	public static final Parcelable.Creator<PhotoInfo> CREATOR = new Creator<PhotoInfo>() {
 

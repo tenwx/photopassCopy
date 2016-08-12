@@ -174,6 +174,7 @@ public class Common {
     public static final String PHOTO_IMAGE = "productImage";
     public static final String CART_COUNT = "cartcount";
     public static final String PHOTOIDS = "photoIds";
+    public static final String REMOVE_REPEATE_PHOTO="removeRepeatPhoto";
     //	public static final String CART = "cart";
     public static final String CART_ITEM_ID = "cartItemId";
     public static final String GOODS_KEY = "goodsKey";

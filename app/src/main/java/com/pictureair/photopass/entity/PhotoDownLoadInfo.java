@@ -2,10 +2,12 @@ package com.pictureair.photopass.entity;
 
 import android.graphics.Bitmap;
 
+import com.google.zxing.common.Comparator;
+
 /**
  * Created by pengwu on 16/7/8.
  */
-public class PhotoDownLoadInfo {
+public class PhotoDownLoadInfo{
     private String photoId;
     private String size;
     private String shootTime;
@@ -14,12 +16,15 @@ public class PhotoDownLoadInfo {
     private String previewUrl;
     private int isVideo;
     private String failedTime;
+    private String status;
+    public boolean isSelect;//表示是否被勾选
+    public int selectPos;
 
     public PhotoDownLoadInfo(){
 
     }
 
-    public PhotoDownLoadInfo(String photoId, String size, String shootTime, String loadTime, String url, String previewUrl,int isVideo,String failedTime) {
+    public PhotoDownLoadInfo(String photoId, String size, String shootTime, String loadTime, String url, String previewUrl,int isVideo,String failedTime,String status) {
         this.photoId = photoId;
         this.size = size;
         this.shootTime = shootTime;
@@ -28,6 +33,7 @@ public class PhotoDownLoadInfo {
         this.previewUrl = previewUrl;
         this.isVideo = isVideo;
         this.failedTime = failedTime;
+        this.status = status;
     }
 
     public String getPhotoId() {
@@ -92,5 +98,13 @@ public class PhotoDownLoadInfo {
 
     public void setFailedTime(String failedTime) {
         this.failedTime = failedTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

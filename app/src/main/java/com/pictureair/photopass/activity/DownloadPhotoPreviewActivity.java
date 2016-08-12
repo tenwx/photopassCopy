@@ -168,7 +168,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                 photolist = new ArrayList<PhotoInfo>();
                 SharedPreferences sPreferences = MyApplication.getInstance().getSharedPreferences(Common.SHARED_PREFERENCE_USERINFO_NAME, Context.MODE_PRIVATE);
                 String userId = sPreferences.getString(Common.USERINFO_ID, "");
-                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,true);
+                List<PhotoDownLoadInfo> photos = pictureAirDbManager.getPhotos(userId,"true");
                 if (photos != null && photos.size() >0) {
                     for (int i=0;i<photos.size();i++) {
                         PhotoDownLoadInfo downLoadInfo = photos.get(i);

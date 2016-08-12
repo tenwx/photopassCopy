@@ -2,26 +2,26 @@ package com.pictureair.photopass.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.DownLoadFramentAdapter;
 import com.pictureair.photopass.eventbus.BaseBusEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
 import com.pictureair.photopass.fragment.LoadSuccessFragment;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppManager;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
+import com.pictureair.photopass.widget.PWToast;
 import com.pictureair.photopass.widget.viewpagerindicator.TabPageIndicator;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +36,15 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     private List<Fragment> fragments = new ArrayList<>();
     private String[] titles;
     private int currentIndex = 0;
-    DownLoadFramentAdapter adapter;
-    DownloadService downloadService;
-    DownLoadingFragment downLoadingFragment;
-    LoadSuccessFragment loadSuccessFragment;
-    public static final int UPDATE_LOAD_SUCCESS_FRAGMENT = 6666;
+    private DownLoadFramentAdapter adapter;
+    private DownLoadingFragment downLoadingFragment;
+    private LoadSuccessFragment loadSuccessFragment;
+    private TextView tv_select;
+    private ImageView img_cancle;
+    private boolean loadingFragmentChanged;
+    private boolean loadSuccessFragmentChanged;
+    private PWToast myToast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,8 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
         setContentView(R.layout.activity_load_manage);
 
         titles = new String[]{getResources().getString(R.string.photo_downloading),getResources().getString(R.string.photo_download_success)};
+        tv_select = (TextView) findViewById(R.id.load_manage_select);
+        img_cancle = (ImageView) findViewById(R.id.load_manage_cancle);
         back = (ImageView) findViewById(R.id.load_manage_back);
         indicator = (TabPageIndicator) findViewById(R.id.load_manage_indicator);
         indicator.setmSelectedTabIndex(0);
@@ -62,21 +68,40 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
         viewPager.setAdapter(adapter);
         indicator.setViewPager(viewPager);
         indicator.setCurrentItem(currentIndex);
+        img_cancle.setVisibility(View.GONE);
+        back.setVisibility(View.VISIBLE);
         back.setOnClickListener(this);
+        img_cancle.setOnClickListener(this);
+        tv_select.setOnClickListener(this);
+        loadingFragmentChanged = false;
+        loadSuccessFragmentChanged = false;
+        myToast = new PWToast(MyApplication.getInstance());
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        PictureAirLog.e("onPageScrolled","postiong: "+position +" positionOffset+ "+positionOffset+" positionOffsetPixels "+positionOffsetPixels);
     }
 
     @Override
     public void onPageSelected(int position) {
+        PictureAirLog.e("onPageSelected","postiong: "+position);
+        currentIndex = position;
+        if (currentIndex == 0){
+            if (loadSuccessFragmentChanged){
+                closeLoadSuccessFragmentSelect();
+            }
+        }else{
+            if (loadingFragmentChanged){
+                closeLoadingFragmentSelect();
+            }
+        }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
 
+        PictureAirLog.e("onPageScrollStateChanged","state: "+state);
     }
 
     @Override
@@ -120,13 +145,70 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        onClick(v.getId());
+    }
+
+    public void onClick(int id){
+        switch (id){
             case R.id.load_manage_back:
                 doBack();
+                break;
+            case R.id.load_manage_cancle:
+                if (currentIndex == 0 && loadingFragmentChanged){
+                    closeLoadingFragmentSelect();
+                }else if (currentIndex == 1 && loadSuccessFragmentChanged){
+                    closeLoadSuccessFragmentSelect();
+                }
+
+                break;
+            case R.id.load_manage_select:
+                if (downLoadingFragment.getIsDownloading()){
+                    myToast.setTextAndShow(R.string.photo_download_tips3, Common.TOAST_SHORT_TIME);
+                    return;
+                }
+                if (currentIndex == 0 && !loadingFragmentChanged){
+                    openLoadingFragmentSelect();
+                }else if (currentIndex == 1 && !loadSuccessFragmentChanged){
+                    openLoadSuccessFragmentSelect();
+                }
                 break;
             default:
                 break;
         }
+    }
+
+    private void openLoadingFragmentSelect(){
+        loadingFragmentChanged = downLoadingFragment.changeToSelectState();
+        if (loadingFragmentChanged){
+            img_cancle.setVisibility(View.VISIBLE);
+            back.setVisibility(View.GONE);
+        }else{
+            myToast.setTextAndShow(R.string.photo_download_tips4);
+        }
+    }
+
+    private void closeLoadingFragmentSelect(){
+        downLoadingFragment.changeToNormalState();
+        img_cancle.setVisibility(View.GONE);
+        back.setVisibility(View.VISIBLE);
+        loadingFragmentChanged = false;
+    }
+
+    private void openLoadSuccessFragmentSelect(){
+        loadSuccessFragmentChanged = loadSuccessFragment.changeToSelectState();
+        if (loadSuccessFragmentChanged){
+            img_cancle.setVisibility(View.VISIBLE);
+            back.setVisibility(View.GONE);
+        }else{
+            myToast.setTextAndShow(R.string.photo_download_tips4);
+        }
+    }
+
+    private void closeLoadSuccessFragmentSelect(){
+        loadSuccessFragment.changeToNormalState();
+        img_cancle.setVisibility(View.GONE);
+        back.setVisibility(View.VISIBLE);
+        loadSuccessFragmentChanged = false;
     }
 
     @Override

@@ -1707,4 +1707,20 @@ public class AppUtil {
     public static boolean isEncrypted(int isEncrypted) {
         return isEncrypted == 1;
     }
+
+    /**
+     * 字符串转日期
+     *
+     * @param strDate 2015-12-24 17:30
+     * @return
+     */
+    public static Date getDateFromStr2(String strDate) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:MM");
+        try {
+            return df.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

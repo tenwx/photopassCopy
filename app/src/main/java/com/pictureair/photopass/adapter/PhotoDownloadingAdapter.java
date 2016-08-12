@@ -1,11 +1,6 @@
 package com.pictureair.photopass.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +13,13 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
-import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.widget.CircleProgressImage;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -38,11 +30,12 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
     private Context mContext;
     private CopyOnWriteArrayList<DownloadFileStatus> photos;
     private ListView listView;
-    private OnItemClickListener childClickListener;
+    private CopyOnWriteArrayList<PhotoInfo> selectPhotos;
 
     public PhotoDownloadingAdapter(Context context,CopyOnWriteArrayList<DownloadFileStatus> photos){
         this.mContext = context;
         this.photos = photos;
+        selectPhotos = new CopyOnWriteArrayList<>();
     }
 
     @Override
@@ -125,13 +118,21 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
                     holder.img_status.mCanDraw = false;
                     holder.img_status.setProgress(0);
                     break;
+                case DownloadFileStatus.DOWNLOAD_STATE_SELECT:
+                    holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                    holder.tv_speed.setText("0KB/S");
+                    holder.tv_status.setText(mContext.getString(R.string.photo_download_wait_select));
+                    if (fileStatus.select == 0) {
+                        holder.img_status.setImageResource(R.drawable.nosele);
+                    }else{
+                        holder.img_status.setImageResource(R.drawable.sele);
+                    }
+                    holder.img_status.mCanDraw = false;
+                    holder.img_status.setProgress(0);
+                    break;
                 default:
                     break;
             }
-
-            childClickListener = new OnItemClickListener(position,holder);
-            holder.rl.setOnClickListener(childClickListener);
-
         }
 
 
@@ -156,44 +157,14 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         return photos;
     }
 
-    private class OnItemClickListener implements View.OnClickListener{
-        private int position;
-        private Holder holder;
-        public OnItemClickListener(int position,Holder holder){
-            this.position = position;
-            this.holder = holder;
-        }
-
-        @Override
-        public void onClick(View v) {
-            DownloadFileStatus fileStatus = photos.get(position);
-            if (fileStatus!= null && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE){
-                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
-                fileStatus.setCurrentSize("0");
-                fileStatus.setLoadSpeed("0");
-                fileStatus.setTotalSize("0");
-
-                holder.tv_size.setText("0MB/0MB");
-                holder.tv_speed.setText("0KB/S");
-                holder.tv_status.setText(mContext.getString(R.string.photo_download_reconnect));
-                holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
-                holder.img_status.mCanDraw = false;
-                ArrayList<PhotoInfo> photos = new ArrayList<>();
-                PhotoInfo info = new PhotoInfo();
-                info.isVideo = fileStatus.isVideo();
-                info.photoPathOrURL = fileStatus.getUrl();
-                info.photoId = fileStatus.getPhotoId();
-                info.shootOn = fileStatus.getShootOn();
-                info.failedTime = fileStatus.getFailedTime();
-
-                photos.add(info);
-                Intent intent = new Intent(mContext, DownloadService.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("photos", photos);
-                bundle.putInt("reconnect",1);
-                bundle.putInt("one",0);
-                intent.putExtras(bundle);
-                mContext.startService(intent);
+    private void removePhotoInfo(DownloadFileStatus fileStatus,int pos){
+        if (selectPhotos.size() >0 ) {
+            Iterator<PhotoInfo> iterator = selectPhotos.iterator();
+            while (iterator.hasNext()) {
+                PhotoInfo info = iterator.next();
+                if (info.selectPos == pos) {
+                    selectPhotos.remove(info);
+                }
             }
         }
     }

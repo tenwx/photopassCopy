@@ -1,10 +1,12 @@
 package com.pictureair.photopass.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -13,14 +15,19 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
+import com.pictureair.photopass.activity.LoadManageActivity;
 import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoDownloadingAdapter;
 import com.pictureair.photopass.entity.DownloadFileStatus;
@@ -28,12 +35,12 @@ import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,7 +49,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by pengwu on 16/7/8.
  */
-public class DownLoadingFragment extends BaseFragment implements View.OnClickListener {
+public class DownLoadingFragment extends BaseFragment implements View.OnClickListener,AdapterView.OnItemClickListener {
 
     private ListView lv_loading;
     private DownloadService downloadService;
@@ -52,15 +59,89 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     public static final int SERVICE_LOAD_SUCCESS = 4444;
     public static final int DOWNLOAD_FINISH = 5555;
     public static final int REMOVE_FAILED_PHOTOS = 6666;
+    public static final int PHOTO_ALL_SELECT = 7777;
     private RelativeLayout rl_loading;
-    private LinearLayout ll_loading;
-    private Button btn_reconnect;
-    private Button btn_clear_failed;
+    private RelativeLayout ll_loading;
     private Button button;
     private PhotoDownloadingAdapter adapter;
     private PWToast myToast;
+    private LinearLayout ll_popup;
+    private Animation animationIn;
+    private Animation animationOut;
+    private TextView tv_selectAll;
+    private TextView tv_reconnect;
+    private TextView tv_delete;
+    private CopyOnWriteArrayList<PhotoInfo> selectPhotos;
+    private boolean selectAll;
+
 
     private final Handler adapterHandler = new AdapterHandler(this);
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (adapter == null || downloadList.size() ==0 || downloadList == null) return;
+        if (downloadList.size() > position){
+            DownloadFileStatus fileStatus = downloadList.get(position);
+            if (fileStatus!= null && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                if (fileStatus.select == 0) {
+                    PhotoInfo info = newPhotoInfo(fileStatus,position);
+                    fileStatus.select = 1;
+                    adapter.setList(downloadList);
+                    adapter.notifyDataSetChanged();
+                    selectPhotos.add(info);
+                } else {
+                    fileStatus.select = 0;
+                    adapter.setList(downloadList);
+                    adapter.notifyDataSetChanged();
+                    removePhotoInfo(fileStatus, position);
+                }
+                enableReconnectDeleteButton();
+                ifSelectAllWhenItemClick();
+            }
+        }
+    }
+
+
+    private void ifSelectAllWhenItemClick(){
+        if (selectPhotos.size() == downloadList.size()){
+            selecAllButtonStatusChange(true);
+        }else{
+            selecAllButtonStatusChange(false);
+        }
+    }
+
+    private void enableReconnectDeleteButton(){
+        if (selectPhotos.size() >0){
+            tv_reconnect.setEnabled(true);
+            tv_delete.setEnabled(true);
+        }else{
+            tv_reconnect.setEnabled(false);
+            tv_delete.setEnabled(false);
+        }
+    }
+
+    private PhotoInfo newPhotoInfo(DownloadFileStatus fileStatus,int position){
+        PhotoInfo info = new PhotoInfo();
+        info.isVideo = fileStatus.isVideo();
+        info.photoPathOrURL = fileStatus.getUrl();
+        info.photoId = fileStatus.getPhotoId();
+        info.shootOn = fileStatus.getShootOn();
+        info.failedTime = fileStatus.getFailedTime();
+        info.selectPos = position;
+        return info;
+    }
+
+    private void removePhotoInfo(DownloadFileStatus fileStatus,int pos){
+        if (selectPhotos.size() >0 ) {
+            Iterator<PhotoInfo> iterator = selectPhotos.iterator();
+            while (iterator.hasNext()) {
+                PhotoInfo info = iterator.next();
+                if (info.selectPos == pos) {
+                    selectPhotos.remove(info);
+                }
+            }
+        }
+    }
 
     public static class AdapterHandler extends Handler{
         private final WeakReference<DownLoadingFragment> mActivity;
@@ -80,9 +161,10 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void dealHandler(Message msg) {
-        dismissPWProgressDialog();
+
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE://更新listview
+                dismissPWProgressDialog();
                 PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
                 updateView();
@@ -93,6 +175,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 break;
             case PHOTO_REMOVE://下载成功后删除
+                dismissPWProgressDialog();
                 PictureAirLog.v("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null) {
@@ -112,6 +195,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case SERVICE_LOAD_SUCCESS://DownloadService 绑定成功，更新页面，设置下载数量
+
                 if (adapter == null) {
                     PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter= null ");
                     downloadList = downloadService.getDownloadList();
@@ -138,9 +222,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 AtomicInteger downLoadCount=downloadService.getDowned_num();
                 PictureAirLog.v("SERVICE_LOAD_SUCCESS","downLoadCount: "+downLoadCount);
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1,false));
+                activityClick();
                 downloadService.startDownload();
+                dismissPWProgressDialog();
                 break;
             case DOWNLOAD_FINISH://下载完成，此时downloadservice中已没有可下载任务，页面显示没有下载中的照片
+                dismissPWProgressDialog();
                 CopyOnWriteArrayList<DownloadFileStatus> list = downloadService.getDownloadList();
                 if (list == null || list.size() == 0) {
                     ll_loading.setVisibility(View.GONE);
@@ -159,9 +246,34 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
+                activityClick();
+                dismissPWProgressDialog();
+                break;
+
+            case PHOTO_ALL_SELECT:
+                updateView();
+                if (selectAll){
+                    setSelectPhotos();
+                }else{
+                    selectPhotos.clear();
+                }
+                enableReconnectDeleteButton();
+                dismissPWProgressDialog();
                 break;
             default:
+                dismissPWProgressDialog();
                 break;
+        }
+    }
+
+    private void setSelectPhotos(){
+        if (downloadList!= null && downloadList.size() >0) {
+            if (selectPhotos.size() >0) selectPhotos.clear();
+            for (int i = 0; i < downloadList.size(); i++) {
+                DownloadFileStatus fileStatus = downloadList.get(i);
+                PhotoInfo info = newPhotoInfo(fileStatus,i);
+                selectPhotos.add(info);
+            }
         }
     }
 
@@ -172,15 +284,39 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         lv_loading = (ListView) view.findViewById(R.id.lv_downloading);
         rl_loading = (RelativeLayout) view.findViewById(R.id.rl_downloading);
         button = (Button) view.findViewById(R.id.downloading_btn_toload);
-        btn_reconnect = (Button) view.findViewById(R.id.loading_connect);
-        btn_clear_failed = (Button) view.findViewById(R.id.loading_clear_fail);
-        ll_loading = (LinearLayout) view.findViewById(R.id.ll_downloading);
+        ll_loading = (RelativeLayout) view.findViewById(R.id.rl_list_downloading);
+        ll_popup = (LinearLayout) view.findViewById(R.id.poplayout_downloading);
+        tv_selectAll = (TextView) view.findViewById(R.id.tv_downloading_select_all);
+        tv_reconnect = (TextView) view.findViewById(R.id.tv_downloading_reconnect);
+        tv_delete = (TextView) view.findViewById(R.id.tv_downloading_delete);
+        tv_reconnect.setEnabled(false);
+        tv_delete.setEnabled(false);
+        tv_selectAll.setOnClickListener(this);
+        tv_reconnect.setOnClickListener(this);
+        tv_delete.setOnClickListener(this);
+        selectPhotos = new CopyOnWriteArrayList<>();
+        animationIn = AnimationUtils.loadAnimation(MyApplication.getInstance(),R.anim.push_bottom_in);
+        animationOut= AnimationUtils.loadAnimation(MyApplication.getInstance(),R.anim.push_bottom_out);
+        animationOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                ll_popup.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        ll_popup.setVisibility(View.GONE);
         myToast = new PWToast(MyApplication.getInstance());
         ll_loading.setVisibility(View.GONE);
         rl_loading.setVisibility(View.VISIBLE);
         button.setOnClickListener(this);
-        btn_reconnect.setOnClickListener(this);
-        btn_clear_failed.setOnClickListener(this);
+        lv_loading.setOnItemClickListener(this);
         bindService();
         return view;
     }
@@ -235,44 +371,64 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 getActivity().finish();
                 break;
 
-            case R.id.loading_connect:
-                ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
-                if (downloadList != null && downloadList.size() >0) {
-                    for (int i=0;i<downloadList.size();i++) {
-                        DownloadFileStatus fileStatus = downloadList.get(i);
-                        if(fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE) {
-                            fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
-                            PhotoInfo info = new PhotoInfo();
-                            info.isVideo = fileStatus.isVideo();
-                            info.photoPathOrURL = fileStatus.getUrl();
-                            info.photoId = fileStatus.getPhotoId();
-                            info.shootOn = fileStatus.getShootOn();
-                            info.failedTime = fileStatus.getFailedTime();
-                            list.add(info);
-                        }
-                    }
-                    adapter.setList(downloadList);
-                    adapter.notifyDataSetChanged();
-                    Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("photos", list);
-                    bundle.putInt("reconnect",1);
-                    bundle.putInt("one",1);
-                    intent1.putExtras(bundle);
-                    MyApplication.getInstance().startService(intent1);
+            case R.id.tv_downloading_select_all:
+                if (downloadService == null) return;
+                if (!selectAll){
+                    selecAllButtonStatusChange(true);
+                    downloadService.setDownloadListSelectOrNot(1);
+                }else{
+                    selecAllButtonStatusChange(false);
+                    downloadService.setDownloadListSelectOrNot(0);
                 }
+
                 break;
 
-            case R.id.loading_clear_fail:
-                if (downloadService.isDownloading()){
-                    myToast.setTextAndShow(R.string.photo_download_clear_tips, Common.TOAST_SHORT_TIME);
-                }else {
-                    showPWProgressDialog();
-                    downloadService.sendClearFailedMsg();
+            case R.id.tv_downloading_reconnect:
+                if (selectPhotos.size() == 0) return;
+                showPWProgressDialog();
+                ArrayList<PhotoInfo> list = new ArrayList<>();
+                for (int i=0;i<selectPhotos.size();i++){
+                    PhotoInfo info = selectPhotos.get(i);
+                    list.add(info);
                 }
+                Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("photos", list);
+                bundle.putInt("reconnect",1);
+                intent1.putExtras(bundle);
+                MyApplication.getInstance().startService(intent1);
+                break;
+
+            case R.id.tv_downloading_delete:
+                if (downloadService == null || selectPhotos.size() == 0) return;
+                showPWProgressDialog();
+                downloadService.deleteSelecItems();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void selecAllButtonStatusChange(boolean all) {
+        Drawable top;
+        if (all){
+            top = getResources().getDrawable(R.drawable.edit_album_disall_button);
+            tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null, top, null, null);
+            tv_selectAll.setText(R.string.edit_story_disall);
+            selectAll = true;
+        }else{
+            top = getResources().getDrawable(R.drawable.edit_album_all_button);
+            tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
+            tv_selectAll.setText(R.string.edit_story_all);
+            selectAll=false;
+        }
+    }
+
+    private void activityClick(){
+        Activity activity = getActivity();
+        if (activity != null && activity instanceof LoadManageActivity){
+            LoadManageActivity loadManageActivity = (LoadManageActivity)activity;
+            loadManageActivity.onClick(R.id.load_manage_cancle);
         }
     }
 
@@ -311,5 +467,36 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         adapter.notifyDataSetChanged();
     }
 
+    public boolean changeToSelectState(){
+        if (downloadService != null) {
+            if (downloadService.downloadListContainsFailur()){
+                downloadService.updateDownloadList();
+                ll_popup.setVisibility(View.VISIBLE);
+                ll_popup.startAnimation(animationIn);
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public void changeToNormalState(){
+        if (downloadService != null) {
+            downloadService.reverseDownloadList();
+            selectPhotos.clear();
+            enableReconnectDeleteButton();
+            Drawable top = getResources().getDrawable(R.drawable.edit_album_all_button);
+            tv_selectAll.setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
+            tv_selectAll.setText(R.string.edit_story_all);
+            selectAll=false;
+            ll_popup.startAnimation(animationOut);
+            return;
+        }
+    }
+
+    public boolean getIsDownloading(){
+        if (downloadService != null && downloadService.isDownloading()){
+            return true;
+        }
+        return false;
+    }
 }

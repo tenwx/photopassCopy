@@ -22,6 +22,19 @@
             android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
             android:src="@drawable/back_white" />
+        <ImageView
+            android:id="@+id/load_manage_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            android:scaleType="centerInside"
+            android:src="@drawable/edit_big_cancle"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,6 +44,21 @@
             android:text="@string/mypage_download"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/load_manage_select"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12"
+            android:text="@string/photo_download_select"
+            android:gravity="center"
+            android:paddingBottom="@dimen/pp_padding_15"
+            android:paddingLeft="@dimen/pp_padding_14"
+            android:paddingRight="@dimen/pp_padding_14"
+            android:paddingTop="@dimen/pp_padding_15"
+            />
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/load_manage_lead_bar"
