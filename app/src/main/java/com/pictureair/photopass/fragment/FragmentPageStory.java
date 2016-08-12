@@ -260,7 +260,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
                 if (!needfresh) {//如果需要刷新数据的话，就不需要从数据库中获取数据
                     //  如果PP中的照片大于 10 张，并且账户中没有PP＋。就提示购买PP+
-                    if (settingUtil.isFirstPP10(SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, ""))) {
+                    if (settingUtil.isFirstPP10(userId)) {
                         //第一次 PP数量到 10 。
                         API1.getPPPSByUserId(MyApplication.getTokenId(), fragmentPageStoryHandler);
                     }

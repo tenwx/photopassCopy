@@ -70,7 +70,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                     case 6035://token过期
                         id = R.string.http_error_code_401;
                         PictureAirLog.v(TAG, "tokenExpired");
-                        SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null);
+                        SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                         break;
 
                     case 6031://用户名不存在
@@ -83,7 +83,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         break;
                 }
                 dismissPWProgressDialog();
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null);
+                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -120,7 +120,7 @@ public class SignAndLoginUtil implements Handler.Callback {
                         break;
                 }
                 dismissPWProgressDialog();
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null);
+                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -134,7 +134,7 @@ public class SignAndLoginUtil implements Handler.Callback {
             case API1.GET_STOREID_FAILED://获取storeId失败
                 id = ReflectionUtil.getStringId(context, msg.arg1);
                 dismissPWProgressDialog();
-                SPUtils.put(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID, null);
+                SPUtils.remove(context, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_TOKENID);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
