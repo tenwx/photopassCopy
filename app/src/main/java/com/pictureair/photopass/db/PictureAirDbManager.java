@@ -823,8 +823,12 @@ public class PictureAirDbManager {
                                         photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
 
                         photo.isRefreshInfo = 1;
+                        cursor.close();
+                        resultArrayList.add(photo);
+                        continue;
+                    } else {
+                        cursor.close();
                     }
-                    cursor.close();
                 }
 
                 resultArrayList.add(photo);
