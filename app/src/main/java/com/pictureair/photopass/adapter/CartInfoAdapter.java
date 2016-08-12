@@ -16,13 +16,13 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -47,7 +47,6 @@ public class CartInfoAdapter extends BaseAdapter {
     private Handler handler;
     private String currency;
     private String userId;
-    private ImageLoader imageLoader;
     private ArrayList<ArrayList<ImageView>> gridLayoutLists;
     private PWToast myToast;
 
@@ -66,7 +65,6 @@ public class CartInfoAdapter extends BaseAdapter {
         this.currency = currency;
         this.userId = userId;
         layoutInflater = LayoutInflater.from(context);
-        imageLoader = ImageLoader.getInstance();
         gridLayoutLists = new ArrayList<>();
         myToast = new PWToast(context);
     }
@@ -137,27 +135,12 @@ public class CartInfoAdapter extends BaseAdapter {
         }
         PictureAirLog.v(TAG, "pictureUrl" + pictureUrl);
         //设置商品图片
-//        if (Common.GOOD_NAME_SINGLE_DIGITAL.equals(goodArrayList.get(position).getProductName())) {//照片商品
-//            if (!pictureUrl.contains("http")) {
-//                pictureUrl = Common.PHOTO_URL + pictureUrl;
-//            }
-//            if (pictureUrl.contains("productImage/gift-singleDigital.jpg")) {
-//                pictureUrl = pictureUrl.replace("4000", "3001");
-//            }
-//            imageLoader.displayImage(pictureUrl, viewHolder.cartGoodImageView);
-//            viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
-//            viewHolder.cartLineImageView.setVisibility(View.GONE);
-//            viewHolder.hideImageView.setVisibility(View.GONE);
-//
-//        } else
         if (goodArrayList.get(position).getEntityType() == 0 && Common.GOOD_NAME_PPP.equals(goodArrayList.get(position).getProductName())) {//ppp商品
-            imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
+            GlideUtil.load(context, Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.GONE);
-//            viewHolder.cartLineImageView.setVisibility(View.GONE);
         } else {//其他商品
             PictureAirLog.v(TAG, "other product");
-            imageLoader.displayImage(Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
-//            viewHolder.cartLineImageView.setVisibility(View.VISIBLE);
+            GlideUtil.load(context, Common.PHOTO_URL + pictureUrl, viewHolder.cartGoodImageView);
             viewHolder.cartGoodPhotosGridLayout.setVisibility(View.VISIBLE);
             viewHolder.cartGoodPhotosGridLayout.removeAllViews();
             if (0 == gridviewlist.size()) {//如果照片数量为0
@@ -198,13 +181,6 @@ public class CartInfoAdapter extends BaseAdapter {
                     if (gridviewlist.get(i).getPhotoUrl() == null || gridviewlist.get(i).getPhotoUrl().equals("")) {
                         PictureAirLog.v(TAG, "getPhotoUrl() == null");
                         imageView.setImageResource(R.drawable.empty);
-//                        TextView textView = new TextView(context);
-//                        GridLayout.LayoutParams params2 = new GridLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//                        textView.setLayoutParams(params2);
-//                        textView.setText(R.string.add_photo);
-//                        textView.setTextColor(Color.WHITE);
-//                        textView.setBackgroundColor(context.getResources().getColor(R.color.orange));
-//                        viewHolder.cartGoodPhotosGridLayout.addView(textView, params2);
                     } else {
                         String photoUrl;
                         if (gridviewlist.get(i).getPhotoUrl().contains("http")) {
@@ -213,7 +189,7 @@ public class CartInfoAdapter extends BaseAdapter {
                             photoUrl = Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl();
                         }
                         PictureAirLog.v(TAG, "getPhotoUrl() != null" + photoUrl);
-                        imageLoader.displayImage(photoUrl, imageView);
+                        GlideUtil.load(context, photoUrl, imageView);
                     }
                 }
             }

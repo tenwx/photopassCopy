@@ -18,15 +18,15 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.mob.tools.utils.UIHandler;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;
 
@@ -558,90 +558,63 @@ public class SharePop extends PopupWindow implements OnClickListener,
 
     private void createThumbNail(final int id) {
         // TODO Auto-generated method stub
-        new Thread() {
-            public void run() {
-                ImageLoader.getInstance().loadImage("file:///" + imagePath,
-                        new ImageLoadingListener() {
-
-                            @Override
-                            public void onLoadingStarted(String imageUri, View view) {
-                                // TODO Auto-generated method stub
-
+        PictureAirLog.out("share pop---->start create thumbnail");
+        GlideUtil.load(context, GlideUtil.getFileUrl(imagePath), new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
+                PictureAirLog.out("share pop---->get the bitmap");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                loadedImage.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                byte[] datas = baos.toByteArray();
+                File shareFile = new File(Common.SHARE_PATH);
+                if (!shareFile.exists()) {
+                    shareFile.mkdirs();
+                }
+                shareFile = new File(Common.SHARE_PATH + AppUtil.getReallyFileName(imagePath, 0));
+                if (!shareFile.exists()) {
+                    PictureAirLog.out("share pop---->start deal thumbnail");
+                    BufferedOutputStream stream = null;
+                    try {
+                        shareFile.createNewFile();
+                        FileOutputStream fStream = new FileOutputStream(shareFile);
+                        stream = new BufferedOutputStream(fStream);
+                        stream.write(datas);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    } finally {
+                        if (stream != null) {
+                            try {
+                                stream.close();
+                            } catch (Exception e2) {
+                                // TODO: handle exception
                             }
+                        }
+                    }
+                }
 
-                            @Override
-                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                                // TODO Auto-generated method stub
+                switch (id) {
+                    case R.id.twitter:
+                        // 生成缩略图成功， 需要开始分享
+                        twitterShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                        break;
 
-                            }
+                    case R.id.sina:
+                        sinaShare(context, shareFile.toString(), imageUrl, shareUrl, type);
+                        break;
 
-                            @Override
-                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                // TODO Auto-generated method stub
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                loadedImage.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-                                byte[] datas = baos.toByteArray();
-                                File shareFile = new File(Common.SHARE_PATH);
-                                if (!shareFile.exists()) {
-                                    shareFile.mkdirs();
-                                }
-                                shareFile = new File(Common.SHARE_PATH + AppUtil.getReallyFileName(imagePath, 0));
-                                if (shareFile.exists()) {
+                    case R.id.qq:
+                        qqShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                        break;
 
-                                } else {
+                    case R.id.qqzone:
+                        qzoneShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
+                        break;
 
-                                    BufferedOutputStream stream = null;
-                                    try {
-                                        shareFile.createNewFile();
-                                        FileOutputStream fStream = new FileOutputStream(shareFile);
-                                        stream = new BufferedOutputStream(fStream);
-                                        stream.write(datas);
-                                    } catch (Exception e) {
-                                        // TODO: handle exception
-                                    } finally {
-                                        if (stream != null) {
-                                            try {
-                                                stream.close();
-                                            } catch (Exception e2) {
-                                                // TODO: handle exception
-                                            }
-                                        }
-                                    }
-                                }
-
-                                switch (id) {
-                                    case R.id.twitter:
-                                        // 生成缩略图成功， 需要开始分享
-                                        twitterShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
-                                        break;
-
-                                    case R.id.sina:
-                                        sinaShare(context, shareFile.toString(), imageUrl, shareUrl, type);
-                                        break;
-
-                                    case R.id.qq:
-                                        qqShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
-                                        break;
-
-                                    case R.id.qqzone:
-                                        qzoneShare(context, shareFile.toString(), thumbnailUrl, imageUrl, shareUrl, type);
-                                        break;
-
-                                    default:
-                                        break;
-                                }
-                            }
-
-                            @Override
-                            public void onLoadingCancelled(String imageUri, View view) {
-                                // TODO Auto-generated method stub
-
-                            }
-                        });
+                    default:
+                        break;
+                }
             }
-
-            ;
-        }.start();
+        });
     }
 
     /**

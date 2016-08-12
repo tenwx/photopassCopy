@@ -18,8 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.customDialog.PWDialog;
 import com.pictureair.photopass.db.PictureAirDbManager;
@@ -27,6 +25,7 @@ import com.pictureair.photopass.editPhoto.EditPhotoUtil;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.HttpCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -42,7 +41,6 @@ import java.util.List;
 
 
 public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDialogClickListener {
-    private DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.decoration_bg).build();// 下载图片显示
     private Context mContext;
     private List<String> stickerPathList;
     private int editType = 0;
@@ -149,8 +147,7 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             layoutParams.height = ScreenUtil.dip2px(mContext, 50);
             layoutParams.width = ScreenUtil.dip2px(mContext, 50);
             holderView.itemRelativeLayout.setLayoutParams(layoutParams);
-            ImageLoader.getInstance().displayImage("assets://" + stickerPathList.get(position), holderView.editImageview, options);
-
+            GlideUtil.load(mContext, stickerPathList.get(position), R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             holderView.editText.setText(filterText[position]);
             holderView.editText.setVisibility(View.VISIBLE);
         }
@@ -166,11 +163,9 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             holderView.editImageview.setLayoutParams(layoutParams1);
 
             if (frameInfos.get(position).onLine == 1) {//网络图片
-
-                ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
+                GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             } else {//本地assets图片
-
-                ImageLoader.getInstance().displayImage(frameInfos.get(position).frameOriginalPathPortrait, holderView.editImageview, options);
+                GlideUtil.load(mContext, frameInfos.get(position).frameOriginalPathPortrait, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
             }
             holderView.itemRelativeLayout.setBackgroundResource(R.drawable.decoration_bg);
 
@@ -225,9 +220,9 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             if (frameInfos.get(position).onLine == 1) {
                 // 网络边框。 3.0版本
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }else{
-                    ImageLoader.getInstance().displayImage(Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, Common.PHOTO_URL + frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }
 
                 if (frameInfos.get(position).isDownload == 0) {
@@ -240,9 +235,9 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
 				}
             } else {
                 if (bitmap.getWidth() > bitmap.getHeight()) {
-                    ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathH160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathH160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 } else {
-                    ImageLoader.getInstance().displayImage(frameInfos.get(position).frameThumbnailPathV160, holderView.editImageview, options);
+                    GlideUtil.load(mContext, frameInfos.get(position).frameThumbnailPathV160, R.drawable.decoration_bg, R.drawable.ic_failed, holderView.editImageview);
                 }
 
             }

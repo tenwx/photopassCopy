@@ -9,14 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
@@ -28,14 +26,12 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
     private ArrayList<PhotoInfo> list;
     private Context context;
     private LayoutInflater layoutInflater;
-    private ImageLoader imageLoader;
     private static final int COLUMN_COUNT = 3;
 
     public StickyGridAdapter(Context context, ArrayList<PhotoInfo> list) {
         this.context = context;
         this.list = list;
         layoutInflater = LayoutInflater.from(context);
-        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -98,10 +94,9 @@ public class StickyGridAdapter extends BaseAdapter implements StickyGridHeadersS
             mViewHolder.videoImageView.setVisibility(View.GONE);
         }
 
-        if (mViewHolder.mImageView.getTag() == null || !mViewHolder.mImageView.getTag().equals(photoUrl)) {//加载图片
-            ImageAware imageAware = new ImageViewAware(mViewHolder.mImageView, false);
-            imageLoader.displayImage(photoUrl, AppUtil.isEncrypted(list.get(position).isEncrypted), imageAware);
-            mViewHolder.mImageView.setTag(photoUrl);
+        if (mViewHolder.mImageView.getTag(R.id.glide_image_tag) == null || !mViewHolder.mImageView.getTag(R.id.glide_image_tag).equals(photoUrl)) {//加载图片
+            GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(list.get(position).isEncrypted), mViewHolder.mImageView);
+            mViewHolder.mImageView.setTag(R.id.glide_image_tag, photoUrl);
         }
 
         return convertView;

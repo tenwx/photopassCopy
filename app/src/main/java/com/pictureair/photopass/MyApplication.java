@@ -1,20 +1,10 @@
 package com.pictureair.photopass;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.Common;
@@ -25,7 +15,6 @@ import com.pictureair.photopass.util.UmengUtil;
 import com.pictureair.photopass.widget.CustomFontManager;
 import com.pictureair.photopass.widget.FontResource;
 
-import java.io.File;
 import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -85,7 +74,6 @@ public class MyApplication extends Application {
         initLanguage();
         // 初始化友盟
         UmengUtil.initUmeng();
-        initImageLoader(getApplicationContext());
         PictureAirLog.out("application on create--->");
     }
 
@@ -136,69 +124,6 @@ public class MyApplication extends Application {
     }
 
     /**
-     * 初始化imageLoader
-     *
-     * @param context
-     */
-    private static void initImageLoader(Context context) {
-        // File parent = new
-        // File(Environment.getExternalStorageDirectory().getPath() +
-        // "/pictureAir/cache/image2/");
-        // if (!parent.exists()) {
-        // parent.mkdirs();
-        // }
-        // File cacheDir = StorageUtils.getOwnCacheDirectory(context,
-        // "/pictureAir/cache/images/");
-        File cacheDir = StorageUtils.getCacheDirectory(context);
-        ;
-        // displayImage(...) call if no options will be passed to this method
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .considerExifParams(true)
-                .// 考虑图片的exif属性
-                // showStubImage(imageRes)//图片下载期间显示的图片
-                // .showImageForEmptyUri(R.drawable.ic_empty) //
-                // 设置图片Uri为空或是错误的时候显示的图片
-                        showImageOnLoading(R.drawable.ic_loading)
-                .showImageOnFail(R.drawable.ic_failed)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                context)
-                .memoryCacheExtraOptions(1000, 1000)
-                // max width, max height，即保存的每个缓存文件的最大长宽
-                .threadPoolSize(4)
-                // 线程池内加载的数量
-                .threadPriority(Thread.NORM_PRIORITY - 2)
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCacheSize(5 * 1024 * 1024)
-                // memoryCache(...)和memoryCacheSize(...)这两个参数会互相覆盖，所以在ImageLoaderConfiguration中使用一个就好了
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                // 将保存的时候的URI名称用MD5 加密
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
-                // .diskCacheFileCount(100)
-                // 缓存的文件数量
-                // .diskCache(new UnlimitedDiscCache(cacheDir))
-                // 自定义缓存路径
-                // UnlimitedDiskCache 不限制缓存大小（默认）
-                // TotalSizeLimitedDiskCache (设置总缓存大小，超过时删除最久之前的缓存)
-                // FileCountLimitedDiskCache
-                // (设置总缓存文件数量，当到达警戒值时，删除最久之前的缓存。如果文件的大小都一样的时候，可以使用该模式)
-                // LimitedAgeDiskCache (不限制缓存大小，但是设置缓存时间，到期后删除)
-                .diskCacheSize(30 * 1024 * 1024)
-                // 50m本地缓存
-                .defaultDisplayImageOptions(defaultOptions)
-                .imageDownloader(
-                        new BaseImageDownloader(context, 5 * 1000, 30 * 1000)) // connectTimeout
-                .build();// 开始构建
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config);
-        // ImageLoader.getInstance().clearDiskCache();
-    }
-
-    /*
      * 获取全局Context
      *
      * @return

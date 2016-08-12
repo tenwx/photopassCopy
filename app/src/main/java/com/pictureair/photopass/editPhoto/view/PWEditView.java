@@ -8,8 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
@@ -209,7 +207,7 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     }
 
     @Override
-    public void showPhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath) {
+    public void showPhotoFrame(String framePath) {
 //        if(!mPhotoFrame.isShown()){
 //            mPhotoFrame.setVisibility(View.VISIBLE);
 //        }
@@ -220,7 +218,7 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface{
     }
 
     @Override //隐藏之后显示一个透明层，解决 边框切换闪烁的bug
-    public void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options,String framePath) {
+    public void hidePhotoFrame(String framePath) {
 //        imageLoader.displayImage(framePath, mPhotoFrame, options);
 //        if(mTempSave.isShown()){
 //            mTempSave.setVisibility(View.GONE);

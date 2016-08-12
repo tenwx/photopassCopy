@@ -29,13 +29,13 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
@@ -44,16 +44,12 @@ import java.io.FileInputStream;
 
 
 public class UrlTouchImageView extends RelativeLayout {
-    //	protected ProgressBar mProgressBar;
     protected TouchImageView mImageView;
     protected ImageView progressImageView;
 
     protected Context mContext;
 
-    protected File dirfile;
-
     private Bitmap bitmap;
-    private ImageLoader imageLoader;
 
     private static final int LOAD_FILE_DONE = 1;
     private int defaultType;
@@ -109,7 +105,6 @@ public class UrlTouchImageView extends RelativeLayout {
         mImageView.setLayoutParams(params);
         this.addView(mImageView);
         mImageView.setVisibility(GONE);
-        imageLoader = ImageLoader.getInstance();
 
         progressImageView = new ImageView(mContext);
         //		mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
@@ -141,29 +136,15 @@ public class UrlTouchImageView extends RelativeLayout {
             PictureAirLog.out("need load from network");
         }
         //使用imageloader加载图片
-        imageLoader.loadImage(imageUrl, isEncrypted, null, null, new SimpleImageLoadingListener() {
+        GlideUtil.load(mContext, imageUrl, isEncrypted, new SimpleTarget<Bitmap>() {
             @Override
-            public void onLoadingComplete(String imageUri, View view,
-                                          Bitmap loadedImage) {
-                // TODO Auto-generated method stub
-                super.onLoadingComplete(imageUri, view, loadedImage);
-//                bitmap = loadedImage;
+            public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
                 progressImageView.setImageResource(getImageResource(100));
                 bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
                 handler.sendEmptyMessage(LOAD_FILE_DONE);
-
-            }
-        }, new ImageLoadingProgressListener() {
-
-            @Override
-            public void onProgressUpdate(String imageUri, View view, int current,
-                                         int total) {
-                // TODO Auto-generated method stub
-                PictureAirLog.out("current percent----->" + current * 100 / total);
-                progressImageView.setImageResource(getImageResource(current * 100 / total));;
+                progressImageView.setImageResource(getImageResource(100));
             }
         });
-
     }
 
     /**

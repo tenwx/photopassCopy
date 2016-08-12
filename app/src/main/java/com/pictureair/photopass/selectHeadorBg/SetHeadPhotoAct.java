@@ -12,9 +12,6 @@ import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.RequestParams;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseActivity;
@@ -97,7 +94,6 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     }
                 }
 
-                clearImageCache(imageUrl);//清除之前的缓存
                 dialog.dismiss();
 //                myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
                 finish();
@@ -137,15 +133,6 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
         clip = (ImageView) findViewById(R.id.clip);
         clip.setOnClickListener(this);
     }
-
-    /**
-     * 清除缓存，更换头像时清除
-     */
-    public static void clearImageCache(String avatarUrl) {
-        DiskCacheUtils.removeFromCache(Common.PHOTO_URL + avatarUrl, ImageLoader.getInstance().getDiskCache());
-        MemoryCacheUtils.removeFromCache(Common.PHOTO_URL + avatarUrl, ImageLoader.getInstance().getMemoryCache());
-    }
-
 
     @Override
     public void onClick(View v) {

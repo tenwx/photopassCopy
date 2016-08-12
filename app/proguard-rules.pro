@@ -145,9 +145,13 @@
    	public <init>(org.json.JSONObject);
 }
 
-# universal-image-loader 混淆
--dontwarn com.nostra13.universalimageloader.**
--keep class com.nostra13.universalimageloader.** { *; }
+# glide 混淆
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# 如果配置了GlideModule，需要加后面的代码  -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 ##异步网络请求避免混淆
 -dontwarn android-async-http-1.4.8.jar.**

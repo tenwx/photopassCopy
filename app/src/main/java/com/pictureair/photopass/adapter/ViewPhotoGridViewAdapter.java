@@ -14,9 +14,9 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
-import com.pictureair.photopass.util.UniversalImageLoadTool;
 
 import java.util.ArrayList;
 
@@ -184,7 +184,11 @@ public class ViewPhotoGridViewAdapter extends BaseAdapter {
 
             }
         }
-        UniversalImageLoadTool.loadImage(photoUrl, AppUtil.isEncrypted(selectPhotoItemInfo.isEncrypted), holderView.imageView_photo);
+
+        if (holderView.imageView_photo.getTag(R.id.glide_image_tag) == null || !holderView.imageView_photo.getTag(R.id.glide_image_tag).toString().equals(photoUrl)) {
+            GlideUtil.load(c, photoUrl, AppUtil.isEncrypted(selectPhotoItemInfo.isEncrypted), holderView.imageView_photo);
+            holderView.imageView_photo.setTag(R.id.glide_image_tag, photoUrl);
+        }
 
         if (selectPhotoItemInfo.showMask == 0) {//隐藏遮罩
             holderView.imageview_maskImageView.setVisibility(View.GONE);

@@ -847,6 +847,7 @@ public class AppUtil {
                 temp.videoHeight = temp2.videoHeight;
                 temp.isHasPreset = temp2.isHasPreset;
                 temp.isEncrypted = temp2.isEncrypted;
+                temp.isRefreshInfo = temp2.isRefreshInfo;
                 tempInfos.add(temp);
             }
         }
@@ -1275,6 +1276,7 @@ public class AppUtil {
                         selectPhotoItemInfo.isVideo = 0;
                         selectPhotoItemInfo.isHasPreset = 0;
                         selectPhotoItemInfo.isEncrypted = 0;
+                        selectPhotoItemInfo.isRefreshInfo = 0;
                         resultList.add(selectPhotoItemInfo);
                         PictureAirLog.out("magic url =========>" + selectPhotoItemInfo.photoPathOrURL);
                     }
@@ -1627,6 +1629,7 @@ public class AppUtil {
         sInfo.showMask = 0;
         sInfo.lastModify = 0l;
         sInfo.index = "";
+        sInfo.isRefreshInfo = 0;
         return sInfo;
     }
 

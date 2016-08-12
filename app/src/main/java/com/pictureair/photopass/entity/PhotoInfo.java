@@ -43,6 +43,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 	public String failedTime;
 	public int isEncrypted;//是否加密 0：未加密；1：已加密
 	public int selectPos;//被勾选的位置
+	public int isRefreshInfo;//0：不需要刷新旧数据，1：需要刷新旧数据列表，只针对刷新的旧图片，其他均用不到
 
 	public static final Parcelable.Creator<PhotoInfo> CREATOR = new Creator<PhotoInfo>() {
 
@@ -92,6 +93,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		isHasPreset = source.readInt();
 		failedTime = source.readString();
 		isEncrypted = source.readInt();
+		isRefreshInfo = source.readInt();
 	}
 
 	@Override
@@ -131,6 +133,7 @@ public class PhotoInfo implements Parcelable, Comparable<PhotoInfo>{
 		dest.writeInt(isHasPreset);
 		dest.writeString(failedTime);
 		dest.writeInt(isEncrypted);
+		dest.writeInt(isRefreshInfo);
 	}
 
 	@Override

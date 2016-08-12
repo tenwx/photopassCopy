@@ -6,16 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.widget.CircleProgressImage;
 
 import java.util.Iterator;
@@ -29,7 +26,6 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
 
     private Context mContext;
     private CopyOnWriteArrayList<DownloadFileStatus> photos;
-    private ListView listView;
     private CopyOnWriteArrayList<PhotoInfo> selectPhotos;
 
     public PhotoDownloadingAdapter(Context context,CopyOnWriteArrayList<DownloadFileStatus> photos){
@@ -74,10 +70,9 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         DownloadFileStatus fileStatus = photos.get(position);
         holder.tv_shootTime.setText(fileStatus.getShootOn());
         if (fileStatus != null) {
-            ImageAware imageAware = new ImageViewAware(holder.img);
-            if (holder.img.getTag() == null || !holder.img.getTag().equals(fileStatus.getPhotoThumbnail())) {
-                ImageLoader.getInstance().displayImage(fileStatus.getPhotoThumbnail(),imageAware);
-                holder.img.setTag(fileStatus.getPhotoThumbnail());
+            if (holder.img.getTag(R.id.glide_image_tag) == null || !holder.img.getTag(R.id.glide_image_tag).equals(fileStatus.getPhotoThumbnail())) {
+                GlideUtil.load(mContext, fileStatus.getPhotoThumbnail(), holder.img);
+                holder.img.setTag(R.id.glide_image_tag, fileStatus.getPhotoThumbnail());
             }
             switch (fileStatus.status) {
                 case DownloadFileStatus.DOWNLOAD_STATE_WAITING:

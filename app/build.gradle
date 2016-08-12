@@ -69,17 +69,7 @@ android {
     }
 
     productFlavors {
-
-        wandoujia {}
-        baidu {}
-        qh360 {}
-        tencent {}
-        xiaomi {}
-        googleplay {}
-        PICTUREAIRCOM_HOME {}
-        PICTUREAIRCOM_PHOTO {}
         pw_test {}
-        website {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
@@ -104,6 +94,7 @@ dependencies {
     compile files('libs/Baidu_Mtj_3.7.3.1.jar')
     compile files('libs/calligraphy-1.1.0.jar')
     compile files('libs/eventbus-3.0.0-beta1.jar')
+    compile files('libs/glide-3.7.0.jar')
     compile files('libs/libammsdk.jar')
     compile files('libs/MobCommons-2016.0623.1641.jar')
     compile files('libs/MobTools-2016.0623.1641.jar')
@@ -124,7 +115,6 @@ dependencies {
     compile files('libs/sqlcipher.jar')
     compile files('libs/tess-two-6.0.0-sources.jar')
     compile files('libs/umeng-analytics-v5.6.1.jar')
-    compile files('libs/universal-image-loader-1.9.3-with-sources.jar')
     compile files('libs/UPPayAssistEx.jar')
     compile files('libs/UPPayPluginExPro.jar')
     compile files('libs/zxing.jar')
