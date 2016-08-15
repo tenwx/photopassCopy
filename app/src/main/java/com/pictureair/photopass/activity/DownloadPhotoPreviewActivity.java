@@ -174,8 +174,8 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
                         PhotoInfo photoInfo = new PhotoInfo();
                         photoInfo.photoId = downLoadInfo.getPhotoId();
-                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
-                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
+                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(), 0);
+                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH + fileName;
                         photoInfo.photoPathOrURL = loadUrl;
                         photoInfo.photoThumbnail = downLoadInfo.getPreviewUrl();
                         photoInfo.photoThumbnail_512 = "";
@@ -202,6 +202,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         photoInfo.showMask = 0;
                         photoInfo.lastModify = 0l;
                         photoInfo.index = "";
+                        photoInfo.isRefreshInfo = 0;
 
                         photolist.add(photoInfo);
                     }

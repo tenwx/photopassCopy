@@ -80,7 +80,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        PictureAirLog.e("onPageScrolled","postiong: "+position +" positionOffset+ "+positionOffset+" positionOffsetPixels "+positionOffsetPixels);
+        PictureAirLog.out("onPageScrolled: postiong: "+position +" positionOffset+ "+positionOffset+" positionOffsetPixels "+positionOffsetPixels);
     }
 
     @Override

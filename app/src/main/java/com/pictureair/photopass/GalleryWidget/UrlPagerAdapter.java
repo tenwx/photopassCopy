@@ -22,8 +22,10 @@ import android.view.ViewGroup;
 
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
+import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 
+import java.io.File;
 import java.util.List;
 
 public class UrlPagerAdapter extends BasePagerAdapter {
@@ -49,17 +51,30 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         iv.setDefaultType(defaultType);
         if (mResources.get(position).onLine == 1 && mResources.get(position).isPayed == 1) {
-            PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
             iv.setProgressImageViewVisible(true);
-            iv.setUrl(mResources.get(position).photoThumbnail_1024, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
-        } else if (mResources.get(position).onLine == 0) {
+            //1.获取需要显示文件的文件名
+            String fileString = AppUtil.getReallyFileName(mResources.get(position).photoThumbnail_1024, 0);
+            //2、判断文件是否存在sd卡中
+            File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
+            if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
+                PictureAirLog.out("file in sd card");
+                iv.setImagePath(file.toString());
 
+            } else {
+                PictureAirLog.v("UrlPagerAdapter", "online and ispayed : " + position);
+                iv.setUrl(mResources.get(position).photoThumbnail_1024, AppUtil.isEncrypted(mResources.get(position).isEncrypted));
+            }
+
+        } else if (mResources.get(position).onLine == 0) {
+            PictureAirLog.out("url---->" + mResources.get(position).photoPathOrURL);
             PictureAirLog.v("instantiateItem", "local photo : " + position + position);
             iv.setProgressImageViewVisible(true);
             iv.setImagePath(mResources.get(position).photoPathOrURL);
+
         } else {
             iv.setProgressImageViewVisible(false);
         }
+
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collection.addView(iv, 0);
         return iv;

@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.pictureair.photopass.R;
@@ -198,6 +199,24 @@ public class GlideUtil {
                 .isEncrypted(isEncrypted)
                 .dontAnimate()
                 .into(simpleTarget);
+    }
+
+    /**
+     * 加载url，可获取对应尺寸的bitmap，可获取加载完成监听
+     * @param context
+     * @param url
+     * @param overrideWidth
+     * @param overrideHeight
+     * @param requestListener
+     * @param imageView
+     */
+    public static void loadOverride(Context context, String url, int overrideWidth, int overrideHeight, RequestListener<String, Bitmap> requestListener, ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .override(overrideWidth, overrideHeight)
+                .listener(requestListener)
+                .into(imageView);
     }
 
     /**
