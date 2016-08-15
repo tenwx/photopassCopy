@@ -20,7 +20,9 @@ package com.pictureair.photopass.GalleryWidget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,36 +44,28 @@ public class UrlTouchImageView extends RelativeLayout {
 
     protected Context mContext;
 
-    private Bitmap bitmap;
-
-    private static final int LOAD_FILE_DONE = 1;
     private int defaultType;
 
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+    private static final int LOAD_FILE_FAILED = 1;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case LOAD_FILE_DONE:
-                    if (bitmap != null) {
-                        PictureAirLog.out("LOAD_FILE_DONE: " + "bitmap != null");
-                        mImageView.setScaleType(ScaleType.MATRIX);
-                        mImageView.setImageBitmap(bitmap);
-                    } else {
-                        PictureAirLog.out("LOAD_FILE_DONE: " + "bitmap == null");
-                        mImageView.setScaleType(ScaleType.CENTER);
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
-                        mImageView.setImageBitmap(bitmap);
-                    }
+                case LOAD_FILE_FAILED://加载失败
+                    Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), (defaultType == 0) ? R.drawable.ic_failed : R.drawable.preview_error);
                     mImageView.setVisibility(VISIBLE);
+                    mImageView.setScaleType(ScaleType.CENTER);
+                    mImageView.setImageBitmap(bitmap);//如果这里直接用setImageResource，导致没有左右滑动
                     progressImageView.setVisibility(GONE);
                     break;
 
                 default:
                     break;
             }
+            return false;
         }
-
-        ;
-    };
+    });
 
     public UrlTouchImageView(Context ctx) {
         super(ctx);
@@ -114,12 +108,48 @@ public class UrlTouchImageView extends RelativeLayout {
         //使用imageloader加载图片
         GlideUtil.load(mContext, imageUrl, isEncrypted, new SimpleTarget<Bitmap>() {
             @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                handler.sendEmptyMessage(LOAD_FILE_FAILED);
+            }
+
+            @Override
             public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
                 progressImageView.setImageResource(getImageResource(100));
-                bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
-                handler.sendEmptyMessage(LOAD_FILE_DONE);
+                mImageView.setVisibility(VISIBLE);
+                mImageView.setScaleType(ScaleType.MATRIX);
+                mImageView.setImageBitmap(loadedImage);
+                progressImageView.setVisibility(GONE);
             }
         });
+    }
+
+    /**
+     * 设置本地图片的路径
+     *
+     * @param imagePath 本地路径
+     */
+    public void setImagePath(String imagePath) {
+        //为什么设置800，800，本地图片尽量不需要去加载原图，容易OOM，因此只要加载特定尺寸即可。
+        //测试发现，800，800，不是最终的bitmap大小，而是和原图相比缩小了1倍，需要继续验证。
+        GlideUtil.load(mContext, GlideUtil.getFileUrl(imagePath), 800, 800, defaultType == 1,//defauleType为1，说明从下载页面进入，此时不需要缓存机制
+                new RequestListener<String, Bitmap>() {
+                    @Override
+                    public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
+                        handler.sendEmptyMessage(LOAD_FILE_FAILED);//此处必须抛出去，不然图片无法显示
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                        PictureAirLog.out("width--->" + bitmap.getWidth() + "===" + bitmap.getHeight());
+                        progressImageView.setImageResource(getImageResource(100));
+                        progressImageView.setVisibility(GONE);
+                        mImageView.setScaleType(ScaleType.MATRIX);
+                        mImageView.setVisibility(VISIBLE);
+                        return false;
+                    }
+                }, mImageView);
     }
 
     /**
@@ -132,33 +162,6 @@ public class UrlTouchImageView extends RelativeLayout {
 
     public void setScaleType(ScaleType scaleType) {
         mImageView.setScaleType(scaleType);
-    }
-
-
-    /**
-     * 设置本地图片的路径
-     *
-     * @param imagePath 本地路径
-     */
-    public void setImagePath(String imagePath) {
-        //为什么设置800，800，本地图片尽量不需要去加载原图，容易OOM，因此只要加载特定尺寸即可。
-        //测试发现，800，800，不是最终的bitmap大小，而是和原图相比缩小了1倍，需要继续验证。
-        GlideUtil.loadOverride(mContext, GlideUtil.getFileUrl(imagePath), 800, 800, new RequestListener<String, Bitmap>() {
-            @Override
-            public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
-                PictureAirLog.out("width--->" + bitmap.getWidth() + "===" + bitmap.getHeight());
-                progressImageView.setImageResource(getImageResource(100));
-                progressImageView.setVisibility(GONE);
-                mImageView.setScaleType(ScaleType.MATRIX);
-                mImageView.setVisibility(VISIBLE);
-                return false;
-            }
-        }, mImageView);
     }
 
     /**

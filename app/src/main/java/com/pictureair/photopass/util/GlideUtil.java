@@ -210,10 +210,12 @@ public class GlideUtil {
      * @param requestListener
      * @param imageView
      */
-    public static void loadOverride(Context context, String url, int overrideWidth, int overrideHeight, RequestListener<String, Bitmap> requestListener, ImageView imageView) {
+    public static void load(Context context, String url, int overrideWidth, int overrideHeight, boolean skipCache,
+                            RequestListener<String, Bitmap> requestListener, ImageView imageView) {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
+                .diskCacheStrategy(skipCache ? DiskCacheStrategy.NONE : DiskCacheStrategy.RESULT)//默认使用RESULT
                 .override(overrideWidth, overrideHeight)
                 .listener(requestListener)
                 .into(imageView);
