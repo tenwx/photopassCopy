@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -21,19 +21,15 @@ import java.util.ArrayList;
 public class OrderProductDetailAdapter extends BaseAdapter {
     private ArrayList<CartItemInfo> list;
     private LayoutInflater inflater;
-    private ImageLoader imageLoader;
     private String currency;
     private Context context;
-    private int screenWight;
     private ArrayList<ImageView> gridlayoutList;
 
     public OrderProductDetailAdapter(Context context, ArrayList<CartItemInfo> list, String currency) {
         this.list = list;
         inflater = LayoutInflater.from(context);
-        imageLoader = ImageLoader.getInstance();
         this.currency = currency;
         this.context = context;
-        screenWight = ScreenUtil.getScreenWidth(context) / 3 - 40;
     }
 
     @Override
@@ -74,9 +70,9 @@ public class OrderProductDetailAdapter extends BaseAdapter {
         }
         //初始化控件值
         if (list.get(position).getCartProductImageUrl().contains("http")) {
-            imageLoader.displayImage(list.get(position).getCartProductImageUrl(), hView.goodsImageView);
+            GlideUtil.load(context, list.get(position).getCartProductImageUrl(), hView.goodsImageView);
         } else {
-            imageLoader.displayImage(Common.PHOTO_URL + list.get(position).getCartProductImageUrl(), hView.goodsImageView);
+            GlideUtil.load(context, Common.PHOTO_URL + list.get(position).getCartProductImageUrl(), hView.goodsImageView);
         }
         hView.goodsName.setText(list.get(position).getProductName());
         hView.goodsCount.setText(list.get(position).getQty() + "");
@@ -97,7 +93,7 @@ public class OrderProductDetailAdapter extends BaseAdapter {
                 params.height = params.width;
                 imageView.setLayoutParams(params);
 
-                imageLoader.displayImage(Common.PHOTO_URL + list.get(position).getEmbedPhotos().get(i).getPhotoUrl(), imageView);
+                GlideUtil.load(context, Common.PHOTO_URL + list.get(position).getEmbedPhotos().get(i).getPhotoUrl(), imageView);
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
                 imageView.setFocusable(false);

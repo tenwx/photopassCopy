@@ -16,8 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.WriterException;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.BaseFragment;
@@ -33,6 +31,7 @@ import com.pictureair.photopass.activity.WebViewActivity;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.CouponTool;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -57,8 +56,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private boolean isShowCodePic = false;//二维码是否已经放大
 
     private boolean hasHidden = false;
-
-    private DisplayImageOptions headOptions;
 
     private PullToZoomScrollViewEx scrollView;
 
@@ -125,14 +122,6 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         //初始化控件
         userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
         qrCodeUrl = Common.BARCODEURL + userPPCode;
-        //设置头像ImageLoader参数
-        headOptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.default_photo)
-                .showImageForEmptyUri(R.drawable.default_photo)
-                .showImageOnFail(R.drawable.default_photo)
-                .cacheOnDisk(true)
-                .cacheInMemory(true)
-                .build();
 
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(getActivity()),
                 (int) (4.0F * (ScreenUtil.getScreenHeight(getActivity()) / 16.0F)) + ScreenUtil.dip2px(getActivity(), 35));
@@ -168,29 +157,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         }
         avatarUrl = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
         setCodePic();//设置二维码
-        setHeadImage();//设置头像
-    }
-
-    /**
-     * 设置头像
-     */
-    private void setHeadImage() {
-        // TODO Auto-generated method stub
-        if (avatarUrl == null || avatarUrl.equals("")) {
-            //如果user中的头像为空，显示默认头像
-            PictureAirLog.v(TAG, "setHeadImage == null");
-            headPhoto.setImageResource(R.drawable.default_photo);
-        } else {//如果有数据，加载图片
-            PictureAirLog.v(TAG, "setHeadImage: " + avatarUrl);
-            initUserHeadImage();
-        }
-    }
-
-    /**
-     * 初始化头像
-     */
-    public void initUserHeadImage() {
-        ImageLoader.getInstance().displayImage(Common.PHOTO_URL + avatarUrl, headPhoto, headOptions);
+        GlideUtil.load(getActivity(), Common.PHOTO_URL + avatarUrl, R.drawable.default_photo, R.drawable.default_photo, System.currentTimeMillis() + "", headPhoto);
     }
 
     /**

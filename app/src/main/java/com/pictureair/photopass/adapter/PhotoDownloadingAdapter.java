@@ -9,15 +9,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.widget.CircleProgressImage;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -73,10 +70,9 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         holder.tv_shootTime.setText(fileStatus.getShootOn());
         if (fileStatus != null) {
             try {
-                ImageAware imageAware = new ImageViewAware(holder.img);
-                if (holder.img.getTag() == null || !holder.img.getTag().equals(fileStatus.getPhotoThumbnail())) {
-                    ImageLoader.getInstance().displayImage(fileStatus.getPhotoThumbnail(), imageAware);
-                    holder.img.setTag(fileStatus.getPhotoThumbnail());
+                if (holder.img.getTag(R.id.glide_image_tag) == null || !holder.img.getTag(R.id.glide_image_tag).equals(fileStatus.getPhotoThumbnail())) {
+                    GlideUtil.load(mContext, fileStatus.getPhotoThumbnail(), holder.img);
+                    holder.img.setTag(R.id.glide_image_tag, fileStatus.getPhotoThumbnail());
                 }
 
                 switch (fileStatus.status) {

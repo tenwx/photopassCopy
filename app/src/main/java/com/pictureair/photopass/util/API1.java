@@ -573,7 +573,8 @@ public class API1 {
             @Override
             public void onFailure(int status) {
                 super.onFailure(status);
-                if (null == timeString) {//获取全部照片
+                if (null == timeString) {//获取全部照片，需要将时间置空，保证下次下拉可以重新拉取数据
+                    SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.LAST_UPDATE_PHOTO_TIME, null);
                     handler.obtainMessage(GET_ALL_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();
                 } else {//获取当前照片
                     handler.obtainMessage(GET_REFRESH_PHOTOS_BY_CONDITIONS_FAILED, status, 0).sendToTarget();

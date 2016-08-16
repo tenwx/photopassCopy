@@ -20,71 +20,52 @@ package com.pictureair.photopass.GalleryWidget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.os.AsyncTask;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.pictureair.photopass.GalleryWidget.InputStreamWrapper.InputStreamProgressListener;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.pictureair.photopass.R;
-import com.pictureair.photopass.util.AppUtil;
-import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-
 public class UrlTouchImageView extends RelativeLayout {
-    //	protected ProgressBar mProgressBar;
     protected TouchImageView mImageView;
     protected ImageView progressImageView;
 
     protected Context mContext;
 
-    protected File dirfile;
-
-    private Bitmap bitmap;
-    private ImageLoader imageLoader;
-
-    private static final int LOAD_FILE_DONE = 1;
     private int defaultType;
 
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
+    private static final int LOAD_FILE_FAILED = 1;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case LOAD_FILE_DONE:
-                    if (bitmap != null) {
-                        PictureAirLog.out("LOAD_FILE_DONE: " + "bitmap != null");
-                        mImageView.setScaleType(ScaleType.MATRIX);
-                        mImageView.setImageBitmap(bitmap);
-                    } else {
-                        PictureAirLog.out("LOAD_FILE_DONE: " + "bitmap == null");
-                        mImageView.setScaleType(ScaleType.CENTER);
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
-                        mImageView.setImageBitmap(bitmap);
-                    }
-                    progressImageView.setImageResource(R.drawable.loading_12);
-                    //			 mProgressBar.setProgress(100);
+                case LOAD_FILE_FAILED://加载失败
+                    Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), (defaultType == 0) ? R.drawable.ic_failed : R.drawable.preview_error);
                     mImageView.setVisibility(VISIBLE);
+                    mImageView.setScaleType(ScaleType.CENTER);
+                    mImageView.setImageBitmap(bitmap);//如果这里直接用setImageResource，导致没有左右滑动
                     progressImageView.setVisibility(GONE);
                     break;
 
                 default:
                     break;
             }
+            return false;
         }
-
-        ;
-    };
+    });
 
     public UrlTouchImageView(Context ctx) {
         super(ctx);
@@ -109,16 +90,10 @@ public class UrlTouchImageView extends RelativeLayout {
         mImageView.setLayoutParams(params);
         this.addView(mImageView);
         mImageView.setVisibility(GONE);
-        imageLoader = ImageLoader.getInstance();
 
         progressImageView = new ImageView(mContext);
-        //		mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
         params = new LayoutParams(ScreenUtil.getScreenWidth(mContext) / 3, ScreenUtil.getScreenWidth(mContext) / 3);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        //		params.setMargins(30, 0, 30, 0);
-        //		mProgressBar.setLayoutParams(params);
-        //		mProgressBar.setIndeterminate(false);
-        //		mProgressBar.setMax(100);
         progressImageView.setLayoutParams(params);
         progressImageView.setImageResource(R.drawable.loading_0);
         this.addView(progressImageView);
@@ -130,40 +105,51 @@ public class UrlTouchImageView extends RelativeLayout {
      * @param imageUrl 网络图片路径
      */
     public void setUrl(String imageUrl, boolean isEncrypted) {
-        //1.获取需要显示文件的文件名
-        String fileString = AppUtil.getReallyFileName(imageUrl,0);
-        //2、判断文件是否存在sd卡中
-        File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
-        if (file.exists()) {//3、如果存在SD卡，则从SD卡获取图片信息
-            PictureAirLog.out("file in sd card");
-            imageUrl = "file://" + file.toString();
-        } else {
-            PictureAirLog.out("need load from network");
-        }
         //使用imageloader加载图片
-        imageLoader.loadImage(imageUrl, isEncrypted, null, null, new SimpleImageLoadingListener() {
+        GlideUtil.load(mContext, imageUrl, isEncrypted, new SimpleTarget<Bitmap>() {
             @Override
-            public void onLoadingComplete(String imageUri, View view,
-                                          Bitmap loadedImage) {
-                // TODO Auto-generated method stub
-                super.onLoadingComplete(imageUri, view, loadedImage);
-//                bitmap = loadedImage;
-                progressImageView.setImageResource(getImageResource(100));
-                bitmap = Bitmap.createBitmap(loadedImage).copy(Bitmap.Config.ARGB_8888, false);
-                handler.sendEmptyMessage(LOAD_FILE_DONE);
-
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                handler.sendEmptyMessage(LOAD_FILE_FAILED);
             }
-        }, new ImageLoadingProgressListener() {
 
             @Override
-            public void onProgressUpdate(String imageUri, View view, int current,
-                                         int total) {
-                // TODO Auto-generated method stub
-                PictureAirLog.out("current percent----->" + current * 100 / total);
-                progressImageView.setImageResource(getImageResource(current * 100 / total));;
+            public void onResourceReady(Bitmap loadedImage, GlideAnimation<? super Bitmap> glideAnimation) {
+                progressImageView.setImageResource(getImageResource(100));
+                mImageView.setVisibility(VISIBLE);
+                mImageView.setScaleType(ScaleType.MATRIX);
+                mImageView.setImageBitmap(loadedImage);
+                progressImageView.setVisibility(GONE);
             }
         });
+    }
 
+    /**
+     * 设置本地图片的路径
+     *
+     * @param imagePath 本地路径
+     */
+    public void setImagePath(String imagePath) {
+        //为什么设置800，800，本地图片尽量不需要去加载原图，容易OOM，因此只要加载特定尺寸即可。
+        //测试发现，800，800，不是最终的bitmap大小，而是和原图相比缩小了1倍，需要继续验证。
+        GlideUtil.load(mContext, GlideUtil.getFileUrl(imagePath), 800, 800, defaultType == 1,//defauleType为1，说明从下载页面进入，此时不需要缓存机制
+                new RequestListener<String, Bitmap>() {
+                    @Override
+                    public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
+                        handler.sendEmptyMessage(LOAD_FILE_FAILED);//此处必须抛出去，不然图片无法显示
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                        PictureAirLog.out("width--->" + bitmap.getWidth() + "===" + bitmap.getHeight());
+                        progressImageView.setImageResource(getImageResource(100));
+                        progressImageView.setVisibility(GONE);
+                        mImageView.setScaleType(ScaleType.MATRIX);
+                        mImageView.setVisibility(VISIBLE);
+                        return false;
+                    }
+                }, mImageView);
     }
 
     /**
@@ -176,92 +162,6 @@ public class UrlTouchImageView extends RelativeLayout {
 
     public void setScaleType(ScaleType scaleType) {
         mImageView.setScaleType(scaleType);
-    }
-
-
-    /**
-     * 设置本地图片的路径
-     *
-     * @param imagePath 本地路径
-     */
-    public void setImagePath(String imagePath) {
-        new ImageLoadTask().execute(imagePath);
-    }
-
-    public class ImageLoadTask extends AsyncTask<String, Integer, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            String path = strings[0];
-            Bitmap bm = null;
-            try {
-                File file = new File(path);
-                FileInputStream fis = new FileInputStream(file);
-                InputStreamWrapper bis = new InputStreamWrapper(fis, 8192, file.length());
-                bis.setProgressListener(new InputStreamProgressListener() {
-                    @Override
-                    public void onProgress(float progressValue, long bytesLoaded,
-                                           long bytesTotal) {
-                        publishProgress((int) (progressValue * 100));
-                    }
-                });
-                bm = BitmapFactory.decodeStream(bis);
-                PictureAirLog.out("bitmap size w" + bm.getWidth() + "_" + bm.getHeight());
-                int width = bm.getWidth();
-                int height = bm.getHeight();
-                PictureAirLog.out("bitmap size w" + width + "_" + height);
-                bis.close();
-
-                Matrix m = new Matrix();
-                m.reset();
-                //如果图片过大，不能显示，要么把硬件加速关闭，要么缩小预览尺寸
-                if (width >= height && (width > 2400 || height > 1800)) {//如果是图片是横着的，
-                    m.postScale((float) 2400 / width, (float) 2400 / width);
-                    bm = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
-                    PictureAirLog.out("------> need zoom");
-                } else if (width < height && (width > 1800 || height > 2400)) {//如果图片是竖着的
-                    m.postScale((float) 1800 / height, (float) 1800 / height);
-                    bm = Bitmap.createBitmap(bm, 0, 0, width, height, m, true);
-                    PictureAirLog.out("------> need zoom");
-                } else {
-
-                    PictureAirLog.out("------> need not zoom");
-                }
-                PictureAirLog.out("bitmap size w" + bm.getWidth() + "_" + bm.getHeight());
-                PictureAirLog.out("--------> load success");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (AppUtil.getExifOrientation(path) != 0) {
-                bm = AppUtil.rotaingImageView(AppUtil.getExifOrientation(path), bm);
-            }
-            return bm;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (bitmap == null) {
-                mImageView.setScaleType(ScaleType.CENTER);
-                if (defaultType == 0) {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_failed);
-                }else if (defaultType == 1){
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.preview_error);
-                }
-                mImageView.setImageBitmap(bitmap);
-            } else {
-                mImageView.setScaleType(ScaleType.MATRIX);
-                mImageView.setImageBitmap(bitmap);
-            }
-
-            mImageView.setVisibility(VISIBLE);
-            progressImageView.setVisibility(GONE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            progressImageView.setImageResource(getImageResource(values[0]));
-            //			 mProgressBar.setProgress(values[0]);
-        }
     }
 
     /**

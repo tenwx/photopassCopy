@@ -7,21 +7,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.util.PictureAirLog;
 
 import java.util.List;
 
-public class MakegiftGoodsAdapter extends BaseAdapter
-{
-
+public class MakegiftGoodsAdapter extends BaseAdapter{
 	private Context mContext;
 	private LayoutInflater mInflater;
 	private List<GoodsInfo> mDatas;
-	private ImageLoader imageLoader;
-//	private int width = 0;
 
 	public MakegiftGoodsAdapter(Context context, List<GoodsInfo> mDatas)
 	{
@@ -29,7 +24,6 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		mInflater = LayoutInflater.from(context);
 		this.mDatas = mDatas;
 		PictureAirLog.out("========="+mDatas.size());
-		imageLoader = ImageLoader.getInstance();
 	}
 
 	public List<GoodsInfo> getmDatas() {
@@ -42,7 +36,7 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 	
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		ViewHolder viewHolder = null;
+		ViewHolder viewHolder;
 		if (convertView == null)
 		{
 			viewHolder = new ViewHolder();
@@ -53,16 +47,6 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		{
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-//		width = ScreenUtil.getScreenWidth(mContext)/3-10;
-//		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width*3/4);
-//		viewHolder.mImg.setLayoutParams(params);
-//		if (mDatas.size() != 0) {
-//			if (null == mDatas.get(position).getPictures().get(0).getUrl()&&"".equals(mDatas.get(position).getPictures().get(0).getUrl())) {
-//
-//			}else {
-//				imageLoader.displayImage(Common.BASE_URL + mDatas.get(position).getPictures().get(0).getUrl(), viewHolder.mImg);
-//			}
-//		}
 		viewHolder.mImg.setText(mDatas.get(position).getNameAlias());
 		return convertView;
 	}
@@ -89,6 +73,4 @@ public class MakegiftGoodsAdapter extends BaseAdapter
 		// TODO Auto-generated method stub
 		return position;
 	}
-
-
 }

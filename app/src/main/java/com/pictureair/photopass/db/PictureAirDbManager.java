@@ -7,9 +7,6 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.utils.DiskCacheUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.DiscoverLocationItemInfo;
 import com.pictureair.photopass.entity.DownloadFileStatus;
@@ -671,48 +668,17 @@ public class PictureAirDbManager {
      */
     public void updatePhotoBought(String selectedPhotoId, boolean isDelete) {
         database = DBManager.getInstance().writData();
-        Cursor cursor = null;
-        String photoUrl;
         try {
             if (isDelete) {//删除操作
                 database.execSQL("delete from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
                 database.execSQL("delete from " + Common.FAVORITE_INFO_TABLE + " where photoId = ?", new String[]{selectedPhotoId});
             } else {//同步操作
-                cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE
-                        + " where photoId = ?", new String[]{selectedPhotoId});
-
-                PictureAirLog.out("cursor count---->" + cursor.getCount());
-                if (cursor.moveToFirst()) {
-                    photoUrl = cursor.getString(cursor.getColumnIndex("originalUrl"));
-                    PictureAirLog.out("photourl---->" + photoUrl);
-                    MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
-                    DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
-
-                    photoUrl = cursor.getString(cursor.getColumnIndex("previewUrl"));
-                    PictureAirLog.out("photourl---->" + photoUrl);
-                    MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
-                    DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
-
-                    photoUrl = cursor.getString(cursor.getColumnIndex("previewUrl_512"));
-                    PictureAirLog.out("photourl---->" + photoUrl);
-                    MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
-                    DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
-
-                    photoUrl = cursor.getString(cursor.getColumnIndex("previewUrl_1024"));
-                    PictureAirLog.out("photourl---->" + photoUrl);
-                    MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
-                    DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
-                }
-
                 database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
                 database.execSQL("update " + Common.FAVORITE_INFO_TABLE + " set isPay = 1 where photoId = ?", new String[]{selectedPhotoId});
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
             DBManager.getInstance().closeDatabase();
         }
     }
@@ -838,15 +804,6 @@ public class PictureAirDbManager {
                     PictureAirLog.out("cursor open ---> insertPhotoInfoIntoPhotoPassInfo");
                     cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where photoId = ?", new String[]{photo.photoId});
                     if (cursor.getCount() > 0) {//说明存在此数据，需要更新下数据
-
-                        if (cursor.moveToFirst()) {//清空原来的图片缓存
-                            String photoUrl = cursor.getString(cursor.getColumnIndex("originalUrl"));
-                            if (!TextUtils.isEmpty(photoUrl)) {
-                                MemoryCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getMemoryCache());
-                                DiskCacheUtils.removeFromCache(photoUrl, ImageLoader.getInstance().getDiskCache());
-                            }
-                        }
-
                         database.execSQL("update " + Common.PHOTOPASS_INFO_TABLE + " set photoCode = ?, " +
                                 "shootTime = ?, originalUrl = ?, previewUrl = ?, previewUrl_512 = ?, " +
                                 "previewUrl_1024 = ?, locationId = ?, shootOn = ?, " +
@@ -869,7 +826,9 @@ public class PictureAirDbManager {
                                         photo.locationCountry, photo.shareURL,  photo.fileSize + "",
                                         photo.videoWidth + "", photo.videoHeight + "", photo.isHasPreset + "", photo.isEncrypted + "", photo.photoId});
 
+                        photo.isRefreshInfo = 1;
                         cursor.close();
+                        resultArrayList.add(photo);
                         continue;
                     } else {
                         cursor.close();

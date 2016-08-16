@@ -189,6 +189,7 @@ public class JsonUtil {
         info.showMask = 0;
         info.lastModify = 0l;
         info.index = "";
+        info.isRefreshInfo = 0;
 //		info.albumName = "";
 //		info.isPayed = 0;
         return info;
@@ -238,6 +239,7 @@ public class JsonUtil {
         info.isSelected = 0;
         info.isLove = 0;
         info.isEncrypted = 0;
+        info.isRefreshInfo = 0;
         info.isUploaded = 0;
         info.showMask = 0;
         info.lastModify = 0l;

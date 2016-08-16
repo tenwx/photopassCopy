@@ -8,14 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersSimpleAdapter;
@@ -34,13 +32,11 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 	private Context context;
 	private static final String TAG = "StoryPinnedListView";
 	private boolean editMode;
-	private ImageLoader imageLoader;
 	public EditStoryPinnedListViewAdapter(Context context, boolean editMode, ArrayList<PhotoInfo> photoList) {
 		this.context = context;
 		this.editMode = editMode;
 		this.photoList = photoList;
 		layoutInflater = LayoutInflater.from(context);
-		imageLoader = ImageLoader.getInstance();
 	}
 
 	public void setEditMode(boolean editMode) {
@@ -109,10 +105,9 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 			photoUrl = "file://" + photoList.get(position).photoPathOrURL;
 			viewHolder.videoImageView.setVisibility(View.GONE);
 		}
-		if (viewHolder.imageView.getTag() == null || !viewHolder.imageView.getTag().equals(photoUrl)) {//加载图片
-			ImageAware imageAware = new ImageViewAware(viewHolder.imageView, false);
-			imageLoader.displayImage(photoUrl, AppUtil.isEncrypted(photoList.get(position).isEncrypted), imageAware);
-			viewHolder.imageView.setTag(photoUrl);
+		if (viewHolder.imageView.getTag(R.id.glide_image_tag) == null || !viewHolder.imageView.getTag(R.id.glide_image_tag).equals(photoUrl)) {//加载图片
+			GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(photoList.get(position).isEncrypted), viewHolder.imageView);
+			viewHolder.imageView.setTag(R.id.glide_image_tag, photoUrl);
 		}
 		if (editMode) {
 			viewHolder.selectImageView.setVisibility(View.VISIBLE);

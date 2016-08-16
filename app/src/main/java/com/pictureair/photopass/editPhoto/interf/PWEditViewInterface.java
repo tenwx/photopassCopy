@@ -2,8 +2,6 @@ package com.pictureair.photopass.editPhoto.interf;
 
 import android.graphics.Bitmap;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
 
@@ -30,8 +28,8 @@ public interface PWEditViewInterface {
 
     void showIsSaveDialog(PWDialog pwDialog); //显示是否保存的对话框
 
-    void showPhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath); //显示用户的边框
+    void showPhotoFrame(String framePath); //显示用户的边框
 
-    void hidePhotoFrame(ImageLoader imageLoader, DisplayImageOptions options,String framePath);
+    void hidePhotoFrame(String framePath);
 
 }

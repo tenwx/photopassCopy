@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.BannerViewAdapter;
 import com.pictureair.photopass.entity.GoodInfoPictures;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ public class BannerView_Detail extends LinearLayout {
     private ViewGroup group;
     private List<ImageView> bannerViewList = new ArrayList<ImageView>();
     private BannerViewAdapter adapter;
-    private ImageLoader imageLoader;
     private ImageView imageView;
     private LinearLayout viewpagerGroup;
 
@@ -48,7 +47,6 @@ public class BannerView_Detail extends LinearLayout {
         group = (ViewGroup) findViewById(R.id.iv_image);
         adViewPager.setLayoutParams(new LayoutParams(ScreenUtil.getScreenWidth(context), ScreenUtil.getScreenWidth(context) * 3 / 4));
         viewpagerGroup.addView(adViewPager);
-        imageLoader = ImageLoader.getInstance();
     }
 
     public void findimagepath(List<GoodInfoPictures> list) {
@@ -62,7 +60,7 @@ public class BannerView_Detail extends LinearLayout {
             android.view.ViewGroup.LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ScaleType.CENTER_CROP);
-            imageLoader.displayImage(Common.PHOTO_URL + list.get(i).getUrl(), imageView);
+            GlideUtil.load(getContext(), Common.PHOTO_URL + list.get(i).getUrl(), imageView);
             bannerViewList.add(imageView);
             adapter.notifyDataSetChanged();//图片改了之后，要通知适配器改变数据
 

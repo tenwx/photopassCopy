@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,11 +28,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.EditActivityAdapter;
 import com.pictureair.photopass.customDialog.PWDialog;
@@ -60,6 +59,7 @@ import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.LocationUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
@@ -82,9 +82,6 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private StickerView mStickerView;// 贴图层View
 	private Bitmap mainBitmap; //低层显示的bitmap，就是编辑的图片。
 	private ImageView mainImage; // 原始图
-
-	private ImageLoader imageLoader;
-	private DisplayImageOptions options;
 
 	private ImageView back,btn_left_back; //结束当前页面的back, 取消操作。
 	private TextView edit_accessory,titleTextView,preview_save,edit_filter,edit_text,edit_frame;//饰品按钮，标题，保存,滤镜按钮, 文字按钮,边框按钮
@@ -196,9 +193,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private void dealHandler(Message msg) {
 		switch (msg.what) {
 			case 9999: //加载网络图片。
-				mainBitmap = imageLoader.loadImageSync(photoURL, isEncrypted);
-				mainImage.setImageBitmap(mainBitmap);
-				dismissPWProgressDialog();
+				GlideUtil.load(this, photoURL, isEncrypted, new SimpleTarget<Bitmap>() {
+					@Override
+					public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+						mainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+						mainImage.setImageBitmap(mainBitmap);
+						dismissPWProgressDialog();
+					}
+				});
 				break;
 			case LOAD_IMAGE_FINISH:
 			case INIT_DATA_FINISHED:
@@ -354,84 +356,73 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		if (!tempFile.isDirectory()) {
 			tempFile.mkdirs();// 创建根目录文件夹
 		}
-		imageLoader = ImageLoader.getInstance();
-		options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
 		pictureAirDbManager = new PictureAirDbManager(this);
 
-		filterPathList.add("filter/original.png");
-		filterPathList.add("filter/filter1.png");
-		filterPathList.add("filter/filter2.png");
-		filterPathList.add("filter/filter3.png");
-		filterPathList.add("filter/filter4.png");
-		filterPathList.add("filter/filter5.png");
-		filterPathList.add("filter/filter6.png");
+		filterPathList.add(GlideUtil.getAssetUrl("filter/original.png"));
+		filterPathList.add(GlideUtil.getAssetUrl("filter/filter1.png"));
+		filterPathList.add(GlideUtil.getAssetUrl("filter/filter2.png"));
+		filterPathList.add(GlideUtil.getAssetUrl("filter/filter3.png"));
+		filterPathList.add(GlideUtil.getAssetUrl("filter/filter4.png"));
+		filterPathList.add(GlideUtil.getAssetUrl("filter/filter5.png"));
+		filterPathList.add(GlideUtil.getAssetUrl("filter/filter6.png"));
 
 		FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_none.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_none.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_none.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_none.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_none.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_none.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_none.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_none.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_1t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_1t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_1.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_1.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_1t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_1t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_1.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_1.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_2t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_2t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_2.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_2.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_2t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_2t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_2.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_2.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_3t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_3t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_3.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_3.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_3t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_3t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_3.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_3.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_4t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_4t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_4.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_4.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_4t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_4t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_4.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_4.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_5.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_5.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_5t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_5t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_5.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_5.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_6t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_6t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_6.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_6.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_6t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_6t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_6.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_6.png");
 		frameInfos.add(frameInfo);
 
 		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_7t.png");
-		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_7t.png");
-		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_7.png");
-		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_7.png");
+		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_7t.png");
+		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_7t.png");
+		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_7.png");
+		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_7.png");
 		frameInfos.add(frameInfo);
-
-//		frameInfo = new FrameOrStikerInfo();
-//		frameInfo.frameThumbnailPathH160 = Scheme.ASSETS.wrap("frame/frame_h_5t.png");
-//		frameInfo.frameThumbnailPathV160 = Scheme.ASSETS.wrap("frame/frame_v_5t.png");
-//		frameInfo.frameOriginalPathLandscape = Scheme.ASSETS.wrap("frame/frame_h_5.png");
-//		frameInfo.frameOriginalPathPortrait = Scheme.ASSETS.wrap("frame/frame_v_5.png");
-//		frameInfos.add(frameInfo);
-
 
 		addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
-
 
 		dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
 
@@ -493,7 +484,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					finish();
 				}
 				break;
-			case R.id.btn_left_back:
+			case R.id.btn_left_back://编辑的时候，不适用当前编辑
 				leftback();
 				break;
 
@@ -549,21 +540,25 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							default:
 								break;
 						}
-
-						new Thread() {
-							@Override
-							public void run() {
-								super.run();
-								if (photoInfo.onLine == 1) {
-									mainBitmap = imageLoader.loadImageSync(editPhotoInfoArrayList.get(0).getPhotoPath());
-								}else{
+						if (photoInfo.onLine == 1) {
+							GlideUtil.load(EditPhotoActivity.this, editPhotoInfoArrayList.get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
+								@Override
+								public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+									mainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+									editPhotoHandler.sendEmptyMessage(START_ASYNC);
+								}
+							});
+						}else{
+							new Thread() {
+								@Override
+								public void run() {
+									super.run();
 									mainBitmap = BitmapUtils.loadImageByPath(editPhotoInfoArrayList.get(0).getPhotoPath(), imageWidth,
 											imageHeight);
+									editPhotoHandler.sendEmptyMessage(START_ASYNC);
 								}
-								editPhotoHandler.sendEmptyMessage(START_ASYNC);
-							}
-						}.start();
-
+							}.start();
+						}
 					}
 				});
 				break;
@@ -597,42 +592,16 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 							stickerUrl = stikerInfos.get(position).frameOriginalPathPortrait;
 						}
 						//ImageLoader 加载
-						imageLoader.loadImage(stickerUrl, new ImageLoadingListener() {
-
+						GlideUtil.load(EditPhotoActivity.this, stickerUrl, new SimpleTarget<Bitmap>() {
 							@Override
-							public void onLoadingStarted(String imageUri, View view) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onLoadingFailed(String imageUri, View view,
-														FailReason failReason) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-								// TODO Auto-generated method stub
-								mStickerView.addBitImage(loadedImage);
-							}
-
-							@Override
-							public void onLoadingCancelled(String imageUri, View view) {
-								// TODO Auto-generated method stub
-
+							public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+								mStickerView.addBitImage(bitmap);
 							}
 						});
-//					}else {
-//						Bitmap accessoryBitmap = EditPhotoUtil.getImageFromAssetsFile(EditPhotoActivity.this, stikerInfos.get(position).frameOriginalPathPortrait);
-//						mStickerView.addBitImage(accessoryBitmap);
-//					}
 					}
 				});
 				break;
 			case R.id.btn_onedit_save: //保存到临时目录
-
 				if (index == 0){ //只要是从原图开始操作，就清空 editPhotoInfoArrayList
 					editPhotoInfoArrayList.clear();
 					addEditPhotoInfo(photoURL,0,null,null,"",0);
@@ -692,7 +661,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				}
 				check();
 				break;
-			case R.id.btn_cancel: //返回按钮。
+			case R.id.btn_cancel: //后退按钮。
 				if (index == -1) {
 					index = editPhotoInfoArrayList.size() - 1;
 				}
@@ -802,7 +771,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 					.list(folderPath);
 			for (String name : files) {
 				frameOrStikerInfo = new FrameOrStikerInfo();
-				frameOrStikerInfo.frameOriginalPathPortrait = "assets://" + folderPath + File.separator + name;
+				frameOrStikerInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(folderPath + File.separator + name);
 				frameOrStikerInfo.locationId = "common";
 				frameOrStikerInfo.isActive = 1;
 				frameOrStikerInfo.onLine = 0;
@@ -830,8 +799,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
 		@Override
 		protected Bitmap doInBackground(String... params) {
-			Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth,
-					imageHeight);
+			Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth, imageHeight);
 			if(AppUtil.getExifOrientation(params[0])!=0){ // 修改图片显示方向问题。
 				bitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(params[0]),bitmap);
 			}
@@ -849,16 +817,11 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap = result;
 
 			if (mainBitmap != null) {
-//				if(AppUtil.getExifOrientation(photoURL)!=0){
-//					mainBitmap = AppUtil.rotaingImageView(AppUtil.getExifOrientation(photoURL),mainBitmap);
-//				}
 				mainImage.setImageBitmap(mainBitmap);
 			}
-//			PictureAirLog.d("bitmap w and h:", mainBitmap.getWidth() + "----"+mainBitmap.getHeight());
 			if (null != editPhotoHandler){
 				editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
 			}
-			//			mainImage.setDisplayType(DisplayType.FIT_TO_SCREEN);
 		}
 	}
 
@@ -879,6 +842,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			PictureAirLog.out("file exists");
 			loadImage(file.toString());
 		}else{
+			PictureAirLog.out("file not exist");
 			editPhotoHandler.sendEmptyMessage(9999); //加载网络图片。
 		}
 	}
@@ -980,45 +944,43 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				Bitmap mainBitmap = params[0];
 				Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(),
 						Config.ARGB_8888);
-//				if (frameImageView.isShown()) {
 				//不论边框显示与否，都让他合成。   即使是原图。
 				Bitmap frameBitmap;
+				String loadPhotoUrl;
 				if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
-//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
 					if(frameInfos.get(curFramePosition).onLine == 1){
-						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
+						loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0);
 					}else{
-						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+						loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathPortrait;
 					}
 				}else{
-//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
 					if(frameInfos.get(curFramePosition).onLine == 1){
-						frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
+						loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0);
 					}else{
-						frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+						loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathLandscape;
 					}
 				}
 
 				Canvas canvas = new Canvas(heBitmap);
 				Paint point = new Paint();
 				point.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_OVER));
-				Matrix matrix2 = new Matrix();
-				matrix2.postScale((float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
-						(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
-
-				frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
-						frameBitmap.getWidth(), frameBitmap.getHeight(),matrix2, true);
-
 				canvas.drawBitmap(mainBitmap, 0, 0, point);
-//				canvas.drawBitmap(frameBitmap, matrix2, point);
-				canvas.drawBitmap(frameBitmap, 0,0, point);
-				matrix2.reset();
-				frameBitmap.recycle();
+
+				frameBitmap = GlideUtil.load(EditPhotoActivity.this, loadPhotoUrl, mainBitmap.getWidth(), mainBitmap.getHeight());
+				if (frameBitmap != null) {
+					Matrix matrix2 = new Matrix();
+					matrix2.postScale((float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
+							(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
+					frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
+							frameBitmap.getWidth(), frameBitmap.getHeight(), matrix2, true);
+
+					canvas.drawBitmap(frameBitmap, 0, 0, point);
+					frameBitmap.recycle();
+					matrix2.reset();
+				}
 				EditPhotoUtil.saveBitmap(heBitmap, url);
-//				pathList.add(url);
 				addEditPhotoInfo(url, editType, frameBitmap, null, "",0);
 				index = editPhotoInfoArrayList.size() - 1;
-
 				return heBitmap;
 			}
 			return null;
@@ -1069,8 +1031,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			AsyncTask<Bitmap, Void, Bitmap> {
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
-			// System.out.println("保存贴图!");
-			if (params[0] == null) {
+			if (params[0] == null || params[0].isRecycled()) {
 				return null;
 			}
 			if (filter instanceof LomoFi) {
@@ -1134,22 +1095,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 */
 	private void loadframe(int position) {
 		if (position != 0) {// 如果不为0，表示有边框
-			frameImageView.setVisibility(View.VISIBLE);
 			if (frameInfos.get(position).onLine == 1) {//网络图片，这个时候已经下载，所以直接取本地图片路径
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-					imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait,0),
-							frameImageView, options, new ImageloaderListener());
+					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathPortrait,0),
+							new ImageloaderListener());
 				}else{
-					imageLoader.displayImage("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape,0),
-							frameImageView, options, new ImageloaderListener());
+					GlideUtil.loadWithNoPlaceHolder(this, "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(position).frameOriginalPathLandscape,0),
+							new ImageloaderListener());
 				}
 			}else {//本地图片
 				// 判断宽高，加载不同的边框。加载预览边框
 				if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
-					imageLoader.displayImage(frameInfos.get(position).frameOriginalPathPortrait, frameImageView, options, new ImageloaderListener());
+					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathPortrait, new ImageloaderListener());
 				}else{
-					imageLoader.displayImage(frameInfos.get(position).frameOriginalPathLandscape, frameImageView, options, new ImageloaderListener());
+					GlideUtil.loadWithNoPlaceHolder(this, frameInfos.get(position).frameOriginalPathLandscape, new ImageloaderListener());
 				}
 			}
 		} else {// 没有边框
@@ -1161,35 +1121,53 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	/*
 	 * Imageloader 加载监听类，目的是监听加载完毕的事件
 	 */
-	private class ImageloaderListener implements ImageLoadingListener{
-		@Override
-		public void onLoadingStarted(String imageUri, View view) {
-			// TODO Auto-generated method stub
+	private class ImageloaderListener extends SimpleTarget<Bitmap> {
 
+		@Override
+		public void onLoadStarted(Drawable drawable) {
 		}
 
 		@Override
-		public void onLoadingFailed(String imageUri, View view,
-									FailReason failReason) {
-			// TODO Auto-generated method stub
+		public void onLoadFailed(Exception e, Drawable drawable) {
 			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 		}
 
 		@Override
-		public void onLoadingComplete(String imageUri, View view,
-									  Bitmap loadedImage) {
-			// TODO Auto-generated method stub
+		public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
 			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
+			frameImageView.setImageBitmap(bitmap);
+			frameImageView.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		public void onLoadCleared(Drawable drawable) {
+			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
+		}
+
+		@Override
+		public void setRequest(Request request) {
 
 		}
 
 		@Override
-		public void onLoadingCancelled(String imageUri, View view) {
-			// TODO Auto-generated method stub
+		public Request getRequest() {
+			return null;
+		}
 
+		@Override
+		public void onStart() {
+
+		}
+
+		@Override
+		public void onStop() {
 			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
 		}
 
+		@Override
+		public void onDestroy() {
+			editPhotoHandler.sendEmptyMessage(LOAD_IMAGE_FINISH);
+		}
 	}
 
 	// 没有保存的时候的对话框
@@ -1341,44 +1319,38 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			mainBitmap = EditPhotoUtil.cropBitmap(mainBitmap, 4, 3);
 		}
 
-		Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(),
-				Config.ARGB_8888);
-//				if (frameImageView.isShown()) {
+		Bitmap heBitmap = Bitmap.createBitmap(mainBitmap.getWidth(), mainBitmap.getHeight(), Config.ARGB_8888);
 		//不论边框显示与否，都让他合成。   即使是原图。
-		Bitmap frameBitmap;
-		if (mainBitmap.getWidth()<mainBitmap.getHeight()) {
-//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+		Bitmap frameBmp;
+		String loadPhotoUrl;
+		if (mainBitmap.getWidth() < mainBitmap.getHeight()) {
 			if(frameInfos.get(curFramePosition).onLine == 1){
-				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0));
+				loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_portrait_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathPortrait,0);
 			}else{
-				frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathPortrait);
+				loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathPortrait;
 			}
 		}else{
-//					frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
 			if(frameInfos.get(curFramePosition).onLine == 1){
-				frameBitmap = imageLoader.loadImageSync("file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0));
+				loadPhotoUrl = "file://" + getFilesDir().toString() + "/frames/frame_landscape_" + AppUtil.getReallyFileName(frameInfos.get(curFramePosition).frameOriginalPathLandscape,0);
 			}else{
-				frameBitmap = imageLoader.loadImageSync(frameInfos.get(curFramePosition).frameOriginalPathLandscape);
+				loadPhotoUrl = frameInfos.get(curFramePosition).frameOriginalPathLandscape;
 			}
 		}
 		Canvas canvas = new Canvas(heBitmap);
 		Paint point = new Paint();
-		point.setXfermode(new PorterDuffXfermode(
-				android.graphics.PorterDuff.Mode.SRC_OVER));
-		Matrix matrix2 = new Matrix();
-		matrix2.postScale(
-				(float) mainBitmap.getWidth() / (frameBitmap.getWidth()),
-				(float) mainBitmap.getHeight() / (frameBitmap.getHeight()));
-
-		frameBitmap = Bitmap.createBitmap(frameBitmap, 0, 0,
-				frameBitmap.getWidth(), frameBitmap.getHeight(),
-				matrix2, true);
-
+		point.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_OVER));
 		canvas.drawBitmap(mainBitmap, 0, 0, point);
-//		canvas.drawBitmap(frameBitmap, matrix2, point);
-		canvas.drawBitmap(frameBitmap, 0, 0, point);
-		matrix2.reset();
-		frameBitmap.recycle();
+
+		frameBmp = GlideUtil.load(this, loadPhotoUrl, mainBitmap.getWidth(), mainBitmap.getHeight());
+		if (frameBmp != null) {
+			Matrix matrix2 = new Matrix();
+			matrix2.postScale((float) mainBitmap.getWidth() / (frameBmp.getWidth()),
+					(float) mainBitmap.getHeight() / (frameBmp.getHeight()));
+			frameBmp = Bitmap.createBitmap(frameBmp, 0, 0, frameBmp.getWidth(), frameBmp.getHeight(), matrix2, true);
+			canvas.drawBitmap(frameBmp, 0, 0, point);
+			frameBmp.recycle();
+			matrix2.reset();
+		}
 		return heBitmap;
 	}
 
@@ -1436,14 +1408,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				frameImageView.setVisibility(View.INVISIBLE);
 			}
 			//恢复到没有裁减的状态。
-			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
+			if (editPhotoInfoArrayList.size() == 1 || index == 0){ //代表最初的图片。
 				if (photoInfo.onLine == 1) {
 					loadOnlineImg(photoURL);
 				}else{
 					loadImage(photoURL);
 				}
 			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-//						loadImage(pathList.get(pathList.size() - 1));
+				loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
 			}
 		}
 

@@ -28,13 +28,13 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:layout_toLeftOf="@+id/download_preview_love"
+            android:layout_toLeftOf="@+id/download_preview_share"
             android:layout_toRightOf="@id/download_preview_back"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_16"/>
         <ImageButton
-            android:id="@+id/download_preview_love"
+            android:id="@+id/download_preview_share"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -45,7 +45,7 @@
             android:paddingRight="@dimen/pp_padding_14"
             android:paddingTop="@dimen/pp_padding_15"
             android:scaleType="centerInside"
-            android:src="@drawable/discover_no_like"
+            android:src="@drawable/preview_share"
             android:visibility="invisible"/>
 
     </RelativeLayout>

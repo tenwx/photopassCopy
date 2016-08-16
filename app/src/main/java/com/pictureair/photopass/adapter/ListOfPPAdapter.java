@@ -14,14 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -191,7 +189,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                 int num = 6 - photoCount;
                 if (num > 0 && i > photoCount - 1) {
                     // 显示默认图片
-                    urlList.add(i, "drawable://" + R.drawable.default_pp);
+                    urlList.add(i, GlideUtil.getDrawableUrl(mContext, R.drawable.default_pp));
                 }
             }
         } else if (photoCount > 6) {
@@ -202,7 +200,7 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
                     int num = 12 - photoCount;
                     if (num > 0 && i > photoCount - 1) {
                         // 显示默认图片
-                        urlList.add(i, "drawable://" + R.drawable.default_pp);
+                        urlList.add(i, GlideUtil.getDrawableUrl(mContext, R.drawable.default_pp));
                     }
                 }
             }
@@ -224,13 +222,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             holder.showCconutLayout.setLayoutParams(params);
             holder.image12.setLayoutParams(params2);
 
-            ImageAware imageAware7 = new ImageViewAware(holder.image7, false);
-            ImageAware imageAware8 = new ImageViewAware(holder.image8, false);
-            ImageAware imageAware9 = new ImageViewAware(holder.image9, false);
-            ImageAware imageAware10 = new ImageViewAware(holder.image10, false);
-            ImageAware imageAware11 = new ImageViewAware(holder.image11, false);
-            ImageAware imageAware12 = new ImageViewAware(holder.image12, false);
-
             String url7 = urlList.get(6);
             String url8 = urlList.get(7);
             String url9 = urlList.get(8);
@@ -238,34 +229,34 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
             String url11 = urlList.get(10);
             String url12 = urlList.get(11);
 
-            if (holder.image7.getTag() == null || !holder.image7.getTag().equals(url7)) {
-                ImageLoader.getInstance().displayImage(url7, imageAware7);
-                holder.image7.setTag(url7);
+            if (holder.image7.getTag(R.id.glide_image_tag) == null || !holder.image7.getTag(R.id.glide_image_tag).equals(url7)) {
+                GlideUtil.load(mContext, url7, holder.image7);
+                holder.image7.setTag(R.id.glide_image_tag, url7);
             }
 
-            if (holder.image8.getTag() == null || !holder.image8.getTag().equals(url8)) {
-                ImageLoader.getInstance().displayImage(url8, imageAware8);
-                holder.image8.setTag(url8);
+            if (holder.image8.getTag(R.id.glide_image_tag) == null || !holder.image8.getTag(R.id.glide_image_tag).equals(url8)) {
+                GlideUtil.load(mContext, url8, holder.image8);
+                holder.image8.setTag(R.id.glide_image_tag, url8);
             }
 
-            if (holder.image9.getTag() == null || !holder.image9.getTag().equals(url9)) {
-                ImageLoader.getInstance().displayImage(url9, imageAware9);
-                holder.image9.setTag(url9);
+            if (holder.image9.getTag(R.id.glide_image_tag) == null || !holder.image9.getTag(R.id.glide_image_tag).equals(url9)) {
+                GlideUtil.load(mContext, url9, holder.image9);
+                holder.image9.setTag(R.id.glide_image_tag, url9);
             }
 
-            if (holder.image10.getTag() == null || !holder.image10.getTag().equals(url10)) {
-                ImageLoader.getInstance().displayImage(url10, imageAware10);
-                holder.image10.setTag(url10);
+            if (holder.image10.getTag(R.id.glide_image_tag) == null || !holder.image10.getTag(R.id.glide_image_tag).equals(url10)) {
+                GlideUtil.load(mContext, url10, holder.image10);
+                holder.image10.setTag(R.id.glide_image_tag, url10);
             }
 
-            if (holder.image11.getTag() == null || !holder.image11.getTag().equals(url11)) {
-                ImageLoader.getInstance().displayImage(url11, imageAware11);
-                holder.image11.setTag(url11);
+            if (holder.image11.getTag(R.id.glide_image_tag) == null || !holder.image11.getTag(R.id.glide_image_tag).equals(url11)) {
+                GlideUtil.load(mContext, url11, holder.image11);
+                holder.image11.setTag(R.id.glide_image_tag, url11);
             }
 
-            if (holder.image12.getTag() == null || !holder.image12.getTag().equals(url12)) {
-                holder.image12.setTag(url12);
-                ImageLoader.getInstance().displayImage(url12, imageAware12);
+            if (holder.image12.getTag(R.id.glide_image_tag) == null || !holder.image12.getTag(R.id.glide_image_tag).equals(url12)) {
+                GlideUtil.load(mContext, url12, holder.image12);
+                holder.image12.setTag(R.id.glide_image_tag, url12);
             }
         }
 
@@ -276,13 +267,6 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         holder.image5.setLayoutParams(params);
         holder.image6.setLayoutParams(params);
 
-        ImageAware imageAware1 = new ImageViewAware(holder.image1, false);
-        ImageAware imageAware2 = new ImageViewAware(holder.image2, false);
-        ImageAware imageAware3 = new ImageViewAware(holder.image3, false);
-        ImageAware imageAware4 = new ImageViewAware(holder.image4, false);
-        ImageAware imageAware5 = new ImageViewAware(holder.image5, false);
-        ImageAware imageAware6 = new ImageViewAware(holder.image6, false);
-
         String url1 = urlList.get(0);
         String url2 = urlList.get(1);
         String url3 = urlList.get(2);
@@ -290,34 +274,34 @@ public class ListOfPPAdapter extends BaseAdapter implements OnClickListener {
         String url5 = urlList.get(4);
         String url6 = urlList.get(5);
 
-        if (holder.image1.getTag() == null || !holder.image1.getTag().equals(url1)) {
-            ImageLoader.getInstance().displayImage(url1, imageAware1);
-            holder.image1.setTag(url1);
+        if (holder.image1.getTag(R.id.glide_image_tag) == null || !holder.image1.getTag(R.id.glide_image_tag).equals(url1)) {
+            GlideUtil.load(mContext, url1, holder.image1);
+            holder.image1.setTag(R.id.glide_image_tag, url1);
         }
 
-        if (holder.image2.getTag() == null || !holder.image2.getTag().equals(url2)) {
-            ImageLoader.getInstance().displayImage(url2, imageAware2);
-            holder.image2.setTag(url2);
+        if (holder.image2.getTag(R.id.glide_image_tag) == null || !holder.image2.getTag(R.id.glide_image_tag).equals(url2)) {
+            GlideUtil.load(mContext, url2, holder.image2);
+            holder.image2.setTag(R.id.glide_image_tag, url2);
         }
 
-        if (holder.image3.getTag() == null || !holder.image3.getTag().equals(url3)) {
-            ImageLoader.getInstance().displayImage(url3, imageAware3);
-            holder.image3.setTag(url3);
+        if (holder.image3.getTag(R.id.glide_image_tag) == null || !holder.image3.getTag(R.id.glide_image_tag).equals(url3)) {
+            GlideUtil.load(mContext, url3, holder.image3);
+            holder.image3.setTag(R.id.glide_image_tag, url3);
         }
 
-        if (holder.image4.getTag() == null || !holder.image4.getTag().equals(url4)) {
-            ImageLoader.getInstance().displayImage(url4, imageAware4);
-            holder.image4.setTag(url4);
+        if (holder.image4.getTag(R.id.glide_image_tag) == null || !holder.image4.getTag(R.id.glide_image_tag).equals(url4)) {
+            GlideUtil.load(mContext, url4, holder.image4);
+            holder.image4.setTag(R.id.glide_image_tag, url4);
         }
 
-        if (holder.image5.getTag() == null || !holder.image5.getTag().equals(url5)) {
-            ImageLoader.getInstance().displayImage(url5, imageAware5);
-            holder.image5.setTag(url5);
+        if (holder.image5.getTag(R.id.glide_image_tag) == null || !holder.image5.getTag(R.id.glide_image_tag).equals(url5)) {
+            GlideUtil.load(mContext, url5, holder.image5);
+            holder.image5.setTag(R.id.glide_image_tag, url5);
         }
 
-        if (holder.image6.getTag() == null || !holder.image6.getTag().equals(url6)) {
-            holder.image6.setTag(url6);
-            ImageLoader.getInstance().displayImage(url6, imageAware6);
+        if (holder.image6.getTag(R.id.glide_image_tag) == null || !holder.image6.getTag(R.id.glide_image_tag).equals(url6)) {
+            GlideUtil.load(mContext, url6, holder.image6);
+            holder.image6.setTag(R.id.glide_image_tag, url6);
         }
 
         return convertView;

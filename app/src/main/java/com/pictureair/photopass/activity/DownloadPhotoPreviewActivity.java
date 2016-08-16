@@ -9,9 +9,11 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,7 +30,9 @@ import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
+import com.pictureair.photopass.widget.SharePop;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,8 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     private TextView locationTextView;
     private GalleryViewPager mViewPager;
     private ImageView returnImageView;
+
+    private ImageButton shareImgBtn;
 
     private PictureAirDbManager pictureAirDbManager;
 
@@ -59,9 +65,14 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
     private RelativeLayout photoFraRelativeLayout;
 
+    private SharePop sharePop;
+
+    private int shareType = 0;
+
     private Handler previewPhotoHandler;
 
     public static final int NO_PHOTOS = 2323;
+    private static final int CHECK_EXIST = 2324;
 
     private static class PreViewHandler extends Handler{
         private final WeakReference<DownloadPhotoPreviewActivity> mActivity;
@@ -81,8 +92,24 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
     }
 
     private void dealHandler(Message msg) {
-
         switch (msg.what) {
+            case CHECK_EXIST://开始检查是否存在
+                if (msg.arg1 >= photolist.size() || msg.arg1 != currentPosition) {
+                    break;
+                }
+                File file = new File(photolist.get(msg.arg1).photoPathOrURL);
+                //更新收藏图标
+                if (msg.arg1 == currentPosition && file.exists()) {//数据库查询的数据是true，并且对应的index还是之前的位置
+                    shareImgBtn.setVisibility(View.VISIBLE);
+                } else {
+                    shareImgBtn.setVisibility(View.INVISIBLE);
+                }
+                break;
+
+            case SharePop.TWITTER:
+                shareType = msg.what;
+                break;
+
             case 7:
                 mViewPager = (GalleryViewPager) findViewById(R.id.download_preview_viewer);
                 UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(DownloadPhotoPreviewActivity.this, photolist,1);
@@ -139,11 +166,14 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
         // TODO Auto-generated method stub
         previewPhotoHandler = new PreViewHandler(this);
         pictureAirDbManager = new PictureAirDbManager(this);
+        sharePop = new SharePop(this);
         PictureAirLog.out("oncreate----->2");
         returnImageView = (ImageView) findViewById(R.id.download_preview_back);
         locationTextView = (TextView) findViewById(R.id.download_preview_title);
         photoFraRelativeLayout = (RelativeLayout) findViewById(R.id.download_preview_fra_layout);
         titleBar = (RelativeLayout) findViewById(R.id.download_preview_titlebar);
+        shareImgBtn = (ImageButton) findViewById(R.id.download_preview_share);
+        shareImgBtn.setOnClickListener(this);
         returnImageView.setOnClickListener(this);
         PictureAirLog.v(TAG, "----------------------->initing...1");
 
@@ -174,8 +204,8 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
                         PhotoInfo photoInfo = new PhotoInfo();
                         photoInfo.photoId = downLoadInfo.getPhotoId();
-                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(),0);
-                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH+fileName;
+                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(), 0);
+                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH + fileName;
                         photoInfo.photoPathOrURL = loadUrl;
                         photoInfo.photoThumbnail = downLoadInfo.getPreviewUrl();
                         photoInfo.photoThumbnail_512 = "";
@@ -194,7 +224,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         photoInfo.videoHeight = 0;
                         photoInfo.videoWidth = 0;
                         photoInfo.isHasPreset = 0;
-                        photoInfo.isEncrypted = 0;
+                        photoInfo.isEncrypted = 1;
                         photoInfo.onLine = 0;
                         photoInfo.isChecked = 0;
                         photoInfo.isSelected = 0;
@@ -202,6 +232,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
                         photoInfo.showMask = 0;
                         photoInfo.lastModify = 0l;
                         photoInfo.index = "";
+                        photoInfo.isRefreshInfo = 0;
 
                         photolist.add(photoInfo);
                     }
@@ -323,6 +354,30 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
             case R.id.download_preview_back:
                 doBack();
                 break;
+
+            case R.id.download_preview_share:
+                sharePop.setshareinfo(null, photolist.get(mViewPager.getCurrentItem()).photoThumbnail_1024,
+                        photolist.get(mViewPager.getCurrentItem()).photoThumbnail,
+                        "online", photolist.get(mViewPager.getCurrentItem()).photoId, SharePop.SHARE_PHOTO_TYPE,
+                        photolist.get(mViewPager.getCurrentItem()).isEncrypted, previewPhotoHandler);
+
+                sharePop.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sharePop != null) {
+            PictureAirLog.out("sharePop not null");
+            if (shareType != SharePop.TWITTER) {
+                PictureAirLog.out("dismiss dialog");
+                sharePop.dismissDialog();
+            }
         }
     }
 
@@ -331,7 +386,7 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
      */
     private void updateIndexTools(boolean isOnCreate) {
         PictureAirLog.v(TAG, "updateIndexTools-------->" + currentPosition);
-
+        previewPhotoHandler.obtainMessage(CHECK_EXIST, currentPosition, 0).sendToTarget();
         //更新序列号
         locationTextView.setText(String.format(getString(R.string.photo_index), currentPosition + 1,photolist.size()));
 

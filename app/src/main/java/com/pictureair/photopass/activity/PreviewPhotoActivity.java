@@ -387,6 +387,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
             case API1.BUY_PHOTO_SUCCESS:
                 dismissPWProgressDialog();
                 cartItemInfoJson = JsonTools.parseObject((JSONObject) msg.obj, CartItemInfoJson.class);//CartItemInfoJson.getString()
+                if (cartItemInfoJson.getItems().size() == 0) {
+                    break;
+                }
                 PictureAirLog.v(TAG, "BUY_PHOTO_SUCCESS" + cartItemInfoJson.toString());
                 //将当前购买的照片信息存放到application中
                 myApplication.setIsBuyingPhotoInfo(photolist.get(currentPosition).photoId, tabName);
@@ -1505,6 +1508,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 selectPhotoItemInfo.isVideo = 0;
                 selectPhotoItemInfo.isHasPreset = 0;
                 selectPhotoItemInfo.isEncrypted = 0;
+                selectPhotoItemInfo.isRefreshInfo = 0;
 
                 //2.将新图片插入到targetList中
                 targetphotolist.add(0, selectPhotoItemInfo);

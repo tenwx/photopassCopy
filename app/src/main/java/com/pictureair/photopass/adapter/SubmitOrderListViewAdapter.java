@@ -14,12 +14,12 @@ import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ScreenUtil;
 
@@ -30,7 +30,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
     private ArrayList<CartItemInfo> arrayList;
     private Context context;
     private LayoutInflater layoutInflater;
-    private ImageLoader imageLoader;
     private ArrayList<ImageView> imageViews;
     private List<CartPhotosInfo> gridviewlist;
     private ArrayList<ArrayList<ImageView>> gridLayoutLists;
@@ -44,7 +43,6 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
         this.currency = currency;
         this.arrayList = list;
         layoutInflater = LayoutInflater.from(context);
-        imageLoader = ImageLoader.getInstance();
         gridLayoutLists = new ArrayList<>();
     }
 
@@ -129,7 +127,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
                         photoUrl = Common.PHOTO_URL + gridviewlist.get(i).getPhotoUrl();
                     }
                     PictureAirLog.v(TAG, "getPhotoUrl() != null" + photoUrl);
-                    imageLoader.displayImage(photoUrl, AppUtil.isEncrypted(gridviewlist.get(i).getIsEncrypted()), imageView);
+                    GlideUtil.load(context, photoUrl, AppUtil.isEncrypted(gridviewlist.get(i).getIsEncrypted()), imageView);
                 }
                 imageView.setScaleType(ScaleType.CENTER_CROP);
                 imageView.setId(position * 10 + i);//给添加的imageview添加id
@@ -155,7 +153,7 @@ public class SubmitOrderListViewAdapter extends BaseAdapter {
 //            }
         }
         if (arrayList.get(position).getPictures() != null && arrayList.get(position).getPictures().length > 0) {
-            imageLoader.displayImage(Common.PHOTO_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
+            GlideUtil.load(context, Common.PHOTO_URL + arrayList.get(position).getPictures()[0], viewHolder.goodImageView);
         }
         gridLayoutLists.add(imageViews);
         viewHolder.goodQuentityTextView.setText("x" + arrayList.get(position).getQty());//数量
