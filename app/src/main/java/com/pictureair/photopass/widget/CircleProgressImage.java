@@ -83,7 +83,7 @@ public class CircleProgressImage extends ImageView {
         try {
             canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
             int layer = canvas.saveLayer(0, 0, getWidth(), getHeight(), null, Canvas.ALL_SAVE_FLAG);
-            drawable.setBounds(getWidth()/4, getWidth()/4, getWidth()*3/4, getHeight()*3/4);
+            drawable.setBounds((int)(getWidth()/4f), (int)(getWidth()/4f), (int)(getWidth()*3/4f), (int)(getHeight()*3/4f));
             drawable.draw(canvas);
 //            //切割
 //            if (shape == null || shape.isRecycled()) {
@@ -98,7 +98,7 @@ public class CircleProgressImage extends ImageView {
                 ringPaint.setStrokeWidth(borderWidth);
                 if (mBorderRect == null) {
                     mBorderRect = new RectF();
-                    mBorderRect.set(borderWidth / 2, borderWidth / 2, getWidth() - borderWidth, getHeight() - borderWidth);
+                    mBorderRect.set(borderWidth/2f+1, borderWidth/2f+1, getWidth() - borderWidth-2, getHeight() - borderWidth-2);
                 }
             canvas.drawArc(mBorderRect, -90, 360, false, ringPaint);
             canvas.drawArc(mBorderRect, -90, progress, false, mBorderPaint);

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.greenrobot.event.EventBus;
 
@@ -1512,6 +1513,9 @@ public class PictureAirDbManager {
         return photos;
     }
 
+    /**
+     * 获取所有的照片信息
+     * */
     public List<PhotoDownLoadInfo> getAllPhotos(String userId){
         List<PhotoDownLoadInfo> photos = new ArrayList<>();
         database = DBManager.getInstance().readData();
@@ -1595,76 +1599,14 @@ public class PictureAirDbManager {
      * @param status 下载状态
      *
      * */
-    public synchronized void insertPhotos(String userId,DownloadFileStatus fileStatus, String loadTime,String status){
+    public synchronized void insertPhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list, String loadTime, String status){
 
         database = DBManager.getInstance().writData();
         database.beginTransaction();
+
         try {
-            ContentValues values = new ContentValues();
-            values.put("userId", userId);
-            values.put("photoId", fileStatus.getPhotoId());
-            values.put("url", fileStatus.getUrl());
-            values.put("size", fileStatus.getTotalSize());
-            values.put("previewUrl", fileStatus.getPhotoThumbnail());
-            values.put("shootTime", fileStatus.getShootOn());
-            values.put("downloadTime", loadTime);
-            values.put("isVideo",fileStatus.getIsVideo());
-            values.put("success", status);
-            values.put("failedTime",fileStatus.getFailedTime());
-            database.insert(Common.PHOTOS_LOAD, "", values);
-            database.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0,0,true));
-        }
-    }
-
-//    public synchronized void updateFailedPhotos(String userId,DownloadFileStatus fileStatus,String loadTime){
-//
-//        database = DBManager.getInstance().writData();
-//        database.beginTransaction();
-//        Cursor cursor = null;
-//        try {
-//            cursor = database.rawQuery("select _id from " + Common.PHOTOS_LOAD + " where userId = ? and photoId = ? and failedTime = ? and success = ?", new String[]{userId,fileStatus.getPhotoId(),fileStatus.getFailedTime(),"false"});
-//            if (cursor.moveToFirst()) {//判断是否photo数据
-//                int id = cursor.getInt(cursor.getColumnIndex("_id"));
-//                database.execSQL("update " + Common.PHOTOS_LOAD + " set size = ?,downloadTime = ?,failedTime = ?,success=? where _id = ?", new Object[]{fileStatus.getTotalSize(),loadTime,"","true",id});
-////                PictureAirLog.e("updateFailedPhotos","success");
-//            }
-//            database.setTransactionSuccessful();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }finally {
-//            if (cursor != null) {
-//                cursor.close();
-//            }
-//            database.endTransaction();
-//            DBManager.getInstance().closeDatabase();
-//            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0,0,true));
-//        }
-//    }
-
-    /**
-     *
-     * 下载失败的照片如果数据库中已存在则更新，不存在则添加
-     *
-     * */
-    public synchronized void updateOrInsertFailedPhotos(String userId,DownloadFileStatus fileStatus){
-
-        database = DBManager.getInstance().writData();
-        database.beginTransaction();
-        Cursor cursor = null;
-        try {
-            cursor = database.rawQuery("select _id from " + Common.PHOTOS_LOAD + " where userId = ? and photoId = ? and failedTime = ? and success = ?", new String[]{userId,fileStatus.getPhotoId(),fileStatus.getFailedTime(),"false"});
-            if (cursor.moveToFirst()) {//判断是否photo数据
-                int id = cursor.getInt(cursor.getColumnIndex("_id"));
-                database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ? where _id = ?", new Object[]{fileStatus.getFailedTime(),id});
-//                PictureAirLog.e("updateOrInsertFailedPhotos","update");
-            }else{
-//                PictureAirLog.e("updateOrInsertFailedPhotos","insert");
+            for (int i=0;i<list.size();i++) {
+                DownloadFileStatus fileStatus = list.get(i);
                 ContentValues values = new ContentValues();
                 values.put("userId", userId);
                 values.put("photoId", fileStatus.getPhotoId());
@@ -1672,53 +1614,21 @@ public class PictureAirDbManager {
                 values.put("size", fileStatus.getTotalSize());
                 values.put("previewUrl", fileStatus.getPhotoThumbnail());
                 values.put("shootTime", fileStatus.getShootOn());
-                values.put("downloadTime", "");
-                values.put("isVideo",fileStatus.getIsVideo());
-                values.put("success", "false");
-                values.put("failedTime",fileStatus.getFailedTime());
+                values.put("downloadTime", loadTime);
+                values.put("isVideo", fileStatus.getIsVideo());
+                values.put("success", status);
+                values.put("failedTime", fileStatus.getFailedTime());
                 database.insert(Common.PHOTOS_LOAD, "", values);
             }
             database.setTransactionSuccessful();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+        } finally {
             database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
     }
 
-
-    /**
-     * 获取对应某种状态的所有照片
-     * @param success “true” 成功  "false" 失败  "load" 下载中
-     *
-     * */
-    public synchronized int getDownloadPhotoCount(String userId,String success) {
-        int count = 0;
-        database = DBManager.getInstance().readData();
-        database.beginTransaction();
-        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
-        Cursor cursor = database.rawQuery("select count(*) from " + Common.PHOTOS_LOAD + " where userId = ? and success = ?", new String[]{userId,success});
-        try {
-            if (cursor.moveToFirst()){
-                count = cursor.getInt(0);
-            }
-            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
-            database.setTransactionSuccessful();
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            database.endTransaction();
-            DBManager.getInstance().closeDatabase();
-            return  count;
-        }
-    }
 
     /**
      *
@@ -1813,13 +1723,13 @@ public class PictureAirDbManager {
      * 更新状态为load的图片信息
      *
      * */
-    public synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId){
+    public synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId,String url){
 
         database = DBManager.getInstance().writData();
         database.beginTransaction();
         PictureAirLog.out("cursor open ---> updateLoadPhotos");
         try {
-            database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=? where userId = ? and photoId=?", new Object[]{"",status,downloadTime,size,userId,photoId});
+            database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=?,url=? where userId = ? and photoId=?", new Object[]{"", status, downloadTime, size, url,userId, photoId});
             database.setTransactionSuccessful();
         }catch (Exception e){
             e.printStackTrace();
@@ -1831,21 +1741,52 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 判断图片是否存在
+     * 用列表循环更新状态为load的图片信息，较单个的更新速度更快
      *
      * */
-    public synchronized boolean isExistPhoto(String userId,String photoId){
-        int count = 0;
-        List<PhotoDownLoadInfo> photos = new ArrayList<>();
-        database = DBManager.getInstance().readData();
+    public synchronized void updateLoadPhotoList(String userId, String status,String downloadTime,String size,List<PhotoDownLoadInfo> list){
+
+        database = DBManager.getInstance().writData();
         database.beginTransaction();
+        PictureAirLog.out("cursor open ---> updateLoadPhotos");
+        try {
+            for (int i=0;i<list.size();i++) {
+                PhotoDownLoadInfo info = list.get(i);
+                database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=? where userId = ? and photoId=?", new Object[]{"", status, downloadTime, size, userId, info.getPhotoId()});
+            }
+            database.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+    }
+
+    public synchronized CopyOnWriteArrayList<PhotoDownLoadInfo> getExistPhoto(String userId){
+        int count = 0;
+        PhotoDownLoadInfo photoInfo = null;
+        CopyOnWriteArrayList<PhotoDownLoadInfo> list = new CopyOnWriteArrayList<>();
+        database = DBManager.getInstance().readData();
         PictureAirLog.out("cursor open ---> ExistPhoto");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and photoId = ?", new String[]{userId,photoId});
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ?", new String[]{userId});
         try {
             if (cursor.moveToFirst()) {//判断是否photo数据
                 count = cursor.getInt(0);
+                do {
+                    photoInfo = new PhotoDownLoadInfo();
+                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
+                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
+                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
+                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
+                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
+                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
+                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
+                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
+                    list.add(photoInfo);
+                }while (cursor.moveToNext());
             }
-            database.setTransactionSuccessful();
             PictureAirLog.out("ExistPhoto --->count: "+count);
         }catch (Exception e){
             e.printStackTrace();
@@ -1853,9 +1794,8 @@ public class PictureAirDbManager {
             if (cursor != null) {
                 cursor.close();
             }
-            database.endTransaction();
             DBManager.getInstance().closeDatabase();
         }
-        return count > 0;
+        return list;
     }
 }

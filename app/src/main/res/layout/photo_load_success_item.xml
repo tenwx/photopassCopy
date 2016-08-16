@@ -22,7 +22,7 @@
         />
         <RelativeLayout
             android:id="@+id/load_success_layout"
-            android:layout_width="140dp"
+            android:layout_width="130dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true">
@@ -41,7 +41,7 @@
                     android:text="@string/photo_download_complete"
                     android:gravity="center"
                     android:textColor="@color/gray2"
-                    android:textSize="@dimen/text_size_14"/>
+                    android:textSize="@dimen/text_size_12"/>
 
                 <TextView
                     android:id="@+id/load_success_time"
@@ -55,8 +55,8 @@
             </LinearLayout>
             <ImageView
                 android:id="@+id/loading_success_img_select"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/nosele"
@@ -70,14 +70,13 @@
             android:orientation="vertical"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/load_success_img"
-            android:layout_toLeftOf="@id/load_success_layout"
             android:layout_marginLeft="16dp">
             <TextView
                 android:id="@+id/load_success_shoottime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/pp_dark_blue"
-                android:textSize="@dimen/text_size_14"
+                android:textSize="@dimen/text_size_12"
                 android:text="2016-6-20 17:40"
                 android:layout_marginTop="@dimen/pp_margin_16"
                 android:gravity="center_vertical|left"/>

@@ -1,9 +1,7 @@
 package com.pictureair.photopass.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,7 +29,6 @@ import com.pictureair.photopass.activity.MyPPActivity;
 import com.pictureair.photopass.adapter.PhotoLoadSuccessAdapter;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.entity.PhotoDownLoadInfo;
-import com.pictureair.photopass.eventbus.DownLoadCountUpdateEvent;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.PictureAirLog;
@@ -66,7 +63,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     private RelativeLayout rl_load_success;
     private RelativeLayout ll_load_success;
     private Button button_toload;
-//    private Button btn_clear;
     private PhotoLoadSuccessAdapter adapter;
     private ExecutorService executorService;
     private LinearLayout ll_pop;
@@ -180,7 +176,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 ll_load_success.setVisibility(View.GONE);
                 int delCount = (int)msg.obj;
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
-                EventBus.getDefault().post(new DownLoadCountUpdateEvent(delCount));
                 dismissPWProgressDialog();
                 break;
             case GET_PHOTO_BACKGROUND:
@@ -191,15 +186,18 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                         rl_load_success.setVisibility(View.GONE);
                         adapter.setPhotos(photos);
                         adapter.notifyDataSetChanged();
+                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1,false));
                     }else{
                         if (photos != null && photos.size()>0) {
                             ll_load_success.setVisibility(View.VISIBLE);
                             rl_load_success.setVisibility(View.GONE);
                             adapter = new PhotoLoadSuccessAdapter(MyApplication.getInstance(), photos);
                             lv_success.setAdapter(adapter);
+                            EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1,false));
                         }else{
                             rl_load_success.setVisibility(View.VISIBLE);
                             ll_load_success.setVisibility(View.GONE);
+                            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
                         }
 
                     }
@@ -288,12 +286,16 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         if (!isLoading && photos == null) {
             isLoading = true;
             showPWProgressDialog();
-            new Thread(){
-                @Override
-                public void run() {
-                    loadPhotos(LOAD_FROM_DATABASE);
+            if (executorService != null) {
+                if (!executorService.isShutdown()) {
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadPhotos(LOAD_FROM_DATABASE);
+                        }
+                    });
                 }
-            }.start();
+            }
         }
     }
 
@@ -325,9 +327,14 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {
-                            removeSelectPhotosFromDB();
                             isLoading = true;
-                            loadPhotos(RELOAD_DATABASE);
+                            if (selectAll){
+                                pictureAirDbManager.deleteDownloadPhoto(userId);
+                                loadPhotos(RELOAD_DATABASE);
+                            }else {
+                                removeSelectPhotosFromDB();
+                                loadPhotos(RELOAD_DATABASE);
+                            }
                         }
                     });
                 }

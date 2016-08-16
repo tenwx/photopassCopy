@@ -1798,6 +1798,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 DownloadService.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("photos", list);
+        bundle.putInt("prepareDownloadCount",list.size());//该参数用于传递下载的图片数量
         intent.putExtras(bundle);
         startService(intent);
     }

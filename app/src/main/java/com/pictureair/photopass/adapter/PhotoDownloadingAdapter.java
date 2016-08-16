@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +28,6 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
 
     private Context mContext;
     private CopyOnWriteArrayList<DownloadFileStatus> photos;
-    private ListView listView;
     private CopyOnWriteArrayList<PhotoInfo> selectPhotos;
 
     public PhotoDownloadingAdapter(Context context,CopyOnWriteArrayList<DownloadFileStatus> photos){
@@ -74,64 +72,82 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
         DownloadFileStatus fileStatus = photos.get(position);
         holder.tv_shootTime.setText(fileStatus.getShootOn());
         if (fileStatus != null) {
-            ImageAware imageAware = new ImageViewAware(holder.img);
-            if (holder.img.getTag() == null || !holder.img.getTag().equals(fileStatus.getPhotoThumbnail())) {
-                ImageLoader.getInstance().displayImage(fileStatus.getPhotoThumbnail(),imageAware);
-                holder.img.setTag(fileStatus.getPhotoThumbnail());
-            }
-            switch (fileStatus.status) {
-                case DownloadFileStatus.DOWNLOAD_STATE_WAITING:
-                    holder.tv_size.setText("0MB/0MB");
-                    holder.tv_speed.setText("0KB/S");
-                    holder.tv_status.setText(mContext.getString(R.string.photo_download_waiting));
-                    holder.img_status.setImageResource(R.drawable.photo_status_wait);
-                    holder.img_status.mCanDraw = false;
-                    holder.img_status.setProgress(0);
-                    break;
-                case DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING:
-                    holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
-                    holder.tv_speed.setText(fileStatus.getLoadSpeed()+"KB/S");
-                    holder.tv_status.setText(mContext.getString(R.string.photo_download_loading));
-                    holder.img_status.setImageResource(R.drawable.photo_status_load);
-                    holder.img_status.mCanDraw = true;
-                    if (Float.valueOf(fileStatus.getTotalSize()) == 0){
-                        holder.img_status.setProgress(0);
-                    }else {
-                        int pro = (int) ((Float.valueOf(fileStatus.getCurrentSize()) / Float.valueOf(fileStatus.getTotalSize())) * 100);
-                        holder.img_status.setProgress(pro);
-                    }
-                    break;
-                case DownloadFileStatus.DOWNLOAD_STATE_FAILURE:
-                    holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
-                    holder.tv_speed.setText("0KB/S");
-                    holder.tv_status.setText(mContext.getString(R.string.photo_download_failed));
-                    holder.img_status.setImageResource(R.drawable.photo_status_error);
-                    holder.img_status.mCanDraw = false;
-                    holder.img_status.setProgress(0);
-                    break;
+            try {
+                ImageAware imageAware = new ImageViewAware(holder.img);
+                if (holder.img.getTag() == null || !holder.img.getTag().equals(fileStatus.getPhotoThumbnail())) {
+                    ImageLoader.getInstance().displayImage(fileStatus.getPhotoThumbnail(), imageAware);
+                    holder.img.setTag(fileStatus.getPhotoThumbnail());
+                }
 
-                case DownloadFileStatus.DOWNLOAD_STATE_RECONNECT:
-                    holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
-                    holder.tv_speed.setText("0KB/S");
-                    holder.tv_status.setText(mContext.getString(R.string.photo_download_reconnect));
-                    holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
-                    holder.img_status.mCanDraw = false;
-                    holder.img_status.setProgress(0);
-                    break;
-                case DownloadFileStatus.DOWNLOAD_STATE_SELECT:
-                    holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
-                    holder.tv_speed.setText("0KB/S");
-                    holder.tv_status.setText(mContext.getString(R.string.photo_download_wait_select));
-                    if (fileStatus.select == 0) {
-                        holder.img_status.setImageResource(R.drawable.nosele);
-                    }else{
-                        holder.img_status.setImageResource(R.drawable.sele);
-                    }
-                    holder.img_status.mCanDraw = false;
-                    holder.img_status.setProgress(0);
-                    break;
-                default:
-                    break;
+                switch (fileStatus.status) {
+                    case DownloadFileStatus.DOWNLOAD_STATE_WAITING:
+                        holder.tv_size.setText("0MB/0MB");
+                        holder.tv_speed.setText("0KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_waiting));
+                        holder.img_status.setImageResource(R.drawable.photo_status_wait);
+                        holder.img_status.mCanDraw = false;
+                        holder.img_status.setProgress(0);
+                        break;
+                    case DownloadFileStatus.DOWNLOAD_STATE_FINISH:
+                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_speed.setText(fileStatus.getLoadSpeed()+"KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_loading));
+                        holder.img_status.setImageResource(R.drawable.photo_status_load);
+                        holder.img_status.mCanDraw = true;
+                        if (Float.valueOf(fileStatus.getTotalSize()) == 0){
+                            holder.img_status.setProgress(0);
+                        }else {
+                            int pro = (int) ((Float.valueOf(fileStatus.getCurrentSize()) / Float.valueOf(fileStatus.getTotalSize())) * 100);
+                            holder.img_status.setProgress(pro);
+                        }
+                        break;
+                    case DownloadFileStatus.DOWNLOAD_STATE_DOWNLOADING:
+                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_speed.setText(fileStatus.getLoadSpeed()+"KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_loading));
+                        holder.img_status.setImageResource(R.drawable.photo_status_load);
+                        holder.img_status.mCanDraw = true;
+                        if (Float.valueOf(fileStatus.getTotalSize()) == 0){
+                            holder.img_status.setProgress(0);
+                        }else {
+                            int pro = (int) ((Float.valueOf(fileStatus.getCurrentSize()) / Float.valueOf(fileStatus.getTotalSize())) * 100);
+                            holder.img_status.setProgress(pro);
+                        }
+                        break;
+                    case DownloadFileStatus.DOWNLOAD_STATE_FAILURE:
+                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_speed.setText("0KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_failed));
+                        holder.img_status.setImageResource(R.drawable.photo_status_error);
+                        holder.img_status.mCanDraw = false;
+                        holder.img_status.setProgress(0);
+                        break;
+
+                    case DownloadFileStatus.DOWNLOAD_STATE_RECONNECT:
+                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_speed.setText("0KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_reconnect));
+                        holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
+                        holder.img_status.mCanDraw = false;
+                        holder.img_status.setProgress(0);
+                        break;
+                    case DownloadFileStatus.DOWNLOAD_STATE_SELECT:
+                        holder.tv_size.setText(fileStatus.getCurrentSize()+"MB/"+fileStatus.getTotalSize()+"MB");
+                        holder.tv_speed.setText("0KB/S");
+                        holder.tv_status.setText(mContext.getString(R.string.photo_download_wait_select));
+                        if (fileStatus.select == 0) {
+                            holder.img_status.setImageResource(R.drawable.nosele);
+                        }else{
+                            holder.img_status.setImageResource(R.drawable.sele);
+                        }
+                        holder.img_status.mCanDraw = false;
+                        holder.img_status.setProgress(0);
+                        break;
+                    default:
+                        break;
+                }
+            }catch (Exception e){
+
             }
         }
 
@@ -155,17 +171,5 @@ public class PhotoDownloadingAdapter extends BaseAdapter {
 
     public List getList(){
         return photos;
-    }
-
-    private void removePhotoInfo(DownloadFileStatus fileStatus,int pos){
-        if (selectPhotos.size() >0 ) {
-            Iterator<PhotoInfo> iterator = selectPhotos.iterator();
-            while (iterator.hasNext()) {
-                PhotoInfo info = iterator.next();
-                if (info.selectPos == pos) {
-                    selectPhotos.remove(info);
-                }
-            }
-        }
     }
 }

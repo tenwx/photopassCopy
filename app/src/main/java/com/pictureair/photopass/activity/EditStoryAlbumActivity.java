@@ -82,6 +82,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 	private boolean netWorkFailed = false;
 	private String ppCode;
 	private PWDialog pictureWorksDialog;
+	private int prepareDownloadCount;
 
 	private Handler editStoryAlbumHandler = new Handler(new Handler.Callback() {
 		@Override
@@ -194,6 +195,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 				//开始将图片加入下载队列
 				Bundle bundle = new Bundle();
 				bundle.putParcelableArrayList("photos", hasPayedList);
+				bundle.putInt("prepareDownloadCount",prepareDownloadCount);
 				intent.putExtras(bundle);
 				startService(intent);
 				hasPayedList.clear();
@@ -205,6 +207,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 		//开始将图片加入下载队列
 		Bundle bundle = new Bundle();
 		bundle.putParcelableArrayList("photos", hasPayedList);
+		bundle.putInt("prepareDownloadCount",prepareDownloadCount);
 		intent.putExtras(bundle);
 		startService(intent);
 
@@ -403,13 +406,18 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 
 	private void downloadPic(){
 		int unPayCount = 0;
+		int downloadCount =0;
 		for (int i = 0; i < albumArrayList.size(); i++) {
-			if (albumArrayList.get(i).isSelected == 1 && albumArrayList.get(i).isPayed == 0) {
-				unPayCount ++;
+			if (albumArrayList.get(i).isSelected == 1) {
+				downloadCount++;
+				if (albumArrayList.get(i).isPayed == 0) {
+					unPayCount++;
+				}
 			}
 		}
-
 		if (unPayCount > 0) {//弹框提示
+			prepareDownloadCount = downloadCount-unPayCount;
+			if (prepareDownloadCount < 0) prepareDownloadCount = 0;
 			pictureWorksDialog.setPWDialogId(unPayCount < selectCount ? HAS_UNPAY_PHOTOS_DIALOG : HAS_ALL_UNPAY_PHOTOS_DIALOG)
 					.setPWDialogMessage(unPayCount < selectCount ? R.string.edit_story_unpay_tips : R.string.edit_story_all_unpay_tips)
 					.setPWDialogNegativeButton(unPayCount < selectCount ? getString(R.string.edit_story_reselect) : null)
@@ -417,6 +425,8 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					.pwDilogShow();
 
 		} else {
+			prepareDownloadCount = downloadCount;
+			if (prepareDownloadCount < 0) prepareDownloadCount = 0;
 			startDownload(false);
 		}
 	}

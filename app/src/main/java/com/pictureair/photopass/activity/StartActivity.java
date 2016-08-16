@@ -50,8 +50,8 @@ public class StartActivity extends BaseActivity implements Callback {
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, false);
+        updateTime = System.currentTimeMillis();
         if (_id != null && !update) {
-            updateTime = System.currentTimeMillis();
             new RemoveRepeatPhotoTask().start();
         }else {
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();
@@ -91,7 +91,8 @@ public class StartActivity extends BaseActivity implements Callback {
 
                     }
                     curTime = System.currentTimeMillis();
-                    long between = curTime-updateTime;
+                    long between = (curTime-updateTime)/(60*60*24);
+                    PictureAirLog.e("startactivity between",String.valueOf(between));
                     if (between < 2000){
                         handler.postDelayed(new Runnable() {
                             @Override

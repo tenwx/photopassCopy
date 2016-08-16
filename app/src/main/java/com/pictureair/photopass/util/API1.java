@@ -20,6 +20,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
+import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import java.io.File;
@@ -2173,6 +2174,58 @@ public class API1 {
             }
         });
     }
+
+    /**
+     * 获取照片的最新数据
+     *
+     * @param tokenId
+     * @param handler
+     */
+    public static void getPhotosInfo(String tokenId, final int id, final Handler handler,final DownloadFileStatus fileStatus) {
+        RequestParams params = new RequestParams();
+        JSONArray ids = new JSONArray();
+        ids.add(fileStatus.getPhotoId());
+        params.put(Common.USERINFO_TOKENID, tokenId);
+        params.put(Common.EPPP_IDS, ids.toJSONString());
+
+        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_PHOTOS_BY_CONDITIONS, params, new HttpCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                super.onSuccess(jsonObject);
+                PictureAirLog.out("jsonobject---->" + jsonObject.toString());
+                JSONArray photos = jsonObject.getJSONArray("photos");
+                if (photos.size() > 0) {
+                    PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
+                    fileStatus.setUrl(photoInfo.photoPathOrURL);
+                    handler.obtainMessage(DownloadService.GET_URL_SUCCESS,fileStatus).sendToTarget();
+                } else {
+                    Message msg =  handler.obtainMessage();
+                    msg.what = DOWNLOAD_PHOTO_FAILED;
+                    Bundle bundle = new Bundle();
+                    fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                    bundle.putParcelable("url",fileStatus);
+                    bundle.putInt("status",401);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                }
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                Message msg =  handler.obtainMessage();
+                msg.what = DOWNLOAD_PHOTO_FAILED;
+                Bundle bundle = new Bundle();
+                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                bundle.putParcelable("url",fileStatus);
+                bundle.putInt("status",401);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+        });
+    }
+
+
 
     /**************************************下载图片 Start**************************************/
     /**

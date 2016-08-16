@@ -42,7 +42,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.greenrobot.event.EventBus;
 
@@ -73,6 +73,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     private TextView tv_delete;
     private CopyOnWriteArrayList<PhotoInfo> selectPhotos;
     private boolean selectAll;
+    private boolean isEdit;
 
 
     private final Handler adapterHandler = new AdapterHandler(this);
@@ -82,26 +83,64 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         if (adapter == null || downloadList.size() ==0 || downloadList == null) return;
         if (downloadList.size() > position){
             DownloadFileStatus fileStatus = downloadList.get(position);
-            if (fileStatus!= null && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
-                if (fileStatus.select == 0) {
-                    PhotoInfo info = newPhotoInfo(fileStatus,position);
-                    fileStatus.select = 1;
-                    adapter.setList(downloadList);
-                    adapter.notifyDataSetChanged();
-                    selectPhotos.add(info);
-                } else {
-                    fileStatus.select = 0;
-                    adapter.setList(downloadList);
-                    adapter.notifyDataSetChanged();
-                    removePhotoInfo(fileStatus, position);
+            if (isEdit) {//编辑状态下，数据保存列表
+                if (fileStatus != null && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                    if (fileStatus.select == 0) {
+                        PhotoInfo info = newPhotoInfo(fileStatus, position);
+                        fileStatus.select = 1;
+                        adapter.setList(downloadList);
+                        adapter.notifyDataSetChanged();
+                        selectPhotos.add(info);
+                    } else {
+                        fileStatus.select = 0;
+                        adapter.setList(downloadList);
+                        adapter.notifyDataSetChanged();
+                        removePhotoInfo(fileStatus, position);
+                    }
+                    enableReconnectDeleteButton();
+                    ifSelectAllWhenItemClick();
                 }
-                enableReconnectDeleteButton();
-                ifSelectAllWhenItemClick();
+            }else{//非编辑状态下点击item 直接下载
+                DownloadFileStatus reconnecFile = downloadList.get(position);
+                if (reconnecFile != null && reconnecFile.status == DownloadFileStatus.DOWNLOAD_STATE_FAILURE){
+                    reconnecFile.status = DownloadFileStatus.DOWNLOAD_STATE_RECONNECT;
+                    reconnecFile.setCurrentSize("0");
+                    reconnecFile.setLoadSpeed("0");
+                    reconnecFile.setTotalSize("0");
+                    Object tag = view.getTag();
+                    if (tag instanceof PhotoDownloadingAdapter.Holder){
+                        PhotoDownloadingAdapter.Holder holder = (PhotoDownloadingAdapter.Holder)tag;
+                        if (holder != null){
+                            holder.tv_size.setText("0MB/0MB");
+                            holder.tv_speed.setText("0KB/S");
+                            holder.tv_status.setText(MyApplication.getInstance().getString(R.string.photo_download_reconnect));
+                            holder.img_status.mCanDraw = false;
+                            holder.img_status.setImageResource(R.drawable.photo_status_reconnect);
+                        }
+                    }
+                    ArrayList<PhotoInfo> photos = new ArrayList<>();
+                    PhotoInfo info = new PhotoInfo();
+                    info.isVideo = reconnecFile.isVideo();
+                    info.photoPathOrURL = reconnecFile.getUrl();
+                    info.photoId = reconnecFile.getPhotoId();
+                    info.shootOn = reconnecFile.getShootOn();
+                    info.failedTime = reconnecFile.getFailedTime();
+                    photos.add(info);
+                    Intent intent = new Intent(MyApplication.getInstance(),DownloadService.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("photos",photos);
+                    bundle.putInt("reconnect",1);
+                    bundle.putInt("prepareDownloadCount",photos.size());
+                    intent.putExtras(bundle);
+                    MyApplication.getInstance().startService(intent);
+                }
             }
         }
     }
 
-
+    /**
+     * 是否点击全选按钮
+     * */
     private void ifSelectAllWhenItemClick(){
         if (selectPhotos.size() == downloadList.size()){
             selecAllButtonStatusChange(true);
@@ -164,7 +203,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE://更新listview
-                dismissPWProgressDialog();
+                dissmissDialog();
                 PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
                 updateView();
@@ -175,7 +214,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 break;
             case PHOTO_REMOVE://下载成功后删除
-                dismissPWProgressDialog();
+                dissmissDialog();
                 PictureAirLog.v("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null) {
@@ -183,13 +222,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     PictureAirLog.v("PHOTO_REMOVE","downloadList.size: "+downloadList.size());
                     adapter.setList(downloadList);
                     adapter.notifyDataSetChanged();
-//                    PictureAirLog.v("DownLoadingFragment","dealHandler remove item success");
                     EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
-                    AtomicInteger oldCount = downloadService.getDatabasePhotoCount();
-                    PictureAirLog.v("PHOTO_REMOVE","oldCount: "+oldCount);
-                    AtomicInteger downLoadCount=downloadService.getDowned_num();
-                    PictureAirLog.v("PHOTO_REMOVE","downLoadCount: "+downLoadCount);
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1,false));
                     downloadService.sendAddDownLoadMessage();
                 }
                 break;
@@ -217,17 +250,12 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     adapter.notifyDataSetChanged();
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0,false));
-                AtomicInteger oldCount = downloadService.getDatabasePhotoCount();
-                PictureAirLog.v("SERVICE_LOAD_SUCCESS","oldCount: "+oldCount);
-                AtomicInteger downLoadCount=downloadService.getDowned_num();
-                PictureAirLog.v("SERVICE_LOAD_SUCCESS","downLoadCount: "+downLoadCount);
-                EventBus.getDefault().post(new TabIndicatorUpdateEvent(downLoadCount.get()+oldCount.get(),1,false));
                 activityClick();
                 downloadService.startDownload();
-                dismissPWProgressDialog();
+                dissmissDialog();
                 break;
             case DOWNLOAD_FINISH://下载完成，此时downloadservice中已没有可下载任务，页面显示没有下载中的照片
-                dismissPWProgressDialog();
+                dissmissDialog();
                 CopyOnWriteArrayList<DownloadFileStatus> list = downloadService.getDownloadList();
                 if (list == null || list.size() == 0) {
                     ll_loading.setVisibility(View.GONE);
@@ -247,7 +275,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
                 activityClick();
-                dismissPWProgressDialog();
+                dissmissDialog();
                 break;
 
             case PHOTO_ALL_SELECT:
@@ -258,11 +286,22 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     selectPhotos.clear();
                 }
                 enableReconnectDeleteButton();
-                dismissPWProgressDialog();
+                dissmissDialog();
                 break;
             default:
-                dismissPWProgressDialog();
+                dissmissDialog();
                 break;
+        }
+    }
+
+    private void dissmissDialog(){
+        if (downloadService == null){
+            dismissPWProgressDialog();
+        }else{
+            AtomicBoolean isAddTask = downloadService.isAddTask();
+            if (isAddTask.get() == false){
+                dismissPWProgressDialog();
+            }
         }
     }
 
@@ -387,13 +426,26 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 if (selectPhotos.size() == 0) return;
                 showPWProgressDialog();
                 ArrayList<PhotoInfo> list = new ArrayList<>();
+                Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
                 for (int i=0;i<selectPhotos.size();i++){
                     PhotoInfo info = selectPhotos.get(i);
                     list.add(info);
+                    if (i != 0 && (i % 50 == 0) && (i != selectPhotos.size() - 1)) {//如果全部扔过去，超出intent传递的限制，报错，因此分批扔过去，每次扔50个
+                        //开始将图片加入下载队列
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelableArrayList("photos", list);
+                        bundle.putInt("prepareDownloadCount",selectPhotos.size());
+                        bundle.putInt("reconnect",1);
+                        intent1.putExtras(bundle);
+                        MyApplication.getInstance().startService(intent1);
+                        list.clear();
+                    }
+
                 }
-                Intent intent1 = new Intent(MyApplication.getInstance(), DownloadService.class);
+
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("photos", list);
+                bundle.putInt("prepareDownloadCount",selectPhotos.size());
                 bundle.putInt("reconnect",1);
                 intent1.putExtras(bundle);
                 MyApplication.getInstance().startService(intent1);
@@ -402,7 +454,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
             case R.id.tv_downloading_delete:
                 if (downloadService == null || selectPhotos.size() == 0) return;
                 showPWProgressDialog();
-                downloadService.deleteSelecItems();
+                if (selectAll){
+                    downloadService.sendClearFailedMsg();
+                }else {
+                    downloadService.deleteSelecItems();
+                }
                 break;
             default:
                 break;
@@ -471,6 +527,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         if (downloadService != null) {
             if (downloadService.downloadListContainsFailur()){
                 downloadService.updateDownloadList();
+                isEdit = true;
                 ll_popup.setVisibility(View.VISIBLE);
                 ll_popup.startAnimation(animationIn);
                 return true;
@@ -481,6 +538,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
 
     public void changeToNormalState(){
         if (downloadService != null) {
+            isEdit = false;
             downloadService.reverseDownloadList();
             selectPhotos.clear();
             enableReconnectDeleteButton();
