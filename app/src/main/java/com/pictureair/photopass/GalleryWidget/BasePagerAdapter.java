@@ -32,7 +32,6 @@ import java.util.List;
  */
 public class BasePagerAdapter extends PagerAdapter {
 
-	//protected final List<String> mResources;
 	protected final List<PhotoInfo> mResources;
 	
     protected final Context mContext;
@@ -45,7 +44,6 @@ public class BasePagerAdapter extends PagerAdapter {
         mContext = null;
     }
 
-    //public BasePagerAdapter(Context context, List<String> resources)
     public BasePagerAdapter(Context context, List<PhotoInfo> resources)
     {
         this.mResources = resources;
@@ -105,6 +103,6 @@ public class BasePagerAdapter extends PagerAdapter {
     {
         void onItemChange(int currentPosition);
     }
-    
-    
-};
+
+
+}

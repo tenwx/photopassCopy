@@ -522,6 +522,11 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+
+    @Override
     public void onDrag(float endX, float endY) {
         //小红点的拖拽消失，消失之后的消息回调，暂时此处不需要做任何的操作
         explored.setVisibility(View.VISIBLE);

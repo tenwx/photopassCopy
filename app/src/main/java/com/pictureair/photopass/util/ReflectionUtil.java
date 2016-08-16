@@ -25,6 +25,9 @@ public class ReflectionUtil {
      * @return
      */
     public static int getStringId(Context paramContext, int paramString) {
+        if (paramContext == null) {
+            return 401;
+        }
         return paramContext.getResources().getIdentifier(BASE_CODE_STRING + paramString, "string",
                 paramContext.getPackageName());
     }
