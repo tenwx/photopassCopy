@@ -1565,10 +1565,13 @@ public class AppUtil {
      * @param permission 权限
      * */
     public static boolean checkPermission(Context context, String permission) {
-        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT < 23) {
+            return true;
+        }else if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
             return false;
+        }else{
+            return true;
         }
-        return true;
     }
 
     /**
