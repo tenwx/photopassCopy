@@ -10,6 +10,7 @@ import android.text.TextUtils;
 public class DownloadFileStatus implements Parcelable{
 
     private String url;  //图片路径
+    private String newUrl;//新请求的路径
     private String currentSize;
     private String totalSize;
     private String loadSpeed;
@@ -38,6 +39,7 @@ public class DownloadFileStatus implements Parcelable{
 
     public DownloadFileStatus(Parcel source) {
         this.url = source.readString();
+        this.newUrl = source.readString();
         this.currentSize = source.readString();
         this.totalSize = source.readString();
         this.loadSpeed =source.readString();
@@ -69,6 +71,14 @@ public class DownloadFileStatus implements Parcelable{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getNewUrl() {
+        return newUrl;
+    }
+
+    public void setNewUrl(String newUrl) {
+        this.newUrl = newUrl;
     }
 
     public String getCurrentSize() {
@@ -168,6 +178,7 @@ public class DownloadFileStatus implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(url);
+        dest.writeString(newUrl);
         dest.writeString(currentSize);
         dest.writeString(totalSize);
         dest.writeString(loadSpeed);

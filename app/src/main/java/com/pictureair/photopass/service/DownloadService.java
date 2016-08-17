@@ -67,7 +67,6 @@ public class DownloadService extends Service {
     private AtomicBoolean isAddTask = new AtomicBoolean(false);
     private boolean mFinish = false;
     private boolean mIsErrorsAdd = false;
-//    private boolean clear
 
     private Context mContext = this;
     private NotificationManager manager;
@@ -77,7 +76,6 @@ public class DownloadService extends Service {
     public final static int ADD_DOWNLOAD = 3;
     public final static int CLEAR_FAILED = 4;
     public final static int PREPARE_DOWNLOAD = 5;
-    public final static int GET_URL_SUCCESS = 6;
 
     private boolean isDownloading = false;
     private PWToast myToast;
@@ -291,7 +289,6 @@ public class DownloadService extends Service {
                                     fileStatus.setPosition(i);
                                     taskList.put(fileStatus.getPhotoId(), fileStatus);
                                     PictureAirLog.out("START_DOWNLOAD photoid and positiong " + fileStatus.getPhotoId() +" "+fileStatus.getPosition());
-//                                    downLoad(fileStatus);
                                     getNewUrl(fileStatus);
                                 } else {
                                     break;
@@ -373,7 +370,7 @@ public class DownloadService extends Service {
                                 }
                                 taskList.remove(failStatus.getPhotoId());
 
-                                pictureAirDbManager.updateLoadPhotos(userId,"false","","",failStatus.getPhotoId(),failStatus.getUrl());
+                                pictureAirDbManager.updateLoadPhotos(userId,"false","","",failStatus.getPhotoId());
                                 if (adapterHandler != null) {
                                     PictureAirLog.out("handleMessage DOWNLOAD_PHOTO_FAILED");
                                     adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
@@ -443,7 +440,7 @@ public class DownloadService extends Service {
                     }
                     break;
 
-                case GET_URL_SUCCESS://更新url
+                case API1.DOWNLOAD_PHOTO_GET_URL_SUCCESS://更新url
                     PictureAirLog.out("downloadService-----------> GET_URL_SUCCESS");
                     DownloadFileStatus newUrlStatus = (DownloadFileStatus)msg.obj;
                     downLoad(newUrlStatus);
@@ -485,25 +482,24 @@ public class DownloadService extends Service {
      */
     private void downLoad(final DownloadFileStatus fileStatus) {
         PictureAirLog.out("downloadurl--->" + fileStatus.getUrl());
-        File file = getSaveFile(fileStatus);
 
         // 使用友盟统计点击下载次数
         UmengUtil.onEvent(mContext, Common.EVENT_ONCLICK_DOWNLOAD);
-        downloadImgOrVideo(file, fileStatus);
+        downloadImgOrVideo(fileStatus);
     }
 
     /**
      * 判断下载视频还是 图片
      */
-    private void downloadImgOrVideo(final File file, final DownloadFileStatus fileStatus) {//int isVideo,String photoId,String url
+    private void downloadImgOrVideo(final DownloadFileStatus fileStatus) {//int isVideo,String photoId,String url
         if (fileStatus.isVideo() == 0) {//photo
-            API1.downLoadPhotos(handler, fileStatus,adapterHandler);
+//            API1.downLoadPhotos(handler, fileStatus,adapterHandler);
+            API1.downLoadPhotosWithUrl(handler, fileStatus,adapterHandler);
         } else {//video
-            String downloadURL = Common.PHOTO_URL + fileStatus.getUrl();
             RequestParams params = new RequestParams();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
             params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
-            HttpUtil1.asyncDownloadBinaryData(downloadURL, params, new HttpCallback() {
+            HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), params, new HttpCallback() {
                 long startTime;
                 long lastTime;
                 @Override
@@ -638,7 +634,7 @@ public class DownloadService extends Service {
                         }
                     }
 
-                    pictureAirDbManager.updateLoadPhotos(userId,"true",loadTime,fileStatus.getTotalSize(),fileStatus.getPhotoId(),fileStatus.getUrl());
+                    pictureAirDbManager.updateLoadPhotos(userId,"true",loadTime,fileStatus.getTotalSize(),fileStatus.getPhotoId());
                     if (adapterHandler != null) {
                         adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_REMOVE,fileStatus).sendToTarget();
                         PictureAirLog.out("saveFileToDb scan>>>>>>>>>");

@@ -20,7 +20,6 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
-import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
 import java.io.File;
@@ -268,6 +267,7 @@ public class API1 {
     //下载
     public static final int DOWNLOAD_PHOTO_SUCCESS = 6041;
     public static final int DOWNLOAD_PHOTO_FAILED = 6040;
+    public final static int DOWNLOAD_PHOTO_GET_URL_SUCCESS = 6042;
 
 
     //选择已有PP＋
@@ -2197,8 +2197,8 @@ public class API1 {
                 JSONArray photos = jsonObject.getJSONArray("photos");
                 if (photos.size() > 0) {
                     PhotoInfo photoInfo = JsonUtil.getPhoto(photos.getJSONObject(0));
-                    fileStatus.setUrl(photoInfo.photoPathOrURL);
-                    handler.obtainMessage(DownloadService.GET_URL_SUCCESS,fileStatus).sendToTarget();
+                    fileStatus.setNewUrl(photoInfo.photoPathOrURL);
+                    handler.obtainMessage(DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
                 } else {
                     Message msg =  handler.obtainMessage();
                     msg.what = DOWNLOAD_PHOTO_FAILED;
@@ -2306,44 +2306,80 @@ public class API1 {
             }
         });
     }
+
+
+    public static void downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
+        RequestParams params = new RequestParams();
+        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
+        params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
+
+        HttpUtil1.asyncDownloadBinaryData(fileStatus.getNewUrl(), params, new HttpCallback() {
+            long startTime;
+            long lastTime;
+            @Override
+            public void onSuccess(byte[] binaryData) {
+                super.onSuccess(binaryData);
+                PictureAirLog.e(TAG, "调用下载照片API成功");
+                Message msg =  handler.obtainMessage();
+                msg.what = DOWNLOAD_PHOTO_SUCCESS;
+                Bundle bundle = new Bundle();
+                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FINISH;
+                bundle.putParcelable("url",fileStatus);
+                bundle.putByteArray("binaryData",binaryData);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+
+            @Override
+            public void onFailure(int status) {
+                super.onFailure(status);
+                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
+                Message msg =  handler.obtainMessage();
+                msg.what = DOWNLOAD_PHOTO_FAILED;
+                Bundle bundle = new Bundle();
+                fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
+                if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
+                    String failedTime = AppUtil.getFormatCurrentTime();
+                    fileStatus.setFailedTime(failedTime);
+                }
+                bundle.putParcelable("url",fileStatus);
+                bundle.putInt("status",status);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
+                double currentSize = bytesWritten/1000d/1000d;
+                double total = totalSize/1000d/1000d;
+                String c = AppUtil.formatData(currentSize);
+                String t = AppUtil.formatData(total);
+                fileStatus.setCurrentSize(c);
+                fileStatus.setTotalSize(t);
+                long currentTime = System.currentTimeMillis();
+                float usedTime = (currentTime-lastTime)/1000f;
+                float keepTime = (currentTime-startTime)/1000f;
+                if (usedTime > 0.2) {
+                    lastTime = currentTime;
+                    double downSpeed = (bytesWritten / 1000d) / keepTime;
+                    String ds = AppUtil.formatData(downSpeed);
+                    fileStatus.setLoadSpeed(ds);
+                    if (adapterHandler != null) {
+                        adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
+                    }
+                }
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                startTime = System.currentTimeMillis();
+                lastTime = startTime;
+            }
+        });
+    }
     /**************************************下载图片 End**************************************/
-
-
-    /**************************************下载图片 Start**************************************/
-    /**
-     * 下载图片的接口。
-     *
-     * @param handler
-     * @param photoId
-     */
-//    public static void downLoadPhotos(final Handler handler, String photoId) {
-//        RequestParams params = new RequestParams();
-//        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-//        params.put(Common.PHOTOIDS, photoId);
-//        params.put("fileType", "jpg");
-//        HttpUtil1.asyncDownloadBinaryData(Common.BASE_URL_TEST + Common.DOWNLOAD_PHOTO, params, new HttpCallback() {
-//            @Override
-//            public void onSuccess(byte[] binaryData) {
-//                super.onSuccess(binaryData);
-//                PictureAirLog.e(TAG, "调用下载照片API成功");
-//                handler.obtainMessage(DOWNLOAD_PHOTO_SUCCESS, binaryData).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onFailure(int status) {
-//                super.onFailure(status);
-//                PictureAirLog.e(TAG, "调用下载照片API失败：错误代码：" + status);
-//                handler.obtainMessage(DOWNLOAD_PHOTO_FAILED, status, 0).sendToTarget();
-//            }
-//
-//            @Override
-//            public void onProgress(long bytesWritten, long totalSize) {
-//                super.onProgress(bytesWritten, totalSize);
-//            }
-//        });
-//    }
-    /**************************************下载图片 End**************************************/
-
 
     /**
      * 忘记密码

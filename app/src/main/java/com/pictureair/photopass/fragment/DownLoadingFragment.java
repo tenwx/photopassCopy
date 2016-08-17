@@ -34,6 +34,7 @@ import com.pictureair.photopass.entity.DownloadFileStatus;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.service.DownloadService;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.widget.PWToast;
@@ -353,7 +354,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
         ll_popup.setVisibility(View.GONE);
         myToast = new PWToast(MyApplication.getInstance());
         ll_loading.setVisibility(View.GONE);
-        rl_loading.setVisibility(View.VISIBLE);
+        rl_loading.setVisibility(View.GONE);
         button.setOnClickListener(this);
         lv_loading.setOnItemClickListener(this);
         bindService();
@@ -407,7 +408,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 Intent intent = new Intent();
                 intent.setClass(MyApplication.getInstance(), MyPPActivity.class);
                 startActivity(intent);
-                getActivity().finish();
+                AppManager.getInstance().killActivity(LoadManageActivity.class);
                 break;
 
             case R.id.tv_downloading_select_all:
