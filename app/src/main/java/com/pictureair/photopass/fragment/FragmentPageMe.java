@@ -1,5 +1,6 @@
 package com.pictureair.photopass.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -47,6 +48,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
     private static final String TAG = "FragmentPageMe";
     private TextView profileTV, orderTV, ppTV, pppTV, helpTV, settingTV, downLoadTV, couponTV,opinionsTV;
     private LinearLayout linearLayout1, linearLayout2, linearLayout3;
+    private LinearLayout layout;
     private ImageView headPhoto, icon2, code_pic;
     private TextView name;// hint是条目右边的小标签，根据需要添加信息
     private String userPPCode = "";//用户PP号
@@ -59,13 +61,19 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
 
     private PullToZoomScrollViewEx scrollView;
 
+    private ScaleAnimation scaleAnimation;
+    private AnimationSet set;
+
+    private Activity activity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        activity = getActivity();
         View view = inflater.inflate(R.layout.fragment_me, null);
         scrollView = (PullToZoomScrollViewEx) view.findViewById(R.id.scroll_view);
-        View headView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_head_view, null, false);
-        View zoomView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_zoom_view, null, false);
-        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_content_view, null, false);
+        View headView = LayoutInflater.from(activity).inflate(R.layout.profile_head_view, null, false);
+        View zoomView = LayoutInflater.from(activity).inflate(R.layout.profile_zoom_view, null, false);
+        View contentView = LayoutInflater.from(activity).inflate(R.layout.profile_content_view, null, false);
         scrollView.setHeaderView(headView);
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);
@@ -89,13 +97,13 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         linearLayout2 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line2_ll);
         linearLayout3 = (LinearLayout) scrollView.getPullRootView().findViewById(R.id.line3_ll);
         ViewGroup.LayoutParams params1 = linearLayout1.getLayoutParams();
-        params1.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
+        params1.height = ScreenUtil.getScreenHeight(activity) * 186 / 1136;
         linearLayout1.setLayoutParams(params1);
         ViewGroup.LayoutParams params2 = linearLayout2.getLayoutParams();
-        params2.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
+        params2.height = ScreenUtil.getScreenHeight(activity) * 186 / 1136;
         linearLayout2.setLayoutParams(params2);
         ViewGroup.LayoutParams params3 = linearLayout3.getLayoutParams();
-        params3.height = ScreenUtil.getScreenHeight(getActivity()) * 186 / 1136;
+        params3.height = ScreenUtil.getScreenHeight(activity) * 186 / 1136;
         linearLayout3.setLayoutParams(params3);
 //        headPhoto.setOnClickListener(this);
         profileTV.setOnClickListener(this);
@@ -114,7 +122,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
                 //二维码放大
                 if (!isShowCodePic) {
                     isShowCodePic = true;
-                    showCodePic(code_pic, container);
+                    showCodePic(container);
                 }
             }
         });
@@ -123,8 +131,8 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         userPPCode = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_USER_PP, "");
         qrCodeUrl = Common.BARCODEURL + userPPCode;
 
-        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(getActivity()),
-                (int) (4.0F * (ScreenUtil.getScreenHeight(getActivity()) / 16.0F)) + ScreenUtil.dip2px(getActivity(), 35));
+        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(ScreenUtil.getScreenWidth(activity),
+                (int) (4.0F * (ScreenUtil.getScreenHeight(activity) / 16.0F)) + ScreenUtil.dip2px(activity, 35));
         scrollView.setHeaderLayoutParams(localObject);
 
         return view;
@@ -157,7 +165,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         }
         avatarUrl = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_HEADPHOTO, null);
         setCodePic();//设置二维码
-        GlideUtil.load(getActivity(), Common.PHOTO_URL + avatarUrl, R.drawable.default_photo, R.drawable.default_photo, System.currentTimeMillis() + "", headPhoto);
+        GlideUtil.load(activity, Common.PHOTO_URL + avatarUrl, R.drawable.default_photo, R.drawable.default_photo, System.currentTimeMillis() + "", headPhoto);
     }
 
     /**
@@ -168,7 +176,7 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
             if (!qrCodeUrl.isEmpty()) {
                 try {
                     //生成二维码
-                    code_pic.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 5));
+                    code_pic.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(activity) / 5));
                     isCodePic = true;
                 } catch (WriterException e) {
                     // TODO Auto-generated catch block
@@ -261,15 +269,25 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
      *
      * @param viewGroup
      */
-    private void showCodePic(ImageView codePicView, ViewGroup viewGroup) {
+    private void showCodePic(ViewGroup viewGroup) {
         //半透明背景
+        if (layout == null) {
+            initPicCodeView(viewGroup);
+        }
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        LinearLayout layout = new LinearLayout(viewGroup.getContext());
+        viewGroup.addView(layout, layoutParams);
+        //动画开始
+        layout.startAnimation(set);
+    }
+
+    private void initPicCodeView(final ViewGroup viewGroup) {
+        layout = new LinearLayout(activity);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
         layout.setBackgroundResource(R.color.black_alpha_60);
         //边框 存放二维码/文字
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.show_code_layout, null);
+        View view = LayoutInflater.from(activity).inflate(R.layout.show_code_layout, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.code_pic_iv);
         TextView textView = (TextView) view.findViewById(R.id.code_tv);
         //初始化ppp号码
@@ -279,42 +297,31 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         }
         textView.setText(ppCode);
         try {
-            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(getActivity()) / 2));
+            imageView.setImageBitmap(AppUtil.createQRCode(qrCodeUrl, ScreenUtil.getScreenWidth(activity) / 2));
         } catch (WriterException e) {
             e.printStackTrace();
         }
         ViewGroup.LayoutParams layoutParams1 = imageView.getLayoutParams();
-        layoutParams1.width = ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2;
-        layoutParams1.height = ScreenUtil.getScreenWidth(viewGroup.getContext()) / 2;
+        layoutParams1.width = ScreenUtil.getScreenWidth(activity) / 2;
+        layoutParams1.height = ScreenUtil.getScreenWidth(activity) / 2;
         imageView.setLayoutParams(layoutParams1);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         viewParams.gravity = Gravity.CENTER;
-        viewParams.setMargins(ScreenUtil.dip2px(viewGroup.getContext(), 40), 0, ScreenUtil.dip2px(viewGroup.getContext(), 40), 0);
+        viewParams.setMargins(ScreenUtil.dip2px(activity, 40), 0, ScreenUtil.dip2px(activity, 40), 0);
         layout.addView(view, viewParams);
 
-        viewGroup.addView(layout, layoutParams);
-        //动画开始
-        startAnimation(viewGroup, layout);
-    }
-
-    /**
-     * 开始动画（从中间放大）
-     *
-     * @param viewGroup
-     * @param layout
-     */
-    private void startAnimation(final ViewGroup viewGroup, final LinearLayout layout) {
-        final ScaleAnimation scaleAnimation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setInterpolator(new LinearInterpolator());
         scaleAnimation.setRepeatCount(0);
         scaleAnimation.setFillAfter(true);
-        final AnimationSet set = new AnimationSet(false);
+
+        set = new AnimationSet(false);
         set.setFillAfter(true);
         set.addAnimation(scaleAnimation);
         set.setDuration(300);
-        layout.startAnimation(set);
+
         //点击屏幕取消
         layout.setOnClickListener(new OnClickListener() {
             @Override
@@ -343,5 +350,11 @@ public class FragmentPageMe extends BaseFragment implements OnClickListener {
         super.onHiddenChanged(hidden);
         hasHidden = hidden;
         PictureAirLog.out("onHiddenChanged---->me" + hidden);
+        if (hidden) {//隐藏发现页面
+            PictureAirLog.out("hide me---->");
+            if (layout != null) {//如果二维码框现实中，则关闭
+                layout.performClick();
+            }
+        }
     }
 }

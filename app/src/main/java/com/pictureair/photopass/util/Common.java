@@ -33,10 +33,10 @@ public class Common {
     /**
      * 域名线上服务器
      */
-//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn:3006";
+//    public static final String BASE_URL_TEST = "http://api.disneyphotopass.com.cn/photoPass";
 //    public static final String PHOTO_URL = "http://www.disneyphotopass.com.cn:4000/";
-//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/alipayNotify";//alipay的异步通知URL
-//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn:3006/api/weChatNotify";//wechat的异步通知URL
+//    public static final String ALIPAY_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/alipayNotify";//alipay的异步通知URL
+//    public static final String WECHAT_NOTIFY = "http://api.disneyphotopass.com.cn/photoPass/api/weChatNotify";//wechat的异步通知URL
 
 
     public static final String BARCODEURL = "http://www.disneyphotopass.com.cn?src=pp&vid=";

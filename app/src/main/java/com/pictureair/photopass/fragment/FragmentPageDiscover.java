@@ -1,6 +1,7 @@
 package com.pictureair.photopass.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -102,6 +103,8 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
     private static final int REQUEST_LOCATION_PERMISSION = 2;
     private boolean mIsAskLocationPermission = false;
 
+    private Activity activity;
+
     private final Handler fragmentPageDiscoverHandler = new FragmentPageDiscoverHandler(this);
 
     private static class FragmentPageDiscoverHandler extends Handler{
@@ -129,7 +132,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         switch (msg.what) {
             case API1.GET_ALL_LOCATION_FAILED:
                 PictureAirLog.out("get location failed");
-                String locationCache = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
+                String locationCache = ACache.get(activity).getAsString(Common.DISCOVER_LOCATION);
                 fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
                 break;
 
@@ -140,7 +143,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 if (msg.obj != null) {
                     locationList.addAll(
                             AppUtil.getLocation(
-                                    getActivity().getApplicationContext(),
+                                    activity,
                                     msg.obj.toString(),
                                     false));
                 }
@@ -201,7 +204,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             case FINISH_LOADING:
                 if (discoverLocationAdapter == null) {
                     PictureAirLog.out("discover adapter is null");
-                    discoverLocationAdapter = new DiscoverLocationAdapter(locationList, getActivity().getApplicationContext(), fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
+                    discoverLocationAdapter = new DiscoverLocationAdapter(locationList, activity, fragmentPageDiscoverHandler, locationUtil.mapLocation, rotate_degree);
                     discoverLocationAdapter.setOnUpdateLocationListener(FragmentPageDiscover.this);
                     discoverListView.setAdapter(discoverLocationAdapter);
                     discoverListView.setOnScrollListener(new DiscoverOnScrollListener());
@@ -250,21 +253,12 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
                 PictureAirLog.out("onclick with reload");
                 locationList.clear();
                 favoriteList.clear();
-//				dialog = CustomProgressDialog.show(getActivity(), getString(R.string.is_loading), false, null);
-                API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
-//				if (ACache.get(getActivity()).getAsString(Common.LOCATION_INFO) == null) {//地址获取失败
-//					API1.getLocationInfo(getActivity(),handler);//获取所有的location
-//				}else {//地址获取成功，但是照片获取失败
-//					Message message = handler.obtainMessage();
-//					message.what = API1.GET_LOCATION_SUCCESS;
-//					message.obj = ACache.get(getActivity()).getAsString(Common.LOCATION_INFO);
-//					handler.sendMessage(message);
-//				}
+                API1.getLocationInfo(activity, MyApplication.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
                 break;
 
             //收藏地点失败
             case API1.EDIT_FAVORITE_LOCATION_FAILED:
-                id = ReflectionUtil.getStringId(getActivity(), msg.arg1);
+                id = ReflectionUtil.getStringId(activity, msg.arg1);
                 myToast.setTextAndShow(id, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -279,6 +273,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        activity = getActivity();
         View view = inflater.inflate(R.layout.fragment_discover, null);
         PictureAirLog.out("discover on create");
 
@@ -303,7 +298,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
         //声明方向传感器
         mySensorEventListener = new MySensorEventListener();
-        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         sensor_orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
         //绑定监听
@@ -315,10 +310,10 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
         //初始化数据
         changeClickEffect(0);
-        offset = ScreenUtil.getScreenWidth(getActivity()) / 4;//偏移量
-        myToast = new PWToast(getActivity());
-        locationUtil = new LocationUtil(getActivity());
-        app = (MyApplication) getActivity().getApplication();
+        offset = ScreenUtil.getScreenWidth(activity) / 4;//偏移量
+        myToast = new PWToast(activity);
+        locationUtil = new LocationUtil(activity);
+        app = (MyApplication) activity.getApplication();
         locationStart = true;
         locationList = new ArrayList<>();
         favoriteList = new ArrayList<>();
@@ -327,21 +322,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
 
         //获取数据
         showPWProgressDialog();
-        PictureAirLog.out("start get lcoation info");
-
-        String expireTime = ACache.get(getActivity()).getAsString(Common.CACHE_LOCATION_TIMER);
-        String locationCache = ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION);
-
-        if (TextUtils.isEmpty(expireTime) || TextUtils.isEmpty(locationCache)) {
-            //超时 或者 没有location数据，需要重新获取
-            //此处不需要直接将location的信息添加时间。因为其他地方没有做为空的处理，做起来也比较麻烦，添加了很多逻辑，因此使用另一个变量来记录时间
-            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
-            ACache.get(getActivity()).put(Common.CACHE_LOCATION_TIMER, "time", ACache.TIME_DAY);//记录访问记录，设置一天缓存时间
-        } else {
-            //直接获取缓存内容
-            fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
-        }
-
+        getLocationInfo();
         return view;
     }
 
@@ -397,8 +378,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             isLoading = false;
             locationStart = true;
             showPWProgressDialog();
-            PictureAirLog.out("start get lcoation info");
-            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
+            getLocationInfo();
             requesLocationPermission();
 
         } else {//隐藏发现页面
@@ -407,6 +387,23 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
             isLoading = false;
             stopService();
 
+        }
+    }
+
+    private void getLocationInfo() {
+        String expireTime = ACache.get(activity).getAsString(Common.CACHE_LOCATION_TIMER);
+        String locationCache = ACache.get(activity).getAsString(Common.DISCOVER_LOCATION);
+
+        if (TextUtils.isEmpty(expireTime) || TextUtils.isEmpty(locationCache)) {
+            //超时 或者 没有location数据，需要重新获取
+            //此处不需要直接将location的信息添加时间。因为其他地方没有做为空的处理，做起来也比较麻烦，添加了很多逻辑，因此使用另一个变量来记录时间
+            PictureAirLog.out("start get lcoation info");
+            API1.getLocationInfo(activity, app.getTokenId(), fragmentPageDiscoverHandler);//获取所有的location
+            ACache.get(activity).put(Common.CACHE_LOCATION_TIMER, "time", ACache.TIME_DAY);//记录访问记录，设置一天缓存时间
+        } else {
+            PictureAirLog.out("not get lcoation info");
+            //直接获取缓存内容
+            fragmentPageDiscoverHandler.obtainMessage(API1.GET_ALL_LOCATION_SUCCESS, locationCache).sendToTarget();
         }
     }
 
@@ -633,7 +630,7 @@ public class FragmentPageDiscover extends BaseFragment implements DiscoverLocati
         if (!AppUtil.checkPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
             PictureAirLog.out("1111111");
             mIsAskLocationPermission = true;
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
             return;
         }
         PictureAirLog.out("22222222");

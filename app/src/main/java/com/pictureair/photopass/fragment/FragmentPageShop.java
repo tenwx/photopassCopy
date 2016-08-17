@@ -1,5 +1,6 @@
 package com.pictureair.photopass.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,6 +69,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
     private PWToast newToast;
 
     private boolean hasHidden = false;
+
+    private Activity activity;
 
     private final Handler fragmentPageShopHandler = new FragmentPageShopHandler(this);
 
@@ -165,6 +168,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        activity = getActivity();
         View view = inflater.inflate(R.layout.fragment_shop, null);
         newToast = new PWToast(MyApplication.getInstance());
         //找控件
@@ -175,8 +179,8 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         noNetWorkOrNoCountView = (NoNetWorkOrNoCountView) view.findViewById(R.id.shopNoNetWorkView);
 
         //初始化数据
-        cartCount = SPUtils.getInt(getActivity(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);//获取购物车数量
-        currency = SPUtils.getString(getActivity(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
+        cartCount = SPUtils.getInt(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);//获取购物车数量
+        currency = SPUtils.getString(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);//获取币种
         //设置购物车数量
         if (cartCount <= 0) {
             cartCountTextView.setVisibility(View.INVISIBLE);
@@ -187,7 +191,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         allGoodsList = new ArrayList<>();//初始化商品列表
         showPWProgressDialog();
         PictureAirLog.out("currency---->" + currency);
-        shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, getActivity(), currency);
+        shopGoodListViewAdapter = new ShopGoodListViewAdapter(allGoodsList, activity, currency);
         xListView.setAdapter(shopGoodListViewAdapter);
         //绑定监听
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -213,10 +217,10 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                 }
                 //根据类型判断 为0,虚拟商品（PP+、Digital Photo）
                 if (allGoodsList.get(position).getEntityType() == 0 && allGoodsList.get(position).getName().equals(Common.GOOD_NAME_PPP)) {
-                    intent = new Intent(getActivity(), PPPDetailProductActivity.class);
+                    intent = new Intent(activity, PPPDetailProductActivity.class);
                     intent.putExtra("goods", allGoodsList.get(position));
                 } else {
-                    intent = new Intent(getActivity(), DetailProductActivity.class);
+                    intent = new Intent(activity, DetailProductActivity.class);
                     //从第二张开始显示
                     intent.putExtra("goods", allGoodsList.get(position));
                 }
@@ -240,7 +244,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
             ACache.get(MyApplication.getInstance()).remove(Common.ACACHE_ADDRESS);
         } else {
             //从缓层中获取数据
-            goodsByACache = ACache.get(getActivity()).getAsString(Common.ALL_GOODS);
+            goodsByACache = ACache.get(activity).getAsString(Common.ALL_GOODS);
         }
         PictureAirLog.v(TAG, "initData: goodsByACache: " + goodsByACache);
         if (goodsByACache != null && !goodsByACache.equals("")) {
@@ -277,7 +281,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
                     newToast.setTextAndShow(R.string.no_network, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                Intent intent = new Intent(getActivity(), CartActivity.class);
+                Intent intent = new Intent(activity, CartActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -290,7 +294,7 @@ public class FragmentPageShop extends BaseFragment implements OnClickListener {
         super.onResume();
         if (!hasHidden) {
             PictureAirLog.out("truely resume----->shop");
-            cartCount = SPUtils.getInt(getActivity(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
+            cartCount = SPUtils.getInt(activity, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
             if (cartCount > 0) {
                 cartCountTextView.setVisibility(View.VISIBLE);
                 cartCountTextView.setText(cartCount + "");

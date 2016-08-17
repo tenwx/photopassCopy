@@ -2,7 +2,7 @@ package com.pictureair.photopass.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -154,7 +154,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private ArrayList<DiscoverLocationItemInfo> locationList = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
     private FragmentAdapter fragmentAdapter;
-    private Context context;
+    private Activity context;
     private SimpleDateFormat sdf;
     private String userId;
     private PWToast myToast;
@@ -252,8 +252,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
 
             case API1.GET_ALL_LOCATION_SUCCESS://成功获取地点信息
                 PictureAirLog.d(TAG, "---------->get location success");
+                if (context == null) {
+                    break;
+                }
                 locationList.clear();
-                locationList.addAll(AppUtil.getLocation(getActivity().getApplicationContext(), msg.obj.toString(), true));
+                locationList.addAll(AppUtil.getLocation(context, msg.obj.toString(), true));
                 //检查数据库是否有数据，如果有数据，直接显示，如果没有数据，从网络获取
                 photoPassPicList.clear();
                 photoPassVideoList.clear();
@@ -456,7 +459,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 PictureAirLog.out("onclick with reload");
                 showPWProgressDialog();
                 if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {//地址获取失败
-                    API1.getLocationInfo(getActivity(), MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
+                    API1.getLocationInfo(context, MyApplication.getTokenId(), fragmentPageStoryHandler);//获取所有的location
                 } else {//地址获取成功，但是照片获取失败
                     Message message = fragmentPageStoryHandler.obtainMessage();
                     message.what = API1.GET_ALL_LOCATION_SUCCESS;
@@ -478,7 +481,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                                         if (which == DialogInterface.BUTTON_POSITIVE) {
                                             // 去升级：购买AirPass+页面. 由于失去了airPass详情的界面。故此处，跳转到了airPass＋的界面。
                                             Intent intent = new Intent();
-                                            intent.setClass(getActivity(), MyPPPActivity.class);
+                                            intent.setClass(context, MyPPPActivity.class);
                                             startActivity(intent);
                                         }
                                     }
@@ -520,7 +523,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case PPPPop.POP_SCAN:
-                Intent intent = new Intent(getActivity(), MipCaptureActivity.class);
+                Intent intent = new Intent(context, MipCaptureActivity.class);
                 startActivity(intent);
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();
@@ -528,7 +531,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case PPPPop.POP_INPUT://进入手动输入页面
-                Intent intent2 = new Intent(getActivity(), InputCodeActivity.class);
+                Intent intent2 = new Intent(context, InputCodeActivity.class);
                 startActivity(intent2);
                 if (pppPop.isShowing()) {
                     pppPop.dismiss();
@@ -536,6 +539,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 break;
 
             case API1.GET_GOODS_SUCCESS:
+                if (context == null) {
+                    break;
+                }
                 List<GoodsInfo> allGoodsList1 = new ArrayList<>();
                 GoodsInfo pppGoodsInfo = null;
                 GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
@@ -551,7 +557,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 }
                 dismissPWProgressDialog();
                 //跳转到PP+详情页面
-                Intent intent3 = new Intent(getActivity(), PPPDetailProductActivity.class);
+                Intent intent3 = new Intent(context, PPPDetailProductActivity.class);
                 intent3.putExtra("goods", pppGoodsInfo);
                 startActivity(intent3);
                 break;
@@ -718,13 +724,14 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PictureAirLog.out("on create----->story");
+        context = getActivity();
         isOnCreate = true;
         View view = inflater.inflate(R.layout.fragment_story, null);
-        titleStrings = new String[] {getActivity().getResources().getString(R.string.story_tab_all),
-                getActivity().getResources().getString(R.string.story_tab_photopass),
-                getActivity().getResources().getString(R.string.story_tab_magic),
-                getActivity().getResources().getString(R.string.story_tab_bought),
-                getActivity().getResources().getString(R.string.story_tab_favorite) };
+        titleStrings = new String[] {context.getResources().getString(R.string.story_tab_all),
+                context.getResources().getString(R.string.story_tab_photopass),
+                context.getResources().getString(R.string.story_tab_magic),
+                context.getResources().getString(R.string.story_tab_bought),
+                context.getResources().getString(R.string.story_tab_favorite) };
         //获取控件
         scanIv = (ImageView) view.findViewById(R.id.story_menu_iv);
         scanLayout = (RelativeLayout) view.findViewById(R.id.story_menu_rl);
@@ -750,10 +757,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         //初始化控件
         PictureAirLog.out("dialog-----> in story");
         showPWProgressDialog();
-        context = getActivity();
         pictureAirDbManager = new PictureAirDbManager(getActivity());
         settingUtil = new SettingUtil(pictureAirDbManager);
-        app = (MyApplication) getActivity().getApplication();
+        app = (MyApplication) context.getApplication();
         PictureAirLog.out("current tap---->" + app.fragmentStoryLastSelectedTab);
         indicator.setmSelectedTabIndex(app.fragmentStoryLastSelectedTab);
         userId = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, "");
@@ -798,7 +804,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
         isLoading = true;
         //获取地点信息
         if (TextUtils.isEmpty(ACache.get(getActivity()).getAsString(Common.DISCOVER_LOCATION))) {
-            API1.getLocationInfo(getActivity(), app.getTokenId(), fragmentPageStoryHandler);//获取所有的location
+            API1.getLocationInfo(context, app.getTokenId(), fragmentPageStoryHandler);//获取所有的location
         } else {
             Message message = fragmentPageStoryHandler.obtainMessage();
             message.what = API1.GET_ALL_LOCATION_SUCCESS;
@@ -936,7 +942,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     }
                 }
                 targetMagicPhotoList.clear();
-                targetMagicPhotoList.addAll(AppUtil.getLocalPhotos(getActivity(), Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
+                if (context != null) {
+                    targetMagicPhotoList.addAll(AppUtil.getLocalPhotos(context, Common.PHOTO_SAVE_PATH, Common.ALBUM_MAGIC));
+                }
                 Collections.sort(targetMagicPhotoList);
                 app.scanMagicFinish = true;
             }
@@ -1070,8 +1078,10 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                 public void run() {
                     super.run();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-                    favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                    if (context != null) {
+                        favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
+                                pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                    }
                     fragmentPageStoryHandler.sendEmptyMessage(DEAL_FAVORITE_DATA_SUCCESS);
 
                 }
@@ -1265,8 +1275,11 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
                     Collections.sort(allItemInfoList);//对all进行排序
                     favouritePhotoList.clear();
                     long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-                    favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
-                            pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+                    if (context != null) {
+                        favouritePhotoList.addAll(AppUtil.insterSortFavouritePhotos(
+                                pictureAirDbManager.getFavoritePhotoInfoListFromDB(context, userId, sdf.format(new Date(cacheTime)), locationList, app.getLanguageType())));
+
+                    }
                     PictureAirLog.out("location is ready----->" + favouritePhotoList.size());
                     fragmentPageStoryHandler.sendEmptyMessage(LOAD_COMPLETED);
                 } catch (ParseException e) {
@@ -1446,7 +1459,9 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void getMagicData() throws ParseException {
         PictureAirLog.d(TAG, "----------->get magic photos" + targetMagicPhotoList.size() + "____" + magicItemInfoList.size());
         magicItemInfoList.clear();//添加之前，先清除，防止添加pp/pp+造成数据重复添加
-        magicItemInfoList.addAll(AppUtil.getMagicItemInfoList(getActivity(), sdf, targetMagicPhotoList));
+        if (context != null) {
+            magicItemInfoList.addAll(AppUtil.getMagicItemInfoList(context, sdf, targetMagicPhotoList));
+        }
     }
 
     /**
@@ -1676,22 +1691,22 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
             //扫描按钮
             case R.id.story_menu_rl:
                 if (pppPop == null ) {
-                    pppPop = new PPPPop(getActivity(), fragmentPageStoryHandler, PPPPop.MENU_TYPE_STORY);
+                    pppPop = new PPPPop(context, fragmentPageStoryHandler, PPPPop.MENU_TYPE_STORY);
                 }
 
                 int[] location = new int[2];
                 scanIv.getLocationOnScreen(location);
-                pppPop.showAsDropDown(scanIv, 0, ScreenUtil.dip2px(getActivity(), 15) - 10);
+                pppPop.showAsDropDown(scanIv, 0, ScreenUtil.dip2px(context, 15) - 10);
                 break;
 
             case R.id.story_activate_ppp:
-                i = new Intent(getActivity(), MipCaptureActivity.class);
+                i = new Intent(context, MipCaptureActivity.class);
                 i.putExtra("mode", "ocr");//默认ocr扫描
                 startActivity(i);
                 break;
 
             case R.id.story_no_pp_scan:
-                i = new Intent(getActivity(), MipCaptureActivity.class);
+                i = new Intent(context, MipCaptureActivity.class);
                 startActivity(i);
                 break;
 
@@ -1787,7 +1802,7 @@ public class FragmentPageStory extends BaseFragment implements OnClickListener, 
     private void requesPermission() {
         if (!AppUtil.checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             mIsAskStoragePermission = true;
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+            ActivityCompat.requestPermissions(context,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
             return;
         }
         scanPhotosThread = new ScanPhotosThread(scanMagicPhotoNeedCallBack);

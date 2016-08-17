@@ -289,6 +289,11 @@ public class OrderActivity extends BaseFragmentActivity {
         super.onResume();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+
     //初始化
     private void initView() {
         PictureAirLog.out("initview");

@@ -105,6 +105,11 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
+
+    @Override
     protected void onResume() {
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);

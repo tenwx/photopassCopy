@@ -196,6 +196,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private static final int FRAME_PHOTO_EDIT_DIALOG = 1004;
     private static final int GO_SETTING_DIALOG = 1005;
     private static final int DOWNLOAD_DIALOG = 1006;
+    private static final int GO_DOWNLOAD_ACTIVITY_DIALOG = 1007;
 
     private PWDialog pictureWorksDialog;
 
@@ -1798,13 +1799,19 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
     private void downloadPic() {
         ArrayList<PhotoInfo> list = new ArrayList<PhotoInfo>();
         list.add(photolist.get(mViewPager.getCurrentItem()));
-        Intent intent = new Intent(PreviewPhotoActivity.this,
-                DownloadService.class);
+        Intent intent = new Intent(PreviewPhotoActivity.this, DownloadService.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("photos", list);
         bundle.putInt("prepareDownloadCount",list.size());//该参数用于传递下载的图片数量
         intent.putExtras(bundle);
         startService(intent);
+
+        //弹框提示，可以进去下载管理页面
+        pictureWorksDialog.setPWDialogId(GO_DOWNLOAD_ACTIVITY_DIALOG)
+                .setPWDialogMessage(R.string.edit_story_addto_downloadlist)
+                .setPWDialogNegativeButton(null)
+                .setPWDialogPositiveButton(R.string.reset_pwd_ok)
+                .pwDilogShow();
     }
 
 
@@ -1883,6 +1890,11 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
                 case DOWNLOAD_DIALOG:
                     downloadPic();
+                    break;
+
+                case GO_DOWNLOAD_ACTIVITY_DIALOG:
+                    Intent i = new Intent(PreviewPhotoActivity.this, LoadManageActivity.class);
+                    startActivity(i);
                     break;
 
                 default:
