@@ -496,8 +496,8 @@ public class EditActivityAdapter extends BaseAdapter implements PWDialog.OnPWDia
             }
 
             @Override
-            public void onProgress(long bytesWritten, long totalSize,boolean done) {
-                super.onProgress(bytesWritten, totalSize,done);
+            public void onProgress(long bytesWritten, long totalSize) {
+                super.onProgress(bytesWritten, totalSize);
                 if (firstTime) {
                     firstFileProgress = bytesWritten * 50 / totalSize;
                 } else {

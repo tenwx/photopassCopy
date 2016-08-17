@@ -1,15 +1,10 @@
 package com.pictureair.photopass.util;
 
-import android.os.Looper;
-import android.util.Log;
-
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.entity.BasicResult;
 import com.pictureair.photopass.http.ApiFactory;
 import com.pictureair.photopass.http.CallTask;
 import com.pictureair.photopass.http.PhotoPassAuthApi;
-import com.pictureair.photopass.http.RetrofitClient;
-import com.pictureair.photopass.http.progress.DownloadProgresshandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -17,6 +12,7 @@ import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import pl.gumyns.retrofit_progress.ProgressListener;
 
 /**
  * Created by pengwu on 16/6/29.
@@ -34,17 +30,13 @@ public class HttpUtil1 {
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
-            @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
-            }
-        });
 
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.get(url));
+        CallTask task = new CallTask<BasicResult<JSONObject>>(request.get(url, new ProgressListener() {
+            @Override
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
+            }
+        }));
         task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
             @Override
             public void onSuccess(BasicResult<JSONObject> result) {
@@ -71,17 +63,12 @@ public class HttpUtil1 {
 
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<BasicResult<JSONObject>>(request.get(url, params, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.get(url,params));
+        }));
         task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
             @Override
             public void onSuccess(BasicResult<JSONObject> result) {
@@ -106,17 +93,12 @@ public class HttpUtil1 {
     public static CallTask asyncPost(final String url,final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<BasicResult<JSONObject>>(request.post(url, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress", String.format("%d%% done\n", (100 * progress) / total));
-                Log.e("done", "--->" + String.valueOf(done));
-                callback.onProgress(progress, total, done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.post(url));
+        }));
         task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
             @Override
             public void onSuccess(BasicResult<JSONObject> result) {
@@ -142,17 +124,12 @@ public class HttpUtil1 {
     public static CallTask asyncPost(final String url,Map params,final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<BasicResult<JSONObject>>(request.post(url, params, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.post(url,params));
+        }));
         task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
             @Override
             public void onSuccess(BasicResult<JSONObject> result) {
@@ -178,17 +155,12 @@ public class HttpUtil1 {
     public static CallTask asyncDelete(final String url,Map params,final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<BasicResult<JSONObject>>(request.delete(url, params, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.delete(url,params));
+        }));
         task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
             @Override
             public void onSuccess(BasicResult<JSONObject> result) {
@@ -214,17 +186,12 @@ public class HttpUtil1 {
     public static CallTask asyncPut(final String url,Map params,final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<BasicResult<JSONObject>>(request.put(url, params, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<BasicResult<JSONObject>>(request.put(url,params));
+        }));
         task.handleResponse(new ResponseCallback<BasicResult<JSONObject>>() {
             @Override
             public void onSuccess(BasicResult<JSONObject> result) {
@@ -250,17 +217,12 @@ public class HttpUtil1 {
     public static CallTask asyncDownloadBinaryData(final String url,final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<ResponseBody>(request.download(url, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<ResponseBody>(request.download(url));
+        }));
         task.handleResponse(new ResponseCallback<ResponseBody>() {
             @Override
             public void onSuccess(ResponseBody result) {
@@ -301,17 +263,12 @@ public class HttpUtil1 {
     public static CallTask asyncDownloadBinaryData(final String url,Map params,final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<ResponseBody>(request.download(url, params, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<ResponseBody>(request.download(url,params));
+        }));
         task.handleResponse(new ResponseCallback<ResponseBody>() {
             @Override
             public void onSuccess(ResponseBody result) {
@@ -352,17 +309,12 @@ public class HttpUtil1 {
     public static CallTask asyncUpload(final String url, Map<String,RequestBody> params, final HttpCallback callback) {
         PhotoPassAuthApi request = ApiFactory.INSTANCE.getPhotoPassAuthApi();
 
-        RetrofitClient.INSTANCE.getFileDownInterceptor().setProgressHandler(new DownloadProgresshandler() {
+        CallTask task = new CallTask<JSONObject>(request.upload(url, params, new ProgressListener() {
             @Override
-            protected void onProgress(long progress, long total, boolean done) {
-                Log.e("是否在主线程中运行", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-                Log.e("onProgress",String.format("%d%% done\n",(100 * progress) / total));
-                Log.e("done","--->" + String.valueOf(done));
-                callback.onProgress(progress,total,done);
+            public void update(long bytesRead, long contentLength) {
+                callback.onProgress(bytesRead,contentLength);
             }
-        });
-
-        CallTask task = new CallTask<JSONObject>(request.upload(url,params));
+        }));
         task.handleResponse(new ResponseCallback<JSONObject>() {
             @Override
             public void onSuccess(JSONObject result) {

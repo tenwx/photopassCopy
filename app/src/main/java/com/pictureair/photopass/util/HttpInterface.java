@@ -57,6 +57,6 @@ public interface HttpInterface {
      * @param bytesWritten long
      * @param totalSize    long
      */
-    void onProgress(long bytesWritten, long totalSize, boolean done);
+    void onProgress(long bytesWritten, long totalSize);
 
 }

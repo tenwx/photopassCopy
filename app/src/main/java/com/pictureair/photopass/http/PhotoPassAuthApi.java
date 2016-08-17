@@ -9,11 +9,15 @@ import java.util.Map;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import pl.gumyns.retrofit_progress.ProgressListener;
+import pl.gumyns.retrofit_progress.annotation.DownloadProgress;
+import pl.gumyns.retrofit_progress.annotation.UploadProgress;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -40,7 +44,7 @@ public interface PhotoPassAuthApi {
      *  @GET("auth/path")方法使用不方便
      * */
     @GET
-    Call<BasicResult<JSONObject>> get(@Url String url);
+    Call<BasicResult<JSONObject>> get(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步get请求，有请求参数
@@ -49,7 +53,7 @@ public interface PhotoPassAuthApi {
      * @param params 请求参数 hashmap键值对
      * */
     @GET
-    Call<BasicResult<JSONObject>> get(@Url String url, @QueryMap Map<String,Object> params);
+    Call<BasicResult<JSONObject>> get(@Url String url, @QueryMap Map<String,Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
 
     /**
@@ -58,7 +62,7 @@ public interface PhotoPassAuthApi {
      * @param  url 请求url
      * */
     @POST
-    Call<BasicResult<JSONObject>> post(@Url String url);
+    Call<BasicResult<JSONObject>> post(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步post请求，有请求参数
@@ -68,7 +72,7 @@ public interface PhotoPassAuthApi {
      * */
     @FormUrlEncoded
     @POST
-    Call<BasicResult<JSONObject>> post(@Url String url, @FieldMap Map<String,Object> params);
+    Call<BasicResult<JSONObject>> post(@Url String url, @FieldMap Map<String,Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步delete请求，有请求参数
@@ -77,7 +81,7 @@ public interface PhotoPassAuthApi {
      * @param params 请求参数 hashmap键值对
      * */
     @DELETE
-    Call<BasicResult<JSONObject>> delete(@Url String url, @QueryMap Map<String,Object> params);
+    Call<BasicResult<JSONObject>> delete(@Url String url, @QueryMap Map<String,Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步put请求，有请求参数
@@ -87,7 +91,7 @@ public interface PhotoPassAuthApi {
      * */
     @FormUrlEncoded
     @PUT
-    Call<BasicResult<JSONObject>> put(@Url String url, @FieldMap Map<String,Object> params);
+    Call<BasicResult<JSONObject>> put(@Url String url, @FieldMap Map<String,Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
 
     /**
@@ -96,7 +100,7 @@ public interface PhotoPassAuthApi {
      * @param  url 请求url
      * */
     @GET
-    Call<ResponseBody> download(@Url String url);
+    Call<ResponseBody> download(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     /**
      * 异步get请求，有请求参数
@@ -105,9 +109,9 @@ public interface PhotoPassAuthApi {
      * @param params 请求参数 hashmap键值对
      * */
     @GET
-    Call<ResponseBody> download(@Url String url, @QueryMap Map<String,Object> params);
+    Call<ResponseBody> download(@Url String url, @QueryMap Map<String,Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
     @Multipart
     @POST
-    Call<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String,RequestBody> params);
+    Call<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String,RequestBody> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
 }

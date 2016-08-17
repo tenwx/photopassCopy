@@ -40,7 +40,7 @@ public abstract class HttpCallback implements HttpInterface {
     }
 
     @Override
-    public void onProgress(long bytesWritten, long totalSize, boolean done) {
+    public void onProgress(long bytesWritten, long totalSize) {
 
     }
 }

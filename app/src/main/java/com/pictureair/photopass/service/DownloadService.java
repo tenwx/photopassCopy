@@ -515,8 +515,8 @@ public class DownloadService extends Service {
                 }
 
                 @Override
-                public void onProgress(long bytesWritten, long totalSize,boolean done) {
-                    super.onProgress(bytesWritten, totalSize,done);
+                public void onProgress(long bytesWritten, long totalSize) {
+                    super.onProgress(bytesWritten, totalSize);
                     double currentSize = bytesWritten/1000d/1000d;
                     double total = totalSize/1000d/1000d;
                     String c = AppUtil.formatData(currentSize);
