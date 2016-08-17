@@ -307,7 +307,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 Intent i = new Intent();
                 i.setClass(MyApplication.getInstance(), MyPPActivity.class);
                 startActivity(i);
-                AppManager.getInstance().killActivity(LoadManageActivity.class);
                 break;
             case R.id.tv_load_success_select_all:
                 if (photos == null || photos.size() ==0 || adapter == null) return;

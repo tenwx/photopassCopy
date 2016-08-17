@@ -408,7 +408,6 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 Intent intent = new Intent();
                 intent.setClass(MyApplication.getInstance(), MyPPActivity.class);
                 startActivity(intent);
-                AppManager.getInstance().killActivity(LoadManageActivity.class);
                 break;
 
             case R.id.tv_downloading_select_all:
