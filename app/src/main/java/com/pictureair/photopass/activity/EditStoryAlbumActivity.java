@@ -621,6 +621,7 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					startDownload(true);
 
 				} else if (dialogId == GO_DOWNLOAD_ACTIVITY_DIALOG) {
+					AppManager.getInstance().killActivity(LoadManageActivity.class);
 					Intent i = new Intent(EditStoryAlbumActivity.this, LoadManageActivity.class);
 					startActivity(i);
 					AppManager.getInstance().killActivity(MyPPActivity.class);
