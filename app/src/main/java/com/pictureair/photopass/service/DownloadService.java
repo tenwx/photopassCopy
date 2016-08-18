@@ -478,7 +478,7 @@ public class DownloadService extends Service {
             String downloadURL = Common.PHOTO_URL + fileStatus.getUrl();
             Map<String,Object> params = new HashMap<>();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-            params.put(Common.PHOTOIDS, fileStatus.getPhotoId());
+            params.put(Common.PHOTOIDS, AppUtil.getCorrectHttpParam(fileStatus.getPhotoId()));
             HttpUtil1.asyncDownloadBinaryData(downloadURL, params, new HttpCallback() {
                 long startTime = System.currentTimeMillis();
                 long lastTime = startTime;

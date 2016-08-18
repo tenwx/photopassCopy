@@ -377,7 +377,7 @@ public class CartInfoAdapter extends BaseAdapter {
             PictureAirLog.v(TAG, "modifyCart");
             Map<String,Object> params = new HashMap<>();
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-            params.put(Common.GOODS_KEY, cartItemInfo.getGoodsKey());
+            params.put(Common.GOODS_KEY, AppUtil.getCorrectHttpParam(cartItemInfo.getGoodsKey()));
             params.put(Common.QTY, count);
             String url = Common.BASE_URL_TEST + Common.ADD_TO_CART + "/" + cartItemInfo.getCartId();
             HttpUtil1.asyncPut(url, params, new HttpCallback() {

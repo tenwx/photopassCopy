@@ -232,7 +232,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                                 RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
                                 params.put("file\";filename=\""+file.getName(), fileBody);
                                 params.put(Common.USERINFO_TOKENID,requestParams);
-                                API1.SetPhoto(params, makeGiftHandler, upload_index, progressBarPop);
+                                API1.SetPhoto(params, makeGiftHandler, upload_index);
                             } catch (FileNotFoundException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
@@ -333,6 +333,12 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     buyImg.setImageResource(R.drawable.addtocart);// 设置buyImg的图片
                     setAnim(buyImg);// 开始执行动画
                 }
+                break;
+            case API1.UPLOAD_PHOTO_Progress:
+                Bundle bundle = msg.getData();
+                long bytesWritten = bundle.getLong("bytesWritten");
+                long totalSize = bundle.getLong("totalSize");
+                progressBarPop.setProgress(bytesWritten,totalSize);
                 break;
 
 

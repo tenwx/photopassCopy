@@ -111,5 +111,5 @@ public interface PhotoPassAuthApi {
 
     @Multipart
     @POST
-    Call<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String,Object> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
+    Call<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String,RequestBody> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
 }

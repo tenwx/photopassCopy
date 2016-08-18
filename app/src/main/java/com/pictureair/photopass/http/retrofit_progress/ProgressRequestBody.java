@@ -44,4 +44,9 @@ final class ProgressRequestBody extends RequestBody {
       requestBody.writeTo(progressSink);
       progressSink.flush();
    }
+
+   @Override
+   public long contentLength() throws IOException {
+      return requestBody.contentLength();
+   }
 }

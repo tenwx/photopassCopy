@@ -334,16 +334,16 @@ public class DealCodeUtil {
 	private void getInfo(String code, final String type){
 		Map<String,Object> params = new HashMap<>();
 		PictureAirLog.out("scan result=" + code + ">>" + type);
-		params.put(Common.USERINFO_TOKENID, AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0)));
+		params.put(Common.USERINFO_TOKENID, AppUtil.getCorrectHttpParam(AESKeyHelper.decryptString(sharedPreferences.getString(Common.USERINFO_TOKENID, ""), PWJniUtil.getAESKey(Common.APP_TYPE_SHDRPP, 0))));
 		String urlString;
 		if ("pp".equals(type)) {
 			PictureAirLog.out("pp");
-			params.put(Common.CUSTOMERID, code);
+			params.put(Common.CUSTOMERID, AppUtil.getCorrectHttpParam(code));
 			urlString = Common.BASE_URL_TEST + Common.ADD_CODE_TO_USER;
 
 		}else {
 			PictureAirLog.out("ppp or coupon");
-			params.put(Common.PPPCode, code);
+			params.put(Common.PPPCode, AppUtil.getCorrectHttpParam(code));
 			urlString = Common.BASE_URL_TEST+Common.BIND_PPP_TO_USER;
 
 		}

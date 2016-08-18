@@ -25,13 +25,17 @@ public class CallTask<T>{
         mCall.enqueue(new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
-                getAPISuccess(response,httpCallback);
+                if (!call.isCanceled()) {
+                    getAPISuccess(response, httpCallback);
+                }
             }
 
             @Override
             public void onFailure(Call<T> call, Throwable throwable) {
                 PictureAirLog.e(Tag, throwable.toString());
-                httpCallback.onFailure(HTTP_ERROR);
+                if (!call.isCanceled()){
+                    httpCallback.onFailure(HTTP_ERROR);
+                }
             }
         });
     }
@@ -65,6 +69,8 @@ public class CallTask<T>{
                         break;
                 }
             }
+        }else if(response.errorBody() != null){
+            httpCallback.onFailure(HTTP_ERROR);
         }
     }
 

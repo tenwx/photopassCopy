@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.pictureair.photopass.entity.CartItemInfo;
 import com.pictureair.photopass.entity.CartPhotosInfo;
 import com.pictureair.photopass.entity.GoodsInfo;
 import com.pictureair.photopass.entity.PhotoInfo;
+import com.pictureair.photopass.http.CallTask;
 import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -128,7 +130,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                                     RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
                                     params.put("file\";filename=\""+file.getName(), fileBody);
                                     params.put(Common.USERINFO_TOKENID,requestParams);
-                                    API1.SetPhoto(params, handler, upload_index, dialog);
+                                    API1.SetPhoto(params, handler, upload_index);
                                 } catch (FileNotFoundException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -200,7 +202,12 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //				Toast.makeText(PreviewproductActivity.this, "Upload photo failed", Common.TOAST_SHORT_TIME).show();
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
-
+                case API1.UPLOAD_PHOTO_Progress:
+                    Bundle bundle = msg.getData();
+                    long bytesWritten = bundle.getLong("bytesWritten");
+                    long totalSize = bundle.getLong("totalSize");
+                    dialog.setProgress(bytesWritten,totalSize);
+                    break;
                 default:
                     break;
             }

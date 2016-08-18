@@ -122,6 +122,13 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 finish();
                 break;
+            case API1.UPLOAD_PHOTO_Progress:
+                Bundle bundle = msg.getData();
+                long bytesWritten = bundle.getLong("bytesWritten");
+                long totalSize = bundle.getLong("totalSize");
+                dialog.setProgress(bytesWritten,totalSize);
+                break;
+
             default:
                 break;
         }
@@ -205,7 +212,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                         params.put(Common.USERINFO_TOKENID,requestParams1);
                         params.put("updateType",requestParams2);
 
-                        API1.updateUserImage(params, setHeadPhotoHandler, 0, dialog);
+                        API1.updateUserImage(params, setHeadPhotoHandler, 0);
                     } catch (FileNotFoundException ee) {
                         // TODO Auto-generated catch block
                         ee.printStackTrace();

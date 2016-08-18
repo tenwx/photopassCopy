@@ -5,6 +5,7 @@ import com.pictureair.photopass.entity.BasicResult;
 import com.pictureair.photopass.http.ApiFactory;
 import com.pictureair.photopass.http.CallTask;
 import com.pictureair.photopass.http.PhotoPassAuthApi;
+import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -12,7 +13,6 @@ import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import pl.gumyns.retrofit_progress.ProgressListener;
 
 /**
  * Created by pengwu on 16/6/29.

@@ -261,6 +261,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
                 break;
 
+            case API1.UPLOAD_PHOTO_Progress:
+                Bundle bundle = msg.getData();
+                long bytesWritten = bundle.getLong("bytesWritten");
+                long totalSize = bundle.getLong("totalSize");
+                customProgressBarPop.setProgress(bytesWritten,totalSize);
+                break;
+
             default:
                 break;
         }
@@ -808,7 +815,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                     RequestBody fileBody = RequestBody.create(MediaType.parse("application/octet-stream"),file);
                     params.put("file\";filename=\""+file.getName(), fileBody);
                     params.put(Common.USERINFO_TOKENID,requestParams);
-                    API1.SetPhoto(params, submitOrderHandler, requestCode, customProgressBarPop);
+                    API1.SetPhoto(params, submitOrderHandler, requestCode);
 //					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
                     customProgressBarPop.show(0);
                 } catch (FileNotFoundException e) {
