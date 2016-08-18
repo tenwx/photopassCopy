@@ -1,4 +1,4 @@
-package pl.gumyns.retrofit_progress;
+package com.pictureair.photopass.http.retrofit_progress;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

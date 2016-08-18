@@ -214,6 +214,7 @@ public class API1 {
 
     public static final int UPLOAD_PHOTO_SUCCESS = 5061;
     public static final int UPLOAD_PHOTO_FAILED = 5060;
+    public static final int UPLOAD_PHOTO_Progress = 5062;
 
     public static final int GET_PPP_SUCCESS = 5071;
     public static final int GET_PPP_FAILED = 5070;
@@ -939,7 +940,13 @@ public class API1 {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
-                diaBarPop.setProgress(bytesWritten, totalSize);
+                Message msg = handler.obtainMessage(UPLOAD_PHOTO_Progress);
+                Bundle bundle = new Bundle();
+                bundle.putLong("bytesWritten",bytesWritten);
+                bundle.putLong("totalSize",totalSize);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+//                diaBarPop.setProgress(bytesWritten, totalSize);
             }
         });
     }

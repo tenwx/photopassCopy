@@ -1,12 +1,13 @@
-package pl.gumyns.retrofit_progress;
+package com.pictureair.photopass.http.retrofit_progress;
+
+import com.pictureair.photopass.http.retrofit_progress.annotation.DownloadProgress;
+import com.pictureair.photopass.http.retrofit_progress.annotation.UploadProgress;
 
 import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import pl.gumyns.retrofit_progress.annotation.DownloadProgress;
-import pl.gumyns.retrofit_progress.annotation.UploadProgress;
 
 /**
  * Okhttp3 interceptor.

@@ -3,15 +3,14 @@ package com.pictureair.photopass.http;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pictureair.photopass.entity.BasicResult;
+import com.pictureair.photopass.http.retrofit_progress.ProgressListener;
+import com.pictureair.photopass.http.retrofit_progress.annotation.DownloadProgress;
+import com.pictureair.photopass.http.retrofit_progress.annotation.UploadProgress;
 
 import java.util.Map;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import pl.gumyns.retrofit_progress.ProgressListener;
-import pl.gumyns.retrofit_progress.annotation.DownloadProgress;
-import pl.gumyns.retrofit_progress.annotation.UploadProgress;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
@@ -21,7 +20,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
@@ -113,5 +111,5 @@ public interface PhotoPassAuthApi {
 
     @Multipart
     @POST
-    Call<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String,RequestBody> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
+    Call<BasicResult<JSONObject>> upload(@Url String url, @PartMap Map<String,Object> params, @UploadProgress @Header(UploadProgress.HEADER) ProgressListener listener);
 }

@@ -1,4 +1,4 @@
-package converter.fastjson;
+package com.pictureair.photopass.http.fastjson;
 
 import com.alibaba.fastjson.JSON;
 

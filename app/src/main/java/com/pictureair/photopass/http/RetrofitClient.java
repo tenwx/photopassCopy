@@ -2,15 +2,15 @@ package com.pictureair.photopass.http;
 
 
 
+import com.pictureair.photopass.http.fastjson.FastjsonConverterFactory;
+import com.pictureair.photopass.http.retrofit_progress.ProgressConverterFactory;
+import com.pictureair.photopass.http.retrofit_progress.ProgressInterceptor;
+import com.pictureair.photopass.http.retrofit_progress.ProgressListenerPool;
 import com.pictureair.photopass.util.Common;
 
 import java.util.concurrent.TimeUnit;
 
-import converter.fastjson.FastjsonConverterFactory;
 import okhttp3.OkHttpClient;
-import pl.gumyns.retrofit_progress.ProgressConverterFactory;
-import pl.gumyns.retrofit_progress.ProgressInterceptor;
-import pl.gumyns.retrofit_progress.ProgressListenerPool;
 import retrofit2.Retrofit;
 
 /**

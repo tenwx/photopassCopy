@@ -1,11 +1,12 @@
-package pl.gumyns.retrofit_progress;
+package com.pictureair.photopass.http.retrofit_progress;
+
+import com.pictureair.photopass.http.retrofit_progress.annotation.DownloadProgress;
+import com.pictureair.photopass.http.retrofit_progress.annotation.UploadProgress;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import pl.gumyns.retrofit_progress.annotation.DownloadProgress;
-import pl.gumyns.retrofit_progress.annotation.UploadProgress;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
