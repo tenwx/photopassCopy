@@ -18,7 +18,6 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.activity.DownloadPhotoPreviewActivity;
@@ -33,7 +32,6 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.HttpCallback;
-import com.pictureair.photopass.util.ResponseCallback;
 import com.pictureair.photopass.util.HttpUtil1;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.UmengUtil;

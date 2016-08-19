@@ -21,31 +21,19 @@ import retrofit2.Retrofit;
 public enum  RetrofitClient {
     INSTANCE;
     private OkHttpClient client;
-    private OkHttpClient.Builder builder;
 
-    /**
-     * 网络请求拦截，切换baserul的时候使用
-     * */
-    private DynamicBaseUrlInterceptor interceptor;
     private Retrofit retrofit;
     private ProgressListenerPool pool;
 
     /**
      * 处理下载进度的网络拦截
      * */
-//    private FileDownInterceptor fileDownInterceptor;
-
     RetrofitClient(){
-//        interceptor = new DynamicBaseUrlInterceptor();
-//        fileDownInterceptor = new FileDownInterceptor();
-//        builder = ProgressHelper.addProgress(null);
         pool = new ProgressListenerPool();
         client = new OkHttpClient.Builder()
-//                .addInterceptor(interceptor)
-//                .addNetworkInterceptor(fileDownInterceptor)
                 .addInterceptor(new ProgressInterceptor(pool))
                 .connectTimeout(60, TimeUnit.SECONDS)// 连接超时时间设置
-                .readTimeout(20, TimeUnit.SECONDS)// 读取超时时间设置
+                .readTimeout(60, TimeUnit.SECONDS)// 读取超时时间设置
                 .retryOnConnectionFailure(true)// 失败重试
                 .build();
         retrofit = new Retrofit.Builder()
@@ -58,9 +46,5 @@ public enum  RetrofitClient {
     public Retrofit getRetrofit(){
         return  retrofit;
     }
-
-//    public FileDownInterceptor getFileDownInterceptor() {
-//        return fileDownInterceptor;
-//    }
 
 }

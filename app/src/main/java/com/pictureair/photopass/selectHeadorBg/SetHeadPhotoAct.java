@@ -13,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;

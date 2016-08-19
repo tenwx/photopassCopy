@@ -149,10 +149,6 @@
 -dontwarn com.nostra13.universalimageloader.**
 -keep class com.nostra13.universalimageloader.** { *; }
 
-##异步网络请求避免混淆
--dontwarn android-async-http-1.4.8.jar.**
--keep class com.loopj.android.http.**{*;}
-
 #不混淆org.apache.http.legacy.jar
 -dontwarn android.net.compatibility.**
 -dontwarn android.net.http.**

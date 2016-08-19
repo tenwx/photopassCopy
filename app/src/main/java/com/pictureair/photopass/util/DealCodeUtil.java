@@ -9,7 +9,6 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.jni.ciphermanager.PWJniUtil;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.entity.CartItemInfo;
