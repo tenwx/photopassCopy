@@ -223,10 +223,10 @@ public class DownloadService extends Service {
     }
 
     private void addToDownloadList(DownloadFileStatus fileStatus){
-        if (cacheList.get(fileStatus.getPhotoId()) == null) {
+//        if (cacheList.get(fileStatus.getPhotoId()) == null) {
             downloadList.add(fileStatus);
-            cacheList.put(fileStatus.getPhotoId(),fileStatus);
-        }
+//            cacheList.put(fileStatus.getPhotoId(),fileStatus);
+//        }
     }
 
     private void startNotification(){

@@ -183,11 +183,17 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 if (msg.obj != null) {
                     photos = (List<PhotoDownLoadInfo>)(msg.obj);
                     if (adapter != null){
-                        ll_load_success.setVisibility(View.VISIBLE);
-                        rl_load_success.setVisibility(View.GONE);
-                        adapter.setPhotos(photos);
-                        adapter.notifyDataSetChanged();
-                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1,false));
+                        if (photos != null && photos.size() >0) {
+                            ll_load_success.setVisibility(View.VISIBLE);
+                            rl_load_success.setVisibility(View.GONE);
+                            adapter.setPhotos(photos);
+                            adapter.notifyDataSetChanged();
+                            EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1, false));
+                        }else{
+                            rl_load_success.setVisibility(View.VISIBLE);
+                            ll_load_success.setVisibility(View.GONE);
+                            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
+                        }
                     }else{
                         if (photos != null && photos.size()>0) {
                             ll_load_success.setVisibility(View.VISIBLE);
@@ -228,7 +234,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 break;
         }
     }
-
 
     @Nullable
     @Override
@@ -399,6 +404,9 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         }
         adapter.setPhotos(photos);
         adapter.notifyDataSetChanged();
+        if (selectPhotos != null) {
+            selectPhotos.clear();
+        }
     }
 
     public void getDataBackground(){
