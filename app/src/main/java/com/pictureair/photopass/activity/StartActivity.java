@@ -3,9 +3,13 @@ package com.pictureair.photopass.activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pictureair.photopass.MyApplication;
@@ -38,6 +42,9 @@ public class StartActivity extends BaseActivity implements Callback {
     private static final int UPDATE_SUCCESS = 1111;
     private long updateTime = 0;
     private long curTime = 0;
+    private LinearLayout ll_update;
+    private ImageView img_update;
+    private AnimationDrawable spinner;
 
 
 
@@ -45,13 +52,18 @@ public class StartActivity extends BaseActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        ll_update = (LinearLayout) findViewById(R.id.ll_update);
+        img_update = (ImageView) findViewById(R.id.img_update);
+        spinner = (AnimationDrawable) img_update.getBackground();
         handler = new Handler(this);
         versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, false);
         updateTime = System.currentTimeMillis();
-        if (_id != null && !update) {
+        if (_id != null & !update) {
+            ll_update.setVisibility(View.VISIBLE);
+            spinner.start();
             new RemoveRepeatPhotoTask().start();
         }else {
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();

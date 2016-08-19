@@ -23,4 +23,28 @@
         android:visibility="gone"
         android:layout_alignBottom="@id/img"/>
 
+    <LinearLayout
+        android:id="@+id/ll_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/img_update"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/loading_anim"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/app_update"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/text_size_10"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+    </LinearLayout>
 </RelativeLayout>
