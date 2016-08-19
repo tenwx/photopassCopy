@@ -2307,7 +2307,6 @@ public class API1 {
         });
     }
 
-
     public static void downLoadPhotosWithUrl(final Handler handler, final DownloadFileStatus fileStatus, final Handler adapterHandler) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());

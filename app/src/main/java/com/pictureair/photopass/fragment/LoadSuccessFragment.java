@@ -52,7 +52,6 @@ import de.greenrobot.event.EventBus;
 public class LoadSuccessFragment extends BaseFragment implements View.OnClickListener,AdapterView.OnItemClickListener{
 
     private ListView lv_success;
-    private boolean isLoading;
     private PictureAirDbManager pictureAirDbManager;
     private String userId = "";
     private final Handler photoLoadSuccessHandler= new PhotoLoadSuccessHandler(this);
@@ -169,7 +168,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                         EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
                     }
                 }
-                isLoading = false;
                 dismissPWProgressDialog();
                 break;
             case DELETE_SUCCESS:
@@ -183,11 +181,17 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 if (msg.obj != null) {
                     photos = (List<PhotoDownLoadInfo>)(msg.obj);
                     if (adapter != null){
-                        ll_load_success.setVisibility(View.VISIBLE);
-                        rl_load_success.setVisibility(View.GONE);
-                        adapter.setPhotos(photos);
-                        adapter.notifyDataSetChanged();
-                        EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1,false));
+                        if (photos != null && photos.size() >0) {
+                            ll_load_success.setVisibility(View.VISIBLE);
+                            rl_load_success.setVisibility(View.GONE);
+                            adapter.setPhotos(photos);
+                            adapter.notifyDataSetChanged();
+                            EventBus.getDefault().post(new TabIndicatorUpdateEvent(photos.size(), 1, false));
+                        }else{
+                            rl_load_success.setVisibility(View.VISIBLE);
+                            ll_load_success.setVisibility(View.GONE);
+                            EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
+                        }
                     }else{
                         if (photos != null && photos.size()>0) {
                             ll_load_success.setVisibility(View.VISIBLE);
@@ -203,7 +207,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
 
                     }
                 }
-                isLoading = false;
                 break;
             case RELOAD_DATABASE:
                 if (msg.obj != null) {
@@ -220,7 +223,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                         EventBus.getDefault().post(new TabIndicatorUpdateEvent(0, 1,false));
                     }
                 }
-                isLoading = false;
                 activityClick();
                 dismissPWProgressDialog();
                 break;
@@ -228,7 +230,6 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 break;
         }
     }
-
 
     @Nullable
     @Override
@@ -284,20 +285,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        if (!isLoading && photos == null) {
-            isLoading = true;
-            showPWProgressDialog();
-            if (executorService != null) {
-                if (!executorService.isShutdown()) {
-                    executorService.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadPhotos(LOAD_FROM_DATABASE);
-                        }
-                    });
-                }
-            }
-        }
+
     }
 
     @Override
@@ -327,7 +315,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {
-                            isLoading = true;
+//                            isLoading = true;
                             if (selectAll){
                                 pictureAirDbManager.deleteDownloadPhoto(userId);
                                 loadPhotos(RELOAD_DATABASE);
@@ -399,10 +387,12 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         }
         adapter.setPhotos(photos);
         adapter.notifyDataSetChanged();
+        if (selectPhotos != null) {
+            selectPhotos.clear();
+        }
     }
 
     public void getDataBackground(){
-        isLoading = true;
         if (executorService != null) {
             if (!executorService.isShutdown()) {
                 executorService.execute(new Runnable() {
@@ -470,6 +460,19 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
                 info.selectPos = 0;
             }
             adapter.setPhotos(photos);
+        }
+    }
+
+    public void initView(){
+        if (executorService != null) {
+            if (!executorService.isShutdown()) {
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPhotos(LOAD_FROM_DATABASE);
+                    }
+                });
+            }
         }
     }
 }
