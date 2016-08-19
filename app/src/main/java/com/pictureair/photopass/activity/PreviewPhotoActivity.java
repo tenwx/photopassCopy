@@ -51,6 +51,7 @@ import com.pictureair.photopass.service.DownloadService;
 import com.pictureair.photopass.util.ACache;
 import com.pictureair.photopass.util.AESKeyHelper;
 import com.pictureair.photopass.util.API1;
+import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
@@ -1893,6 +1894,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                     break;
 
                 case GO_DOWNLOAD_ACTIVITY_DIALOG:
+                    AppManager.getInstance().killActivity(LoadManageActivity.class);
                     Intent i = new Intent(PreviewPhotoActivity.this, LoadManageActivity.class);
                     startActivity(i);
                     break;

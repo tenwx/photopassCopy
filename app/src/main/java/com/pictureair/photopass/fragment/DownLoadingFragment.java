@@ -201,10 +201,8 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void dealHandler(Message msg) {
-
         switch (msg.what) {
             case PHOTO_STATUS_UPDATE://更新listview
-                dissmissDialog();
                 PictureAirLog.v("dealHandler","PHOTO_STATUS_UPDATE");
                 DownloadFileStatus fileStatus = (DownloadFileStatus)msg.obj;
                 updateView();
@@ -215,7 +213,6 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 break;
             case PHOTO_REMOVE://下载成功后删除
-                dissmissDialog();
                 PictureAirLog.v("DownLoadingFragment","PHOTO_REMOVE");
                 DownloadFileStatus status = (DownloadFileStatus)msg.obj;
                 if (downloadList != null) {
@@ -229,7 +226,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 break;
 
             case SERVICE_LOAD_SUCCESS://DownloadService 绑定成功，更新页面，设置下载数量
-
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof LoadManageActivity){
+                    LoadManageActivity loadManageActivity = (LoadManageActivity)activity;
+                    loadManageActivity.successFragmentLoading();
+                }
                 if (adapter == null) {
                     PictureAirLog.v("SERVICE_LOAD_SUCCESS","adapter= null ");
                     downloadList = downloadService.getDownloadList();
@@ -253,10 +254,9 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0,false));
                 activityClick();
                 downloadService.startDownload();
-                dissmissDialog();
+                dismissPWProgressDialog();
                 break;
             case DOWNLOAD_FINISH://下载完成，此时downloadservice中已没有可下载任务，页面显示没有下载中的照片
-                dissmissDialog();
                 CopyOnWriteArrayList<DownloadFileStatus> list = downloadService.getDownloadList();
                 if (list == null || list.size() == 0) {
                     ll_loading.setVisibility(View.GONE);
@@ -276,7 +276,7 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                 }
                 EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(),0,false));
                 activityClick();
-                dissmissDialog();
+                dismissPWProgressDialog();
                 break;
 
             case PHOTO_ALL_SELECT:
@@ -287,22 +287,11 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     selectPhotos.clear();
                 }
                 enableReconnectDeleteButton();
-                dissmissDialog();
+                dismissPWProgressDialog();
                 break;
             default:
-                dissmissDialog();
-                break;
-        }
-    }
-
-    private void dissmissDialog(){
-        if (downloadService == null){
-            dismissPWProgressDialog();
-        }else{
-            AtomicBoolean isAddTask = downloadService.isAddTask();
-            if (isAddTask.get() == false){
                 dismissPWProgressDialog();
-            }
+                break;
         }
     }
 
@@ -382,17 +371,14 @@ public class DownLoadingFragment extends BaseFragment implements View.OnClickLis
                     rl_loading.setVisibility(View.GONE);
                     adapter = new PhotoDownloadingAdapter(getContext(), downloadList);
                     lv_loading.setAdapter(adapter);
-                    EventBus.getDefault().post(new TabIndicatorUpdateEvent(downloadList.size(), 0,false));
-                }else{//如果downloadservice中没有等待下载的数据，bindservice不去走onstartcommand，此时用startservice运行一遍onstartcommand
-                    Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
-                    ArrayList<PhotoInfo> photos = new ArrayList<>();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("photos", photos);
-                    intent.putExtras(bundle);
-                    MyApplication.getInstance().startService(intent);
-                    PictureAirLog.v("onServiceConnected","false");
                 }
-
+                Intent intent = new Intent(MyApplication.getInstance(), DownloadService.class);
+                ArrayList<PhotoInfo> photos = new ArrayList<>();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("photos", photos);
+                intent.putExtras(bundle);
+                MyApplication.getInstance().startService(intent);
+                PictureAirLog.v("onServiceConnected","false");
             }
         }
 

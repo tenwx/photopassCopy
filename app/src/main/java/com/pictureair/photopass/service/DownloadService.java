@@ -60,11 +60,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DownloadService extends Service {
     private ArrayList<PhotoInfo> photos = new ArrayList<PhotoInfo>();
     private CopyOnWriteArrayList<DownloadFileStatus> downloadList = new CopyOnWriteArrayList<DownloadFileStatus>();
-    private Map<String,DownloadFileStatus> taskList = new HashMap<>();
+    private ConcurrentHashMap<String,DownloadFileStatus> taskList = new ConcurrentHashMap<>();
     private AtomicInteger downed_num = new AtomicInteger(0);//实际下载照片数
     private AtomicInteger failed_num = new AtomicInteger(0);//下载失败的照片数
     private CopyOnWriteArrayList<DownloadFileStatus> tempList = new CopyOnWriteArrayList<>();
-    private AtomicBoolean isAddTask = new AtomicBoolean(false);
     private boolean mFinish = false;
     private boolean mIsErrorsAdd = false;
 
@@ -88,6 +87,7 @@ public class DownloadService extends Service {
     private String lastUrl = new String();
     private String userId;
     private ConcurrentHashMap<String,DownloadFileStatus> cacheList = new ConcurrentHashMap<>();
+    private CopyOnWriteArrayList<DownloadFileStatus> deleteList = new CopyOnWriteArrayList<>();
     private int prepareDownloadCount;
     private AtomicInteger processCount = new AtomicInteger(0);
 
@@ -132,7 +132,7 @@ public class DownloadService extends Service {
                 //将新的数据放入到下载队列的末尾
                 if (reconnect > -1) {//需要重连的走这个流程
                     if (photos.size() >0 && downloadList.size() >0) {
-                        isAddTask.set(true);
+//                        isAddTask.set(true);
                         for (int i=0;i<photos.size();i++) {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
@@ -159,7 +159,7 @@ public class DownloadService extends Service {
                 } else {//正常下载走这个
                     CopyOnWriteArrayList<PhotoDownLoadInfo> infos = pictureAirDbManager.getExistPhoto(userId);
                     if (photos.size() >0) {
-                        isAddTask.set(true);
+//                        isAddTask.set(true);
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
                             final DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
@@ -176,7 +176,9 @@ public class DownloadService extends Service {
                                     if ("true".equalsIgnoreCase(info.getStatus())) {
                                         if (!file.exists()) {
                                             addToDownloadList(fileStatus);
+                                            deleteList.add(fileStatus);
                                             processCount.incrementAndGet();
+                                            tempList.add(fileStatus);
                                         } else {
                                             processCount.incrementAndGet();
                                         }
@@ -201,10 +203,16 @@ public class DownloadService extends Service {
 
                         PictureAirLog.out("downloadlist size =" + downloadList.size());
 
+                        if (deleteList.size() >0){
+                            pictureAirDbManager.deletePhotos(userId,deleteList);
+                            deleteList.clear();
+                        }
+
                         if (tempList.size() >0){
                             pictureAirDbManager.insertPhotos(userId,tempList,"","load");
                             tempList.clear();
                         }
+
                     }
                 }
                 PictureAirLog.out("addTask processCount size =" + processCount.get());
@@ -271,7 +279,6 @@ public class DownloadService extends Service {
             switch (msg.what) {
 
                 case PREPARE_DOWNLOAD://准备下载
-                    isAddTask.set(false);
                     if (!fixedThreadPool.isShutdown() && fixedThreadPool != null) {
                         PictureAirLog.out("PREPARE_DOWNLOAD>>>>>>>>>");
                         fixedThreadPool.execute(new PrepareDownloadTask());
@@ -681,10 +688,6 @@ public class DownloadService extends Service {
 
     public void sendAddDownLoadMessage(){
         handler.sendEmptyMessageDelayed(ADD_DOWNLOAD,200);
-    }
-
-    public AtomicBoolean isAddTask(){
-        return isAddTask;
     }
 
     public void startDownload(){

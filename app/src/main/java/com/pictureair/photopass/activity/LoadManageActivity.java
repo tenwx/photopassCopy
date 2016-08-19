@@ -80,12 +80,10 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        PictureAirLog.out("onPageScrolled: postiong: "+position +" positionOffset+ "+positionOffset+" positionOffsetPixels "+positionOffsetPixels);
     }
 
     @Override
     public void onPageSelected(int position) {
-        PictureAirLog.e("onPageSelected","postiong: "+position);
         currentIndex = position;
         if (currentIndex == 0){
             if (loadSuccessFragmentChanged){
@@ -100,8 +98,6 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
-        PictureAirLog.e("onPageScrollStateChanged","state: "+state);
     }
 
     @Override
@@ -233,5 +229,11 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
             startActivity(intent);
         }
         finish();
+    }
+
+    public void successFragmentLoading(){
+        if (loadSuccessFragment != null){
+            loadSuccessFragment.initView();
+        }
     }
 }

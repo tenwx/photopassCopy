@@ -1589,6 +1589,24 @@ public class PictureAirDbManager {
     }
 
 
+    public synchronized void deletePhotos(String userId, CopyOnWriteArrayList<DownloadFileStatus> list){
+        database = DBManager.getInstance().writData();
+        database.beginTransaction();
+        try {
+            for (int i=0;i<list.size();i++) {
+                DownloadFileStatus fileStatus = list.get(i);
+                database.delete(Common.PHOTOS_LOAD,"userId = ? and photoId=?",new String[]{userId,fileStatus.getPhotoId()});
+            }
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+
+    }
+
     /**
      *
      * 删除所有下载照片
