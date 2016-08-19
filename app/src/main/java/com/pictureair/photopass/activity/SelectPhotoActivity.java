@@ -190,7 +190,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 intent.putExtra("bundle", bundle);
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.NEED_FRESH, true);
                 AppManager.getInstance().killActivity(MyPPPActivity.class);
-                myApplication.setMainTabIndex(0);
+                myApplication.setMainTabIndex(-1);
                 startActivity(intent);
                 finish();
                 break;

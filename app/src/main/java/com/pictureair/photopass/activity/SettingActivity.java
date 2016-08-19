@@ -254,7 +254,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener, PW
             switch (dialogId) {
                 case LOGOUT_DIALOG:
                     // logout 之后，清空上个用户的数据。
-                    application.setMainTabIndex(0);   // 设置 进入 app为主页
+                    application.setMainTabIndex(-1);   // 设置 进入 app为主页
                     //断开推送
                     AppExitUtil.getInstance().AppLogout();
                     break;

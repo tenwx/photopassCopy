@@ -128,12 +128,13 @@ public class DownloadTask {
                     mHandler.sendEmptyMessage(BreakpointDownloadService.SERVICE_STOP);
                 }
             } catch (Exception e) {
-                PictureAirLog.e(TAG, e.getMessage());
+                PictureAirLog.d(TAG, e.getMessage());
                 saveThreadInfo(mFinish);//需要保存下载进度
                 intent.putExtra("onFailure", true);
                 context.sendBroadcast(intent);
                 e.printStackTrace();
             } finally {
+                PictureAirLog.out("downloading finally");
                 try {
                     //关闭流
                     if (null != conn )

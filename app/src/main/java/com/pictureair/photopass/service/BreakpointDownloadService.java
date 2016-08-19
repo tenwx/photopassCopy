@@ -23,7 +23,6 @@ import java.net.URL;
  */
 public class BreakpointDownloadService extends Service {
     public static final String ACTION_STRAT = "action strat";
-    public static final String ACTION_STOP = "action stop";
     public static final String ACTION_UPDATE = "action update";
     public static final int SERVICE_STOP = 2;
 
@@ -43,11 +42,6 @@ public class BreakpointDownloadService extends Service {
                 mTask.isPause = false;
             }
             new InitThread(fileInfo).start();
-        } else if (ACTION_STOP.equals(intent.getAction())) {
-            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("fileInfo");
-            if (null != mTask) {
-                mTask.isPause = true;
-            }
         }
         return START_NOT_STICKY;//被系统kill之后，不会自动复活重新启动服务
     }
@@ -87,14 +81,13 @@ public class BreakpointDownloadService extends Service {
 //            super.run();
             HttpURLConnection conn = null;
             RandomAccessFile raf = null;
+            int length = -1;
             try {
                 //连接网络文件
                 URL url = new URL(fileInfo.getUrl());
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(3000);
                 conn.setRequestMethod("GET");
-
-                int length = -1;
 
                 if (conn.getResponseCode() == 200) {
                     //获得文件长度
@@ -117,11 +110,18 @@ public class BreakpointDownloadService extends Service {
                 mHandler.obtainMessage(MSG_INIT, fileInfo).sendToTarget();
 
             } catch (Exception e) {
+                PictureAirLog.out("download failed");
                 e.printStackTrace();
                 Intent intent = new Intent(BreakpointDownloadService.ACTION_UPDATE);
                 intent.putExtra("onFailure", true);
                 sendBroadcast(intent);
             } finally {
+                PictureAirLog.out("finally failed");
+                if (length <= 0) {
+                    Intent intent = new Intent(BreakpointDownloadService.ACTION_UPDATE);
+                    intent.putExtra("onFailure", true);
+                    sendBroadcast(intent);
+                }
                 PictureAirLog.out("get length finally----->");
                 try {
                     //关闭流
@@ -138,13 +138,12 @@ public class BreakpointDownloadService extends Service {
         }
     }
 
-
     @Override
     public void onDestroy() {
         /**
          * 断开服务时如果正在下载，需要保存下载记录
           */
-
+        PictureAirLog.out(BreakpointDownloadService.class.getSimpleName() + " ---ondestroy");
         super.onDestroy();
     }
 }

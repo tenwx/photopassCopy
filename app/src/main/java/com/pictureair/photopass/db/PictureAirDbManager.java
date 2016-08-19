@@ -1387,9 +1387,14 @@ public class PictureAirDbManager {
      */
     public void updateThread(String url, int threadId, long finished) {
         database = DBManager.getInstance().writData();
-        database.execSQL("update " + Common.THREAD_INFO + " set finished = ? where url = ? and thread_id = ?",
-                new Object[]{finished, url, threadId});
-        DBManager.getInstance().closeDatabase();
+        try {
+            database.execSQL("update " + Common.THREAD_INFO + " set finished = ? where url = ? and thread_id = ?",
+                    new Object[]{finished, url, threadId});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager.getInstance().closeDatabase();
+        }
     }
 
 

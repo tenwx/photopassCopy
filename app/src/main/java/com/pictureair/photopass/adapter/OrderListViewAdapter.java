@@ -46,7 +46,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
 
     private Handler handler;
 
-    private int deletePosition;
+    private OrderInfo deleteOrderInfo;
+    private OrderProductInfo deleteOrderProductInfo;
 
     public OrderListViewAdapter(Context context, ArrayList<OrderInfo> list, List<OrderProductInfo> orderChildlist, String currency, Handler handler, int tab) {
         this.context = context;
@@ -235,7 +236,7 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
     @Override
     public void onPWDialogButtonClicked(int which, int dialogId) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            API1.removeOrder(grouplist.get(deletePosition).orderId, grouplist.get(deletePosition), childlist.get(deletePosition), handler);
+            API1.removeOrder(deleteOrderInfo.orderId, deleteOrderInfo, deleteOrderProductInfo, handler);
         }
     }
 
@@ -301,7 +302,8 @@ public class OrderListViewAdapter extends BaseExpandableListAdapter implements P
 
             } else {//删除
                 if (tab == 0) {//未付款
-                    deletePosition = position;
+                    deleteOrderInfo = grouplist.get(position);
+                    deleteOrderProductInfo = childlist.get(position);
                     if (pictureWorksDialog == null) {
                         pictureWorksDialog = new PWDialog(context)
                                 .setPWDialogMessage(R.string.order_delete_msg)

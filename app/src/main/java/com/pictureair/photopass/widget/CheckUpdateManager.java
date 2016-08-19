@@ -123,7 +123,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
                     break;
 
                 case API1.DOWNLOAD_APK_FAILED:
-                    PictureAirLog.out("failed");
+                    PictureAirLog.out("download apk failed");
                     customProgressBarPop.dismiss();
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     pictureWorksDialog.pwDilogShow();
@@ -343,7 +343,6 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
             insertAPK();
         } else {//文件不存在，需要去下载
             //开始下载.启用service下载
-            //直线型进度条
             customProgressBarPop = new CustomProgressBarPop(context, parentView, CustomProgressBarPop.TYPE_DOWNLOAD);
             customProgressBarPop.show(0);
 
@@ -356,6 +355,10 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
             fileInfo.setFileName(fileName);
             fileInfo.setFinished(0);
             fileInfo.setLength(0);
+
+            if (!downloadAPKFile.exists()) {//如果文件不存在，需要把数据库中对应的记录删除
+                dbDAO.deleteThread(downloadURL, 0);
+            }
 
             Intent intent = new Intent(context, BreakpointDownloadService.class);
             intent.setAction(BreakpointDownloadService.ACTION_STRAT);
@@ -409,9 +412,14 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
      * 销毁CheckUpdateManager
      */
     public void onDestroy(){
+        PictureAirLog.out("check update manager on destroy");
         hasDestroyed = true;
         unregisterReceiver();
         dismissDialog();
+
+        if (customProgressBarPop != null && customProgressBarPop.isShowing()) {
+            customProgressBarPop.dismiss();
+        }
     }
 
     /**

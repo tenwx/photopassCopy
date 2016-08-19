@@ -1244,6 +1244,9 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 }
                 if (photoInfo.isPayed == 1) {
                     dia.dismiss();
+                    if (mViewPager.getCurrentItem() >= photolist.size()) {
+                        return;
+                    }
                     PictureAirLog.v(TAG, "start share=" + photolist.get(mViewPager.getCurrentItem()).photoPathOrURL);
                     if (isEdited) {//编辑后
                         sharePop.setshareinfo(targetphotolist.get(mViewPager.getCurrentItem()).photoPathOrURL, null, null, "local", null, SharePop.SHARE_PHOTO_TYPE, 0, previewPhotoHandler);

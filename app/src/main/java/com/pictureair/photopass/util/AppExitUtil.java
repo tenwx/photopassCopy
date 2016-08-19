@@ -12,8 +12,6 @@ import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.lang.ref.WeakReference;
-
 /**
  * Created by milo on 15/12/29.
  * 退出程序操作
@@ -23,32 +21,11 @@ import java.lang.ref.WeakReference;
 public class AppExitUtil {
     private static AppExitUtil appExitUtil;
     private static PictureAirDbManager pictureAirDbManager;
-    public static boolean isAppExit = false;//防止程序一直logout
     private static PWToast newToast;
-    private MyHandler myHandler = new MyHandler(MyApplication.getInstance());
 
-    public static AppExitUtil getInstance() {
-        if (appExitUtil == null) {
-            appExitUtil = new AppExitUtil();
-            pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
-            newToast = new PWToast(MyApplication.getInstance());
-        }
-        return appExitUtil;
-    }
-
-    public class MyHandler extends Handler {
-        WeakReference<MyApplication> myApplication;
-
-        MyHandler(MyApplication application) {
-            myApplication = new WeakReference<>(application);
-        }
-
+    private Handler myHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (myApplication == null) {
-                return;
-            }
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case API1.LOGOUT_FAILED:
                 case API1.LOGOUT_SUCCESS:
@@ -73,7 +50,6 @@ public class AppExitUtil {
                     Intent i = new Intent(MyApplication.getInstance(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     MyApplication.getInstance().startActivity(i);
-                    isAppExit = true;
 
                     AppManager.getInstance().AppExit(MyApplication.getInstance());
                     break;
@@ -85,7 +61,17 @@ public class AppExitUtil {
                 default:
                     break;
             }
+            return false;
         }
+    });
+
+    public static AppExitUtil getInstance() {
+        if (appExitUtil == null) {
+            appExitUtil = new AppExitUtil();
+            pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
+            newToast = new PWToast(MyApplication.getInstance());
+        }
+        return appExitUtil;
     }
 
     /**
@@ -94,7 +80,6 @@ public class AppExitUtil {
     public void AppReLogin() {
         //断开推送
         newToast.setTextAndShow(R.string.please_relogin, Toast.LENGTH_SHORT);
-        isAppExit = true;
         API1.noticeSocketDisConnect(myHandler);
     }
 
@@ -103,14 +88,6 @@ public class AppExitUtil {
      */
     public void AppLogout() {
         //断开推送
-        isAppExit = true;
         API1.noticeSocketDisConnect(myHandler);
-    }
-
-    /**
-     * app登录
-     */
-    public void AppLogin(){
-        isAppExit = false;
     }
 }

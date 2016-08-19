@@ -215,6 +215,7 @@ public class GlideUtil {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
+                .skipMemoryCache(skipCache)//skipMemoryCache必须和diskCacheStrategy一起用，才可以跳过缓存
                 .diskCacheStrategy(skipCache ? DiskCacheStrategy.NONE : DiskCacheStrategy.RESULT)//默认使用RESULT
                 .override(overrideWidth, overrideHeight)
                 .listener(requestListener)
@@ -258,6 +259,21 @@ public class GlideUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 加载url
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    public static void loadGif(Context context, String url, ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .asGif()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .into(imageView);
     }
 
     /**

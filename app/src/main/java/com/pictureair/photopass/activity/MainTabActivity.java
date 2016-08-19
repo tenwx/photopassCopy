@@ -29,7 +29,6 @@ import com.pictureair.photopass.fragment.FragmentPageShop;
 import com.pictureair.photopass.fragment.FragmentPageStory;
 import com.pictureair.photopass.service.NotificationService;
 import com.pictureair.photopass.util.ACache;
-import com.pictureair.photopass.util.AppExitUtil;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
@@ -153,9 +152,6 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
         parentLayout = (RelativeLayout) findViewById(R.id.parent);
         newToast = new PWToast(this);
-
-        //设置app是否登录的状态
-        AppExitUtil.getInstance().AppLogin();
 
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
