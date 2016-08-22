@@ -15,10 +15,11 @@ public class PhotoDownLoadInfo{
     private String url;
     private String previewUrl;
     private int isVideo;
-    private String failedTime;
+    private String failedTime = "";
     private String status;
     public boolean isSelect;//表示是否被勾选
     public int selectPos;
+    private int id;
 
     public PhotoDownLoadInfo(){
 
@@ -34,6 +35,14 @@ public class PhotoDownLoadInfo{
         this.isVideo = isVideo;
         this.failedTime = failedTime;
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPhotoId() {

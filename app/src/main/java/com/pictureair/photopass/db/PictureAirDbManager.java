@@ -1490,6 +1490,7 @@ public class PictureAirDbManager {
             if (cursor.moveToFirst()) {//判断是否photo数据
                 do {
                     PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
+                    photoInfo.setId(cursor.getInt(cursor.getColumnIndex("_id")));
                     photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
                     photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
                     photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
@@ -1498,7 +1499,7 @@ public class PictureAirDbManager {
                     photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
                     photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
                     photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
-                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("status")));
+                    photoInfo.setStatus(cursor.getString(cursor.getColumnIndex("success")));
                     photos.add(photoInfo);
                 } while (cursor.moveToNext());
             }
@@ -1664,13 +1665,7 @@ public class PictureAirDbManager {
         database.beginTransaction();
         int res = 0;
         try {
-            if (info.getStatus().equalsIgnoreCase("true")){
-                res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ? and photoId = ? and downloadTime = ?",new String[]{userId,info.getStatus(),info.getPhotoId(),info.getLoadTime()});
-            }else if (info.getStatus().equalsIgnoreCase("load")){
-                res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ? and photoId = ?",new String[]{userId,info.getStatus(),info.getPhotoId()});
-            }else{
-                res = database.delete(Common.PHOTOS_LOAD,"userId = ? and success = ? and photoId = ? and failedTime = ?",new String[]{userId,info.getStatus(),info.getPhotoId(),info.getFailedTime()});
-            }
+            res = database.delete(Common.PHOTOS_LOAD,"userId = ? and _id=?",new String[]{userId,String.valueOf(info.getId())});
             PictureAirLog.e("deleteDownloadPhoto","count:" + res);
             database.setTransactionSuccessful();
         }catch (Exception e){

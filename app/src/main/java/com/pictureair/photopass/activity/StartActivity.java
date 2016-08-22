@@ -61,7 +61,7 @@ public class StartActivity extends BaseActivity implements Callback {
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
         boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, false);
         updateTime = System.currentTimeMillis();
-        if (_id != null & !update) {
+        if (_id != null && !update) {
             ll_update.setVisibility(View.VISIBLE);
             spinner.start();
             new RemoveRepeatPhotoTask().start();
@@ -133,18 +133,26 @@ public class StartActivity extends BaseActivity implements Callback {
     class RemoveRepeatPhotoTask extends Thread{
         @Override
         public void run() {
-            List<PhotoDownLoadInfo> list = pictureAirDbManager.getAllPhotos(_id);
-            Collections.sort(list,new PhotoDownLoadInfoSortUtil());
-            if (list != null && list.size() >0) {
-                for (int i = 0; i < list.size() -1;i++) {
-                    for (int j = list.size() -1;j>i;j--){
-                        PhotoDownLoadInfo infoi =  list.get(i);
-                        PhotoDownLoadInfo infoj = list.get(j);
-                        if (infoi.getPhotoId().equalsIgnoreCase(infoj.getPhotoId())){
-                            pictureAirDbManager.deleteRepeatPhoto(_id,infoj);
+            try {
+                List<PhotoDownLoadInfo> list = pictureAirDbManager.getAllPhotos(_id);
+                Collections.sort(list, new PhotoDownLoadInfoSortUtil());
+                if (list != null && list.size() > 0) {
+                    int len = list.size();
+                    for (int i = 0; i < len - 1; i++) {
+                        PhotoDownLoadInfo infoi = list.get(i);
+                        for (int j = i + 1; j < len; j++) {
+                            PhotoDownLoadInfo infoj = list.get(j);
+                            if (infoi.getPhotoId().equalsIgnoreCase(infoj.getPhotoId())) {
+                                pictureAirDbManager.deleteRepeatPhoto(_id, infoj);
+                                list.remove(j);
+                                j--;
+                                len--;
+                            }
                         }
                     }
                 }
+            }catch (Exception e){
+                e.printStackTrace();
             }
             SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, true);
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();
