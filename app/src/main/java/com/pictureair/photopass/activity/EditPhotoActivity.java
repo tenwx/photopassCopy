@@ -111,9 +111,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private ArrayList<FrameOrStikerInfo> stickerFromDBInfos;//来自数据库的数据
 	private ArrayList<DiscoverLocationItemInfo> locationItemInfos;
 
-	public final String STICKERPATH = "sticker";
-	public final String FILTERPATH = "filter";
-	public final String FRAMEPATH = "frame";
+	public final String STICKERPATH = "rekcits";
+	public final String FILTERPATH = "retlif";
+	public final String FRAMEPATH = "emarf";
 	public static final int FRAMECOUNT = 7+1;//正常frame的数量+1个frame_none
 
 	private File nameFile; //保存文件的目录

@@ -6,7 +6,7 @@ package com.pictureair.photopass.editPhoto.util;
  */
 public class PhotoCommon {
 
-    public static final String StickerPath = "sticker";
+    public static final String StickerPath = "rekcits";
 
     public static final int EditNone = 00; //没有选择模式
     public static final int EditFrame = 11; //相框模式
