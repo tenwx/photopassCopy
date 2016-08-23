@@ -49,16 +49,16 @@ public class PWEditController implements PWEditViewListener, PWDialog.OnPWDialog
 
     public void onCreate(Activity activity,PWEditViewInterface pwEditViewInterface){
         this.mActivity = activity;
-         photoPath = activity.getIntent().getStringExtra("photoPath");
-         isOnLine = activity.getIntent().getBooleanExtra("isOnLine",false);
+        photoPath = activity.getIntent().getStringExtra("photoPath");
+        isOnLine = activity.getIntent().getBooleanExtra("isOnLine",false);
         this.pwEditViewInterface = pwEditViewInterface;
         loadImageFormPath(photoPath, isOnLine);  //加载图片，用ImageLoader加载，故不用新开线程。
         pwEditViewInterface.setLister(this); // 加入接口，消耗内存很小，不用开线程。
         pwEditUtil.createFolder(); //可以放在线程。（不过需要考虑线程还没执行，就执行了其他操作，造成不同步）
         index = 1;
         rotateAngle = 0;
-        pwEditUtil.loadFrameList(); // 加载边框 考虑放入线程。（不过需要考虑线程还没执行，就执行了其他操作，造成不同步）
-        pwEditUtil.loadFilterImgPath(); //加载滤镜图片
+        pwEditUtil.loadFrameList(mActivity); // 加载边框 考虑放入线程。（不过需要考虑线程还没执行，就执行了其他操作，造成不同步）
+        pwEditUtil.loadFilterImgPath(mActivity); //加载滤镜图片
         pwEditUtil.loadStickerList(mActivity);
     }
 

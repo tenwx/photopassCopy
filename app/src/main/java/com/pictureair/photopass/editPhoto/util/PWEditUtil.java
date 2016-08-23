@@ -9,6 +9,7 @@ import android.graphics.PorterDuffXfermode;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 
+import com.pictureair.photopass.activity.EditPhotoActivity;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.editPhoto.bean.PhotoStikerInfo;
 import com.pictureair.photopass.entity.FrameOrStikerInfo;
@@ -39,20 +40,14 @@ public class PWEditUtil {
     private ArrayList<PhotoEditorInfo> photoEditorList; //纪录编辑照片的步骤
     private SimpleDateFormat dateFormat;
 
-    private String[][] framePathStr = {{"frame/frame_none.png","frame/frame_none.png","frame/frame_none.png","frame/frame_none.png"},
-            {"frame/frame_h_1t.png","frame/frame_v_1t.png","frame/frame_h_1.png","frame/frame_v_1.png"},
-            {"frame/frame_h_2t.png","frame/frame_v_2t.png","frame/frame_h_2.png","frame/frame_v_2.png"},
-            {"frame/frame_h_3t.png","frame/frame_v_3t.png","frame/frame_h_3.png","frame/frame_v_3.png"},
-            {"frame/frame_h_4t.png","frame/frame_v_4t.png","frame/frame_h_4.png","frame/frame_v_4.png"}
-    };
     private ArrayList<FrameOrStikerInfo> frameInfos; //保存边框的集合。
     private List<String> filterPathList; // 保存滤镜图片路径的集合
     private ArrayList<FrameOrStikerInfo> stikerInfos;// 饰品图片路径列表
     public PWEditUtil() {
-        photoEditorList = new ArrayList<PhotoEditorInfo>();
-        frameInfos = new ArrayList<FrameOrStikerInfo>();
-        filterPathList = new ArrayList<String>();
-        stikerInfos = new ArrayList<FrameOrStikerInfo>();
+        photoEditorList = new ArrayList<>();
+        frameInfos = new ArrayList<>();
+        filterPathList = new ArrayList<>();
+        stikerInfos = new ArrayList<>();
     }
 
     /**
@@ -329,14 +324,29 @@ public class PWEditUtil {
     /**
      * 获取边框代码
      */
-    public void loadFrameList(){
-        for (int i=0; i<framePathStr.length; i++){
-            FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
-            frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(framePathStr[i][0]);
-            frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(framePathStr[i][1]);
-            frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(framePathStr[i][2]);
-            frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(framePathStr[i][3]);
-            frameInfos.add(frameInfo);
+    public void loadFrameList(Context context){
+        frameInfos.clear();
+
+        try {
+            String[] files = context.getResources().getAssets().list(EditPhotoActivity.FRAMEPATH);
+            for (int i=0; i < EditPhotoActivity.FRAMECOUNT; i++){
+                FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
+                if (i == 0){
+                    frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
+                    frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
+                    frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
+                    frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[i]);
+                }else{
+                    int index = (i - 1) * 4;
+                    frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+1]);
+                    frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+2]);
+                    frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+3]);
+                    frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(EditPhotoActivity.FRAMEPATH + File.separator + files[index+4]);
+                }
+                frameInfos.add(frameInfo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -351,14 +361,16 @@ public class PWEditUtil {
     /**
      * 加载滤镜图片
      */
-    public void loadFilterImgPath(){
-        filterPathList.add("filter/original.png");
-        filterPathList.add("filter/filter1.png");
-        filterPathList.add("filter/filter2.png");
-        filterPathList.add("filter/filter3.png");
-        filterPathList.add("filter/filter4.png");
-        filterPathList.add("filter/filter5.png");
-        filterPathList.add("filter/filter6.png");
+    public void loadFilterImgPath(Context context){
+        filterPathList.clear();
+        try {
+            String[] files = context.getResources().getAssets().list(EditPhotoActivity.FILTERPATH);
+            for (String name : files){
+                filterPathList.add(GlideUtil.getAssetUrl(EditPhotoActivity.FILTERPATH + File.separator + name));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<String> getFilterPathList() {

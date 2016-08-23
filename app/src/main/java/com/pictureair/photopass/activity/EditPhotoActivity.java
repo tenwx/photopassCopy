@@ -111,7 +111,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private ArrayList<FrameOrStikerInfo> stickerFromDBInfos;//来自数据库的数据
 	private ArrayList<DiscoverLocationItemInfo> locationItemInfos;
 
-	public final String STICKERPATH = "sticker";
+	public static final String STICKERPATH = "rekcits";
+	public static final String FILTERPATH = "retlif";
+	public static final String FRAMEPATH = "emarf";
+	public static final int FRAMECOUNT = 7+1;//正常frame的数量+1个frame_none
 
 	private File nameFile; //保存文件的目录
 	private File tempFile; //保存文件的临时目录
@@ -358,70 +361,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		}
 		pictureAirDbManager = new PictureAirDbManager(this);
 
-		filterPathList.add(GlideUtil.getAssetUrl("filter/original.png"));
-		filterPathList.add(GlideUtil.getAssetUrl("filter/filter1.png"));
-		filterPathList.add(GlideUtil.getAssetUrl("filter/filter2.png"));
-		filterPathList.add(GlideUtil.getAssetUrl("filter/filter3.png"));
-		filterPathList.add(GlideUtil.getAssetUrl("filter/filter4.png"));
-		filterPathList.add(GlideUtil.getAssetUrl("filter/filter5.png"));
-		filterPathList.add(GlideUtil.getAssetUrl("filter/filter6.png"));
-
-		FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_none.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_none.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_none.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_none.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_1t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_1t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_1.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_1.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_2t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_2t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_2.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_2.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_3t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_3t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_3.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_3.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_4t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_4t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_4.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_4.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_5t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_5t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_5.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_5.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_6t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_6t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_6.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_6.png");
-		frameInfos.add(frameInfo);
-
-		frameInfo = new FrameOrStikerInfo();
-		frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl("frame/frame_h_7t.png");
-		frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl("frame/frame_v_7t.png");
-		frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl("frame/frame_h_7.png");
-		frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl("frame/frame_v_7.png");
-		frameInfos.add(frameInfo);
-
+		addFilterImages(FILTERPATH);
+		addFrameImages(FRAMEPATH);
 		addStickerImages(STICKERPATH); //获取资源文件的  饰品   加载饰品资源
 
 		dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
@@ -776,6 +717,48 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				frameOrStikerInfo.isActive = 1;
 				frameOrStikerInfo.onLine = 0;
 				stikerInfos.add(frameOrStikerInfo);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//读取 assets 目录下 filter目录的图片
+	public void addFilterImages(String folderPath) {
+		filterPathList.clear();
+
+		try {
+			String[] files =getResources().getAssets().list(folderPath);
+			for (String name : files){
+				filterPathList.add(GlideUtil.getAssetUrl(folderPath + File.separator + name));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	//读取 assets 目录下frame目录的图片
+	public void addFrameImages(String folderPath) {
+		frameInfos.clear();
+
+		try {
+			String[] files =getResources().getAssets().list(folderPath);
+			for (int i=0; i< FRAMECOUNT; i++){
+				FrameOrStikerInfo frameInfo = new FrameOrStikerInfo();
+				if (i == 0){
+					frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
+					frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
+					frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
+					frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(folderPath + File.separator + files[i]);
+				}else{
+					int index = (i - 1) * 4;
+					frameInfo.frameOriginalPathLandscape = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+1]);
+					frameInfo.frameThumbnailPathH160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+2]);
+					frameInfo.frameOriginalPathPortrait = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+3]);
+					frameInfo.frameThumbnailPathV160 = GlideUtil.getAssetUrl(folderPath + File.separator + files[index+4]);
+				}
+				frameInfos.add(frameInfo);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
