@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -40,8 +39,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
     private PWDialog pictureWorksDialog;
     private String downloadURL, forceUpdate, currentLanguage;
     private String channelStr;
-    private CustomProgressBarPop customProgressBarPop;
-    private View parentView;
+    private PWProgressBarDialog pwProgressBarDialog;
     private PWToast myToast;
     private String version;
     private File downloadAPKFile;
@@ -54,7 +52,6 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
     private static final int APK_NEED_UPDATE = 205;
     private static final int UPDATE_DIALOG = 206;
     private PictureAirDbManager dbDAO = null;
-
 
     /**
      * 接受广播
@@ -85,8 +82,9 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case UPDATE_PB:
-                    customProgressBarPop.setProgress(((long[])msg.obj)[0], ((long[])msg.obj)[1]);
+                    pwProgressBarDialog.setProgress(((long[])msg.obj)[0], ((long[])msg.obj)[1]);
                     break;
+
                 case API1.GET_TOKEN_ID_FAILED:
                     break;
 
@@ -124,7 +122,7 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
 
                 case API1.DOWNLOAD_APK_FAILED:
                     PictureAirLog.out("download apk failed");
-                    customProgressBarPop.dismiss();
+                    pwProgressBarDialog.pwProgressBarDialogDismiss();
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     pictureWorksDialog.pwDilogShow();
                     break;
@@ -265,17 +263,15 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
      * <p/>
      * 怎么使用
      * 1.申明变量
-     * 2.checkUpdateManager = new CheckUpdateManager(this, currentLanguage, linearLayout);
+     * 2.checkUpdateManager = new CheckUpdateManager(this, currentLanguage);
      * 3.checkUpdateManager.startCheck();
      *
      * @param context
      * @param currentLanguage 当前语言
-     * @param parent          进度条需要的父控件
      */
-    public CheckUpdateManager(Context context, String currentLanguage, View parent) {
+    public CheckUpdateManager(Context context, String currentLanguage) {
         this.context = context;
         this.currentLanguage = currentLanguage;
-        this.parentView = parent;
         myToast = new PWToast(context);
         channelStr = AppUtil.getMetaData(context, "UMENG_CHANNEL");
     }
@@ -343,8 +339,10 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
             insertAPK();
         } else {//文件不存在，需要去下载
             //开始下载.启用service下载
-            customProgressBarPop = new CustomProgressBarPop(context, parentView, CustomProgressBarPop.TYPE_DOWNLOAD);
-            customProgressBarPop.show(0);
+            if (pwProgressBarDialog == null) {
+                pwProgressBarDialog = new PWProgressBarDialog(context).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_DOWNLOAD);
+            }
+            pwProgressBarDialog.pwProgressBarDialogShow();
 
             //注册广播接收器
             registerReceiver();
@@ -386,14 +384,13 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
          * end
          * 需要在安装之前判断apk文件的md5值
          */
-        if (customProgressBarPop != null) {
-            customProgressBarPop.dismiss();
+        if (pwProgressBarDialog != null) {
+            pwProgressBarDialog.pwProgressBarDialogDismiss();
         }
         //开始安装新版本
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(downloadAPKFile),
-                "application/vnd.android.package-archive");
+        intent.setDataAndType(Uri.fromFile(downloadAPKFile), "application/vnd.android.package-archive");
         context.startActivity(intent);
         AppManager.getInstance().AppExit(context);
     }
@@ -417,8 +414,8 @@ public class CheckUpdateManager implements PWDialog.OnPWDialogClickListener {
         unregisterReceiver();
         dismissDialog();
 
-        if (customProgressBarPop != null && customProgressBarPop.isShowing()) {
-            customProgressBarPop.dismiss();
+        if (pwProgressBarDialog != null) {
+            pwProgressBarDialog.pwProgressBarDialogDismiss();
         }
     }
 

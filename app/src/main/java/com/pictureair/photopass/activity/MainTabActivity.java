@@ -155,7 +155,7 @@ public class MainTabActivity extends BaseFragmentActivity implements OnDragCompe
 
         // 自动检查更新
         currentLanguage = SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH);
-        checkUpdateManager = new CheckUpdateManager(this, currentLanguage, parentLayout);
+        checkUpdateManager = new CheckUpdateManager(this, currentLanguage);
 
         new Thread(new Runnable() {
             @Override

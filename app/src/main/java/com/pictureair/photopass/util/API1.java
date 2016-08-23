@@ -1532,7 +1532,12 @@ public class API1 {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 super.onSuccess(jsonObject);
-                handler.obtainMessage(GET_ORDER_SUCCESS, jsonObject).sendToTarget();
+                JSONArray allOrdersArray = jsonObject.getJSONArray("orders");//得到所有的订单信息
+                if (allOrdersArray == null) {
+                    handler.obtainMessage(GET_ORDER_FAILED, 401, 0).sendToTarget();
+                } else {
+                    handler.obtainMessage(GET_ORDER_SUCCESS, jsonObject).sendToTarget();
+                }
             }
 
             @Override

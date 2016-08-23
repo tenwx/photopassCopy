@@ -897,6 +897,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		@Override
 		protected Bitmap doInBackground(Bitmap... params) {
 			// System.out.println("保存贴图!");
+			if (params[0] == null || params[0].isRecycled()) {
+				return null;
+			}
 			String url = tempFile + "/"
 					+ dateFormat.format(new Date()) + ".jpg";
 			if (editType == 2) {//滤镜

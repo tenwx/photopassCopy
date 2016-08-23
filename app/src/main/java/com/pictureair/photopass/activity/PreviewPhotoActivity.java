@@ -421,7 +421,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
 
             case API1.GET_GOODS_SUCCESS:
                 GoodsInfoJson goodsInfoJson = JsonTools.parseObject(msg.obj.toString(), GoodsInfoJson.class);//GoodsInfoJson.getString()
-                if (goodsInfoJson != null && goodsInfoJson.getGoods().size() > 0) {
+                if (goodsInfoJson != null && goodsInfoJson.getGoods() != null && goodsInfoJson.getGoods().size() > 0) {
                     allGoodsList = goodsInfoJson.getGoods();
                     PictureAirLog.v(TAG, "goods size: " + allGoodsList.size());
                     //获取PP+

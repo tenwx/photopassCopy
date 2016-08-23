@@ -5,9 +5,9 @@ import android.os.Handler;
 
 import com.pictureair.photopass.widget.CustomProgressBarPop;
 
-public abstract interface BaseCheckUpdate {
+public interface BaseCheckUpdate {
 
-	abstract void getTokenId(Context context, Handler handler);
-	abstract void checkUpdate(Context context, Handler handler);
-	abstract void downloadAPK(Context context,String downloadURL, CustomProgressBarPop customProgressBarPop, String version, Handler handler);
+	void getTokenId(Context context, Handler handler);
+	void checkUpdate(Context context, Handler handler);
+	void downloadAPK(Context context,String downloadURL, CustomProgressBarPop customProgressBarPop, String version, Handler handler);
 }

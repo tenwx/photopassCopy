@@ -206,8 +206,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, Sign
 
         // 自动检查更新
         checkUpdateManager = new CheckUpdateManager(this,
-                SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH),
-                parentRelativeLayout);
+                SPUtils.getString(this, Common.SHARED_PREFERENCE_APP, Common.LANGUAGE_TYPE, Common.ENGLISH));
 
         new Thread(new Runnable() {
             @Override
