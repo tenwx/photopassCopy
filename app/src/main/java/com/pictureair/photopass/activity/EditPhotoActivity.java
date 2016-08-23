@@ -142,7 +142,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	private PictureAirDbManager pictureAirDbManager;
 	private LocationUtil locationUtil;
 
-	private static final String TAG = "EditPhotoActivity";
+	private static final String TAG = "EditPhotoActivity: ";
 
 	private static final int INIT_DATA_FINISHED = 104;
 	private static final int LOAD_IMAGE_FINISH = 103;
@@ -378,12 +378,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			photoURL = photoInfo.photoThumbnail_1024;
 			isOnlinePic = true;
 			isEncrypted = AppUtil.isEncrypted(photoInfo.isEncrypted);
-			loadOnlineImg(photoURL);
+			loadOnlineImg();
 		}else{
 			//本地图片
 			photoURL = photoInfo.photoPathOrURL;
 			isOnlinePic = false;
-			loadImage(photoURL);
+			loadImage(photoURL, true);
 		}
 		addEditPhotoInfo(photoURL,0,null,null,"",0);
 
@@ -482,13 +482,23 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 								break;
 						}
 						if (photoInfo.onLine == 1) {
-							GlideUtil.load(EditPhotoActivity.this, editPhotoInfoArrayList.get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
-								@Override
-								public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-									mainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-									editPhotoHandler.sendEmptyMessage(START_ASYNC);
-								}
-							});
+
+							// 1.获取需要显示文件的文件名
+							String fileString = AppUtil.getReallyFileName(editPhotoInfoArrayList.get(0).getPhotoPath(), 0);
+							// 2、判断文件是否存在sd卡中
+							File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
+							if (file.exists()) {// 3、如果存在SD卡，则从SD卡获取图片信息
+								loadImage(file.toString(), false);
+							}else{
+								GlideUtil.load(EditPhotoActivity.this, editPhotoInfoArrayList.get(0).getPhotoPath(), new SimpleTarget<Bitmap>() {
+									@Override
+									public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+										mainBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+										editPhotoHandler.sendEmptyMessage(START_ASYNC);
+									}
+								});
+							}
+
 						}else{
 							new Thread() {
 								@Override
@@ -597,7 +607,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 				if (editPhotoInfoArrayList.size() > index + 1) {
 					index++;
-					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+					loadImage(editPhotoInfoArrayList.get(index).getPhotoPath(), true);
 					tempEditPhotoInfoArrayList.add(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1)); //前进，就加一个编辑对象。
 				}
 				check();
@@ -613,14 +623,14 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				if (editPhotoInfoArrayList.size() - 2 >= 0) {
 					if (index == 0) {
 						if (isOnlinePic) {
-							loadOnlineImg(editPhotoInfoArrayList.get(index).getPhotoPath());
+							loadOnlineImg();
 							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
 						}else{
-							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+							loadImage(editPhotoInfoArrayList.get(index).getPhotoPath(), true);
 							tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
 						}
 					}else{
-						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+						loadImage(editPhotoInfoArrayList.get(index).getPhotoPath(), true);
 						tempEditPhotoInfoArrayList.remove(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size()-1));
 					}
 				}
@@ -770,16 +780,21 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 	 *
 	 * @param filepath
 	 */
-	public void loadImage(String filepath) {
+	public void loadImage(String filepath, boolean isInitLoad) {
 //		photoURL = filepath;
 		if (mLoadImageTask != null) {
 			mLoadImageTask.cancel(true);
 		}
-		mLoadImageTask = new LoadImageTask();
+		mLoadImageTask = new LoadImageTask(isInitLoad);
 		mLoadImageTask.execute(filepath);
 	}
 
 	private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+		private boolean isInitLoad;
+		public LoadImageTask(boolean isInitLoad) {
+			this.isInitLoad = isInitLoad;
+		}
+
 		@Override
 		protected Bitmap doInBackground(String... params) {
 			Bitmap bitmap = BitmapUtils.loadImageByPath(params[0], imageWidth, imageHeight);
@@ -799,21 +814,24 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			}
 			mainBitmap = result;
 
-			if (mainBitmap != null) {
-				mainImage.setImageBitmap(mainBitmap);
-			}
-			if (null != editPhotoHandler){
-				editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
+			if (isInitLoad) {
+				if (mainBitmap != null) {
+					mainImage.setImageBitmap(mainBitmap);
+				}
+				if (null != editPhotoHandler){
+					editPhotoHandler.sendEmptyMessage(INIT_DATA_FINISHED);
+				}
+			} else {
+				editPhotoHandler.sendEmptyMessage(START_ASYNC);
 			}
 		}
 	}
 
 	/**
 	 * 加载网络图片
-	 *
-	 * @param url
 	 */
-	private void loadOnlineImg(String url){
+	private void loadOnlineImg(){
+		PictureAirLog.out(TAG + "photoURL" + photoURL);
 		/*
 		 * 需要使用三级缓存，1.判断SD卡是否存在，2.判断缓存中是否存在，3.从网上下载
 		 */
@@ -822,10 +840,10 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		// 2、判断文件是否存在sd卡中
 		File file = new File(Common.PHOTO_DOWNLOAD_PATH + fileString);
 		if (file.exists()) {// 3、如果存在SD卡，则从SD卡获取图片信息
-			PictureAirLog.out("file exists");
-			loadImage(file.toString());
+			PictureAirLog.out(TAG + "file exists" + fileString);
+			loadImage(file.toString(), true);
 		}else{
-			PictureAirLog.out("file not exist");
+			PictureAirLog.out(TAG + "file not exist");
 			editPhotoHandler.sendEmptyMessage(9999); //加载网络图片。
 		}
 	}
@@ -883,8 +901,7 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			if (params[0] == null || params[0].isRecycled()) {
 				return null;
 			}
-			String url = tempFile + "/"
-					+ dateFormat.format(new Date()) + ".jpg";
+			String url = tempFile + "/" + dateFormat.format(new Date()) + ".jpg";
 			if (editType == 2) {//滤镜
 				EditPhotoUtil.saveBitmap(params[0], url);
 //				pathList.add(url);
@@ -892,11 +909,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 				index = editPhotoInfoArrayList.size() - 1;
 				return params[0];
 			}else if(editType == 3){//饰品
-				//				Matrix touchMatrix = mainImage.getImageViewMatrix();
 				List<StikerInfo> stikerInfoList = new ArrayList<StikerInfo>();
 
-				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(
-						Bitmap.Config.ARGB_8888, true);
+				Bitmap resultBit = Bitmap.createBitmap(params[0]).copy(Bitmap.Config.ARGB_8888, true);
 				Canvas canvas = new Canvas(resultBit);
 				canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));  //抗锯齿
 				float[] data = new float[9];
@@ -1040,8 +1055,8 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			} else if (filter instanceof BlurFilter) {
 				newImage = ((BlurFilter) filter).transform(params[0]);
 			}
+
 			newImage = savaFitlerAfter(newImage); // 滤镜合成之后，再去合成曾经操作过的步骤。
-			//           
 			return newImage;
 		}
 
@@ -1396,12 +1411,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 			//恢复到没有裁减的状态。
 			if (editPhotoInfoArrayList.size() == 1 || index == 0){ //代表最初的图片。
 				if (photoInfo.onLine == 1) {
-					loadOnlineImg(photoURL);
+					loadOnlineImg();
 				}else{
-					loadImage(photoURL);
+					loadImage(photoURL, true);
 				}
 			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-				loadImage(editPhotoInfoArrayList.get(index).getPhotoPath());
+				loadImage(editPhotoInfoArrayList.get(index).getPhotoPath(), true);
 			}
 		}
 
@@ -1422,12 +1437,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 //					mainImage.setImageBitmap(mainBitmap);
 			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 				if (photoInfo.onLine == 1) {
-					loadOnlineImg(photoURL);
+					loadOnlineImg();
 				}else{
-					loadImage(photoURL);
+					loadImage(photoURL, true);
 				}
 			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath(), true);
 			}
 		}
 
@@ -1435,12 +1450,12 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 		if (editType == 4) { // 恢复到原始状态。
 			if (editPhotoInfoArrayList.size() == 1){ //代表最初的图片。
 				if (photoInfo.onLine == 1) {
-					loadOnlineImg(photoURL);
+					loadOnlineImg();
 				}else{
-					loadImage(photoURL);
+					loadImage(photoURL, true);
 				}
 			}else{ // 如果 pathList不仅仅存在 一个。说明本地都存在。 恢复到前一个
-				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath());
+				loadImage(editPhotoInfoArrayList.get(editPhotoInfoArrayList.size() - 1).getPhotoPath(), true);
 			}
 		}
 		exitEditStates(); // 推出编辑状态

@@ -41,7 +41,9 @@ public class NotificationServiceHelp {
                     break;
 
                 case SocketUtil.SOCKET_RECEIVE_DATA: // 接受到信息之后。清空服务器消息。PhotoPass上需要清空四个：照片，订单，视频，upgradedPhoto
-                    API1.clearSocketCachePhotoCount(msg.obj.toString());
+                    if (msg.obj != null) {
+                        API1.clearSocketCachePhotoCount(msg.obj.toString());
+                    }
                     break;
 
                 default:

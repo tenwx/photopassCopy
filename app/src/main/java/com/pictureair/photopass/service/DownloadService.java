@@ -41,16 +41,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -137,10 +134,10 @@ public class DownloadService extends Service {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
                                 DownloadFileStatus fileStatus = downloadList.get(j);
-                                if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                                if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoThumbnail_1024) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
-                                }else if(fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
+                                }else if(fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoThumbnail_1024) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
                                 }
@@ -162,7 +159,7 @@ public class DownloadService extends Service {
 //                        isAddTask.set(true);
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
-                            final DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                            DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
                             boolean existPhoto = false;
                             for (int j = 0; j < infos.size(); j++) {
 
@@ -172,7 +169,7 @@ public class DownloadService extends Service {
                                     PictureAirLog.out("filename=" + fileName);
                                     File filedir = new File(Common.PHOTO_DOWNLOAD_PATH);
                                     filedir.mkdirs();
-                                    final File file = new File(filedir + "/" + fileName);
+                                    File file = new File(filedir + "/" + fileName);
                                     if ("true".equalsIgnoreCase(info.getStatus())) {
                                         if (!file.exists()) {
                                             addToDownloadList(fileStatus);
