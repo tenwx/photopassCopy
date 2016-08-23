@@ -50,7 +50,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
@@ -94,7 +94,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
     private TextView addressTextView;
     private int recordcount;
 
-    private CustomProgressBarPop progressBarPop;
+    private PWProgressBarDialog progressBarPop;
 
     private PWToast newToast;
 
@@ -240,9 +240,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
 
             case API1.ADD_TO_CART_FAILED:
             case API1.UPLOAD_PHOTO_FAILED:
-                if (progressBarPop.isShowing()) {
-                    progressBarPop.dismiss();
-                }
+                progressBarPop.pwProgressBarDialogDismiss();
                 upload_index = 0;
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
@@ -259,9 +257,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case API1.ADD_TO_CART_SUCCESS:
-                if (progressBarPop.isShowing()) {
-                    progressBarPop.dismiss();
-                }
+                progressBarPop.pwProgressBarDialogDismiss();
                 JSONObject addcart = JSONObject.parseObject(msg.obj.toString());
                 PictureAirLog.v(TAG, "addtocart==" + addcart);
                 int currentCartCount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
@@ -346,7 +342,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
         priceTextView.setTypeface(MyApplication.getInstance().getFontBold());
         buttonSelectproduct = (ImageView) findViewById(R.id.button_selectproduct);
         cartButton.setOnClickListener(this);
-        progressBarPop = new CustomProgressBarPop(this, findViewById(R.id.makegift_relativate), CustomProgressBarPop.TYPE_UPLOAD);
+        progressBarPop = new PWProgressBarDialog(this).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_UPLOAD);
 //        selectButton.setOnClickListener(this);
 
         productNameLl.setOnClickListener(this);
@@ -610,7 +606,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     isbuynow = true;//buy now
                     message.obj = "start";
                     makeGiftHandler.sendMessage(message);
-                    progressBarPop.show(0);
+                    progressBarPop.pwProgressBarDialogShow();
                 } else {
                     intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
@@ -628,7 +624,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     isbuynow = false;//add to cart
                     message.obj = "start";
                     makeGiftHandler.sendMessage(message);
-                    progressBarPop.show(0);
+                    progressBarPop.pwProgressBarDialogShow();
                 } else {
                     intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);

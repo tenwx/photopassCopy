@@ -18,6 +18,10 @@ import com.pictureair.photopass.util.ScreenUtil;
  *
  * 注意点，show和dismiss必须要在main线程中执行
  *
+ * 怎么使用：
+ * PWProgressBarDialog pwDialog = new PWProgressBarDialog(context).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE);
+ * pwDialog.pwProgressBarDialogShow();
+ *
  * @author bauer_bao
  */
 public class PWProgressBarDialog extends Dialog {
@@ -177,7 +181,7 @@ public class PWProgressBarDialog extends Dialog {
             currentProgress = progress * 100 / total;
         }
 
-        int result = ReflectionUtil.getDrawableId(mContext, "loading_" + (currentProgress / 8));//83 = 1000/12f
+        int result = ReflectionUtil.getDrawableId(mContext, "loading_" + (currentProgress / 8));
 
         imageView.setImageResource(result);
         setProgressText(progress, total);

@@ -37,7 +37,7 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.BannerView_PreviewCompositeProduct;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.io.File;
@@ -65,7 +65,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
     private int recordcount = 0; //记录数据库中有几条记录
     private TextView counTextView;
 
-    private CustomProgressBarPop dialog;
+    private PWProgressBarDialog dialog;
     private BannerView_PreviewCompositeProduct bannerView_Preview;
     private boolean isbuynow = false;
 
@@ -182,9 +182,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 case API1.BATCH_ADD_TO_CARTS_FAILED:
                 case API1.ADD_TO_CART_FAILED:
                 case API1.UPLOAD_PHOTO_FAILED:
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
+                    dialog.pwProgressBarDialogDismiss();
                     upload_index = 0;
                     //				Toast.makeText(PreviewproductActivity.this, "Upload photo failed", Common.TOAST_SHORT_TIME).show();
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
@@ -230,7 +228,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
         addtocartButton.setTypeface(MyApplication.getInstance().getFontBold());
 
         //上传进度条
-        dialog = new CustomProgressBarPop(this, findViewById(R.id.preview_relativelayout), CustomProgressBarPop.TYPE_UPLOAD);
+        dialog = new PWProgressBarDialog(this).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_UPLOAD);
 
         recordcount = SPUtils.getInt(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, 0);
         if (recordcount <= 0) {
@@ -368,8 +366,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 isbuynow = true;//buy now
                 msg.obj = "start";
                 handler.sendMessage(msg);
-//			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, false);
-                dialog.show(0);
+                dialog.pwProgressBarDialogShow();
                 break;
 
             case R.id.button_add_to_cart://先要上传选择的图片，然后再加入购物车
@@ -383,8 +380,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                 isbuynow = false;//add to cart
                 message.obj = "start";
                 handler.sendMessage(message);
-//			dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, false);
-                dialog.show(0);
+                dialog.pwProgressBarDialogShow();
                 break;
 
             case R.id.textview_cart_count:
@@ -409,9 +405,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
      * @param isBatch 是否是批量处理
      */
     private void addCartSuccess(Object result, boolean isBatch){
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dialog.pwProgressBarDialogDismiss();
         PictureAirLog.out("result---->" + result);
         JSONArray addcartArray;
 

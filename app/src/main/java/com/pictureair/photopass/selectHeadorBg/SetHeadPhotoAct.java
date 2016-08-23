@@ -20,7 +20,7 @@ import com.pictureair.photopass.util.BlurUtil;
 import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.io.BufferedOutputStream;
@@ -40,7 +40,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
     private final static int IMAGE_CODE = 0; // 这里的IMAGE_CODE是自己任意定义的
     private ImageView clip;
     private ImageView back;
-    private CustomProgressBarPop dialog;
+    private PWProgressBarDialog dialog;
     private PWToast myToast;
     private File headPhoto;
 
@@ -94,14 +94,14 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     }
                 }
 
-                dialog.dismiss();
+                dialog.pwProgressBarDialogDismiss();
 //                myToast.setTextAndShow(R.string.save_success, Common.TOAST_SHORT_TIME);
                 finish();
                 break;
 
             case API1.UPDATE_USER_IMAGE_FAILED:
                 //删除头像的临时文件
-                dialog.dismiss();
+                dialog.pwProgressBarDialogDismiss();
                 if (headPhoto.exists()) {
                     headPhoto.delete();
                 }
@@ -142,8 +142,8 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                     myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     return;
                 }
-                dialog = new CustomProgressBarPop(this, findViewById(R.id.setHeadRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
-                dialog.show(0);
+                dialog = new PWProgressBarDialog(this).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_UPLOAD);
+                dialog.pwProgressBarDialogShow();
                 Bitmap bitmap = mClipImageLayout.clip();
                 bitmap = BlurUtil.comp(bitmap);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

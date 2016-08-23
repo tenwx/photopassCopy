@@ -31,11 +31,4 @@ public class CheckUpdate implements BaseCheckUpdate{
 		// TODO Auto-generated method stub
 		API1.checkUpdate(context, handler);
 	}
-
-	@Override
-	public void downloadAPK(Context context,String downloadURL, CustomProgressBarPop customProgressBarPop, String version, Handler handler) {
-		// TODO Auto-generated method stub
-//		API1.downloadAPK(context,downloadURL, customProgressBarPop, version, handler);
-		//启动service去下载
-	}
 }

@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.loopj.android.http.RequestParams;
 import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.R;
 import com.pictureair.photopass.adapter.AddressAdapter;
@@ -43,11 +42,8 @@ import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.ReflectionUtil;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.PWToast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +64,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private int cartCount = 0;
     private static final int CHANGE_PHOTO = 1;//修改图片
     private int payType = 0;//支付类型  0 支付宝 1 银联  2 VISA信用卡 3 代付 4 分期 5 自提 6 paypal
-
-    private CustomProgressBarPop customProgressBarPop;
 
     private PWToast newToast;
 
@@ -277,11 +271,10 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         submitButton = (TextView) findViewById(R.id.button2_submit);
         allGoodsTextView = (TextView) findViewById(R.id.good_count);
         submitButton.setOnClickListener(this);
-        customProgressBarPop = new CustomProgressBarPop(this, findViewById(R.id.submitOrderRelativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
         list = (ArrayList<CartItemInfo>) getIntent().getSerializableExtra("orderinfo");//获取订单信息
         infoListView = (ListView) findViewById(R.id.listView_submitorder);
         currency = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CURRENCY, Common.DEFAULT_CURRENCY);
-        submitorderAdapter = new SubmitOrderListViewAdapter(this, list, currency, submitOrderHandler);
+        submitorderAdapter = new SubmitOrderListViewAdapter(this, list, currency);
         infoListView.setHeaderDividersEnabled(false);
         infoListView.setFooterDividersEnabled(false);
         infoListView.addHeaderView(initHeaderAndFooterView(true, false, null));
@@ -773,35 +766,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         PictureAirLog.v(TAG, "onActivityResult" + "requestCode: " + requestCode + " resultCode: " + resultCode);
-        if (resultCode == 20) {//先要上传图片，上传完之后调用修改cart的api，如果返回ok，则刷新界面
-            updatephotolist = (ArrayList<PhotoInfo>) data.getSerializableExtra("photopath");
-            if (updatephotolist.get(0).onLine == 1) {//如果是选择的PP的照片
-                JSONObject object = new JSONObject();
-                object.put("photoUrl", updatephotolist.get(0).photoThumbnail_512);
-                object.put("photoId", updatephotolist.get(0).photoId);
-                Message msg = submitOrderHandler.obtainMessage();
-                msg.what = API1.UPLOAD_PHOTO_SUCCESS;
-                msg.arg1 = requestCode;
-                msg.obj = object;
-                submitOrderHandler.sendMessage(msg);
-//				dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-                customProgressBarPop.show(0);
-            } else {
-                String photourl = updatephotolist.get(0).photoPathOrURL;
-                // 需要上传选择的图片
-                RequestParams params = new RequestParams();
-                PictureAirLog.v(TAG, "上传的图片URL" + photourl);
-                try {
-                    params.put("file", new File(photourl), "application/octet-stream");
-                    params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-                    API1.SetPhoto(params, submitOrderHandler, requestCode, customProgressBarPop);
-//					dialog = ProgressDialog.show(this, getString(R.string.loading___), getString(R.string.photo_is_uploading), true, true);
-                    customProgressBarPop.show(0);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
         if (resultCode == RESULT_OK && requestCode == PREVIEW_COUPON_CODE) {
             //选择优惠码返回 请求API使用优惠券
             showPWProgressDialog();

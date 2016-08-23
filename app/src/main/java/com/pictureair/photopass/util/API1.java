@@ -20,7 +20,7 @@ import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.entity.PhotoInfo;
 import com.pictureair.photopass.entity.SendAddress;
 import com.pictureair.photopass.fragment.DownLoadingFragment;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
+import com.pictureair.photopass.widget.PWProgressBarDialog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -873,7 +873,7 @@ public class API1 {
      * @param position 修改图片的时候需要这个参数来定位
      * @throws FileNotFoundException
      */
-    public static void updateUserImage(RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
+    public static void updateUserImage(RequestParams params, final Handler handler, final int position, final PWProgressBarDialog diaBarPop) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPDATE_USER_IMAGE, params, new HttpCallback() {
             @Override
@@ -908,7 +908,7 @@ public class API1 {
      * @param position 修改图片的时候需要这个参数来定位
      * @throws FileNotFoundException
      */
-    public static void SetPhoto(RequestParams params, final Handler handler, final int position, final CustomProgressBarPop diaBarPop) throws FileNotFoundException {
+    public static void SetPhoto(RequestParams params, final Handler handler, final int position, final PWProgressBarDialog diaBarPop) throws FileNotFoundException {
         // 需要更新服务器中用户背景图片信息
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.UPLOAD_PHOTOS, params, new HttpCallback() {
             @Override
@@ -1404,7 +1404,7 @@ public class API1 {
      * @param embedPhotos 商品项对应配备的照片id与ppcode映射数组数据(可选)
      * @param handler     handler
      */
-    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final CustomProgressBarPop diaBarPop) {
+    public static void modifyCart(String cartId, String goodsKey, int qty, JSONArray embedPhotos, final Handler handler, final PWProgressBarDialog diaBarPop) {
         PictureAirLog.v(TAG, "modifyCart");
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());

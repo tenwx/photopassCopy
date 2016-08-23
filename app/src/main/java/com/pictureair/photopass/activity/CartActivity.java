@@ -30,8 +30,8 @@ import com.pictureair.photopass.util.Common;
 import com.pictureair.photopass.util.JsonTools;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
-import com.pictureair.photopass.widget.CustomProgressBarPop;
 import com.pictureair.photopass.widget.NoNetWorkOrNoCountView;
+import com.pictureair.photopass.widget.PWProgressBarDialog;
 import com.pictureair.photopass.widget.PWToast;
 
 import java.lang.ref.WeakReference;
@@ -67,7 +67,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
 
     private CartInfoAdapter cartAdapter;
 
-    private CustomProgressBarPop dialog;
+    private PWProgressBarDialog dialog;
 
     private String userId = "";
     private PWToast newToast;
@@ -222,17 +222,13 @@ public class CartActivity extends BaseActivity implements OnClickListener {
                 break;
             case API1.MODIFY_CART_SUCCESS:
                 PictureAirLog.v(TAG, "MODIFY_CART_SUCCESS: " + "uodate cart");
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dialog.pwProgressBarDialogDismiss();
                 //更新本地购物车
                 changephoto(position, updatephotolist);
 
                 break;
             case API1.MODIFY_CART_FAILED:
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                dialog.pwProgressBarDialogDismiss();
                 newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -322,7 +318,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
         setContentView(R.layout.activity_cart);
         newToast = new PWToast(this);
         //上传进度条
-        dialog = new CustomProgressBarPop(this, findViewById(R.id.cart_activity_relativeLayout), CustomProgressBarPop.TYPE_UPLOAD);
+        dialog = new PWProgressBarDialog(this).pwProgressBarDialogCreate(PWProgressBarDialog.TYPE_UPLOAD);
         rtButton = (ImageView) findViewById(R.id.ret_relyt);
         rtButton.setOnClickListener(this);
         paymentButton = (Button) findViewById(R.id.button3_pm);
@@ -705,7 +701,7 @@ public class CartActivity extends BaseActivity implements OnClickListener {
             msg.arg1 = requestCode;
             msg.obj = jsonArray;
             cartHandler.sendMessage(msg);
-            dialog.show(0);
+            dialog.pwProgressBarDialogShow();
         }
     }
 
