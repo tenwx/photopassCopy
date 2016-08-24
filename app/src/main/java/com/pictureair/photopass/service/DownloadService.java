@@ -134,10 +134,10 @@ public class DownloadService extends Service {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
                                 DownloadFileStatus fileStatus = downloadList.get(j);
-                                if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoThumbnail_1024) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
+                                if (fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_SELECT) {
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
-                                }else if(fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoThumbnail_1024) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
+                                }else if(fileStatus != null && fileStatus.getUrl().equals(photos.get(i).photoPathOrURL) && fileStatus.status == DownloadFileStatus.DOWNLOAD_STATE_RECONNECT){
                                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_WAITING;
                                     processCount.incrementAndGet();
                                 }
@@ -159,7 +159,7 @@ public class DownloadService extends Service {
 //                        isAddTask.set(true);
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
-                            DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
+                            DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024,photoInfo.photoThumbnail_512,photoInfo.photoThumbnail_1024,photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
                             boolean existPhoto = false;
                             for (int j = 0; j < infos.size(); j++) {
 
@@ -257,7 +257,7 @@ public class DownloadService extends Service {
 
                 for (int i = 0; i < infos.size(); i++) {
                     PhotoDownLoadInfo info = infos.get(i);
-                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "0", "0", "0", info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), info.getFailedTime());
+                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "","","","0", "0", "0", info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), info.getFailedTime());
                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
                     addToDownloadList(fileStatus);
                 }
@@ -473,7 +473,14 @@ public class DownloadService extends Service {
 
 
     private void getNewUrl(DownloadFileStatus fileStatus){
-        API1.getPhotosInfo(MyApplication.getTokenId(),0,handler,fileStatus);
+        if (fileStatus.ifRequestForNewUrl()) {
+            PictureAirLog.out("getNewUrl>>>>>>>>>>>  requestNewUrl");
+            API1.getPhotosInfo(MyApplication.getTokenId(), 0, handler, fileStatus);
+        }else{
+            PictureAirLog.out("getNewUrl>>>>>>>>>>>  original Url");
+            fileStatus.setNewUrl(fileStatus.getOriginalUrl());
+            handler.obtainMessage(API1.DOWNLOAD_PHOTO_GET_URL_SUCCESS,fileStatus).sendToTarget();
+        }
     }
 
     /**

@@ -4,12 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.pictureair.photopass.util.Common;
+
 /**
  * Created by pengwu on 16/7/12.
  */
 public class DownloadFileStatus implements Parcelable{
 
-    private String url;  //图片路径
+    private String url;  //文件存储路径，实际上使用的是1024的路径来命名，是由于购买照片后，重新登录后真实的原图路径会改变，会导致重新下载
+    private String photoThumbnail_512;//缩略图512尺寸的路径
+    private String photoThumbnail_1024;//缩略图1024尺寸的路径
+    private String originalUrl;//原图路径
     private String newUrl;//新请求的路径
     private String currentSize;
     private String totalSize;
@@ -39,6 +44,9 @@ public class DownloadFileStatus implements Parcelable{
 
     public DownloadFileStatus(Parcel source) {
         this.url = source.readString();
+        this.photoThumbnail_512 = source.readString();
+        this.photoThumbnail_1024 = source.readString();
+        this.originalUrl = source.readString();
         this.newUrl = source.readString();
         this.currentSize = source.readString();
         this.totalSize = source.readString();
@@ -53,8 +61,11 @@ public class DownloadFileStatus implements Parcelable{
         this.select = source.readInt();
     }
 
-    public DownloadFileStatus(String url, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,String failedTime) {
+    public DownloadFileStatus(String url,String photoThumbnail_512,String photoThumbnail_1024,String originalUrl, String currentSize, String totalSize, String loadSpeed , String photoId, int isVideo,String photoThumbnail,String shootOn,String failedTime) {
         this.url = url;
+        this.photoThumbnail_512 = photoThumbnail_512;
+        this.photoThumbnail_1024 = photoThumbnail_1024;
+        this.originalUrl = originalUrl;
         this.currentSize = currentSize;
         this.totalSize = totalSize;
         this.loadSpeed = loadSpeed;
@@ -71,6 +82,30 @@ public class DownloadFileStatus implements Parcelable{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getPhotoThumbnail_512() {
+        return photoThumbnail_512;
+    }
+
+    public void setPhotoThumbnail_512(String photoThumbnail_512) {
+        this.photoThumbnail_512 = photoThumbnail_512;
+    }
+
+    public String getPhotoThumbnail_1024() {
+        return photoThumbnail_1024;
+    }
+
+    public void setPhotoThumbnail_1024(String photoThumbnail_1024) {
+        this.photoThumbnail_1024 = photoThumbnail_1024;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
     public String getNewUrl() {
@@ -178,6 +213,9 @@ public class DownloadFileStatus implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(url);
+        dest.writeString(photoThumbnail_512);
+        dest.writeString(photoThumbnail_1024);
+        dest.writeString(originalUrl);
         dest.writeString(newUrl);
         dest.writeString(currentSize);
         dest.writeString(totalSize);
@@ -213,5 +251,31 @@ public class DownloadFileStatus implements Parcelable{
             str = str.replace("，",".");
         }
         return str;
+    }
+
+    /**
+     * 原图路径如果和 1024 512 128缩略图都不一样，表示原图路径是正确的，否则原图路径错误
+     * */
+    public boolean ifRequestForNewUrl(){
+        if (TextUtils.isEmpty(originalUrl)) return true;
+        if (!TextUtils.isEmpty(photoThumbnail_1024)){
+            if (originalUrl.equalsIgnoreCase(photoThumbnail_1024)){
+                return true;
+            }
+        }
+
+        if (!TextUtils.isEmpty(photoThumbnail_512)){
+            if (originalUrl.equalsIgnoreCase(Common.PHOTO_URL+"/"+photoThumbnail_512)){
+                return true;
+            }
+        }
+
+        if (!TextUtils.isEmpty(photoThumbnail)){
+            if (originalUrl.equalsIgnoreCase(photoThumbnail)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
