@@ -235,8 +235,8 @@ public final class CameraManager {
             if (camera == null) {
                 return null;
             }
-            int width = ScreenUtil.getScreenWidth(context) / 2;//边长为屏宽的四分之二
-            int topOffset = ScreenUtil.getScreenHeight(context) * 4 / 15;
+            int width = ScreenUtil.getScreenWidth(context) / 2;//边长为屏宽的二分之一
+            int topOffset = ScreenUtil.getScreenHeight(context) / 3;
             int leftOffset = width / 2;//两边间隔为屏宽的四分之一
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + width);//正方形
         }
@@ -261,16 +261,12 @@ public final class CameraManager {
             Point cameraResolution = configManager.getCameraResolution();
             Point screenResolution = configManager.getScreenResolution();
             //modify here
-//      rect.left = rect.left * cameraResolution.x / screenResolution.x;
-//      rect.right = rect.right * cameraResolution.x / screenResolution.x;
-//      rect.top = rect.top * cameraResolution.y / screenResolution.y;
-//      rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
             PictureAirLog.out("rect :" + rect.width() + "_height:" + rect.height());
             int temp = rect.width() / 4;  // 为了 增加识别得范围。故增加区域
-            rect.left = rect.left * cameraResolution.y / screenResolution.x - temp;
-            rect.right = rect.right * cameraResolution.y / screenResolution.x + temp;
-            rect.top = rect.top * cameraResolution.x / screenResolution.y - temp;
-            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y + temp;
+            rect.left = (rect.left - temp) * cameraResolution.y / screenResolution.x;
+            rect.right = (rect.right  + temp) * cameraResolution.y / screenResolution.x;
+            rect.top = (rect.top - temp) * cameraResolution.x / screenResolution.y;
+            rect.bottom = (rect.bottom + temp) * cameraResolution.x / screenResolution.y;
             framingRectInPreview = rect;
         }
         return framingRectInPreview;

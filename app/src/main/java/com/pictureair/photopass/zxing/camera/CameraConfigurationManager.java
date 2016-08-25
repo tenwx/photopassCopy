@@ -93,8 +93,13 @@ final class CameraConfigurationManager {
         Point theScreenResolution = new Point();
         display.getSize(theScreenResolution);
         screenResolution = theScreenResolution;
-        cameraResolution = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolution);
-        bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolution);
+        /**
+         * 因为库中findBestPreviewSizeValue方法依旧是横屏的代码：double screenAspectRatio1 = (double)screenResolution.x / (double)screenResolution.y;
+         * 因此传入的point也需要转成横屏的point，以此解决预览图像拉伸的问题
+         */
+        Point point = new Point(screenResolution.y, screenResolution.x);
+        cameraResolution = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, point);
+        bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, point);
 
         boolean isScreenPortrait = screenResolution.x < screenResolution.y;
         boolean isPreviewSizePortrait = bestPreviewSize.x < bestPreviewSize.y;
