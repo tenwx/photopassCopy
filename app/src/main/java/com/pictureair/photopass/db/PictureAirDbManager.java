@@ -1478,6 +1478,47 @@ public class PictureAirDbManager {
     }
 
     /**
+     * 获取对应状态的photo信息
+     * @param userId
+     * @param success 状态有 成功 “true”  失败 “false”  下载中 “load”
+     * */
+    public List<PhotoDownLoadInfo> getPhotosOrderByTime(String userId,String  success){
+        List<PhotoDownLoadInfo> photos = new ArrayList<>();
+        database = DBManager.getInstance().readData();
+        database.beginTransaction();
+        PictureAirLog.out("cursor open ---> getLoadSuccessPhotos");
+        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOS_LOAD + " where userId = ? and success = ? order by downloadTime desc", new String[]{userId,success});
+        try {
+            if (cursor.moveToFirst()) {//判断是否photo数据
+                do {
+                    PhotoDownLoadInfo photoInfo = new PhotoDownLoadInfo();
+                    photoInfo.setPhotoId(cursor.getString(cursor.getColumnIndex("photoId")));
+                    photoInfo.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+                    photoInfo.setSize(cursor.getString(cursor.getColumnIndex("size")));
+                    photoInfo.setPreviewUrl(cursor.getString(cursor.getColumnIndex("previewUrl")));
+                    photoInfo.setShootTime(cursor.getString(cursor.getColumnIndex("shootTime")));
+                    photoInfo.setLoadTime(cursor.getString(cursor.getColumnIndex("downloadTime")));
+                    photoInfo.setIsVideo(cursor.getInt(cursor.getColumnIndex("isVideo")));
+                    photoInfo.setFailedTime(cursor.getString(cursor.getColumnIndex("failedTime")));
+                    photos.add(photoInfo);
+                } while (cursor.moveToNext());
+            }
+            database.setTransactionSuccessful();
+            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            database.endTransaction();
+            DBManager.getInstance().closeDatabase();
+        }
+        return photos;
+    }
+
+
+    /**
      * 获取所有的照片信息
      * */
     public List<PhotoDownLoadInfo> getAllPhotos(String userId){

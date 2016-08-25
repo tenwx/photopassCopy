@@ -414,7 +414,7 @@ public class LoadSuccessFragment extends BaseFragment implements View.OnClickLis
         try{
             List<PhotoDownLoadInfo> photos = new ArrayList<PhotoDownLoadInfo>();
             if (pictureAirDbManager != null && !TextUtils.isEmpty(userId)) {
-                photos = pictureAirDbManager.getPhotos(userId, "true");
+                photos = pictureAirDbManager.getPhotosOrderByTime(userId, "true");
             }
             if (photoLoadSuccessHandler != null){
                 photoLoadSuccessHandler.obtainMessage(what, photos).sendToTarget();

@@ -181,6 +181,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     private void openLoadingFragmentSelect(){
         loadingFragmentChanged = downLoadingFragment.changeToSelectState();
         if (loadingFragmentChanged){
+            tv_select.setVisibility(View.INVISIBLE);
             img_cancle.setVisibility(View.VISIBLE);
             back.setVisibility(View.GONE);
         }else{
@@ -190,6 +191,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     private void closeLoadingFragmentSelect(){
         downLoadingFragment.changeToNormalState();
+        tv_select.setVisibility(View.VISIBLE);
         img_cancle.setVisibility(View.GONE);
         back.setVisibility(View.VISIBLE);
         loadingFragmentChanged = false;
@@ -198,6 +200,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
     private void openLoadSuccessFragmentSelect(){
         loadSuccessFragmentChanged = loadSuccessFragment.changeToSelectState();
         if (loadSuccessFragmentChanged){
+            tv_select.setVisibility(View.INVISIBLE);
             img_cancle.setVisibility(View.VISIBLE);
             back.setVisibility(View.GONE);
         }else{
@@ -207,6 +210,7 @@ public class LoadManageActivity extends BaseFragmentActivity implements ViewPage
 
     private void closeLoadSuccessFragmentSelect(){
         loadSuccessFragment.changeToNormalState();
+        tv_select.setVisibility(View.VISIBLE);
         img_cancle.setVisibility(View.GONE);
         back.setVisibility(View.VISIBLE);
         loadSuccessFragmentChanged = false;
