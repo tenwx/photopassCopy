@@ -17,12 +17,12 @@
 package com.pictureair.photopass.zxing.view;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -31,8 +31,8 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder
@@ -40,29 +40,29 @@ import java.util.HashSet;
  * animation and result points.
  */
 public final class ViewfinderView extends View {
-    private static final String TAG = "log";
+    private static final String TAG = ViewfinderView.class.getSimpleName();
     /**
      * 刷新界面的时间
      */
     private static final long ANIMATION_DELAY = 10L;
-    private static final int OPAQUE = 0xFF;
+    private static final int CURRENT_POINT_OPACITY = 0xA0;
+    private static final int MAX_RESULT_POINTS = 20;
+    private static final int POINT_SIZE = 6;
 
     /**
      * 四个绿色边角对应的长度
      */
-    private int ScreenRate;
+    private int screenRate;
 
     /**
      * 四个绿色边角对应的宽度
      */
     private static final int CORNER_WIDTH = 2;
 
-
     /**
      * 中间那条线每次刷新移动的距离
      */
     private static final int SPEEN_DISTANCE = 5;
-
 
     /**
      * 画笔对象的引用
@@ -75,29 +75,33 @@ public final class ViewfinderView extends View {
     private int slideTop;
 
     private final int resultPointColor;
-    private Collection<ResultPoint> possibleResultPoints;
-    private Collection<ResultPoint> lastPossibleResultPoints;
+    private List<ResultPoint> possibleResultPoints;
+    private List<ResultPoint> lastPossibleResultPoints;
 
-    boolean isFirst;
+    private boolean isFirst;
 
     public ViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         //将像素转换成dp
-        ScreenRate = ScreenUtil.getScreenWidth(context) / 6;
+        screenRate = ScreenUtil.getScreenWidth(context) / 6;
 
-        paint = new Paint();
-        Resources resources = getResources();
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        resultPointColor = resources.getColor(R.color.color3);
-        possibleResultPoints = new HashSet<ResultPoint>(5);
+        resultPointColor = ContextCompat.getColor(context, R.color.color3);
+        possibleResultPoints = new ArrayList<>(5);
+        lastPossibleResultPoints = null;
     }
 
     @Override
     public void onDraw(Canvas canvas) {
+        if (CameraManager.get() == null) {
+            return; // not ready yet, early draw before done configuring
+        }
         //中间的扫描框，你要修改扫描框的大小，去CameraManager里面修改
         Rect frame = CameraManager.get().getFramingRect();
-        if (frame == null) {
+        Rect previewFrame = CameraManager.get().getFramingRectInPreview();
+        if (frame == null || previewFrame == null) {
             return;
         }
 
@@ -109,21 +113,21 @@ public final class ViewfinderView extends View {
 
         //画扫描框边上的角，总共8个部分
         paint.setColor(Color.WHITE);
-        canvas.drawRect(frame.left, frame.top, frame.left + ScreenRate,
+        canvas.drawRect(frame.left, frame.top, frame.left + screenRate,
                 frame.top + CORNER_WIDTH, paint);
         canvas.drawRect(frame.left, frame.top, frame.left + CORNER_WIDTH, frame.top
-                + ScreenRate, paint);
-        canvas.drawRect(frame.right - ScreenRate, frame.top, frame.right,
+                + screenRate, paint);
+        canvas.drawRect(frame.right - screenRate, frame.top, frame.right,
                 frame.top + CORNER_WIDTH, paint);
         canvas.drawRect(frame.right - CORNER_WIDTH, frame.top, frame.right, frame.top
-                + ScreenRate, paint);
+                + screenRate, paint);
         canvas.drawRect(frame.left, frame.bottom - CORNER_WIDTH, frame.left
-                + ScreenRate, frame.bottom, paint);
-        canvas.drawRect(frame.left, frame.bottom - ScreenRate,
+                + screenRate, frame.bottom, paint);
+        canvas.drawRect(frame.left, frame.bottom - screenRate,
                 frame.left + CORNER_WIDTH, frame.bottom, paint);
-        canvas.drawRect(frame.right - ScreenRate, frame.bottom - CORNER_WIDTH,
+        canvas.drawRect(frame.right - screenRate, frame.bottom - CORNER_WIDTH,
                 frame.right, frame.bottom, paint);
-        canvas.drawRect(frame.right - CORNER_WIDTH, frame.bottom - ScreenRate,
+        canvas.drawRect(frame.right - CORNER_WIDTH, frame.bottom - screenRate,
                 frame.right, frame.bottom, paint);
 
 
@@ -140,30 +144,34 @@ public final class ViewfinderView extends View {
         lineRect.bottom = slideTop + 18;
         canvas.drawBitmap(((BitmapDrawable) (getResources().getDrawable(R.drawable.qrcode_scan_line))).getBitmap(), null, lineRect, paint);
 
-
-        Collection<ResultPoint> currentPossible = possibleResultPoints;
-        Collection<ResultPoint> currentLast = lastPossibleResultPoints;
+        List<ResultPoint> currentPossible = possibleResultPoints;
+        List<ResultPoint> currentLast = lastPossibleResultPoints;
         if (currentPossible.isEmpty()) {
             lastPossibleResultPoints = null;
         } else {
-            possibleResultPoints = new HashSet<ResultPoint>(5);
+            possibleResultPoints = new ArrayList<>(5);
             lastPossibleResultPoints = currentPossible;
-            paint.setAlpha(OPAQUE);
+            paint.setAlpha(CURRENT_POINT_OPACITY);
             paint.setColor(resultPointColor);
-            for (ResultPoint point : currentPossible) {
-                canvas.drawCircle(frame.left + point.getX(), frame.top
-                        + point.getY(), 6.0f, paint);
-            }
-        }
-        if (currentLast != null) {
-            paint.setAlpha(OPAQUE / 2);
-            paint.setColor(resultPointColor);
-            for (ResultPoint point : currentLast) {
-                canvas.drawCircle(frame.left + point.getX(), frame.top
-                        + point.getY(), 3.0f, paint);
+            synchronized (currentPossible) {
+                for (ResultPoint point : currentPossible) {
+                    canvas.drawCircle(frame.left + point.getX(), frame.top
+                            + point.getY(), POINT_SIZE, paint);
+                }
             }
         }
 
+        if (currentLast != null) {
+            paint.setAlpha(CURRENT_POINT_OPACITY / 2);
+            paint.setColor(resultPointColor);
+            synchronized (currentLast) {
+                float radius = POINT_SIZE / 2.0f;
+                for (ResultPoint point : currentLast) {
+                    canvas.drawCircle(frame.left + point.getX(), frame.top
+                            + point.getY(), radius, paint);
+                }
+            }
+        }
 
         //只刷新扫描框的内容，其他地方不刷新
         postInvalidateDelayed(ANIMATION_DELAY, frame.left, frame.top,
@@ -176,7 +184,15 @@ public final class ViewfinderView extends View {
     }
 
     public void addPossibleResultPoint(ResultPoint point) {
-        possibleResultPoints.add(point);
+        List<ResultPoint> points = possibleResultPoints;
+        synchronized (points) {
+            points.add(point);
+            int size = points.size();
+            if (size > MAX_RESULT_POINTS) {
+                // trim it
+                points.subList(0, size - MAX_RESULT_POINTS / 2).clear();
+            }
+        }
     }
 
 }

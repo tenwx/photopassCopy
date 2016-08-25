@@ -1,9 +1,5 @@
 package com.pictureair.photopass.entity;
 
-import android.graphics.Bitmap;
-
-import com.google.zxing.common.Comparator;
-
 /**
  * Created by pengwu on 16/7/8.
  */
