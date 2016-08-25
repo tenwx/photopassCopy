@@ -45,7 +45,7 @@
             android:paddingLeft="@dimen/pp_margin_16"
             android:text="@string/ok"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_16" />
 
     </RelativeLayout>
 
