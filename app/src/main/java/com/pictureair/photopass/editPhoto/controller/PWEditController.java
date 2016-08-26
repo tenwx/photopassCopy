@@ -61,7 +61,7 @@ public class PWEditController implements PWEditViewListener{
         isOnLine = activity.getIntent().getBooleanExtra("isOnLine",false);
         this.pwEditViewInterface = pwEditViewInterface;
         loadImageFormPath(photoPath, isOnLine);  //加载图片，用ImageLoader加载，故不用新开线程。
-        pwEditViewInterface.setLister(this); // 加入接口，消耗内存很小，不用开线程。
+        this.pwEditViewInterface.setLister(this); // 加入接口，消耗内存很小，不用开线程。
         pwEditUtil.createFolder(); //可以放在线程。（不过需要考虑线程还没执行，就执行了其他操作，造成不同步）
         index = 1;
         rotateAngle = 0;
