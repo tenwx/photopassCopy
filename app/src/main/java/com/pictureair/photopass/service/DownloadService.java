@@ -72,6 +72,7 @@ public class DownloadService extends Service {
     public final static int ADD_DOWNLOAD = 3;
     public final static int CLEAR_FAILED = 4;
     public final static int PREPARE_DOWNLOAD = 5;
+    public final static int NO_PERMISSION = 6;
 
     private boolean isDownloading = false;
     private PWToast myToast;
@@ -83,7 +84,7 @@ public class DownloadService extends Service {
     private boolean hasPhotos = false;
     private String lastUrl = new String();
     private String userId;
-    private ConcurrentHashMap<String,DownloadFileStatus> cacheList = new ConcurrentHashMap<>();
+//    private ConcurrentHashMap<String,DownloadFileStatus> cacheList = new ConcurrentHashMap<>();
     private CopyOnWriteArrayList<DownloadFileStatus> deleteList = new CopyOnWriteArrayList<>();
     private int prepareDownloadCount;
     private AtomicInteger processCount = new AtomicInteger(0);
@@ -123,13 +124,12 @@ public class DownloadService extends Service {
             PictureAirLog.out("addTask start prepareDownloadCount size =" + prepareDownloadCount);
             int reconnect = b.getInt("reconnect",-1);
             if (!AppUtil.checkPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
-                stopSelf();//下载服务停止
+                handler.sendEmptyMessage(NO_PERMISSION);
+                return;
             } else if (photos != null) {
                 //将新的数据放入到下载队列的末尾
                 if (reconnect > -1) {//需要重连的走这个流程
                     if (photos.size() >0 && downloadList.size() >0) {
-//                        isAddTask.set(true);
                         for (int i=0;i<photos.size();i++) {
                             PhotoInfo info = photos.get(i);
                             for (int j=0;j<downloadList.size();j++) {
@@ -156,7 +156,6 @@ public class DownloadService extends Service {
                 } else {//正常下载走这个
                     CopyOnWriteArrayList<PhotoDownLoadInfo> infos = pictureAirDbManager.getExistPhoto(userId);
                     if (photos.size() >0) {
-//                        isAddTask.set(true);
                         for (int i = 0; i < photos.size(); i++) {
                             PhotoInfo photoInfo = photos.get(i);
                             DownloadFileStatus fileStatus = new DownloadFileStatus(photoInfo.photoThumbnail_1024,photoInfo.photoThumbnail_512,photoInfo.photoThumbnail_1024,photoInfo.photoPathOrURL, "0", "0", "0", photoInfo.photoId, photoInfo.isVideo, photoInfo.photoThumbnail, photoInfo.shootOn, "");
@@ -453,7 +452,10 @@ public class DownloadService extends Service {
                         adapterHandler.sendEmptyMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE);
                     }
                     break;
-
+                case NO_PERMISSION:
+                    myToast.setTextAndShow(R.string.permission_storage_message, Common.TOAST_SHORT_TIME);
+                    stopSelf();//下载服务停止
+                    break;
                 default:
                     break;
             }

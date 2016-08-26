@@ -1519,6 +1519,34 @@ public class PictureAirDbManager {
 
 
     /**
+     * 获取所有userId
+     *
+     * */
+    public List<String> getAllUsers(){
+        List<String> users = new ArrayList<>();
+        database = DBManager.getInstance().readData();
+        Cursor cursor = database.rawQuery("select distinct userId from " + Common.PHOTOS_LOAD, null);
+        try {
+            if (cursor.moveToFirst()) {//判断是否photo数据
+                do {
+                    String user = cursor.getString(cursor.getColumnIndex("userId"));
+                    users.add(user);
+                } while (cursor.moveToNext());
+            }
+            PictureAirLog.out("cursor close ---> getAllPhotoFromPhotoPassInfo");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            DBManager.getInstance().closeDatabase();
+        }
+        return users;
+    }
+
+
+    /**
      * 获取所有的照片信息
      * */
     public List<PhotoDownLoadInfo> getAllPhotos(String userId){

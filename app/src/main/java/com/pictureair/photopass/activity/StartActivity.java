@@ -59,9 +59,9 @@ public class StartActivity extends BaseActivity implements Callback {
         versionTextView = (TextView) findViewById(R.id.start_version_code_tv);
         pictureAirDbManager = new PictureAirDbManager(getApplicationContext());
         _id = SPUtils.getString(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
-        boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, false);
+        boolean update =  SPUtils.getBoolean(this, Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, false);
         updateTime = System.currentTimeMillis();
-        if (_id != null && !update) {
+        if (!update) {
             ll_update.setVisibility(View.VISIBLE);
             spinner.start();
             new RemoveRepeatPhotoTask().start();
@@ -103,7 +103,7 @@ public class StartActivity extends BaseActivity implements Callback {
 
                     }
                     curTime = System.currentTimeMillis();
-                    long between = (curTime-updateTime)/(60*60*24);
+                    long between = curTime-updateTime;
                     PictureAirLog.e("startactivity between",String.valueOf(between));
                     if (between < 2000){
                         handler.postDelayed(new Runnable() {
@@ -134,19 +134,25 @@ public class StartActivity extends BaseActivity implements Callback {
         @Override
         public void run() {
             try {
-                List<PhotoDownLoadInfo> list = pictureAirDbManager.getAllPhotos(_id);
-                Collections.sort(list, new PhotoDownLoadInfoSortUtil());
-                if (list != null && list.size() > 0) {
-                    int len = list.size();
-                    for (int i = 0; i < len - 1; i++) {
-                        PhotoDownLoadInfo infoi = list.get(i);
-                        for (int j = i + 1; j < len; j++) {
-                            PhotoDownLoadInfo infoj = list.get(j);
-                            if (infoi.getPhotoId().equalsIgnoreCase(infoj.getPhotoId())) {
-                                pictureAirDbManager.deleteRepeatPhoto(_id, infoj);
-                                list.remove(j);
-                                j--;
-                                len--;
+                List<String> users = pictureAirDbManager.getAllUsers();
+                if (users.size() >0) {
+                    for (int k = 0;k<users.size();k++) {
+                        String userId = users.get(k);
+                        List<PhotoDownLoadInfo> list = pictureAirDbManager.getAllPhotos(userId);
+                        Collections.sort(list, new PhotoDownLoadInfoSortUtil());
+                        if (list != null && list.size() > 0) {
+                            int len = list.size();
+                            for (int i = 0; i < len - 1; i++) {
+                                PhotoDownLoadInfo infoi = list.get(i);
+                                for (int j = i + 1; j < len; j++) {
+                                    PhotoDownLoadInfo infoj = list.get(j);
+                                    if (infoi.getPhotoId().equalsIgnoreCase(infoj.getPhotoId())) {
+                                        pictureAirDbManager.deleteRepeatPhoto(userId, infoj);
+                                        list.remove(j);
+                                        j--;
+                                        len--;
+                                    }
+                                }
                             }
                         }
                     }
@@ -154,7 +160,7 @@ public class StartActivity extends BaseActivity implements Callback {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.REMOVE_REPEATE_PHOTO, true);
+            SPUtils.put(MyApplication.getInstance(), Common.SHARED_PREFERENCE_APP, Common.REMOVE_REPEATE_PHOTO, true);
             handler.obtainMessage(UPDATE_SUCCESS).sendToTarget();
 
         }
