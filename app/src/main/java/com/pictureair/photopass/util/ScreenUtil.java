@@ -2,11 +2,14 @@ package com.pictureair.photopass.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**屏幕计算*/
 public class ScreenUtil {
@@ -79,6 +82,45 @@ public class ScreenUtil {
 			e1.printStackTrace();
 		}
 		return sbar;
+	}
+
+	/**
+	 * 获取屏幕原始尺寸高度，包括虚拟功能键高度
+	 */
+	public static int getDpi(Context context){
+		int dpi = 0;
+		WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		Display display = windowManager.getDefaultDisplay();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		@SuppressWarnings("rawtypes")
+		Class c;
+		try {
+			c = Class.forName("android.view.Display");
+			@SuppressWarnings("unchecked")
+			Method method = c.getMethod("getRealMetrics", DisplayMetrics.class);
+			method.invoke(display, displayMetrics);
+			dpi = displayMetrics.heightPixels;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return dpi;
+	}
+
+	/**
+	 * 获取 虚拟按键的高度
+	 * @param context
+	 * @return
+	 */
+	public static  int getNavigationHeight(Context context){
+		return getDpi(context) - getScreenHeight(context);
+	}
+
+	/**
+	 * 标题栏高度
+	 * @return
+	 */
+	public static int getTitleHeight(Activity activity){
+		return  activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
 	}
 
 	/**

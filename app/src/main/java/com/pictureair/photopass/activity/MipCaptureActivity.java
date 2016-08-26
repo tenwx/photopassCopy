@@ -72,6 +72,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private AmbientLightManager ambientLightManager;
     private RelativeLayout.LayoutParams rlp;
     private SurfaceView surfaceView;
+    private View navigationView;
     private String code;
 
     private PWToast newToast;
@@ -230,12 +231,14 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保存屏幕不休眠
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        //保证相机以全屏的方式显示，保证图像不会拉伸
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//使用沉浸式
             //透明状态栏
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏（虚拟按键）
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        } else {//全屏设置
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_capture);
         String mode = getIntent().getStringExtra("mode");
@@ -253,6 +256,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        navigationView = findViewById(R.id.bottom_status_bar_view);
         setTopLeftValueAndShow(R.drawable.back_white, true);
         setTopTitleShow(R.string.auto);
         setTopRightValueAndShow(R.drawable.manual_input,true);
@@ -272,8 +276,23 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
 
+        //设置顶部状态栏和底部虚拟按键的对应View的高度
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            View topStatusBar = findViewById(R.id.status_bar_view);
+            ViewGroup.LayoutParams params = topStatusBar.getLayoutParams();
+            params.height = ScreenUtil.getStatusBarHeight(this);
+            topStatusBar.setLayoutParams(params);
+        }
+
+        int navigationHeight = ScreenUtil.getNavigationHeight(this);
+        if (navigationHeight > 0) {
+            ViewGroup.LayoutParams navigationParams = navigationView.getLayoutParams();
+            navigationParams.height = navigationHeight;
+            navigationView.setLayoutParams(navigationParams);
+        }
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
+
         ViewTreeObserver viewTreeObserver = tvScanPPPCode.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -291,6 +310,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             ocrScanView.setVisibility(View.GONE);
             viewfinderView.setVisibility(View.VISIBLE);
             tvScanQRcodeTips.setVisibility(View.VISIBLE);
+            navigationView.setVisibility(View.VISIBLE);
             rlMask.setVisibility(View.GONE);
 
             tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_sel), null, null);
@@ -319,12 +339,13 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
             rlMask.setVisibility(View.VISIBLE);
             viewfinderView.setVisibility(View.GONE);
             tvScanQRcodeTips.setVisibility(View.GONE);
+            navigationView.setVisibility(View.GONE);
 
             tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_sel), null, null);
-            tvScanPPPCode.setTextColor(getResources().getColor(R.color.pp_blue));
+            tvScanPPPCode.setTextColor(ContextCompat.getColor(this, R.color.pp_blue));
 
             tvScanQRCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_qrcode_nor), null, null);
-            tvScanQRCode.setTextColor(getResources().getColor(R.color.white));
+            tvScanQRCode.setTextColor(ContextCompat.getColor(this, R.color.white));
         }
     }
 
