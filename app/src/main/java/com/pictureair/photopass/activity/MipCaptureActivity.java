@@ -2,16 +2,14 @@ package com.pictureair.photopass.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +20,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +36,8 @@ import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
 import com.pictureair.photopass.widget.PWToast;
+import com.pictureair.photopass.zxing.camera.AmbientLightManager;
+import com.pictureair.photopass.zxing.camera.BeepManager;
 import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.decoding.CaptureActivityHandler;
 import com.pictureair.photopass.zxing.decoding.InactivityTimer;
@@ -67,10 +68,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private Vector<BarcodeFormat> decodeFormats;
     private String characterSet;
     private InactivityTimer inactivityTimer;
-    private MediaPlayer mediaPlayer;
-    private boolean playBeep;
-    private static final float BEEP_VOLUME = 0.10f;
-    private boolean vibrate;
+    private BeepManager beepManager;
+    private AmbientLightManager ambientLightManager;
     private RelativeLayout.LayoutParams rlp;
     private SurfaceView surfaceView;
     private String code;
@@ -82,7 +81,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     private TextView tvScanQRCode ,tvScanPPPCode; //扫描QR码 和 PP+号码的按钮
     private int scanType = 1; //扫描方式。1，代表Qr码扫描。2，代表PP+卡扫描。  默认进来是扫描QR码
-    private ViewfinderView viewfinder_view; // QR码 扫描的矩形
     private TextView tvScanQRcodeTips;// QR码的提示字体。
     private RelativeLayout rlMask,rlLight; //蒙版, 高亮部分
     private ScanView ocrScanView;
@@ -93,10 +91,10 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private boolean mIsAskCameraPermission = false;
 
     @Override
-    public void decodeSuccess(Result result, Bitmap bitmap) {
+    public void decodeSuccess(Result result) {
         if (!isPWProgressDialogShowing()) {//处理扫描结果
             inactivityTimer.onActivity();
-            playBeepSoundAndVibrate();
+            beepManager.playBeepSoundAndVibrate();
             String resultString = result.getText();
             PictureAirLog.out("scan result = " + resultString);
             if (resultString.contains("vid=")) { //包含vid
@@ -135,6 +133,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     @Override
     public void decodeOCRSuccess(Bundle bundle) {
         if (bundle.getString("text") != null){ //跳转到确认的界面。
+            beepManager.playBeepSoundAndVibrate();
             Intent intent = new Intent();
             intent.putExtra("text", bundle.getString("text"));
             intent.putExtra("type", getIntent().getStringExtra("type"));
@@ -230,6 +229,14 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保存屏幕不休眠
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏（虚拟按键）
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         setContentView(R.layout.activity_capture);
         String mode = getIntent().getStringExtra("mode");
         if (TextUtils.isEmpty(mode)) {
@@ -251,10 +258,11 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         setTopRightValueAndShow(R.drawable.manual_input,true);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
+        beepManager = new BeepManager(this);
+        ambientLightManager = new AmbientLightManager(this);
         dealCodeUtil = new DealCodeUtil(this, getIntent(), false, mipCaptureHandler);
 
         //OCR 识别需要用到的组件。
-        viewfinder_view = (ViewfinderView) findViewById(R.id.viewfinder_view);
         tvScanQRcodeTips = (TextView) findViewById(R.id.tv_scan_qr_code_tips);
         tvScanQRCode = (TextView) findViewById(R.id.tv_scan_qr_code);
         tvScanPPPCode = (TextView) findViewById(R.id.tv_scan_ppp_code);
@@ -264,6 +272,8 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         rlMask = (RelativeLayout) findViewById(R.id.rl_mask);
         rlLight = (RelativeLayout) findViewById(R.id.rl_light);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        
         ViewTreeObserver viewTreeObserver = tvScanPPPCode.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -279,7 +289,7 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
     private void setScanMode(int mode){
         if (mode == 1) {
             ocrScanView.setVisibility(View.GONE);
-            viewfinder_view.setVisibility(View.VISIBLE);
+            viewfinderView.setVisibility(View.VISIBLE);
             tvScanQRcodeTips.setVisibility(View.VISIBLE);
             rlMask.setVisibility(View.GONE);
 
@@ -302,11 +312,12 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
                 PictureAirLog.out("width---->" + layoutParams.width);
                 PictureAirLog.out("height---->" + layoutParams.height);
                 tvCenterHint.setLayoutParams(layoutParams);
+                CameraManager.get().setOCRFrameRect(width, height);
             }
 
             ocrScanView.setVisibility(View.VISIBLE);
             rlMask.setVisibility(View.VISIBLE);
-            viewfinder_view.setVisibility(View.GONE);
+            viewfinderView.setVisibility(View.GONE);
             tvScanQRcodeTips.setVisibility(View.GONE);
 
             tvScanPPPCode.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, R.drawable.scan_pppcode_sel), null, null);
@@ -346,38 +357,35 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         }
         PictureAirLog.out("resume==============");
 
+        beepManager.updatePrefs();
+        ambientLightManager.start(CameraManager.get());
+        inactivityTimer.onResume();
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
             requestCameraPermissionAndInit();
         } else {
             surfaceHolder.addCallback(this);
-            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
         decodeFormats = null;
         characterSet = null;
-
-        playBeep = true;
-        AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
-        if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
-            playBeep = false;
-        }
-        initBeepSound();
-        vibrate = true;
-
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         PictureAirLog.out("----------pause");
         if (handler != null) {
             PictureAirLog.out("need quitSynchronously");
             handler.quitSynchronously();
             handler = null;
         }
-        PictureAirLog.out("need closeDriver");
+
+        inactivityTimer.onPause();
+        ambientLightManager.stop();
         CameraManager.get().closeDriver();
-        PictureAirLog.out("pause -----> done");
+        if (!hasSurface) {
+            surfaceView.getHolder().removeCallback(this);
+        }
+        super.onPause();
     }
 
     @Override
@@ -385,19 +393,18 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
         super.onDestroy();
         PictureAirLog.out("-----------destroy");
         inactivityTimer.shutdown();
-        if (mediaPlayer != null) {
-
-            if (mediaPlayer.isPlaying()) {
-
-                mediaPlayer.stop();
-            }
-            mediaPlayer.release();
-        }
-        mediaPlayer = null;
         mipCaptureHandler.removeCallbacksAndMessages(null);
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
+        if (surfaceHolder == null) {
+            PictureAirLog.out("no surfaceholder");
+            return;
+        }
+        if (CameraManager.get().isOpen()) {
+            PictureAirLog.out("camera is open");
+            return;
+        }
         try {
             CameraManager.get().openDriver(surfaceHolder);
         } catch (IOException ioe) {
@@ -444,43 +451,6 @@ public class MipCaptureActivity extends BaseActivity implements Callback,View.On
 
     public Handler getHandler() {
         return handler;
-    }
-
-
-    private void initBeepSound() {
-        if (playBeep && mediaPlayer == null) {
-            // The volume on STREAM_SYSTEM is not adjustable, and users found it
-            // too loud,
-            // so we now play on the music stream.
-            setVolumeControlStream(AudioManager.STREAM_MUSIC);
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setOnCompletionListener(beepListener);
-
-            AssetFileDescriptor file = getResources().openRawResourceFd(
-                    R.raw.beep);
-            try {
-                mediaPlayer.setDataSource(file.getFileDescriptor(),
-                        file.getStartOffset(), file.getLength());
-                file.close();
-                mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
-                mediaPlayer.prepare();
-            } catch (IOException e) {
-                mediaPlayer = null;
-            }
-        }
-    }
-
-    private static final long VIBRATE_DURATION = 200L;
-
-    private void playBeepSoundAndVibrate() {
-        if (playBeep && mediaPlayer != null) {
-            mediaPlayer.start();
-        }
-        if (vibrate) {
-            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-            vibrator.vibrate(VIBRATE_DURATION);
-        }
     }
 
     /**

@@ -19,31 +19,26 @@ package com.pictureair.photopass.zxing.camera;
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
-import android.os.Build;
+import android.util.Log;
 import android.view.Display;
+import android.view.Surface;
 import android.view.WindowManager;
 
-import com.pictureair.photopass.util.PictureAirLog;
-import com.pictureair.photopass.util.ScreenUtil;
-
-import java.lang.reflect.Method;
-import java.util.regex.Pattern;
+import com.google.zxing.client.android.camera.CameraConfigurationUtils;
+import com.pictureair.photopass.zxing.camera.open.CameraFacing;
+import com.pictureair.photopass.zxing.camera.open.OpenCamera;
 
 final class CameraConfigurationManager {
 
     private static final String TAG = CameraConfigurationManager.class.getSimpleName();
 
-    private static final int TEN_DESIRED_ZOOM = 27;
-    private static final int DESIRED_SHARPNESS = 30;
-
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     private final Context context;
+    private int cwNeededRotation;
+    private int cwRotationFromDisplayToCamera;
     private Point screenResolution;
     private Point cameraResolution;
-    private int previewFormat;
-    private String previewFormatString;
-    private int screenWidth = 0;
+    private Point bestPreviewSize;
+    private Point previewSizeOnScreen;
 
     CameraConfigurationManager(Context context) {
         this.context = context;
@@ -52,42 +47,68 @@ final class CameraConfigurationManager {
     /**
      * Reads, one time, values from the camera that are needed by the app.
      */
-    void initFromCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
-        previewFormat = parameters.getPreviewFormat();
-        previewFormatString = parameters.get("preview-format");
-        PictureAirLog.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
+    void initFromCameraParameters(OpenCamera camera) {
+        Camera.Parameters parameters = camera.getCamera().getParameters();
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
 
-//    screenWidth = ScreenUtil.getScreenWidth(context);
-//    
-//    
-//    List<Size> previewsizes = parameters.getSupportedPreviewSizes();// 获取系统可支持的预览尺寸
-//	for (Size size : previewsizes) {
-//		PictureAirLog.out("previewSize"+"width:" + size.width + " height "
-//				+ size.height);// 查询所有的预览尺寸
-//		if (size.height == screenWidth) {
-//			screenResolution = new Point(size.width, size.height);
-//		}
-//	}
-//    
-
-        screenResolution = new Point(display.getWidth(), display.getHeight());
-        PictureAirLog.d(TAG, "Screen resolution: " + screenResolution);
-
-        Point screenResolutionForCamera = new Point();
-        screenResolutionForCamera.x = screenResolution.x;
-        screenResolutionForCamera.y = screenResolution.y;
-        // preview size is always something like 480*320, other 320*480
-        if (screenResolution.x < screenResolution.y) {
-            screenResolutionForCamera.x = screenResolution.y;
-            screenResolutionForCamera.y = screenResolution.x;
+        int displayRotation = display.getRotation();
+        int cwRotationFromNaturalToDisplay;
+        switch (displayRotation) {
+            case Surface.ROTATION_0:
+                cwRotationFromNaturalToDisplay = 0;
+                break;
+            case Surface.ROTATION_90:
+                cwRotationFromNaturalToDisplay = 90;
+                break;
+            case Surface.ROTATION_180:
+                cwRotationFromNaturalToDisplay = 180;
+                break;
+            case Surface.ROTATION_270:
+                cwRotationFromNaturalToDisplay = 270;
+                break;
+            default:
+                // Have seen this return incorrect values like -90
+                if (displayRotation % 90 == 0) {
+                    cwRotationFromNaturalToDisplay = (360 + displayRotation) % 360;
+                } else {
+                    throw new IllegalArgumentException("Bad rotation: " + displayRotation);
+                }
         }
-        cameraResolution = getCameraResolution(parameters, screenResolutionForCamera);
 
-//    cameraResolution = getCameraResolution(parameters, screenResolution);
-        PictureAirLog.d(TAG, "Camera resolution: " + screenResolution);
+        int cwRotationFromNaturalToCamera = camera.getOrientation();
+
+        // Still not 100% sure about this. But acts like we need to flip this:
+        if (camera.getFacing() == CameraFacing.FRONT) {
+            cwRotationFromNaturalToCamera = (360 - cwRotationFromNaturalToCamera) % 360;
+        }
+
+        cwRotationFromDisplayToCamera = (360 + cwRotationFromNaturalToCamera - cwRotationFromNaturalToDisplay) % 360;
+        if (camera.getFacing() == CameraFacing.FRONT) {
+            cwNeededRotation = (360 - cwRotationFromDisplayToCamera) % 360;
+        } else {
+            cwNeededRotation = cwRotationFromDisplayToCamera;
+        }
+
+        Point theScreenResolution = new Point();
+        display.getSize(theScreenResolution);
+        screenResolution = theScreenResolution;
+        /**
+         * 因为库中findBestPreviewSizeValue方法依旧是横屏的代码：double screenAspectRatio1 = (double)screenResolution.x / (double)screenResolution.y;
+         * 因此传入的point也需要转成横屏的point，以此解决预览图像拉伸的问题
+         */
+        Point point = new Point(screenResolution.y, screenResolution.x);
+        cameraResolution = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, point);
+        bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, point);
+
+        boolean isScreenPortrait = screenResolution.x < screenResolution.y;
+        boolean isPreviewSizePortrait = bestPreviewSize.x < bestPreviewSize.y;
+
+        if (isScreenPortrait == isPreviewSizePortrait) {
+            previewSizeOnScreen = bestPreviewSize;
+        } else {
+            previewSizeOnScreen = new Point(bestPreviewSize.y, bestPreviewSize.x);
+        }
     }
 
     /**
@@ -96,21 +117,41 @@ final class CameraConfigurationManager {
      * LuminanceSource subclass. In the future we may want to force YUV420SP as it's the smallest,
      * and the planar Y can be used for barcode scanning without a copy in some cases.
      */
-    void setDesiredCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
+    void setDesiredCameraParameters(OpenCamera camera, boolean safeMode) {
+        Camera theCamera = camera.getCamera();
+        Camera.Parameters parameters = theCamera.getParameters();
 
-        PictureAirLog.d(TAG, "Setting preview size: " + cameraResolution);
-        PictureAirLog.out("Setting preview size: " + cameraResolution);
-        PictureAirLog.out("screen widi" + ScreenUtil.getScreenWidth(context) + "___" + ScreenUtil.getScreenHeight(context));
-        parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
-        setFlash(parameters);
-        setZoom(parameters);
-        //setSharpness(parameters);
-        //modify here
+        if (parameters == null) {
+            return;
+        }
 
-//    camera.setDisplayOrientation(90);
-        setDisplayOrientation(camera, 90);
-        camera.setParameters(parameters);
+        initializeTorch(parameters);
+
+        CameraConfigurationUtils.setFocus(parameters, true, true, safeMode);
+
+        parameters.setPreviewSize(bestPreviewSize.x, bestPreviewSize.y);
+
+        theCamera.setParameters(parameters);
+
+        theCamera.setDisplayOrientation(cwRotationFromDisplayToCamera);
+
+        Camera.Parameters afterParameters = theCamera.getParameters();
+        Camera.Size afterSize = afterParameters.getPreviewSize();
+        if (afterSize != null && (bestPreviewSize.x != afterSize.width || bestPreviewSize.y != afterSize.height)) {
+            Log.w(TAG, "Camera said it supported preview size " + bestPreviewSize.x + 'x' + bestPreviewSize.y +
+                    ", but after setting it, preview size is " + afterSize.width + 'x' + afterSize.height);
+            bestPreviewSize.x = afterSize.width;
+            bestPreviewSize.y = afterSize.height;
+        }
+
+    }
+
+    Point getBestPreviewSize() {
+        return bestPreviewSize;
+    }
+
+    Point getPreviewSizeOnScreen() {
+        return previewSizeOnScreen;
     }
 
     Point getCameraResolution() {
@@ -121,196 +162,35 @@ final class CameraConfigurationManager {
         return screenResolution;
     }
 
-    int getPreviewFormat() {
-        return previewFormat;
+    int getCWNeededRotation() {
+        return cwNeededRotation;
     }
 
-    String getPreviewFormatString() {
-        return previewFormatString;
+    boolean getTorchState(Camera camera) {
+        if (camera != null) {
+            Camera.Parameters parameters = camera.getParameters();
+            if (parameters != null) {
+                String flashMode = camera.getParameters().getFlashMode();
+                return flashMode != null &&
+                        (Camera.Parameters.FLASH_MODE_ON.equals(flashMode) ||
+                                Camera.Parameters.FLASH_MODE_TORCH.equals(flashMode));
+            }
+        }
+        return false;
     }
 
-    private static Point getCameraResolution(Camera.Parameters parameters, Point screenResolution) {
-
-        String previewSizeValueString = parameters.get("preview-size-values");
-        // saw this on Xperia
-        if (previewSizeValueString == null) {
-            previewSizeValueString = parameters.get("preview-size-value");
-        }
-
-        Point cameraResolution = null;
-
-        if (previewSizeValueString != null) {
-            PictureAirLog.d(TAG, "preview-size-values parameter: " + previewSizeValueString);
-            cameraResolution = findBestPreviewSizeValue(previewSizeValueString, screenResolution);
-        }
-
-        if (cameraResolution == null) {
-            // Ensure that the camera resolution is a multiple of 8, as the screen may not be.
-            cameraResolution = new Point(
-                    (screenResolution.x >> 3) << 3,
-                    (screenResolution.y >> 3) << 3);
-        }
-
-        return cameraResolution;
+    void setTorch(Camera camera, boolean newSetting) {
+        Camera.Parameters parameters = camera.getParameters();
+        doSetTorch(parameters, newSetting);
+        camera.setParameters(parameters);
     }
 
-    private static Point findBestPreviewSizeValue(CharSequence previewSizeValueString, Point screenResolution) {
-        int bestX = 0;
-        int bestY = 0;
-        int diff = Integer.MAX_VALUE;
-        for (String previewSize : COMMA_PATTERN.split(previewSizeValueString)) {
-
-            previewSize = previewSize.trim();
-            int dimPosition = previewSize.indexOf('x');
-            if (dimPosition < 0) {
-                PictureAirLog.d(TAG, "Bad preview-size: " + previewSize);
-                continue;
-            }
-
-            int newX;
-            int newY;
-            try {
-                newX = Integer.parseInt(previewSize.substring(0, dimPosition));
-                newY = Integer.parseInt(previewSize.substring(dimPosition + 1));
-            } catch (NumberFormatException nfe) {
-                PictureAirLog.d(TAG, "Bad preview-size: " + previewSize);
-                continue;
-            }
-
-            int newDiff = Math.abs(newX - screenResolution.x) + Math.abs(newY - screenResolution.y);
-            if (newDiff == 0) {
-                bestX = newX;
-                bestY = newY;
-                break;
-            } else if (newDiff < diff) {
-                bestX = newX;
-                bestY = newY;
-                diff = newDiff;
-            }
-
-        }
-
-        if (bestX > 0 && bestY > 0) {
-            return new Point(bestX, bestY);
-        }
-        return null;
+    private void initializeTorch(Camera.Parameters parameters) {
+        doSetTorch(parameters, false);
     }
 
-    private static int findBestMotZoomValue(CharSequence stringValues, int tenDesiredZoom) {
-        int tenBestValue = 0;
-        for (String stringValue : COMMA_PATTERN.split(stringValues)) {
-            stringValue = stringValue.trim();
-            double value;
-            try {
-                value = Double.parseDouble(stringValue);
-            } catch (NumberFormatException nfe) {
-                return tenDesiredZoom;
-            }
-            int tenValue = (int) (10.0 * value);
-            if (Math.abs(tenDesiredZoom - value) < Math.abs(tenDesiredZoom - tenBestValue)) {
-                tenBestValue = tenValue;
-            }
-        }
-        return tenBestValue;
-    }
-
-    private void setFlash(Camera.Parameters parameters) {
-        // FIXME: This is a hack to turn the flash off on the Samsung Galaxy.
-        // And this is a hack-hack to work around a different value on the Behold II
-        // Restrict Behold II check to Cupcake, per Samsung's advice
-        //if (Build.MODEL.contains("Behold II") &&
-        //    CameraManager.SDK_INT == Build.VERSION_CODES.CUPCAKE) {
-        if (Build.MODEL.contains("Behold II") && CameraManager.SDK_INT == 3) { // 3 = Cupcake
-            parameters.set("flash-value", 1);
-        } else {
-            parameters.set("flash-value", 2);
-        }
-        // This is the standard setting to turn the flash off that all devices should honor.
-        parameters.set("flash-mode", "off");
-    }
-
-    private void setZoom(Camera.Parameters parameters) {
-
-        String zoomSupportedString = parameters.get("zoom-supported");
-        if (zoomSupportedString != null && !Boolean.parseBoolean(zoomSupportedString)) {
-            return;
-        }
-
-        int tenDesiredZoom = TEN_DESIRED_ZOOM;
-
-        String maxZoomString = parameters.get("max-zoom");
-        if (maxZoomString != null) {
-            try {
-                int tenMaxZoom = (int) (10.0 * Double.parseDouble(maxZoomString));
-                if (tenDesiredZoom > tenMaxZoom) {
-                    tenDesiredZoom = tenMaxZoom;
-                }
-            } catch (NumberFormatException nfe) {
-                PictureAirLog.d(TAG, "Bad max-zoom: " + maxZoomString);
-            }
-        }
-
-        String takingPictureZoomMaxString = parameters.get("taking-picture-zoom-max");
-        if (takingPictureZoomMaxString != null) {
-            try {
-                int tenMaxZoom = Integer.parseInt(takingPictureZoomMaxString);
-                if (tenDesiredZoom > tenMaxZoom) {
-                    tenDesiredZoom = tenMaxZoom;
-                }
-            } catch (NumberFormatException nfe) {
-                PictureAirLog.d(TAG, "Bad taking-picture-zoom-max: " + takingPictureZoomMaxString);
-            }
-        }
-
-        String motZoomValuesString = parameters.get("mot-zoom-values");
-        if (motZoomValuesString != null) {
-            tenDesiredZoom = findBestMotZoomValue(motZoomValuesString, tenDesiredZoom);
-        }
-
-        String motZoomStepString = parameters.get("mot-zoom-step");
-        if (motZoomStepString != null) {
-            try {
-                double motZoomStep = Double.parseDouble(motZoomStepString.trim());
-                int tenZoomStep = (int) (10.0 * motZoomStep);
-                if (tenZoomStep > 1) {
-                    tenDesiredZoom -= tenDesiredZoom % tenZoomStep;
-                }
-            } catch (NumberFormatException nfe) {
-                // continue
-            }
-        }
-
-        // Set zoom. This helps encourage the user to pull back.
-        // Some devices like the Behold have a zoom parameter
-        if (maxZoomString != null || motZoomValuesString != null) {
-            parameters.set("zoom", String.valueOf(tenDesiredZoom / 10.0));
-        }
-
-        // Most devices, like the Hero, appear to expose this zoom parameter.
-        // It takes on values like "27" which appears to mean 2.7x zoom
-        if (takingPictureZoomMaxString != null) {
-            parameters.set("taking-picture-zoom", tenDesiredZoom);
-        }
-    }
-
-    public static int getDesiredSharpness() {
-        return DESIRED_SHARPNESS;
-    }
-
-    /**
-     * compatible  1.6
-     *
-     * @param camera
-     * @param angle
-     */
-    protected void setDisplayOrientation(Camera camera, int angle) {
-        Method downPolymorphic;
-        try {
-            downPolymorphic = camera.getClass().getMethod("setDisplayOrientation", new Class[]{int.class});
-            if (downPolymorphic != null)
-                downPolymorphic.invoke(camera, new Object[]{angle});
-        } catch (Exception e1) {
-        }
+    private void doSetTorch(Camera.Parameters parameters, boolean newSetting) {
+        CameraConfigurationUtils.setTorch(parameters, newSetting);
     }
 
 }

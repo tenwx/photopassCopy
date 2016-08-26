@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_16"
             android:text="@string/photo_download_select"
             android:gravity="center"
             android:paddingBottom="@dimen/pp_padding_15"

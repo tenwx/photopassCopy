@@ -17,8 +17,6 @@
 package com.pictureair.photopass.zxing.decoding;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
@@ -30,7 +28,7 @@ import com.pictureair.photopass.zxing.camera.CameraManager;
 import com.pictureair.photopass.zxing.view.ViewfinderResultPointCallback;
 import com.pictureair.photopass.zxing.view.ViewfinderView;
 
-import java.util.Vector;
+import java.util.Collection;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.
@@ -57,7 +55,7 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
     }
 
     public CaptureActivityHandler(Context context,
-                                  Vector<BarcodeFormat> decodeFormats,
+                                  Collection<BarcodeFormat> decodeFormats,
                                   String characterSet,
                                   ViewfinderView viewfinderView,
                                   int scanType,
@@ -84,15 +82,6 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
     @Override
     public void handleMessage(Message message) {
         switch (message.what) {
-            case R.id.auto_focus:
-                //PictureAirLog.d(TAG, "Got auto-focus message");
-                // When one auto focus pass finishes, start another. This is the closest thing to
-                // continuous AF. It does seem to hunt a bit, but I'm not sure what else to do.
-                if (state == State.PREVIEW) {
-                    CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
-                }
-                break;
-
             case R.id.restart_preview:
                 PictureAirLog.d(TAG, "Got restart preview message");
                 PictureAirLog.e("", "restart_preview");
@@ -102,12 +91,7 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
             case R.id.decode_succeeded:
                 PictureAirLog.d(TAG, "Got decode succeeded message");
                 state = State.SUCCESS;
-                Bundle bundle = message.getData();
-
-                Bitmap barcode = bundle == null ? null :
-                        (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
-
-                onDealCodeListener.decodeSuccess((Result) message.obj, barcode);//交给回调进行处理
+                onDealCodeListener.decodeSuccess((Result) message.obj);//交给回调进行处理
                 break;
 
             case R.id.decode_failed:
@@ -130,13 +114,14 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
         Message quit = Message.obtain(decodeThread.getHandler(), R.id.quit);
         quit.sendToTarget();
         try {
-            decodeThread.join();
+            decodeThread.join(500L);
         } catch (InterruptedException e) {
             // continue
         }
 
         // Be absolutely sure we don't send any queued up messages
         removeMessages(R.id.decode_succeeded);
+        removeMessages(R.id.decode_ocr_succeeded);
         removeMessages(R.id.decode_failed);
     }
 
@@ -144,7 +129,6 @@ public final class CaptureActivityHandler extends Handler implements DecodeHandl
         if (state == State.SUCCESS) {
             state = State.PREVIEW;
             CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
-            CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
             viewfinderView.drawViewfinder();
         }
     }

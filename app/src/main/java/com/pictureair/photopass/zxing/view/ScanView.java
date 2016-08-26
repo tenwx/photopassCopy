@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -39,9 +40,12 @@ public final class ScanView extends View {
 
     private boolean isFirst;
 
+    private BitmapDrawable bitmapDrawable;
+
     public ScanView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
+        bitmapDrawable = (BitmapDrawable) (ContextCompat.getDrawable(getContext(), R.drawable.qrcode_scan_line_ocr));
     }
 
     @Override
@@ -67,7 +71,7 @@ public final class ScanView extends View {
         lineRect.right = slideRight + 18;// 18 是线的宽度。
         lineRect.top = frame.top;
         lineRect.bottom = frame.bottom;
-        canvas.drawBitmap(((BitmapDrawable) (getResources().getDrawable(R.drawable.qrcode_scan_line_ocr))).getBitmap(), null, lineRect, paint);
+        canvas.drawBitmap(bitmapDrawable.getBitmap(), null, lineRect, paint);
         //只刷新扫描框的内容，其他地方不刷新
         postInvalidateDelayed(ANIMATION_DELAY, frame.left, frame.top,
                 frame.right, frame.bottom);
