@@ -1612,7 +1612,7 @@ public class API1 {
      * @param cartIdsArray
      * @param handler      handler
      */
-    public static void getCartsWithInvoice(JSONArray cartIdsArray,boolean isNeedInvoice, final Handler handler) {
+    public static void getCartsWithInvoice(JSONArray cartIdsArray, boolean isNeedInvoice, JSONArray couponCodes, final Handler handler) {
         PictureAirLog.out("getCartsInvoice---》" + MyApplication.getTokenId());
         final int flag;//表示请求类型： 初始化/选中取消选中
         RequestParams params = new RequestParams();
@@ -1627,6 +1627,8 @@ public class API1 {
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put(Common.LANGUAGE, MyApplication.getInstance().getLanguageType());
         params.put("isNeedInvoice", isNeedInvoice);
+        params.put("couponCodes", couponCodes.toString());
+
         HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_CART, params, new HttpCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -2538,11 +2540,12 @@ public class API1 {
      * @param couponCodes  优惠码
      * @param cartItemsIds 用户选中的购物项
      */
-    public static void previewCoupon(final Handler handler, JSONArray couponCodes, JSONArray cartItemsIds) {
+    public static void previewCoupon(final Handler handler, JSONArray couponCodes, boolean needInvoice, JSONArray cartItemsIds) {
         RequestParams params = new RequestParams();
         params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
         params.put("couponCodes", couponCodes.toString());
         params.put("cartItemIds", cartItemsIds.toString());
+        params.put("isNeedInvoice", needInvoice);
         PictureAirLog.v(TAG, "previewCoupon params：" + params);
         HttpUtil1.asyncPost(Common.BASE_URL_TEST + Common.PREVIEW_COUPONS, params, new HttpCallback() {
             @Override

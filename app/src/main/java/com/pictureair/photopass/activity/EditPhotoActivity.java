@@ -537,6 +537,9 @@ public class EditPhotoActivity extends BaseActivity implements OnClickListener, 
 
 
 			case R.id.edit_accessory:
+				if(mainBitmap == null || mainBitmap.isRecycled()) {
+					return;
+				}
 				calRec();
 				mStickerView.setVisibility(View.VISIBLE); // 事先让视图可见。
 				//饰品编辑

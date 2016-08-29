@@ -353,7 +353,7 @@ public class CartInfoAdapter extends BaseAdapter {
             params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
             params.put(Common.GOODS_KEY, cartItemInfo.getGoodsKey());
             params.put(Common.QTY, count);
-            String url = Common.BASE_URL_TEST + Common.ADD_TO_CART + "/" + cartItemInfo.getCartId();
+            String url = Common.BASE_URL_TEST + Common.MODIFY_TO_CART + "/" + cartItemInfo.getCartId();
             HttpUtil1.asyncPut(url, params, new HttpCallback() {
                 @Override
                 public void onSuccess(JSONObject jsonObject) {

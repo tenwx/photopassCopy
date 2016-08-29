@@ -137,6 +137,7 @@ public class Common {
     public static final String TERMINAL = "terminal";
     public static final String APP_ID = "appID";
     public static final String SHARED_PREFERENCE_USERINFO_NAME = "userInfo";
+    public static final String USERINFO_ISLOGIN = "isLogin";
     public static final String USERINFO_ID = "_id";//api需要的userId
     public static final String USERINFO_TOKENID = "tokenId";//api需要的tokenId
     public static final String USERINFO_USER_PP = "userPP"; //用户的code

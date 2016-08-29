@@ -236,7 +236,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
             case API1.GET_INVOICE_SUCCESS:
                 parseInvoicePay(msg);
+                dismissPWProgressDialog();
                 break;
+
+            case API1.GET_INVOICE_FAILED:
+                dismissPWProgressDialog();
+                newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
+                break;
+
             case PAY_SUCCESS:
                 //成功跳转相应的界面
 
@@ -777,11 +784,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
             }
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
-                API1.previewCoupon(submitOrderHandler, couponCodes, cartItemIds);
+                API1.previewCoupon(submitOrderHandler, couponCodes, true, cartItemIds);
             } else {
                 //取消使用优惠券，couponCodes为空数组
                 if (null != cartItemIds) {
-                    API1.previewCoupon(submitOrderHandler, new JSONArray(), cartItemIds);
+                    API1.previewCoupon(submitOrderHandler, new JSONArray(), false, cartItemIds);
                 }
             }
         }
@@ -789,9 +796,16 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if(resultCode == RESULT_OK && requestCode == PREVIEW_INVOICE_CODE){
             //TODO 发票返回结果
             invoiceInfo = data.getParcelableExtra("invoiceInfo");
-            boolean b=null!=invoicePriceTv;
-            if(null != invoiceInfo){
-                API1.getCartsWithInvoice(cartItemIds,invoiceInfo.isNeedInvoice(),submitOrderHandler);
+            boolean b = null != invoicePriceTv;
+            if(null != invoiceInfo) {
+                showPWProgressDialog();
+                if (couponCodes != null && couponCodes.size() > 0) {
+                    API1.getCartsWithInvoice(cartItemIds, invoiceInfo.isNeedInvoice(), couponCodes, submitOrderHandler);
+
+                } else {
+                    API1.getCartsWithInvoice(cartItemIds, invoiceInfo.isNeedInvoice(), new JSONArray(), submitOrderHandler);
+
+                }
             }
         }
 

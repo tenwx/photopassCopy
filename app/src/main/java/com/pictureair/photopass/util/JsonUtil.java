@@ -301,6 +301,7 @@ public class JsonUtil {
         }
 
         e.putString(Common.USERINFO_ACCOUNT, account);
+        e.putBoolean(Common.USERINFO_ISLOGIN, true);
 
         String headUrl;
         if (obj.containsKey("avatarUrl")) {

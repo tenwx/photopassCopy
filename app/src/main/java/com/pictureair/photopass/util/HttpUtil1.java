@@ -1,7 +1,5 @@
 package com.pictureair.photopass.util;
 
-import android.text.TextUtils;
-
 import com.alibaba.fastjson.JSONObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
@@ -419,10 +417,11 @@ public class HttpUtil1 {
                     case 6034://please login
                     case 5030://not login
                     case 5011://not login
-                        String _id = SPUtils.getString(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ID, null);
-                        if (TextUtils.isEmpty(_id)){//没有登录
+                        boolean isLogin = SPUtils.getBoolean(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN, false);
+                        if (!isLogin){//没有登录
                             httpCallback.onFailure(httpBaseJson.getStatus());
                         } else {//如果在登录状态，需要退出操作
+                            SPUtils.remove(MyApplication.getInstance(), Common.SHARED_PREFERENCE_USERINFO_NAME, Common.USERINFO_ISLOGIN);
                             AppExitUtil.getInstance().AppReLogin();
                         }
                         break;

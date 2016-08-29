@@ -1588,14 +1588,12 @@ public class AppUtil {
                 filename = filename.substring(filename.lastIndexOf("/") + 1);
             } else {
                 filename = filename.substring(filename.lastIndexOf("/") + 1) + ".jpg";
-//                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1)) + ".jpg";
             }
         } else {
             if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
                 filename = filename.substring(filename.lastIndexOf("/") + 1);
             } else {
                 filename = filename.substring(filename.lastIndexOf("/") + 1) + ".mp4";
-//                filename = AppUtil.md5(filename.substring(filename.lastIndexOf("/") + 1)) + ".mp4";
             }
         }
         return filename;
