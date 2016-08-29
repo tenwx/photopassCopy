@@ -256,7 +256,7 @@ public class DownloadService extends Service {
 
                 for (int i = 0; i < infos.size(); i++) {
                     PhotoDownLoadInfo info = infos.get(i);
-                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "","","","0", "0", "0", info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), info.getFailedTime());
+                    DownloadFileStatus fileStatus = new DownloadFileStatus(info.getUrl(), "","","","0", "0", "0", info.getPhotoId(), info.getIsVideo(), info.getPreviewUrl(), info.getShootTime(), "");
                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
                     addToDownloadList(fileStatus);
                 }
@@ -373,7 +373,7 @@ public class DownloadService extends Service {
                                 }
                                 taskList.remove(failStatus.getPhotoId());
 
-                                pictureAirDbManager.updateLoadPhotos(userId,"false","","",failStatus.getPhotoId());
+                                pictureAirDbManager.updateLoadPhotos(userId,"false","","",failStatus.getPhotoId(),"");
                                 if (adapterHandler != null) {
                                     PictureAirLog.out("handleMessage DOWNLOAD_PHOTO_FAILED");
                                     adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_STATUS_UPDATE, failStatus).sendToTarget();
@@ -537,10 +537,6 @@ public class DownloadService extends Service {
                     msg.what = API1.DOWNLOAD_PHOTO_FAILED;
                     Bundle bundle = new Bundle();
                     fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                    if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
-                        String failedTime = AppUtil.getFormatCurrentTime();
-                        fileStatus.setFailedTime(failedTime);
-                    }
                     bundle.putParcelable("url",fileStatus);
                     bundle.putInt("status",status);
                     msg.setData(bundle);
@@ -594,9 +590,25 @@ public class DownloadService extends Service {
             FileOutputStream fsStream = new FileOutputStream(file);
             stream = new BufferedOutputStream(fsStream);
             stream.write(data);
+            fileStatus.setFailedTime("");
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            if (e.getMessage().contains("ENAMETOOLONG")){//如果是文件过长错误，需要重新保存
+                try {
+                    String path = file.getAbsolutePath();
+                    path = path.substring(Common.PHOTO_DOWNLOAD_PATH.length(),path.length());
+                    file = new File(Common.PHOTO_DOWNLOAD_PATH+"/"+AppUtil.md5(path)+".jpg");
+                    file.createNewFile();
+                    FileOutputStream fsStream = new FileOutputStream(file);
+                    stream = new BufferedOutputStream(fsStream);
+                    stream.write(data);
+                    fileStatus.setFailedTime(file.getAbsolutePath());
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+            }else {
+                e.printStackTrace();
+            }
         } finally {
             try {
                 if (stream != null) {
@@ -636,7 +648,7 @@ public class DownloadService extends Service {
                 @Override
                 public void run() {
                     PictureAirLog.out("saveFileToDb ----------->>>>>>>");
-                    lastUrl = fileStatus.getUrl();
+                    lastUrl = fileStatus.getPhotoId();
                     taskList.remove(fileStatus.getPhotoId());
                     downloadList.remove(fileStatus.getPosition());
                     final String loadTime = AppUtil.getFormatCurrentTime();
@@ -647,7 +659,7 @@ public class DownloadService extends Service {
                         }
                     }
 
-                    pictureAirDbManager.updateLoadPhotos(userId,"true",loadTime,fileStatus.getTotalSize(),fileStatus.getPhotoId());
+                    pictureAirDbManager.updateLoadPhotos(userId,"true",loadTime,fileStatus.getTotalSize(),fileStatus.getPhotoId(),fileStatus.getFailedTime());
                     if (adapterHandler != null) {
                         adapterHandler.obtainMessage(DownLoadingFragment.PHOTO_REMOVE,fileStatus).sendToTarget();
                         PictureAirLog.out("saveFileToDb scan>>>>>>>>>");

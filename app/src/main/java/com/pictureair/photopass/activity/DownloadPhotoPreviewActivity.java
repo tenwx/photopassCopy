@@ -204,8 +204,15 @@ public class DownloadPhotoPreviewActivity extends BaseActivity implements View.O
 
                         PhotoInfo photoInfo = new PhotoInfo();
                         photoInfo.photoId = downLoadInfo.getPhotoId();
-                        String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(), 0);
-                        String loadUrl = Common.PHOTO_DOWNLOAD_PATH + fileName;
+
+                        String loadUrl;
+                        //如果文件名过长导致无法保存，会将文件名进行MD5，数据库中保存在FailedTime字段，此处是对这种情况的特殊处理
+                        if (TextUtils.isEmpty(downLoadInfo.getFailedTime())){
+                            String fileName = AppUtil.getReallyFileName(downLoadInfo.getUrl(), 0);
+                            loadUrl = Common.PHOTO_DOWNLOAD_PATH + fileName;
+                        }else{
+                            loadUrl = downLoadInfo.getFailedTime();
+                        }
                         photoInfo.photoPathOrURL = loadUrl;
                         photoInfo.photoThumbnail = downLoadInfo.getPreviewUrl();
                         photoInfo.photoThumbnail_512 = "";

@@ -24,7 +24,7 @@ public class DownloadFileStatus implements Parcelable{
     private int position;
     private String photoThumbnail;
     public String shootOn;
-    private String failedTime;
+    private String failedTime;//用作文件存储路径，文件名过长时保存会抛出异常，此时把文件名进行MD5处理，在预览图片的时候直接根据文件路径查看，而不是url
     public static final int DOWNLOAD_STATE_DOWNLOADING = 0x01;
     public static final int DOWNLOAD_STATE_WAITING = 0x02;
     public static final int DOWNLOAD_STATE_FAILURE = 0x03;

@@ -1769,13 +1769,13 @@ public class PictureAirDbManager {
      * 更新状态为load的图片信息
      *
      * */
-    public synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId){
+    public synchronized void updateLoadPhotos(String userId, String status,String downloadTime,String size,String photoId,String failedTime){
 
         database = DBManager.getInstance().writData();
         database.beginTransaction();
         PictureAirLog.out("cursor open ---> updateLoadPhotos");
         try {
-            database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=? where userId = ? and photoId=?", new Object[]{"", status, downloadTime, size, userId, photoId});
+            database.execSQL("update " + Common.PHOTOS_LOAD + " set failedTime = ?,success=?,downloadTime=?,size=? where userId = ? and photoId=?", new Object[]{failedTime, status, downloadTime, size, userId, photoId});
             database.setTransactionSuccessful();
         }catch (Exception e){
             e.printStackTrace();

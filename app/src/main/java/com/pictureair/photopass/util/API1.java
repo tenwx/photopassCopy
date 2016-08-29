@@ -2270,10 +2270,6 @@ public class API1 {
                 msg.what = DOWNLOAD_PHOTO_FAILED;
                 Bundle bundle = new Bundle();
                 fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
-                    String failedTime = AppUtil.getFormatCurrentTime();
-                    fileStatus.setFailedTime(failedTime);
-                }
                 bundle.putParcelable("url",fileStatus);
                 bundle.putInt("status",status);
                 msg.setData(bundle);
@@ -2342,10 +2338,6 @@ public class API1 {
                 msg.what = DOWNLOAD_PHOTO_FAILED;
                 Bundle bundle = new Bundle();
                 fileStatus.status = DownloadFileStatus.DOWNLOAD_STATE_FAILURE;
-                if (TextUtils.isEmpty(fileStatus.getFailedTime())) {
-                    String failedTime = AppUtil.getFormatCurrentTime();
-                    fileStatus.setFailedTime(failedTime);
-                }
                 bundle.putParcelable("url",fileStatus);
                 bundle.putInt("status",status);
                 msg.setData(bundle);
