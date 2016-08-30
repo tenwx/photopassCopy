@@ -544,6 +544,7 @@
     <string name="shop_price">商品金额</string>
     <string name="coupon_price">抵用券抵用</string>
     <string name="invoice_price">发票运费</string>
+    <string name="invoice_price1">发票运费：</string>
     <string name="coupon_price1">抵用券抵用：</string>
     <string name="pay_price">实际支付</string>
     <string name="coupon_count">有%1$d张抵用券可用</string>

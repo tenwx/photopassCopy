@@ -27,7 +27,8 @@ import java.util.ArrayList;
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
 
     private Button deliveryButton;
-    private TextView orderNumber, orderTime, payMethod, orderStatus, productPrice, address, payTotalPrice, preferentialPrice,straightwayPreferentialPrice;
+    private TextView orderNumber, orderTime, payMethod, orderStatus, productPrice, address, payTotalPrice, preferentialPrice, straightwayPreferentialPrice;
+    private TextView invoiceShippingPriceTV;
     private OrderInfo orderInfo;
     private ArrayList<CartItemInfo> orderDetailArrayList;
 
@@ -56,7 +57,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         productPrice = (TextView) findViewById(R.id.order_productprice);
         preferentialPrice = (TextView) findViewById(R.id.promotionPreferentialPrice_tv);
         straightwayPreferentialPrice = (TextView) findViewById(R.id.straightwayPreferentialPrice_tv);
-
+        invoiceShippingPriceTV = (TextView) findViewById(R.id.invoice_shipping_price_tv);
         payTotalPrice = (TextView) findViewById(R.id.pay_total_price);
 
         address = (TextView) findViewById(R.id.order_delivery_address);
@@ -128,6 +129,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
         payTotalPrice.setText(currency + (int) orderInfo.orderTotalPrice + "");
         preferentialPrice.setText(currency + (int)orderInfo.promotionPreferentialPrice);
         straightwayPreferentialPrice.setText(currency + (int)orderInfo.straightwayPreferentialPrice);
+        invoiceShippingPriceTV.setText(currency + (int)orderInfo.deliveryShipping);
 
 
         switch (orderInfo.deliveryMethod) {

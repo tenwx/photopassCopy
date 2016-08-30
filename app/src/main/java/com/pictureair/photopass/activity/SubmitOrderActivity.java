@@ -784,11 +784,11 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
             }
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
-                API1.previewCoupon(submitOrderHandler, couponCodes, true, cartItemIds);
+                API1.previewCoupon(submitOrderHandler, couponCodes, null != invoicePriceTv, cartItemIds);
             } else {
                 //取消使用优惠券，couponCodes为空数组
                 if (null != cartItemIds) {
-                    API1.previewCoupon(submitOrderHandler, new JSONArray(), false, cartItemIds);
+                    API1.previewCoupon(submitOrderHandler, new JSONArray(), null != invoicePriceTv, cartItemIds);
                 }
             }
         }

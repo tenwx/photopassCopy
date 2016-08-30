@@ -232,6 +232,37 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
+                        android:text="@string/invoice_price1"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <TextView
+                        android:id="@+id/invoice_shipping_price_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="-0"
+                        android:textColor="@color/pp_gray"
+                        android:textSize="@dimen/text_size_14" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/pp_padding_8"
+                    android:paddingLeft="@dimen/pp_margin_16"
+                    android:paddingRight="@dimen/pp_margin_16"
+                    android:paddingTop="@dimen/pp_padding_8">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
                         android:text="@string/totalprice"
                         android:textColor="@color/pp_gray"
                         android:textSize="@dimen/text_size_14" />

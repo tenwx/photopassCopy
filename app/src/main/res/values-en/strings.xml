@@ -544,6 +544,7 @@
     <string name="shop_price">Total</string>
     <string name="coupon_price">Coupon Discount</string>
     <string name="invoice_price">Invoice Shipping</string>
+    <string name="invoice_price1">Invoice Shipping:</string>
     <string name="coupon_price1">Coupon Discount:</string>
     <string name="pay_price">Pay</string>
     <string name="coupon_count">%1$d Coupons</string>
