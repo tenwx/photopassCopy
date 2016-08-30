@@ -1,5 +1,6 @@
 package com.pictureair.photopass.editPhoto.interf;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
@@ -17,8 +18,6 @@ public interface PWEditViewInterface {
 
     void dialogDismiss(); // 隐藏Loading
 
-    void setLister(PWEditViewListener pwEditViewListener);
-
     void showEditView(int curEditType, EditActivityAdapter editActivityAdapter); // 显示底部栏目
 
     void showBitmap(Bitmap bitmap);
@@ -35,7 +34,7 @@ public interface PWEditViewInterface {
 
     void leftBackClik();
 
-    void showIsSaveDialog(PictureWorksDialog pictureWorksDialog); //显示是否保存的对话框
+    void showIsSaveDialog(); //显示是否保存的对话框
 
     void showPhotoFrame(ImageLoader imageLoader, DisplayImageOptions options, String framePath); //显示用户的边框
 
@@ -50,5 +49,9 @@ public interface PWEditViewInterface {
     void hidePhotoStickerView(); //隐藏饰品view，清空饰品
 
     void ToastShow(int stringId); //弹出Toast
+
+    Activity getEditPhotView();//获取窗体对象
+
+    void finishActivity();
 
 }

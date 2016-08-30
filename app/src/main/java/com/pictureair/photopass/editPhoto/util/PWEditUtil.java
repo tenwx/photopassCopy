@@ -1,6 +1,5 @@
 package com.pictureair.photopass.editPhoto.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.pictureair.photopass.MyApplication;
 import com.pictureair.photopass.db.PictureAirDbManager;
 import com.pictureair.photopass.editPhoto.bean.PhotoEditorInfo;
 import com.pictureair.photopass.editPhoto.bean.StikerInfo;
@@ -74,16 +74,14 @@ public class PWEditUtil {
     private PictureAirDbManager pictureAirDbManager;
     private ArrayList<FrameOrStikerInfo> frameFromDBInfos;//来自数据库的数据
     private ArrayList<FrameOrStikerInfo> stickerFromDBInfos;//来自数据库的数据
-    private Activity mActivity;
-    public PWEditUtil(Activity activity) {
+    public PWEditUtil() {
         photoEditorList = new ArrayList<PhotoEditorInfo>();
         frameInfos = new ArrayList<FrameOrStikerInfo>();
         filterPathList = new ArrayList<String>();
         stikerInfos = new ArrayList<FrameOrStikerInfo>();
         imageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
-        this.mActivity = activity;
-        pictureAirDbManager = new PictureAirDbManager(mActivity);
+        pictureAirDbManager = new PictureAirDbManager(MyApplication.getInstance());
     }
 
     /**
@@ -578,6 +576,9 @@ public class PWEditUtil {
      * @return  滤镜比较特殊，饰品与相框不需要滤镜效果。故应将原图先处理滤镜效果，再叠加之前图片应用的效果。
      */
     public Bitmap getFilterComposeBitmap(Context mContext, Bitmap bitmap, int position, int backStep){
+        if (bitmap == null || bitmap.isRecycled()){ // 解决使用部分滤镜崩溃
+            return null;
+        }
         switch (position){
             case 0:
                 break;
@@ -677,7 +678,7 @@ public class PWEditUtil {
                 pictureAirDbManager.insertFrameAndStickerIntoDB(resultJsonObject.getJSONObject("assets"));
             }
             if (resultJsonObject.containsKey("time")) {
-                PWEditSPUtil.setValue(mActivity,Common.GET_LAST_CONTENT_TIME,resultJsonObject.getString("time"));
+                PWEditSPUtil.setValue(MyApplication.getInstance(),Common.GET_LAST_CONTENT_TIME,resultJsonObject.getString("time"));
             }
         } catch (Exception e) {
             e.printStackTrace();

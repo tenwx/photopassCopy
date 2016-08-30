@@ -136,10 +136,10 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface, Lo
         }
     }
 
-    @Override
-    public void setLister(PWEditViewListener pwEditViewListener) {
-        this.pwEditViewListener = pwEditViewListener;
-    }
+//    @Override
+//    public void setLister(PWEditViewListener pwEditViewListener) {
+//        this.pwEditViewListener = pwEditViewListener;
+//    }
 
     @Override
     public void showEditView(int curEditType, EditActivityAdapter editActivityAdapter) {
@@ -242,8 +242,8 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface, Lo
     }
 
     @Override
-    public void showIsSaveDialog(PictureWorksDialog pictureWorksDialog) {
-        pictureWorksDialog.show();
+    public void showIsSaveDialog() {
+//        pictureWorksDialog.show();
     }
 
     @Override
@@ -293,6 +293,16 @@ public class PWEditView implements View.OnClickListener, PWEditViewInterface, Lo
     @Override
     public void ToastShow(int StringId) {
         myToast.setTextAndShow(StringId, Common.TOAST_SHORT_TIME);
+    }
+
+    @Override
+    public Activity getEditPhotView() {
+        return mActivity;
+    }
+
+    @Override
+    public void finishActivity() {
+
     }
 
     /**

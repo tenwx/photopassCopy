@@ -2,6 +2,7 @@ package com.pictureair.photopass.editPhoto.interf;
 
 
 import android.graphics.Matrix;
+import android.os.Handler;
 
 import com.pictureair.photopass.editPhoto.widget.StickerItem;
 
@@ -14,8 +15,6 @@ import java.util.LinkedHashMap;
 public interface PWEditViewListener {
 
     void leftBackClik();
-
-    void finish();
 
     void saveTempPhoto(LinkedHashMap<Integer, StickerItem> addItems, Matrix touchMatrix);
 
@@ -40,5 +39,7 @@ public interface PWEditViewListener {
     void sticker(int mainImageHeight, int mainImageWidth); //显示饰品，为了限定滑动区域，故传参数。
 
     void inOrOutPlace(String locationIds, boolean in);
+
+    Handler getHandler();
 
 }
