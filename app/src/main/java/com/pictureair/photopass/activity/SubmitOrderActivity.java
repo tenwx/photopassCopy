@@ -783,12 +783,16 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
             } else {
                 couponCountTv.setText(String.format(getString(R.string.coupon_count), couponCount));
             }
+            boolean hasInvoiceInfo = false;
+            if (null != invoiceInfo) {
+                hasInvoiceInfo = invoiceInfo.isNeedInvoice();
+            }
             if (cartItemIds != null && cartItemIds.size() > 0 && couponCodes != null && couponCodes.size() > 0) {
-                API1.previewCoupon(submitOrderHandler, couponCodes, null != invoicePriceTv, cartItemIds);
+                API1.previewCoupon(submitOrderHandler, couponCodes, hasInvoiceInfo, cartItemIds);
             } else {
                 //取消使用优惠券，couponCodes为空数组
                 if (null != cartItemIds) {
-                    API1.previewCoupon(submitOrderHandler, new JSONArray(), null != invoicePriceTv, cartItemIds);
+                    API1.previewCoupon(submitOrderHandler, new JSONArray(), hasInvoiceInfo, cartItemIds);
                 }
             }
         }
@@ -796,7 +800,6 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
         if(resultCode == RESULT_OK && requestCode == PREVIEW_INVOICE_CODE){
             //TODO 发票返回结果
             invoiceInfo = data.getParcelableExtra("invoiceInfo");
-            boolean b = null != invoicePriceTv;
             if(null != invoiceInfo) {
                 showPWProgressDialog();
                 if (couponCodes != null && couponCodes.size() > 0) {

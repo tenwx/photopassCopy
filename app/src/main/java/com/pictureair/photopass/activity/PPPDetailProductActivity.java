@@ -99,6 +99,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
     private void dealHandler(Message msg) {
         switch (msg.what) {
             case API1.ADD_TO_CART_FAILED:
+                dismissPWProgressDialog();
                 myToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                 break;
 
@@ -108,6 +109,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
                 SPUtils.put(this, Common.SHARED_PREFERENCE_USERINFO_NAME, Common.CART_COUNT, currentCartCount + 1);
 
                 String cartId = jsonObject.getString("cartId");
+                dismissPWProgressDialog();
                 if (isBuyNow) {
                     //生成订单
                     Intent intent = new Intent(PPPDetailProductActivity.this, SubmitOrderActivity.class);
@@ -256,6 +258,7 @@ public class PPPDetailProductActivity extends BaseActivity implements OnClickLis
      * 添加购物车
      */
     private void addtocart() {
+        showPWProgressDialog();
         //调用addToCart API1
         API1.addToCart(goodsInfo.getGoodsKey(), 1, isBuyNow, null, pPPDetailProductHandler);
     }
