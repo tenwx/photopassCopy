@@ -34,7 +34,7 @@ public enum  RetrofitClient {
                 .addInterceptor(new ProgressInterceptor(pool))
                 .connectTimeout(60, TimeUnit.SECONDS)// 连接超时时间设置
                 .readTimeout(60, TimeUnit.SECONDS)// 读取超时时间设置
-                .retryOnConnectionFailure(true)// 失败重试
+                .retryOnConnectionFailure(false)// 失败重试
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(Common.BASE_URL_TEST)
