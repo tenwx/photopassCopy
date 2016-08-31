@@ -227,22 +227,28 @@ public class HttpUtil1 {
             @Override
             public void onSuccess(ResponseBody result) {
                 super.onSuccess(result);
-                PictureAirLog.v(TAG, "get data from " + url + " finished");
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buff = new byte[1024];
-                int res = 0;
-                try {
-                    InputStream is = result.byteStream();
-                    while ((res = is.read(buff))!= -1){
-                        baos.write(buff,0,res);
+                final ResponseBody body = result;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        PictureAirLog.v(TAG, "get data from " + url + " finished");
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        byte[] buff = new byte[1024];
+                        int res = 0;
+                        try {
+                            InputStream is = body.byteStream();
+                            while ((res = is.read(buff)) != -1) {
+                                baos.write(buff, 0, res);
+                            }
+                            byte[] bytes = baos.toByteArray();
+                            is.close();
+                            baos.close();
+                            callback.onSuccess(bytes);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                    byte[] bytes = baos.toByteArray();
-                    is.close();
-                    baos.close();
-                    callback.onSuccess(bytes);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                }.start();
             }
 
             @Override
@@ -273,22 +279,28 @@ public class HttpUtil1 {
             @Override
             public void onSuccess(ResponseBody result) {
                 super.onSuccess(result);
-                PictureAirLog.v(TAG, "get data from " + url + " finished");
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buff = new byte[1024];
-                int res = 0;
-                try {
-                    InputStream is = result.byteStream();
-                    while ((res = is.read(buff))!= -1){
-                        baos.write(buff,0,res);
-                    }
-                    byte[] bytes = baos.toByteArray();
-                    is.close();
-                    baos.close();
-                    callback.onSuccess(bytes);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                final ResponseBody body = result;
+                   new Thread(){
+                       @Override
+                       public void run() {
+                           PictureAirLog.v(TAG, "get data from " + url + " finished");
+                           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                           byte[] buff = new byte[1024];
+                           int res = 0;
+                           try {
+                               InputStream is = body.byteStream();
+                               while ((res = is.read(buff))!= -1){
+                                   baos.write(buff,0,res);
+                               }
+                               byte[] bytes = baos.toByteArray();
+                               is.close();
+                               baos.close();
+                               callback.onSuccess(bytes);
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                           }
+                       }
+                   }.start();
             }
 
             @Override

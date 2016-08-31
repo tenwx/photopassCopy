@@ -121,7 +121,7 @@ public class SetHeadPhotoAct extends BaseActivity implements OnClickListener {
                 myToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 finish();
                 break;
-            case API1.UPLOAD_PHOTO_Progress:
+            case API1.UPLOAD_PHOTO_PROGRESS:
                 Bundle bundle = msg.getData();
                 long bytesWritten = bundle.getLong("bytesWritten");
                 long totalSize = bundle.getLong("totalSize");

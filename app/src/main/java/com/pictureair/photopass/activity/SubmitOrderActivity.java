@@ -260,7 +260,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
                 break;
 
-            case API1.UPLOAD_PHOTO_Progress:
+            case API1.UPLOAD_PHOTO_PROGRESS:
                 Bundle bundle = msg.getData();
                 long bytesWritten = bundle.getLong("bytesWritten");
                 long totalSize = bundle.getLong("totalSize");

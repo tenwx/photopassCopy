@@ -22,6 +22,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.PartMap;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
 /**
@@ -97,6 +98,7 @@ public interface PhotoPassAuthApi {
      *
      * @param  url 请求url
      * */
+    @Streaming
     @GET
     Call<ResponseBody> download(@Url String url, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 
@@ -106,6 +108,7 @@ public interface PhotoPassAuthApi {
      * @param  url 请求url
      * @param params 请求参数 hashmap键值对
      * */
+    @Streaming
     @GET
     Call<ResponseBody> download(@Url String url, @QueryMap Map<String,Object> params, @DownloadProgress @Header(DownloadProgress.HEADER)ProgressListener listener);
 

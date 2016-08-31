@@ -200,7 +200,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                     //				Toast.makeText(PreviewproductActivity.this, "Upload photo failed", Common.TOAST_SHORT_TIME).show();
                     newToast.setTextAndShow(R.string.http_error_code_401, Common.TOAST_SHORT_TIME);
                     break;
-                case API1.UPLOAD_PHOTO_Progress:
+                case API1.UPLOAD_PHOTO_PROGRESS:
                     Bundle bundle = msg.getData();
                     long bytesWritten = bundle.getLong("bytesWritten");
                     long totalSize = bundle.getLong("totalSize");

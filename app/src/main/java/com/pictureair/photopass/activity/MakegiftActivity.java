@@ -333,7 +333,7 @@ public class MakegiftActivity extends BaseActivity implements OnClickListener {
                     setAnim(buyImg);// 开始执行动画
                 }
                 break;
-            case API1.UPLOAD_PHOTO_Progress:
+            case API1.UPLOAD_PHOTO_PROGRESS:
                 Bundle bundle = msg.getData();
                 long bytesWritten = bundle.getLong("bytesWritten");
                 long totalSize = bundle.getLong("totalSize");

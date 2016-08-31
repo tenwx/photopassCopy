@@ -1708,15 +1708,4 @@ public class AppUtil {
         return isEncrypted == 1;
     }
 
-    /**
-     * okHttp请求不允许有null，需要先判断转成空串
-     * */
-    public static String getCorrectHttpParam(String paramStr){
-        if (paramStr != null){
-            return paramStr;
-        }else{
-            return "";
-        }
-
-    }
 }
