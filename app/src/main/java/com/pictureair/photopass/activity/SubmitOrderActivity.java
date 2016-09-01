@@ -77,6 +77,7 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
     private ListView transportListView;
     private AddressAdapter addressAdapter;
     private InvoiceInfo invoiceInfo;//发票信息
+    private InvoiceInfo originalInvoiceInfo;//从发票页面传过来的原始发票信息
     private int curPositon = -1;//记录选择的地址
 
 
@@ -235,11 +236,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
                 break;
 
             case API1.GET_INVOICE_SUCCESS:
+                invoiceInfo = originalInvoiceInfo;
                 parseInvoicePay(msg);
                 dismissPWProgressDialog();
                 break;
 
             case API1.GET_INVOICE_FAILED:
+                originalInvoiceInfo = null;
                 dismissPWProgressDialog();
                 newToast.setTextAndShow(ReflectionUtil.getStringId(MyApplication.getInstance(), msg.arg1), Common.TOAST_SHORT_TIME);
                 break;
@@ -733,14 +736,13 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
     //封装发票的jsonObject
     public JSONObject assembleInvoiceJson(){
-        if(null != invoiceInfo && invoiceInfo.isNeedInvoice())
-        {
-            JSONObject invoice=new JSONObject();
-            invoice.put("invoiceType",0);
-            invoice.put("invoiceTitle",invoiceInfo.getTitle()==InvoiceInfo.PERSONAL?0:1);
+        if(null != invoiceInfo && invoiceInfo.isNeedInvoice()) {
+            JSONObject invoice = new JSONObject();
+            invoice.put("invoiceType", 0);
+            invoice.put("invoiceTitle", invoiceInfo.getTitle() == InvoiceInfo.PERSONAL ? 0 : 1);
             if(invoiceInfo.getTitle() == InvoiceInfo.COMPANY)
-                invoice.put("invoiceCompanyName",invoiceInfo.getCompanyName());
-            invoice.put("invoiceAddressId",invoiceInfo.getAddress().getAddressId());
+                invoice.put("invoiceCompanyName", invoiceInfo.getCompanyName());
+            invoice.put("invoiceAddressId", invoiceInfo.getAddress().getAddressId());
             return invoice;
         }
         return null;
@@ -799,14 +801,14 @@ public class SubmitOrderActivity extends BaseActivity implements OnClickListener
 
         if(resultCode == RESULT_OK && requestCode == PREVIEW_INVOICE_CODE){
             //TODO 发票返回结果
-            invoiceInfo = data.getParcelableExtra("invoiceInfo");
-            if(null != invoiceInfo) {
+            originalInvoiceInfo = data.getParcelableExtra("invoiceInfo");
+            if(null != originalInvoiceInfo) {
                 showPWProgressDialog();
                 if (couponCodes != null && couponCodes.size() > 0) {
-                    API1.getCartsWithInvoice(cartItemIds, invoiceInfo.isNeedInvoice(), couponCodes, submitOrderHandler);
+                    API1.getCartsWithInvoice(cartItemIds, originalInvoiceInfo.isNeedInvoice(), couponCodes, submitOrderHandler);
 
                 } else {
-                    API1.getCartsWithInvoice(cartItemIds, invoiceInfo.isNeedInvoice(), new JSONArray(), submitOrderHandler);
+                    API1.getCartsWithInvoice(cartItemIds, originalInvoiceInfo.isNeedInvoice(), new JSONArray(), submitOrderHandler);
 
                 }
             }

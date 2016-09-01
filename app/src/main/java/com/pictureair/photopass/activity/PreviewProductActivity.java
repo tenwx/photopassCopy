@@ -460,7 +460,7 @@ public class PreviewProductActivity extends BaseActivity implements OnClickListe
                         cartPhotosInfo = new CartPhotosInfo();
                         cartPhotosInfo.setPhotoUrl(list.get(j).photoPathOrURL);
                         cartPhotosInfo.setPhotoId(list.get(j).photoId);
-                        cartPhotosInfo.setIsEncrypted(list.get(i).isEncrypted);
+                        cartPhotosInfo.setIsEncrypted(list.get(j).isEncrypted);
                         listAfterUploaded.add(cartPhotosInfo);
                     }
                 }
