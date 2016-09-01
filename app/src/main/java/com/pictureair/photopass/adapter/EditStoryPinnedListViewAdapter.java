@@ -85,8 +85,8 @@ public class EditStoryPinnedListViewAdapter extends BaseAdapter implements Stick
 		String photoUrl;
 		if (photoList.get(position).onLine == 1) {
 			if (photoList.get(position).isVideo == 1) {
-				PictureAirLog.out("load video--->" + photoList.get(position).photoPathOrURL);
-				photoUrl = Common.PHOTO_URL + photoList.get(position).photoPathOrURL;
+				PictureAirLog.out("load video--->" + photoList.get(position).photoThumbnail_512);
+				photoUrl = Common.PHOTO_URL + photoList.get(position).photoThumbnail_512;
 				viewHolder.videoImageView.setVisibility(View.VISIBLE);
 				ViewGroup.LayoutParams params2 = viewHolder.videoImageView.getLayoutParams();
 				params2.width = (ScreenUtil.getScreenWidth(context) - ScreenUtil.dip2px(context, 5 * (2))) / (2 * COLUMN_COUNT);

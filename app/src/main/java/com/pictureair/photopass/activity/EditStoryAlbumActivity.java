@@ -31,6 +31,7 @@ import com.pictureair.photopass.util.API1;
 import com.pictureair.photopass.util.AppManager;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.SettingUtil;
@@ -286,14 +287,21 @@ public class EditStoryAlbumActivity extends BaseActivity implements OnClickListe
 					itemOnClick(position, view);
 				} else {//预览模式，点击进入大图预览
 					PictureAirLog.out("select" + position);
-					Intent i = new Intent();
-					i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putInt("position", position);
-					bundle.putString("tab", "editStory");
-					bundle.putString("ppCode", ppCode);
-					i.putExtra("bundle", bundle);
-					startActivity(i);
+					if (albumArrayList.get(position).isVideo == 1) {
+						PhotoInfo info = albumArrayList.get(position);
+						Intent intent = new Intent(EditStoryAlbumActivity.this, VideoPlayerActivity.class);
+						intent.putExtra(DisneyVideoTool.FROM_STORY, info);
+						startActivity(intent);
+					} else {
+						Intent i = new Intent();
+						i.setClass(EditStoryAlbumActivity.this, PreviewPhotoActivity.class);
+						Bundle bundle = new Bundle();
+						bundle.putInt("position", position);
+						bundle.putString("tab", "editStory");
+						bundle.putString("ppCode", ppCode);
+						i.putExtra("bundle", bundle);
+						startActivity(i);
+					}
 				}
 			}
 		});

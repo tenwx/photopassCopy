@@ -208,7 +208,6 @@ public class Common {
     public static final String PPS = "pps";
     public static final String ppp1 = "ppp";
     public static final String LAST_UPDATE_PHOTO_TIME = "lastUpdatePhotoTime";
-    public static final String LAST_UPDATE_VIDEO_TIME = "lastUpdateVideoTime";
     public static final String LAST_UPDATE_TIME = "lastUpdateTime";
     public static final String LANGUAGE_NAME = "l";
     public static final String PP_COUNT = "ppCount";//保存pp数量的sharedpreference

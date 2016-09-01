@@ -756,30 +756,12 @@ public class PictureAirDbManager {
     }
 
     /**
-     * 删除photopassInfo中的内容
-     *
-     * @param tableName 需要清空的表的名字
-     * @param isVideo   是不是视频数据
-     */
-    public void deleteAllInfoFromTable(String tableName, boolean isVideo) {
-        database = DBManager.getInstance().writData();
-        try {
-            database.execSQL("delete from " + tableName + " where isVideo = ?", new String[]{isVideo ? "1" : "0"});
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager.getInstance().closeDatabase();
-        }
-    }
-
-    /**
      * 将照片插入到photoPassInfo表中
      *
      * @param responseArray
-     * @param isVideo       是否是视频信息
      * @param isAll         是否是刷新信息
      */
-    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isVideo, boolean isAll) {
+    public synchronized ArrayList<PhotoInfo> insertPhotoInfoIntoPhotoPassInfo(JSONArray responseArray, boolean isAll) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
         if (responseArray.size() == 0) {
             return resultArrayList;
@@ -790,12 +772,9 @@ public class PictureAirDbManager {
         try {
             for (int i = 0; i < responseArray.size(); i++) {
                 JSONObject object = responseArray.getJSONObject(i);
-                PhotoInfo photo = isVideo ? JsonUtil.getVideoInfo(object) : JsonUtil.getPhoto(object);
-                if (!isVideo) {
-                    if (photo.locationId == null || photo.locationId.equals("")) {
-//                        continue;
-                        photo.locationId = "others";
-                    }
+                PhotoInfo photo = JsonUtil.getPhoto(object);
+                if (photo.locationId == null || photo.locationId.equals("")) {
+                    photo.locationId = "others";
                 }
 
                 if (!isAll) {

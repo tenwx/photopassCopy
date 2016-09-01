@@ -93,7 +93,14 @@ public class JsonUtil {
         } else {
             info.isPayed = 0;
         }
-        info.isVideo = 0;
+
+        //是否是视频
+        if (object.containsKey("mimeType") && object.getString("mimeType").contains("mp4")) {
+            info.isVideo = 1;
+        } else {
+            info.isVideo = 0;
+        }
+
         //获取图片的location信息
         if (object.containsKey("locationId"))
             info.locationId = object.getString("locationId");
@@ -135,6 +142,16 @@ public class JsonUtil {
                     StringBuffer sb = new StringBuffer();
                     sb.append(Common.PHOTO_URL).append(x1024.getString("url"));
                     info.photoThumbnail_1024 = sb.toString().trim();
+                }
+
+                if (info.isVideo == 1) {
+                    if (object.containsKey("width")) {
+                        info.videoWidth = object.getIntValue("width");
+                    }
+
+                    if (object.containsKey("height")) {
+                        info.videoHeight = object.getIntValue("height");
+                    }
                 }
             }
         }
@@ -192,65 +209,6 @@ public class JsonUtil {
         info.isRefreshInfo = 0;
 //		info.albumName = "";
 //		info.isPayed = 0;
-        return info;
-    }
-
-    /**
-     * 视频信息解析 ，并且把数据插入到数据库中作为缓存数据
-     */
-    public static PhotoInfo getVideoInfo(JSONObject object) throws JSONException {
-        PhotoInfo info = new PhotoInfo();
-        info.onLine = 1;
-        //获取图片的ID
-        if (object.containsKey("_id"))
-            info.photoId = object.getString("_id");
-
-        //获取图片的购买状态
-        info.isPayed = 1;
-        info.isVideo = 1;
-        //获取图片的原始路径信息
-        if (object.containsKey("url")) {
-            info.photoPathOrURL = object.getString("url");
-        }
-        //获取图片对应的pp码
-        info.photoPassCode = "";
-        //获取视频的拍摄日期
-        if (object.containsKey("createdOn")) {
-            String time = object.getString("createdOn");
-            info.shootOn = AppUtil.GTMToLocal(time);
-            info.shootTime = info.shootOn.substring(0, 10);
-//            PictureAirLog.out("get transfer time----> " + info.shootOn);
-//            PictureAirLog.out("shootTime----> " + info.shootTime);
-        }
-
-        if (object.containsKey("fileSize")) {
-            info.fileSize = object.getIntValue("fileSize");
-        }
-
-        if (object.containsKey("width")) {
-            info.videoWidth = object.getIntValue("width");
-        }
-
-        if (object.containsKey("height")) {
-            info.videoHeight = object.getIntValue("height");
-        }
-
-        info.isChecked = 0;
-        info.isSelected = 0;
-        info.isLove = 0;
-        info.isEncrypted = 0;
-        info.isRefreshInfo = 0;
-        info.isUploaded = 0;
-        info.showMask = 0;
-        info.lastModify = 0l;
-        info.index = "";
-        info.photoThumbnail = "";
-        info.photoThumbnail_512 = "";
-        info.photoThumbnail_1024 = "";
-        info.locationId = "";
-        info.shareURL = "";
-        info.locationCountry = "";
-        info.locationName = "";
         return info;
     }
 

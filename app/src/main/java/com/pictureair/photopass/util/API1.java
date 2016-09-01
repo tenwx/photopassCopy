@@ -92,12 +92,6 @@ public class API1 {
     /**
      * 获取视频信息
      */
-    public static final int GET_ALL_VIDEO_LIST_FAILED = 2050;
-    public static final int GET_ALL_VIDEO_LIST_SUCCESS = 2051;
-
-    public static final int GET_REFRESH_VIDEO_LIST_FAILED = 2060;
-    public static final int GET_REFRESH_VIDEO_LIST_SUCCESS = 2061;
-
     public static final int GET_LAST_CONTENT_SUCCESS = 2071;
     public static final int GET_LAST_CONTENT_FAILED = 2070;
 
@@ -618,39 +612,6 @@ public class API1 {
                 handler.obtainMessage(GET_NEW_PHOTOS_INFO_FAILED, status, 0).sendToTarget();
             }
         });
-    }
-
-    /**
-     * 获取视频信息
-     *
-     * @param time 如果是null，则全部获取，如果不为null，则获取最新数据
-     */
-    public static void getVideoList(final String time, final Handler handler) {
-        RequestParams params = new RequestParams();
-        params.put(Common.USERINFO_TOKENID, MyApplication.getTokenId());
-        params.put(Common.LAST_UPDATE_TIME, time);
-        HttpUtil1.asyncGet(Common.BASE_URL_TEST + Common.GET_VIDEO_LIST, params, new HttpCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                super.onSuccess(jsonObject);
-                if (time == null) {//全部数据
-                    handler.obtainMessage(GET_ALL_VIDEO_LIST_SUCCESS, jsonObject).sendToTarget();
-                } else {//刷新数据
-                    handler.obtainMessage(GET_REFRESH_VIDEO_LIST_SUCCESS, jsonObject).sendToTarget();
-                }
-            }
-
-            @Override
-            public void onFailure(int status) {
-                super.onFailure(status);
-                if (time == null) {//全部数据
-                    handler.obtainMessage(GET_ALL_VIDEO_LIST_FAILED, status, 0).sendToTarget();
-                } else {//刷新数据
-                    handler.obtainMessage(GET_REFRESH_VIDEO_LIST_FAILED, status, 0).sendToTarget();
-                }
-            }
-        });
-
     }
 
     /**
