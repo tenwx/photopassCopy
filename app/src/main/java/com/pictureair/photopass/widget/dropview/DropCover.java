@@ -187,9 +187,9 @@ public class DropCover extends View implements Callback{
     public void finish(float x, float y) {
         double distance = Math.sqrt(Math.pow(mBaseX - mTargetX, 2) + Math.pow(mBaseY - mTargetY, 2));
         if (distance > mMaxDistance) {//消失
-        	touchMode = TOUCH_UP;
             if (mOnDragCompeteListener != null)
                 mOnDragCompeteListener.onDrag(x, y - mStatusBarHeight);
+        	touchMode = TOUCH_UP;
             isExplored = true;
             clearDatas();
             clearViews();
@@ -299,8 +299,8 @@ public class DropCover extends View implements Callback{
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                touchMode = TOUCH_CANCEL;
                 mOnDragCompeteListener.onVisible(true);
+                touchMode = TOUCH_CANCEL;
             }
         });
         rollBackAnim.setDuration(duration);
