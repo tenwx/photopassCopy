@@ -319,10 +319,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         llDisneyVideoFoot.setVisibility(View.VISIBLE);
         llShopPhoto.setOnClickListener(this);
 
-
-//        tvBubble.setAlpha(0.9f);
-//        tvBubble.setVisibility(View.VISIBLE);
-//        bubbleStart();
     }
 
     /**
@@ -405,15 +401,6 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         }
         return false;
     }
-
-    /**
-     * 隐藏OkButton
-     */
-    private void goneOkButton() {
-//        okButton.setVisibility(View.GONE);
-        okButton.setEnabled(false);
-    }
-
 
     /**
      * 将photoItemInfo的列表转成photoInfo的列表
@@ -650,22 +637,11 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
         popupWindow.setAnimationStyle(R.style.from_center_anim);
         popupWindow.showAtLocation(okButton, Gravity.CENTER, 0, 0);
         TextView tv1 = (TextView) popView.findViewById(R.id.tv_video_popup1);
-//        LinearLayout llContent = (LinearLayout) popView.findViewById(R.id.ll_content);
         tv1.setTypeface(MyApplication.getInstance().getFontBold());
         Button btnSubmit = (Button) popView.findViewById(R.id.btn_submit);
         btnSubmit.setTypeface(MyApplication.getInstance().getFontBold());
         btnSubmit.setOnClickListener(this);
         popupWindow.update();
-
-//        llContent.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (popupWindow.isShowing()){
-//                    clearData();
-//                }
-//                return false;
-//            }
-//        });
 
     }
 
