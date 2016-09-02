@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,6 +30,7 @@ import com.pictureair.photopass.util.DisneyVideoTool;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.UmengUtil;
+import com.pictureair.photopass.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ import de.greenrobot.event.Subscribe;
 
 public class StoryFragment extends Fragment {
 	private static final String TAG = "StoryFragment";
-	private GridView gridView;
+	private StickyGridHeadersGridView gridView;
 	private RelativeLayout noPhotoRelativeLayout;
 	private TextView noPhotoTextView;
 	private StickyGridAdapter stickyGridAdapter;
@@ -95,7 +95,7 @@ public class StoryFragment extends Fragment {
 			
 			view = inflater.inflate(R.layout.story_pinned_list, container, false);
 		}
-		gridView = (GridView) view.findViewById(R.id.stickyGridHeadersGridView);
+		gridView = (StickyGridHeadersGridView) view.findViewById(R.id.stickyGridHeadersGridView);
 		noPhotoRelativeLayout = (RelativeLayout) view.findViewById(R.id.no_photo_relativelayout);
 		noPhotoTextView = (TextView) view.findViewById(R.id.no_photo_textView);
 		

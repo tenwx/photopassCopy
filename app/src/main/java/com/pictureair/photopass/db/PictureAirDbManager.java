@@ -930,7 +930,7 @@ public class PictureAirDbManager {
      *
      * @return
      */
-    public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean isVideo, String deleteTime) {
+    public synchronized ArrayList<PhotoInfo> getAllPhotoFromPhotoPassInfo(boolean exceptVideo, String deleteTime) {
         ArrayList<PhotoInfo> resultArrayList = new ArrayList<PhotoInfo>();
         database = DBManager.getInstance().writData();
         //根据当前时间，删除超过30天并且未支付的数据信息
@@ -942,7 +942,12 @@ public class PictureAirDbManager {
 
         //删除过期的数据之后，再查询photo表的信息
         PictureAirLog.out("cursor open ---> getAllPhotoFromPhotoPassInfo");
-        Cursor cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isVideo = ? order by shootOn desc", new String[]{isVideo ? "1" : "0"});
+        Cursor cursor;
+        if (exceptVideo) {
+            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " where isVideo = 0 order by shootOn desc", null);
+        } else{
+            cursor = database.rawQuery("select * from " + Common.PHOTOPASS_INFO_TABLE + " order by shootOn desc", null);
+        }
         PhotoInfo photoInfo;
         if (cursor.moveToFirst()) {//判断是否photo数据
             do {

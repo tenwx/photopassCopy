@@ -95,7 +95,7 @@ public class JsonUtil {
         }
 
         //是否是视频
-        if (object.containsKey("mimeType") && object.getString("mimeType").contains("mp4")) {
+        if (object.containsKey("mimeType") && object.getString("mimeType").toLowerCase().contains("mp4")) {
             info.isVideo = 1;
         } else {
             info.isVideo = 0;

@@ -282,7 +282,7 @@ public class SelectPhotoActivity extends BaseActivity implements OnClickListener
                 super.run();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 long cacheTime = System.currentTimeMillis() - PictureAirDbManager.CACHE_DAY * PictureAirDbManager.DAY_TIME;
-                photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(false, sdf.format(new Date(cacheTime)));
+                photopassList = pictureAirDbManager.getAllPhotoFromPhotoPassInfo(true, sdf.format(new Date(cacheTime)));
                 photoPassArrayList.addAll(transferPhotoItemInfoToPhotoInfo(isBuy));
                 PictureAirLog.v(TAG, "pp photo size: " + photoPassArrayList.size());
                 selectPhotoHandler.sendEmptyMessage(GET_PHOTOS_DONE);

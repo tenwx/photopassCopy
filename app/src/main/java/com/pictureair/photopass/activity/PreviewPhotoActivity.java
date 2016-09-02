@@ -891,6 +891,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 PictureAirLog.out("photolist size ---->" + photolist.size());
                 PictureAirLog.out("currentPosition ---->" + currentPosition);
                 currentPosition = photolist.indexOf(currentPhotoInfo);
+                PictureAirLog.out("photoid--->" + photolist.get(currentPosition).photoId);
                 PictureAirLog.out("currentPosition ---->" + currentPosition);
                 PictureAirLog.v(TAG, "photo size is " + photolist.size());
                 PictureAirLog.v(TAG, "thumbnail is " + photolist.get(currentPosition).photoThumbnail);
