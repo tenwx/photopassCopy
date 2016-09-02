@@ -567,7 +567,7 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case GET_LOCATION_AD:
-                currentPhotoADTextView.setVisibility(View.GONE);
+//                currentPhotoADTextView.setVisibility(View.GONE);
                 final int oldPositon = msg.arg1;
                 if (myApplication.isGetADLocationSuccess()) {
                     //从数据库中查找
@@ -587,10 +587,14 @@ public class PreviewPhotoActivity extends BaseActivity implements OnClickListene
                 break;
 
             case GET_LOCATION_AD_DONE:
-                if (msg.arg1 == currentPosition && !msg.obj.toString().equals("")) {//如果获取的对应索引值，依旧是当期的索引值，则显示广告
-                    PictureAirLog.out("current position need show ad");
-                    currentPhotoADTextView.setVisibility(View.VISIBLE);
-                    currentPhotoADTextView.setText(msg.obj.toString());
+                if (msg.arg1 == currentPosition) {
+                    if (!msg.obj.toString().equals("")) {//如果获取的对应索引值，依旧是当期的索引值，则显示广告
+                        PictureAirLog.out("current position need show ad");
+                        currentPhotoADTextView.setVisibility(View.VISIBLE);
+                        currentPhotoADTextView.setText(msg.obj.toString());
+                    } else {
+                        currentPhotoADTextView.setVisibility(View.GONE);
+                    }
                 }
                 break;
 
