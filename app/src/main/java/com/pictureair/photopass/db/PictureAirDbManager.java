@@ -20,6 +20,7 @@ import com.pictureair.photopass.entity.ThreadInfo;
 import com.pictureair.photopass.eventbus.TabIndicatorUpdateEvent;
 import com.pictureair.photopass.util.AppUtil;
 import com.pictureair.photopass.util.Common;
+import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.JsonUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 
@@ -31,6 +32,7 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -535,7 +537,7 @@ public class PictureAirDbManager {
      * @param type       1 代表直接进入的 PP 页面， 2 代表是从selectPP进入，这个情况只显示模糊图
      * @return
      */
-    public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(ArrayList<PPinfo> ppCodeList, int type) {
+    public ArrayList<PPinfo> getPPCodeInfo1ByPPCodeList(Context c, ArrayList<PPinfo> ppCodeList, int type) {
         ArrayList<PPinfo> showPPCodeList = new ArrayList<PPinfo>();
         //获取需要显示的PP(去掉重复、隐藏的) (new add 选择PP+界面直接解析)
         if (type == 1) {
@@ -550,14 +552,15 @@ public class PictureAirDbManager {
         Cursor cursor = null;
         try {
             database = DBManager.getInstance().writData();
-            ArrayList<String> urlList;
+            ArrayList<HashMap<String, String>> urlList;
             ArrayList<PhotoInfo> selectPhotoItemInfos;
+            HashMap<String, String> map;
             for (int i = 0; i < ppCodeList.size(); i++) {
                 if (ppCodeList.get(i).getIsHidden() == 1) {
                     continue;
                 }
-                urlList = new ArrayList<String>();
-                selectPhotoItemInfos = new ArrayList<PhotoInfo>();
+                urlList = new ArrayList<>();
+                selectPhotoItemInfos = new ArrayList<>();
                 PPinfo ppInfo = ppCodeList.get(i);
                 PictureAirLog.out("cursor open ---> getPPCodeInfo1ByPPCodeList" + cursor);
                 if (type == 1) {
@@ -572,7 +575,10 @@ public class PictureAirDbManager {
                 if (cursor != null && cursor.moveToFirst()) {
                     do {
                         // 获取图片路径
-                        urlList.add(cursor.getString(cursor.getColumnIndex("previewUrl")));
+                        map = new HashMap<>();
+                        map.put("url", cursor.getString(cursor.getColumnIndex("previewUrl")));
+                        map.put("isVideo", cursor.getInt(cursor.getColumnIndex("isVideo")) + "");
+                        urlList.add(map);
                         PhotoInfo sInfo = AppUtil.getPhotoInfoFromCursor(cursor);
                         selectPhotoItemInfos.add(sInfo);
                     } while (cursor.moveToNext());
@@ -581,11 +587,29 @@ public class PictureAirDbManager {
                 if (type == 2) {
                     Collections.reverse(urlList);
                 }
+
+                int count = urlList.size();
+                if (count < 6) {//不满6或者12的，需要补全
+                    for (int j = 6 - count; j > 0; j--) {
+                        map = new HashMap<>();
+                        map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
+                        map.put("isVideo", "0");
+                        urlList.add(map);
+                    }
+                } else if (count < 12) {
+                    for (int j = 12 - count; j > 0; j--) {
+                        map = new HashMap<>();
+                        map.put("url", GlideUtil.getDrawableUrl(c, R.drawable.default_pp));
+                        map.put("isVideo", "0");
+                        urlList.add(map);
+                    }
+                }
                 PPinfo ppInfo1 = new PPinfo();
                 ppInfo1.setPpCode(ppInfo.getPpCode());
                 ppInfo1.setShootDate(ppInfo.getShootDate());
                 ppInfo1.setUrlList(urlList);
                 ppInfo1.setSelectPhotoItemInfos(selectPhotoItemInfos);
+                ppInfo1.setPhotoCount(count);
                 showPPCodeList.add(ppInfo1);
                 if (cursor != null) {
                     PictureAirLog.out("cursor close ---> getPPCodeInfo1ByPPCodeList");

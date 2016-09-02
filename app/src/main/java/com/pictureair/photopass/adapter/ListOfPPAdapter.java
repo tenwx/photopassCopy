@@ -18,7 +18,6 @@ import com.pictureair.photopass.activity.EditStoryAlbumActivity;
 import com.pictureair.photopass.entity.PPPinfo;
 import com.pictureair.photopass.entity.PPinfo;
 import com.pictureair.photopass.util.Common;
-import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.PictureAirLog;
 import com.pictureair.photopass.util.SPUtils;
 import com.pictureair.photopass.util.ScreenUtil;
@@ -61,8 +60,7 @@ public class ListOfPPAdapter extends BaseAdapter {
         this.isDeletePP = isDeletePP;
         myToast = new PWToast(mContext);
         screenWidth = ScreenUtil.getScreenWidth(mContext);// 获取屏幕宽度
-        params = new LinearLayout.LayoutParams(
-                (screenWidth - 24) / 6, (screenWidth - 24) / 6);
+        params = new LinearLayout.LayoutParams((screenWidth - 24) / 6, (screenWidth - 24) / 6);
         params.setMargins(2, 2, 2, 2);
 
         this.pppInfo = pppInfo;
@@ -149,26 +147,16 @@ public class ListOfPPAdapter extends BaseAdapter {
             holder.deleteMyPP.setOnClickListener(new PhotoPassManagerOnClickListener(position, true));//删除图片
         }
 
-
         if (arrayList == null || arrayList.size() <= 0) {
             return convertView;
         }
 
-
-        // 初始化数据
         // 初始化pp码
-        PPinfo ppInfo1 = new PPinfo();
-        ppInfo1 = arrayList.get(position);
-        ArrayList<String> urlList = new ArrayList<String>();
+        PPinfo ppInfo1 = arrayList.get(position);
         holder.ppCode.setText(ppInfo1.getPpCode());
-        if (ppInfo1.getUrlList() == null || ppInfo1.getUrlList().size() <= 0) {
-            ppInfo1.setUrlList(new ArrayList<String>());
-        }
 
         // 图片显示
-        int photoCount = ppInfo1.getUrlList().size();
-        urlList.removeAll(urlList);
-        urlList.addAll(ppInfo1.getUrlList());
+        int photoCount = ppInfo1.getPhotoCount();
         if (photoCount == 0) {
             holder.conerImageView.setImageResource(R.drawable.my_pp_miqi_no_photo);
         } else {
@@ -177,25 +165,10 @@ public class ListOfPPAdapter extends BaseAdapter {
         if (photoCount <= 6) {
             holder.ppImageLayout2.setVisibility(View.GONE);
             holder.dividerView.setVisibility(View.VISIBLE);
-            for (int i = 0; i < 6; i++) {
-                int num = 6 - photoCount;
-                if (num > 0 && i > photoCount - 1) {
-                    // 显示默认图片
-                    urlList.add(i, GlideUtil.getDrawableUrl(mContext, R.drawable.default_pp));
-                }
-            }
+
         } else if (photoCount > 6) {
             holder.dividerView.setVisibility(View.GONE);
             holder.ppImageLayout2.setVisibility(View.VISIBLE);
-            if (photoCount <= 12) {
-                for (int i = 0; i < 12; i++) {
-                    int num = 12 - photoCount;
-                    if (num > 0 && i > photoCount - 1) {
-                        // 显示默认图片
-                        urlList.add(i, GlideUtil.getDrawableUrl(mContext, R.drawable.default_pp));
-                    }
-                }
-            }
 
             holder.image7.setLayoutParams(params);
             holder.image8.setLayoutParams(params);
@@ -204,12 +177,12 @@ public class ListOfPPAdapter extends BaseAdapter {
             holder.image11.setLayoutParams(params);
             holder.image12.setLayoutParams(params);
 
-            holder.image7.initData(urlList.get(6), false, 6, photoCount);
-            holder.image8.initData(urlList.get(7), false, 7, photoCount);
-            holder.image9.initData(urlList.get(8), false, 8, photoCount);
-            holder.image10.initData(urlList.get(9), false, 9, photoCount);
-            holder.image11.initData(urlList.get(10), false, 10, photoCount);
-            holder.image12.initData(urlList.get(11), false, 11, photoCount);
+            holder.image7.initData(ppInfo1.getUrlList().get(6), 6, photoCount);
+            holder.image8.initData(ppInfo1.getUrlList().get(7), 7, photoCount);
+            holder.image9.initData(ppInfo1.getUrlList().get(8), 8, photoCount);
+            holder.image10.initData(ppInfo1.getUrlList().get(9), 9, photoCount);
+            holder.image11.initData(ppInfo1.getUrlList().get(10), 10, photoCount);
+            holder.image12.initData(ppInfo1.getUrlList().get(11), 11, photoCount);
         }
 
         holder.image1.setLayoutParams(params);
@@ -219,12 +192,12 @@ public class ListOfPPAdapter extends BaseAdapter {
         holder.image5.setLayoutParams(params);
         holder.image6.setLayoutParams(params);
 
-        holder.image1.initData(urlList.get(0), false, 0, photoCount);
-        holder.image2.initData(urlList.get(1), false, 1, photoCount);
-        holder.image3.initData(urlList.get(2), false, 2, photoCount);
-        holder.image4.initData(urlList.get(3), false, 3, photoCount);
-        holder.image5.initData(urlList.get(4), false, 4, photoCount);
-        holder.image6.initData(urlList.get(5), false, 5, photoCount);
+        holder.image1.initData(ppInfo1.getUrlList().get(0), 0, photoCount);
+        holder.image2.initData(ppInfo1.getUrlList().get(1), 1, photoCount);
+        holder.image3.initData(ppInfo1.getUrlList().get(2), 2, photoCount);
+        holder.image4.initData(ppInfo1.getUrlList().get(3), 3, photoCount);
+        holder.image5.initData(ppInfo1.getUrlList().get(4), 4, photoCount);
+        holder.image6.initData(ppInfo1.getUrlList().get(5), 5, photoCount);
         return convertView;
     }
 

@@ -12,6 +12,8 @@ import com.pictureair.photopass.R;
 import com.pictureair.photopass.util.GlideUtil;
 import com.pictureair.photopass.util.ScreenUtil;
 
+import java.util.HashMap;
+
 /**
  * Created by bauer_bao on 16/9/1.
  *
@@ -43,13 +45,13 @@ public class PWPhotoPassPhotoView extends RelativeLayout {
         countTV = (TextView) findViewById(R.id.pp_manager_photo_count_tv);
     }
 
-    public void initData(String photoURL, boolean isVideo, int position, int photoCount) {
-        if (photoIV.getTag(R.id.glide_image_tag) == null || !photoIV.getTag(R.id.glide_image_tag).equals(photoURL)) {
-            GlideUtil.load(context, photoURL, photoIV);
-            photoIV.setTag(R.id.glide_image_tag, photoURL);
+    public void initData(HashMap<String, String> map, int position, int photoCount) {
+        if (photoIV.getTag(R.id.glide_image_tag) == null || !photoIV.getTag(R.id.glide_image_tag).equals(map.get("url"))) {
+            GlideUtil.load(context, map.get("url"), photoIV);
+            photoIV.setTag(R.id.glide_image_tag, map.get("url"));
         }
 
-        if (!isVideo) {
+        if (map.get("isVideo").equals("1")) {
             ViewGroup.LayoutParams layoutParams = frontPlayIV.getLayoutParams();
             layoutParams.width = ScreenUtil.getScreenWidth(context) / 15;
             layoutParams.height = layoutParams.width;

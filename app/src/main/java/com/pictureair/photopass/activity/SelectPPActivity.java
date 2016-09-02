@@ -147,7 +147,7 @@ public class SelectPPActivity extends BaseActivity implements View.OnClickListen
                     pPinfo.setShootDate(shootTime);
                     PPlist.add(pPinfo);
                 }
-                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(PPlist, 2);
+                showPPCodeList = pictureAirDbManager.getPPCodeInfo1ByPPCodeList(SelectPPActivity.this, PPlist, 2);
 
                 dppp = new PPPinfo();
                 dppp.capacity = 1;
