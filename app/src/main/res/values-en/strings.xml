@@ -598,15 +598,14 @@
     <string name="photo_download_complete">Completed</string>
     <string name="photo_download_clear">Clear List</string>
     <string name="photo_download_reconnect">Reconnect</string>
-    <string name="photo_download_wait_select">待勾选</string>
-    <string name="photo_download_clear_tips">Download completed before you can clear</string>
+    <string name="photo_download_wait_select">Select</string>
     <string name="photo_download_not_exists">Deleted</string>
     <string name="photo_download_tips">There are no photos downloading in progress</string>
     <string name="photo_download_success_tips">There are no photos downloaded</string>
     <string name="photo_download_to_load">DownLoad Now</string>
     <string name="photo_download_tips2">Your photos have been successfully downloaded into your local photo album. You can click on the photos below to view them.</string>
     <string name="photo_download_select">Select</string>
-    <string name="photo_download_tips3">wait</string>
-    <string name="photo_download_tips4">没有可编辑图片哦</string>
+    <string name="photo_download_tips3">Your photo is still downloading, please try again later</string>
+    <string name="photo_download_tips4">No editable photo</string>
     <!--photo download manage start-->
 </resources>

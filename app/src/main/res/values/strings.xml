@@ -599,7 +599,6 @@
     <string name="photo_download_clear">清空列表</string>
     <string name="photo_download_reconnect">重连</string>
     <string name="photo_download_wait_select">待勾选</string>
-    <string name="photo_download_clear_tips">下载完成后才可以清除</string>
     <string name="photo_download_not_exists">源文件已删除</string>
     <string name="photo_download_tips">未有正在下载中的照片</string>
     <string name="photo_download_success_tips">未有已下载完成的照片</string>
